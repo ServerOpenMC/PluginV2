@@ -1,6 +1,10 @@
 package fr.openmc.core.utils;
 
 public class DateUtils {
+    /**
+     * @param ticks Ticks in Minecraft
+     * @return Date Format in Xj Xh Xm Xs
+     */
     public static String convertTime(long ticks) {
         long millis = ticks * 50;
 
