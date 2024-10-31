@@ -15,8 +15,15 @@ public class Socials {
         if (url == null || url.isEmpty()) {
             return url;
         }
-        return url.replaceFirst("^[a-zA-Z]+://", "");
+        String modifiedUrl = url.replaceFirst("^[a-zA-Z]+://", "");
+
+        if (modifiedUrl.endsWith("/")) {
+            modifiedUrl = modifiedUrl.substring(0, modifiedUrl.length() - 1);
+        }
+
+        return modifiedUrl;
     }
+
 
     private Component parseText(String message, String link) {
         return Component.text(message).append(
