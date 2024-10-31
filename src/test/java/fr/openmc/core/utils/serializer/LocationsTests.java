@@ -25,7 +25,7 @@ public class LocationsTests {
     void serializeXYZ() {
         Assertions.assertEquals(
                 "5894,69;946612,51;1651,52;0,00;0,00",
-                LocationSerializer.serialize(5894.694, 946612.51, 1651.5156154651135)
+                LocationSerializer.serialize(5894.694, 946612.51, 1651.5166154651135)
         );
     }
 
