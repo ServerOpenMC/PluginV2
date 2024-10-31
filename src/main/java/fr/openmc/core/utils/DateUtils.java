@@ -2,6 +2,7 @@ package fr.openmc.core.utils;
 
 public class DateUtils {
     /**
+     * Convert MCT to a readable duration
      * @param ticks Ticks in Minecraft
      * @return Date Format in Xj Xh Xm Xs
      */
