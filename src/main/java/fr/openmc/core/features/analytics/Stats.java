@@ -12,6 +12,11 @@ public enum Stats {
     SESSION,
     ;
 
+    /**
+     * Increment a stats for a player
+     * @param uuid Player
+     * @param amount Amount to incremented
+     */
     public void increment(UUID uuid, int amount) {
         if (!AnalyticsManager.isEnabled()) return;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -28,14 +33,27 @@ public enum Stats {
         });
     }
 
+    /**
+     * Increment a stats by one for a player
+     * @param uuid Player
+     */
     public void increment(UUID uuid) {
         increment(uuid, 1);
     }
 
+    /**
+     * Decrement a stats by one for a player
+     * @param uuid Player
+     */
     public void decrement(UUID uuid) {
         increment(uuid, -1);
     }
 
+    /**
+     * Decrement a stats by one for a player
+     * @param uuid Player
+     * @param amount Amount to be decremented
+     */
     public void decrement(UUID uuid, int amount) {
         increment(uuid, amount*-1);
     }
