@@ -15,6 +15,7 @@ public class DatabaseManager {
     public DatabaseManager() {
         connect();
         try {
+            // Déclencher au début du plugin pour créer les tables nécessaires
             AnalyticsManager.init_db(connection);
         } catch (SQLException e) {
             e.printStackTrace();
