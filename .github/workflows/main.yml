@@ -42,4 +42,4 @@ jobs:
           echo "artifactPath=$(pwd)/builds" >> $GITHUB_ENV
       - name: Run units tests
         run: |
-          ./gradlew test --tests "*Tests" --scan
+          ./gradlew test --tests "*Tests"
