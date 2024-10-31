@@ -19,7 +19,8 @@ public class CommandsManager {
 
     private void registerCommands() {
         handler.register(
-                new Socials()
+                new Socials(),
+                new Playtime()
         );
     }
 
