@@ -1,0 +1,28 @@
+package fr.openmc.core.commands.utils;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+public class SetSpawn {
+    
+    @Command("setspawn")
+    @Description("Permet de changer le spawn")
+    @CommandPermission("omc.command.setspawn")
+    public void setSpawn(Player player) {
+
+        Location location = player.getLocation();
+
+        OMCPlugin.getInstance().getSpawnManager().setSpawn(location);
+
+        MessagesManager.sendMessageType(player, "§aVous avez changé le point de spawn en §6X: §e" + location.getBlockX() + "§6, Y:§e" + location.getBlockY() + "§6, Z: §e" + location.getBlockY(), Prefix.OPENMC, MessageType.SUCCESS, true);
+
+    }
+}

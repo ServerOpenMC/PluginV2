@@ -3,6 +3,8 @@ package fr.openmc.core.utils.messages;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import lombok.Getter;
+
 public class MessagesManager {
 
 
@@ -132,6 +134,18 @@ public class MessagesManager {
         }
 
         return result.toString();
+    }
+
+    public static enum Message {
+        NOPERMISSION("§cVous n'avez pas la permission d'exécuter cette commande."),
+
+        ;
+
+        @Getter private final String message;
+        Message(String message) {
+            this.message = message;
+        }
+
     }
 
 }

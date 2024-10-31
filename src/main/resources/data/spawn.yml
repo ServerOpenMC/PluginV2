@@ -1,0 +1,7 @@
+spawn:
+  world: world # Nom du monde
+  x: 0.0 # Coordonnées X
+  y: 0.0 # Coordonnées Y
+  z: 0.0 # Coordonnées Z
+  yaw: 0.0 # Coordonnées Yaw
+  pitch: 0.0 # Coordonnées Pitch
