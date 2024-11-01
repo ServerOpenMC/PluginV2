@@ -1,0 +1,10 @@
+#####
+# MOTD
+#####
+motds:
+  - motd1:
+      line1: "§d§lOPENMC V2 §r§8- §7Le serveur Open Source §8- §d1.21.1"
+      line2: "                      §3§lTOWN UPDATE                      "
+  - motd2:
+      line1: "§d§lOPENMC V2 §r§8- §7Le serveur Open Source §8- §d1.21.1"
+      line2: "                      §3§lV2 UPDATE                      "

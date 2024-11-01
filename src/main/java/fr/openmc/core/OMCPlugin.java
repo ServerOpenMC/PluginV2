@@ -5,6 +5,7 @@ import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.utils.spawn.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,6 +31,7 @@ public final class OMCPlugin extends JavaPlugin {
         new SpawnManager(this);
         new CommandsManager();
         new ListenersManager();
+        new MotdUtils(this);
 
         getLogger().info("Plugin activé");
     }
