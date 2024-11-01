@@ -1,6 +1,8 @@
 package fr.openmc.core.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.fun.Playtime;
+import fr.openmc.core.commands.utils.*;
 import lombok.Getter;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
@@ -20,6 +22,8 @@ public class CommandsManager {
     private void registerCommands() {
         handler.register(
                 new Socials(),
+                new Spawn(),
+                new SetSpawn(),
                 new Playtime()
         );
     }

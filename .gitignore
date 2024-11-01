@@ -9,6 +9,9 @@ builds/
 *.ipr
 *.iws
 
+# VSCode
+.vscode/*
+
 # IntelliJ
 out/
 # mpeltonen/sbt-idea plugin

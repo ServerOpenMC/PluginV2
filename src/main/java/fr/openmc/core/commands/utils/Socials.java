@@ -1,4 +1,4 @@
-package fr.openmc.core.commands;
+package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
 import net.kyori.adventure.text.Component;

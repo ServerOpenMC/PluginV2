@@ -15,3 +15,6 @@ permissions:
   omc.commands.*:
     description: "Donne accès au commandes"
     default: true
+  omc.admins.commands.*:
+    description: "Donne accès aux commandes d'administration"
+    default: op

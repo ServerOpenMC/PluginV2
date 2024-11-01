@@ -2,6 +2,7 @@ package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.utils.spawn.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -20,12 +21,13 @@ public final class OMCPlugin extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
         configs = this.getConfig();
-
+        
         /* EXTERNALS */
         MenuLib.init(this);
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
+        new SpawnManager(this);
         new CommandsManager();
         new ListenersManager();
 
