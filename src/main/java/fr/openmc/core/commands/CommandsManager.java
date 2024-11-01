@@ -22,7 +22,8 @@ public class CommandsManager {
         handler.register(
                 new Socials(),
                 new Spawn(),
-                new SetSpawn()
+                new SetSpawn(),
+                new Playtime()
         );
     }
 
