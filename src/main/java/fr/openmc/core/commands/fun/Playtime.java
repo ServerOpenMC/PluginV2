@@ -4,7 +4,6 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
