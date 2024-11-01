@@ -1,4 +1,4 @@
-package fr.openmc.core.commands;
+package fr.openmc.core.commands.fun;
 
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
