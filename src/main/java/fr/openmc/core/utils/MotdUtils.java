@@ -6,7 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import net.kyori.adventure.text.Component;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -25,7 +24,7 @@ public class MotdUtils {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Integer randomIndex = new Random().nextInt(0, 1);
+                int randomIndex = new Random().nextInt(0, 1);
 
                 Bukkit.getServer().motd(motdList.get(randomIndex));
             }
