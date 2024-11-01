@@ -1,6 +1,8 @@
 package fr.openmc.core.commands.utils;
 
+import fr.openmc.core.features.utils.spawn.SpawnManager;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import fr.openmc.core.OMCPlugin;
@@ -9,25 +11,27 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.MessagesManager.Message;
 import revxrsal.commands.annotation.*;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Spawn {
 
     @Command("spawn")
     @Description("Permet de se rendre au spawn")
-    public void spawn(Player player, @Default("me") Player target) {
+    @CommandPermission("omc.commands.spawn")
+    public void spawn(CommandSender sender, @Default("me") Player target) {
         
-        Location spawnLocation = OMCPlugin.getInstance().getSpawnManager().getSpawnLocation();
+        Location spawnLocation = SpawnManager.getInstance().getSpawnLocation();
 
-        if(target.equals(player)) {
+        if(sender instanceof Player player && player == target) {
             player.teleport(spawnLocation);
             MessagesManager.sendMessageType(player, "§aVous avez été envoyé au spawn", Prefix.OPENMC, MessageType.SUCCESS, true);
         } else {
-            if(player.hasPermission("omc.command.spawn.others")) {
+            if(!(sender instanceof Player) || ((Player) sender).hasPermission("omc.admin.commands.spawn.others")) {
                 target.teleport(spawnLocation);
-                MessagesManager.sendMessageType(player, "§aVous avez envoyer §e" + target.getName() + "§a au spawn", Prefix.OPENMC, MessageType.SUCCESS, true);
-                MessagesManager.sendMessageType(target, "§aVous avez été envoyé par §e" + player.getName() + "§a au spawn", Prefix.OPENMC, MessageType.WARNING, true);
+                MessagesManager.sendMessageType(sender, "§aVous avez envoyé §e" + target.getName() + "§a au spawn", Prefix.OPENMC, MessageType.SUCCESS, true);
+                MessagesManager.sendMessageType(target, "§aVous avez été envoyé par §e" + (sender instanceof Player player ? player.getName() : "Console") + "§a au spawn", Prefix.OPENMC, MessageType.WARNING, true);
             } else {
-                MessagesManager.sendMessageType(player, Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessageType(sender, Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
             }
         }
     }

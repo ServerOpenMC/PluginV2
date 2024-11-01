@@ -1,4 +1,4 @@
-package fr.openmc.core.features.spawn;
+package fr.openmc.core.features.utils.spawn;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +16,10 @@ public class SpawnManager {
     private final File spawnFile;
     private FileConfiguration spawnConfig;
     @Getter private Location spawnLocation;
+    @Getter static SpawnManager instance;
 
     public SpawnManager(OMCPlugin plugin) {
+        instance = this;
         this.plugin = plugin;
         this.spawnFile = new File(plugin.getDataFolder() + "/data", "spawn.yml");
         loadSpawnConfig();

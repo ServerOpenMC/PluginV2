@@ -1,6 +1,7 @@
 package fr.openmc.core.utils.messages;
 
 import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import lombok.Getter;
@@ -16,20 +17,21 @@ public class MessagesManager {
     /**
      * Sends a formatted message to the player with or without sound.
      *
-     * @param player  The player to send the message to
+     * @param sender  The player to send the message to (can be a console)
      * @param message The content of the message
      * @param prefix  The prefix for the message
      * @param type    The type of message (information, error, success, warning)
      * @param sound   Indicates whether a sound should be played (true) or not (false)
      */
-    public static void sendMessageType(Player player, String message, Prefix prefix, MessageType type, boolean sound) {
+    public static void sendMessageType(CommandSender sender, String message, Prefix prefix, MessageType type, boolean sound) {
 
-        if(sound) {
+        String messageStr = prefix.getPrefix() + " §7» " + message;
+
+        if(sender instanceof Player player && sound) {
             player.playSound(player.getLocation(), getSound(type), 1, 1);
         }
-        String messageStr = "§8(" + getPrefixType(type) + "§8) " + prefix.getPrefix() + " §7» " + message;
 
-        player.sendMessage(messageStr);
+        sender.sendMessage(messageStr);
 
     }
 
@@ -37,17 +39,14 @@ public class MessagesManager {
     /**
      * Sends a formatted message to the player with an accompanying sound.
      *
-     * @param player  The player to send the message to
+     * @param sender  The player to send the message to (can be a console)
      * @param message The content of the message
      * @param prefix  The prefix for the message
-     * @param type    The type of message (determines the sound played)
      */
-    public static void sendMessage(Player player, String message, Prefix prefix, MessageType type) {
-        player.playSound(player.getLocation(), getSound(type), 1, 1);
-
+    public static void sendMessage(CommandSender sender, String message, Prefix prefix) {
         String messageStr = prefix.getPrefix() + " §7» " + message;
 
-        player.sendMessage(messageStr);
+        sender.sendMessage(messageStr);
 
     }
 

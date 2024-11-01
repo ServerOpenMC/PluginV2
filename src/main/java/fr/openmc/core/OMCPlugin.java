@@ -2,7 +2,7 @@ package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
-import fr.openmc.core.features.spawn.SpawnManager;
+import fr.openmc.core.features.utils.spawn.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -14,7 +14,6 @@ import java.sql.SQLException;
 public final class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
-    @Getter private SpawnManager spawnManager;
     private DatabaseManager dbManager;
 
     @Override
@@ -28,7 +27,7 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
-        spawnManager = new SpawnManager(this);
+        new SpawnManager(this);
         new CommandsManager();
         new ListenersManager();
 
