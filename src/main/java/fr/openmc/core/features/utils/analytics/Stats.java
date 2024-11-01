@@ -1,4 +1,4 @@
-package fr.openmc.core.features.analytics;
+package fr.openmc.core.features.utils.analytics;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.database.DatabaseManager;
