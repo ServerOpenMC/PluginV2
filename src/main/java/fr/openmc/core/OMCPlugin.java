@@ -31,10 +31,7 @@ public final class OMCPlugin extends JavaPlugin {
         new SpawnManager(this);
         new CommandsManager();
         new ListenersManager();
-
-        /* MOTD */
-        MotdUtils motdChanger = new MotdUtils();
-        motdChanger.startMOTD(this);
+        new MotdUtils(this);
 
         getLogger().info("Plugin activé");
     }

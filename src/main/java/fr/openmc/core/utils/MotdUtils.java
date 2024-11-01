@@ -1,33 +1,43 @@
 package fr.openmc.core.utils;
 
 
+import fr.openmc.core.OMCPlugin;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import net.kyori.adventure.text.Component;
 
-import java.util.Arrays;
+import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class MotdUtils {
-    String title = "§d§lOPENMC V2 §r§8- §7Le serveur Open Source §8- §d1.21.1";
+    private final YamlConfiguration motdConfig;
+    public MotdUtils(OMCPlugin plugin) {
+        File motdFile = new File(plugin.getDataFolder() + "/data", "motd.yml");
 
-    private final List<Component> motdList = Arrays.asList(
-            Component.text(title + "\n                      §3§lTOWN UPDATE                      "),
-            Component.text(title + "\n                      §3§lV2 UPDATE                      ")
-            // oublier pas de changer le motd en fonction des updates qu'il y a (grosse feature ect)
-    );
+        if(!motdFile.exists()) {
+            motdFile.getParentFile().mkdirs();
+            plugin.saveResource("data/motd.yml", false);
+        }
 
-    public void startMOTD(JavaPlugin plugin) {
+        motdConfig = YamlConfiguration.loadConfiguration(motdFile);
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                int randomIndex = new Random().nextInt(0, 1);
+                List<Map<?, ?>> motds = motdConfig.getMapList("motds");
 
-                Bukkit.getServer().motd(motdList.get(randomIndex));
+                int randomIndex = new Random().nextInt(motds.size());
+                Map<?, ?> motdData = motds.get(randomIndex);
+
+                String line1 = (String) (motdData).get("line1");
+                String line2 = (String) (motdData).get("line2");
+
+                Bukkit.getServer().motd(Component.text(line1 + "\n" + line2));
             }
         }.runTaskTimer(plugin, 0L, 12000L); // 12000 ticks = 10 minutes
     }
+
 }
