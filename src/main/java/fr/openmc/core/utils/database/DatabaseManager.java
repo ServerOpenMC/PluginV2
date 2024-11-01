@@ -1,7 +1,7 @@
 package fr.openmc.core.utils.database;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.analytics.AnalyticsManager;
+import fr.openmc.core.features.utils.analytics.AnalyticsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
