@@ -3,7 +3,6 @@ package fr.openmc.core.features.utils.analytics;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
