@@ -4,6 +4,7 @@ import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,6 +29,10 @@ public final class OMCPlugin extends JavaPlugin {
         dbManager = new DatabaseManager();
         new CommandsManager();
         new ListenersManager();
+
+        /* MOTD */
+        MotdUtils motdChanger = new MotdUtils();
+        motdChanger.startMOTD(this);
 
         getLogger().info("Plugin activé");
     }
