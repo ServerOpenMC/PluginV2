@@ -32,19 +32,25 @@ public class MotdUtils {
             public void run() {
                 List<Map<?, ?>> motds = motdConfig.getMapList("motds");
 
+                System.out.println(motds.size());
+
                 int randomIndex = new Random().nextInt(motds.size());
+                System.out.println(motds.size());
+                System.out.println(randomIndex);
                 Map<?, ?> motdData = motds.get(randomIndex);
+
+
+                System.out.println(motdData.get("line1"));
+                System.out.println(motdData.get("line2"));
 
                 String line1 = (String) (motdData).get("line1");
                 String line2 = (String) (motdData).get("line2");
 
+
                 motd=Component.text(line1 + "\n" + line2);
+                System.out.println(motd);
                 Bukkit.getServer().motd(motd);
             }
         }.runTaskTimer(plugin, 0L, 12000L); // 12000 ticks = 10 minutes
-    }
-
-    public static Component getCurrentMotd() {
-        return motd;
     }
 }
