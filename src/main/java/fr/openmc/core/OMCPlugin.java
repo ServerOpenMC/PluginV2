@@ -2,6 +2,7 @@ package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.utils.economy.EconomyManager;
 import fr.openmc.core.features.utils.spawn.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -30,6 +31,7 @@ public final class OMCPlugin extends JavaPlugin {
         new SpawnManager(this);
         new CommandsManager();
         new ListenersManager();
+        new EconomyManager();
 
         getLogger().info("Plugin activé");
     }
