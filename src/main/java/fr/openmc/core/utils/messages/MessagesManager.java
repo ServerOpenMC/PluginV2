@@ -25,7 +25,7 @@ public class MessagesManager {
      */
     public static void sendMessageType(CommandSender sender, String message, Prefix prefix, MessageType type, boolean sound) {
 
-        String messageStr = prefix.getPrefix() + " §7» " + message;
+        String messageStr = "§7(" + getPrefixType(type) + "§7) " + prefix.getPrefix() + " §7» " + message;
 
         if(sender instanceof Player player && sound) {
             player.playSound(player.getLocation(), getSound(type), 1, 1);
@@ -52,47 +52,22 @@ public class MessagesManager {
 
 
     private static String getPrefixType(MessageType type) {
-        String prefixType;
-        switch (type) {
-            case ERROR:
-                prefixType = "§c❗";
-                break;
-            case WARNING:
-                prefixType = "§6⚠";
-                break;
-            case SUCCESS:
-                prefixType = "§a✔";
-                break;
-            case INFO:
-                prefixType = "§bⓘ";
-                break;
-            default:
-                prefixType = "§7";
-                break;
-        }
-        return prefixType;
+        return switch (type) {
+            case ERROR -> "§c❗";
+            case WARNING -> "§6⚠";
+            case SUCCESS -> "§a✔";
+            case INFO -> "§bⓘ";
+            default -> "§7";
+        };
     }
 
     private static Sound getSound(MessageType type) {
-        Sound soundType;
-        switch (type) {
-            case ERROR:
-                soundType = Sound.BLOCK_NOTE_BLOCK_BASS;
-                break;
-            case WARNING:
-                soundType = Sound.BLOCK_NOTE_BLOCK_BASS;
-                break;
-            case SUCCESS:
-                soundType = Sound.BLOCK_NOTE_BLOCK_BELL;
-                break;
-            case INFO:
-                soundType = Sound.BLOCK_NOTE_BLOCK_BIT;
-                break;
-            default:
-                soundType = null;
-                break;
-        }
-        return soundType;
+        return switch (type) {
+            case ERROR, WARNING -> Sound.BLOCK_NOTE_BLOCK_BASS;
+            case SUCCESS -> Sound.BLOCK_NOTE_BLOCK_BELL;
+            case INFO -> Sound.BLOCK_NOTE_BLOCK_BIT;
+            default -> null;
+        };
     }
 
     public static String textToSmall(String text) {
@@ -111,9 +86,9 @@ public class MessagesManager {
                     continue;
                 }
                 if (split[i].length() > 1) {
-                    result.append("§" + split[i].charAt(0) + textToSmall(split[i].substring(1)));
+                    result.append("§").append(split[i].charAt(0)).append(textToSmall(split[i].substring(1)));
                 } else {
-                    result.append("§" + split[i]);
+                    result.append("§").append(split[i]);
                 }
             }
             return result.toString();
@@ -135,12 +110,14 @@ public class MessagesManager {
         return result.toString();
     }
 
-    public static enum Message {
+    @Getter
+    public enum Message {
         NOPERMISSION("§cVous n'avez pas la permission d'exécuter cette commande."),
+        MISSINGARGUMENT("§cVous devez spécifier un argument."),
 
         ;
 
-        @Getter private final String message;
+        private final String message;
         Message(String message) {
             this.message = message;
         }
