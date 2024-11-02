@@ -2,12 +2,14 @@ package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.utils.spawn.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.SQLException;
@@ -30,6 +32,7 @@ public final class OMCPlugin extends JavaPlugin {
         dbManager = new DatabaseManager();
         new SpawnManager(this);
         new CommandsManager();
+        new CityManager();
         new ListenersManager();
         new MotdUtils(this);
 
@@ -44,5 +47,11 @@ public final class OMCPlugin extends JavaPlugin {
             getLogger().severe("Impossible de fermer la connection à la base de données");
         }
         getLogger().info("Plugin désactivé");
+    }
+
+    public static void registerEvents(Listener... listeners) {
+        for (Listener listener : listeners) {
+            instance.getServer().getPluginManager().registerEvents(listener, instance);
+        }
     }
 }

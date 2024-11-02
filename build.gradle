@@ -11,17 +11,20 @@ repositories {
     maven {url = "https://repo.papermc.io/repository/maven-public/"}
     maven {url = "https://oss.sonatype.org/content/groups/public/"}
     maven {url = "https://mvn.mathiasd.fr/releases"}
+    maven {url = "https://maven.enginehub.org/repo/" }
     maven {url = "https://jitpack.io"} // Laissez en dernier
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
     compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.1")
+    compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.10")
 
     implementation("dev.xernas:menulib:1.1.0")
     implementation("org.jetbrains:annotations:24.1.0")
     implementation("com.github.Revxrsal.Lamp:common:3.2.1")
     implementation("com.github.Revxrsal.Lamp:bukkit:3.2.1")
+    implementation("net.raidstone:wgevents:1.18.1") // Version custom de Webbeh/WorldGuard-Events
 
     // lombok
     compileOnly("org.projectlombok:lombok:1.18.34")
@@ -30,9 +33,9 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
 
     // unit tests
-    testImplementation 'org.slf4j:slf4j-simple:2.0.16'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
-    testImplementation 'com.github.seeseemelk:MockBukkit-v1.21:3.133.2'
+    testImplementation("org.slf4j:slf4j-simple:2.0.16")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.21:3.133.2")
 }
 
 def targetJavaVersion = 21
