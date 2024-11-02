@@ -18,6 +18,6 @@ public class QuitMessageListener implements Listener  {
         QueryOptions queryOptions = OMCPlugin.getInstance().lpApi.getContextManager().getQueryOptions(userlp).orElse(QueryOptions.defaultContextualOptions());
 
 
-        event.quitMessage(Component.text("§8[§c§l-§8] " + (userlp.getCachedData().getMetaData(queryOptions).getPrefix() != null ? userlp.getCachedData().getMetaData(queryOptions).getPrefix().replace("&", "§") : "") + "" + player.getName()));
+        event.quitMessage(Component.text("§8[§c§l-§8] §r" + (userlp.getCachedData().getMetaData(queryOptions).getPrefix() != null ? userlp.getCachedData().getMetaData(queryOptions).getPrefix().replace("&", "§") : "") + "" + player.getName()));
     }
 }
