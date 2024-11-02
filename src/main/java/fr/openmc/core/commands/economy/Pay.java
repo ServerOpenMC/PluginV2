@@ -1,0 +1,33 @@
+package fr.openmc.core.commands.economy;
+
+import fr.openmc.core.features.utils.economy.EconomyManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import org.bukkit.entity.Player;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Range;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+public class Pay {
+
+    @Command("pay")
+    @Description("Permet de payer un joueur")
+    @CommandPermission("omc.commands.pay")
+    public void pay(Player player, Player target, @Range(min = 1) double amount) {
+        EconomyManager economyManager = EconomyManager.getInstance();
+        if(player == target) {
+            MessagesManager.sendMessageType(player, "§cVous ne pouvez pas vous payer vous-même", Prefix.OPENMC, MessageType.ERROR, true);
+            return;
+        }
+        if(economyManager.withdrawBalance(player.getUniqueId(), amount)) {
+            economyManager.addBalance(target.getUniqueId(), amount);
+            MessagesManager.sendMessageType(player, "§aVous avez payé §e" + target.getName() + "§a de §e" + economyManager.getFormattedNumber(amount), Prefix.OPENMC, MessageType.SUCCESS, true);
+            MessagesManager.sendMessageType(target, "§aVous avez reçu §e" + economyManager.getFormattedNumber(amount) + "§a de §e" + player.getName(), Prefix.OPENMC, MessageType.INFO, true);
+        } else {
+            MessagesManager.sendMessageType(player, "§cVous n'avez pas assez d'argent", Prefix.OPENMC, MessageType.ERROR, true);
+        }
+    }
+
+}
