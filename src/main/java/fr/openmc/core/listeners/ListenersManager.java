@@ -9,7 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ListenersManager {
     public ListenersManager() {
         registerEvents(
-                new SessionsListener()
+                new SessionsListener(),
+                new PlayerListener()
         );
     }
 
