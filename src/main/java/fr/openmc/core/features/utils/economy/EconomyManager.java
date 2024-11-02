@@ -58,4 +58,12 @@ public class EconomyManager {
         return format.format(bd);
     }
 
+    public String getFormattedNumber(double number) {
+        Currency currency = Currency.getInstance("EUR");
+        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
+        format.setCurrency(currency);
+        BigDecimal bd = new BigDecimal(number);
+        return format.format(bd);
+    }
+
 }
