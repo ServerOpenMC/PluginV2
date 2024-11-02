@@ -51,19 +51,19 @@ public class EconomyManager {
 
     public String getFormattedBalance(UUID player) {
         String balance = String.valueOf(getBalance(player));
-        Currency currency = Currency.getInstance("EUR");
+        Currency currency = Currency.getInstance(Locale.FRANCE);
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
         BigDecimal bd = new BigDecimal(balance);
-        return format.format(bd);
+        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), "Ⓐ");
     }
 
     public String getFormattedNumber(double number) {
-        Currency currency = Currency.getInstance("EUR");
+        Currency currency = Currency.getInstance(Locale.FRANCE);
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
         BigDecimal bd = new BigDecimal(number);
-        return format.format(bd);
+        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), "Ⓐ");
     }
 
 }

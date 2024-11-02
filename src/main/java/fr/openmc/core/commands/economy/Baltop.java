@@ -1,6 +1,10 @@
 package fr.openmc.core.commands.economy;
 
 import fr.openmc.core.features.utils.economy.EconomyManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -29,24 +33,28 @@ public class Baltop {
             balances = balances.subList(0, 10);
         }
 
-        List<String> lines = new ArrayList<>();
-        lines.add(ChatColor.DARK_GREEN + "Liste des 10 joueurs les plus riches");
+        TextComponent.Builder builder = Component.text()
+                .content("§6§lTop 10 des joueurs les plus riches\n\n")
+                .color(TextColor.color(0xffd700));
 
         int index = 1;
         for(PlayerBalance balance : balances) {
-            lines.add(MessageFormat.format("{0}. {1}: {2}", getColor(index) + index, ChatColor.GRAY + Bukkit.getOfflinePlayer(balance.playerId).getName(), ChatColor.GREEN + balance.getFormattedBalance()));            index++;
+            builder.append(Component.text(index + ". ", getColor(index)))
+                    .append(Component.text(Bukkit.getOfflinePlayer(balance.playerId).getName() + ": ", NamedTextColor.GRAY))
+                    .append(Component.text(EconomyManager.getInstance().getFormattedNumber(balance.balance) + "\n", NamedTextColor.GREEN));
+            index++;
         }
 
-        player.sendMessage(String.join("\n", lines));
+        player.sendMessage(builder.build());
     }
 
-    public static String getColor(int index) {
-        return (switch (index) {
-            case 1 -> ChatColor.GOLD;
-            case 2 -> ChatColor.of("#d7d7d7");
-            case 3 -> ChatColor.of("#945604");
-            default -> ChatColor.WHITE;
-        }).toString();
+    public static TextColor getColor(int index) {
+        return switch (index) {
+            case 1 -> TextColor.color(0xffd700);
+            case 2 -> TextColor.color(0xd7d7d7);
+            case 3 -> TextColor.color(0x945604);
+            default -> NamedTextColor.WHITE;
+        };
     }
 
 
@@ -65,15 +73,6 @@ public class Baltop {
         public PlayerBalance(UUID playerId, Double balance) {
             this.playerId = playerId;
             this.balance = balance;
-        }
-
-        public String getFormattedBalance() {
-            String balance = String.valueOf(this.balance);
-            Currency currency = Currency.getInstance("EUR");
-            NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-            formatter.setCurrency(currency);
-            BigDecimal bd = new BigDecimal(balance);
-            return formatter.format(bd);
         }
     }
 }
