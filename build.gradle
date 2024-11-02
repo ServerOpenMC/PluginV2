@@ -11,6 +11,7 @@ repositories {
     maven {url = "https://repo.papermc.io/repository/maven-public/"}
     maven {url = "https://oss.sonatype.org/content/groups/public/"}
     maven {url = "https://mvn.mathiasd.fr/releases"}
+    maven {url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
     maven {url = "https://jitpack.io"} // Laissez en dernier
 }
 
