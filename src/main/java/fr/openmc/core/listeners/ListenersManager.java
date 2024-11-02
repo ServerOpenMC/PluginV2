@@ -10,7 +10,8 @@ public class ListenersManager {
     public ListenersManager() {
         registerEvents(
                 new SessionsListener(),
-                new PlayerListener()
+                new JoinMessageListener(),
+                new QuitMessageListener()
         );
     }
 
