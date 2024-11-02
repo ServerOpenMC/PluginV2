@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
 public class EconomyManager {
     @Getter private static Map<UUID, Double> balances;
@@ -55,7 +60,7 @@ public class EconomyManager {
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
         BigDecimal bd = new BigDecimal(balance);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), "Ⓐ");
+        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), getEconomyIcon());
     }
 
     public String getFormattedNumber(double number) {
@@ -63,7 +68,14 @@ public class EconomyManager {
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
         BigDecimal bd = new BigDecimal(number);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), "Ⓐ");
+        return  format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), getEconomyIcon());
+    }
+
+    private String getEconomyIcon() {
+        if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            return ChatColor.RESET +  PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
+        }
+        return "Ⓐ";
     }
 
 }
