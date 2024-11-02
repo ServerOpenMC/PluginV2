@@ -7,6 +7,9 @@ depend:
   - LuckPerms
   - ItemsAdder
 
+softdepend:
+  - PlaceholderAPI
+
 prefix: OMC
 authors: [ La communauté ]
 description: Nouveau plugin d'OpenMC
