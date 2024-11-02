@@ -32,6 +32,7 @@ public class MotdUtilsTests {
     public void testMOTD() {
         String def = getComponentContent(server.motd());
         new MotdUtils(plugin);
-        server.getScheduler().performTicks(12001L);Assertions.assertNotNull(getComponentContent(server.motd()), def);
+        server.getScheduler().performTicks(12001L);
+        Assertions.assertNotNull(getComponentContent(server.motd()), def);
     }
 }

@@ -6,6 +6,10 @@ api-version: '1.21.1'
 depend:
   - ItemsAdder
   - WorldGuard
+  - LuckPerms
+  
+softdepend:
+  - PlaceholderAPI
 
 prefix: OMC
 authors: [ La communauté ]

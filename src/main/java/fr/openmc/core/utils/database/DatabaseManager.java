@@ -3,6 +3,7 @@ package fr.openmc.core.utils.database;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.utils.analytics.AnalyticsManager;
+import fr.openmc.core.features.utils.economy.EconomyData;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -19,6 +20,7 @@ public class DatabaseManager {
             // Déclencher au début du plugin pour créer les tables nécessaires
             AnalyticsManager.init_db(connection);
             CityManager.init_db(connection);
+            EconomyData.init_db(connection);
         } catch (SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");

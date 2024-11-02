@@ -1,6 +1,9 @@
 package fr.openmc.core.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.economy.Baltop;
+import fr.openmc.core.commands.economy.Money;
+import fr.openmc.core.commands.economy.Pay;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
 import lombok.Getter;
@@ -24,7 +27,10 @@ public class CommandsManager {
                 new Socials(),
                 new Spawn(),
                 new SetSpawn(),
-                new Playtime()
+                new Playtime(),
+                new Money(),
+                new Baltop(),
+                new Pay()
         );
     }
 

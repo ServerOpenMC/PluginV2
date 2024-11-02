@@ -1,7 +1,5 @@
 package fr.openmc.core.utils;
 
-
-import fr.openmc.core.OMCPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,13 +36,10 @@ public class MotdUtils {
                 String line1 = (String) (motdData).get("line1");
                 String line2 = (String) (motdData).get("line2");
 
+
                 motd=Component.text(line1 + "\n" + line2);
                 Bukkit.getServer().motd(motd);
             }
         }.runTaskTimer(plugin, 0L, 12000L); // 12000 ticks = 10 minutes
-    }
-
-    public static Component getCurrentMotd() {
-        return motd;
     }
 }

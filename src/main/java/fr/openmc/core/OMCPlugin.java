@@ -3,11 +3,14 @@ package fr.openmc.core;
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.utils.economy.EconomyManager;
 import fr.openmc.core.features.utils.spawn.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
+import fr.openmc.core.utils.LuckPermAPI;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
+import net.luckperms.api.LuckPerms;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,9 +22,16 @@ public final class OMCPlugin extends JavaPlugin {
     @Getter static FileConfiguration configs;
     private DatabaseManager dbManager;
 
+    public LuckPerms lpApi;
+
     @Override
     public void onEnable() {
         instance = this;
+
+        /* LUCKPERMS DEPENDANCY */
+        new LuckPermAPI(this);
+
+        /* CONFIG */
         saveDefaultConfig();
         configs = this.getConfig();
         
@@ -34,6 +44,7 @@ public final class OMCPlugin extends JavaPlugin {
         new CommandsManager();
         new CityManager();
         new ListenersManager();
+        new EconomyManager();
         new MotdUtils(this);
 
         getLogger().info("Plugin activé");
