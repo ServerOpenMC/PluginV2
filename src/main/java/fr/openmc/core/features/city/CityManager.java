@@ -123,7 +123,7 @@ public class CityManager {
      * @param value The new balance value to be set.
      */
     public static void setBalance(String uuid, Double value) {
-        balance.put(uuid, value);
+        Double old = balance.put(uuid, value);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET balance=? WHERE uuid=?;");
@@ -132,6 +132,7 @@ public class CityManager {
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
+                balance.put(uuid, old);
             }
         });
     }
@@ -143,7 +144,7 @@ public class CityManager {
      * @param diff The amount to be added to the existing balance.
      */
     public static void updateBalance(String uuid, Double diff) {
-        balance.put(uuid, balance.get(uuid) + diff);
+        Double old = balance.put(uuid, balance.get(uuid) + diff);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET balance=balance+? WHERE uuid=?;");
@@ -152,6 +153,7 @@ public class CityManager {
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
+                balance.put(uuid, old);
             }
         });
     }
@@ -251,7 +253,7 @@ public class CityManager {
      * @param newName The new name for the city.
      */
     public static void renameCity(String uuid, String newName) {
-        cityNames.put(uuid, newName);
+        String old = cityNames.put(uuid, newName);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -261,6 +263,7 @@ public class CityManager {
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
+                cityNames.put(uuid, old);
             }
         });
     }
@@ -378,7 +381,7 @@ public class CityManager {
      * @param city The UUID of the city.
      */
     public static void changeOwner(UUID player, String city) {
-        cityOwners.put(city, player);
+        UUID old = cityOwners.put(city, player);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -388,6 +391,7 @@ public class CityManager {
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
+                cityOwners.put(city, old);
             }
         });
     }
