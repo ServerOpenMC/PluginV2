@@ -1,4 +1,4 @@
-package fr.openmc.core.features.utils.spawn;
+package fr.openmc.core.commands.utils;
 
 import java.io.File;
 import java.io.IOException;

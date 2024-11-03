@@ -1,4 +1,4 @@
-package fr.openmc.core.features.utils.economy;
+package fr.openmc.core.features.economy;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -9,8 +9,6 @@ import java.util.UUID;
 
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 

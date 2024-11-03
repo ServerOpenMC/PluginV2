@@ -1,20 +1,16 @@
-package fr.openmc.core.commands.economy;
+package fr.openmc.core.features.economy.commands;
 
-import fr.openmc.core.features.utils.economy.EconomyManager;
+import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.math.BigDecimal;
-import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.util.*;
 
 public class Baltop {

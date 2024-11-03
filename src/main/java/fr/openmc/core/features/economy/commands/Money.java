@@ -1,6 +1,6 @@
-package fr.openmc.core.commands.economy;
+package fr.openmc.core.features.economy.commands;
 
-import fr.openmc.core.features.utils.economy.EconomyManager;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

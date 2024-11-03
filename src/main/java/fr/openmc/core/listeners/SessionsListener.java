@@ -1,6 +1,6 @@
 package fr.openmc.core.listeners;
 
-import fr.openmc.core.features.utils.analytics.Stats;
+import fr.openmc.core.features.analytics.Stats;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
