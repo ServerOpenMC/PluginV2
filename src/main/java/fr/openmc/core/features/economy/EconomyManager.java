@@ -7,6 +7,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.economy.commands.Baltop;
+import fr.openmc.core.features.economy.commands.History;
+import fr.openmc.core.features.economy.commands.Money;
+import fr.openmc.core.features.economy.commands.Pay;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -19,6 +24,12 @@ public class EconomyManager {
     public EconomyManager() {
         balances = EconomyData.loadBalances();
         instance = this;
+        CommandsManager.getHandler().register(
+                new Pay(),
+                new Baltop(),
+                new History(),
+                new Money()
+        );
     }
 
     public double getBalance(UUID player) {

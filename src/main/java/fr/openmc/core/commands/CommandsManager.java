@@ -27,10 +27,7 @@ public class CommandsManager {
                 new Socials(),
                 new Spawn(),
                 new SetSpawn(),
-                new Playtime(),
-                new Money(),
-                new Baltop(),
-                new Pay()
+                new Playtime()
         );
     }
 

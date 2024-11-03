@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.analytics.AnalyticsManager;
 import fr.openmc.core.features.economy.EconomyData;
+import fr.openmc.core.features.economy.TransactionsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -18,6 +19,7 @@ public class DatabaseManager {
         connect();
         try {
             // Déclencher au début du plugin pour créer les tables nécessaires
+            TransactionsManager.init_db(connection);
             AnalyticsManager.init_db(connection);
             CityManager.init_db(connection);
             EconomyData.init_db(connection);

@@ -40,8 +40,8 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
-        new SpawnManager(this);
         new CommandsManager();
+        new SpawnManager(this);
         new CityManager();
         new ListenersManager();
         new EconomyManager();

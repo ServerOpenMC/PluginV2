@@ -1,9 +1,12 @@
 package fr.openmc.core.features.economy.commands;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.Transaction;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -52,6 +55,15 @@ public class Money {
         if(target.isOnline()) {
             MessagesManager.sendMessageType(target.getPlayer(), "§aVous avez reçu §e" + EconomyManager.getInstance().getFormattedNumber(amount), Prefix.OPENMC, MessageType.INFO, true);
         }
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            new Transaction(
+                    target.getUniqueId().toString(),
+                    "CONSOLE",
+                    amount,
+                    "Admin"
+            ).register();
+        });
     }
 
     @Subcommand("remove")
@@ -63,6 +75,15 @@ public class Money {
             if(target.isOnline()) {
                 MessagesManager.sendMessageType(target.getPlayer(), "§cVous avez perdu §e" + EconomyManager.getInstance().getFormattedNumber(amount), Prefix.OPENMC, MessageType.INFO, true);
             }
+
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                new Transaction(
+                        "CONSOLE",
+                        target.getUniqueId().toString(),
+                        amount,
+                        "Admin"
+                ).register();
+            });
         } else {
             MessagesManager.sendMessageType(player, "§cLe joueur n'a pas assez d'argent", Prefix.OPENMC, MessageType.ERROR, true);
         }
