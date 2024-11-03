@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.commands;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.flags.*;
 import com.sk89q.worldguard.protection.flags.Flag;
@@ -11,6 +12,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.CityUtils;
+import fr.openmc.core.features.utils.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -20,6 +22,7 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -36,6 +39,10 @@ public class CityCommands {
         Location maxLocation = new Location(world, (chunkX+chunkRadius+1) * 16 - 1, location.getY(), (chunkZ+chunkRadius + 1) * 16 - 1);
 
         return new Location[]{minLocation, maxLocation};
+    }
+
+    private int calculatePrice(int chunkCount) {
+        return 5000 + ((chunkCount-25) * 1000);
     }
 
     private boolean isInvalidName(String name) {
@@ -273,7 +280,7 @@ public class CityCommands {
             return;
         }
 
-        if (CityManager.getOwnerUUID(playerCity) != sender.getUniqueId()) {
+        if (!Objects.equals(CityManager.getOwnerUUID(playerCity).toString(), sender.getUniqueId().toString())) {
             MessagesManager.sendMessageType(sender, "Vous n'êtes pas maire de la ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -296,15 +303,32 @@ public class CityCommands {
         int chunkX = chunk.getX();
         int chunkZ = chunk.getZ();
 
-        if (CityUtils.doesRegionOverlap(bWorld, new Location(bWorld, chunkX, 300, chunkZ), new Location(bWorld, chunkX+16, -100, chunkZ+16))) {
-            MessagesManager.sendMessageType(sender, "Cette endroit fais déjà parti d'une ville", Prefix.CITY, MessageType.ERROR, false);
+        AtomicBoolean keepGoing = new AtomicBoolean(true);
+        regionManager.getApplicableRegionsIDs(BlockVector3.at(chunkX * 16, 200, chunkZ * 16)).forEach(region -> {
+            if (region.equals("__global__")) return;
+            MessagesManager.sendMessageType(sender, "Cette endroit fais déjà partie d'une ville ", Prefix.CITY, MessageType.ERROR, false);
+            keepGoing.set(false);
+        });
+        if (!keepGoing.get()) return;
+
+        int area = (int) Math.ceil(CityUtils.getPolygonalRegionArea(oldRegion)/256);
+
+        if (area >= 50) {
+            MessagesManager.sendMessageType(sender, "Votre ville est trop grande", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        // Les 4 coins du chunk dans l'ordre (sens horaire en commençant par le coin sud-ouest)
+        int price = calculatePrice(area);
+        if (CityManager.getBalance(playerCity) < price) {
+            MessagesManager.sendMessageType(sender, "Votre ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaire)", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        CityManager.updateBalance(playerCity, (double) (price*-1));
+
         BlockVector2[] chunkPoints = new BlockVector2[4];
-        chunkPoints[0] = BlockVector2.at(chunkX * 16, chunkZ * 16);             // Sud-Ouest
-        chunkPoints[1] = BlockVector2.at(chunkX * 16, (chunkZ + 1) * 16 - 1);   // Nord-Ouest
+        chunkPoints[0] = BlockVector2.at(chunkX * 16, chunkZ * 16);
+        chunkPoints[1] = BlockVector2.at(chunkX * 16, (chunkZ + 1) * 16 - 1);
         chunkPoints[2] = BlockVector2.at((chunkX + 1) * 16 - 1, (chunkZ + 1) * 16 - 1);
         chunkPoints[3] = BlockVector2.at((chunkX + 1) * 16 - 1, chunkZ * 16);
 
@@ -375,6 +399,63 @@ public class CityCommands {
         }
     }
 
+    @Subcommand("money give")
+    @CommandPermission("omc.commands.city.give")
+    @Description("Transferer de l'argent vers la ville")
+    void give(Player player, @Named("montant") @Range(min=1) double amount) {
+        String playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null) {
+            MessagesManager.sendMessageType(player, "Vous n'habitez dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), amount)) {
+            CityManager.updateBalance(playerCity, amount);
+            MessagesManager.sendMessageType(player, "Vous avez transféré "+amount+EconomyManager.getEconomyIcon()+" à votre ville", Prefix.CITY, MessageType.ERROR, false);
+        } else {
+            MessagesManager.sendMessageType(player, "Vous n'avez pas accès d'argent", Prefix.CITY, MessageType.ERROR, false);
+        }
+    }
+
+    @Subcommand("money balance")
+    @CommandPermission("omc.commands.city.balance")
+    @Description("Afficher l'argent de votre ville")
+    void balance(Player player) {
+        String playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null) {
+            MessagesManager.sendMessageType(player, "Vous n'habitez dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        double balance = CityManager.getBalance(playerCity);
+        MessagesManager.sendMessageType(player, "Votre ville possède "+balance+EconomyManager.getEconomyIcon(), Prefix.CITY, MessageType.INFO, false);
+    }
+
+    @Subcommand("money take")
+    @CommandPermission("omc.commands.city.take")
+    @Description("Prendre de l'argent depuis votre ville")
+    void take(Player player, @Named("montant") @Range(min=1) double amount) {
+        String playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null) {
+            MessagesManager.sendMessageType(player, "Vous n'habitez dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        UUID owner = CityManager.getOwnerUUID(playerCity);
+        if (owner == null || !owner.equals(player.getUniqueId())) {
+            MessagesManager.sendMessageType(player, "Vous n'êtes pas maire de la ville", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (CityManager.getBalance(playerCity) < amount) {
+            MessagesManager.sendMessageType(player, "Votre ville n'a pas accès d'argent en banque", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        CityManager.updateBalance(playerCity, amount*-1);
+        EconomyManager.getInstance().addBalance(player.getUniqueId(), amount);
+        MessagesManager.sendMessageType(player, amount+EconomyManager.getEconomyIcon()+" ont été transféré à votre compte", Prefix.CITY, MessageType.SUCCESS, false);
+    }
+
     @Subcommand("info")
     @CommandPermission("omc.commands.city.info")
     @Description("Avoir des informations sur votre ville")
@@ -413,7 +494,6 @@ public class CityCommands {
         }
 
         String regionUUID = UUID.randomUUID().toString().substring(0, 8);
-        System.out.println(regionUUID);
 
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         assert regionManager != null;

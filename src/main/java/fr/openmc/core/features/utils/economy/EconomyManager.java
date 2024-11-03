@@ -71,7 +71,7 @@ public class EconomyManager {
         return  format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), getEconomyIcon());
     }
 
-    private String getEconomyIcon() {
+    public static String getEconomyIcon() {
         if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             return ChatColor.RESET +  PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
         }

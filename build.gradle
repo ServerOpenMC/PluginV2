@@ -21,7 +21,6 @@ dependencies {
     compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.1")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.10")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.1")
     compileOnly("me.clip:placeholderapi:2.11.6")
 
     implementation("dev.xernas:menulib:1.1.0")

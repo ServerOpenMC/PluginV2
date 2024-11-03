@@ -11,6 +11,7 @@ import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
+import net.raidstone.wgevents.WorldGuardEvents;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,15 +29,14 @@ public final class OMCPlugin extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        /* LUCKPERMS DEPENDANCY */
-        new LuckPermAPI(this);
-
         /* CONFIG */
         saveDefaultConfig();
         configs = this.getConfig();
         
         /* EXTERNALS */
         MenuLib.init(this);
+        new LuckPermAPI(this);
+        new WorldGuardEvents().enable(this);
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
