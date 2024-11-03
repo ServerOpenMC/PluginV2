@@ -1,9 +1,12 @@
-package fr.openmc.core.commands.economy;
+package fr.openmc.core.features.economy.commands;
 
-import fr.openmc.core.features.utils.economy.EconomyManager;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.Transaction;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -25,6 +28,15 @@ public class Pay {
             economyManager.addBalance(target.getUniqueId(), amount);
             MessagesManager.sendMessageType(player, "§aVous avez payé §e" + target.getName() + "§a de §e" + economyManager.getFormattedNumber(amount), Prefix.OPENMC, MessageType.SUCCESS, true);
             MessagesManager.sendMessageType(target, "§aVous avez reçu §e" + economyManager.getFormattedNumber(amount) + "§a de §e" + player.getName(), Prefix.OPENMC, MessageType.INFO, true);
+
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                new Transaction(
+                        target.getUniqueId().toString(),
+                        player.getUniqueId().toString(),
+                        amount,
+                        "Paiement"
+                ).register();
+            });
         } else {
             MessagesManager.sendMessageType(player, "§cVous n'avez pas assez d'argent", Prefix.OPENMC, MessageType.ERROR, true);
         }

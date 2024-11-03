@@ -1,4 +1,4 @@
-package fr.openmc.core.features.utils.economy;
+package fr.openmc.core.features.economy;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

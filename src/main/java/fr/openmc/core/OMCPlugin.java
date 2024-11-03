@@ -3,8 +3,8 @@ package fr.openmc.core;
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.utils.economy.EconomyManager;
-import fr.openmc.core.features.utils.spawn.SpawnManager;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermAPI;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -40,8 +40,8 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
-        new SpawnManager(this);
         new CommandsManager();
+        new SpawnManager(this);
         new CityManager();
         new ListenersManager();
         new EconomyManager();

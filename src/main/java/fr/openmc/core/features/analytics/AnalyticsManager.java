@@ -1,4 +1,4 @@
-package fr.openmc.core.features.utils.analytics;
+package fr.openmc.core.features.analytics;
 
 import fr.openmc.core.OMCPlugin;
 import java.sql.Connection;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class AnalyticsManager {
     public static boolean isEnabled() {
-        return OMCPlugin.getConfigs().getBoolean("analytics.enabled", false);
+        return OMCPlugin.getConfigs().getBoolean("features.analytics", false);
     }
 
     public static void init_db(Connection conn) throws SQLException {

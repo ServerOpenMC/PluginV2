@@ -1,4 +1,4 @@
-package fr.openmc.core.features.utils.analytics;
+package fr.openmc.core.features.analytics;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public enum Stats {
     SESSION,
+    TOTAL_TRANSACTIONS,
     ;
 
     /**
@@ -69,22 +70,5 @@ public enum Stats {
      */
     public void increment(UUID uuid) {
         increment(uuid, 1);
-    }
-
-    /**
-     * Decrement a stats by one for a player
-     * @param uuid Player
-     */
-    public void decrement(UUID uuid) {
-        increment(uuid, -1);
-    }
-
-    /**
-     * Decrement a stats by one for a player
-     * @param uuid Player
-     * @param amount Amount to be decremented
-     */
-    public void decrement(UUID uuid, int amount) {
-        increment(uuid, amount*-1);
     }
 }

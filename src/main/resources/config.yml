@@ -6,11 +6,9 @@ database:
   username: ""
   password: ""
 
-#####
-# Analytics
-#####
-analytics:
-  enabled: true
+features:
+  analytics: true
+  transactions: true
 
 #####
 # Paramètres pour un environnement de production
