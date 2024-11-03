@@ -4,9 +4,10 @@ main: fr.openmc.core.OMCPlugin
 api-version: '1.21.1'
 
 depend:
-  - LuckPerms
   - ItemsAdder
-
+  - WorldGuard
+  - LuckPerms
+  
 softdepend:
   - PlaceholderAPI
 
