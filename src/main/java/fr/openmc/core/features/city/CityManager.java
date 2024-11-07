@@ -8,6 +8,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.AdminCityCommands;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.commands.CityPermsCommands;
 import fr.openmc.core.features.city.listeners.CityDoorsListener;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
@@ -23,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CityManager {
     private static HashMap<UUID, String> playerCity = new HashMap<>();
@@ -35,9 +37,7 @@ public class CityManager {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_members", ((args, sender, command) -> {
             String playerCity = CityManager.getPlayerCity(sender.getUniqueId());
 
-            if (playerCity == null) {
-                return List.of();
-            }
+            if (playerCity == null) return List.of();
 
             return CityManager.getMembers(playerCity).stream()
                     .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
@@ -46,7 +46,8 @@ public class CityManager {
 
         CommandsManager.getHandler().register(
                 new CityCommands(),
-                new AdminCityCommands()
+                new AdminCityCommands(),
+                new CityPermsCommands()
         );
 
         OMCPlugin.registerEvents(
@@ -56,7 +57,8 @@ public class CityManager {
 
     public static void init_db(Connection conn) throws SQLException {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city (uuid VARCHAR(8) NOT NULL PRIMARY KEY, owner VARCHAR(36) NOT NULL, bank_pages TINYINT UNSIGNED, name VARCHAR(32), balance DOUBLE DEFAULT 0);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_members (city_uuid VARCHAR(8) NOT NULL , player VARCHAR(36) NOT NULL PRIMARY KEY);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_members (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL PRIMARY KEY);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_permissions (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
     }
 
     public static void clearCache(@Nullable String cache) {
@@ -209,37 +211,8 @@ public class CityManager {
             }
 
             cityNames.put(uuid, null);
+            if (resultSet.getFetchSize() == 0) return null;
             return resultSet.getString("name");
-        } catch (SQLException err) {
-            err.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Retrieves the owner's UUID for a specific city.
-     *
-     * @param city The UUID of the city.
-     * @return The UUID of the city owner, or null if the city does not exist.
-     */
-    public static UUID getOwnerUUID(String city) {
-        UUID isIn = cityOwners.get(city);
-
-        if (cityOwners.containsKey(city)) return isIn;
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT owner FROM city WHERE uuid = ? LIMIT 1");
-            statement.setString(1, city);
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                UUID owner = UUID.fromString(resultSet.getString(1));
-                cityOwners.put(city, owner);
-                return owner;
-            }
-
-            cityOwners.put(city, null);
-            return null;
         } catch (SQLException err) {
             err.printStackTrace();
             return null;
@@ -304,6 +277,7 @@ public class CityManager {
 
         cityOwners.remove(city);
         cityNames.remove(city);
+        CityPermissions.forgetCity(city);
 
         for (var entry : playerCity.entrySet()) {
             if (!entry.getValue().equals(city)) continue;
@@ -383,6 +357,9 @@ public class CityManager {
     public static void changeOwner(UUID player, String city) {
         UUID old = cityOwners.put(city, player);
 
+        CityPermissions.removePermission(city, old, CPermission.OWNER);
+        CityPermissions.addPermission(city, player, CPermission.OWNER);
+
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET owner=? WHERE uuid=?;");
@@ -404,6 +381,7 @@ public class CityManager {
      */
     public static boolean playerLeaveCity(UUID player) {
         String city = CityManager.getPlayerCity(player);
+        CityPermissions.forgetPlayer(city, player);
 
         members.put(city, members.getOrDefault(
                 city,
