@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes;
 
+import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -7,8 +8,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
+@Getter
 public class Home {
-
     private final UUID player;
     @Setter private String name;
     private final Location location;
