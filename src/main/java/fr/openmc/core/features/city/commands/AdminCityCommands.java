@@ -3,8 +3,10 @@ package fr.openmc.core.features.city.commands;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityMessages;
+import fr.openmc.core.features.city.CityPermissions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -108,7 +110,7 @@ public class AdminCityCommands {
             return;
         }
 
-        if (CityManager.getOwnerUUID(city_uuid).equals(member.getUniqueId())) {
+        if (CityPermissions.hasPermission(city_uuid, member.getUniqueId(), CPermission.OWNER)) {
             MessagesManager.sendMessageType(player, "Le joueur est le propriétaire de la ville", Prefix.STAFF, MessageType.ERROR, false);
             return;
         }

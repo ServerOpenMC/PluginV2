@@ -10,6 +10,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class CityMessages {
     private static void sendLine(Audience audience, String title, String info) {
@@ -19,9 +21,9 @@ public class CityMessages {
         ));
     }
 
-    public static void sendInfo(Audience audience, String cityUUID) {
+    public static void sendInfo(CommandSender sender, String cityUUID) {
         String cityName = CityManager.getCityName(cityUUID);
-        String mayorName = Bukkit.getOfflinePlayer(CityManager.getOwnerUUID(cityUUID)).getName();
+        String mayorName = Bukkit.getOfflinePlayer(CityPermissions.getPlayerWith(cityUUID, CPermission.OWNER)).getName();
         int citizens = CityManager.getMembers(cityUUID).size();
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
         ProtectedRegion region = regionManager.getRegion("city_"+cityUUID);
@@ -31,15 +33,21 @@ public class CityMessages {
             cityName = "Inconnu";
         }
 
-        audience.sendMessage(
+        sender.sendMessage(
                 Component.text("--- ").color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.BOLD, false).append(
                 Component.text(cityName).color(NamedTextColor.DARK_PURPLE).decoration(TextDecoration.BOLD, true).append(
                 Component.text(" ---").color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.BOLD, false)
         )));
 
-        sendLine(audience, "Maire", mayorName);
-        sendLine(audience, "Habitants", String.valueOf(citizens));
-        sendLine(audience, "Banque", CityManager.getBalance(cityUUID)+ EconomyManager.getEconomyIcon());
-        sendLine(audience, "Superficie", String.valueOf(area));
+        sendLine(sender, "Maire", mayorName);
+        sendLine(sender, "Habitants", String.valueOf(citizens));
+        sendLine(sender, "Superficie", String.valueOf(area));
+
+        if (sender instanceof Player player) {
+            if (!(CityPermissions.hasPermission(cityUUID, player.getUniqueId(), CPermission.MONEY_BALANCE))) return;
+            sendLine(sender, "Banque", CityManager.getBalance(cityUUID)+ EconomyManager.getEconomyIcon());
+        } else {
+            sendLine(sender, "Banque", CityManager.getBalance(cityUUID)+ EconomyManager.getEconomyIcon());
+        }
     }
 }
