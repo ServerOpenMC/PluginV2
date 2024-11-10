@@ -21,12 +21,12 @@ public class CityMessages {
         ));
     }
 
-    public static void sendInfo(CommandSender sender, String cityUUID) {
-        String cityName = CityManager.getCityName(cityUUID);
-        String mayorName = Bukkit.getOfflinePlayer(CityPermissions.getPlayerWith(cityUUID, CPermission.OWNER)).getName();
-        int citizens = CityManager.getMembers(cityUUID).size();
+    public static void sendInfo(CommandSender sender, City city) {
+        String cityName = city.getName();
+        String mayorName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        int citizens = city.getMembers().size();
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-        ProtectedRegion region = regionManager.getRegion("city_"+cityUUID);
+        ProtectedRegion region = regionManager.getRegion("city_"+city.getUUID());
         int area = (int) Math.ceil(CityUtils.getPolygonalRegionArea(region)/256);
 
         if (cityName == null) {
@@ -44,10 +44,10 @@ public class CityMessages {
         sendLine(sender, "Superficie", String.valueOf(area));
 
         if (sender instanceof Player player) {
-            if (!(CityPermissions.hasPermission(cityUUID, player.getUniqueId(), CPermission.MONEY_BALANCE))) return;
-            sendLine(sender, "Banque", CityManager.getBalance(cityUUID)+ EconomyManager.getEconomyIcon());
+            if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE))) return;
+            sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
         } else {
-            sendLine(sender, "Banque", CityManager.getBalance(cityUUID)+ EconomyManager.getEconomyIcon());
+            sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
         }
     }
 }

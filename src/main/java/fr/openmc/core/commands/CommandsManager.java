@@ -1,6 +1,7 @@
 package fr.openmc.core.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
