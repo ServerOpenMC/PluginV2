@@ -70,7 +70,7 @@ public class CityMenu extends Menu {
             Player inviter = CityCommands.invitations.get(player);
             String inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
 
-            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité\n dans " + CityManager.getCityName(inviterCity)));
+            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité dans " + CityManager.getCityName(inviterCity)));
             lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR VOTRE CONFIRMATION"));
 
             inventory.put(15, new ItemBuilder(this, Material.BEEHIVE, itemMeta -> {
