@@ -56,7 +56,7 @@ public class CityPermsCommands {
         }
 
         if (!city.hasPermission(sender.getUniqueId(), permission) && permission == CPermission.PERMS) {
-            MessagesManager.sendMessageType(sender, "Seul le maire peut modifier cette permissions", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(sender, "Seul le maire peut modifier cette permission", Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -117,7 +117,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessageType(sender, "Tu habite dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(sender, "Tu habites dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

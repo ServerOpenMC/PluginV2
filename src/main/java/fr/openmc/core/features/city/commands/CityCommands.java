@@ -98,7 +98,7 @@ public class CityCommands {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         if (playerCity == null) {
-            MessagesManager.sendMessageType(player, "Tu n'habite dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, "Tu n'habites dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
         }
 
         if (!(playerCity.hasPermission(player.getUniqueId(), CPermission.RENAME))) {
@@ -122,17 +122,17 @@ public class CityCommands {
     void transfer(Player sender, @Named("maire") OfflinePlayer player) {
         City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
         if (playerCity == null) {
-            MessagesManager.sendMessageType(sender, "Tu n'habite aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(sender, "Tu n'habites aucune ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!(playerCity.hasPermission(sender.getUniqueId(), CPermission.OWNER))) {
-            MessagesManager.sendMessageType(sender, "Tu n'est pas maire de la ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(sender, "Tu n'es pas maire de la ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!playerCity.getMembers().contains(sender.getUniqueId())) {
-            MessagesManager.sendMessageType(sender, "Ce joueur n'habite pas dans votre ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(sender, "Ce joueur n'habites pas dans votre ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -167,7 +167,7 @@ public class CityCommands {
     void kick(Player sender, @Named("exclu") OfflinePlayer player) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(sender, "Tu n'habite dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(sender, "Tu n'habites dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -203,7 +203,7 @@ public class CityCommands {
     void leave(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(player, "Tu n'habite dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, "Tu n'habites dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -225,7 +225,7 @@ public class CityCommands {
     void add(Player sender, @Named("invité") Player target) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(sender, "Tu n'habite aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(sender, "Tu n'habites aucune ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -235,7 +235,7 @@ public class CityCommands {
         }
 
         if (CityManager.getPlayerCity(target.getUniqueId()) != null) {
-            MessagesManager.sendMessageType(sender, "Cette personne habite déjà une ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(sender, "Cette personne habites déjà une ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -480,7 +480,7 @@ public class CityCommands {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, "Tu n'habite aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, "Tu n'habites aucune ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
