@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.listeners;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -36,9 +37,12 @@ public class CityDoorsListener implements Listener {
         Player player = event.getPlayer();
         if (player == null) return;
 
-        String cityName = CityManager.getCityName(region.getId().substring(5));
-        if (cityName == null) {
+        City city = CityManager.getCity(region.getId().substring(5));
+        String cityName;
+        if (city == null) {
             cityName = "une ville inconnue";
+        } else {
+            cityName = city.getName();
         }
 
         sendCityActionBar(player, cityName, true);
@@ -52,9 +56,12 @@ public class CityDoorsListener implements Listener {
         Player player = event.getPlayer();
         if (player == null) return;
 
-        String cityName = CityManager.getCityName(region.getId().substring(5));
-        if (cityName == null) {
+        City city = CityManager.getCity(region.getId().substring(5));
+        String cityName;
+        if (city == null) {
             cityName = "une ville inconnue";
+        } else {
+            cityName = city.getName();
         }
 
         sendCityActionBar(player, cityName, false);
