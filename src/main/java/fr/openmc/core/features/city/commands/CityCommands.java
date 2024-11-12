@@ -10,6 +10,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
 import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command({"ville", "city"})
 public class CityCommands {
-    HashMap<Player, Player> invitations = new HashMap<>(); // Invité, Inviteur
+    public static HashMap<Player, Player> invitations = new HashMap<>(); // Invité, Inviteur
 
     private Location[] getCorners(Player player) {
         World world = player.getWorld();
@@ -56,6 +57,12 @@ public class CityCommands {
         }
 
         return false;
+    }
+
+    @DefaultFor("~")
+    void main(Player player) {
+        CityMenu menu = new CityMenu(player);
+        menu.open();
     }
 
     @Subcommand("accept")
