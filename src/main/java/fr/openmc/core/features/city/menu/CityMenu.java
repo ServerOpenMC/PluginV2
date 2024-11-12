@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.utils.menu.ConfirmMenu;
@@ -68,9 +69,9 @@ public class CityMenu extends Menu {
             name_notif = Component.text("§7Vous avez une §6invitation");
 
             Player inviter = CityCommands.invitations.get(player);
-            String inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
+            City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
 
-            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité dans " + CityManager.getCityName(inviterCity)));
+            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité dans " + inviterCity.getName()));
             lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR VOTRE CONFIRMATION"));
 
             inventory.put(15, new ItemBuilder(this, Material.BEEHIVE, itemMeta -> {

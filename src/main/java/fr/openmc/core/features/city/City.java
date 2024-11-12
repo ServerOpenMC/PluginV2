@@ -53,7 +53,7 @@ public class City {
         return city_uuid;
     }
 
-    public String getName() {
+    public @NotNull String getName() {
         if (name != null) return name;
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT name FROM city WHERE uuid = ?");
