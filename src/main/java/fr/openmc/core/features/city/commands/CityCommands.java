@@ -425,7 +425,7 @@ public class CityCommands {
             city.updateBalance(amount);
             MessagesManager.sendMessageType(player, "Vous avez transféré "+amount+EconomyManager.getEconomyIcon()+" à votre ville", Prefix.CITY, MessageType.ERROR, false);
         } else {
-            MessagesManager.sendMessageType(player, "Vous n'avez pas accès d'argent", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, "Vous n'avez pas assez d'argent", Prefix.CITY, MessageType.ERROR, false);
         }
     }
 
@@ -464,7 +464,7 @@ public class CityCommands {
         }
 
         if (city.getBalance() < amount) {
-            MessagesManager.sendMessageType(player, "Votre ville n'a pas accès d'argent en banque", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, "Votre ville n'a pas assez d'argent en banque", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
