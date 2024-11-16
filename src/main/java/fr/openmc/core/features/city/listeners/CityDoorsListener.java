@@ -23,7 +23,7 @@ public class CityDoorsListener implements Listener {
         player.sendActionBar(
                 Component.text(actionText).append(
                         Component.text(cityName)
-                                .color(NamedTextColor.GRAY)
+                                .color(entering ? NamedTextColor.GREEN : NamedTextColor.RED)
                                 .decorate(TextDecoration.BOLD)
                 )
         );
