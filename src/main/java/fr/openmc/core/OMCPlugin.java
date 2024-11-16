@@ -55,7 +55,7 @@ public final class OMCPlugin extends JavaPlugin {
         try {
             dbManager.close();
         } catch (SQLException e) {
-            getLogger().severe("Impossible de fermer la connection à la base de données");
+            getLogger().severe("Impossible de fermer la connexion à la base de données");
         }
         getLogger().info("Plugin désactivé");
     }
