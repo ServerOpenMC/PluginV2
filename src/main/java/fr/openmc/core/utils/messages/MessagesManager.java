@@ -117,7 +117,7 @@ public class MessagesManager {
 
         // City messages
         PLAYERNOCITY("Tu n'es pas dans une ville"),
-        PLAYERINCITY("Tu n'es pas dans une ville"),
+        PLAYERINCITY("le joueur est déjà dans une ville"),
 
         ;
 
