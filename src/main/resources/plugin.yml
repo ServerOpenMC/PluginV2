@@ -18,8 +18,8 @@ website: https://openmc.fr
 
 permissions:
   omc.commands.*:
-    description: "Donne accès au commandes"
+    description: "Donne l'accès au commandes"
     default: true
   omc.admins.commands.*:
-    description: "Donne accès aux commandes d'administration"
+    description: "Donne l'accès aux commandes d'administration"
     default: op

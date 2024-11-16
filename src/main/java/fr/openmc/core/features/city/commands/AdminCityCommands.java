@@ -46,7 +46,7 @@ public class AdminCityCommands {
                 }
             }
             if (city_uuid.equalsIgnoreCase("here")) {
-                MessagesManager.sendMessageType(player, "Vous n'êtes pas dans une ville", Prefix.STAFF, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
                 return;
             }
         }
@@ -83,7 +83,7 @@ public class AdminCityCommands {
         }
 
         city.changeOwner(newOwner.getUniqueId());
-        MessagesManager.sendMessageType(player, "Le propriétaire a été changé", Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, "Le propriété a été transférée", Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("setBalance")
@@ -96,7 +96,7 @@ public class AdminCityCommands {
         }
 
         city.setBalance(newBalance);
-        MessagesManager.sendMessageType(player, "Le solde a été changé", Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, "Le solde a été modifié", Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("getBalance")
