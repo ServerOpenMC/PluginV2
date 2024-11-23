@@ -11,12 +11,17 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import fr.openmc.core.features.city.CityManager;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.UUID;
 
 public class CityChatCommand {
     @Command({"cc", "city chat", "ville chat"})
-    public void onCityChat(Player sender, String message) {
+    @CommandPermission("omc.commands.city.chat")
+    @Description("Envoyer un message dans le chat de votre ville")
+    public void onCityChat(Player sender, @Named("message") String message) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessageType(sender, "Tu n'habites dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
