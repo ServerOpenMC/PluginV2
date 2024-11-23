@@ -1,9 +1,5 @@
 package fr.openmc.core.features.city;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.managers.storage.StorageException;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.AdminCityCommands;
@@ -12,34 +8,28 @@ import fr.openmc.core.features.city.commands.CityPermsCommands;
 import fr.openmc.core.features.city.listeners.CityDoorsListener;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CityManager {
-    private static HashMap<UUID, String> playerCity = new HashMap<>();
-    private static HashMap<String, UUID> cityOwners = new HashMap<>();
-    private static HashMap<String, String> cityNames = new HashMap<>();
-    private static HashMap<String, ArrayList<UUID>> members = new HashMap<>();
-    private static HashMap<String, Double> balance = new HashMap<>();
+    private static HashMap<String, City> cities = new HashMap<>();
+    private static HashMap<UUID, City> playerCities = new HashMap<>();
 
     public CityManager() {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_members", ((args, sender, command) -> {
-            String playerCity = CityManager.getPlayerCity(sender.getUniqueId());
+            String playerCity = playerCities.get(sender.getUniqueId()).getUUID();
 
             if (playerCity == null) return List.of();
 
-            return CityManager.getMembers(playerCity).stream()
+            return playerCities.keySet().stream()
+                    .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
                     .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.toList());
         }));
@@ -58,200 +48,10 @@ public class CityManager {
     public static void init_db(Connection conn) throws SQLException {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city (uuid VARCHAR(8) NOT NULL PRIMARY KEY, owner VARCHAR(36) NOT NULL, bank_pages TINYINT UNSIGNED, name VARCHAR(32), balance DOUBLE DEFAULT 0);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_members (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL PRIMARY KEY);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_permissions (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_permissions (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
     }
 
-    public static void clearCache(@Nullable String cache) {
-        switch (cache) {
-            case "playerCity":
-                playerCity.clear();
-                break;
-            case "cityOwners":
-                cityOwners.clear();
-                break;
-            case "cityNames":
-                cityNames.clear();
-                break;
-            case "members":
-                members.clear();
-                break;
-            case "balance":
-                balance.clear();
-                break;
-            case null, default:
-                playerCity.clear();
-                cityOwners.clear();
-                cityNames.clear();
-                members.clear();
-                balance.clear();
-                break;
-        }
-    }
-
-    /**
-     * Gets the list of members (UUIDs) of a specific city.
-     *
-     * @param uuid The UUID of the city.
-     * @return A list of UUIDs representing the members of the city.
-     */
-    public static ArrayList<UUID> getMembers(String uuid) {
-        ArrayList<UUID> isIn = members.get(uuid);
-
-        if (members.containsKey(uuid)) return isIn;
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT player FROM city_members WHERE city_uuid = ?");
-            statement.setString(1, uuid);
-
-            ArrayList<UUID> cityMembers = members.getOrDefault(uuid, new ArrayList<>());
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                cityMembers.add(UUID.fromString(resultSet.getString(1)));
-            }
-
-            members.put(uuid, cityMembers);
-            return cityMembers;
-        } catch (SQLException err) {
-            err.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    /**
-     * Sets the balance for a given City and updates it in the database asynchronously.
-     *
-     * @param uuid  The city UUID.
-     * @param value The new balance value to be set.
-     */
-    public static void setBalance(String uuid, Double value) {
-        Double old = balance.put(uuid, value);
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET balance=? WHERE uuid=?;");
-                statement.setDouble(1, value);
-                statement.setString(2, uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                balance.put(uuid, old);
-            }
-        });
-    }
-
-    /**
-     * Updates the balance for a given City by adding a difference amount and updating it in the database asynchronously.
-     *
-     * @param uuid The city UUID
-     * @param diff The amount to be added to the existing balance.
-     */
-    public static void updateBalance(String uuid, Double diff) {
-        Double old = balance.put(uuid, balance.get(uuid) + diff);
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET balance=balance+? WHERE uuid=?;");
-                statement.setDouble(1, diff);
-                statement.setString(2, uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                balance.put(uuid, old);
-            }
-        });
-    }
-
-    /**
-     * Retrieves the balance for a given UUID. If the balance is not cached, it retrieves it from the database.
-     *
-     * @param uuid The unique identifier of the entity whose balance is being retrieved.
-     * @return The balance of the city, or 0 if no balance is found or an error occurs.
-     */
-    @NotNull public static Double getBalance(String uuid) {
-        Double isIn = balance.get(uuid);
-
-        if (balance.containsKey(uuid)) return isIn;
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT balance FROM city WHERE uuid = ?");
-            statement.setString(1, uuid);
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                balance.put(uuid, resultSet.getDouble("balance"));
-                return balance.get(uuid);
-            }
-
-            balance.put(uuid, 0d);
-            return 0d;
-        } catch (SQLException err) {
-            err.printStackTrace();
-            return 0d;
-        }
-    }
-
-    /**
-     * Retrieves the name of a city by its UUID.
-     *
-     * @param uuid The UUID of the city.
-     * @return The name of the city, or null if the city does not exist.
-     */
-    @Nullable public static String getCityName(String uuid) {
-        String isIn = cityNames.get(uuid);
-
-        if (cityNames.containsKey(uuid)) return isIn;
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT name FROM city WHERE uuid = ? LIMIT 1");
-            statement.setString(1, uuid);
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                cityNames.put(uuid, resultSet.getString("name"));
-                return resultSet.getString("name");
-            }
-
-            cityNames.put(uuid, null);
-            if (resultSet.getFetchSize() == 0) return null;
-            return resultSet.getString("name");
-        } catch (SQLException err) {
-            err.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Renames a city.
-     *
-     * @param uuid The UUID of the city.
-     * @param newName The new name for the city.
-     */
-    public static void renameCity(String uuid, String newName) {
-        String old = cityNames.put(uuid, newName);
-
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET name=? WHERE uuid=?;");
-                statement.setString(1, newName);
-                statement.setString(2, uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                cityNames.put(uuid, old);
-            }
-        });
-    }
-
-    /**
-     * Creates a new city with a specified owner, UUID, and name.
-     *
-     * @param owner The UUID of the city's owner.
-     * @param city The UUID of the city.
-     * @param name The name of the city.
-     */
-    public static void createCity(UUID owner, String city, String name) {
-        cityOwners.put(city, owner);
-        cityNames.put(city, name);
-
+    public static City createCity(UUID owner, String city, String name) {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, ?, 0)");
@@ -264,176 +64,86 @@ public class CityManager {
                 e.printStackTrace();
             }
         });
+        return new City(city);
     }
 
-    /**
-     * Deletes a city, removing it from records and updating members and regions accordingly.
-     *
-     * @param city The UUID of the city to delete.
-     * @return Is a success
-     */
-    public static boolean deleteCity(String city) {
-        if (getCityName(city) == null) return false;
+    public static void registerCity(City city) {
+        cities.put(city.getUUID(), city);
+    }
 
-        cityOwners.remove(city);
-        cityNames.remove(city);
-        CityPermissions.forgetCity(city);
+    public static City getCity(String city) {
+        if (!cities.containsKey(city)) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
+                statement.setString(1, city);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    System.out.println("Adding city " + city + " to cache");
+                    City c = new City(city);
+                    cities.put(c.getUUID(), c);
+                    return c;
+                }
+                System.out.println("Empty fetch for city " + city);
 
-        for (var entry : playerCity.entrySet()) {
-            if (!entry.getValue().equals(city)) continue;
-            playerCity.remove(entry.getKey());
+                return null;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return cities.get(city);
+    }
+
+    public static void forgetCity(String city) {
+        cities.remove(city);
+
+        for (UUID uuid : playerCities.keySet()) {
+            if (playerCities.get(uuid).getUUID().equals(city)) {
+                playerCities.remove(uuid);
+            }
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-                assert regionManager != null;
-                regionManager.removeRegion("city_"+city);
-                regionManager.saveChanges();
-
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE city_uuid=?");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_permissions WHERE city_uuid = ?");
                 statement.setString(1, city);
-                statement.executeUpdate();
-
-                statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city WHERE uuid=?");
-                statement.setString(1, city);
-                statement.executeUpdate();
-            } catch (SQLException | StorageException e) {
-                e.printStackTrace();
-            }
-        });
-        return true;
-    }
-
-    private static void addToMembers(UUID player, String city) {
-        ArrayList<UUID> mem = members.get(city);
-        mem.add(player);
-        members.put(city, mem);
-    }
-
-    private static boolean removeFromMembers(UUID player, String city) {
-        ArrayList<UUID> mem = members.get(city);
-        boolean success = mem.remove(player);
-        members.put(city, mem);
-        return success;
-    }
-
-    /**
-     * Adds a player as a member of a specific city.
-     *
-     * @param player The UUID of the player to add.
-     * @param city The UUID of the city to add the player to.
-     */
-    public static void playerJoinCity(UUID player, String city) {
-        playerCity.put(player, city);
-        members.put(city, members.getOrDefault(
-                city,
-                new ArrayList<>())
-        );
-        addToMembers(player, city);
-
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-                regionManager.getRegion("city_"+city).getMembers().addPlayer(player);
-                regionManager.saveChanges();
-
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_members VALUE (?, ?)");
-                statement.setString(1, city);
-                statement.setString(2, player.toString());
-                statement.executeUpdate();
-            } catch (SQLException | StorageException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    /**
-     * Changes the owner of a city.
-     *
-     * @param player The UUID of the new owner.
-     * @param city The UUID of the city.
-     */
-    public static void changeOwner(UUID player, String city) {
-        UUID old = cityOwners.put(city, player);
-
-        CityPermissions.removePermission(city, old, CPermission.OWNER);
-        CityPermissions.addPermission(city, player, CPermission.OWNER);
-
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET owner=? WHERE uuid=?;");
-                statement.setString(1, player.toString());
-                statement.setString(2, city);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
-                cityOwners.put(city, old);
             }
         });
     }
 
-    /**
-     * Allows a player to leave a city and updates the database and region permissions.
-     *
-     * @param player The UUID of the player leaving the city.
-     * @return True if the player successfully left the city, false otherwise.
-     */
-    public static boolean playerLeaveCity(UUID player) {
-        String city = CityManager.getPlayerCity(player);
-        CityPermissions.forgetPlayer(city, player);
-
-        members.put(city, members.getOrDefault(
-                city,
-                new ArrayList<>())
-        );
-
-        if (!removeFromMembers(player, city)) return false;
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE player=?");
-            statement.setString(1, player.toString());
-            statement.executeUpdate();
-
-            RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-            regionManager.getRegion("city_"+ playerCity.get(player)).getMembers().removePlayer(player);
-
-            regionManager.saveChanges();
-            playerCity.remove(player);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+    public static void cachePlayer(UUID uuid, City city) {
+        playerCities.put(uuid, city);
     }
 
-    /**
-     * Retrieves the city UUID that a player belongs to.
-     *
-     * @param player The UUID of the player.
-     * @return The UUID of the city the player belongs to, or null if they are not part of any city.
-     */
-    @Nullable public static String getPlayerCity(UUID player) {
-        String isIn = playerCity.get(player);
+    public static City getPlayerCity(UUID uuid) {
+        if (!playerCities.containsKey(uuid)) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_members WHERE player = ? LIMIT 1");
+                statement.setString(1, uuid.toString());
+                ResultSet rs = statement.executeQuery();
 
-        if (playerCity.containsKey(player)) return isIn;
+                if (!rs.next()) {
+                    System.out.println(statement);
+                    System.out.println("Empty fetch for player " + uuid);
+                    return null;
+                }
 
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_members WHERE player = ? LIMIT 1");
-            statement.setString(1, player.toString());
 
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                playerCity.put(player, resultSet.getString("city_uuid"));
-                return resultSet.getString("city_uuid");
+                String city = rs.getString(1);
+                cachePlayer(uuid, getCity(city));
+                return getCity(city);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
             }
-
-            playerCity.put(player, null);
-            return null;
-        } catch (SQLException err) {
-            err.printStackTrace();
-            return null;
         }
+        return playerCities.get(uuid);
+    }
+
+    public static void uncachePlayer(UUID uuid) {
+        playerCities.remove(uuid);
     }
 }

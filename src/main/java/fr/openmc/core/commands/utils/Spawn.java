@@ -27,7 +27,7 @@ public class Spawn {
             if(!(sender instanceof Player) || ((Player) sender).hasPermission("omc.admin.commands.spawn.others")) {
                 target.teleport(spawnLocation);
                 MessagesManager.sendMessageType(sender, "§aVous avez envoyé §e" + target.getName() + "§a au spawn", Prefix.OPENMC, MessageType.SUCCESS, true);
-                MessagesManager.sendMessageType(target, "§aVous avez été envoyé par §e" + (sender instanceof Player player ? player.getName() : "Console") + "§a au spawn", Prefix.OPENMC, MessageType.WARNING, true);
+                MessagesManager.sendMessageType(target, "§aVous avez été envoyé au spawn par §e" + (sender instanceof Player player ? player.getName() : "Console") + "§a", Prefix.OPENMC, MessageType.WARNING, true);
             } else {
                 MessagesManager.sendMessageType(sender, Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
             }

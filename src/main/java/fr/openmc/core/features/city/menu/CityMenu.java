@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.utils.menu.ConfirmMenu;
@@ -30,7 +31,7 @@ public class CityMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes";
+        return "Menu des villes";
     }
 
     @Override
@@ -56,34 +57,34 @@ public class CityMenu extends Menu {
         if (!CityCommands.invitations.containsKey(player)) {
             name_notif = Component.text("§7Vous n'avez aucune §6invitation");
             lore_notif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
-            lore_notif.add(Component.text("§6/city invite §7ou depuis le §6Menu de sa Ville"));
+            lore_notif.add(Component.text("§6/city invite §7(ou depuis le §6Menu de sa ville)"));
 
             inventory.put(15, new ItemBuilder(this, Material.BEEHIVE, itemMeta -> {
                 itemMeta.itemName(name_notif);
                 itemMeta.lore(lore_notif);
             }).setOnClick(inventoryClickEvent -> {
-                MessagesManager.sendMessageType(player, "Tu n'as aucune invitations en attente", Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, "Tu n'as aucune invitation en attente", Prefix.CITY, MessageType.ERROR, false);
             }));
         } else {
             name_notif = Component.text("§7Vous avez une §6invitation");
 
             Player inviter = CityCommands.invitations.get(player);
-            String inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
+            City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
 
-            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité dans " + CityManager.getCityName(inviterCity)));
-            lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR VOTRE CONFIRMATION"));
+            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName()));
+            lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER"));
 
             inventory.put(15, new ItemBuilder(this, Material.BEEHIVE, itemMeta -> {
                 itemMeta.itemName(name_notif);
                 itemMeta.lore(lore_notif);
             }).setOnClick(inventoryClickEvent -> {
-                ConfirmMenu menu = new ConfirmMenu(player, new CityMenu(player), this::accept, this::refuse, "§7Vous accepterez la demande d'invitation de " + inviter.getName(), "§7Vous refuserez la demande d'invitation de " + inviter.getName());
+                ConfirmMenu menu = new ConfirmMenu(player, new CityMenu(player), this::accept, this::refuse, "§7Accepter", "§7Refuser" + inviter.getName());
                 menu.open();
             }));
         }
 
         inventory.put(11, new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Créer §dvotre Ville"));
+            itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
             itemMeta.lore(lore_create);
         }));
 
