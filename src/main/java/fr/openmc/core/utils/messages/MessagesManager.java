@@ -8,14 +8,72 @@ import lombok.Getter;
 
 public class MessagesManager {
 
+    private final Prefix prefix;
+    public MessagesManager(Prefix prefix) {
+        this.prefix = prefix;
+    }
 
     /*
     For use the beautiful message, create a prefix.
      */
 
+    /**
+     * Sends a formatted message to the player with an accompanying sound.
+     *
+     * @param sender  The player to send the message to (can be a console)
+     * @param message The content of the message
+     */
+    public void error(CommandSender sender, String message) {
+        sendMessageType(sender, message, MessageType.ERROR, true);
+    }
+
+    /**
+     * Sends a formatted message to the player with an accompanying sound.
+     *
+     * @param sender  The player to send the message to (can be a console)
+     * @param message The content of the message
+     */
+    public void warning(CommandSender sender, String message) {
+        sendMessageType(sender, message, MessageType.WARNING, true);
+    }
+
+    /**
+     * Sends a formatted message to the player with an accompanying sound.
+     *
+     * @param sender  The player to send the message to (can be a console)
+     * @param message The content of the message
+     */
+    public void success(CommandSender sender, String message) {
+        sendMessageType(sender, message, MessageType.SUCCESS, true);
+    }
+
+    /**
+     * Sends a formatted message to the player with an accompanying sound.
+     *
+     * @param sender  The player to send the message to (can be a console)
+     * @param message The content of the message
+     */
+    public void info(CommandSender sender, String message) {
+        sendMessageType(sender, message, MessageType.INFO, true);
+    }
+
+    private void sendMessageType(CommandSender sender, String message, MessageType type, boolean sound) {
+
+        String messageStr = "§7(" + getPrefixType(type) + "§7) " + this.prefix.getPrefix() + " §7» " + message;
+
+        if(sender instanceof Player player && sound) {
+            player.playSound(player.getLocation(), getSound(type), 1, 1);
+        }
+
+        sender.sendMessage(messageStr);
+
+    }
+
 
     /**
      * Sends a formatted message to the player with or without sound.
+     *
+     * Deprecated
      *
      * @param sender  The player to send the message to (can be a console)
      * @param message The content of the message
@@ -23,6 +81,7 @@ public class MessagesManager {
      * @param type    The type of message (information, error, success, warning)
      * @param sound   Indicates whether a sound should be played (true) or not (false)
      */
+    @Deprecated
     public static void sendMessageType(CommandSender sender, String message, Prefix prefix, MessageType type, boolean sound) {
 
         String messageStr = "§7(" + getPrefixType(type) + "§7) " + prefix.getPrefix() + " §7» " + message;
@@ -39,10 +98,13 @@ public class MessagesManager {
     /**
      * Sends a formatted message to the player with an accompanying sound.
      *
+     * Deprecated
+     *
      * @param sender  The player to send the message to (can be a console)
      * @param message The content of the message
      * @param prefix  The prefix for the message
      */
+    @Deprecated
     public static void sendMessage(CommandSender sender, String message, Prefix prefix) {
         String messageStr = prefix.getPrefix() + " §7» " + message;
 
