@@ -27,7 +27,7 @@ public enum Stats {
             statement.setString(2, this.name());
             ResultSet resultSet = statement.executeQuery();
 
-            return resultSet.getInt(0);
+            return resultSet.getInt(1);
         } catch (SQLException err) {
             err.printStackTrace();
             return defaultValue;

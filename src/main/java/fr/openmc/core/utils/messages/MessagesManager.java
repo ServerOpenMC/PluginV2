@@ -115,6 +115,10 @@ public class MessagesManager {
         NOPERMISSION("§cVous n'avez pas la permission d'exécuter cette commande."),
         MISSINGARGUMENT("§cVous devez spécifier un argument."),
 
+        // City messages
+        PLAYERNOCITY("Tu n'es pas dans une ville"),
+        PLAYERINCITY("le joueur est déjà dans une ville"),
+
         ;
 
         private final String message;
