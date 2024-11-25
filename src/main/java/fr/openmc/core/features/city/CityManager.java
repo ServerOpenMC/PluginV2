@@ -3,6 +3,7 @@ package fr.openmc.core.features.city;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.AdminCityCommands;
+import fr.openmc.core.features.city.commands.CityChatCommand;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.commands.CityPermsCommands;
 import fr.openmc.core.features.city.listeners.CityDoorsListener;
@@ -37,7 +38,8 @@ public class CityManager {
         CommandsManager.getHandler().register(
                 new CityCommands(),
                 new AdminCityCommands(),
-                new CityPermsCommands()
+                new CityPermsCommands(),
+                new CityChatCommand()
         );
 
         OMCPlugin.registerEvents(
