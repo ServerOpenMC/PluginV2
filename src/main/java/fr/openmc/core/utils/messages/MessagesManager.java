@@ -73,13 +73,13 @@ public class MessagesManager {
     /**
      * Sends a formatted message to the player with or without sound.
      *
-     * Deprecated
      *
      * @param sender  The player to send the message to (can be a console)
      * @param message The content of the message
      * @param prefix  The prefix for the message
      * @param type    The type of message (information, error, success, warning)
      * @param sound   Indicates whether a sound should be played (true) or not (false)
+     * @deprecated Use {@link #error(CommandSender, String)}, {@link #warning(CommandSender, String)}, {@link #success(CommandSender, String)} or {@link #info(CommandSender, String)} instead
      */
     @Deprecated
     public static void sendMessageType(CommandSender sender, String message, Prefix prefix, MessageType type, boolean sound) {
@@ -103,6 +103,7 @@ public class MessagesManager {
      * @param sender  The player to send the message to (can be a console)
      * @param message The content of the message
      * @param prefix  The prefix for the message
+     * @deprecated Use {@link #error(CommandSender, String)}, {@link #warning(CommandSender, String)}, {@link #success(CommandSender, String)} or {@link #info(CommandSender, String)} instead
      */
     @Deprecated
     public static void sendMessage(CommandSender sender, String message, Prefix prefix) {
