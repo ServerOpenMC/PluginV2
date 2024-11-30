@@ -3,7 +3,6 @@ package fr.openmc.core.features.economy;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.analytics.Stats;
 import fr.openmc.core.utils.database.DatabaseManager;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -44,32 +43,32 @@ public class Transaction {
         if (!Objects.equals(this.recipient, player.toString())) {
             itemstack = new ItemStack(Material.RED_CONCRETE, 1);
             itemmeta = itemstack.getItemMeta();
-            itemmeta.displayName(Component.text("Transaction sortante"));
+            itemmeta.setDisplayName("Transaction sortante");
 
             String recipient = "CONSOLE";
             if (!this.recipient.equals("CONSOLE")){
                 recipient = Bukkit.getServer().getOfflinePlayer(UUID.fromString(this.recipient)).getName();
             }
 
-            itemmeta.lore(List.of(
-                    Component.text("§r§6Destination:§f "+recipient),
-                    Component.text("§r§6Montant:§f "+this.amount),
-                    Component.text("§r§6Raison:§f "+reason)
+            itemmeta.setLore(List.of(
+                    "§r§6Destination:§f "+recipient,
+                    "§r§6Montant:§f "+this.amount,
+                    "§r§6Raison:§f "+reason
             ));
         } else {
             itemstack = new ItemStack(Material.LIME_CONCRETE, 1);
             itemmeta = itemstack.getItemMeta();
-            itemmeta.displayName(Component.text(("Transaction entrante")));
+            itemmeta.setDisplayName("Transaction entrante");
 
             String senderName = "CONSOLE";
             if (!this.sender.equals("CONSOLE")){
                 senderName = Bukkit.getServer().getOfflinePlayer(UUID.fromString(this.sender)).getName();
             }
 
-            itemmeta.lore(List.of(
-                    Component.text("§r§6Envoyeur:§f "+senderName),
-                    Component.text("§r§6Montant:§f "+this.amount),
-                    Component.text("§r§6Raison:§f "+reason)
+            itemmeta.setLore(List.of(
+                    "§r§6Envoyeur:§f "+senderName,
+                    "§r§6Montant:§f "+this.amount,
+                    "§r§6Raison:§f "+reason
             ));
         }
 

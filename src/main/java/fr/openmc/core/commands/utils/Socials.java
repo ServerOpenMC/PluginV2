@@ -1,8 +1,6 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -13,8 +11,6 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Socials {
-    private final MessagesManager msgOMC  = new MessagesManager(Prefix.OPENMC);
-
     private String removeProtocol(String url) {
         if (url == null || url.isEmpty()) {
             return url;
