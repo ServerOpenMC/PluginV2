@@ -13,6 +13,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +51,7 @@ public class CityMenu extends Menu {
 
         List<Component> lore_create = new ArrayList<>();
         lore_create.add(Component.text("§7Vous pouvez aussi créer §dvotre Ville"));
-        lore_create.add(Component.text("§7Faite §d/city create <name>"));
+        lore_create.add(Component.text("§7Faites §d/city create <name>"));
 
         Component name_notif;
         List<Component> lore_notif = new ArrayList<>();
@@ -58,9 +59,9 @@ public class CityMenu extends Menu {
         if (!CityCommands.invitations.containsKey(player)) {
             name_notif = Component.text("§7Vous n'avez aucune §6invitation");
             lore_notif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
-            lore_notif.add(Component.text("§6/city invite §7(ou depuis le §6Menu de sa ville)"));
+            lore_notif.add(Component.text("§6via /city invite"));
 
-            inventory.put(15, new ItemBuilder(this, Material.BEEHIVE, itemMeta -> {
+            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(name_notif);
                 itemMeta.lore(lore_notif);
             }).setOnClick(inventoryClickEvent -> msgCity.error(player, "Tu n'as aucune invitation en attente")));
@@ -74,7 +75,7 @@ public class CityMenu extends Menu {
             lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName()));
             lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER"));
 
-            inventory.put(15, new ItemBuilder(this, Material.BEEHIVE, itemMeta -> {
+            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(name_notif);
                 itemMeta.lore(lore_notif);
             }).setOnClick(inventoryClickEvent -> {
