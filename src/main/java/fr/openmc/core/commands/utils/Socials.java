@@ -42,20 +42,29 @@ public class Socials {
     @CommandPermission("omc.commands.discord")
     @Description("Donne le lien du serveur Discord")
     private void discord(CommandSender sender) {
-        msgOMC.info(sender, "Venez discutez sur " + OMCPlugin.getConfigs().getString("discord", "INVALID CONFIG"));
+        sender.sendMessage(parseText(
+                "Venez discutez sur ",
+                OMCPlugin.getConfigs().getString("discord", "INVALID CONFIG")
+        ));
     }
 
     @Command("site")
     @CommandPermission("omc.commands.site")
     @Description("Donne le lien du site")
     private void website(CommandSender sender) {
-        msgOMC.info(sender, "Découvrez nous sur " + OMCPlugin.getConfigs().getString("homepage", "INVALID CONFIG"));
+        sender.sendMessage(parseText(
+                "Découvrez nous sur ",
+                OMCPlugin.getConfigs().getString("homepage", "INVALID CONFIG")
+        ));
     }
 
     @Command("blog")
     @CommandPermission("omc.commands.blog")
     @Description("Donne le lien du blog")
     private void blog(CommandSender sender) {
-        msgOMC.info(sender, "Lisez des articles sur " + OMCPlugin.getConfigs().getString("blog", "INVALID CONFIG"));
+        sender.sendMessage(parseText(
+                "Lisez des articles sur ",
+                OMCPlugin.getConfigs().getString("blog", "INVALID CONFIG")
+        ));
     }
 }
