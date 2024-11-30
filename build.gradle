@@ -17,8 +17,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
-    compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.1")
+    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
+    compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14")
     compileOnly("com.sk89q.worldguard:worldguard-bukkit:7.0.10")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("me.clip:placeholderapi:2.11.6")
@@ -71,7 +71,7 @@ jar {
     manifest {
         attributes("GIT-COMMIT" : System.getenv("GITHUB_SHA") ?: "unknown")
     }
-    destinationDirectory.set(file("./builds/"))
+    destinationDirectory.set(file("./server/plugins/"))
 }
 
 clean {
@@ -79,7 +79,7 @@ clean {
 }
 
 shadowJar {
-    destinationDirectory.set(file("./builds/"))
+    destinationDirectory.set(file("./server/plugins/"))
     archiveFileName = "OpenMC.jar"
 }
 
