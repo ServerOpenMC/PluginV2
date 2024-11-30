@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
@@ -18,13 +17,15 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.UUID;
 
 public class CityChatCommand {
+    private final MessagesManager msgCity  = new MessagesManager(Prefix.CITY);
+
     @Command({"cc", "city chat", "ville chat"})
     @CommandPermission("omc.commands.city.chat")
     @Description("Envoyer un message dans le chat de votre ville")
     public void onCityChat(Player sender, @Named("message") String message) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(sender, "Tu n'habites dans aucune ville", Prefix.CITY, MessageType.ERROR, false);
+            msgCity.error(sender, "Tu n'habites dans aucune ville");
             return;
         }
 

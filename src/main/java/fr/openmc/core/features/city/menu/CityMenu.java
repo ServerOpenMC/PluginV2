@@ -7,7 +7,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.utils.menu.ConfirmMenu;
-import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CityMenu extends Menu {
+    private final MessagesManager msgCity  = new MessagesManager(Prefix.CITY);
 
     public CityMenu(Player owner) {
         super(owner);
@@ -54,6 +54,7 @@ public class CityMenu extends Menu {
 
         Component name_notif;
         List<Component> lore_notif = new ArrayList<>();
+
         if (!CityCommands.invitations.containsKey(player)) {
             name_notif = Component.text("§7Vous n'avez aucune §6invitation");
             lore_notif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
@@ -62,14 +63,13 @@ public class CityMenu extends Menu {
             inventory.put(15, new ItemBuilder(this, Material.BEEHIVE, itemMeta -> {
                 itemMeta.itemName(name_notif);
                 itemMeta.lore(lore_notif);
-            }).setOnClick(inventoryClickEvent -> {
-                MessagesManager.sendMessageType(player, "Tu n'as aucune invitation en attente", Prefix.CITY, MessageType.ERROR, false);
-            }));
+            }).setOnClick(inventoryClickEvent -> msgCity.error(player, "Tu n'as aucune invitation en attente")));
         } else {
             name_notif = Component.text("§7Vous avez une §6invitation");
 
             Player inviter = CityCommands.invitations.get(player);
             City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
+            assert inviterCity != null;
 
             lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName()));
             lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER"));

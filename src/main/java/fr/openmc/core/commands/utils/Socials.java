@@ -1,6 +1,8 @@
 package fr.openmc.core.commands.utils;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -11,6 +13,8 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Socials {
+    private final MessagesManager msgOMC  = new MessagesManager(Prefix.OPENMC);
+
     private String removeProtocol(String url) {
         if (url == null || url.isEmpty()) {
             return url;
@@ -38,29 +42,20 @@ public class Socials {
     @CommandPermission("omc.commands.discord")
     @Description("Donne le lien du serveur Discord")
     private void discord(CommandSender sender) {
-        sender.sendMessage(parseText(
-                "Venez discutez sur ",
-                OMCPlugin.getConfigs().getString("discord", "INVALID CONFIG")
-        ));
+        msgOMC.info(sender, "Venez discutez sur " + OMCPlugin.getConfigs().getString("discord", "INVALID CONFIG"));
     }
 
     @Command("site")
     @CommandPermission("omc.commands.site")
     @Description("Donne le lien du site")
     private void website(CommandSender sender) {
-        sender.sendMessage(parseText(
-                "Découvrez nous sur ",
-                OMCPlugin.getConfigs().getString("homepage", "INVALID CONFIG")
-        ));
+        msgOMC.info(sender, "Découvrez nous sur " + OMCPlugin.getConfigs().getString("homepage", "INVALID CONFIG"));
     }
 
     @Command("blog")
     @CommandPermission("omc.commands.blog")
     @Description("Donne le lien du blog")
     private void blog(CommandSender sender) {
-        sender.sendMessage(parseText(
-                "Lisez des articles sur ",
-                OMCPlugin.getConfigs().getString("blog", "INVALID CONFIG")
-        ));
+        msgOMC.info(sender, "Lisez des articles sur " + OMCPlugin.getConfigs().getString("blog", "INVALID CONFIG"));
     }
 }

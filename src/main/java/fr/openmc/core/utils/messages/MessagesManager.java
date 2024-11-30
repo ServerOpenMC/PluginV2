@@ -69,51 +69,6 @@ public class MessagesManager {
 
     }
 
-
-    /**
-     * Sends a formatted message to the player with or without sound.
-     *
-     *
-     * @param sender  The player to send the message to (can be a console)
-     * @param message The content of the message
-     * @param prefix  The prefix for the message
-     * @param type    The type of message (information, error, success, warning)
-     * @param sound   Indicates whether a sound should be played (true) or not (false)
-     * @deprecated Use {@link #error(CommandSender, String)}, {@link #warning(CommandSender, String)}, {@link #success(CommandSender, String)} or {@link #info(CommandSender, String)} instead
-     */
-    @Deprecated
-    public static void sendMessageType(CommandSender sender, String message, Prefix prefix, MessageType type, boolean sound) {
-
-        String messageStr = "§7(" + getPrefixType(type) + "§7) " + prefix.getPrefix() + " §7» " + message;
-
-        if(sender instanceof Player player && sound) {
-            player.playSound(player.getLocation(), getSound(type), 1, 1);
-        }
-
-        sender.sendMessage(messageStr);
-
-    }
-
-
-    /**
-     * Sends a formatted message to the player with an accompanying sound.
-     *
-     * Deprecated
-     *
-     * @param sender  The player to send the message to (can be a console)
-     * @param message The content of the message
-     * @param prefix  The prefix for the message
-     * @deprecated Use {@link #error(CommandSender, String)}, {@link #warning(CommandSender, String)}, {@link #success(CommandSender, String)} or {@link #info(CommandSender, String)} instead
-     */
-    @Deprecated
-    public static void sendMessage(CommandSender sender, String message, Prefix prefix) {
-        String messageStr = prefix.getPrefix() + " §7» " + message;
-
-        sender.sendMessage(messageStr);
-
-    }
-
-
     private static String getPrefixType(MessageType type) {
         return switch (type) {
             case ERROR -> "§c❗";
