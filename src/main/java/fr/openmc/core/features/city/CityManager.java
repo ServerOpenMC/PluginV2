@@ -2,11 +2,8 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
-import fr.openmc.core.features.city.commands.AdminCityCommands;
-import fr.openmc.core.features.city.commands.CityChatCommand;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.commands.CityPermsCommands;
-import fr.openmc.core.features.city.listeners.CityDoorsListener;
+import fr.openmc.core.features.city.commands.*;
+import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 
@@ -14,9 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CityManager {
@@ -43,14 +38,32 @@ public class CityManager {
         );
 
         OMCPlugin.registerEvents(
-                new CityDoorsListener()
+                new ProtectionListener()
         );
+    }
+
+    public static Collection<City> getCities() {
+        return cities.values();
     }
 
     public static void init_db(Connection conn) throws SQLException {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city (uuid VARCHAR(8) NOT NULL PRIMARY KEY, owner VARCHAR(36) NOT NULL, bank_pages TINYINT UNSIGNED, name VARCHAR(32), balance DOUBLE DEFAULT 0);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_members (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL PRIMARY KEY);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_permissions (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_regions (city_uuid VARCHAR(8) NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate(); // Faut esperer qu'aucun clodo n'ira à 134.217.712 blocks du spawn
+    }
+
+    public static boolean isChunkClaimed(int x, int z) {
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_regions WHERE x = ? AND z = ? LIMIT 1");
+            statement.setInt(1, x);
+            statement.setInt(2, z);
+            ResultSet rs = statement.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static City createCity(UUID owner, String city, String name) {
@@ -80,12 +93,10 @@ public class CityManager {
                 statement.setString(1, city);
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
-                    System.out.println("Adding city " + city + " to cache");
                     City c = new City(city);
                     cities.put(c.getUUID(), c);
                     return c;
                 }
-                System.out.println("Empty fetch for city " + city);
 
                 return null;
             } catch (SQLException e) {
@@ -128,8 +139,6 @@ public class CityManager {
                 ResultSet rs = statement.executeQuery();
 
                 if (!rs.next()) {
-                    System.out.println(statement);
-                    System.out.println("Empty fetch for player " + uuid);
                     return null;
                 }
 

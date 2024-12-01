@@ -1,12 +1,10 @@
 package fr.openmc.core.features.city;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.managers.storage.StorageException;
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +19,7 @@ public class City {
     private Set<UUID> members = new HashSet<>();
     private Double balance;
     private String name;
+    private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
 
     public City(String uuid) {
         this.city_uuid = uuid;
@@ -51,6 +50,69 @@ public class City {
 
     public String getUUID() {
         return city_uuid;
+    }
+
+    public void addChunk(Chunk chunk) {
+        getChunks(); // Load chunks
+
+        if (chunks.contains(BlockVector2.at(chunk.getX(), chunk.getZ()))) return;
+        chunks.add(BlockVector2.at(chunk.getX(), chunk.getZ()));
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
+                statement.setString(1, city_uuid);
+                statement.setInt(2, chunk.getX());
+                statement.setInt(3, chunk.getZ());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public boolean removeChunk(int chunkX, int chunkZ) {
+        getChunks(); // Load chunks
+
+        if (!chunks.contains(BlockVector2.at(chunkX, chunkZ))) return false;
+        chunks.remove(BlockVector2.at(chunkX, chunkZ));
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
+                statement.setString(1, city_uuid);
+                statement.setInt(2, chunkX);
+                statement.setInt(3, chunkZ);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+        return true;
+    }
+
+    public @NotNull Set<BlockVector2> getChunks() {
+        if (!chunks.isEmpty()) return chunks;
+
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT x, z FROM city_regions WHERE city_uuid = ?");
+            statement.setString(1, city_uuid);
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                chunks.add(BlockVector2.at(resultSet.getInt("x"), resultSet.getInt("z")));
+            }
+
+            return chunks;
+        } catch (SQLException err) {
+            err.printStackTrace();
+            return Set.of();
+        }
+    }
+
+    public boolean hasChunk(int chunkX, int chunkZ) {
+        getChunks(); // Load chunks
+        return chunks.contains(BlockVector2.at(chunkX, chunkZ));
     }
 
     public @NotNull String getName() {
@@ -352,11 +414,6 @@ public class City {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE player=?");
             statement.setString(1, player.toString());
             statement.executeUpdate();
-
-            RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-            regionManager.getRegion("city_"+ city_uuid).getMembers().removePlayer(player);
-
-            regionManager.saveChanges();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -374,15 +431,11 @@ public class City {
         CityManager.cachePlayer(player, this);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-                regionManager.getRegion("city_"+city_uuid).getMembers().addPlayer(player);
-                regionManager.saveChanges();
-
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_members VALUE (?, ?)");
                 statement.setString(1, city_uuid);
                 statement.setString(2, player.toString());
                 statement.executeUpdate();
-            } catch (SQLException | StorageException e) {
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
@@ -398,11 +451,6 @@ public class City {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-                assert regionManager != null;
-                regionManager.removeRegion("city_"+city_uuid);
-                regionManager.saveChanges();
-
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE city_uuid=?");
                 statement.setString(1, city_uuid);
                 statement.executeUpdate();
@@ -414,7 +462,11 @@ public class City {
                 statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_permissions WHERE city_uuid=?");
                 statement.setString(1, city_uuid);
                 statement.executeUpdate();
-            } catch (SQLException | StorageException e) {
+
+                statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_regions WHERE city_uuid=?");
+                statement.setString(1, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         });

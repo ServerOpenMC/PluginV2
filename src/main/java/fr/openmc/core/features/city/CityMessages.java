@@ -1,9 +1,5 @@
 package fr.openmc.core.features.city;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -25,13 +21,7 @@ public class CityMessages {
         String cityName = city.getName();
         String mayorName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
         int citizens = city.getMembers().size();
-        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-        ProtectedRegion region = regionManager.getRegion("city_"+city.getUUID());
-        int area = (int) Math.ceil(CityUtils.getPolygonalRegionArea(region)/256);
-
-        if (cityName == null) {
-            cityName = "Inconnu";
-        }
+        int area = city.getChunks().size();
 
         sender.sendMessage(
                 Component.text("--- ").color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.BOLD, false).append(

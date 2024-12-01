@@ -1,14 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector2;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.flags.*;
-import com.sk89q.worldguard.protection.flags.Flag;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.managers.storage.StorageException;
-import com.sk89q.worldguard.protection.regions.ProtectedPolygonalRegion;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -298,112 +291,43 @@ public class CityCommands {
             return;
         }
 
-        com.sk89q.worldedit.world.World world = BukkitAdapter.adapt(bWorld);
-        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(world);
-        ProtectedPolygonalRegion oldRegion = (ProtectedPolygonalRegion) regionManager.getRegion("city_" + city.getUUID());
-        if (oldRegion == null) {
-            MessagesManager.sendMessageType(sender, "Impossible de trouver la ville "+ city.getCityName(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
         Chunk chunk = sender.getLocation().getChunk();
         int chunkX = chunk.getX();
         int chunkZ = chunk.getZ();
+        BlockVector2 chunkVec2 = BlockVector2.at(chunkX, chunkZ);
 
-        AtomicBoolean keepGoing = new AtomicBoolean(true);
-        regionManager.getApplicableRegionsIDs(BlockVector3.at(chunkX * 16, 200, chunkZ * 16)).forEach(region -> {
-            if (region.equals("__global__")) return;
-            MessagesManager.sendMessageType(sender, "Cet endroit fais déjà partie d'une ville ", Prefix.CITY, MessageType.ERROR, false);
-            keepGoing.set(false);
-        });
-        if (!keepGoing.get()) return;
+        AtomicBoolean isFar = new AtomicBoolean(true);
+        for (BlockVector2 chnk: city.getChunks()) {
+            if (chnk.distance(chunkVec2) == 1) { //Si c'est en diagonale alors ça sera sqrt(2) ≈1.41
+                isFar.set(false);
+                break;
+            }
+        }
 
-        int area = (int) Math.ceil(CityUtils.getPolygonalRegionArea(oldRegion)/256);
+        if (isFar.get()) {
+            MessagesManager.sendMessageType(sender, "Ce chunk n'est pas adjacent à ta ville", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
 
-        if (area >= 50) {
+        if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
+            // TODO: Vérifier si le chunk est dans le spawn
+            MessagesManager.sendMessageType(sender, "Ce chunk est déjà claim", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (city.getChunks().size() >= 50) {
             MessagesManager.sendMessageType(sender, "Ta ville est trop grande", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        int price = calculatePrice(area);
+        int price = calculatePrice(city.getChunks().size());
         if (city.getBalance() < price) {
             MessagesManager.sendMessageType(sender, "Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.updateBalance((double) (price*-1));
-
-        BlockVector2[] chunkPoints = new BlockVector2[4];
-        chunkPoints[0] = BlockVector2.at(chunkX * 16, chunkZ * 16);
-        chunkPoints[1] = BlockVector2.at(chunkX * 16, (chunkZ + 1) * 16 - 1);
-        chunkPoints[2] = BlockVector2.at((chunkX + 1) * 16 - 1, (chunkZ + 1) * 16 - 1);
-        chunkPoints[3] = BlockVector2.at((chunkX + 1) * 16 - 1, chunkZ * 16);
-
-        List<BlockVector2> existingPoints = new ArrayList<>(oldRegion.getPoints());
-
-        BlockVector2 closestPoint = existingPoints.getFirst();
-        int closestPointIndex = 0;
-        double minDistance = Double.MAX_VALUE;
-
-        for (int i = 0; i < existingPoints.size(); i++) {
-            BlockVector2 point = existingPoints.get(i);
-            for (BlockVector2 chunkPoint : chunkPoints) {
-                double distance = point.distance(chunkPoint);
-                if (distance < minDistance) {
-                    minDistance = distance;
-                    closestPoint = point;
-                    closestPointIndex = i;
-                }
-            }
-        }
-
-        int closestChunkPointIndex = 0;
-        minDistance = Double.MAX_VALUE;
-
-        for (int i = 0; i < chunkPoints.length; i++) {
-            double distance = closestPoint.distance(chunkPoints[i]);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestChunkPointIndex = i;
-            }
-        }
-
-        List<BlockVector2> newPoints = new ArrayList<>();
-
-        for (int i = 0; i <= closestPointIndex; i++) {
-            newPoints.add(existingPoints.get(i));
-        }
-
-        for (int i = 0; i < chunkPoints.length; i++) {
-            int index = (closestChunkPointIndex + i) % chunkPoints.length;
-            newPoints.add(chunkPoints[index]);
-        }
-
-        for (int i = closestPointIndex + 1; i < existingPoints.size(); i++) {
-            newPoints.add(existingPoints.get(i));
-        }
-
-        ProtectedPolygonalRegion newRegion = new ProtectedPolygonalRegion(
-                oldRegion.getId(),
-                newPoints,
-                oldRegion.getMinimumPoint().y(),
-                oldRegion.getMaximumPoint().y()
-        );
-
-        newRegion.setFlags(oldRegion.getFlags());
-        newRegion.setOwners(oldRegion.getOwners());
-        newRegion.setMembers(oldRegion.getMembers());
-
-        regionManager.removeRegion(oldRegion.getId());
-        regionManager.addRegion(newRegion);
-
-        try {
-            regionManager.saveChanges();
-            MessagesManager.sendMessageType(sender, "Ta ville a été étendue", Prefix.CITY, MessageType.SUCCESS, false);
-        } catch (StorageException e) {
-            MessagesManager.sendMessageType(sender, "Impossible d'étendre la ville", Prefix.CITY, MessageType.ERROR, false);
-            e.printStackTrace();
-        }
+        MessagesManager.sendMessageType(sender, "Ta ville a été étendue", Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     @Subcommand("money give")
@@ -491,10 +415,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.create")
     @Description("Créer une ville")
     @Cooldown(value=60)
-    void create(Player player, @Named("nom") String name) throws StorageException, SQLException {
-        World world = player.getWorld();
-        Location[] corners = getCorners(player);
-
+    void create(Player player, @Named("nom") String name) throws SQLException {
         if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
             MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -505,46 +426,30 @@ public class CityCommands {
             return;
         }
 
-        if (CityUtils.doesRegionOverlap(world, corners[0], corners[1])) {
-            MessagesManager.sendMessageType(player, "Impossible de créer une ville ici", Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
-        String regionUUID = UUID.randomUUID().toString().substring(0, 8);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
+                statement.setString(1, cityUUID);
+                Chunk origin = player.getChunk();
 
-        RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
-        assert regionManager != null;
+                for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
+                    for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
+                        statement.setInt(2, x);
+                        statement.setInt(3, z);
+                        statement.addBatch();
+                    }
+                }
 
-        BlockVector2 corner1 = BlockVector2.at(corners[0].x(), corners[0].z());
-        BlockVector2 corner2 = BlockVector2.at(corners[1].x(), corners[1].z());
-        BlockVector2 corner3 = BlockVector2.at(corner1.x(), corner2.z());
-        BlockVector2 corner4 = BlockVector2.at(corner2.x(), corner1.z());
-        ProtectedPolygonalRegion region = new ProtectedPolygonalRegion("city_"+regionUUID, Arrays.asList(corner1, corner3, corner2, corner4), 400, -100);
-
-        Flag<?>[] flagsToProtect = {
-                Flags.USE,
-                Flags.RIDE,
-                Flags.BUILD,
-                Flags.USE_ANVIL,
-                Flags.CHEST_ACCESS,
-                Flags.PLACE_VEHICLE,
-                Flags.DAMAGE_ANIMALS,
-                Flags.DESTROY_VEHICLE,
-                Flags.ENTITY_PAINTING_DESTROY,
-                Flags.ENTITY_ITEM_FRAME_DESTROY
-        };
-
-        for (Flag<?> flag : flagsToProtect) {
-            if (flag != null) {
-                region.setFlag((StateFlag) flag, StateFlag.State.DENY);
-                region.setFlag(flag.getRegionGroupFlag(), RegionGroup.NON_MEMBERS);
+                statement.executeBatch();
+                statement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-        }
+        });
 
-        regionManager.addRegion(region);
-        regionManager.saveChanges();
-
-        City city = CityManager.createCity(player.getUniqueId(), regionUUID, name);
+        City city = CityManager.createCity(player.getUniqueId(), cityUUID, name);
         city.addPlayer(player.getUniqueId());
         city.addPermission(player.getUniqueId(), CPermission.OWNER);
 
