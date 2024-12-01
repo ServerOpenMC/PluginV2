@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.CityMenu;
@@ -16,6 +17,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -292,6 +294,20 @@ public class CityCommands {
         Chunk chunk = sender.getLocation().getChunk();
         int chunkX = chunk.getX();
         int chunkZ = chunk.getZ();
+        BlockVector2 chunkVec2 = BlockVector2.at(chunkX, chunkZ);
+
+        AtomicBoolean isFar = new AtomicBoolean(true);
+        for (BlockVector2 chnk: city.getChunks()) {
+            if (chnk.distance(chunkVec2) == 1) { //Si c'est en diagonale alors ça sera sqrt(2) ≈1.41
+                isFar.set(false);
+                break;
+            }
+        }
+
+        if (isFar.get()) {
+            MessagesManager.sendMessageType(sender, "Ce chunk n'est pas adjacent à ta ville", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
 
         if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
             // TODO: Vérifier si le chunk est dans le spawn
@@ -311,7 +327,6 @@ public class CityCommands {
         }
 
         city.updateBalance((double) (price*-1));
-
         MessagesManager.sendMessageType(sender, "Ta ville a été étendue", Prefix.CITY, MessageType.SUCCESS, false);
     }
 
