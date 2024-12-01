@@ -1,14 +1,10 @@
 package fr.openmc.core.features.city.commands;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.managers.RegionManager;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
@@ -35,26 +31,15 @@ public class AdminCityCommands {
 
     @Subcommand("info")
     @CommandPermission("omc.admins.commands.admincity.info")
-    @AutoComplete("here|<uuid>")
+    @AutoComplete("<uuid>")
     void info(Player player, @Named("uuid") String city_uuid) {
-        if (city_uuid.equalsIgnoreCase("here")) {
-            RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(Bukkit.getWorld("world")));
-            for (String regionId : regionManager.getRegions().keySet()) {
-                if (regionManager.getRegion(regionId).contains(BukkitAdapter.asBlockVector(player.getLocation()))) {
-                    city_uuid = regionId.replace("city_", "");
-                    break;
-                }
-            }
-            if (city_uuid.equalsIgnoreCase("here")) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
-                return;
-            }
-        }
         City city = CityManager.getCity(city_uuid);
+
         if (city == null) {
             MessagesManager.sendMessageType(player, "Cette ville n'existe pas", Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
+
         CityMessages.sendInfo(player, city);
     }
 
