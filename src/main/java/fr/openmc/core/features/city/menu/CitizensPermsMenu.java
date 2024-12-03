@@ -56,7 +56,7 @@ public class CitizensPermsMenu {
         for (CPermission permission: CPermission.values()) {
             if (permission == CPermission.OWNER) continue;
 
-            perms.add(Component.text("- "+permission.getDisplayName())
+            perms.add(Component.text((city.hasPermission(player, permission) ? "+ ": "- ")+permission.getDisplayName())
                     .decoration(TextDecoration.UNDERLINED, false)
                     .decoration(TextDecoration.BOLD, false)
                     .clickEvent(ClickEvent.callback((plr1) -> {
