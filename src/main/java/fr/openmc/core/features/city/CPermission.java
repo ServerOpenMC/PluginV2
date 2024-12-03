@@ -9,7 +9,7 @@ public enum CPermission {
     CLAIM("Claim"),
     RENAME("Renommer"),
     MONEY_GIVE("Donner de l'argent"),
-    MONEY_BALANCE("Check Balance"),
+    MONEY_BALANCE("Voir l'argent"),
     MONEY_TAKE("Prendre de l'argent"),
     PERMS("Permissions"); // Cette permission est donnée seulement par l'owner
 
