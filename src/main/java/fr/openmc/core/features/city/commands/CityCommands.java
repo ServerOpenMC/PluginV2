@@ -327,6 +327,7 @@ public class CityCommands {
         }
 
         city.updateBalance((double) (price*-1));
+        city.addChunk(sender.getChunk());
         MessagesManager.sendMessageType(sender, "Ta ville a été étendue", Prefix.CITY, MessageType.SUCCESS, false);
     }
 

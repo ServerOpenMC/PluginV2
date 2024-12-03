@@ -288,15 +288,15 @@ public class City {
         return "inconnu";
     }
 
-    public boolean hasPermission(UUID uuid, CPermission permission) {
-        if (!permsCache.containsKey(uuid)) {
+    private boolean loadPermission(UUID player) {
+        if (!permsCache.containsKey(player)) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_permissions WHERE city_uuid = ? AND player = ?");
                 statement.setString(1, city_uuid);
-                statement.setString(2, uuid.toString());
+                statement.setString(2, player.toString());
                 ResultSet rs = statement.executeQuery();
 
-                Set<CPermission> plrPerms = permsCache.getOrDefault(uuid, new HashSet<>());
+                Set<CPermission> plrPerms = permsCache.getOrDefault(player, new HashSet<>());
 
                 while (rs.next()) {
                     try {
@@ -306,18 +306,26 @@ public class City {
                     }
                 }
 
-                permsCache.put(uuid, plrPerms);
+                permsCache.put(player, plrPerms);
+                return true;
             } catch (SQLException e) {
                 e.printStackTrace();
                 return false;
             }
         }
+        return true;
+    }
 
+    public Set<CPermission> getPermissions(UUID player) {
+        loadPermission(player);
+        return permsCache.get(player);
+    }
+
+    public boolean hasPermission(UUID uuid, CPermission permission) {
+        loadPermission(uuid);
         Set<CPermission> playerPerms = permsCache.get(uuid);
 
-        if (playerPerms.contains(CPermission.OWNER)) {
-            return true;
-        }
+        if (playerPerms.contains(CPermission.OWNER)) return true;
 
         return playerPerms.contains(permission);
     }
@@ -332,6 +340,7 @@ public class City {
     }
 
     public boolean removePermission(UUID uuid, CPermission permission) {
+        loadPermission(uuid);
         Set<CPermission> playerPerms = permsCache.get(uuid);
 
         if (playerPerms == null) {
