@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.commands;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.menu.CitizensPermsMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -11,17 +12,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.AutoComplete;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.UUID;
 
 @Command({"ville perms", "city perms"})
 public class CityPermsCommands {
-    private boolean verification(Player sender, UUID player) {
+    private static boolean verification(Player sender, UUID player) {
         City city = CityManager.getPlayerCity(player);
 
         if (city == null) {
@@ -42,7 +40,7 @@ public class CityPermsCommands {
         return true;
     }
 
-    private boolean verificationForModif(Player sender, CPermission permission) {
+    private static boolean verificationForModif(Player sender, CPermission permission) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
@@ -61,6 +59,46 @@ public class CityPermsCommands {
         }
 
         return true;
+    }
+
+    @DefaultFor("~")
+    @CommandPermission("omc.commands.city.perm_get")
+    @AutoComplete("@city_members")
+    void getGUI(Player sender, @Optional OfflinePlayer member) {
+        if (member == null) {
+            CitizensPermsMenu.openBook(sender);
+            return;
+        }
+
+        CitizensPermsMenu.openBookFor(sender, member.getUniqueId());
+    }
+
+    @Subcommand("switch")
+    @CommandPermission("omc.commands.city.perm_switch")
+    @Description("Inverse la permission d'un joueur")
+    @AutoComplete("@city_members")
+    public static void swap(Player sender, OfflinePlayer player, CPermission permission) {
+        if (!verification(sender, player.getUniqueId())) return;
+        if (!verificationForModif(sender, permission)) return;
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+
+        if (city == null) {
+            MessagesManager.sendMessageType(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!city.getMembers().contains(player.getUniqueId())) {
+            MessagesManager.sendMessageType(sender, "Ce joueur n'est pas dans ta ville", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (city.hasPermission(player.getUniqueId(), permission)) {
+            city.removePermission(player.getUniqueId(), permission);
+            MessagesManager.sendMessageType(sender, player.getName()+" a perdu la permission \""+permission.toString()+"\"", Prefix.CITY, MessageType.SUCCESS, false);
+        } else {
+            city.addPermission(player.getUniqueId(), permission);
+            MessagesManager.sendMessageType(sender, player.getName()+" a gagné la permission \""+permission.toString()+"\"", Prefix.CITY, MessageType.SUCCESS, false);
+        }
     }
     
     @Subcommand("add")
