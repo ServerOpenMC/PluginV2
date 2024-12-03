@@ -68,9 +68,16 @@ public class CitizensPermsMenu {
                     .append(Component.newline()));
         }
 
-        for (int i = 0; i < 11 && !perms.isEmpty(); i++) {
+        for (int i = 0; i < 9 && !perms.isEmpty(); i++) {
             firstPage = firstPage.append(perms.removeFirst());
         }
+        firstPage = firstPage.append(Component.text("\n\n\n⬅ Retour")
+                .clickEvent(ClickEvent.callback((plr1) -> {
+                    sender.closeInventory();
+                    openBook(sender);
+                }))
+                .color(NamedTextColor.BLACK));
+
         pages.add(firstPage);
 
         while (!perms.isEmpty()) {
