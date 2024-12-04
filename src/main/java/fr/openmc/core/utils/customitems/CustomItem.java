@@ -23,7 +23,8 @@ public abstract class CustomItem {
      * @return Best ItemStack to use for the server
      */
     public ItemStack getBest() {
-        ItemStack item = getItemsAdder();
+        ItemStack item = null;
+        if (CustomItemRegistry.hasItemsAdder()) item = getItemsAdder();
 
         if (item == null) {
             item = getVanilla();

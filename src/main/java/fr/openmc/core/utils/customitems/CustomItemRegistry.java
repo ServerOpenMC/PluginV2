@@ -1,6 +1,9 @@
 package fr.openmc.core.utils.customitems;
 
+import fr.openmc.core.commands.CommandsManager;
 import io.papermc.paper.persistence.PersistentDataContainerView;
+import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,8 +16,16 @@ import java.util.HashSet;
 public class CustomItemRegistry {
     static HashMap<String, CustomItem> items = new HashMap<>();
     static NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
+    private static boolean hasItemsAdder = false;
+
+    public static boolean hasItemsAdder() {
+        return hasItemsAdder;
+    }
 
     static public void init() {
+        CommandsManager.getHandler().register(new CustomItemsDebugCommand());
+        hasItemsAdder = Bukkit.getPluginManager().getPlugin("ItemsAdder") != null;
+
         // Ici, enregistrer tout les items custom
         new CloseButton();
         new PreviousPage();
