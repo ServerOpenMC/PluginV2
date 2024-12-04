@@ -8,6 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class CloseButton extends CustomItem {
+    public CloseButton() {
+        super("menu:close_button");
+    }
+
     private ItemStack format(ItemStack initial) {
         ItemMeta meta = initial.getItemMeta();
         meta.displayName(Component.text("Fermer").decoration(TextDecoration.ITALIC, false));
