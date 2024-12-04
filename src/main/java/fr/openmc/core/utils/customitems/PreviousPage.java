@@ -8,6 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class PreviousPage extends CustomItem {
+    public PreviousPage() {
+        super("menu:previous_page");
+    }
+
     private ItemStack format(ItemStack initial) {
         ItemMeta meta = initial.getItemMeta();
         meta.displayName(Component.text("Page précedente").decoration(TextDecoration.ITALIC, false));
