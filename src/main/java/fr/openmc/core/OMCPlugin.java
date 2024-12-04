@@ -7,7 +7,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermAPI;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
@@ -42,7 +41,6 @@ public final class OMCPlugin extends JavaPlugin {
         /* MANAGERS */
         dbManager = new DatabaseManager();
         new CommandsManager();
-        CustomItemRegistry.init();
         new SpawnManager(this);
         new CityManager();
         new ListenersManager();
@@ -54,14 +52,11 @@ public final class OMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (dbManager != null) {
-            try {
-                dbManager.close();
-            } catch (SQLException e) {
-                getLogger().severe("Impossible de fermer la connexion à la base de données");
-            }
+        try {
+            dbManager.close();
+        } catch (SQLException e) {
+            getLogger().severe("Impossible de fermer la connexion à la base de données");
         }
-
         getLogger().info("Plugin désactivé");
     }
 
