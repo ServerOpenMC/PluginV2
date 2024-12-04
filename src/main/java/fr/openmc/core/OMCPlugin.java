@@ -40,9 +40,9 @@ public final class OMCPlugin extends JavaPlugin {
         new WorldGuardEvents().enable(this);
 
         /* MANAGERS */
-        CustomItemRegistry.init();
         dbManager = new DatabaseManager();
         new CommandsManager();
+        CustomItemRegistry.init();
         new SpawnManager(this);
         new CityManager();
         new ListenersManager();
