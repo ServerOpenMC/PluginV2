@@ -4,8 +4,8 @@ main: fr.openmc.core.OMCPlugin
 api-version: '1.21.3'
 
 depend:
-  - WorldGuard
-  
+  - WorldEdit
+
 softdepend:
   - PlaceholderAPI
   - LuckPerms

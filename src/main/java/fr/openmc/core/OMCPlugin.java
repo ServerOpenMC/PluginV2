@@ -37,7 +37,6 @@ public final class OMCPlugin extends JavaPlugin {
         /* EXTERNALS */
         MenuLib.init(this);
         new LuckPermsAPI(this);
-        new WorldGuardEvents().enable(this);
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
