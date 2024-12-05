@@ -10,6 +10,21 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("debug customitems")
 @CommandPermission("omc.debug.customitems")
 public class CustomItemsDebugCommand {
+    private void passTest(Player player, int test, boolean pass) {
+        player.sendMessage("Test " + test + ": " + (pass ? "§aPassé" : "§cÉchoué"));
+    }
+
+    @Subcommand("is closebutton")
+    public void isCloseButton(Player player) {
+        ItemStack item = player.getInventory().getItemInMainHand();
+
+        CustomItem closeButton = CustomItemRegistry.getByName("menu:close_button");
+
+        passTest(player, 1, closeButton.equals(item));
+        passTest(player, 2, closeButton.equals("menu:close_button"));
+        passTest(player, 3, closeButton.equals(closeButton));
+    }
+
     @Subcommand("hand")
     public void hand(Player player) {
         PlayerInventory inv = player.getInventory();

@@ -16,6 +16,26 @@ public abstract class CustomItem {
         CustomItemRegistry.register(name, this);
     }
 
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof ItemStack anotherItem) {
+            CustomItem citem = CustomItemRegistry.getByItemStack(anotherItem);
+
+            if (citem == null) return false;
+            return citem.getName().equals(this.getName());
+        }
+
+        if (anotherObject instanceof String name) {
+            return this.getName().equals(name);
+        }
+
+        if (anotherObject instanceof CustomItem citem) {
+            return citem.getName().equals(this.getName());
+        }
+
+        return false;
+    }
+
     /**
      * Order:
      * 1. ItemsAdder
