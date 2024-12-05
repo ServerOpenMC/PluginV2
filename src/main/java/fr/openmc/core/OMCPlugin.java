@@ -6,7 +6,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
-import fr.openmc.core.utils.LuckPermAPI;
+import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
@@ -36,8 +36,7 @@ public final class OMCPlugin extends JavaPlugin {
         
         /* EXTERNALS */
         MenuLib.init(this);
-        new LuckPermAPI(this);
-        new WorldGuardEvents().enable(this);
+        new LuckPermsAPI(this);
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
