@@ -8,6 +8,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class NextPage extends CustomItem {
+    public NextPage() {
+        super("menu:next_page");
+    }
+
     private ItemStack format(ItemStack initial) {
         ItemMeta meta = initial.getItemMeta();
         meta.displayName(Component.text("Prochaine page").decoration(TextDecoration.ITALIC, false));
