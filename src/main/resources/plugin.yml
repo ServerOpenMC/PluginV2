@@ -5,10 +5,10 @@ api-version: '1.21.3'
 
 depend:
   - WorldGuard
-  - LuckPerms
   
 softdepend:
   - PlaceholderAPI
+  - LuckPerms
   - ItemsAdder
 
 prefix: OMC
