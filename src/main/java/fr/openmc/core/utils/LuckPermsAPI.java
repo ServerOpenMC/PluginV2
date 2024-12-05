@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import java.util.Objects;
+
 public class LuckPermsAPI {
     @Getter private static LuckPerms api;
     private static boolean hasLuckPerms;
@@ -38,6 +40,7 @@ public class LuckPermsAPI {
         User user = api.getUserManager().getUser(player.getUniqueId());
         if (user == null) return "";
 
-        return user.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
+        String prefix = user.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
+        return Objects.requireNonNullElse(prefix, "");
     }
 }
