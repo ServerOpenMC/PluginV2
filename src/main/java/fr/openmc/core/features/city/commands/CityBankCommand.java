@@ -65,6 +65,8 @@ public class CityBankCommand {
             return;
         }
 
+        city.updateBalance((double) -price);
+
         city.upgradeBank();
         MessagesManager.sendMessageType(player, "La banque a été améliorée", Prefix.CITY, MessageType.SUCCESS, false);
     }
