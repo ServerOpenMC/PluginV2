@@ -6,6 +6,7 @@ import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.commands.fun.Playtime;
+import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.utils.*;
 import lombok.Getter;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
@@ -28,7 +29,8 @@ public class CommandsManager {
                 new Socials(),
                 new Spawn(),
                 new SetSpawn(),
-                new Playtime()
+                new Playtime(),
+		new Diceroll()
         );
     }
 
