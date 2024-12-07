@@ -230,8 +230,8 @@ public class City {
      *
      * @param value The new balance value to be set.
      */
-    public void setBalance( Double value) {
-        Double old = balance;
+    public void setBalance(Double value) {
+        Double old = getBalance();
         balance = value;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -333,19 +333,7 @@ public class City {
      * @param diff The amount to be added to the existing balance.
      */
     public void updateBalance(Double diff) {
-        Double old = balance;
-        balance += diff;
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET balance=balance+? WHERE uuid=?;");
-                statement.setDouble(1, diff);
-                statement.setString(2, city_uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                balance = old;
-            }
-        });
+        setBalance(balance+diff);
     }
 
     /**
