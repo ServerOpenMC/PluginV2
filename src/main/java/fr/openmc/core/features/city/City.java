@@ -248,12 +248,14 @@ public class City {
 
     public int addBankPages() {
         bank_pages += 1;
+        bankContent.put(bank_pages, new ItemStack[54]);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_banks (city_uuid, page) VALUES (?, ?)");
                 statement.setString(1, city_uuid);
                 statement.setInt(2, bank_pages);
                 statement.executeUpdate();
+                bankContent.remove(bank_pages);
             } catch (SQLException e) {
                 e.printStackTrace();
                 bank_pages -= 1;
