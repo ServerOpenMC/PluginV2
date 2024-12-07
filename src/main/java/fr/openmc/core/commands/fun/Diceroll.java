@@ -1,5 +1,7 @@
 package fr.openmc.core.commands.fun;
 
+import java.util.Random;
+
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
