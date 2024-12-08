@@ -11,7 +11,10 @@ public enum CPermission {
     MONEY_GIVE("Donner de l'argent"),
     MONEY_BALANCE("Voir l'argent"),
     MONEY_TAKE("Prendre de l'argent"),
-    PERMS("Permissions"); // Cette permission est donnée seulement par l'owner
+    PERMS("Permissions"), // Cette permission est donnée seulement par l'owner
+    BANK("Banque"),
+    BANK_UPGRADE("Améliorer la banque")
+    ;
 
     @Getter
     private final String displayName;
