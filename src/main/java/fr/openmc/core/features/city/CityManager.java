@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class CityManager {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
-    public static HashMap<BlockVector2, Boolean> claimedChunks;
+    public static HashMap<BlockVector2, Boolean> claimedChunks = new HashMap<>();
 
     public CityManager() {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_members", ((args, sender, command) -> {
