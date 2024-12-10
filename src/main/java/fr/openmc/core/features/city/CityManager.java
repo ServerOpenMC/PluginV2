@@ -26,6 +26,19 @@ public class CityManager {
 
             if (playerCity == null) return List.of();
 
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                try {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_regions");
+                    ResultSet rs = statement.executeQuery();
+
+                    while (rs.next()) {
+                        claimedChunks.put(BlockVector2.at(rs.getInt(1), rs.getInt(2)), true);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
             return playerCities.keySet().stream()
                     .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
                     .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
