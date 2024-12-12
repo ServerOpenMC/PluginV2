@@ -416,7 +416,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.create")
     @Description("Créer une ville")
     @Cooldown(value=60)
-    void create(Player player, @Named("nom") String name) throws SQLException {
+    void create(Player player, @Named("nom") String name) {
         if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
             MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -429,11 +429,26 @@ public class CityCommands {
 
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
+        Chunk origin = player.getChunk();
+        AtomicBoolean isClaimed = new AtomicBoolean(false);
+        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
+            for (int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
+                if (CityManager.isChunkClaimed(x,z)) {
+                    isClaimed.set(true);
+                    break;
+                }
+            }
+        }
+
+        if (isClaimed.get()) {
+            MessagesManager.sendMessageType(player, "Cette parcelle est déjà claim", Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
                 statement.setString(1, cityUUID);
-                Chunk origin = player.getChunk();
 
                 for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
                     for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {

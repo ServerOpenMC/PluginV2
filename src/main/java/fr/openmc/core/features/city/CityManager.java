@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
@@ -17,12 +18,26 @@ import java.util.stream.Collectors;
 public class CityManager {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
+    public static HashMap<BlockVector2, Boolean> claimedChunks = new HashMap<>();
 
     public CityManager() {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_members", ((args, sender, command) -> {
             String playerCity = playerCities.get(sender.getUniqueId()).getUUID();
 
             if (playerCity == null) return List.of();
+
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                try {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_regions");
+                    ResultSet rs = statement.executeQuery();
+
+                    while (rs.next()) {
+                        claimedChunks.put(BlockVector2.at(rs.getInt(1), rs.getInt(2)), true);
+                    }
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             return playerCities.keySet().stream()
                     .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
@@ -57,12 +72,17 @@ public class CityManager {
     }
 
     public static boolean isChunkClaimed(int x, int z) {
+        if (claimedChunks.containsKey(BlockVector2.at(x, z))) {
+            return claimedChunks.get(BlockVector2.at(x, z));
+        }
+
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_regions WHERE x = ? AND z = ? LIMIT 1");
             statement.setInt(1, x);
             statement.setInt(2, z);
             ResultSet rs = statement.executeQuery();
-            return rs.next();
+            claimedChunks.put(BlockVector2.at(x, z), rs.next());
+            return claimedChunks.get(BlockVector2.at(x, z));
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
