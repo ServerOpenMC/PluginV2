@@ -5,6 +5,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.cooldown.DynamicCooldown;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -254,20 +256,25 @@ public class CityCommands {
     @Subcommand("delconfirm")
     @CommandPermission("omc.commands.city.delete")
     @Description("Supprimer votre ville")
+    @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir supprimer ta ville (%sec% secondes)")
     void delete(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        UUID uuid = sender.getUniqueId();
+
+        City city = CityManager.getPlayerCity(uuid);
         if (city == null) {
             MessagesManager.sendMessageType(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        if (!city.getPlayerWith(CPermission.OWNER).equals(sender.getUniqueId())) {
+        if (!city.getPlayerWith(CPermission.OWNER).equals(uuid)) {
             MessagesManager.sendMessageType(sender, "Tu n'es pas le maire de la ville", Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.delete();
         MessagesManager.sendMessageType(sender, "Votre ville a été supprimée", Prefix.CITY, MessageType.SUCCESS, false);
+
+        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
     }
 
     @Subcommand("claim")
@@ -415,9 +422,11 @@ public class CityCommands {
     @Subcommand("create")
     @CommandPermission("omc.commands.city.create")
     @Description("Créer une ville")
-    @Cooldown(value=60)
+    @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir créer une ville (%sec% secondes)")
     void create(Player player, @Named("nom") String name) {
-        if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
+        UUID uuid = player.getUniqueId();
+
+        if (CityManager.getPlayerCity(uuid) != null) {
             MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -465,10 +474,12 @@ public class CityCommands {
             }
         });
 
-        City city = CityManager.createCity(player.getUniqueId(), cityUUID, name);
-        city.addPlayer(player.getUniqueId());
-        city.addPermission(player.getUniqueId(), CPermission.OWNER);
+        City city = CityManager.createCity(uuid, cityUUID, name);
+        city.addPlayer(uuid);
+        city.addPermission(uuid, CPermission.OWNER);
 
         MessagesManager.sendMessageType(player, "Votre ville a été créée", Prefix.CITY, MessageType.SUCCESS, false);
+
+        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
     }
 }
