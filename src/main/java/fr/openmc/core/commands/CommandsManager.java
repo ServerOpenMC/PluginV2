@@ -1,10 +1,7 @@
 package fr.openmc.core.commands;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.economy.commands.Baltop;
-import fr.openmc.core.features.economy.commands.Money;
-import fr.openmc.core.features.economy.commands.Pay;
+import fr.openmc.core.commands.debug.CooldownCommand;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.utils.*;
@@ -30,7 +27,8 @@ public class CommandsManager {
                 new Spawn(),
                 new SetSpawn(),
                 new Playtime(),
-		new Diceroll()
+		        new Diceroll(),
+                new CooldownCommand()
         );
     }
 
