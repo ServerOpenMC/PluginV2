@@ -5,6 +5,7 @@ import fr.openmc.core.commands.debug.CooldownCommand;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.utils.*;
+import fr.openmc.core.utils.cooldown.CooldownInterceptor;
 import lombok.Getter;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
@@ -16,6 +17,8 @@ public class CommandsManager {
         instance = this;
         OMCPlugin plugin = OMCPlugin.getInstance();
         handler = BukkitCommandHandler.create(plugin);
+
+        handler.registerCondition(new CooldownInterceptor());
 
         registerSuggestions();
         registerCommands();
