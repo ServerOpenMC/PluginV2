@@ -1,9 +1,10 @@
 package fr.openmc.core.features.city.commands;
 
-import com.sk89q.worldedit.math.BlockVector2;
+import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -56,8 +57,16 @@ public class CityCommands {
 
     @DefaultFor("~")
     void main(Player player) {
-        CityMenu menu = new CityMenu(player);
-        menu.open();
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (playerCity == null) {
+            NoCityMenu menu = new NoCityMenu(player);
+            menu.open();
+        } else {
+            CityMenu menu = new CityMenu(player);
+            menu.open();
+        }
+
     }
 
     @Subcommand("accept")

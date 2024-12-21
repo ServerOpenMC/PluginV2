@@ -3,9 +3,6 @@ version: '2.0.0'
 main: fr.openmc.core.OMCPlugin
 api-version: '1.21.3'
 
-depend:
-  - WorldEdit
-
 softdepend:
   - PlaceholderAPI
   - LuckPerms

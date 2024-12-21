@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
-import com.sk89q.worldedit.math.BlockVector2;
+import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.messages.MessageType;
