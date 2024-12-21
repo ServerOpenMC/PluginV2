@@ -2,9 +2,9 @@
 # Database
 #####
 database:
-  url: "jdbc:mysql://host:port/openmc"
-  username: ""
-  password: ""
+  url: "jdbc:mysql://hz0hv.h.filess.io:3306/crgdtest_broughtran"
+  username: "crgdtest_broughtran"
+  password: "+srhuttsvh+&sZY2j$U%<^fCyqw)8]"
 
 features:
   analytics: true
