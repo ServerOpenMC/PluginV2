@@ -53,7 +53,6 @@ public final class OMCPlugin extends JavaPlugin {
         new MotdUtils(this);
         textManager = new TextManager(this, new File(this.getDataFolder(), "translations"), "fr");
         textManager.loadAllLanguages();
-        textManager.loadLanguage("en");
 
 
         getLogger().info("Plugin activé");
