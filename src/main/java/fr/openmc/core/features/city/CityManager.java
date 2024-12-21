@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city;
 
-import com.sk89q.worldedit.math.BlockVector2;
+import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
