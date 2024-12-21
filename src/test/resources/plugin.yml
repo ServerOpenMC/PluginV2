@@ -1,5 +1,5 @@
 name: OpenMC
 version: '2.0.0'
 main: fr.openmc.core.TestPlugin
-api-version: '1.21.3'
+api-version: '1.21.4'
 prefix: OMC

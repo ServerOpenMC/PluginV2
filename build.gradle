@@ -17,9 +17,8 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14")
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.3.9")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("me.clip:placeholderapi:2.11.6")
 
