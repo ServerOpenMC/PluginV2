@@ -3,6 +3,8 @@ package fr.openmc.core;
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
@@ -24,6 +26,7 @@ public final class OMCPlugin extends JavaPlugin {
     @Getter static FileConfiguration configs;
     private DatabaseManager dbManager;
 
+    // API(s)
     public LuckPerms lpApi;
 
     @Override
@@ -40,12 +43,16 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
+        ContestManager contestManager = new ContestManager(this);
+        ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new CommandsManager();
         CustomItemRegistry.init();
         new SpawnManager(this);
         new CityManager();
         new ListenersManager();
         new EconomyManager();
+        contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
+        contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
 
         getLogger().info("Plugin activé");
@@ -53,6 +60,9 @@ public final class OMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        ContestManager contestManager = new ContestManager(this);
+        contestManager.saveContestData();
+        contestManager.saveContestPlayerData();
         if (dbManager != null) {
             try {
                 dbManager.close();
