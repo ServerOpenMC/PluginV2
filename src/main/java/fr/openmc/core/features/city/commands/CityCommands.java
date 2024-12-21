@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.commands;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
-import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
