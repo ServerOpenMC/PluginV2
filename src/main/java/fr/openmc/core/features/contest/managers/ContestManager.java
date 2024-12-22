@@ -1,5 +1,6 @@
 package fr.openmc.core.features.contest.managers;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,12 +19,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.LocalDate;
@@ -35,7 +35,8 @@ public class ContestManager {
 
     @Getter static ContestManager instance;
 
-    private final FileConfiguration config;
+    public File contestFile;
+    public YamlConfiguration contestConfig;
     private final OMCPlugin plugin;
 
     private final EconomyManager economyManager;
@@ -44,39 +45,45 @@ public class ContestManager {
     public ContestData data;
     public Map<String, ContestPlayer> dataPlayer = new HashMap<>();
 
+    private BukkitRunnable eventRunnable;
+
     private final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
             "DARK_GREEN","DARK_BLUE","BLACK"
     );
 
+    //TODO: Faire contest.yml pour que tout marche et regler pb de saveContestData et savePlayerData
     public ContestManager(OMCPlugin plugin) {
         instance = this;
+
+        //Const
+        this.plugin = plugin;
+        economyManager = EconomyManager.getInstance();
+        contestPlayerManager = ContestPlayerManager.getInstance();
+
+        //Load config
+        this.contestFile = new File(plugin.getDataFolder() + "/data", "contest.yml");
+        loadContestConfig();
 
         // Fill data and playerData
         initContestData();
         loadContestPlayerData();
 
-        this.plugin = plugin;
-        config = plugin.getConfig();
-        economyManager = EconomyManager.getInstance();
-        contestPlayerManager = ContestPlayerManager.getInstance();
-
         // Logs of data and playerData
+        eventRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                System.out.println(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
+                System.out.println(dataPlayer);
+                dataPlayer.forEach((uuid, data) -> {
+                   System.out.println(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
+                });
+            }
+        };
 
-//        eventRunnable = new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                System.out.println(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
-//                System.out.println(dataPlayer);
-//                dataPlayer.forEach((uuid, data) -> {
-//                   System.out.println(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
-//                });
-//            }
-//        };
-//
-//        // tout les minutes
-//        eventRunnable.runTaskTimer(plugin, 0, 100);
+        // tout les minutes
+        eventRunnable.runTaskTimer(plugin, 0, 100);
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -98,6 +105,22 @@ public class ContestManager {
 
         // Table camps
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int(11), point_dep int(11))").executeUpdate();
+    }
+
+    private void loadContestConfig() {
+        if(!contestFile.exists()) {
+            contestFile.getParentFile().mkdirs();
+            plugin.saveResource("data/contest.yml", false);
+        }
+
+        this.contestConfig = YamlConfiguration.loadConfiguration(contestFile);
+    }
+
+    public void saveContestConfig() {
+        if(!contestFile.exists()) {
+            contestFile.getParentFile().mkdirs();
+            plugin.saveResource("data/contest.yml", false);
+        }
     }
 
     // CONTEST DATA
@@ -408,7 +431,7 @@ public class ContestManager {
 
     // TRADE METHODE
     public List<Map<String, Object>> getTradeSelected(boolean bool) {
-        List<Map<?, ?>> contestTrades = config.getMapList("contest.contestTrades");
+        List<Map<?, ?>> contestTrades = contestConfig.getMapList("contestTrades");
 
         List<Map<String, Object>> filteredTrades = contestTrades.stream()
                 .filter(trade -> (boolean) trade.get("selected") == bool)
@@ -420,14 +443,14 @@ public class ContestManager {
     }
 
     public void updateColumnBooleanFromRandomTrades(Boolean bool, String ress) {
-        List<Map<String, Object>> contestTrades = (List<Map<String, Object>>) config.get("contest.contestTrades");
+        List<Map<String, Object>> contestTrades = (List<Map<String, Object>>) contestConfig.get("contestTrades");
 
         for (Map<String, Object> trade : contestTrades) {
             if (trade.get("ress").equals(ress)) {
                 trade.put("selected", bool);
             }
         }
-        plugin.saveDefaultConfig();
+        saveContestConfig();
     }
 
     public DayOfWeek getCurrentDayOfWeek() {
@@ -459,7 +482,7 @@ public class ContestManager {
 
     public List<String> getRessListFromConfig() {
         FileConfiguration config = plugin.getConfig();
-        List<Map<?, ?>> trades = config.getMapList("contest.contestTrades");
+        List<Map<?, ?>> trades = config.getMapList("contestTrades");
         List<String> ressList = new ArrayList<>();
 
         for (Map<?, ?> tradeEntry : trades) {
@@ -471,7 +494,7 @@ public class ContestManager {
     }
 
     private void updateSelected(String camp) {
-        List<Map<?, ?>> contestList = config.getMapList("contest.contestList");
+        List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
         List<Map<String, Object>> updatedContestList = new ArrayList<>();
 
         for (Map<?, ?> contest : contestList) {
@@ -490,11 +513,11 @@ public class ContestManager {
 
             updatedContestList.add(fusionContestList);
         }
-        config.set("contest.contestList", updatedContestList);
-        plugin.saveDefaultConfig();
+        contestConfig.set("contestList", updatedContestList);
+        saveContestConfig();
     }
     public void addOneToLastContest(String camps) {
-        List<Map<?, ?>> contestList = config.getMapList("contest.contestList");
+        List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
 
         for (Map<?, ?> contest : contestList) {
             if (contest.get("camp1").equals(camps)) {
@@ -510,7 +533,7 @@ public class ContestManager {
     }
 
     public void selectRandomlyContest() {
-        List<Map<?, ?>> contestList = config.getMapList("contest.contestList");
+        List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
         List<Map<String, Object>> orderredContestList = new ArrayList<>();
 
         for (Map<?, ?> contest : contestList) {

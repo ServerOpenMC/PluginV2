@@ -9,6 +9,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -93,8 +94,8 @@ public class ContestCommand {
     @CommandPermission("ayw.command.contest.settrade")
     @AutoComplete("@trade")
     public void settrade(Player player, @Named("trade") String trade, int amount, int amount_shell) {
-        FileConfiguration config = plugin.getConfig();
-        List<Map<?, ?>> trades = config.getMapList("contest.contestTrades");
+        YamlConfiguration config = ContestManager.getInstance().contestConfig;
+        List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
         boolean tradeFound = false;
 
@@ -108,7 +109,7 @@ public class ContestCommand {
         }
 
         if (tradeFound) {
-            plugin.saveConfig();
+            ContestManager.getInstance().saveContestConfig();
             MessagesManager.sendMessageType(player, "Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amount_shell + " coquillages de contest.", Prefix.STAFF, MessageType.SUCCESS, true);
         } else {
             MessagesManager.sendMessageType(player, "Le trade n'existe pas.\n/contest settrade <mat> <amount> <amount_shell>", Prefix.STAFF, MessageType.ERROR, true);

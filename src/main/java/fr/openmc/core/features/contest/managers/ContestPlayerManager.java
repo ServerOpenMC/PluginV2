@@ -1,13 +1,11 @@
 package fr.openmc.core.features.contest.managers;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.sql.PreparedStatement;
