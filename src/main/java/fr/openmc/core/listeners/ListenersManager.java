@@ -11,7 +11,8 @@ public class ListenersManager {
         registerEvents(
                 new SessionsListener(),
                 new JoinMessageListener(),
-                new ClockInfos()
+                new ClockInfos(),
+                new DisableCreakings()
         );
     }
 
