@@ -75,7 +75,7 @@ public class ContestManager {
                 plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
                 plugin.getLogger().info(" ");
                 dataPlayer.forEach((uuid, data) -> {
-                    plugin.getLogger().info(uuid + " " + data.camp() + " " + data.color() + " " + data.points() + " " + data.name());
+                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
                 });
             }
         };
@@ -194,9 +194,9 @@ public class ContestManager {
             dataPlayer.forEach((uuid, playerData) -> {
                 try {
                     statement.setString(1, uuid);
-                    statement.setString(2, playerData.name());
-                    statement.setInt(3, playerData.camp());
-                    statement.setInt(4, playerData.points());
+                    statement.setString(2, playerData.getName());
+                    statement.setInt(3, playerData.getCamp());
+                    statement.setInt(4, playerData.getPoints());
 
                     statement.addBatch();
                 } catch (SQLException e) {
