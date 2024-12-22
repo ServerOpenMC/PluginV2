@@ -69,7 +69,7 @@ public class ContestCommand {
     @Description("Permet de définir un Contest")
     @CommandPermission("ayw.command.contest.setcontest")
     @AutoComplete("@colorContest")
-    public void setcontest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
+    public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
         int phase = contestManager.data.getPhase();
         if (phase == 1) {
             if (contestManager.getColorContestList().contains(color1) || contestManager.getColorContestList().contains(color2)) {
