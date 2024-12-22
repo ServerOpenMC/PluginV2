@@ -56,12 +56,16 @@ public class ContestCommand {
     @Description("Permet de lancer une procédure de phase")
     @CommandPermission("ayw.command.contest.setphase")
     public void setPhase(Integer phase) {
-        if (phase == 1) {
-            contestManager.initPhase1();
-        } else if (phase == 2) {
-            contestManager.initPhase2();
-        } else if (phase == 3) {
-            contestManager.initPhase3();
+        switch(phase) {
+            case 1:
+                this.contestManager.initPhase1();
+                break;
+            case 2:
+                this.contestManager.initPhase2();
+                break;
+             case 3:
+                this.contestManager.initPhase3();
+                break;
         }
     }
 
