@@ -6,6 +6,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.managers.ColorConvertor;
 import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,7 +29,11 @@ public class VoteMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
+        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
+        } else {
+            return "Menu des Contests";
+        }
     }
 
     @Override

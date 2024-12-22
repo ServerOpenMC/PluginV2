@@ -9,12 +9,12 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
+import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
-import net.raidstone.wgevents.WorldGuardEvents;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,9 +25,6 @@ public final class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
     private DatabaseManager dbManager;
-
-    // API(s)
-    public LuckPerms lpApi;
 
     @Override
     public void onEnable() {
@@ -40,6 +37,7 @@ public final class OMCPlugin extends JavaPlugin {
         /* EXTERNALS */
         MenuLib.init(this);
         new LuckPermsAPI(this);
+        new PapiAPI();
 
         /* MANAGERS */
         dbManager = new DatabaseManager();

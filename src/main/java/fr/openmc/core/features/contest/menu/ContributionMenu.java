@@ -9,6 +9,8 @@ import fr.openmc.core.features.contest.managers.ColorConvertor;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -35,7 +37,11 @@ public class ContributionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
+        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
+        } else {
+            return "Menu des Contests";
+        }
     }
 
     @Override
@@ -57,7 +63,6 @@ public class ContributionMenu extends Menu {
         Material m = ColorConvertor.getMaterialFromColor(campColor);
 
         List<String> loreinfo = new ArrayList<String>();
-        List<String> lore_weekbooster = new ArrayList<String>();
         List<String> lore_contribute = new ArrayList<String>();
         List<String> lore_trade = new ArrayList<String>();
         List<String> lore_rang = new ArrayList<String>();
@@ -65,12 +70,6 @@ public class ContributionMenu extends Menu {
         loreinfo.add("§7Apprenez en plus sur les Contest !");
         loreinfo.add("§7Le déroulement..., Les résultats, ...");
         loreinfo.add("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!");
-
-        lore_weekbooster.add("§7Qui dit Week End, dit chill !");
-        lore_weekbooster.add("§7- §3x2 §7de Minérais");
-        lore_weekbooster.add("§7- §3x3 §7d'Expérience");
-        lore_weekbooster.add("§7- §3+ §7d'Effets");
-        lore_weekbooster.add("§8bon weekend :)");
 
         Material shell_contest = CustomStack.getInstance("contest:contest_shell").getItemStack().getType();
         lore_contribute.add("§7Donner vos §bCoquillages de Contest");
@@ -126,11 +125,6 @@ public class ContributionMenu extends Menu {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-        }));
-
-        inventory.put(16, new ItemBuilder(this, Material.OMINOUS_TRIAL_KEY, itemMeta -> {
-            itemMeta.setDisplayName("§r§9Week-End Booster!");
-            itemMeta.setLore(lore_weekbooster);
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
