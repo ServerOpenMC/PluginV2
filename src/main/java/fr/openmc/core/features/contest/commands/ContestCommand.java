@@ -35,13 +35,10 @@ public class ContestCommand {
     @DefaultFor("~")
     public void defaultCommand(Player player) {
         int phase = contestManager.data.getPhase();
-        if (phase==2) {
+        if (phase >= 2 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) {
             VoteMenu menu = new VoteMenu(player);
             menu.open();
-        } else if (phase==3 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) {
-            VoteMenu menu = new VoteMenu(player);
-            menu.open();
-        } else if (phase==3) {
+        } else if (phase == 3) {
             ContributionMenu menu = new ContributionMenu(player);
             menu.open();
 
