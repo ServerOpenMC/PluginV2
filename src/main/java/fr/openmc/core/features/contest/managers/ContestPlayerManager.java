@@ -24,7 +24,7 @@ public class ContestPlayerManager  {
 
     public ResultSet getAllPlayer() {
         try {
-            PreparedStatement query = DatabaseManager.getConnection().prepareStatement("SELECT * FROM camps");
+            PreparedStatement query = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps");
             ResultSet rs = query.executeQuery();
             return rs;
         } catch (SQLException e) {
@@ -38,7 +38,7 @@ public class ContestPlayerManager  {
     }
 
     public Integer getOfflinePlayerCamp(OfflinePlayer player) {
-        String sql = "SELECT * FROM camps WHERE minecraft_uuid = ?";
+        String sql = "SELECT * FROM contest_camps WHERE minecraft_uuid = ?";
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
             states.setString(1, player.getUniqueId().toString());
             ResultSet result = states.executeQuery();
@@ -70,7 +70,7 @@ public class ContestPlayerManager  {
     }
 
     public Integer getRankPlayerInContest(Integer pointsDep) {
-        String sql = "SELECT COUNT(*) AS rank FROM camps WHERE point_dep > ?";
+        String sql = "SELECT COUNT(*) AS rank FROM contest_camps WHERE point_dep > ?";
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
             states.setInt(1, pointsDep);
             ResultSet result = states.executeQuery();
@@ -140,7 +140,7 @@ public class ContestPlayerManager  {
     }
 
     public String getRankContestFromOffline(OfflinePlayer player) {
-        String sql = "SELECT * FROM camps WHERE minecraft_uuid = ?";
+        String sql = "SELECT * FROM contest_camps WHERE minecraft_uuid = ?";
         int points = 0;
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
             states.setString(1, player.getUniqueId().toString());
@@ -178,7 +178,7 @@ public class ContestPlayerManager  {
     }
 
     public int getRankContestFromOfflineInt(OfflinePlayer player) {
-        String sql = "SELECT * FROM camps WHERE minecraft_uuid = ?";
+        String sql = "SELECT * FROM contest_camps WHERE minecraft_uuid = ?";
         int points = 0;
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
             states.setString(1, player.getUniqueId().toString());
@@ -216,7 +216,7 @@ public class ContestPlayerManager  {
     }
 
     public boolean hasWinInCampFromOfflinePlayer(OfflinePlayer player) {
-        String sql = "SELECT * FROM camps WHERE minecraft_uuid = ?";
+        String sql = "SELECT * FROM contest_camps WHERE minecraft_uuid = ?";
         int playerCamp = 0;
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
             states.setString(1, player.getUniqueId().toString());

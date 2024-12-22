@@ -39,7 +39,6 @@ public class ContestManager {
     public YamlConfiguration contestConfig;
     private final OMCPlugin plugin;
 
-    private final EconomyManager economyManager;
     @Setter private ContestPlayerManager contestPlayerManager;
 
     public ContestData data;
@@ -53,13 +52,12 @@ public class ContestManager {
             "DARK_GREEN","DARK_BLUE","BLACK"
     );
 
-    //TODO: Faire contest.yml pour que tout marche et regler pb de saveContestData et savePlayerData
+    //TODO: regler pb de saveContestConfig
     public ContestManager(OMCPlugin plugin) {
         instance = this;
 
         //Const
         this.plugin = plugin;
-        economyManager = EconomyManager.getInstance();
         contestPlayerManager = ContestPlayerManager.getInstance();
 
         //Load config
@@ -74,10 +72,10 @@ public class ContestManager {
         eventRunnable = new BukkitRunnable() {
             @Override
             public void run() {
-                System.out.println(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
-                System.out.println(dataPlayer);
+                plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
+                plugin.getLogger().info(" ");
                 dataPlayer.forEach((uuid, data) -> {
-                   System.out.println(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
+                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
                 });
             }
         };
@@ -104,7 +102,7 @@ public class ContestManager {
         }
 
         // Table camps
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int(11), point_dep int(11))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest_camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int(11), point_dep int(11))").executeUpdate();
     }
 
     private void loadContestConfig() {
@@ -146,6 +144,7 @@ public class ContestManager {
 
     public void saveContestData() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("UPDATE contest SET phase = ?, camp1 = ?, color1 = ?, camp2 = ?, color2 = ?, startdate = ?, points1 = ?, points2 = ?")) {
+            plugin.getLogger().info("Sauvegarde des données du Contest...");
             states.setInt(1, data.getPhase());
             states.setString(2, data.getCamp1());
             states.setString(3, data.getColor1());
@@ -156,14 +155,16 @@ public class ContestManager {
             states.setInt(8, data.getPoint2());
 
             states.executeUpdate();
+            plugin.getLogger().info("Sauvegarde des données du Contest réussi.");
         } catch (SQLException e) {
+            plugin.getLogger().severe("Echec de la sauvegarde des données du Contest.");
             throw new RuntimeException(e);
         }
     }
 
     // CONTEST PLAYER DATA
     public void loadContestPlayerData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM camps")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps")) {
             ResultSet result = states.executeQuery();
             if (result.next()) {
                 String uuid = result.getString("minecraft_uuid");
@@ -182,11 +183,12 @@ public class ContestManager {
 
     public void saveContestPlayerData() {
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
-                "INSERT INTO camps (minecraft_uuid, name, camps, point_dep) " +
+                "INSERT INTO contest_camps (minecraft_uuid, name, camps, point_dep) " +
                         "VALUES (?, ?, ?, ?) " +
                         "ON DUPLICATE KEY UPDATE " +
                         "name = VALUES(name), camps = VALUES(camps), point_dep = VALUES(point_dep)"
         )) {
+            plugin.getLogger().info("Sauvegarde des données des Joueurs du Contest...");
             dataPlayer.forEach((uuid, playerData) -> {
                 try {
                     statement.setString(1, uuid);
@@ -201,7 +203,10 @@ public class ContestManager {
             });
 
             statement.executeBatch();
+
+            plugin.getLogger().info("Sauvegarde des données des Joueurs du Contest réussi.");
         } catch (SQLException e) {
+            plugin.getLogger().severe("Echec de la sauvegarde des données des Joueurs du Contest.");
             e.printStackTrace();
         }
     }
@@ -225,7 +230,7 @@ public class ContestManager {
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
         }
 
-        System.out.println("[CONTEST] Ouverture des votes");
+        plugin.getLogger().info("[CONTEST] Ouverture des votes");
     }
     //PHASE 2
     public void initPhase2() {
@@ -240,6 +245,7 @@ public class ContestManager {
         }
 
         data.setPhase(3);
+
         Bukkit.broadcastMessage(
                 "§8§m                                                     §r\n" +
                         "§7\n" +
@@ -254,7 +260,7 @@ public class ContestManager {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1.0F, 0.3F);
         }
 
-        System.out.println("[CONTEST] Ouverture des trades");
+        plugin.getLogger().info("[CONTEST] Ouverture des trades");
     }
     //PHASE 3
     public void initPhase3() {
@@ -348,7 +354,7 @@ public class ContestManager {
         int rankInt = 0;
 
         try {
-            PreparedStatement query = DatabaseManager.getConnection().prepareStatement("SELECT * FROM camps ORDER BY point_dep DESC");
+            PreparedStatement query = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps ORDER BY point_dep DESC");
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
                 OfflinePlayer player2 = Bukkit.getOfflinePlayer(rs.getString("name"));
@@ -388,7 +394,7 @@ public class ContestManager {
                     moneyMax = (int) (moneyMax * multi);
 
                     money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
-                    economyManager.addBalance(player.getUniqueId(), money);
+                    EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
 
                 } else {
                     int moneyMin = 4000;
@@ -398,7 +404,7 @@ public class ContestManager {
                     moneyMax = (int) (moneyMax * multi);
 
                     money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
-                    economyManager.addBalance(player.getUniqueId(), money);
+                    EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
 
                 }
 
@@ -420,13 +426,13 @@ public class ContestManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                     addOneToLastContest(data.getCamp1());
                     deleteTableContest("contest");
-                    deleteTableContest("camps");
+                    deleteTableContest("contest_camps");
                     selectRandomlyContest();
                     dataPlayer=new HashMap<>();
                     //TODO: MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
         });
 
-        System.out.println("[CONTEST] Fermeture du Contest");
+        plugin.getLogger().info("[CONTEST] Fermeture du Contest");
     }
 
     // TRADE METHODE
@@ -465,7 +471,7 @@ public class ContestManager {
 
     // GET TAUX DE VOTE D'UN CAMP
     public Integer getVoteTaux(Integer camps) {
-        String sql = "SELECT COUNT(*) FROM camps WHERE camps = ?";
+        String sql = "SELECT COUNT(*) FROM contest_camps WHERE camps = ?";
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
             states.setInt(1, camps);
             ResultSet result = states.executeQuery();
