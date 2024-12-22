@@ -1,6 +1,7 @@
 package fr.openmc.core.features.contest.managers;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,7 +53,6 @@ public class ContestManager {
             "DARK_GREEN","DARK_BLUE","BLACK"
     );
 
-    //TODO: regler pb de saveContestConfig
     public ContestManager(OMCPlugin plugin) {
         instance = this;
 
@@ -115,9 +115,11 @@ public class ContestManager {
     }
 
     public void saveContestConfig() {
-        if(!contestFile.exists()) {
-            contestFile.getParentFile().mkdirs();
-            plugin.saveResource("data/contest.yml", false);
+        try {
+            contestConfig.save(contestFile);
+        } catch (IOException e) {
+            plugin.getLogger().severe("Impossible de sauvegarder le fichier de configuration des contests");
+            e.printStackTrace();
         }
     }
 
