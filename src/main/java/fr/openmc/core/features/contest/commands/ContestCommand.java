@@ -36,13 +36,10 @@ public class ContestCommand {
     @DefaultFor("~")
     public void defaultCommand(Player player) {
         int phase = contestManager.data.getPhase();
-        if (phase==2) {
+        if (phase >= 2 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) {
             VoteMenu menu = new VoteMenu(player);
             menu.open();
-        } else if (phase==3 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) {
-            VoteMenu menu = new VoteMenu(player);
-            menu.open();
-        } else if (phase==3) {
+        } else if (phase == 3) {
             ContributionMenu menu = new ContributionMenu(player);
             menu.open();
 
@@ -59,13 +56,17 @@ public class ContestCommand {
     @Subcommand("setphase")
     @Description("Permet de lancer une procédure de phase")
     @CommandPermission("ayw.command.contest.setphase")
-    public void setphase(Integer phase) {
-        if (phase == 1) {
-            contestManager.initPhase1();
-        } else if (phase == 2) {
-            contestManager.initPhase2();
-        } else if (phase == 3) {
-            contestManager.initPhase3();
+    public void setPhase(Integer phase) {
+        switch(phase) {
+            case 1:
+                this.contestManager.initPhase1();
+                break;
+            case 2:
+                this.contestManager.initPhase2();
+                break;
+             case 3:
+                this.contestManager.initPhase3();
+                break;
         }
     }
 
@@ -73,7 +74,7 @@ public class ContestCommand {
     @Description("Permet de définir un Contest")
     @CommandPermission("ayw.command.contest.setcontest")
     @AutoComplete("@colorContest")
-    public void setcontest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
+    public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
         int phase = contestManager.data.getPhase();
         if (phase == 1) {
             if (contestManager.getColorContestList().contains(color1) || contestManager.getColorContestList().contains(color2)) {
@@ -120,8 +121,8 @@ public class ContestCommand {
     @Subcommand("addpoints")
     @Description("Permet d'ajouter des points a un membre")
     @CommandPermission("ayw.command.contest.addpoints")
-    public void addpoints(Player player, Player target, Integer points) {
-        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target).points());
+    public void addPoints(Player player, Player target, Integer points) {
+        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target).getPoints());
         MessagesManager.sendMessageType(player, "§aVous avez ajouté " + points + " §apoint(s) à " + target.getName(), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 
