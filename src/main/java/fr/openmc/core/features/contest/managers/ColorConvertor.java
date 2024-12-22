@@ -57,30 +57,6 @@ public class ColorConvertor {
         return colorToMaterial.getOrDefault(c, null);
     }
 
-    private static final Map<ChatColor, Color> firerocketColorFromChatColor = new HashMap<>();
-    static {
-        firerocketColorFromChatColor.put(ChatColor.BLACK, Color.BLACK);
-        firerocketColorFromChatColor.put(ChatColor.DARK_BLUE, Color.BLUE);
-        firerocketColorFromChatColor.put(ChatColor.DARK_GREEN, Color.GREEN);
-        firerocketColorFromChatColor.put(ChatColor.DARK_AQUA, Color.AQUA);
-        firerocketColorFromChatColor.put(ChatColor.DARK_RED, Color.RED);
-        firerocketColorFromChatColor.put(ChatColor.DARK_PURPLE, Color.PURPLE);
-        firerocketColorFromChatColor.put(ChatColor.GOLD, Color.ORANGE);
-        firerocketColorFromChatColor.put(ChatColor.GRAY, Color.SILVER);
-        firerocketColorFromChatColor.put(ChatColor.DARK_GRAY, Color.GRAY);
-        firerocketColorFromChatColor.put(ChatColor.BLUE, Color.AQUA);
-        firerocketColorFromChatColor.put(ChatColor.GREEN, Color.LIME);
-        firerocketColorFromChatColor.put(ChatColor.AQUA, Color.AQUA);
-        firerocketColorFromChatColor.put(ChatColor.RED, Color.RED);
-        firerocketColorFromChatColor.put(ChatColor.LIGHT_PURPLE, Color.FUCHSIA);
-        firerocketColorFromChatColor.put(ChatColor.YELLOW, Color.YELLOW);
-        firerocketColorFromChatColor.put(ChatColor.WHITE, Color.WHITE);
-    }
-
-    public static Color getFirerocketColorFromChatColor(ChatColor c) {
-        return firerocketColorFromChatColor.getOrDefault(c, null);
-    }
-
     public static int[] getRGBFromChatColor(ChatColor chatColor) {
         switch (chatColor) {
             case BLACK:

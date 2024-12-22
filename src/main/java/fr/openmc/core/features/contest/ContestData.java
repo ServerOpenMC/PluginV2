@@ -1,17 +1,25 @@
 package fr.openmc.core.features.contest;
 
 import fr.openmc.core.features.contest.managers.ContestManager;
+import lombok.Getter;
 
 import java.util.Objects;
 
 public class ContestData {
+    @Getter
     private final String camp1;
+    @Getter
     private final String camp2;
+    @Getter
     private final String color1;
+    @Getter
     private final String color2;
+    @Getter
     private final int phase;
     private final String startdate;
+    @Getter
     private final int point1;
+    @Getter
     private final int point2;
 
     public ContestData(String camp1, String camp2, String color1, String color2, int phase, String startdate, int point1, int point2) {
@@ -25,46 +33,14 @@ public class ContestData {
         this.point2 = point2;
     }
 
-    public String getCamp1() {
-        return camp1;
-    }
-
-    public String getCamp2() {
-        return camp2;
-    }
-
-    public String getColor1() {
-        return color1;
-    }
-
-    public String getColor2() {
-        return color2;
-    }
-
-    public int getPhase() {
-        return phase;
-    }
-
-    public int getPoint1() {
-        return point1;
-    }
-
-    public int getPoint2() {
-        return point2;
-    }
-
     public String get(String input) {
-        if (Objects.equals(input, "camp1")) {
-            return getCamp1();
-        } else if (Objects.equals(input, "camp2")) {
-            return getCamp2();
-        } else if (Objects.equals(input, "color1")) {
-            return getColor1();
-        } else if (Objects.equals(input, "color2")) {
-            return getColor2();
-        } else {
-            return null;
-        }
+        return switch (input) {
+            case "camp1" -> getCamp1();
+            case "camp2" -> getCamp2();
+            case "color1" -> getColor1();
+            case "color2" -> getColor2();
+            case null, default -> null;
+        };
     }
 
     public int getInteger(String input) {

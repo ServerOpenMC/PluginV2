@@ -33,7 +33,7 @@ public class ContestPlayerManager  {
     }
 
     public String getPlayerCampName(Player player) {
-        int campInteger = contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
+        int campInteger = contestManager.dataPlayer.get(player.getUniqueId().toString()).camp();
         return contestManager.data.get("camp" + campInteger);
     }
 
@@ -66,7 +66,7 @@ public class ContestPlayerManager  {
         ContestManager manager = ContestManager.getInstance();
         ContestPlayer data = manager.dataPlayer.get(player.getUniqueId().toString());
 
-        manager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(data.getName(), points, data.getCamp(), data.getColor()));
+        manager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(data.name(), points, data.camp(), data.color()));
     }
 
     public Integer getRankPlayerInContest(Integer pointsDep) {
@@ -84,7 +84,7 @@ public class ContestPlayerManager  {
     }
 
     public String getRankContest(Player player) {
-        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
+        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).points();
 
         if(points >= 10000) {
             return "Dictateur en ";
@@ -112,7 +112,7 @@ public class ContestPlayerManager  {
     }
 
     public int getRepPointsToRank(Player player) {
-        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
+        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).points();
 
         if(points >= 10000) {
             return 0;

@@ -56,7 +56,7 @@ public class TradeMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
         String campName = contestPlayerManager.getPlayerCampName(player);
-        ChatColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+        ChatColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).color();
         Material shell_contest = CustomStack.getInstance("contest:contest_shell").getItemStack().getType();
 
         List<String> loreinfo = Arrays.asList(

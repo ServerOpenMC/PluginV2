@@ -4,7 +4,6 @@ import dev.lone.itemsadder.api.CustomStack;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.managers.ColorConvertor;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
@@ -59,7 +58,7 @@ public class ContributionMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
         String campName = contestPlayerManager.getPlayerCampName(player);
-        ChatColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+        ChatColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).color();
         Material m = ColorConvertor.getMaterialFromColor(campColor);
 
         List<String> loreinfo = new ArrayList<String>();
@@ -81,7 +80,7 @@ public class ContributionMenu extends Menu {
         lore_trade.add("§e§lCliquez pour acceder au Menu des trades");
 
         lore_rang.add(campColor + contestPlayerManager.getRankContest(player) + campName);
-        lore_rang.add("§7Progression §8: " + campColor + contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints() + "§8/" + campColor + contestPlayerManager.getRepPointsToRank(getOwner()));
+        lore_rang.add("§7Progression §8: " + campColor + contestManager.dataPlayer.get(player.getUniqueId().toString()).points() + "§8/" + campColor + contestPlayerManager.getRepPointsToRank(getOwner()));
         lore_rang.add("§e§lAUGMENTER DE RANG POUR VOIR DES RECOMPENSES MEILLEURES");
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
@@ -107,11 +106,11 @@ public class ContributionMenu extends Menu {
                     if (ItemUtils.hasEnoughItems(player, shell_contestItem.getType(), shellCount)) {
                         ItemUtils.removeItemsFromInventory(player, shell_contestItem.getType(), shellCount);
 
-                        int newPlayerPoints = shellCount + contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
-                        int updatedCampPoints = shellCount + contestManager.data.getInteger("points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp());
+                        int newPlayerPoints = shellCount + contestManager.dataPlayer.get(player.getUniqueId().toString()).points();
+                        int updatedCampPoints = shellCount + contestManager.data.getInteger("points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).camp());
 
                         contestPlayerManager.setPointsPlayer(player, newPlayerPoints);
-                        String pointCamp = "points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
+                        String pointCamp = "points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).camp();
                         if (Objects.equals(pointCamp, "points1")) {
                             contestManager.data.setPointsCamp1(updatedCampPoints);
                         } else if (Objects.equals(pointCamp, "points2")) {

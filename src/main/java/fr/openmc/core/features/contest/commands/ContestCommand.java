@@ -8,7 +8,8 @@ import fr.openmc.core.features.contest.menu.VoteMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -120,8 +121,50 @@ public class ContestCommand {
     @Description("Permet d'ajouter des points a un membre")
     @CommandPermission("ayw.command.contest.addpoints")
     public void addpoints(Player player, Player target, Integer points) {
-        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target).getPoints());
+        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target).points());
         MessagesManager.sendMessageType(player, "§aVous avez ajouté " + points + " §apoint(s) à " + target.getName(), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 
+    @Subcommand("color")
+    @Description("test pour transition ChatColor => Color")
+    @CommandPermission("ayw.command.contest.color")
+    public void settrade(Player player) {
+       MessagesManager.sendMessage(player,
+               Color.AQUA + "Color.AQUA" +
+                       Color.RED +" Color.RED" +
+                       Color.BLACK +" Color.BLACK" +
+                       Color.BLUE +" Color.BLUE" +
+                       Color.FUCHSIA + " Color.FUCHSIA" +
+                       Color.GRAY + " Color.RED" +
+                       Color.GREEN + " Color.GREEN" +
+                       Color.LIME + " Color.LIME" +
+                       Color.MAROON +" Color.MAROON" +
+                       Color.NAVY +" Color.NAVY" +
+                       Color.OLIVE +" Color.OLIVE" +
+                       Color.ORANGE +" Color.ORANGE" +
+                       Color.PURPLE + " Color.PURPLE" +
+                       Color.SILVER + " Color.SILVER" +
+                       Color.TEAL + " Color.TEAL" +
+                       Color.WHITE + " Color.WHITE" +
+                       Color.YELLOW +" Color.YELLOW", Prefix.OPENMC);
+
+        player.sendMessage(
+                ChatColor.AQUA + "Color.AQUA" +
+                        ChatColor.DARK_AQUA +" Color.RED" +
+                        ChatColor.BLACK +" Color.BLACK" +
+                        ChatColor.BLUE +" Color.BLUE" +
+                        ChatColor.DARK_BLUE + " Color.FUCHSIA" +
+                        ChatColor.GRAY + " Color.RED" +
+                ChatColor.DARK_GRAY + " Color.GREEN" +
+                        ChatColor.DARK_GREEN + " Color.LIME" +
+                ChatColor.GREEN +" Color.MAROON" +
+                ChatColor.LIGHT_PURPLE +" Color.NAVY" +
+                ChatColor.DARK_PURPLE +" Color.OLIVE" +
+                ChatColor.GOLD +" Color.ORANGE" +
+                ChatColor.YELLOW + " Color.PURPLE" +
+                ChatColor.RED + " Color.SILVER" +
+                ChatColor.DARK_RED + " Color.TEAL" +
+                ChatColor.WHITE + " Color.WHITE"
+        );
+    }
 }
