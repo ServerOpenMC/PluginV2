@@ -95,7 +95,7 @@ public class ContestCommand {
     @Description("Permet de définir un Trade")
     @CommandPermission("ayw.command.contest.settrade")
     @AutoComplete("@trade")
-    public void settrade(Player player, @Named("trade") String trade, int amount, int amount_shell) {
+    public void setTrade(Player player, @Named("trade") String trade, int amount, int amount_shell) {
         YamlConfiguration config = ContestManager.getInstance().contestConfig;
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
