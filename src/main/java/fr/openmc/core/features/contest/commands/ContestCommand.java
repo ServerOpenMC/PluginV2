@@ -122,14 +122,14 @@ public class ContestCommand {
     @Description("Permet d'ajouter des points a un membre")
     @CommandPermission("ayw.command.contest.addpoints")
     public void addPoints(Player player, Player target, Integer points) {
-        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target).getPoints());
+        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target).points());
         MessagesManager.sendMessageType(player, "§aVous avez ajouté " + points + " §apoint(s) à " + target.getName(), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 
     @Subcommand("color")
     @Description("test pour transition ChatColor => Color")
     @CommandPermission("ayw.command.contest.color")
-    public void settrade(Player player) {
+    public void color(Player player) {
        MessagesManager.sendMessage(player,
                Color.AQUA + "Color.AQUA" +
                        Color.RED +" Color.RED" +

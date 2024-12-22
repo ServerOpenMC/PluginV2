@@ -83,30 +83,33 @@ public class ContestPlayerManager  {
         return -1;
     }
 
-    public String getRankContest(Player player) {
-        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).points();
-
-        int[] seuils = {10000, 2500, 2000, 1500, 1000, 750, 500, 250, 100, 0};
+    private String getRankWithPoints(int points) {
+        int[] pointsRank = {10000, 2500, 2000, 1500, 1000, 750, 500, 250, 100, 0};
         String[] categories = {
-            "Dictateur en ",
-            "Colonel en ",
-            "Addict en ",
-            "Dieu en ",
-            "Légende en ",
-            "Sénior en ",
-            "Pro en ",
-            "Semi-Pro en ",
-            "Amateur en ",
-            "Noob en "
+                "Dictateur en ",
+                "Colonel en ",
+                "Addict en ",
+                "Dieu en ",
+                "Légende en ",
+                "Sénior en ",
+                "Pro en ",
+                "Semi-Pro en ",
+                "Amateur en ",
+                "Noob en "
         };
-        
-        for (int i = 0; i < seuils.length; i++) {
-            if (points >= seuils[i]) {
+
+        for (int i = 0; i < pointsRank.length; i++) {
+            if (points >= pointsRank[i]) {
                 return categories[i];
             }
         }
-
         return "";
+    }
+
+    public String getRankContest(Player player) {
+        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).points();
+
+        return getRankWithPoints(points);
     }
 
     public int getRepPointsToRank(Player player) {
@@ -150,29 +153,7 @@ public class ContestPlayerManager  {
             throw new RuntimeException(e);
         }
 
-        if(points >= 10000) {
-            return "Dictateur en  ";
-        } else if (points >= 2500) {
-            return "Colonel en ";
-        } else if (points >= 2000) {
-            return "Addict en ";
-        } else if (points >= 1500) {
-            return "Dieu en ";
-        } else if (points >= 1000) {
-            return "Légende en ";
-        } else if (points >= 750) {
-            return "Sénior en ";
-        } else if (points >= 500) {
-            return "Pro en ";
-        } else if (points >= 250) {
-            return "Semi-Pro en ";
-        } else if (points >= 100) {
-            return "Amateur en ";
-        } else if (points >= 0) {
-            return "Noob en ";
-        }
-
-        return "";
+        return getRankWithPoints(points);
     }
 
     public int getRankContestFromOfflineInt(OfflinePlayer player) {
