@@ -13,7 +13,9 @@ public class DisableCreakings implements Listener {
         Block block = event.getBlock();
         if (block.getType() != Material.CREAKING_HEART) return;
         CreakingHeart heart = (CreakingHeart) block.getBlockData();
-        heart.setActive(false);
-        block.setBlockData(heart);
+        if (!heart.isNatural()) {
+            heart.setActive(false);
+            block.setBlockData(heart);
+        }
     }
 }
