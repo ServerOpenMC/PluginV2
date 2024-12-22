@@ -1,10 +1,12 @@
 package fr.openmc.core.utils.messages;
 
-import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MessagesManager {
 
@@ -25,10 +27,10 @@ public class MessagesManager {
      */
     public static void sendMessageType(CommandSender sender, String message, Prefix prefix, MessageType type, boolean sound) {
 
-        String messageStr = "§7(" + getPrefixType(type) + "§7) " + prefix.getPrefix() + " §7» " + message;
+        String messageStr = "§7(" + type.getPrefix() + "§7) " + prefix.getPrefix() + " §7» " + message;
 
         if(sender instanceof Player player && sound) {
-            player.playSound(player.getLocation(), getSound(type), 1, 1);
+            player.playSound(player.getLocation(), type.getSound(), 1, 1);
         }
 
         sender.sendMessage(messageStr);
@@ -47,61 +49,29 @@ public class MessagesManager {
         String messageStr = prefix.getPrefix() + " §7» " + message;
 
         sender.sendMessage(messageStr);
-
-    }
-
-
-    private static String getPrefixType(MessageType type) {
-        return switch (type) {
-            case ERROR -> "§c❗";
-            case WARNING -> "§6⚠";
-            case SUCCESS -> "§a✔";
-            case INFO -> "§bⓘ";
-            default -> "§7";
-        };
-    }
-
-    private static Sound getSound(MessageType type) {
-        return switch (type) {
-            case ERROR, WARNING -> Sound.BLOCK_NOTE_BLOCK_BASS;
-            case SUCCESS -> Sound.BLOCK_NOTE_BLOCK_BELL;
-            case INFO -> Sound.BLOCK_NOTE_BLOCK_BIT;
-            default -> null;
-        };
     }
 
     public static String textToSmall(String text) {
         StringBuilder result = new StringBuilder();
+        Map<Character, Character> charMap = new HashMap<>();
+
         String smallLetters = "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀѕᴛᴜᴠᴡхʏᴢ";
         String normalLetters = "abcdefghijklmnopqrstuvwxyz";
-        String normalLettersCaps = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String numbers = "₁₂₃₄₅₆₇₈₉₀";
         String numbersNormal = "1234567890";
 
-        if (text.contains("§")) {
-            String[] split = text.split("§");
-            for (int i = 0; i < split.length; i++) {
-                if (i == 0) {
-                    result.append(split[i]);
-                    continue;
-                }
-                if (split[i].length() > 1) {
-                    result.append("§").append(split[i].charAt(0)).append(textToSmall(split[i].substring(1)));
-                } else {
-                    result.append("§").append(split[i]);
-                }
-            }
-            return result.toString();
+        for (int i = 0; i < 26; i++) {
+            charMap.put(normalLetters.charAt(i), smallLetters.charAt(i));
+            charMap.put(normalLetters.charAt(i + 26), smallLetters.charAt(i));
+        }
+        for (int i = 0; i < numbersNormal.length(); i++) {
+            charMap.put(numbersNormal.charAt(i), numbers.charAt(i));
         }
 
-        for (char c : text.toCharArray()) {
 
-            if (normalLetters.indexOf(c) != -1) {
-                result.append(smallLetters.charAt(normalLetters.indexOf(c)));
-            } else if (normalLettersCaps.indexOf(c) != -1) {
-                result.append(smallLetters.charAt(normalLettersCaps.indexOf(c)));
-            } else if (numbersNormal.indexOf(c) != -1) {
-                result.append(numbers.charAt(numbersNormal.indexOf(c)));
+        for (char c : text.toCharArray()) {
+            if (charMap.containsKey(c)) {
+                result.append(charMap.get(c));
             } else {
                 result.append(c);
             }
