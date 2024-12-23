@@ -93,7 +93,7 @@ public class ContributionMenu extends Menu {
         );
 
         //TODO: itemadder dependency
-        Material shell_contest = CustomStack.getInstance("contest:contest_shell").getItemStack().getType();
+        Material shell_contest = CustomItemRegistry.getByName("omc_contest:contest_shell").getBest().getType();
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.displayName(Component.text("§6§lVotre Grade"));

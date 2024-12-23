@@ -59,7 +59,10 @@ public class TradeMenu extends Menu {
 
         String campName = contestPlayerManager.getPlayerCampName(player);
         NamedTextColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
-        Material shell_contest = CustomStack.getInstance("contest:contest_shell").getItemStack().getType();
+
+        // ITEM ADDER
+        String namespaceShellContest = "omc_contest:contest_shell";
+        Material shell_contest = CustomItemRegistry.getByName(namespaceShellContest).getBest().getType();
 
         List<Component> loreinfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
@@ -100,10 +103,14 @@ public class TradeMenu extends Menu {
             inventory.put(slot, new ItemBuilder(this, m, itemMeta -> {
                 itemMeta.lore(lore_trades);
             }).setOnClick(inventoryClickEvent -> {
+                if (!CustomItemRegistry.hasItemsAdder()) {
+                    MessagesManager.sendMessageType(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
+                    return;
+                }
                 String m1 = String.valueOf(inventoryClickEvent.getCurrentItem().getType());
                 int amount = (int) trade.get("amount");
                 int amount_shell = (int) trade.get("amount_shell");
-                ItemStack shell_contestItem = CustomStack.getInstance("contest:contest_shell").getItemStack();
+                ItemStack shell_contestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
                 if (inventoryClickEvent.isLeftClick() && inventoryClickEvent.isShiftClick()) {
                     int items = 0;
                     for (ItemStack is : player.getInventory().getContents()) {
@@ -132,7 +139,7 @@ public class TradeMenu extends Menu {
                                     player.getInventory().addItem(shell_contestItem);
                                 }
 
-                                ItemStack newshell_contestItem = CustomStack.getInstance("contest:contest_shell").getItemStack();
+                                ItemStack newshell_contestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
                                 int remain2 = remain1 - numbertoStack;
                                 if (remain2 != 0) {
                                     newshell_contestItem.setAmount(remain2);
