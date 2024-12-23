@@ -16,6 +16,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -71,23 +72,23 @@ public class ContributionMenu extends Menu {
         List<Component> lore_contribute = Arrays.asList(
                 Component.text("§7Donner vos §bCoquillages de Contest"),
                 Component.text("§7Pour faire gagner votre ")
-                        .append(Component.text("Team").color(campColor)),
+                        .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
                 Component.text("§e§lCliquez pour verser tout vos Coquillages")
         );
 
         List<Component> lore_trade = Arrays.asList(
                 Component.text("§7Faites des Trades contre des §bCoquillages de Contest"),
                 Component.text("§7Utile pour faire gagner ta ")
-                        .append(Component.text("Team").color(campColor)),
+                        .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
                 Component.text("§e§lCliquez pour acceder au Menu des trades")
         );
 
         List<Component> lore_rang = Arrays.asList(
-                Component.text(contestPlayerManager.getRankContest(player) + campName).color(campColor),
+                Component.text(contestPlayerManager.getRankContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
                 Component.text("§7Progression §8: ")
-                        .append(Component.text(contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).color(campColor))
+                        .append(Component.text(contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
                         .append(Component.text("§8/"))
-                        .append(Component.text(contestPlayerManager.getRepPointsToRank(getOwner())).color(campColor)),
+                        .append(Component.text(contestPlayerManager.getRepPointsToRank(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
                 Component.text("§e§lAUGMENTER DE RANG POUR VOIR DES RECOMPENSES MEILLEURES")
         );
 
@@ -107,7 +108,7 @@ public class ContributionMenu extends Menu {
         }).setNextMenu(new TradeMenu(getOwner())));
 
         inventory.put(15, new ItemBuilder(this, m, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§7Contribuer pour la ").append(Component.text("Team " + campName).color(campColor)));
+            itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
             itemMeta.lore(lore_contribute);
         }).setOnClick(inventoryClickEvent -> {
                 try {

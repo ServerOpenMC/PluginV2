@@ -6,15 +6,12 @@ import org.bukkit.Material;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.kyori.adventure.text.format.NamedTextColor.BLACK;
-import static net.kyori.adventure.text.format.NamedTextColor.DARK_BLUE;
-
 public class ColorUtils {
 
     private static final Map<NamedTextColor, NamedTextColor> colorToReadable = new HashMap<>();
     static {
-        colorToReadable.put(BLACK, BLACK);
-        colorToReadable.put(DARK_BLUE, DARK_BLUE);
+        colorToReadable.put(NamedTextColor.BLACK, NamedTextColor.BLACK);
+        colorToReadable.put(NamedTextColor.DARK_BLUE, NamedTextColor.DARK_BLUE);
         colorToReadable.put(NamedTextColor.DARK_GREEN, NamedTextColor.DARK_GREEN);
         colorToReadable.put(NamedTextColor.DARK_AQUA, NamedTextColor.DARK_AQUA);
         colorToReadable.put(NamedTextColor.DARK_RED, NamedTextColor.DARK_RED);
@@ -37,8 +34,8 @@ public class ColorUtils {
 
     private static final Map<NamedTextColor, Material> colorToMaterial = new HashMap<>();
     static {
-        colorToMaterial.put(BLACK, Material.BLACK_WOOL);
-        colorToMaterial.put(DARK_BLUE, Material.BLUE_WOOL);
+        colorToMaterial.put(NamedTextColor.BLACK, Material.BLACK_WOOL);
+        colorToMaterial.put(NamedTextColor.DARK_BLUE, Material.BLUE_WOOL);
         colorToMaterial.put(NamedTextColor.DARK_GREEN, Material.GREEN_WOOL);
         colorToMaterial.put(NamedTextColor.DARK_AQUA, Material.CYAN_WOOL);
         colorToMaterial.put(NamedTextColor.DARK_RED, Material.RED_WOOL);

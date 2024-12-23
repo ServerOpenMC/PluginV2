@@ -13,6 +13,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -63,12 +64,12 @@ public class ConfirmMenu extends Menu {
 
         NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
         List<Component> lore1 = Arrays.asList(
-                Component.text("§7Vous allez rejoindre ").append(Component.text( "La Team " + campName).color(colorFinal)),
+                Component.text("§7Vous allez rejoindre ").append(Component.text( "La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
                 Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
         );
 
         List<Component> lore0 = Arrays.asList(
-                Component.text("§7Vous allez annuler votre choix : ").append(Component.text( "La Team " + campName).color(colorFinal)),
+                Component.text("§7Vous allez annuler votre choix : ").append(Component.text( "La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
                 Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
         );
 
@@ -91,7 +92,7 @@ public class ConfirmMenu extends Menu {
 
             contestManager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(player.getName(), 0, Integer.valueOf(substring), campColorF));
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
-            MessagesManager.sendMessageType(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
+            MessagesManager.sendMessageType(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
             player.closeInventory();
         }));
         player.openInventory(getInventory());

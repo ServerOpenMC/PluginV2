@@ -10,6 +10,7 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import dev.xernas.menulib.Menu;
@@ -75,14 +76,14 @@ public class VoteMenu extends Menu {
             ench1 = false;
             ench2 = false;
             lore1.add(Component.text("§7Votez pour la Team ")
-                    .append(Component.text(camp1Name).color(color1))
+                    .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
             );
             lore1.add(Component.text("§7Faites la gagner en déposant le plus de points"));
             lore1.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
 
 
             lore2.add(Component.text("§7Votez pour la Team ")
-                    .append(Component.text(camp2Name).color(color2))
+                    .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2))
             );
             lore2.add(Component.text("§7Faites la gagner en déposant le plus de points"));
             lore2.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
@@ -91,13 +92,13 @@ public class VoteMenu extends Menu {
                 ench1 = false;
                 ench2 = false;
                 lore1.add(Component.text("§7Votez pour la Team ")
-                        .append(Component.text(camp1Name).color(color1))
+                        .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
                 );
                 lore1.add(Component.text("§7Faites la gagner en déposant le plus de points"));
                 lore1.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
 
                 lore2.add(Component.text("§7Votez pour la Team ")
-                        .append(Component.text(camp2Name).color(color2))
+                        .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2))
                 );
                 lore2.add(Component.text("§7Faites la gagner en déposant le plus de points"));
                 lore2.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
@@ -105,28 +106,28 @@ public class VoteMenu extends Menu {
             } else if(playerData.getCamp() == 1) {
                 lore1.add(
                         Component.text("§7Vous avez votez pour la Team ")
-                        .append(Component.text(camp1Name).color(color1))
+                        .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
                 );
                 lore1.add(Component.text("§7Faites la gagner en déposant le plus de points!"));
                 ench1 = true;
 
                 lore2.add(
                         Component.text("§7Faites perdre la Team ")
-                                .append(Component.text(camp2Name).color(color2))
+                                .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2))
                 );
                 lore2.add(Component.text("§7En Apportant le plus de points que vous pouvez!"));
                 ench2 = false;
             } else if(playerData.getCamp() == 2) {
                 lore1.add(
                         Component.text("§7Faites perdre la Team ")
-                                .append(Component.text(camp1Name).color(color1))
+                                .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
                 );
                 lore1.add(Component.text("§7En Apportant le plus de points que vous pouvez!"));
                 ench1 = false;
 
                 lore2.add(
                         Component.text("§7Vous avez votez pour la Team ")
-                                .append(Component.text(camp2Name).color(color2))
+                                .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2))
                 );
                 lore2.add(Component.text("§7Faites la gagner en déposant le plus de points!"));
                 ench2 = true;
@@ -143,7 +144,7 @@ public class VoteMenu extends Menu {
         );
 
         inventory.put(camp1Slot, new ItemBuilder(this, m1, itemMeta -> {
-            itemMeta.displayName(Component.text(camp1Name).color(color1));
+            itemMeta.displayName(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1));
             itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(ench1);
         }).setOnClick(inventoryClickEvent -> {
@@ -154,7 +155,7 @@ public class VoteMenu extends Menu {
         }));
 
         inventory.put(camp2Slot, new ItemBuilder(this, m2, itemMeta -> {
-            itemMeta.displayName(Component.text(camp2Name).color(color2));
+            itemMeta.displayName(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2));
             itemMeta.lore(lore2);
             itemMeta.setEnchantmentGlintOverride(ench2);
         }).setOnClick(inventoryClickEvent -> {

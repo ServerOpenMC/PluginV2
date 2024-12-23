@@ -68,20 +68,20 @@ public class ContestManager {
         initContestData();
         loadContestPlayerData();
 
-//        // Logs of data and playerData
-//        eventRunnable = new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
-//                plugin.getLogger().info(" ");
-//                dataPlayer.forEach((uuid, data) -> {
-//                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
-//                });
-//            }
-//        };
-//
-//        // tout les minutes
-//        eventRunnable.runTaskTimer(plugin, 0, 100);
+        // Logs of data and playerData
+        eventRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
+                plugin.getLogger().info(" ");
+                dataPlayer.forEach((uuid, data) -> {
+                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
+                });
+            }
+        };
+
+        // tout les minutes
+        eventRunnable.runTaskTimer(plugin, 0, 100);
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -152,7 +152,7 @@ public class ContestManager {
             states.setString(3, data.getColor1());
             states.setString(4, data.getCamp2());
             states.setString(5, data.getColor2());
-            states.setString(6, data.getStartDate());
+            states.setString(6, data.getStartdate());
             states.setInt(7, data.getPoint1());
             states.setInt(8, data.getPoint2());
 
@@ -174,7 +174,7 @@ public class ContestManager {
                 int points = result.getInt("point_dep");
                 int camp = result.getInt("camps");
                 String color = data.get("color" + camp);
-                NamedTextColor campColor = NamedTextColor.NAMES.value(color);
+                NamedTextColor campColor = ColorUtils.getNamedTextColor(color);
 
                 dataPlayer.put(uuid, new ContestPlayer(name, points, camp, campColor));
             }

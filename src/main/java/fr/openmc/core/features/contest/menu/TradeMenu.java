@@ -15,6 +15,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -69,7 +70,8 @@ public class TradeMenu extends Menu {
         List<Component> lore_trade = Arrays.asList(
                 Component.text("§7Vendez un maximum de ressources"),
                 Component.text("§7Contre des §bCoquillages de Contest"),
-                Component.text("§7Pour faire gagner la " + campColor + "Team " + campName)
+                Component.text("§7Pour faire gagner la ")
+                        .append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor))
         );
 
         inventory.put(4, new ItemBuilder(this, shell_contest, itemMeta -> {

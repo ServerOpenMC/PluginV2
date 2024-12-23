@@ -37,16 +37,16 @@ public class ContestCommand {
     @DefaultFor("~")
     public void defaultCommand(Player player) {
         int phase = contestManager.data.getPhase();
-        if ((phase >= 2 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) || phase == 2) {
+        if ((phase >= 2 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) || (phase == 2)) {
             VoteMenu menu = new VoteMenu(player);
             menu.open();
-        } else if (phase == 3) {
+        } else if (phase == 3 && contestManager.dataPlayer.get(player.getUniqueId().toString()) != null) {
             ContributionMenu menu = new ContributionMenu(player);
             menu.open();
 
         } else {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.FRENCH);
-            DayOfWeek dayStartContestOfWeek = DayOfWeek.from(formatter.parse(contestManager.data.getStartDate()));
+            DayOfWeek dayStartContestOfWeek = DayOfWeek.from(formatter.parse(contestManager.data.getStartdate()));
 
             int days = (dayStartContestOfWeek.getValue() - contestManager.getCurrentDayOfWeek().getValue() + 7) % 7;
 

@@ -5,22 +5,15 @@ import lombok.Getter;
 
 import java.util.Objects;
 
+@Getter
 public class ContestData {
-    @Getter
     private final String camp1;
-    @Getter
     private final String camp2;
-    @Getter
     private final String color1;
-    @Getter
     private final String color2;
-    @Getter
     private final int phase;
-    @Getter
     private final String startdate;
-    @Getter
     private final int point1;
-    @Getter
     private final int point2;
 
     public ContestData(String camp1, String camp2, String color1, String color2, int phase, String startdate, int point1, int point2) {
