@@ -16,6 +16,7 @@ public class ContestData {
     private final String color2;
     @Getter
     private final int phase;
+    @Getter
     private final String startdate;
     @Getter
     private final int point1;
@@ -53,22 +54,18 @@ public class ContestData {
         }
     }
 
-    public String getStartDate() {
-        return startdate;
-    }
-
     public void setPhase(int phase) {
         ContestData data = ContestManager.getInstance().data;
-        ContestManager.getInstance().data = new ContestData(data.getCamp1(), data.getCamp2(), data.getColor1(), data.getColor2(), phase, data.getStartDate(), data.getPoint1(), data.getPoint2());
+        ContestManager.getInstance().data = new ContestData(data.getCamp1(), data.getCamp2(), data.getColor1(), data.getColor2(), phase, data.getStartdate(), data.getPoint1(), data.getPoint2());
     }
 
     public void setPointsCamp1(int points) {
         ContestData data = ContestManager.getInstance().data;
-        ContestManager.getInstance().data = new ContestData(data.getCamp1(), data.getCamp2(), data.getColor1(), data.getColor2(), data.getPhase(), data.getStartDate(), points, data.getPoint2());
+        ContestManager.getInstance().data = new ContestData(data.getCamp1(), data.getCamp2(), data.getColor1(), data.getColor2(), data.getPhase(), data.getStartdate(), points, data.getPoint2());
     }
 
     public void setPointsCamp2(int points) {
         ContestData data = ContestManager.getInstance().data;
-        ContestManager.getInstance().data = new ContestData(data.getCamp1(), data.getCamp2(), data.getColor1(), data.getColor2(), data.getPhase(), data.getStartDate(), data.getPoint1(), points);
+        ContestManager.getInstance().data = new ContestData(data.getCamp1(), data.getCamp2(), data.getColor1(), data.getColor2(), data.getPhase(), data.getStartdate(), data.getPoint1(), points);
     }
 }

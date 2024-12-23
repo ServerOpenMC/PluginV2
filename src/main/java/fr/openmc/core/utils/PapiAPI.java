@@ -6,12 +6,7 @@ public class PapiAPI {
     private static boolean hasPAPI;
 
     public PapiAPI() {
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
-            hasPAPI = false;
-            return;
-        } else {
-            hasPAPI = true;
-        }
+        hasPAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 
     public static boolean hasPAPI() {
