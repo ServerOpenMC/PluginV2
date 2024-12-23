@@ -18,6 +18,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
