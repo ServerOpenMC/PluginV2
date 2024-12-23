@@ -69,19 +69,19 @@ public class ContestManager {
         loadContestPlayerData();
 
         // Logs of data and playerData
-        eventRunnable = new BukkitRunnable() {
-            @Override
-            public void run() {
-                plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
-                plugin.getLogger().info(" ");
-                dataPlayer.forEach((uuid, data) -> {
-                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
-                });
-            }
-        };
-
-        // tout les minutes
-        eventRunnable.runTaskTimer(plugin, 0, 100);
+//        eventRunnable = new BukkitRunnable() {
+//            @Override
+//            public void run() {
+//                plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
+//                plugin.getLogger().info(" ");
+//                dataPlayer.forEach((uuid, data) -> {
+//                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
+//                });
+//            }
+//        };
+//
+//        // tout les minutes
+//        eventRunnable.runTaskTimer(plugin, 0, 100);
     }
 
     public static void init_db(Connection conn) throws SQLException {

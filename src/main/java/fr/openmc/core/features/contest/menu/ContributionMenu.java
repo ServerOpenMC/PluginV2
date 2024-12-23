@@ -63,27 +63,27 @@ public class ContributionMenu extends Menu {
         NamedTextColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
         Material m = ColorUtils.getMaterialFromColor(campColor);
 
-        List<Component> loreinfo = Arrays.asList(
+        List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
                 Component.text("§7Le déroulement..., Les résultats, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
-        List<Component> lore_contribute = Arrays.asList(
+        List<Component> loreContribute = Arrays.asList(
                 Component.text("§7Donner vos §bCoquillages de Contest"),
                 Component.text("§7Pour faire gagner votre ")
                         .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
                 Component.text("§e§lCliquez pour verser tout vos Coquillages")
         );
 
-        List<Component> lore_trade = Arrays.asList(
+        List<Component> loreTrade = Arrays.asList(
                 Component.text("§7Faites des Trades contre des §bCoquillages de Contest"),
                 Component.text("§7Utile pour faire gagner ta ")
                         .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
                 Component.text("§e§lCliquez pour acceder au Menu des trades")
         );
 
-        List<Component> lore_rang = Arrays.asList(
+        List<Component> loreRang = Arrays.asList(
                 Component.text(contestPlayerManager.getRankContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
                 Component.text("§7Progression §8: ")
                         .append(Component.text(contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
@@ -92,24 +92,23 @@ public class ContributionMenu extends Menu {
                 Component.text("§e§lAUGMENTER DE RANG POUR VOIR DES RECOMPENSES MEILLEURES")
         );
 
-        //TODO: itemadder dependency
-        Material shell_contest = CustomItemRegistry.getByName("omc_contest:contest_shell").getBest().getType();
+        Material shellContest = CustomItemRegistry.getByName("omc_contest:contest_shell").getBest().getType();
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.displayName(Component.text("§6§lVotre Grade"));
-            itemMeta.lore(lore_rang);
+            itemMeta.lore(loreRang);
         }));
 
 
-        inventory.put(11, new ItemBuilder(this, shell_contest, itemMeta -> {
+        inventory.put(11, new ItemBuilder(this, shellContest, itemMeta -> {
             itemMeta.displayName(Component.text("§7Les Trades"));
-            itemMeta.lore(lore_trade);
+            itemMeta.lore(loreTrade);
             itemMeta.setCustomModelData(10000);
         }).setNextMenu(new TradeMenu(getOwner())));
 
         inventory.put(15, new ItemBuilder(this, m, itemMeta -> {
             itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
-            itemMeta.lore(lore_contribute);
+            itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
                 try {
                     ItemStack shell_contestItem = CustomStack.getInstance("contest:contest_shell").getItemStack();
@@ -140,7 +139,7 @@ public class ContributionMenu extends Menu {
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
-            itemMeta.lore(loreinfo);
+            itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));
 
         return inventory;

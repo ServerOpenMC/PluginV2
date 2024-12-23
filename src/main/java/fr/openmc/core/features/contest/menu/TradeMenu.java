@@ -62,24 +62,24 @@ public class TradeMenu extends Menu {
 
         // ITEM ADDER
         String namespaceShellContest = "omc_contest:contest_shell";
-        Material shell_contest = CustomItemRegistry.getByName(namespaceShellContest).getBest().getType();
+        Material shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest().getType();
 
-        List<Component> loreinfo = Arrays.asList(
+        List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
                 Component.text("§7Le déroulement..., Les résultats, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
-        List<Component> lore_trade = Arrays.asList(
+        List<Component> loreTrade = Arrays.asList(
                 Component.text("§7Vendez un maximum de ressources"),
                 Component.text("§7Contre des §bCoquillages de Contest"),
                 Component.text("§7Pour faire gagner la ")
                         .append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor))
         );
 
-        inventory.put(4, new ItemBuilder(this, shell_contest, itemMeta -> {
+        inventory.put(4, new ItemBuilder(this, shellContest, itemMeta -> {
             itemMeta.displayName(Component.text("§7Les Trades"));
-            itemMeta.lore(lore_trade);
+            itemMeta.lore(loreTrade);
             itemMeta.setCustomModelData(10000);
         }));
 
@@ -87,30 +87,31 @@ public class TradeMenu extends Menu {
                 .sorted(Comparator.comparing(trade -> (String) trade.get("ress")))
                 .collect(Collectors.toList());
 
-        List<Integer> slot_trade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
+        List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
 
         for (int i = 0; i < selectedTrades.size(); i++) {
             Map<String, Object> trade = selectedTrades.get(i);
-            Integer slot = slot_trade.get(i);
+            Integer slot = slotTrade.get(i);
 
             Material m = Material.getMaterial((String) trade.get("ress"));
-            List<Component> lore_trades = Arrays.asList(
+            List<Component> loreTrades = Arrays.asList(
                     Component.text("§7Vendez §e" + trade.get("amount") + " de cette ressource §7pour §b" + trade.get("amount_shell") + " Coquillage(s) de Contest"),
                     Component.text("§e§lCLIQUE-GAUCHE POUR VENDRE UNE FOIS"),
                     Component.text("§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE")
             );
 
             inventory.put(slot, new ItemBuilder(this, m, itemMeta -> {
-                itemMeta.lore(lore_trades);
+                itemMeta.lore(loreTrades);
             }).setOnClick(inventoryClickEvent -> {
                 if (!CustomItemRegistry.hasItemsAdder()) {
                     MessagesManager.sendMessageType(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                     return;
                 }
+
                 String m1 = String.valueOf(inventoryClickEvent.getCurrentItem().getType());
                 int amount = (int) trade.get("amount");
-                int amount_shell = (int) trade.get("amount_shell");
-                ItemStack shell_contestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
+                int amountShell = (int) trade.get("amount_shell");
+                ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
                 if (inventoryClickEvent.isLeftClick() && inventoryClickEvent.isShiftClick()) {
                     int items = 0;
                     for (ItemStack is : player.getInventory().getContents()) {
@@ -120,45 +121,45 @@ public class TradeMenu extends Menu {
                     }
 
                     if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
-                        int amount_shell2 = (items / amount) * amount_shell;
-                        int items1 = (amount_shell2 / amount_shell) * amount;
+                        int amountShell2 = (items / amount) * amountShell;
+                        int items1 = (amountShell2 / amountShell) * amount;
                         ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), items1);
-                        int slot_empty = ItemUtils.getSlotNull(player);
-                        int stack_available = slot_empty * 64;
-                        int additem = Math.min(amount_shell2, stack_available);
-                        if (stack_available >=64) {
-                            shell_contestItem.setAmount(additem);
-                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shell_contestItem)) {
+                        int slotEmpty = ItemUtils.getSlotNull(player);
+                        int stackAvailable = slotEmpty * 64;
+                        int additem = Math.min(amountShell2, stackAvailable);
+                        if (stackAvailable >=64) {
+                            shellContestItem.setAmount(additem);
+                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {
                                 player.getInventory().addItem(item);
                             }
-                            int remain1 = amount_shell2 - additem;
+                            int remain1 = amountShell2 - additem;
                             if(remain1 != 0) {
-                                int numbertoStack = ItemUtils.getNumberItemToStack(player, shell_contestItem);
+                                int numbertoStack = ItemUtils.getNumberItemToStack(player, shellContestItem);
                                 if (numbertoStack > 0) {
-                                    shell_contestItem.setAmount(numbertoStack);
-                                    player.getInventory().addItem(shell_contestItem);
+                                    shellContestItem.setAmount(numbertoStack);
+                                    player.getInventory().addItem(shellContestItem);
                                 }
 
-                                ItemStack newshell_contestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
+                                ItemStack newshellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
                                 int remain2 = remain1 - numbertoStack;
                                 if (remain2 != 0) {
-                                    newshell_contestItem.setAmount(remain2);
-                                    List<ItemStack> itemlist = ItemUtils.splitAmountIntoStack(newshell_contestItem);
-                                    ItemStack[] shell_contest_array = itemlist.toArray(new ItemStack[itemlist.size()]);
-                                    //TODO: MailboxManager.sendItems(player, player, shell_contest_array);
+                                    newshellContestItem.setAmount(remain2);
+                                    List<ItemStack> itemlist = ItemUtils.splitAmountIntoStack(newshellContestItem);
+                                    ItemStack[] shellContestArray = itemlist.toArray(new ItemStack[itemlist.size()]);
+                                    //TODO: MailboxManager.sendItems(player, player, shellContestArray);
                                 }
                             }
                         } else {
-                            shell_contestItem.setAmount(amount_shell2);
-                            ItemStack[] shell_contest_array = new ItemStack[]{shell_contestItem, shell_contestItem};
-                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shell_contestItem)) {
+                            shellContestItem.setAmount(amountShell2);
+                            ItemStack[] shellContestArray = new ItemStack[]{shellContestItem, shellContestItem};
+                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {
                                 player.getInventory().addItem(item);
                             }
 
-                            //TODO: MailboxManager.sendItems(player, player, shell_contest_array);
+                            //TODO: MailboxManager.sendItems(player, player, shellContestArray);
                         }
 
-                        MessagesManager.sendMessageType(player, Component.text("§7Vous avez échangé §e" + items1 + " " + m1 + " §7contre§b " + amount_shell2 + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessageType(player, Component.text("§7Vous avez échangé §e" + items1 + " " + m1 + " §7contre§b " + amountShell2 + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
                         MessagesManager.sendMessageType(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
@@ -167,18 +168,18 @@ public class TradeMenu extends Menu {
 
                         //mettre dans l'inv ou boite mail?
                         if (Arrays.asList(player.getInventory().getStorageContents()).contains(null)) {
-                            shell_contestItem.setAmount(amount_shell);
-                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shell_contestItem)) {
+                            shellContestItem.setAmount(amountShell);
+                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {
                                 player.getInventory().addItem(item);
                             }
                         } else {
-                            shell_contestItem.setAmount(amount_shell);
-                            ItemStack[] shell_contest_array = new ItemStack[]{shell_contestItem};
-                            //TODO: MailboxManager.sendItems(player, player, shell_contest_array);
+                            shellContestItem.setAmount(amountShell);
+                            ItemStack[] shellContestArray = new ItemStack[]{shellContestItem};
+                            //TODO: MailboxManager.sendItems(player, player, shellContestArray);
                         }
 
                         ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), amount);
-                        MessagesManager.sendMessageType(player, Component.text("§7Vous avez échangé §e" + amount + " " + m1 + " §7contre§b " + amount_shell + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessageType(player, Component.text("§7Vous avez échangé §e" + amount + " " + m1 + " §7contre§b " + amountShell + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
                         MessagesManager.sendMessageType(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
@@ -192,7 +193,7 @@ public class TradeMenu extends Menu {
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
-            itemMeta.lore(loreinfo);
+            itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));
 
         return inventory;

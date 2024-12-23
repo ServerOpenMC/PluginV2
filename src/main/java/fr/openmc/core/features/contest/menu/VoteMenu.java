@@ -137,7 +137,7 @@ public class VoteMenu extends Menu {
             }
         }
 
-        List<Component> loreinfo = Arrays.asList(
+        List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
                 Component.text("§7Le déroulement..., Les résultats, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
@@ -167,7 +167,7 @@ public class VoteMenu extends Menu {
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
-            itemMeta.lore(loreinfo);
+            itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(player)));
 
         return inventory;
