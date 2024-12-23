@@ -13,6 +13,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -148,9 +149,9 @@ public class TradeMenu extends Menu {
                             //TODO: MailboxManager.sendItems(player, player, shell_contest_array);
                         }
 
-                        MessagesManager.sendMessageType(player, "§7Vous avez échangé §e" + items1 + " " + m1 + " §7contre§b " + amount_shell2 + " Coquillages(s) de Contest", Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessageType(player, Component.text("§7Vous avez échangé §e" + items1 + " " + m1 + " §7contre§b " + amount_shell2 + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
-                        MessagesManager.sendMessageType(player, "§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!", Prefix.CONTEST, MessageType.ERROR, true);
+                        MessagesManager.sendMessageType(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
                 } else if (inventoryClickEvent.isLeftClick()) {
                     if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
@@ -168,9 +169,9 @@ public class TradeMenu extends Menu {
                         }
 
                         ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), amount);
-                        MessagesManager.sendMessageType(player, "§7Vous avez échangé §e" + amount + " " + m1 + " §7contre§b " + amount_shell + " Coquillages(s) de Contest", Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessageType(player, Component.text("§7Vous avez échangé §e" + amount + " " + m1 + " §7contre§b " + amount_shell + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
-                        MessagesManager.sendMessageType(player, "§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!", Prefix.CONTEST, MessageType.ERROR, true);
+                        MessagesManager.sendMessageType(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
                 }
             }));

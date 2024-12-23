@@ -8,6 +8,7 @@ import fr.openmc.core.features.contest.menu.VoteMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,7 +37,7 @@ public class ContestCommand {
     @DefaultFor("~")
     public void defaultCommand(Player player) {
         int phase = contestManager.data.getPhase();
-        if (phase >= 2 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) {
+        if ((phase >= 2 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) || phase == 2) {
             VoteMenu menu = new VoteMenu(player);
             menu.open();
         } else if (phase == 3) {
@@ -49,7 +50,7 @@ public class ContestCommand {
 
             int days = (dayStartContestOfWeek.getValue() - contestManager.getCurrentDayOfWeek().getValue() + 7) % 7;
 
-            MessagesManager.sendMessageType(player, "§cIl n'y a aucun Contest ! Revenez dans " + days + " jour(s).", Prefix.CONTEST, MessageType.ERROR, true);
+            MessagesManager.sendMessageType(player, Component.text("§cIl n'y a aucun Contest ! Revenez dans " + days + " jour(s)."), Prefix.CONTEST, MessageType.ERROR, true);
         }
     }
 
@@ -82,12 +83,12 @@ public class ContestCommand {
                 contestManager.deleteTableContest("camps");
                 contestManager.insertCustomContest(camp1, color1, camp2, color2);
 
-                MessagesManager.sendMessageType(player, "§aLe Contest : " + camp1 + " VS " + camp2 + " a bien été sauvegarder\nMerci d'attendre que les données en cache s'actualise.", Prefix.STAFF, MessageType.SUCCESS, true);
+                MessagesManager.sendMessageType(player, Component.text("§aLe Contest : " + camp1 + " VS " + camp2 + " a bien été sauvegarder\nMerci d'attendre que les données en cache s'actualise."), Prefix.STAFF, MessageType.SUCCESS, true);
             } else {
-                MessagesManager.sendMessageType(player, "§c/contest setcontest <camp1> <color1> <camp2> <color2> et color doit comporter une couleur valide", Prefix.STAFF, MessageType.ERROR, true);
+                MessagesManager.sendMessageType(player, Component.text("§c/contest setcontest <camp1> <color1> <camp2> <color2> et color doit comporter une couleur valide"), Prefix.STAFF, MessageType.ERROR, true);
             }
         } else {
-            MessagesManager.sendMessageType(player, "§cVous pouvez pas définir un contest lorsqu'il a commencé", Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessageType(player, Component.text("§cVous pouvez pas définir un contest lorsqu'il a commencé"), Prefix.STAFF, MessageType.ERROR, true);
         }
     }
 
@@ -112,9 +113,9 @@ public class ContestCommand {
 
         if (tradeFound) {
             ContestManager.getInstance().saveContestConfig();
-            MessagesManager.sendMessageType(player, "Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amount_shell + " coquillages de contest.", Prefix.STAFF, MessageType.SUCCESS, true);
+            MessagesManager.sendMessageType(player, Component.text("Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amount_shell + " coquillages de contest."), Prefix.STAFF, MessageType.SUCCESS, true);
         } else {
-            MessagesManager.sendMessageType(player, "Le trade n'existe pas.\n/contest settrade <mat> <amount> <amount_shell>", Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessageType(player, Component.text("Le trade n'existe pas.\n/contest settrade <mat> <amount> <amount_shell>"), Prefix.STAFF, MessageType.ERROR, true);
         }
     }
 
@@ -123,7 +124,7 @@ public class ContestCommand {
     @CommandPermission("ayw.command.contest.addpoints")
     public void addPoints(Player player, Player target, Integer points) {
         ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target).getPoints());
-        MessagesManager.sendMessageType(player, "§aVous avez ajouté " + points + " §apoint(s) à " + target.getName(), Prefix.STAFF, MessageType.SUCCESS, true);
+        MessagesManager.sendMessageType(player, Component.text("§aVous avez ajouté " + points + " §apoint(s) à " + target.getName()), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 
     @Subcommand("color")
@@ -131,7 +132,7 @@ public class ContestCommand {
     @CommandPermission("ayw.command.contest.color")
     public void color(Player player) {
        MessagesManager.sendMessage(player,
-               Color.AQUA + "Color.AQUA" +
+               Component.text(Color.AQUA + "Color.AQUA" +
                        Color.RED +" Color.RED" +
                        Color.BLACK +" Color.BLACK" +
                        Color.BLUE +" Color.BLUE" +
@@ -147,7 +148,7 @@ public class ContestCommand {
                        Color.SILVER + " Color.SILVER" +
                        Color.TEAL + " Color.TEAL" +
                        Color.WHITE + " Color.WHITE" +
-                       Color.YELLOW +" Color.YELLOW", Prefix.OPENMC);
+                       Color.YELLOW +" Color.YELLOW"), Prefix.OPENMC);
 
         player.sendMessage(
                 ChatColor.AQUA + "Color.AQUA" +
@@ -156,16 +157,17 @@ public class ContestCommand {
                         ChatColor.BLUE +" Color.BLUE" +
                         ChatColor.DARK_BLUE + " Color.FUCHSIA" +
                         ChatColor.GRAY + " Color.RED" +
-                ChatColor.DARK_GRAY + " Color.GREEN" +
+                        ChatColor.DARK_GRAY + " Color.GREEN" +
                         ChatColor.DARK_GREEN + " Color.LIME" +
-                ChatColor.GREEN +" Color.MAROON" +
-                ChatColor.LIGHT_PURPLE +" Color.NAVY" +
-                ChatColor.DARK_PURPLE +" Color.OLIVE" +
-                ChatColor.GOLD +" Color.ORANGE" +
-                ChatColor.YELLOW + " Color.PURPLE" +
-                ChatColor.RED + " Color.SILVER" +
-                ChatColor.DARK_RED + " Color.TEAL" +
-                ChatColor.WHITE + " Color.WHITE"
+                        ChatColor.GREEN +" Color.MAROON" +
+                        ChatColor.LIGHT_PURPLE +" Color.NAVY" +
+                        ChatColor.DARK_PURPLE +" Color.OLIVE" +
+                        ChatColor.GOLD +" Color.ORANGE" +
+                        ChatColor.YELLOW + " Color.PURPLE" +
+                        ChatColor.RED + " Color.SILVER" +
+                        ChatColor.DARK_RED + " Color.TEAL" +
+                        ChatColor.WHITE + " Color.WHITE"
         );
+
     }
 }

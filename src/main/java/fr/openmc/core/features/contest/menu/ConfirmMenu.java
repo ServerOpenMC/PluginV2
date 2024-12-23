@@ -10,6 +10,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -86,7 +87,7 @@ public class ConfirmMenu extends Menu {
             ChatColor campColorF = ChatColor.valueOf(color);
             contestManager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(player.getName(), 0, Integer.valueOf(substring), campColorF));
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
-            MessagesManager.sendMessageType(player, "§7Vous avez bien rejoint : " + colorFinal + "La Team " + campName, Prefix.CONTEST, MessageType.SUCCESS, false);
+            MessagesManager.sendMessageType(player, Component.text("§7Vous avez bien rejoint : " + colorFinal + "La Team " + campName), Prefix.CONTEST, MessageType.SUCCESS, false);
             player.closeInventory();
         }));
         player.openInventory(getInventory());

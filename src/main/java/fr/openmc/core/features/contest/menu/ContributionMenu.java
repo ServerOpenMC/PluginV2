@@ -14,6 +14,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -117,9 +118,9 @@ public class ContributionMenu extends Menu {
                             contestManager.data.setPointsCamp2(updatedCampPoints);
                         }
 
-                        MessagesManager.sendMessageType(getOwner(), "§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!", Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessageType(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
-                        MessagesManager.sendMessageType(getOwner(), "§cVous n'avez pas de Coquillage(s) de Contest§7", Prefix.CONTEST, MessageType.ERROR, true);
+                        MessagesManager.sendMessageType(getOwner(), Component.text("§cVous n'avez pas de Coquillage(s) de Contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
