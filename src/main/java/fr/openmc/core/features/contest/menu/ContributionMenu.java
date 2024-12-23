@@ -92,13 +92,14 @@ public class ContributionMenu extends Menu {
                 Component.text("§e§lAUGMENTER DE RANG POUR VOIR DES RECOMPENSES MEILLEURES")
         );
 
-        Material shellContest = CustomItemRegistry.getByName("omc_contest:contest_shell").getBest().getType();
+        //ITEMADDER
+        String namespaceShellContest = "omc_contest:contest_shell";
+        Material shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest().getType();
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.displayName(Component.text("§6§lVotre Grade"));
             itemMeta.lore(loreRang);
         }));
-
 
         inventory.put(11, new ItemBuilder(this, shellContest, itemMeta -> {
             itemMeta.displayName(Component.text("§7Les Trades"));
@@ -110,31 +111,36 @@ public class ContributionMenu extends Menu {
             itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
-                try {
-                    ItemStack shell_contestItem = CustomStack.getInstance("contest:contest_shell").getItemStack();
-                    int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && is.isSimilar(shell_contestItem)).mapToInt(ItemStack::getAmount).sum();
+            if (!CustomItemRegistry.hasItemsAdder()) {
+                MessagesManager.sendMessageType(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
+                return;
+            }
 
-                    if (ItemUtils.hasEnoughItems(player, shell_contestItem.getType(), shellCount)) {
-                        ItemUtils.removeItemsFromInventory(player, shell_contestItem.getType(), shellCount);
+            try {
+                ItemStack shell_contestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
+                int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && is.isSimilar(shell_contestItem)).mapToInt(ItemStack::getAmount).sum();
 
-                        int newPlayerPoints = shellCount + contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
-                        int updatedCampPoints = shellCount + contestManager.data.getInteger("points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp());
+                if (ItemUtils.hasEnoughItems(player, shell_contestItem.getType(), shellCount)) {
+                    ItemUtils.removeItemsFromInventory(player, shell_contestItem.getType(), shellCount);
 
-                        contestPlayerManager.setPointsPlayer(player, newPlayerPoints);
-                        String pointCamp = "points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
-                        if (Objects.equals(pointCamp, "points1")) {
-                            contestManager.data.setPointsCamp1(updatedCampPoints);
-                        } else if (Objects.equals(pointCamp, "points2")) {
-                            contestManager.data.setPointsCamp2(updatedCampPoints);
-                        }
+                    int newPlayerPoints = shellCount + contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
+                    int updatedCampPoints = shellCount + contestManager.data.getInteger("points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp());
 
-                        MessagesManager.sendMessageType(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
-                    } else {
-                        MessagesManager.sendMessageType(getOwner(), Component.text("§cVous n'avez pas de Coquillage(s) de Contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
+                    contestPlayerManager.setPointsPlayer(player, newPlayerPoints);
+                    String pointCamp = "points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
+                    if (Objects.equals(pointCamp, "points1")) {
+                        contestManager.data.setPointsCamp1(updatedCampPoints);
+                    } else if (Objects.equals(pointCamp, "points2")) {
+                        contestManager.data.setPointsCamp2(updatedCampPoints);
                     }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+
+                    MessagesManager.sendMessageType(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                } else {
+                    MessagesManager.sendMessageType(getOwner(), Component.text("§cVous n'avez pas de Coquillage(s) de Contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {

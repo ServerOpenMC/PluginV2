@@ -68,7 +68,7 @@ public class ContestManager {
         initContestData();
         loadContestPlayerData();
 
-        // Logs of data and playerData
+//        // Logs of data and playerData
 //        eventRunnable = new BukkitRunnable() {
 //            @Override
 //            public void run() {
@@ -428,7 +428,6 @@ public class ContestManager {
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                     addOneToLastContest(data.getCamp1());
-                    deleteTableContest("contest");
                     deleteTableContest("contest_camps");
                     selectRandomlyContest();
                     dataPlayer=new HashMap<>();
@@ -559,7 +558,7 @@ public class ContestManager {
 
         Map<String, Object> contest = orderredContestList.get(0);
 
-        data = new ContestData((String) contest.get("camp1"), (String) contest.get("color1"), (String) contest.get("camp2"), (String) contest.get("color2"), 1, "ven.", 0, 0);
+        data = new ContestData((String) contest.get("camp1"), (String) contest.get("camp2"), (String) contest.get("color1"), (String) contest.get("color2"), 1, "ven.", 0, 0);
     }
 
     public void deleteTableContest(String table) {
