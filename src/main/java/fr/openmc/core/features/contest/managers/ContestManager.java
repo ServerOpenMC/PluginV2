@@ -18,6 +18,7 @@ import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
 import fr.openmc.core.features.contest.listeners.ContestListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +32,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.units.qual.C;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -67,9 +69,14 @@ public class ContestManager {
 
         // LISTENERS
         OMCPlugin.registerEvents(
-                new ContestListener(this.plugin),
-                new ContestIntractEvents()
+                new ContestListener(this.plugin)
         );
+
+        if (CustomItemRegistry.hasItemsAdder()) {
+            OMCPlugin.registerEvents(
+                    new ContestIntractEvents()
+            );
+        }
 
         //Load config
         this.contestFile = new File(plugin.getDataFolder() + "/data", "contest.yml");
