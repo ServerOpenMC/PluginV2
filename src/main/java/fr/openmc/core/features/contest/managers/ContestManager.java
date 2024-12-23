@@ -174,7 +174,7 @@ public class ContestManager {
                 int points = result.getInt("point_dep");
                 int camp = result.getInt("camps");
                 String color = data.get("color" + camp);
-                ChatColor campColor = ChatColor.valueOf(color);
+                NamedTextColor campColor = NamedTextColor.NAMES.value(color);
 
                 dataPlayer.put(uuid, new ContestPlayer(name, points, camp, campColor));
             }
@@ -217,8 +217,7 @@ public class ContestManager {
     public void initPhase1() {
         data.setPhase(2);
 
-        Bukkit.broadcastMessage(
-
+        Bukkit.broadcast(Component.text(
                 "§8§m                                                     §r\n" +
                         "§7\n" +
                         "§6§lCONTEST!§r §7 Les votes sont ouverts !§7" +
@@ -226,7 +225,7 @@ public class ContestManager {
                         "§8§o*on se retrouve au spawn pour pouvoir voter ou /contest...*\n" +
                         "§7\n" +
                         "§8§m                                                     §r"
-        );
+        ));
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
@@ -248,7 +247,7 @@ public class ContestManager {
 
         data.setPhase(3);
 
-        Bukkit.broadcastMessage(
+        Bukkit.broadcast(Component.text(
                 "§8§m                                                     §r\n" +
                         "§7\n" +
                         "§6§lCONTEST!§r §7Les contributions ont commencé!§7" +
@@ -256,7 +255,7 @@ public class ContestManager {
                         "§8§ovia la Borne des Contest ou /contest\n" +
                         "§7\n" +
                         "§8§m                                                     §r"
-        );
+        ));
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1.0F, 0.3F);
@@ -272,8 +271,7 @@ public class ContestManager {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);
         }
 
-        Bukkit.broadcastMessage(
-
+        Bukkit.broadcast(Component.text(
                 "§8§m                                                     §r\n" +
                         "§7\n" +
                         "§6§lCONTEST!§r §7Time over! §7" +
@@ -282,7 +280,7 @@ public class ContestManager {
                         "§8§o*/contest pour voir quand le prochain contest arrive*\n" +
                         "§7\n" +
                         "§8§m                                                     §r"
-        );
+        ));
 //        Component message_mail = Component.text("Vous avez reçu la lettre du Contest", NamedTextColor.DARK_GREEN)
 //                .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
 //                .clickEvent(getRunCommand("mail"))
@@ -300,8 +298,8 @@ public class ContestManager {
         // GET GLOBAL CONTEST INFORMATION
         String camp1Color = data.getColor1();
         String camp2Color = data.getColor2();
-        ChatColor color1 = ColorConvertor.getReadableColor(ChatColor.valueOf(camp1Color));
-        ChatColor color2 = ColorConvertor.getReadableColor(ChatColor.valueOf(camp2Color));
+        NamedTextColor color1 = ColorUtils.getReadableColor(ColorUtils.getNamedTextColor(camp1Color));
+        NamedTextColor color2 = ColorUtils.getReadableColor(ColorUtils.getNamedTextColor(camp2Color));
         String camp1Name = data.getCamp1();
         String camp2Name = data.getCamp2();
 
@@ -311,10 +309,13 @@ public class ContestManager {
         baseBookMeta.setTitle("Les Résultats du Contest");
         baseBookMeta.setAuthor("Les Contest");
 
-        List<String> lore = new ArrayList<String>();
-        lore.add(color1 + camp1Name + " §7VS " + color2 + camp2Name);
-        lore.add("§e§lOuvrez ce livre pour en savoir plus!");
-        baseBookMeta.setLore(lore);
+        List<Component> lore = Arrays.asList(
+                Component.text(camp1Name).color(color1)
+                        .append(Component.text("§7VS"))
+                        .append(Component.text(camp2Name)).color(color2),
+                Component.text("§e§lOuvrez ce livre pour en savoir plus!")
+        );
+        baseBookMeta.lore(lore);
 
         // GET VOTE AND POINT TAUX
         DecimalFormat df = new DecimalFormat("#.#");
@@ -360,7 +361,7 @@ public class ContestManager {
             ResultSet rs = query.executeQuery();
             while (rs.next()) {
                 OfflinePlayer player2 = Bukkit.getOfflinePlayer(rs.getString("name"));
-                ChatColor playerCampColor2 = ColorConvertor.getReadableColor(contestPlayerManager.getOfflinePlayerCampChatColor(player2));
+                NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(contestPlayerManager.getOfflinePlayerCampColor(player2));
                 if (rankInt >= 10) {
                     break;
                 }
@@ -383,7 +384,7 @@ public class ContestManager {
                 String playerName = rs1.getString("name");
                 OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
                 String playerCampName = contestPlayerManager.getOfflinePlayerCampName(player);
-                ChatColor playerCampColor = ColorConvertor.getReadableColor(contestPlayerManager.getOfflinePlayerCampChatColor(player));
+                NamedTextColor playerCampColor = ColorUtils.getReadableColor(contestPlayerManager.getOfflinePlayerCampColor(player));
 
                 bookMetaPlayer.addPage("§8§lStatistiques Personnelles\n§0Votre camp : " + playerCampColor + playerCampName + "\n§0Votre Grade sur Le Contest §8: " + playerCampColor + contestPlayerManager.getRankContestFromOffline(player) + playerCampName + "\n§0Votre Rang sur Le Contest : §8#" + contestPlayerManager.getRankPlayerInContest(rs1.getInt("point_dep")) + "\n§0Points Déposés : §b" + rs1.getString("point_dep"));
 

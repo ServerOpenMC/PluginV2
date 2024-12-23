@@ -3,12 +3,13 @@ package fr.openmc.core.features.contest.menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.ContestPlayer;
-import fr.openmc.core.features.contest.managers.ColorConvertor;
+import fr.openmc.core.features.contest.managers.ColorUtils;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import dev.xernas.menulib.Menu;
@@ -49,24 +50,22 @@ public class VoteMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-
-
         String camp1Name = contestManager.data.getCamp1();
         String camp2Name = contestManager.data.getCamp2();
 
         String camp1Color = contestManager.data.getColor1();
         String camp2Color = contestManager.data.getColor2();
 
-        ChatColor color1 = ChatColor.valueOf(camp1Color);
-        ChatColor color2 = ChatColor.valueOf(camp2Color);
-        Material m1 = ColorConvertor.getMaterialFromColor(color1);
-        Material m2 = ColorConvertor.getMaterialFromColor(color2);
+        NamedTextColor color1 = ColorUtils.getNamedTextColor(camp1Color);
+        NamedTextColor color2 = ColorUtils.getNamedTextColor(camp2Color);
+        Material m1 = ColorUtils.getMaterialFromColor(color1);
+        Material m2 = ColorUtils.getMaterialFromColor(color2);
 
         int camp1Slot = 11;
         int camp2Slot = 15;
 
-        List<String> lore1 = new ArrayList<String>();
-        List<String> lore2 = new ArrayList<String>();
+        List<Component> lore1 = new ArrayList<>();
+        List<Component> lore2 = new ArrayList<>();
         boolean ench1;
         boolean ench2;
 
@@ -75,40 +74,61 @@ public class VoteMenu extends Menu {
         if (playerData == null) {
             ench1 = false;
             ench2 = false;
-            lore1.add("§7Votez pour la Team " + color1 + camp1Name);
-            lore1.add("§7Faites la gagner en déposant le plus de points");
-            lore1.add("§c§lATTENTION! Le choix est définitif!");
+            lore1.add(Component.text("§7Votez pour la Team ")
+                    .append(Component.text(camp1Name).color(color1))
+            );
+            lore1.add(Component.text("§7Faites la gagner en déposant le plus de points"));
+            lore1.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
 
-            lore2.add("§7Votez pour " + color2 + "La Team " + camp2Name);
-            lore2.add("§7Faites la gagner en déposant le plus de points");
-            lore2.add("§c§lATTENTION! Le choix est définitif!");
+
+            lore2.add(Component.text("§7Votez pour la Team ")
+                    .append(Component.text(camp2Name).color(color2))
+            );
+            lore2.add(Component.text("§7Faites la gagner en déposant le plus de points"));
+            lore2.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
         } else {
             if(playerData.getCamp() <= 0) {
                 ench1 = false;
                 ench2 = false;
-                lore1.add("§7Votez pour la Team " + color1 + camp1Name);
-                lore1.add("§7Faites la gagner en déposant le plus de points");
-                lore1.add("§c§lATTENTION! Le choix est définitif!");
+                lore1.add(Component.text("§7Votez pour la Team ")
+                        .append(Component.text(camp1Name).color(color1))
+                );
+                lore1.add(Component.text("§7Faites la gagner en déposant le plus de points"));
+                lore1.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
 
-                lore2.add("§7Votez pour " + color2 + "La Team " + camp2Name);
-                lore2.add("§7Faites la gagner en déposant le plus de points");
-                lore2.add("§c§lATTENTION! Le choix est définitif!");
+                lore2.add(Component.text("§7Votez pour la Team ")
+                        .append(Component.text(camp2Name).color(color2))
+                );
+                lore2.add(Component.text("§7Faites la gagner en déposant le plus de points"));
+                lore2.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
 
             } else if(playerData.getCamp() == 1) {
-                lore1.add("§7Vous avez votez pour la Team " + color1 + camp1Name);
-                lore1.add("§7Faites la gagner en déposant le plus de points!");
+                lore1.add(
+                        Component.text("§7Vous avez votez pour la Team ")
+                        .append(Component.text(camp1Name).color(color1))
+                );
+                lore1.add(Component.text("§7Faites la gagner en déposant le plus de points!"));
                 ench1 = true;
 
-                lore2.add("§7Faites perdre la Team " + color2 + camp2Name);
-                lore2.add("§7En Apportant le plus de points que vous pouvez!");
+                lore2.add(
+                        Component.text("§7Faites perdre la Team ")
+                                .append(Component.text(camp2Name).color(color2))
+                );
+                lore2.add(Component.text("§7En Apportant le plus de points que vous pouvez!"));
                 ench2 = false;
             } else if(playerData.getCamp() == 2) {
-                lore1.add("§7Faites perdre la Team " + color1 + camp1Name);
-                lore1.add("§7En Apportant le plus de points que vous pouvez!");
+                lore1.add(
+                        Component.text("§7Faites perdre la Team ")
+                                .append(Component.text(camp1Name).color(color1))
+                );
+                lore1.add(Component.text("§7En Apportant le plus de points que vous pouvez!"));
                 ench1 = false;
 
-                lore2.add("§7Vous avez votez pour la Team " + color2 + camp2Name);
-                lore2.add("§7Faites la gagner en déposant le plus de points!");
+                lore2.add(
+                        Component.text("§7Vous avez votez pour la Team ")
+                                .append(Component.text(camp2Name).color(color2))
+                );
+                lore2.add(Component.text("§7Faites la gagner en déposant le plus de points!"));
                 ench2 = true;
             } else {
                 ench1=false;
@@ -116,15 +136,15 @@ public class VoteMenu extends Menu {
             }
         }
 
-        List<String> loreinfo = new ArrayList<String>();
-
-        loreinfo.add("§7Apprenez en plus sur les Contest !");
-        loreinfo.add("§7Le déroulement..., Les résultats, ...");
-        loreinfo.add("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!");
+        List<Component> loreinfo = Arrays.asList(
+                Component.text("§7Apprenez en plus sur les Contest !"),
+                Component.text("§7Le déroulement..., Les résultats, ..."),
+                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
+        );
 
         inventory.put(camp1Slot, new ItemBuilder(this, m1, itemMeta -> {
-            itemMeta.setDisplayName("§r" + color1 + camp1Name);
-            itemMeta.setLore(lore1);
+            itemMeta.displayName(Component.text(camp1Name).color(color1));
+            itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(ench1);
         }).setOnClick(inventoryClickEvent -> {
             if (playerData == null || playerData.getCamp() <= 0) {
@@ -134,8 +154,8 @@ public class VoteMenu extends Menu {
         }));
 
         inventory.put(camp2Slot, new ItemBuilder(this, m2, itemMeta -> {
-            itemMeta.setDisplayName("§r" + color2 + camp2Name);
-            itemMeta.setLore(lore2);
+            itemMeta.displayName(Component.text(camp2Name).color(color2));
+            itemMeta.lore(lore2);
             itemMeta.setEnchantmentGlintOverride(ench2);
         }).setOnClick(inventoryClickEvent -> {
             if (playerData == null || playerData.getCamp() <= 0) {
@@ -145,8 +165,8 @@ public class VoteMenu extends Menu {
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
-            itemMeta.setDisplayName("§r§aPlus d'info !");
-            itemMeta.setLore(loreinfo);
+            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.lore(loreinfo);
         }).setNextMenu(new MoreInfoMenu(player)));
 
         return inventory;

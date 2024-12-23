@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.CustomStack;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.managers.ColorConvertor;
+import fr.openmc.core.features.contest.managers.ColorUtils;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.utils.ItemUtils;
@@ -15,7 +15,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -59,46 +59,56 @@ public class ContributionMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
         String campName = contestPlayerManager.getPlayerCampName(player);
-        ChatColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
-        Material m = ColorConvertor.getMaterialFromColor(campColor);
+        NamedTextColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+        Material m = ColorUtils.getMaterialFromColor(campColor);
 
-        List<String> loreinfo = new ArrayList<String>();
-        List<String> lore_contribute = new ArrayList<String>();
-        List<String> lore_trade = new ArrayList<String>();
-        List<String> lore_rang = new ArrayList<String>();
+        List<Component> loreinfo = Arrays.asList(
+                Component.text("§7Apprenez en plus sur les Contest !"),
+                Component.text("§7Le déroulement..., Les résultats, ..."),
+                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
+        );
 
-        loreinfo.add("§7Apprenez en plus sur les Contest !");
-        loreinfo.add("§7Le déroulement..., Les résultats, ...");
-        loreinfo.add("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!");
+        List<Component> lore_contribute = Arrays.asList(
+                Component.text("§7Donner vos §bCoquillages de Contest"),
+                Component.text("§7Pour faire gagner votre ")
+                        .append(Component.text("Team").color(campColor)),
+                Component.text("§e§lCliquez pour verser tout vos Coquillages")
+        );
 
+        List<Component> lore_trade = Arrays.asList(
+                Component.text("§7Faites des Trades contre des §bCoquillages de Contest"),
+                Component.text("§7Utile pour faire gagner ta ")
+                        .append(Component.text("Team").color(campColor)),
+                Component.text("§e§lCliquez pour acceder au Menu des trades")
+        );
+
+        List<Component> lore_rang = Arrays.asList(
+                Component.text(contestPlayerManager.getRankContest(player) + campName).color(campColor),
+                Component.text("§7Progression §8: ")
+                        .append(Component.text(contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).color(campColor))
+                        .append(Component.text("§8/"))
+                        .append(Component.text(contestPlayerManager.getRepPointsToRank(getOwner())).color(campColor)),
+                Component.text("§e§lAUGMENTER DE RANG POUR VOIR DES RECOMPENSES MEILLEURES")
+        );
+
+        //TODO: itemadder dependency
         Material shell_contest = CustomStack.getInstance("contest:contest_shell").getItemStack().getType();
-        lore_contribute.add("§7Donner vos §bCoquillages de Contest");
-        lore_contribute.add("§7Pour faire gagner votre"+ campColor +" Team!");
-        lore_contribute.add("§e§lCliquez pour verser tout vos Coquillages");
-
-        lore_trade.add("§7Faites des Trades contre des §bCoquillages de Contest");
-        lore_trade.add("§7Utile pour faire gagner ta"+ campColor +" Team");
-        lore_trade.add("§e§lCliquez pour acceder au Menu des trades");
-
-        lore_rang.add(campColor + contestPlayerManager.getRankContest(player) + campName);
-        lore_rang.add("§7Progression §8: " + campColor + contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints() + "§8/" + campColor + contestPlayerManager.getRepPointsToRank(getOwner()));
-        lore_rang.add("§e§lAUGMENTER DE RANG POUR VOIR DES RECOMPENSES MEILLEURES");
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-            itemMeta.setDisplayName("§6§lVotre Grade");
-            itemMeta.setLore(lore_rang);
+            itemMeta.displayName(Component.text("§6§lVotre Grade"));
+            itemMeta.lore(lore_rang);
         }));
 
 
         inventory.put(11, new ItemBuilder(this, shell_contest, itemMeta -> {
-            itemMeta.setDisplayName("§7Les Trades");
-            itemMeta.setLore(lore_trade);
+            itemMeta.displayName(Component.text("§7Les Trades"));
+            itemMeta.lore(lore_trade);
             itemMeta.setCustomModelData(10000);
         }).setNextMenu(new TradeMenu(getOwner())));
 
         inventory.put(15, new ItemBuilder(this, m, itemMeta -> {
-            itemMeta.setDisplayName("§r§7Contribuer pour la"+ campColor+ " Team " + campName);
-            itemMeta.setLore(lore_contribute);
+            itemMeta.displayName(Component.text("§r§7Contribuer pour la ").append(Component.text("Team " + campName).color(campColor)));
+            itemMeta.lore(lore_contribute);
         }).setOnClick(inventoryClickEvent -> {
                 try {
                     ItemStack shell_contestItem = CustomStack.getInstance("contest:contest_shell").getItemStack();
@@ -128,8 +138,8 @@ public class ContributionMenu extends Menu {
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
-            itemMeta.setDisplayName("§r§aPlus d'info !");
-            itemMeta.setLore(loreinfo);
+            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.lore(loreinfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));
 
         return inventory;

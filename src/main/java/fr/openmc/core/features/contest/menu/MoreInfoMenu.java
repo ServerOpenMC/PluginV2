@@ -6,6 +6,7 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import dev.xernas.menulib.Menu;
@@ -44,23 +45,26 @@ public class MoreInfoMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-        List<String> lore0 = new ArrayList<String>();
-        List<String> lore1 = new ArrayList<String>();
-        List<String> lore2 = new ArrayList<String>();
+        List<Component> lore0 = Arrays.asList(
+                Component.text("§7Tout les vendredi, le Contest commence"),
+                Component.text("§7Et les votes s'ouvrent, et il faut choisir"),
+                Component.text("§7Entre 2 camps, une ambience se crée dans le spawn...")
+        );
 
-        lore0.add("§7Tout les vendredi, le Contest commence");
-        lore0.add("§7Et les votes s'ouvrent, et il faut choisir");
-        lore0.add("§7Entre 2 camps, une ambience se crée dans le spawn...");
+        List<Component> lore1 = Arrays.asList(
+                Component.text("§7La nuit tombe sur le spawn pendant 2 jours"),
+                Component.text("§7Que la Fête commence!"),
+                Component.text("§7Des trades sont disponible"),
+                Component.text("§7Donnant des Coquillages de Contest!")
+        );
 
-        lore1.add("§7La nuit tombe sur le spawn pendant 2 jours");
-        lore1.add("§7Que la Fête commence!");
-        lore1.add("§7Des trades sont disponible");
-        lore1.add("§7Donnant des Coquillages de Contest!");
+        List<Component> lore2 = Arrays.asList(
+                Component.text("§7Le levé de Soleil sur le Spawn!"),
+                Component.text("§7Les résultats tombent, et un camp"),
+                Component.text("§7sera gagnant. Et des récompenses seront attribué"),
+                Component.text(("§7A chacun."))
+        );
 
-        lore2.add("§7Le levé de Soleil sur le Spawn!");
-        lore2.add("§7Les résultats tombent, et un camp gagnant");
-        lore2.add("§7Sera élu. Et des récompenses sont attribué");
-        lore2.add("§7A chacun.");
 
         int phase = contestManager.data.getPhase();
 
@@ -78,24 +82,24 @@ public class MoreInfoMenu extends Menu {
         }
 
         inventory.put(11, new ItemBuilder(this, Material.BLUE_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName("§r§1Les Votes - Vendredi");
-            itemMeta.setLore(lore0);
+            itemMeta.displayName(Component.text("§r§1Les Votes - Vendredi"));
+            itemMeta.lore(lore0);
             itemMeta.setEnchantmentGlintOverride(ench0);
         }));
 
         inventory.put(13, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName("§r§cL'Affrontement - Samedi-Dimanche");
-            itemMeta.setLore(lore1);
+            itemMeta.displayName(Component.text("§r§cL'Affrontement - Samedi-Dimanche"));
+            itemMeta.lore(lore1);
             itemMeta.setEnchantmentGlintOverride(ench1);
         }));
 
         inventory.put(15, new ItemBuilder(this, Material.YELLOW_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName("§r§eLes Résultats - Lundi");
-            itemMeta.setLore(lore2);
+            itemMeta.displayName(Component.text("§r§eLes Résultats - Lundi"));
+            itemMeta.lore(lore2);
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.setDisplayName("§r§aRetour");
+            itemMeta.displayName(Component.text("§r§aRetour"));
         }).setBackButton());
 
         return inventory;

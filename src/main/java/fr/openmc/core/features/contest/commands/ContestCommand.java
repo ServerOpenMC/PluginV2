@@ -9,8 +9,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -133,42 +132,6 @@ public class ContestCommand {
     @CommandPermission("ayw.command.contest.color")
     public void color(Player player) {
        MessagesManager.sendMessage(player,
-               Component.text(Color.AQUA + "Color.AQUA" +
-                       Color.RED +" Color.RED" +
-                       Color.BLACK +" Color.BLACK" +
-                       Color.BLUE +" Color.BLUE" +
-                       Color.FUCHSIA + " Color.FUCHSIA" +
-                       Color.GRAY + " Color.RED" +
-                       Color.GREEN + " Color.GREEN" +
-                       Color.LIME + " Color.LIME" +
-                       Color.MAROON +" Color.MAROON" +
-                       Color.NAVY +" Color.NAVY" +
-                       Color.OLIVE +" Color.OLIVE" +
-                       Color.ORANGE +" Color.ORANGE" +
-                       Color.PURPLE + " Color.PURPLE" +
-                       Color.SILVER + " Color.SILVER" +
-                       Color.TEAL + " Color.TEAL" +
-                       Color.WHITE + " Color.WHITE" +
-                       Color.YELLOW +" Color.YELLOW"), Prefix.OPENMC);
-
-        player.sendMessage(
-                ChatColor.AQUA + "Color.AQUA" +
-                        ChatColor.DARK_AQUA +" Color.RED" +
-                        ChatColor.BLACK +" Color.BLACK" +
-                        ChatColor.BLUE +" Color.BLUE" +
-                        ChatColor.DARK_BLUE + " Color.FUCHSIA" +
-                        ChatColor.GRAY + " Color.RED" +
-                        ChatColor.DARK_GRAY + " Color.GREEN" +
-                        ChatColor.DARK_GREEN + " Color.LIME" +
-                        ChatColor.GREEN +" Color.MAROON" +
-                        ChatColor.LIGHT_PURPLE +" Color.NAVY" +
-                        ChatColor.DARK_PURPLE +" Color.OLIVE" +
-                        ChatColor.GOLD +" Color.ORANGE" +
-                        ChatColor.YELLOW + " Color.PURPLE" +
-                        ChatColor.RED + " Color.SILVER" +
-                        ChatColor.DARK_RED + " Color.TEAL" +
-                        ChatColor.WHITE + " Color.WHITE"
-        );
-
+               Component.text(NamedTextColor.AQUA + "Color.AQUA"), Prefix.OPENMC);
     }
 }

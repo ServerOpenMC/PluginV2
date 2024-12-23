@@ -4,7 +4,7 @@ import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -56,10 +56,10 @@ public class ContestPlayerManager  {
         return contestManager.data.get("camp" + campInteger);
     }
 
-    public ChatColor getOfflinePlayerCampChatColor(OfflinePlayer player) {
+    public NamedTextColor getOfflinePlayerCampColor(OfflinePlayer player) {
         Integer campInteger = getOfflinePlayerCamp(player);
         String color = contestManager.data.get("color" + campInteger);
-        return ChatColor.valueOf(color);
+        return ColorUtils.getNamedTextColor(color);
     }
 
     public void setPointsPlayer(Player player, int points) {

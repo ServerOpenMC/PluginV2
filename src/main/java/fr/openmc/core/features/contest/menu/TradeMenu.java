@@ -14,7 +14,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -57,24 +57,24 @@ public class TradeMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
         String campName = contestPlayerManager.getPlayerCampName(player);
-        ChatColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+        NamedTextColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
         Material shell_contest = CustomStack.getInstance("contest:contest_shell").getItemStack().getType();
 
-        List<String> loreinfo = Arrays.asList(
-                "§7Apprenez en plus sur les Contest !",
-                "§7Le déroulement..., Les résultats, ...",
-                "§e§lCLIQUEZ ICI POUR EN VOIR PLUS!"
+        List<Component> loreinfo = Arrays.asList(
+                Component.text("§7Apprenez en plus sur les Contest !"),
+                Component.text("§7Le déroulement..., Les résultats, ..."),
+                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
-        List<String> lore_trade = Arrays.asList(
-                "§7Vendez un maximum de ressources",
-                "§7Contre des §bCoquillages de Contest",
-                "§7Pour faire gagner la " + campColor + "Team " + campName
+        List<Component> lore_trade = Arrays.asList(
+                Component.text("§7Vendez un maximum de ressources"),
+                Component.text("§7Contre des §bCoquillages de Contest"),
+                Component.text("§7Pour faire gagner la " + campColor + "Team " + campName)
         );
 
         inventory.put(4, new ItemBuilder(this, shell_contest, itemMeta -> {
-            itemMeta.setDisplayName("§7Les Trades");
-            itemMeta.setLore(lore_trade);
+            itemMeta.displayName(Component.text("§7Les Trades"));
+            itemMeta.lore(lore_trade);
             itemMeta.setCustomModelData(10000);
         }));
 
@@ -89,14 +89,14 @@ public class TradeMenu extends Menu {
             Integer slot = slot_trade.get(i);
 
             Material m = Material.getMaterial((String) trade.get("ress"));
-            List<String> lore_trades = Arrays.asList(
-                    "§7Vendez §e" + trade.get("amount") + " de cette ressource §7pour §b" + trade.get("amount_shell") + " Coquillage(s) de Contest",
-                    "§e§lCLIQUE-GAUCHE POUR VENDRE UNE FOIS",
-                    "§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE"
+            List<Component> lore_trades = Arrays.asList(
+                    Component.text("§7Vendez §e" + trade.get("amount") + " de cette ressource §7pour §b" + trade.get("amount_shell") + " Coquillage(s) de Contest"),
+                    Component.text("§e§lCLIQUE-GAUCHE POUR VENDRE UNE FOIS"),
+                    Component.text("§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE")
             );
 
             inventory.put(slot, new ItemBuilder(this, m, itemMeta -> {
-                itemMeta.setLore(lore_trades);
+                itemMeta.lore(lore_trades);
             }).setOnClick(inventoryClickEvent -> {
                 String m1 = String.valueOf(inventoryClickEvent.getCurrentItem().getType());
                 int amount = (int) trade.get("amount");
@@ -178,12 +178,12 @@ public class TradeMenu extends Menu {
         }
 
         inventory.put(27, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.setDisplayName("§r§aRetour");
+            itemMeta.displayName(Component.text("§r§aRetour"));
         }).setBackButton());
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
-            itemMeta.setDisplayName("§r§aPlus d'info !");
-            itemMeta.setLore(loreinfo);
+            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.lore(loreinfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));
 
         return inventory;
