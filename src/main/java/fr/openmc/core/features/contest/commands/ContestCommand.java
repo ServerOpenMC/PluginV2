@@ -78,7 +78,7 @@ public class ContestCommand {
     public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
         int phase = contestManager.data.getPhase();
         if (phase == 1) {
-            if (contestManager.getColorContestList().contains(color1) || contestManager.getColorContestList().contains(color2)) {
+            if (contestManager.getColorContestList().containsAll(Arrays.asList(color1, color2))) {
                 contestManager.deleteTableContest("contest");
                 contestManager.deleteTableContest("camps");
                 contestManager.insertCustomContest(camp1, color1, camp2, color2);
