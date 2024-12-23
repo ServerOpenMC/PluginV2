@@ -38,7 +38,7 @@ public class ContestListener implements Listener {
                 }
             }
         };
-        // tout les minutes
+        // 1200 s = 1 min
         eventRunnable.runTaskTimer(plugin, 0, 1200);
      };
 }
