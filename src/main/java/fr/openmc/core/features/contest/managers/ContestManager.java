@@ -10,9 +10,14 @@ import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.listeners.BankMenuListener;
+import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.ContestPlayer;
+import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
+import fr.openmc.core.features.contest.listeners.ContestListener;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,6 +64,12 @@ public class ContestManager {
         //Const
         this.plugin = plugin;
         contestPlayerManager = ContestPlayerManager.getInstance();
+
+        // LISTENERS
+        OMCPlugin.registerEvents(
+                new ContestListener(this.plugin),
+                new ContestIntractEvents()
+        );
 
         //Load config
         this.contestFile = new File(plugin.getDataFolder() + "/data", "contest.yml");
@@ -431,7 +442,7 @@ public class ContestManager {
                     deleteTableContest("contest_camps");
                     selectRandomlyContest();
                     dataPlayer=new HashMap<>();
-                    //TODO: MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
+                    MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
         });
 
         plugin.getLogger().info("[CONTEST] Fermeture du Contest");
