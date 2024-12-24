@@ -37,6 +37,7 @@ import revxrsal.commands.autocomplete.SuggestionProvider;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
@@ -367,6 +368,7 @@ public class ContestManager {
         int points2Taux = (int) (((double) points2 / totalpoint) * 100);
         points2Taux = Integer.parseInt(df.format(points2Taux));
 
+        // 1ERE PAGE - STATS GLOBAL
         String campWinner = null;
         NamedTextColor colorWinner = null;
         int voteWinnerTaux = 0;
@@ -418,102 +420,102 @@ public class ContestManager {
         );
 
 
-        // PRINT DE LA PAGE DES CLASSEMENTS
-        Component leaderboard = Component.text("§8§lLe Classement du Contest (Jusqu'au 10eme)");
-        int rankInt = 0;
+        // 2EME PAGE - LES CLASSEMENTS
+        final Component[] leaderboard = {Component.text("§8§lLe Classement du Contest (Jusqu'au 10eme)")};
 
-        try {
-            PreparedStatement query = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps ORDER BY point_dep DESC");
-            ResultSet rs = query.executeQuery();
-            while (rs.next()) {
-                OfflinePlayer player2 = Bukkit.getOfflinePlayer(rs.getString("name"));
-                NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(contestPlayerManager.getOfflinePlayerCampColor(player2));
-                if (rankInt >= 10) {
-                    break;
-                }
-                Component rankComponent = Component.text("\n§0#" + (rankInt+1) + " ")
-                        .append(Component.text(rs.getString("name")).decoration(TextDecoration.ITALIC, false).color(playerCampColor2))
-                        .append(Component.text(" §8- §b" + rs.getString("point_dep")));
-                leaderboard = leaderboard.append(rankComponent);
-                rankInt++;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        baseBookMeta.addPages(leaderboard);
+        Map<String, ContestPlayer> orderedMap = dataPlayer.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> Integer.compare(
+                        entry2.getValue().getPoints(),
+                        entry1.getValue().getPoints()
+                ))
+                .limit(10)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+
+        final int[] rankInt = {0};
+
+        orderedMap.forEach((uuid, data) -> {
+            NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(data.getColor());
+
+            Component rankComponent = Component.text("\n§0#" + (rankInt[0] + 1) + " ")
+                    .append(Component.text(data.getName()).decoration(TextDecoration.ITALIC, false).color(playerCampColor2))
+                    .append(Component.text(" §8- §b" + data.getPoints()));
+            rankInt[0]++;
+            leaderboard[0] = leaderboard[0].append(rankComponent);
+        });
+
+        baseBookMeta.addPages(leaderboard[0]);
 
         // STATS PERSO + REWARDS
-        ResultSet rs1 = contestPlayerManager.getAllPlayer();
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
-        try {
-            while(rs1.next()) {
-                ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
-                BookMeta bookMetaPlayer = baseBookMeta.clone();
+        orderedMap.forEach((uuid, data) -> {
+            ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-                String playerName = rs1.getString("name");
-                OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
-                String playerCampName = contestPlayerManager.getOfflinePlayerCampName(player);
-                NamedTextColor playerCampColor = ColorUtils.getReadableColor(contestPlayerManager.getOfflinePlayerCampColor(player));
+            OfflinePlayer player = Bukkit.getOfflinePlayer(data.getName());
+            int points = data.getPoints();
+            String playerCampName = contestPlayerManager.getOfflinePlayerCampName(player);
+            NamedTextColor playerCampColor = ColorUtils.getReadableColor(contestPlayerManager.getOfflinePlayerCampColor(player));
 
-                bookMetaPlayer.addPages(
-                        Component.text("§8§lStatistiques Personnelles\n§0Votre camp : ")
-                                .append(Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
-                                .append(Component.text("\n§0Votre Titre sur Le Contest §8: "))
-                                .append(Component.text(contestPlayerManager.getRankContestFromOffline(player) + playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
-                                .append(Component.text("\n§0Votre Rang sur Le Contest : §8#"))
-                                .append(Component.text(contestPlayerManager.getRankPlayerInContest(rs1.getInt("point_dep"))))
-                                .append(Component.text("\n§0Points Déposés : §b" + rs1.getString("point_dep")))
-                );
+            bookMetaPlayer.addPages(
+                    Component.text("§8§lStatistiques Personnelles\n§0Votre camp : ")
+                            .append(Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
+                            .append(Component.text("\n§0Votre Titre sur Le Contest §8: "))
+                            .append(Component.text(contestPlayerManager.getRankContestFromOffline(player) + playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
+                            .append(Component.text("\n§0Votre Rang sur Le Contest : §8#"))
+                            .append(Component.text(contestPlayerManager.getRankPlayerInContest(points)))
+                            .append(Component.text("\n§0Points Déposés : §b" + points))
+            );
 
-                int money = 0;
-                if(contestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
-                    int moneyMin = 12000;
-                    int moneyMax = 14000;
-                    double multi = contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
-                    moneyMin = (int) (moneyMin * multi);
-                    moneyMax = (int) (moneyMax * multi);
+            int money = 0;
+            if(contestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
+                int moneyMin = 10000;
+                int moneyMax = 12000;
+                double multi = contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
+                moneyMin = (int) (moneyMin * multi);
+                moneyMax = (int) (moneyMax * multi);
 
-                    money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
-                    EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
+                money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
+                EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
 
-                } else {
-                    int moneyMin = 4000;
-                    int moneyMax = 6000;
-                    double multi = contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
-                    moneyMin = (int) (moneyMin * multi);
-                    moneyMax = (int) (moneyMax * multi);
+            } else {
+                int moneyMin = 2000;
+                int moneyMax = 4000;
+                double multi = contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
+                moneyMin = (int) (moneyMin * multi);
+                moneyMax = (int) (moneyMax * multi);
 
-                    money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
-                    EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
-
-                }
-
-                //TODO: Mettre Item qui permet d'améliorer sa Mascotte
-
-                // bookMetaPlayer.addPages(); ?
-                bookMetaPlayer.addPages(
-                        Component.text("§8§lRécompenses\n§0+ " + money + "$ §b(x" + contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player)) + ")")
-                );
-
-                bookPlayer.setItemMeta(bookMetaPlayer);
-
-                List<ItemStack> itemlist = new ArrayList<>();
-                itemlist.add(bookPlayer);
-
-                ItemStack[] items = itemlist.toArray(new ItemStack[itemlist.size()]);
-                playerItemsMap.put(player, items);
+                money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
+                EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
+            //TODO: Mettre Item qui permet d'améliorer sa Mascotte
+
+            bookMetaPlayer.addPages(
+                    Component.text("§8§lRécompenses\n§0+ " + money + "$ §b(x" + contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player)) + ")")
+            );
+
+            bookPlayer.setItemMeta(bookMetaPlayer);
+
+            List<ItemStack> itemlist = new ArrayList<>();
+            itemlist.add(bookPlayer);
+
+            ItemStack[] items = itemlist.toArray(new ItemStack[itemlist.size()]);
+            playerItemsMap.put(player, items);
+        });
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                    addOneToLastContest(data.getCamp1());
+                    addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
                     deleteTableContest("contest_camps");
-                    selectRandomlyContest();
-                    dataPlayer=new HashMap<>();
-                    MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
+                    selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
+                    dataPlayer=new HashMap<>(); // on supprime les données précédentes du joueurs
+                    MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
         });
 
         plugin.getLogger().info("[CONTEST] Fermeture du Contest");
