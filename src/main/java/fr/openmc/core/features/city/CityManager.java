@@ -1,5 +1,7 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.features.city.events.ChunkClaimedEvent;
+import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
@@ -7,6 +9,8 @@ import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;
@@ -16,12 +20,14 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CityManager {
+public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
     public static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
 
     public CityManager() {
+        OMCPlugin.registerEvents(this);
+
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_members", ((args, sender, command) -> {
             String playerCity = playerCities.get(sender.getUniqueId()).getUUID();
 
@@ -58,6 +64,17 @@ public class CityManager {
                 new ProtectionListener(),
                 new BankMenuListener()
         );
+    }
+
+    @EventHandler
+    public void onChunkClaim(ChunkClaimedEvent event) {
+        claimedChunks.put(BlockVector2.at(event.getChunk().getX(), event.getChunk().getZ()), event.getCity());
+    }
+
+    @EventHandler
+    public void onCityDelete(CityCreationEvent event) {
+        City city = event.getCity();
+        claimedChunks.entrySet().removeIf(entry -> entry.getValue().equals(city));
     }
 
     public static Collection<City> getCities() {
@@ -101,23 +118,25 @@ public class CityManager {
         }
     }
 
-    public static City createCity(UUID owner, String city, String name) {
+    public static City createCity(UUID owner, String city_uuid, String name) {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0)");
-                statement.setString(1, city);
+                statement.setString(1, city_uuid);
                 statement.setString(2, owner.toString());
                 statement.setString(3, name);
                 statement.executeUpdate();
 
                 statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_banks VALUE (?, 1, null)");
-                statement.setString(1, city);
+                statement.setString(1, city_uuid);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
-        return new City(city);
+        City city = new City(city_uuid);
+        Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
+        return city;
     }
 
     public static void registerCity(City city) {
