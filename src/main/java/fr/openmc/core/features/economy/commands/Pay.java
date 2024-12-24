@@ -6,6 +6,7 @@ import fr.openmc.core.features.economy.Transaction;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -21,13 +22,13 @@ public class Pay {
     public void pay(Player player, Player target, @Range(min = 1) double amount) {
         EconomyManager economyManager = EconomyManager.getInstance();
         if(player == target) {
-            MessagesManager.sendMessageType(player, "§cVous ne pouvez pas vous payer vous-même", Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessageType(player, Component.text("§cVous ne pouvez pas vous payer vous-même"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
         if(economyManager.withdrawBalance(player.getUniqueId(), amount)) {
             economyManager.addBalance(target.getUniqueId(), amount);
-            MessagesManager.sendMessageType(player, "§aVous avez payé §e" + target.getName() + "§a de §e" + economyManager.getFormattedNumber(amount), Prefix.OPENMC, MessageType.SUCCESS, true);
-            MessagesManager.sendMessageType(target, "§aVous avez reçu §e" + economyManager.getFormattedNumber(amount) + "§a de §e" + player.getName(), Prefix.OPENMC, MessageType.INFO, true);
+            MessagesManager.sendMessageType(player, Component.text("§aVous avez payé §e" + target.getName() + "§a de §e" + economyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
+            MessagesManager.sendMessageType(target, Component.text("§aVous avez reçu §e" + economyManager.getFormattedNumber(amount) + "§a de §e" + player.getName()), Prefix.OPENMC, MessageType.INFO, true);
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 new Transaction(
@@ -38,7 +39,7 @@ public class Pay {
                 ).register();
             });
         } else {
-            MessagesManager.sendMessageType(player, "§cVous n'avez pas assez d'argent", Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessageType(player, Component.text("§cVous n'avez pas assez d'argent"), Prefix.OPENMC, MessageType.ERROR, true);
         }
     }
 

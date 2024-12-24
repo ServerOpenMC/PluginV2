@@ -4,6 +4,7 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -16,6 +17,6 @@ public class Playtime {
     @Description("Donne votre temps de jeu")
     private void playtime(Player player) {
         long timePlayed = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
-        MessagesManager.sendMessageType(player, "Vous avez §d" + DateUtils.convertTime(timePlayed) + " §7de temps de jeu.", Prefix.OPENMC, MessageType.INFO, true);
+        MessagesManager.sendMessageType(player, Component.text("Vous avez §d" + DateUtils.convertTime(timePlayed) + " §7de temps de jeu."), Prefix.OPENMC, MessageType.INFO, true);
     }
 }

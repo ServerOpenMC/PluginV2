@@ -1,5 +1,6 @@
 package fr.openmc.core.commands.utils;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -21,7 +22,7 @@ public class SetSpawn {
 
         SpawnManager.getInstance().setSpawn(location);
 
-        MessagesManager.sendMessageType(player, "§aVous avez changé le point de spawn en §6X: §e" + location.getBlockX() + "§6, Y:§e" + location.getBlockY() + "§6, Z: §e" + location.getBlockY(), Prefix.OPENMC, MessageType.SUCCESS, true);
+        MessagesManager.sendMessageType(player, Component.text("§aVous avez changé le point de spawn en §6X: §e" + location.getBlockX() + "§6, Y:§e" + location.getBlockY() + "§6, Z: §e" + location.getBlockY()), Prefix.OPENMC, MessageType.SUCCESS, true);
 
     }
 }
