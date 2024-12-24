@@ -2,6 +2,7 @@ package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
@@ -12,7 +13,6 @@ import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
-import net.raidstone.wgevents.WorldGuardEvents;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,6 +44,7 @@ public final class OMCPlugin extends JavaPlugin {
         CustomItemRegistry.init();
         new SpawnManager(this);
         new CityManager();
+        new ScoreboardManager();
         new ListenersManager();
         new EconomyManager();
         new MotdUtils(this);
