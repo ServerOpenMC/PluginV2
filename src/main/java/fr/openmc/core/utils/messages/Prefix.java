@@ -13,7 +13,7 @@ public enum Prefix {
 
     // Font: https://lingojam.com/MinecraftSmallFont
     // For gradient color: https://www.birdflop.com/resources/rgb/
-    // Color format: §x§r§r§g§g§b§b§l
+    // Color format: MiniMessage
 
     OPENMC("<gradient:#BD45E6:#F99BEB>ᴏᴘᴇɴᴍᴄ</gradient>"),
     STAFF("<gradient:#AC3535:#8C052B>ѕᴛᴀꜰꜰ</gradient>"),
