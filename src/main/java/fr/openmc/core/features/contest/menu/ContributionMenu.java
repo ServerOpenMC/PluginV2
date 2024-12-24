@@ -89,7 +89,7 @@ public class ContributionMenu extends Menu {
                         .append(Component.text(contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
                         .append(Component.text("§8/"))
                         .append(Component.text(contestPlayerManager.getRepPointsToRank(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
-                Component.text("§e§lAUGMENTER DE RANG POUR VOIR DES RECOMPENSES MEILLEURES")
+                Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
         );
 
         //ITEMADDER
@@ -97,7 +97,7 @@ public class ContributionMenu extends Menu {
         Material shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest().getType();
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-            itemMeta.displayName(Component.text("§6§lVotre Grade"));
+            itemMeta.displayName(Component.text("§6§lVotre Titre"));
             itemMeta.lore(loreRang);
         }));
 

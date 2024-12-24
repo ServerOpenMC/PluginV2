@@ -11,9 +11,6 @@ import java.time.DayOfWeek;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
-import fr.openmc.core.features.city.commands.*;
-import fr.openmc.core.features.city.listeners.BankMenuListener;
-import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.commands.ContestCommand;
@@ -27,21 +24,23 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.checkerframework.checker.units.qual.C;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getRunCommand;
 
 public class ContestManager {
 
@@ -310,19 +309,12 @@ public class ContestManager {
                         "§7\n" +
                         "§8§m                                                     §r"
         ));
-//        Component message_mail = Component.text("Vous avez reçu la lettre du Contest", NamedTextColor.DARK_GREEN)
-//                .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
-//                .clickEvent(getRunCommand("mail"))
-//                .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
-//                .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
-//        Bukkit.broadcast(message_mail);
-
-        Component message = Component.text("Procédure de Fin du Contest", NamedTextColor.RED)
-                .append(Component.text("\nCela devrait prendre quelques minutes", NamedTextColor.DARK_GRAY));
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.kick(message, PlayerKickEvent.Cause.PLUGIN);
-        }
+        Component message_mail = Component.text("Vous avez reçu la lettre du Contest", NamedTextColor.DARK_GREEN)
+                .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
+                .clickEvent(getRunCommand("mail"))
+                .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
+                .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
+        Bukkit.broadcast(message_mail);
 
         // GET GLOBAL CONTEST INFORMATION
         String camp1Color = data.getColor1();
@@ -339,9 +331,9 @@ public class ContestManager {
         baseBookMeta.setAuthor("Les Contest");
 
         List<Component> lore = Arrays.asList(
-                Component.text(camp1Name).color(color1)
-                        .append(Component.text("§7VS"))
-                        .append(Component.text(camp2Name)).color(color2),
+                Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
+                        .append(Component.text(" §7VS "))
+                        .append(Component.text(camp2Name)).decoration(TextDecoration.ITALIC, false).color(color2),
                 Component.text("§e§lOuvrez ce livre pour en savoir plus!")
         );
         baseBookMeta.lore(lore);
@@ -357,7 +349,7 @@ public class ContestManager {
         int points2 = data.getPoint2();
 
         int multiplicateurPoint = Math.abs(vote1Taux - vote2Taux)/16;
-        multiplicateurPoint=Integer.valueOf(df.format(multiplicateurPoint));
+        multiplicateurPoint=Integer.parseInt(df.format(multiplicateurPoint));
 
         if (vote1Taux > vote2Taux) {
             if (points2<points1) {
@@ -371,18 +363,63 @@ public class ContestManager {
 
         int totalpoint = points1 + points2;
         int points1Taux = (int) (((double) points1 / totalpoint) * 100);
-        points1Taux = Integer.valueOf(df.format(points1Taux));
+        points1Taux = Integer.parseInt(df.format(points1Taux));
         int points2Taux = (int) (((double) points2 / totalpoint) * 100);
-        points2Taux = Integer.valueOf(df.format(points2Taux));
+        points2Taux = Integer.parseInt(df.format(points2Taux));
+
+        String campWinner = null;
+        NamedTextColor colorWinner = null;
+        int voteWinnerTaux = 0;
+        int pointsWinnerTaux = 0;
+
+        String campLooser = null;
+        NamedTextColor colorLooser = null;
+        int voteLooserTaux = 0;
+        int pointsLooserTaux = 0;
 
         if (points1 > points2) {
-            baseBookMeta.addPage("§8§lStatistiques Globales \n§0Gagnant : " + color1 + camp1Name+ "\n§0Taux de vote : §8" + vote1Taux + "%\n§0Taux de Points : §8" + points1Taux + "%\n\n" + "§0Perdant : " + color2 + camp2Name+ "\n§0Taux de vote : §8" + vote2Taux + "%\n§0Taux de Points : §8" + points2Taux + "% §0Multiplicateur d'Infériorité : §bx"+  multiplicateurPoint +"\n§8§oProchaine page : Classement des 10 Meilleurs Contributeur");
+            campWinner = camp1Name;
+            colorWinner = color1;
+            voteWinnerTaux=vote1Taux;
+            pointsWinnerTaux=points1Taux;
+
+            campLooser = camp2Name;
+            colorLooser = color2;
+            voteLooserTaux = vote2Taux;
+            pointsLooserTaux = points2Taux;
         } else {
-            baseBookMeta.addPage("§8§lStatistiques Globales \n§0Gagnant : " + color2 + camp2Name+ "\n§0Taux de vote : §8" + vote2Taux + "%\n§0Taux de Points : §8" + points2Taux + "%\n\n" + "§0Perdant : " + color1 + camp1Name+ "\n§0Taux de vote : §8" + vote1Taux + "%\n§0Taux de Points : §8" + points1Taux + "% §0Multiplicateur d'Infériorité : §bx"+  multiplicateurPoint +"\n§8§oProchaine page : Classement des 10 Meilleurs Contributeur");
+            campWinner = camp2Name;
+            colorWinner = color2;
+            voteWinnerTaux = vote2Taux;
+            pointsWinnerTaux = points2Taux;
+
+            campLooser = camp1Name;
+            colorLooser = color1;
+            voteLooserTaux = vote1Taux;
+            pointsLooserTaux = points1Taux;
         }
 
+        baseBookMeta.addPages(
+                Component.text("§8§lStatistiques Globales \n§0Gagnant : ")
+                        .append(Component.text(campWinner).decoration(TextDecoration.ITALIC, false).color(colorWinner))
+                        .append(Component.text("\n§0Taux de Vote : §8"))
+                        .append(Component.text(voteWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text("\n§0Taux de Points : §8"))
+                        .append(Component.text(pointsWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text( "\n\n §0Perdant : "))
+                        .append(Component.text(campLooser).decoration(TextDecoration.ITALIC, false).color(colorLooser))
+                        .append(Component.text("\n§0Taux de Vote : §8"))
+                        .append(Component.text(voteLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text("\n§0Taux de Points : §8"))
+                        .append(Component.text(pointsLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text("\n§0Multiplicateur d'Infériorité : §bx"))
+                        .append(Component.text(multiplicateurPoint).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text("\n§8§oProchaine page : Classement des 10 Meilleurs Contributeur"))
+        );
+
+
         // PRINT DE LA PAGE DES CLASSEMENTS
-        String leaderboard = "§8§lLe Classement du Contest (Jusqu'au 10eme)";
+        Component leaderboard = Component.text("§8§lLe Classement du Contest (Jusqu'au 10eme)");
         int rankInt = 0;
 
         try {
@@ -394,15 +431,18 @@ public class ContestManager {
                 if (rankInt >= 10) {
                     break;
                 }
-                String rankStr = "\n§0#" + (rankInt+1) + " " + playerCampColor2 + rs.getString("name") + " §8- §b" + rs.getString("point_dep");
-                leaderboard = leaderboard + rankStr;
+                Component rankComponent = Component.text("\n§0#" + (rankInt+1) + " ")
+                        .append(Component.text(rs.getString("name")).decoration(TextDecoration.ITALIC, false).color(playerCampColor2))
+                        .append(Component.text(" §8- §b" + rs.getString("point_dep")));
+                leaderboard = leaderboard.append(rankComponent);
                 rankInt++;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        baseBookMeta.addPage(leaderboard);
+        baseBookMeta.addPages(leaderboard);
 
+        // STATS PERSO + REWARDS
         ResultSet rs1 = contestPlayerManager.getAllPlayer();
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
         try {
@@ -415,7 +455,15 @@ public class ContestManager {
                 String playerCampName = contestPlayerManager.getOfflinePlayerCampName(player);
                 NamedTextColor playerCampColor = ColorUtils.getReadableColor(contestPlayerManager.getOfflinePlayerCampColor(player));
 
-                bookMetaPlayer.addPage("§8§lStatistiques Personnelles\n§0Votre camp : " + playerCampColor + playerCampName + "\n§0Votre Grade sur Le Contest §8: " + playerCampColor + contestPlayerManager.getRankContestFromOffline(player) + playerCampName + "\n§0Votre Rang sur Le Contest : §8#" + contestPlayerManager.getRankPlayerInContest(rs1.getInt("point_dep")) + "\n§0Points Déposés : §b" + rs1.getString("point_dep"));
+                bookMetaPlayer.addPages(
+                        Component.text("§8§lStatistiques Personnelles\n§0Votre camp : ")
+                                .append(Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
+                                .append(Component.text("\n§0Votre Titre sur Le Contest §8: "))
+                                .append(Component.text(contestPlayerManager.getRankContestFromOffline(player) + playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
+                                .append(Component.text("\n§0Votre Rang sur Le Contest : §8#"))
+                                .append(Component.text(contestPlayerManager.getRankPlayerInContest(rs1.getInt("point_dep"))))
+                                .append(Component.text("\n§0Points Déposés : §b" + rs1.getString("point_dep")))
+                );
 
                 int money = 0;
                 if(contestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
@@ -440,7 +488,12 @@ public class ContestManager {
 
                 }
 
-                bookMetaPlayer.addPage("§8§lRécompenses\n§0+ " + money + "$ §b(x" + contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player)) + ")");
+                //TODO: Mettre Item qui permet d'améliorer sa Mascotte
+
+                // bookMetaPlayer.addPages(); ?
+                bookMetaPlayer.addPages(
+                        Component.text("§8§lRécompenses\n§0+ " + money + "$ §b(x" + contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player)) + ")")
+                );
 
                 bookPlayer.setItemMeta(bookMetaPlayer);
 
