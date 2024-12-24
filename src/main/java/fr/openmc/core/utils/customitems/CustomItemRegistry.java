@@ -28,6 +28,7 @@ public class CustomItemRegistry {
 
         // Ici, enregistrer tout les items custom
         new CloseButton();
+        new ContestShell();
         new PreviousPage();
         new NextPage();
     }

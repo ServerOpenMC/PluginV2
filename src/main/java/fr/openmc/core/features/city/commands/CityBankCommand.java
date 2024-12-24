@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.menu.BankMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -18,17 +19,17 @@ public class CityBankCommand {
     void bank(Player player, @Optional @Named("page") @Range(min=0) Integer page) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(player, "Vous n'êtes pas dans une ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Vous n'êtes pas dans une ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.hasPermission(player.getUniqueId(), CPermission.BANK)) {
-            MessagesManager.sendMessageType(player, "Vous n'avez pas les permissions de voir la banque", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas les permissions de voir la banque"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city.getBankWatcher() != null) {
-            MessagesManager.sendMessageType(player, "La banque est déjà ouverte", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La banque est déjà ouverte"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -45,29 +46,29 @@ public class CityBankCommand {
     void upgrade(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(player, "Vous n'êtes pas dans une ville", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Vous n'êtes pas dans une ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.hasPermission(player.getUniqueId(), CPermission.BANK_UPGRADE)) {
-            MessagesManager.sendMessageType(player, "Vous n'avez pas les permissions d'améliorer la banque", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas les permissions d'améliorer la banque"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city.getBankPages() >= 5) {
-            MessagesManager.sendMessageType(player, "La banque est déjà au niveau maximum", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La banque est déjà au niveau maximum"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         int price = city.getBankPages()*5000; // fonction linéaire f(x)=ax ; a=5000
         if (city.getBalance() < price) {
-            MessagesManager.sendMessageType(player, "La ville n'as pas assez d'argent ("+price+" nécessaires)", Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La ville n'as pas assez d'argent ("+price+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.updateBalance((double) -price);
 
         city.upgradeBank();
-        MessagesManager.sendMessageType(player, "La banque a été améliorée", Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, Component.text("La banque a été améliorée"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }
