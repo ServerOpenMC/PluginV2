@@ -1,5 +1,6 @@
 package fr.openmc.core.commands.fun;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -16,6 +17,8 @@ public class Playtime {
     @Description("Donne votre temps de jeu")
     private void playtime(Player player) {
         long timePlayed = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
-        MessagesManager.sendMessageType(player, "Vous avez §d" + DateUtils.convertTime(timePlayed) + " §7de temps de jeu.", Prefix.OPENMC, MessageType.INFO, true);
+        MessagesManager.sendMessageType(player, OMCPlugin.getTextManager().getText("messages.general.playtime",
+                        "fr", "playTime", DateUtils.convertTime(timePlayed)),
+                Prefix.OPENMC, MessageType.INFO, true);
     }
 }
