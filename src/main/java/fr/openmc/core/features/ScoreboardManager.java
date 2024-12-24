@@ -68,11 +68,11 @@ public class ScoreboardManager implements Listener {
             player.setScoreboard(createNewScoreboard(player));
             updateScoreboard(player);
 
-            MessagesManager.sendMessage(player, "§aScoreboard activé", Prefix.CITY);
+            MessagesManager.sendMessage(player, Component.text("Scoreboard activé").color(NamedTextColor.GREEN), Prefix.CITY);
         } else {
             disabledPlayers.add(uuid);
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-            MessagesManager.sendMessage(player, "§cScoreboard désactivé", Prefix.CITY);
+            MessagesManager.sendMessage(player, Component.text("Scoreboard désactivé").color(NamedTextColor.RED), Prefix.CITY);
         }
     }
 
