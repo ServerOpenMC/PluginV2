@@ -19,7 +19,6 @@ import java.util.Map;
 
 public class MessagesManager {
 
-
     /*
     For use the beautiful message, create a prefix.
      */
@@ -37,7 +36,7 @@ public class MessagesManager {
     public static void sendMessageType(CommandSender sender, Component message, Prefix prefix, MessageType type, boolean sound) {
         MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
-                Component.text("§7(" + type.getPrefixType() + "§7) ")
+                Component.text("§7(" + type.getPrefix() + "§7) ")
                         .append(MiniMessage.miniMessage().deserialize(prefix.getPrefix()))
                         .append(Component.text(" §7» ")
                         .append(message)
