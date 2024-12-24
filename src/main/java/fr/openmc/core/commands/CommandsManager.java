@@ -24,9 +24,6 @@ public class CommandsManager {
 
         handler.registerCondition(new CooldownInterceptor());
 
-        handler.getAutoCompleter().registerSuggestion("colorContest", SuggestionProvider.of(ContestManager.getInstance().getColorContestList()));
-        handler.getAutoCompleter().registerSuggestion("trade", SuggestionProvider.of(ContestManager.getInstance().getRessListFromConfig()));
-
         registerSuggestions();
         registerCommands();
     }
@@ -38,9 +35,7 @@ public class CommandsManager {
                 new SetSpawn(),
                 new Playtime(),
 		        new Diceroll(),
-                new CooldownCommand(),
-                new MailboxCommand(OMCPlugin.getInstance()),
-                new ContestCommand(OMCPlugin.getInstance())
+                new CooldownCommand()
         );
     }
 

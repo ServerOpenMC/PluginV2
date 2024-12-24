@@ -10,10 +10,13 @@ import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.BankMenuListener;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.ContestPlayer;
+import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
 import fr.openmc.core.features.contest.listeners.ContestListener;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -33,6 +36,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.checkerframework.checker.units.qual.C;
+import revxrsal.commands.autocomplete.SuggestionProvider;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -71,12 +75,19 @@ public class ContestManager {
         OMCPlugin.registerEvents(
                 new ContestListener(this.plugin)
         );
-
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );
         }
+
+        //COMMANDS
+        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("colorContest", SuggestionProvider.of(ContestManager.getInstance().getColorContestList()));
+        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("trade", SuggestionProvider.of(ContestManager.getInstance().getRessListFromConfig()));
+
+        CommandsManager.getHandler().register(
+                new ContestCommand(this.plugin)
+        );
 
         //Load config
         this.contestFile = new File(plugin.getDataFolder() + "/data", "contest.yml");

@@ -41,10 +41,10 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
-        ContestManager contestManager = new ContestManager(this);
-        ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new CommandsManager();
         CustomItemRegistry.init();
+        ContestManager contestManager = new ContestManager(this);
+        ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
         new CityManager();
         new ListenersManager();
