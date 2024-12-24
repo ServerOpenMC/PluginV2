@@ -2,6 +2,7 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
+import fr.openmc.core.features.city.events.CityDeleteEvent;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
@@ -72,7 +73,7 @@ public class CityManager implements Listener {
     }
 
     @EventHandler
-    public void onCityDelete(CityCreationEvent event) {
+    public void onCityDelete(CityDeleteEvent event) {
         City city = event.getCity();
         claimedChunks.entrySet().removeIf(entry -> entry.getValue().equals(city));
     }
