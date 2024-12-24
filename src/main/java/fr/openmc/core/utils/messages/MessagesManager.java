@@ -1,13 +1,15 @@
 package fr.openmc.core.utils.messages;
 
-import org.bukkit.Sound;
+import com.google.common.collect.ImmutableBiMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import lombok.Getter;
 
-public class MessagesManager {
+import java.util.HashMap;
+import java.util.Map;
 
+public class MessagesManager {
 
     /*
     For use the beautiful message, create a prefix.
@@ -25,10 +27,10 @@ public class MessagesManager {
      */
     public static void sendMessageType(CommandSender sender, String message, Prefix prefix, MessageType type, boolean sound) {
 
-        String messageStr = "§7(" + getPrefixType(type) + "§7) " + prefix.getPrefix() + " §7» " + message;
+        String messageStr = "§7(" + type.getPrefix() + "§7) " + prefix.getPrefix() + " §7» " + message;
 
         if(sender instanceof Player player && sound) {
-            player.playSound(player.getLocation(), getSound(type), 1, 1);
+            player.playSound(player.getLocation(), type.getSound(), 1, 1);
         }
 
         sender.sendMessage(messageStr);
@@ -47,64 +49,22 @@ public class MessagesManager {
         String messageStr = prefix.getPrefix() + " §7» " + message;
 
         sender.sendMessage(messageStr);
-
-    }
-
-
-    private static String getPrefixType(MessageType type) {
-        return switch (type) {
-            case ERROR -> "§c❗";
-            case WARNING -> "§6⚠";
-            case SUCCESS -> "§a✔";
-            case INFO -> "§bⓘ";
-            default -> "§7";
-        };
-    }
-
-    private static Sound getSound(MessageType type) {
-        return switch (type) {
-            case ERROR, WARNING -> Sound.BLOCK_NOTE_BLOCK_BASS;
-            case SUCCESS -> Sound.BLOCK_NOTE_BLOCK_BELL;
-            case INFO -> Sound.BLOCK_NOTE_BLOCK_BIT;
-            default -> null;
-        };
     }
 
     public static String textToSmall(String text) {
         StringBuilder result = new StringBuilder();
-        String smallLetters = "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀѕᴛᴜᴠᴡхʏᴢ";
-        String normalLetters = "abcdefghijklmnopqrstuvwxyz";
-        String normalLettersCaps = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String numbers = "₁₂₃₄₅₆₇₈₉₀";
-        String numbersNormal = "1234567890";
-
-        if (text.contains("§")) {
-            String[] split = text.split("§");
-            for (int i = 0; i < split.length; i++) {
-                if (i == 0) {
-                    result.append(split[i]);
-                    continue;
-                }
-                if (split[i].length() > 1) {
-                    result.append("§").append(split[i].charAt(0)).append(textToSmall(split[i].substring(1)));
-                } else {
-                    result.append("§").append(split[i]);
-                }
-            }
-            return result.toString();
-        }
+        Map<Character, Character> charMap = ImmutableBiMap.<Character, Character>builder()
+                .put('A', 'ᴀ').put('B', 'ʙ').put('C', 'ᴄ').put('D', 'ᴅ').put('E', 'ᴇ')
+                .put('F', 'ꜰ').put('G', 'ɢ').put('H', 'ʜ').put('I', 'ɪ').put('J', 'ᴊ')
+                .put('K', 'ᴋ').put('L', 'ʟ').put('M', 'ᴍ').put('N', 'ɴ').put('O', 'ᴏ')
+                .put('P', 'ǫ').put('Q', 'ʀ').put('R', 'ʀ').put('S', 'ѕ').put('T', 'ᴛ')
+                .put('U', 'ᴜ').put('V', 'ᴠ').put('W', 'ᴡ').put('X', 'ʏ').put('Y', 'ʏ').put('Z', 'ᴢ')
+                .put('1', '₁').put('2', '₂').put('3', '₃').put('4', '₄').put('5', '₅')
+                .put('6', '₆').put('7', '₇').put('8', '₈').put('9', '₉').put('0', '₀')
+                .build();
 
         for (char c : text.toCharArray()) {
-
-            if (normalLetters.indexOf(c) != -1) {
-                result.append(smallLetters.charAt(normalLetters.indexOf(c)));
-            } else if (normalLettersCaps.indexOf(c) != -1) {
-                result.append(smallLetters.charAt(normalLettersCaps.indexOf(c)));
-            } else if (numbersNormal.indexOf(c) != -1) {
-                result.append(numbers.charAt(numbersNormal.indexOf(c)));
-            } else {
-                result.append(c);
-            }
+            result.append(charMap.getOrDefault(c, c));
         }
 
         return result.toString();
