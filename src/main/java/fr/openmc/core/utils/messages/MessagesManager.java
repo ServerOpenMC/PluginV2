@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.messages;
 
+import com.google.common.collect.ImmutableBiMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -9,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MessagesManager {
-
 
     /*
     For use the beautiful message, create a prefix.
@@ -53,28 +53,18 @@ public class MessagesManager {
 
     public static String textToSmall(String text) {
         StringBuilder result = new StringBuilder();
-        Map<Character, Character> charMap = new HashMap<>();
-
-        String smallLetters = "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀѕᴛᴜᴠᴡхʏᴢ";
-        String normalLetters = "abcdefghijklmnopqrstuvwxyz";
-        String numbers = "₁₂₃₄₅₆₇₈₉₀";
-        String numbersNormal = "1234567890";
-
-        for (int i = 0; i < 26; i++) {
-            charMap.put(normalLetters.charAt(i), smallLetters.charAt(i));
-            charMap.put(normalLetters.charAt(i + 26), smallLetters.charAt(i));
-        }
-        for (int i = 0; i < numbersNormal.length(); i++) {
-            charMap.put(numbersNormal.charAt(i), numbers.charAt(i));
-        }
-
+        Map<Character, Character> charMap = ImmutableBiMap.<Character, Character>builder()
+                .put('A', 'ᴀ').put('B', 'ʙ').put('C', 'ᴄ').put('D', 'ᴅ').put('E', 'ᴇ')
+                .put('F', 'ꜰ').put('G', 'ɢ').put('H', 'ʜ').put('I', 'ɪ').put('J', 'ᴊ')
+                .put('K', 'ᴋ').put('L', 'ʟ').put('M', 'ᴍ').put('N', 'ɴ').put('O', 'ᴏ')
+                .put('P', 'ǫ').put('Q', 'ʀ').put('R', 'ʀ').put('S', 'ѕ').put('T', 'ᴛ')
+                .put('U', 'ᴜ').put('V', 'ᴠ').put('W', 'ᴡ').put('X', 'ʏ').put('Y', 'ʏ').put('Z', 'ᴢ')
+                .put('1', '₁').put('2', '₂').put('3', '₃').put('4', '₄').put('5', '₅')
+                .put('6', '₆').put('7', '₇').put('8', '₈').put('9', '₉').put('0', '₀')
+                .build();
 
         for (char c : text.toCharArray()) {
-            if (charMap.containsKey(c)) {
-                result.append(charMap.get(c));
-            } else {
-                result.append(c);
-            }
+            result.append(charMap.getOrDefault(c, c));
         }
 
         return result.toString();
