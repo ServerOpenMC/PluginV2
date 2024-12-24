@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 
+import javax.annotation.Nullable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class CityManager {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
-    public static HashMap<BlockVector2, Boolean> claimedChunks = new HashMap<>();
+    public static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
 
     public CityManager() {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_members", ((args, sender, command) -> {
@@ -32,7 +33,7 @@ public class CityManager {
                     ResultSet rs = statement.executeQuery();
 
                     while (rs.next()) {
-                        claimedChunks.put(BlockVector2.at(rs.getInt(1), rs.getInt(2)), true);
+                        claimedChunks.put(BlockVector2.at(rs.getInt(1), rs.getInt(2)), getCity(rs.getString("city_uuid")));
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -73,6 +74,31 @@ public class CityManager {
 
     public static boolean isChunkClaimed(int x, int z) {
         if (claimedChunks.containsKey(BlockVector2.at(x, z))) {
+            return claimedChunks.get(BlockVector2.at(x, z)) != null;
+        }
+
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_regions WHERE x = ? AND z = ? LIMIT 1");
+            statement.setInt(1, x);
+            statement.setInt(2, z);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                claimedChunks.put(BlockVector2.at(x, z), null);
+                return false;
+            }
+
+            claimedChunks.put(BlockVector2.at(x, z), CityManager.getCity(rs.getString("city_uuid")));
+            return claimedChunks.get(BlockVector2.at(x, z)) != null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Nullable
+    public static City getCityFromChunk(int x, int z) {
+        if (claimedChunks.containsKey(BlockVector2.at(x, z))) {
             return claimedChunks.get(BlockVector2.at(x, z));
         }
 
@@ -81,11 +107,17 @@ public class CityManager {
             statement.setInt(1, x);
             statement.setInt(2, z);
             ResultSet rs = statement.executeQuery();
-            claimedChunks.put(BlockVector2.at(x, z), rs.next());
+
+            if (!rs.next()) {
+                claimedChunks.put(BlockVector2.at(x, z), null);
+                return null;
+            }
+
+            claimedChunks.put(BlockVector2.at(x, z), CityManager.getCity(rs.getString("city_uuid")));
             return claimedChunks.get(BlockVector2.at(x, z));
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
