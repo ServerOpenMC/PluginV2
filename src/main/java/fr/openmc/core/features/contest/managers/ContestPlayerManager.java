@@ -1,16 +1,11 @@
 package fr.openmc.core.features.contest.managers;
 
 import fr.openmc.core.features.contest.ContestPlayer;
-import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Random;
 
 @Setter
@@ -28,31 +23,6 @@ public class ContestPlayerManager  {
         return contestManager.data.get("camp" + campInteger);
     }
 
-    public Integer getOfflinePlayerCamp(OfflinePlayer player) {
-        String sql = "SELECT * FROM contest_camps WHERE minecraft_uuid = ?";
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
-            states.setString(1, player.getUniqueId().toString());
-            ResultSet result = states.executeQuery();
-            if (result.next()) {
-                return result.getInt("camps");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return 0;
-    }
-
-    public String getOfflinePlayerCampName(OfflinePlayer player) {
-        Integer campInteger = getOfflinePlayerCamp(player);
-        return contestManager.data.get("camp" + campInteger);
-    }
-
-    public NamedTextColor getOfflinePlayerCampColor(OfflinePlayer player) {
-        Integer campInteger = getOfflinePlayerCamp(player);
-        String color = contestManager.data.get("color" + campInteger);
-        return ColorUtils.getNamedTextColor(color);
-    }
-
     public void setPointsPlayer(Player player, int points) {
         ContestManager manager = ContestManager.getInstance();
         ContestPlayer data = manager.dataPlayer.get(player.getUniqueId().toString());
@@ -60,21 +30,7 @@ public class ContestPlayerManager  {
         manager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(data.getName(), points, data.getCamp(), data.getColor()));
     }
 
-    public Integer getRankPlayerInContest(Integer pointsDep) {
-        String sql = "SELECT COUNT(*) AS rank FROM contest_camps WHERE point_dep > ?";
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
-            states.setInt(1, pointsDep);
-            ResultSet result = states.executeQuery();
-            if (result.next()) {
-                return result.getInt("rank") + 1;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return -1;
-    }
-
-    private String getRankWithPoints(int points) {
+    public String getTitleWithPoints(int points) {
         int[] pointsRank = {10000, 2500, 2000, 1500, 1000, 750, 500, 250, 100, 0};
         String[] categories = {
                 "Dictateur en ",
@@ -97,13 +53,13 @@ public class ContestPlayerManager  {
         return "";
     }
 
-    public String getRankContest(Player player) {
+    public String getTitleContest(Player player) {
         int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
 
-        return getRankWithPoints(points);
+        return getTitleWithPoints(points);
     }
 
-    public int getRepPointsToRank(Player player) {
+    public int getGoalPointsToRankUp(Player player) {
         int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
 
         if(points >= 10000) {
@@ -131,34 +87,9 @@ public class ContestPlayerManager  {
         return 0;
     }
 
-    public String getRankContestFromOffline(OfflinePlayer player) {
-        String sql = "SELECT * FROM contest_camps WHERE minecraft_uuid = ?";
-        int points = 0;
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
-            states.setString(1, player.getUniqueId().toString());
-            ResultSet result = states.executeQuery();
-            if (result.next()) {
-                points = result.getInt("point_dep");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return getRankWithPoints(points);
-    }
-
     public int getRankContestFromOfflineInt(OfflinePlayer player) {
-        String sql = "SELECT * FROM contest_camps WHERE minecraft_uuid = ?";
-        int points = 0;
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
-            states.setString(1, player.getUniqueId().toString());
-            ResultSet result = states.executeQuery();
-            if (result.next()) {
-                points = result.getInt("point_dep");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+
+        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
 
         if(points >= 10000) {
             return 10;
@@ -186,17 +117,7 @@ public class ContestPlayerManager  {
     }
 
     public boolean hasWinInCampFromOfflinePlayer(OfflinePlayer player) {
-        String sql = "SELECT * FROM contest_camps WHERE minecraft_uuid = ?";
-        int playerCamp = 0;
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
-            states.setString(1, player.getUniqueId().toString());
-            ResultSet result = states.executeQuery();
-            if (result.next()) {
-                playerCamp = result.getInt("camps");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        int playerCamp = contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
 
         int points1 = contestManager.data.getPoint1();
         int points2 = contestManager.data.getPoint2();
@@ -225,8 +146,7 @@ public class ContestPlayerManager  {
     }
 
     public int giveRandomly(Integer min, Integer max) {
-        int moneyGive = new Random().nextInt(min, max);
-        return moneyGive;
+        return new Random().nextInt(min, max);
     }
 
     public double getMultiMoneyFromRang(int rang) {

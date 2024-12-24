@@ -55,6 +55,8 @@ public class ContestManager {
     public ContestData data;
     public Map<String, ContestPlayer> dataPlayer = new HashMap<>();
 
+    private BukkitRunnable eventRunnable;
+
     private final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
@@ -93,6 +95,21 @@ public class ContestManager {
         // Fill data and playerData
         initContestData();
         loadContestPlayerData();
+
+        // Logs of data and playerData
+        eventRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
+                plugin.getLogger().info(" ");
+                dataPlayer.forEach((uuid, data) -> {
+                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
+                });
+            }
+        };
+
+        // tout les minutes
+        eventRunnable.runTaskTimer(plugin, 0, 100);
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -179,7 +196,7 @@ public class ContestManager {
     public void loadContestPlayerData() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps")) {
             ResultSet result = states.executeQuery();
-            if (result.next()) {
+            while (result.next()) {
                 String uuid = result.getString("minecraft_uuid");
                 String name = result.getString("name");
                 int points = result.getInt("point_dep");
@@ -316,7 +333,7 @@ public class ContestManager {
         List<Component> lore = Arrays.asList(
                 Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
                         .append(Component.text(" §7VS "))
-                        .append(Component.text(camp2Name)).decoration(TextDecoration.ITALIC, false).color(color2),
+                        .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2)),
                 Component.text("§e§lOuvrez ce livre pour en savoir plus!")
         );
         baseBookMeta.lore(lore);
@@ -435,22 +452,30 @@ public class ContestManager {
 
         // STATS PERSO + REWARDS
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
-        orderedMap.forEach((uuid, data) -> {
+
+        // For each player in contest
+        orderedMap.forEach((uuid, dataPlayer1) -> {
+            int rank = 1;
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(data.getName());
-            int points = data.getPoints();
-            String playerCampName = contestPlayerManager.getOfflinePlayerCampName(player);
-            NamedTextColor playerCampColor = ColorUtils.getReadableColor(contestPlayerManager.getOfflinePlayerCampColor(player));
+            plugin.getLogger().info(uuid + " " + dataPlayer1.getCamp() + " " + dataPlayer1.getColor() + " " + dataPlayer1.getPoints() + " " + dataPlayer1.getName());
+
+            OfflinePlayer player = Bukkit.getOfflinePlayer(dataPlayer1.getName());
+            int points = dataPlayer1.getPoints();
+
+            String playerCampName = data.get("camp" + dataPlayer1.getCamp());
+            NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
+            String playerTitleContest = contestPlayerManager.getTitleWithPoints(points) + playerCampName;
+            // ex Novice en + Moutarde
 
             bookMetaPlayer.addPages(
                     Component.text("§8§lStatistiques Personnelles\n§0Votre camp : ")
                             .append(Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
                             .append(Component.text("\n§0Votre Titre sur Le Contest §8: "))
-                            .append(Component.text(contestPlayerManager.getRankContestFromOffline(player) + playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
+                            .append(Component.text(playerTitleContest).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
                             .append(Component.text("\n§0Votre Rang sur Le Contest : §8#"))
-                            .append(Component.text(contestPlayerManager.getRankPlayerInContest(points)))
+                            .append(Component.text(rank))
                             .append(Component.text("\n§0Points Déposés : §b" + points))
             );
 
@@ -489,6 +514,7 @@ public class ContestManager {
 
             ItemStack[] items = itemlist.toArray(new ItemStack[itemlist.size()]);
             playerItemsMap.put(player, items);
+            rank++;
         });
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
@@ -539,17 +565,9 @@ public class ContestManager {
 
     // GET TAUX DE VOTE D'UN CAMP
     public Integer getVoteTaux(Integer camps) {
-        String sql = "SELECT COUNT(*) FROM contest_camps WHERE camps = ?";
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
-            states.setInt(1, camps);
-            ResultSet result = states.executeQuery();
-            if (result.next()) {
-                return result.getInt(1);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return 0;
+        return (int) dataPlayer.values().stream()
+                .filter(player -> player.getCamp() == camps)
+                .count();
     }
 
     //END CONTEST METHODE
