@@ -65,33 +65,10 @@ public class MessagesManager {
         Component messageComponent = MiniMessage.miniMessage().deserialize(prefix.getPrefix())
                 .append(Component.text(" §7» "))
                 .append(message);
-      sender.sendMessage(messageComponent)
+        sender.sendMessage(messageComponent);
 
     }
-
-
-    private static String getPrefixType(MessageType type) {
-        return switch (type) {
-            case ERROR -> "§c❗";
-            case WARNING -> "§6⚠";
-            case SUCCESS -> "§a✔";
-            case INFO -> "§bⓘ";
-            default -> "§7";
-        };
-    }
-
-    private static Sound getSound(MessageType type) {
-        return switch (type) {
-            case ERROR, WARNING -> Sound.BLOCK_NOTE_BLOCK_BASS;
-            case SUCCESS -> Sound.BLOCK_NOTE_BLOCK_BELL;
-            case INFO -> Sound.BLOCK_NOTE_BLOCK_BIT;
-            default -> null;
-        };
-
-
-
-    }
-
+        
     public static String textToSmall(String text) {
         StringBuilder result = new StringBuilder();
         Map<Character, Character> charMap = ImmutableBiMap.<Character, Character>builder()
