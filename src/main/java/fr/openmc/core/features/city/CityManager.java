@@ -72,12 +72,6 @@ public class CityManager implements Listener {
         claimedChunks.put(BlockVector2.at(event.getChunk().getX(), event.getChunk().getZ()), event.getCity());
     }
 
-    @EventHandler
-    public void onCityDelete(CityDeleteEvent event) {
-        City city = event.getCity();
-        claimedChunks.entrySet().removeIf(entry -> entry.getValue().equals(city));
-    }
-
     public static Collection<City> getCities() {
         return cities.values();
     }
@@ -166,7 +160,13 @@ public class CityManager implements Listener {
     }
 
     public static void forgetCity(String city) {
-        cities.remove(city);
+        City cityz = cities.remove(city);
+
+        for (BlockVector2 vector : claimedChunks.keySet()) {
+            if (claimedChunks.get(vector).equals(cityz)) {
+                claimedChunks.remove(vector);
+            }
+        }
 
         for (UUID uuid : playerCities.keySet()) {
             if (playerCities.get(uuid).getUUID().equals(city)) {
