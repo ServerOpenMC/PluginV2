@@ -37,7 +37,6 @@ import revxrsal.commands.autocomplete.SuggestionProvider;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
@@ -55,8 +54,6 @@ public class ContestManager {
 
     public ContestData data;
     public Map<String, ContestPlayer> dataPlayer = new HashMap<>();
-
-    private BukkitRunnable eventRunnable;
 
     private final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
@@ -86,7 +83,7 @@ public class ContestManager {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("trade", SuggestionProvider.of(ContestManager.getInstance().getRessListFromConfig()));
 
         CommandsManager.getHandler().register(
-                new ContestCommand(this.plugin)
+                new ContestCommand()
         );
 
         //Load config
@@ -96,21 +93,6 @@ public class ContestManager {
         // Fill data and playerData
         initContestData();
         loadContestPlayerData();
-
-//        // Logs of data and playerData
-//        eventRunnable = new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
-//                plugin.getLogger().info(" ");
-//                dataPlayer.forEach((uuid, data) -> {
-//                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
-//                });
-//            }
-//        };
-//
-//        // tout les minutes
-//        eventRunnable.runTaskTimer(plugin, 0, 100);
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -408,14 +390,14 @@ public class ContestManager {
                         .append(Component.text(voteWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
                         .append(Component.text("\n§0Taux de Points : §8"))
                         .append(Component.text(pointsWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text( "\n\n §0Perdant : "))
+                        .append(Component.text( "\n\n§0Perdant : "))
                         .append(Component.text(campLooser).decoration(TextDecoration.ITALIC, false).color(colorLooser))
                         .append(Component.text("\n§0Taux de Vote : §8"))
                         .append(Component.text(voteLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
                         .append(Component.text("\n§0Taux de Points : §8"))
                         .append(Component.text(pointsLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
                         .append(Component.text("\n§0Multiplicateur d'Infériorité : §bx"))
-                        .append(Component.text(multiplicateurPoint).decoration(TextDecoration.ITALIC, false))
+                        .append(Component.text(multiplicateurPoint).decoration(TextDecoration.ITALIC, false).color(NamedTextColor.AQUA))
                         .append(Component.text("\n§8§oProchaine page : Classement des 10 Meilleurs Contributeur"))
         );
 

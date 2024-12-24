@@ -3,7 +3,6 @@ package fr.openmc.core.features.mailboxes;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
-import fr.openmc.core.features.contest.listeners.ContestListener;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.Letter;

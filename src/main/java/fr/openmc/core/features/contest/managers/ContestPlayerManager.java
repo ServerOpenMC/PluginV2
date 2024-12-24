@@ -13,23 +13,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 
+@Setter
 public class ContestPlayerManager  {
     @Getter static ContestPlayerManager instance;
-    @Setter private ContestManager contestManager;
+    private ContestManager contestManager;
 
     public ContestPlayerManager() {
         instance = this;
         contestManager = ContestManager.getInstance();
-    };
-
-    public ResultSet getAllPlayer() {
-        try {
-            PreparedStatement query = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps");
-            ResultSet rs = query.executeQuery();
-            return rs;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public String getPlayerCampName(Player player) {
