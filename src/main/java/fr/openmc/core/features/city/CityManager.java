@@ -73,27 +73,7 @@ public class CityManager {
     }
 
     public static boolean isChunkClaimed(int x, int z) {
-        if (claimedChunks.containsKey(BlockVector2.at(x, z))) {
-            return claimedChunks.get(BlockVector2.at(x, z)) != null;
-        }
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_regions WHERE x = ? AND z = ? LIMIT 1");
-            statement.setInt(1, x);
-            statement.setInt(2, z);
-            ResultSet rs = statement.executeQuery();
-
-            if (!rs.next()) {
-                claimedChunks.put(BlockVector2.at(x, z), null);
-                return false;
-            }
-
-            claimedChunks.put(BlockVector2.at(x, z), CityManager.getCity(rs.getString("city_uuid")));
-            return claimedChunks.get(BlockVector2.at(x, z)) != null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return getCityFromChunk(x, z) != null;
     }
 
     @Nullable
