@@ -90,7 +90,7 @@ public class TextManager {
      * Replaces the keys (between {}) in a String with the value Strings.
      *
      * @param text The string to modify
-     * * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
+     * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
      */
     public String replacePlaceholders(String text, String... placeholders) {
         for (int i = 0; i < placeholders.length; i += 2) {
