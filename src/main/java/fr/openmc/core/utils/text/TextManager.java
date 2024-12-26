@@ -48,7 +48,7 @@ public class TextManager {
      * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
      */
     public String getText(String path, String language, String... placeholders) {
-        return replacePlaceholders(getText(path, language), placeholders);
+        return this.replacePlaceholders(getText(path, language), placeholders);
     }
 
     /**
