@@ -57,7 +57,7 @@ public class TextManager {
      * @param path  The path to the text
      */
     public String getText(String path) {
-        return getText(path, this.defaultLanguage);
+        return this.getText(path, this.defaultLanguage);
     }
 
 
