@@ -124,7 +124,7 @@ public class TextManager {
         File[] files = this.translationFolder.listFiles((dir, name) -> name.endsWith(".yml"));
         if (files!=null) {
             for (File file: files)  {
-                loadLanguage(file.getName().replace(".yml", ""));
+                this.loadLanguage(file.getName().replace(".yml", ""));
             }
         }
 
