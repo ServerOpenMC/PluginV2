@@ -53,7 +53,7 @@ public class ChestMenu {
     }
 
     public void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 54, Component.text("Banque de " + this.city.getName() + " - Page " + this.page));
+        Inventory inventory = Bukkit.createInventory(null, 54, Component.text("Coffre de " + this.city.getName() + " - Page " + this.page));
 
         inventory.setContents(this.city.getChestContent(this.page));
 
