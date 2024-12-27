@@ -53,18 +53,46 @@ public class CityMenu extends Menu {
 
         inventory.put(8, new ItemBuilder(this, Material.DRAGON_EGG, itemMeta -> {
             itemMeta.itemName(Component.text("§cVotre Mascotte"));
-            itemMeta.lore(List.of(Component.text("§cVie : §7null/null"))); //TODO: Mascottes
+            itemMeta.lore(List.of(
+                    Component.text("§cVie : §7null/null")
+            )); //TODO: Mascottes
         }));
 
         inventory.put(19, new ItemBuilder(this, Material.OAK_FENCE, itemMeta -> {
             itemMeta.itemName(Component.text("§6Taille de votre Ville"));
-            itemMeta.lore(List.of(Component.text("§7Superficie" + city.getChunks().size())));
+            itemMeta.lore(List.of(
+                    Component.text("§7Superficie : " + city.getChunks().size())
+            ));
+        }));
+
+        inventory.put(36, new ItemBuilder(this, Material.CHEST, itemMeta -> {
+            itemMeta.itemName(Component.text("§aLe Coffre de la Ville"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Acceder au Coffre de votre Ville pour"),
+                    Component.text("§7stocker des items en commun"),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            new ChestMenu(city, 1).open(player);
+        }));
+
+        inventory.put(40, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+            itemMeta.itemName(Component.text("§6La Banque"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Le compte en banque de la ville et le votre"),
+                    Component.text("§e§lCLIQUEZ ICI POUR GERER LES COMPTES DE BANQUE")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            //TODO: Implementer la Banque pour les villes et banque perso voir cdc
         }));
 
 
         inventory.put(44, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
             itemMeta.itemName(Component.text("§cPartir de la Ville"));
-            itemMeta.lore(List.of(Component.text("§e§lCLIQUEZ ICI POUR PARTIR")));
+            itemMeta.lore(List.of(
+                    Component.text("§7Vous allez §cquitter §7" + city.getCityName()),
+                    Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
+            ));
         }).setOnClick(inventoryClickEvent -> {
             ConfirmMenu menu = new ConfirmMenu(player, null, this::accept, this::refuse, "§7Voulez vous vraiment partir de " + city.getCityName() + " ?", "§7Rester dans la ville "  + city.getCityName());
             menu.open();
@@ -77,6 +105,5 @@ public class CityMenu extends Menu {
         Bukkit.dispatchCommand(getOwner(), "city leave");
     }
 
-    private void refuse() {
-    }
+    private void refuse() { }
 }
