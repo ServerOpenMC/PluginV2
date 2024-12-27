@@ -8,6 +8,7 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
@@ -42,15 +43,15 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
-        ContestManager contestManager = new ContestManager(this);
-        ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new CommandsManager();
         CustomItemRegistry.init();
+        ContestManager contestManager = new ContestManager(this);
+        ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
         new CityManager();
-        new ScoreboardManager();
         new ListenersManager();
         new EconomyManager();
+        new MailboxManager();
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);

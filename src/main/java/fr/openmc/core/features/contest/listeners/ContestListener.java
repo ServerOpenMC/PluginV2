@@ -10,11 +10,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ContestListener implements Listener {
-    private BukkitRunnable eventRunnable;
-    private ContestManager contestManager;
+    private final ContestManager contestManager;
     public ContestListener(OMCPlugin plugin) {
         contestManager = ContestManager.getInstance();
-        eventRunnable = new BukkitRunnable() {
+        //attention ne pas modifier les valeurs de départ des contest sinon le systeme va broke
+        BukkitRunnable eventRunnable = new BukkitRunnable() {
             @Override
             public void run() {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.FRENCH);
@@ -25,13 +25,15 @@ public class ContestListener implements Listener {
                     contestManager.initPhase1();
                 }
                 int dayStart = dayStartContestOfWeek.getValue() + 1;
-                if (dayStart==8) {dayStart=1;}
+                if (dayStart == 8) {
+                    dayStart = 1;
+                }
                 if (phase == 2 && contestManager.getCurrentDayOfWeek().getValue() == dayStart) {
                     contestManager.initPhase2();
                 }
                 int dayEnd = dayStart + 2;
-                if (dayEnd>=8) {
-                    dayEnd=1;
+                if (dayEnd >= 8) {
+                    dayEnd = 1;
                 } //attention ne pas modifier les valeurs de départ des contest sinon le systeme va broke
                 if (phase == 3 && contestManager.getCurrentDayOfWeek().getValue() == dayEnd) {
                     contestManager.initPhase3();
@@ -40,5 +42,5 @@ public class ContestListener implements Listener {
         };
         // 1200 s = 1 min
         eventRunnable.runTaskTimer(plugin, 0, 1200);
-     };
+     }
 }

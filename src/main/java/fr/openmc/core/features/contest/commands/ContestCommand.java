@@ -1,6 +1,5 @@
 package fr.openmc.core.features.contest.commands;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.contest.menu.ContributionMenu;
@@ -25,12 +24,10 @@ import java.util.Map;
 @Command("contest")
 @Description("Ouvre l'interface des festivals, et quand un festival commence, vous pouvez choisir votre camp")
 public class ContestCommand {
-    private final OMCPlugin plugin;
     private final ContestManager contestManager;
 
-    public ContestCommand(OMCPlugin plugin) {
+    public ContestCommand() {
         this.contestManager = ContestManager.getInstance();
-        this.plugin = plugin;
     }
 
     @Cooldown(4)

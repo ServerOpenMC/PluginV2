@@ -37,8 +37,7 @@ public class CommandsManager {
                 new SetSpawn(),
                 new Playtime(),
 		        new Diceroll(),
-                new CooldownCommand(),
-                new ContestCommand(OMCPlugin.getInstance())
+                new CooldownCommand()
         );
     }
 
