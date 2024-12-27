@@ -477,7 +477,7 @@ public class CityCommands {
             }
         });
 
-        City city = CityManager.createCity(uuid, cityUUID, name);
+        City city = CityManager.createCity(player, cityUUID, name);
         city.addPlayer(uuid);
         city.addPermission(uuid, CPermission.OWNER);
 
