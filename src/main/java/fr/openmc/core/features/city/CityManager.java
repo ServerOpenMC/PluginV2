@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -113,12 +114,12 @@ public class CityManager implements Listener {
         }
     }
 
-    public static City createCity(UUID owner, String city_uuid, String name) {
+    public static City createCity(Player owner, String city_uuid, String name) {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0)");
                 statement.setString(1, city_uuid);
-                statement.setString(2, owner.toString());
+                statement.setString(2, owner.getUniqueId().toString());
                 statement.setString(3, name);
                 statement.executeUpdate();
 

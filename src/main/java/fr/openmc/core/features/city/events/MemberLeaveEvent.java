@@ -2,17 +2,16 @@ package fr.openmc.core.features.city.events;
 
 import fr.openmc.core.features.city.City;
 import lombok.Getter;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public class MemberLeaveEvent extends Event {
-    @Getter private UUID player;
+    @Getter private OfflinePlayer player;
     @Getter private City city;
 
-    public MemberLeaveEvent(UUID player, City city) {
+    public MemberLeaveEvent(OfflinePlayer player, City city) {
         this.player = player;
         this.city = city;
     }

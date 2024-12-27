@@ -443,7 +443,7 @@ public class City {
                 }
             });
 
-            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, uuid, permission, false));
+            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, false));
             return true;
         }
         return false;
@@ -485,7 +485,7 @@ public class City {
                     e.printStackTrace();
                 }
             });
-            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, uuid, permission, true));
+            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, true));
         }
     }
 
@@ -500,7 +500,7 @@ public class City {
         CityManager.uncachePlayer(player);
         members.remove(player);
 
-        Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(player, this));
+        Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(Bukkit.getOfflinePlayer(player), this));
 
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE player=?");
@@ -520,7 +520,7 @@ public class City {
      */
     public void addPlayer(UUID player) {
         members.add(player);
-        Bukkit.getPluginManager().callEvent(new MemberJoinEvent(player, this));
+        Bukkit.getPluginManager().callEvent(new MemberJoinEvent(Bukkit.getOfflinePlayer(player), this));
         CityManager.cachePlayer(player, this);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
