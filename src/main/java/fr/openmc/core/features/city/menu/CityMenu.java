@@ -5,20 +5,15 @@ import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.utils.menu.ConfirmMenu;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +31,7 @@ public class CityMenu extends Menu {
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.LARGE;
+        return InventorySize.LARGER;
     }
 
     @Override
@@ -48,54 +43,40 @@ public class CityMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        List<Component> lore_create = new ArrayList<>();
-        lore_create.add(Component.text("§7Vous pouvez aussi créer §dvotre Ville"));
-        lore_create.add(Component.text("§7Faites §d/city create <name>"));
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        assert city != null;
 
-        Component name_notif;
-        List<Component> lore_notif = new ArrayList<>();
-        if (!CityCommands.invitations.containsKey(player)) {
-            name_notif = Component.text("§7Vous n'avez aucune §6invitation");
-            lore_notif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
-            lore_notif.add(Component.text("§6via /city invite"));
+        inventory.put(4, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
+            itemMeta.itemName(Component.text("§d" + city.getCityName()));
+            itemMeta.lore(List.of(Component.text("§7Membre(s) : " + city.getMembers().size())));
+        }));
 
-            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
-                itemMeta.itemName(name_notif);
-                itemMeta.lore(lore_notif);
-            }).setOnClick(inventoryClickEvent -> {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
-            }));
-        } else {
-            name_notif = Component.text("§7Vous avez une §6invitation");
+        inventory.put(8, new ItemBuilder(this, Material.DRAGON_EGG, itemMeta -> {
+            itemMeta.itemName(Component.text("§cVotre Mascotte"));
+            itemMeta.lore(List.of(Component.text("§cVie : §7null/null"))); //TODO: Mascottes
+        }));
 
-            Player inviter = CityCommands.invitations.get(player);
-            City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
+        inventory.put(19, new ItemBuilder(this, Material.OAK_FENCE, itemMeta -> {
+            itemMeta.itemName(Component.text("§6Taille de votre Ville"));
+            itemMeta.lore(List.of(Component.text("§7Superficie" + city.getChunks().size())));
+        }));
 
-            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName()));
-            lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER"));
 
-            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
-                itemMeta.itemName(name_notif);
-                itemMeta.lore(lore_notif);
-            }).setOnClick(inventoryClickEvent -> {
-                ConfirmMenu menu = new ConfirmMenu(player, new CityMenu(player), this::accept, this::refuse, "§7Accepter", "§7Refuser" + inviter.getName());
-                menu.open();
-            }));
-        }
-
-        inventory.put(11, new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
-            itemMeta.lore(lore_create);
+        inventory.put(44, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
+            itemMeta.itemName(Component.text("§cPartir de la Ville"));
+            itemMeta.lore(List.of(Component.text("§e§lCLIQUEZ ICI POUR PARTIR")));
+        }).setOnClick(inventoryClickEvent -> {
+            ConfirmMenu menu = new ConfirmMenu(player, null, this::accept, this::refuse, "§7Voulez vous vraiment partir de " + city.getCityName() + " ?", "§7Rester dans la ville "  + city.getCityName());
+            menu.open();
         }));
 
         return inventory;
     }
 
     private void accept() {
-        Bukkit.dispatchCommand(getOwner(), "city accept");
+        Bukkit.dispatchCommand(getOwner(), "city leave");
     }
 
     private void refuse() {
-        Bukkit.dispatchCommand(getOwner(), "city deny");
     }
 }

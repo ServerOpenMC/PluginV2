@@ -57,8 +57,15 @@ public class CityCommands {
 
     @DefaultFor("~")
     void main(Player player) {
-        CityMenu menu = new CityMenu(player);
-        menu.open();
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (playerCity == null) {
+            NoCityMenu menu = new NoCityMenu(player);
+            menu.open();
+        } else {
+            CityMenu menu = new CityMenu(player);
+            menu.open();
+        }
     }
 
     @Subcommand("accept")
