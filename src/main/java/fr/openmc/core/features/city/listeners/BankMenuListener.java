@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.listeners;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.BankMenu;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,8 +21,9 @@ public class BankMenuListener implements Listener {
         City city = CityManager.getPlayerCity(player.getUniqueId()); // Ca permets de charger les villes en background
         if (city == null) { return; }
 
-        Inventory inv = event.getInventory();
         BankMenu menu = city.getBankMenu();
+        Inventory inv = event.getInventory();
+
         if (menu == null) { return; }
         if (inv != menu.getInventory()) { return; }
 
