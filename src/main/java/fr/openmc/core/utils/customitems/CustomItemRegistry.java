@@ -30,6 +30,8 @@ public class CustomItemRegistry {
         new ContestShell();
         new PreviousPage();
         new NextPage();
+        new AcceptButton();
+        new RefuseButton();
     }
 
     public static void register(String name, CustomItem item) {

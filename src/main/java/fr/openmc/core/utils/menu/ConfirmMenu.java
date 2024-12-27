@@ -3,6 +3,9 @@ package fr.openmc.core.utils.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -43,7 +46,11 @@ public class ConfirmMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Confirmation";
+        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_confirm_menu%");
+        } else {
+            return "Confirmation";
+        }
     }
 
     @Override
@@ -67,16 +74,19 @@ public class ConfirmMenu extends Menu {
         lore_deny.add(Component.text(loreDeny));
         lore_deny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
 
-        inventory.put(2, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> {
-            itemMeta.itemName(Component.text("§cRefuser"));
+        ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
+        ItemStack  acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
+
+        inventory.put(2, new ItemBuilder(this, refuseBtn, itemMeta -> {
+            itemMeta.displayName(Component.text("§cRefuser"));
             itemMeta.lore(lore_deny);
         }).setOnClick(event -> {
             deny.run();
             menu.open();
         }));
 
-        inventory.put(6, new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> {
-            itemMeta.itemName(Component.text("§aAccepter"));
+        inventory.put(6, new ItemBuilder(this,acceptBtn, itemMeta -> {
+            itemMeta.displayName(Component.text("§aAccepter"));
             itemMeta.lore(lore_accept);
         }).setOnClick(event -> {
             accept.run();
