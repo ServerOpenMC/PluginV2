@@ -12,8 +12,8 @@ public enum CPermission {
     MONEY_BALANCE("Voir l'argent"),
     MONEY_TAKE("Prendre de l'argent"),
     PERMS("Permissions"), // Cette permission est donnée seulement par l'owner
-    BANK("Banque"),
-    BANK_UPGRADE("Améliorer la banque")
+    CHEST("Accès au Coffre"),
+    CHEST_UPGRADE("Améliorer le coffre")
     ;
 
     @Getter

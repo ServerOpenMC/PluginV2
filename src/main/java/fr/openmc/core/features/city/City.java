@@ -2,7 +2,7 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.menu.BankMenu;
+import fr.openmc.core.features.city.menu.ChestMenu;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,12 +23,12 @@ public class City {
     private Set<UUID> members = new HashSet<>();
     private Double balance;
     private String name;
-    private Integer bank_pages;
+    private Integer chest_pages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
-    private HashMap<Integer, ItemStack[]> bankContent = new HashMap<>();
+    private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
 
-    @Getter @Setter private UUID bankWatcher;
-    @Getter @Setter private BankMenu bankMenu;
+    @Getter @Setter private UUID chestWatcher;
+    @Getter @Setter private ChestMenu chestMenu;
 
     public City(String uuid) {
         this.city_uuid = uuid;
@@ -57,13 +57,13 @@ public class City {
         }
     }
 
-    public ItemStack[] getBankContent(int page) {
-        if (bankContent.containsKey(page)) {
-            return bankContent.get(page);
+    public ItemStack[] getChestContent(int page) {
+        if (chestContent.containsKey(page)) {
+            return chestContent.get(page);
         }
 
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT content FROM city_banks WHERE city_uuid = ? AND page = ? LIMIT 1");
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT content FROM city_chests WHERE city_uuid = ? AND page = ? LIMIT 1");
             statement.setString(1, city_uuid);
             statement.setInt(2, page);
             ResultSet rs = statement.executeQuery();
@@ -72,22 +72,22 @@ public class City {
                 if (content == null) {
                     return new ItemStack[54];
                 }
-                bankContent.put(page, ItemStack.deserializeItemsFromBytes(content));
-                return bankContent.get(page);
+                chestContent.put(page, ItemStack.deserializeItemsFromBytes(content));
+                return chestContent.get(page);
             }
         } catch (SQLException e) {
             e.printStackTrace(); // On peut pas retourner une liste vide parceque si il ferme, ça va reset son inv
-            throw new RuntimeException("Error while loading bank content");
+            throw new RuntimeException("Error while loading chest content");
         }
         return new ItemStack[54]; // ayayay
     }
 
-    public void saveBankContent(int page, ItemStack[] content) {
-        bankContent.put(page, content);
+    public void saveChestContent(int page, ItemStack[] content) {
+        chestContent.put(page, content);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_banks SET content=? WHERE city_uuid=? AND page=?");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_chests SET content=? WHERE city_uuid=? AND page=?");
                 statement.setBytes(1, ItemStack.serializeItemsAsBytes(content));
                 statement.setString(2, city_uuid);
                 statement.setInt(3, page);
@@ -165,17 +165,17 @@ public class City {
         return chunks.contains(BlockVector2.at(chunkX, chunkZ));
     }
 
-    public @NotNull Integer getBankPages() {
-        if (bank_pages != null) return bank_pages;
+    public @NotNull Integer getChestPages() {
+        if (chest_pages != null) return chest_pages;
 
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT COUNT(page) FROM city_banks WHERE city_uuid = ?");
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT COUNT(page) FROM city_chests WHERE city_uuid = ?");
             statement.setString(1, city_uuid);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                bank_pages = resultSet.getInt(1);
-                return bank_pages;
+                chest_pages = resultSet.getInt(1);
+                return chest_pages;
             }
         } catch (SQLException err) {
             err.printStackTrace();
@@ -246,22 +246,22 @@ public class City {
         });
     }
 
-    public int addBankPages() {
-        bank_pages += 1;
-        bankContent.put(bank_pages, new ItemStack[54]);
+    public int addChestPages() {
+        chest_pages += 1;
+        chestContent.put(chest_pages, new ItemStack[54]);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_banks (city_uuid, page) VALUES (?, ?)");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests (city_uuid, page) VALUES (?, ?)");
                 statement.setString(1, city_uuid);
-                statement.setInt(2, bank_pages);
+                statement.setInt(2, chest_pages);
                 statement.executeUpdate();
-                bankContent.remove(bank_pages);
+                chestContent.remove(chest_pages);
             } catch (SQLException e) {
                 e.printStackTrace();
-                bank_pages -= 1;
+                chest_pages -= 1;
             }
         });
-        return bank_pages;
+        return chest_pages;
     }
 
     /**
@@ -537,7 +537,7 @@ public class City {
                         "DELETE FROM city WHERE uuid=?",
                         "DELETE FROM city_permissions WHERE city_uuid=?",
                         "DELETE FROM city_regions WHERE city_uuid=?",
-                        "DELETE FROM city_banks WHERE city_uuid=?"
+                        "DELETE FROM city_chests WHERE city_uuid=?"
                 };
 
                 for (String sql : queries) {
@@ -551,17 +551,17 @@ public class City {
         });
     }
 
-    public void upgradeBank() {
-        bank_pages += 1;
+    public void upgradeChest() {
+        chest_pages += 1;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_banks (city_uuid, page) VALUES (?, ?)");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests (city_uuid, page) VALUES (?, ?)");
                 statement.setString(1, city_uuid);
-                statement.setInt(2, bank_pages);
+                statement.setInt(2, chest_pages);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
-                bank_pages -= 1;
+                chest_pages -= 1;
             }
         });
     }
