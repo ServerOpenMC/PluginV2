@@ -18,8 +18,6 @@ public class BankMenuListener implements Listener {
         HumanEntity humanEntity = event.getWhoClicked();
         if (!(humanEntity instanceof Player player)) { return; }
 
-        if (!((TextComponent) event.getView().title()).content().startsWith("Banque de ")) return; // Vérifie que le titre commence par "Banque de "
-
         City city = CityManager.getPlayerCity(player.getUniqueId()); // Ca permets de charger les villes en background
         if (city == null) { return; }
 
