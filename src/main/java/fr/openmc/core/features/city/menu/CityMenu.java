@@ -69,6 +69,8 @@ public class CityMenu extends Menu {
                     Component.text("§7Votre ville a une superficie de §6" + city.getChunks().size()),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A LA MAP")
             ));
+        }).setOnClick(inventoryClickEvent -> {
+            // Menu des claims
         }));
 
         ItemStack playerHead = PlayerUtils.getPlayerSkull(player);
@@ -129,5 +131,6 @@ public class CityMenu extends Menu {
         Bukkit.dispatchCommand(getOwner(), "city leave");
     }
 
-    private void refuse() { }
+    private void refuse() {
+    }
 }
