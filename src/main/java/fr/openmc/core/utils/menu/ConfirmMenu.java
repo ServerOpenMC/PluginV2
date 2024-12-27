@@ -47,7 +47,7 @@ public class ConfirmMenu extends Menu {
     @Override
     public @NotNull String getName() {
         if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_confirm_menu%");
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_confirm_menu%");
         } else {
             return "Confirmation";
         }
@@ -65,6 +65,7 @@ public class ConfirmMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
+        Player player = getOwner();
 
         List<Component> lore_accept = new ArrayList<>();
         lore_accept.add(Component.text(loreAccept));
@@ -77,20 +78,28 @@ public class ConfirmMenu extends Menu {
         ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
         ItemStack  acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
 
-        inventory.put(2, new ItemBuilder(this, refuseBtn, itemMeta -> {
+        inventory.put(3, new ItemBuilder(this, refuseBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§cRefuser"));
             itemMeta.lore(lore_deny);
         }).setOnClick(event -> {
             deny.run();
-            menu.open();
+            if (menu == null) {
+                player.closeInventory();
+            } else {
+                menu.open();
+            }
         }));
 
-        inventory.put(6, new ItemBuilder(this,acceptBtn, itemMeta -> {
+        inventory.put(5, new ItemBuilder(this,acceptBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§aAccepter"));
             itemMeta.lore(lore_accept);
         }).setOnClick(event -> {
             accept.run();
-            menu.open();
+            if (menu == null) {
+                player.closeInventory();
+            } else {
+                menu.open();
+            }
         }));
 
 
