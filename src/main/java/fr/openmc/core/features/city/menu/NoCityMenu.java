@@ -36,11 +36,11 @@ public class NoCityMenu extends Menu {
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.LARGE;
+        return InventorySize.NORMAL;
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent click) {
+    public void onInventoryClick(InventoryClickEvent clùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùick) {
     }
 
     @Override

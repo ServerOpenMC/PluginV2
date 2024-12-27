@@ -3,8 +3,10 @@ package fr.openmc.core.features.city.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -48,7 +50,10 @@ public class CityMenu extends Menu {
 
         inventory.put(4, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
             itemMeta.itemName(Component.text("§d" + city.getCityName()));
-            itemMeta.lore(List.of(Component.text("§7Membre(s) : " + city.getMembers().size())));
+            itemMeta.lore(List.of(
+                    Component.text("§7Maire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                    Component.text("§7Membre(s) : " + city.getMembers().size())
+            ));
         }));
 
         inventory.put(8, new ItemBuilder(this, Material.DRAGON_EGG, itemMeta -> {
@@ -61,7 +66,26 @@ public class CityMenu extends Menu {
         inventory.put(19, new ItemBuilder(this, Material.OAK_FENCE, itemMeta -> {
             itemMeta.itemName(Component.text("§6Taille de votre Ville"));
             itemMeta.lore(List.of(
-                    Component.text("§7Superficie : " + city.getChunks().size())
+                    Component.text("§7Votre ville a une superficie de §6" + city.getChunks().size()),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A LA MAP")
+            ));
+        }));
+
+        ItemStack playerHead = PlayerUtils.getPlayerSkull(player);
+
+        inventory.put(22, new ItemBuilder(this, playerHead, itemMeta -> {
+            itemMeta.displayName(Component.text("§dListe des Membres"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Il y a actuellement §d" + city.getMembers().size() + "§7 membre(s) dans votre ville")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            // Menu des membres
+        }));
+
+        inventory.put(25, new ItemBuilder(this, Material.NETHERITE_SWORD, itemMeta -> {
+            itemMeta.itemName(Component.text("§5Le Statut de votre Ville"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Votre ville est en ...") //TODO: Systeme de Status des Villes (voir cdc, en paix, en guerre, commerce)
             ));
         }));
 
