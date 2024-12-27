@@ -437,6 +437,8 @@ public class CityCommands {
             return;
         }
 
+        MessagesManager.sendMessageType(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
+
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
         Chunk origin = player.getChunk();
@@ -475,11 +477,11 @@ public class CityCommands {
             }
         });
 
-        City city = CityManager.createCity(uuid, cityUUID, name);
+        City city = CityManager.createCity(player, cityUUID, name);
         city.addPlayer(uuid);
         city.addPermission(uuid, CPermission.OWNER);
 
-        MessagesManager.sendMessageType(player, Component.text("Votre ville a été créée"), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, Component.text("Votre ville a été créée"), Prefix.CITY, MessageType.SUCCESS, true);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
     }

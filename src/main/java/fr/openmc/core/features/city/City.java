@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.menu.ChestMenu;
@@ -119,6 +120,8 @@ public class City {
                 e.printStackTrace();
             }
         });
+
+        Bukkit.getPluginManager().callEvent(new ChunkClaimedEvent(this, chunk));
     }
 
     public boolean removeChunk(int chunkX, int chunkZ) {
@@ -270,7 +273,9 @@ public class City {
      * @param newName The new name for the city.
      */
     public void renameCity(String newName) {
+        Bukkit.getPluginManager().callEvent(new CityRenameEvent(this.name, this));
         name = newName;
+
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET name=? WHERE uuid=?;");
@@ -335,6 +340,7 @@ public class City {
      * @param diff The amount to be added to the existing balance.
      */
     public void updateBalance(Double diff) {
+        Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, balance, balance+diff));
         setBalance(balance+diff);
     }
 
@@ -432,12 +438,12 @@ public class City {
                     statement.setString(2, uuid.toString());
                     statement.setString(3, permission.toString());
                     statement.executeUpdate();
-                    statement.executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             });
 
+            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, false));
             return true;
         }
         return false;
@@ -479,6 +485,7 @@ public class City {
                     e.printStackTrace();
                 }
             });
+            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, true));
         }
     }
 
@@ -492,6 +499,8 @@ public class City {
         forgetPlayer(player);
         CityManager.uncachePlayer(player);
         members.remove(player);
+
+        Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(Bukkit.getOfflinePlayer(player), this));
 
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE player=?");
@@ -511,6 +520,7 @@ public class City {
      */
     public void addPlayer(UUID player) {
         members.add(player);
+        Bukkit.getPluginManager().callEvent(new MemberJoinEvent(Bukkit.getOfflinePlayer(player), this));
         CityManager.cachePlayer(player, this);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -549,6 +559,8 @@ public class City {
                 e.printStackTrace();
             }
         });
+
+        Bukkit.getPluginManager().callEvent(new CityDeleteEvent(this));
     }
 
     public void upgradeChest() {
