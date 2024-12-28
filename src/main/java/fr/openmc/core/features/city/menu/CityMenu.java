@@ -6,8 +6,12 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.menu.bank.BankMainMenu;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -99,17 +103,29 @@ public class CityMenu extends Menu {
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
             ));
         }).setOnClick(inventoryClickEvent -> {
+            if (!city.hasPermission(player.getUniqueId(), CPermission.CHEST)) {
+                MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas les permissions de voir le coffre"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            if (city.getChestWatcher() != null) {
+                MessagesManager.sendMessageType(player, Component.text("Le coffre est déjà ouvert"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             new ChestMenu(city, 1).open(player);
         }));
 
         inventory.put(40, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.itemName(Component.text("§6La Banque"));
             itemMeta.lore(List.of(
-                    Component.text("§7Le compte en banque de la ville et le votre"),
-                    Component.text("§e§lCLIQUEZ ICI POUR GERER LES COMPTES DE BANQUE")
+                    Component.text("§7Stocker votre argent et celle de votre ville"),
+                    Component.text("§7Contribuer au développement de votre ville"),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX COMPTES")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            //TODO: Implementer la Banque pour les villes et banque perso voir cdc
+            BankMainMenu menu = new BankMainMenu(player);
+            menu.open();
         }));
 
 
@@ -120,17 +136,17 @@ public class CityMenu extends Menu {
                     Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            ConfirmMenu menu = new ConfirmMenu(player, null, this::accept, this::refuse, "§7Voulez vous vraiment partir de " + city.getCityName() + " ?", "§7Rester dans la ville "  + city.getCityName());
+            ConfirmMenu menu = new ConfirmMenu(player, null, this::acceptLeave, this::refuseLeave, "§7Voulez vous vraiment partir de " + city.getCityName() + " ?", "§7Rester dans la ville "  + city.getCityName());
             menu.open();
         }));
 
         return inventory;
     }
 
-    private void accept() {
+    private void acceptLeave() {
         Bukkit.dispatchCommand(getOwner(), "city leave");
     }
 
-    private void refuse() {
+    private void refuseLeave() {
     }
 }

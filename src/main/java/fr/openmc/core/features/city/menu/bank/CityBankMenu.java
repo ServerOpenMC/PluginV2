@@ -1,0 +1,117 @@
+package fr.openmc.core.features.city.menu.bank;
+
+import dev.xernas.menulib.Menu;
+import dev.xernas.menulib.utils.InventorySize;
+import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.input.SignManager;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class CityBankMenu extends Menu {
+
+    public CityBankMenu(Player owner) {
+        super(owner);
+    }
+
+    @Override
+    public @NotNull String getName() {
+        return "Menu des villes - Banque de Ville";
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.NORMAL;
+    }
+
+    @Override
+    public void onInventoryClick(InventoryClickEvent click) {
+    }
+
+    @Override
+    public @NotNull Map<Integer, ItemStack> getContent() {
+        Map<Integer, ItemStack> inventory = new HashMap<>();
+        Player player = getOwner();
+
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        assert city != null;
+
+        List<Component> loreBankDeposit;
+
+        if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE)) {
+            loreBankDeposit = List.of(
+                    Component.text("§7Votre argent sera placé dans la §6Banque de la Ville"),
+                    Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
+            );
+        } else {
+            loreBankDeposit = List.of(
+                    Component.text("§cVous n'avez pas le droit de faire ceci")
+            );
+        }
+
+        inventory.put(11, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
+            itemMeta.itemName(Component.text("§7Déposer de l'§6Argent"));
+            itemMeta.lore(loreBankDeposit);
+        }).setOnClick(inventoryClickEvent -> {
+            SignManager.openSign(player);
+        }));
+
+        if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE)) {
+            inventory.put(13, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
+                itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
+                itemMeta.lore(List.of(
+                        Component.text("§7La ville a actuellement §6" + city.getBalance() + EconomyManager.getEconomyIcon())
+                        )
+                );
+            }));
+        }
+
+        List<Component> loreBankTake;
+
+        if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE)) {
+            loreBankTake = List.of(
+                    Component.text("§7L'argent indiqué sera pris dans la §6Banque de la Ville"),
+                    Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
+            );
+        } else {
+            loreBankTake = List.of(
+                    Component.text("§cVous n'avez pas le droit de faire ceci")
+            );
+        }
+
+        inventory.put(15, new ItemBuilder(this, Material.DISPENSER, itemMeta -> {
+            itemMeta.itemName(Component.text("§7Retirer de l'§6Argent"));
+            itemMeta.lore(loreBankTake);
+        }).setOnClick(inventoryClickEvent -> {
+            //
+        }));
+
+        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.itemName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Vous allez retourner au menu des comptes en banque"),
+                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            BankMainMenu menu = new BankMainMenu(player);
+            menu.open();
+        }));
+
+        return inventory;
+    }
+
+}
