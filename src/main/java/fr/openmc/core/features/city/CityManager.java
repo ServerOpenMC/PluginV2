@@ -114,23 +114,23 @@ public class CityManager implements Listener {
         }
     }
 
-    public static City createCity(Player owner, String city_uuid, String name) {
+    public static City createCity(Player owner, String cityUuid, String name) {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0)");
-                statement.setString(1, city_uuid);
+                statement.setString(1, cityUuid);
                 statement.setString(2, owner.getUniqueId().toString());
                 statement.setString(3, name);
                 statement.executeUpdate();
 
                 statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests VALUE (?, 1, null)");
-                statement.setString(1, city_uuid);
+                statement.setString(1, cityUuid);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
-        City city = new City(city_uuid);
+        City city = new City(cityUuid);
         Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
         return city;
     }
