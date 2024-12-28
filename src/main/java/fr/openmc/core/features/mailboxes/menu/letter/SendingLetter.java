@@ -23,7 +23,7 @@ public class SendingLetter extends MailboxInv {
     private final OMCPlugin plugin;
     private List<String> playerFriends = new ArrayList<>();
 
-    int mail_accept;
+    int mailAccept;
 
     public SendingLetter(Player player, OfflinePlayer receiver, OMCPlugin plugin) throws SQLException {
         super(player);
