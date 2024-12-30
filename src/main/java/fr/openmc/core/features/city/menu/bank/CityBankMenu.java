@@ -1,7 +1,5 @@
 package fr.openmc.core.features.city.menu.bank;
 
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
@@ -9,19 +7,16 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +89,7 @@ public class CityBankMenu extends Menu {
 
         if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE)) {
             loreBankTake = List.of(
-                    Component.text("§7L'argent indiqué sera pris dans la §6Banque de la Ville"),
+                    Component.text("§7L'argent sera pris dans la §6Banque de la Ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
             );
         } else {
