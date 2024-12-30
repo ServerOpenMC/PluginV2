@@ -55,6 +55,7 @@ public final class OMCPlugin extends JavaPlugin {
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
+        new ScoreboardManager();
 
         getLogger().info("Plugin activé");
     }
