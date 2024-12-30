@@ -6,6 +6,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -90,6 +91,17 @@ public class BankMainMenu extends Menu {
                     Component.text("§7Vous avez actuellement §b..."),
                     Component.text("§7Votre prochain intéret est de §b...")
             ));
+        }));
+
+        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.itemName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Vous allez retourner au menu des villes"),
+                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            CityMenu menu = new CityMenu(player);
+            menu.open();
         }));
 
         return inventory;
