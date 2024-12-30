@@ -37,6 +37,7 @@ public class BankMainMenu extends Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent click) {
+        // empty
     }
 
     @Override

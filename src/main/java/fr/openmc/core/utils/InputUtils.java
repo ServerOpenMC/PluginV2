@@ -2,6 +2,10 @@ package fr.openmc.core.utils;
 
 public class InputUtils {
 
+    private InputUtils() {
+        // for Sonar
+    }
+
     /**
      * Check if input was for money
      * @param input Input of Player

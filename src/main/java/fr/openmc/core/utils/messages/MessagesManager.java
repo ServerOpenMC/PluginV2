@@ -3,7 +3,6 @@ package fr.openmc.core.utils.messages;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Sound;
 
 import com.google.common.collect.ImmutableBiMap;
 
@@ -12,7 +11,6 @@ import org.bukkit.entity.Player;
 
 import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -90,11 +88,19 @@ public class MessagesManager {
     @Getter
     public enum Message {
         NOPERMISSION(Component.text("§cVous n'avez pas la permission d'exécuter cette commande.")),
+        NOPERMISSION2(Component.text("§cVous n'avez pas le droit de faire ceci")),
         MISSINGARGUMENT(Component.text("§cVous devez spécifier un argument.")),
+
+        MONEYPLAYERMISSING(Component.text("Tu n'as pas assez d'argent")),
 
         // City messages
         PLAYERNOCITY(Component.text("Tu n'es pas dans une ville")),
         PLAYERINCITY(Component.text("le joueur est déjà dans une ville")),
+
+        PLAYERNOMONEYGIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),
+        PLAYERNOMONEYTAKE(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville")),
+
+        CITYNOTFOUND(Component.text("La ville n'existe pas")),
 
         ;
 

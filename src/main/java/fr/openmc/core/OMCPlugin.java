@@ -37,7 +37,7 @@ public final class OMCPlugin extends JavaPlugin {
         
         /* EXTERNALS */
         MenuLib.init(this);
-        new LuckPermsAPI(this);
+        new LuckPermsAPI();
         new PapiAPI();
 
         /* MANAGERS */
@@ -50,7 +50,6 @@ public final class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MailboxManager();
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);

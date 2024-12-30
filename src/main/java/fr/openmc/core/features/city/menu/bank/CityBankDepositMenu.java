@@ -16,7 +16,6 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -45,6 +44,7 @@ public class CityBankDepositMenu extends Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent click) {
+        // empty
     }
 
     @Override
@@ -72,7 +72,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositAll = List.of(
-                    Component.text("§cVous n'avez pas le droit de faire ceci")
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -81,7 +81,7 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -90,7 +90,7 @@ public class CityBankDepositMenu extends Menu {
                 city.updateBalance(moneyPlayer);
                 MessagesManager.sendMessageType(player, Component.text("Tu as transféré " + moneyPlayer + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas assez d'argent"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -108,7 +108,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositHalf = List.of(
-                    Component.text("§cVous n'avez pas le droit de faire ceci")
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -117,7 +117,7 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -125,7 +125,7 @@ public class CityBankDepositMenu extends Menu {
                 city.updateBalance(halfMoneyPlayer);
                 MessagesManager.sendMessageType(player, Component.text("Tu as transféré " + halfMoneyPlayer + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas assez d'argent"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -140,7 +140,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositInput = List.of(
-                    Component.text("§cVous n'avez pas le droit de faire ceci")
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -149,7 +149,7 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -174,7 +174,7 @@ public class CityBankDepositMenu extends Menu {
                                     city.updateBalance(moneyDeposit);
                                     MessagesManager.sendMessageType(player, Component.text("Tu as transféré "+moneyDeposit+EconomyManager.getEconomyIcon()+" à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                                 } else {
-                                    MessagesManager.sendMessageType(player, Component.text("Tu n'as pas assez d'argent"), Prefix.CITY, MessageType.ERROR, false);
+                                    MessagesManager.sendMessageType(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                                 }
                             } else {
                                 MessagesManager.sendMessageType(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);

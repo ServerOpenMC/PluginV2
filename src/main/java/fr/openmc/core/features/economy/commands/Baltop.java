@@ -63,8 +63,8 @@ public class Baltop {
     }
 
     public static class PlayerBalance {
-        public UUID playerId;
-        public Double balance;
+        public final UUID playerId;
+        public final Double balance;
 
         public PlayerBalance(UUID playerId, Double balance) {
             this.playerId = playerId;

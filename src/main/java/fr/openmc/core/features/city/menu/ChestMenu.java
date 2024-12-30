@@ -57,25 +57,25 @@ public class ChestMenu {
     }
 
     public void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 54, Component.text("Coffre de " + this.city.getName() + " - Page " + this.page));
+        Inventory inventoryChest = Bukkit.createInventory(null, 54, Component.text("Coffre de " + this.city.getName() + " - Page " + this.page));
 
-        inventory.setContents(this.city.getChestContent(this.page));
+        inventoryChest.setContents(this.city.getChestContent(this.page));
 
         for (int i = 45; i < 54; i++) {
-            inventory.setItem(i, getBorder());
+            inventoryChest.setItem(i, getBorder());
         }
 
         if (hasPreviousPage()) {
             ItemStack previous = CustomItemRegistry.getByName("menu:previous_page").getBest();
-            inventory.setItem(45, previous);
+            inventoryChest.setItem(45, previous);
         }
 
         if (hasNextPage()) {
             ItemStack next = CustomItemRegistry.getByName("menu:next_page").getBest();
-            inventory.setItem(53, next);
+            inventoryChest.setItem(53, next);
         }
 
-        if (city.hasPermission(player.getUniqueId(), CPermission.CHEST_UPGRADE) && !(city.getChestPages() >= 5)) {
+        if (city.hasPermission(player.getUniqueId(), CPermission.CHEST_UPGRADE) && city.getChestPages() < 5) {
             ItemStack upgrade = new ItemStack(Material.ENDER_CHEST);
             ItemMeta meta = upgrade.getItemMeta();
             meta.displayName(Component.text("§aAméliorer le coffre"));
@@ -84,15 +84,15 @@ public class ChestMenu {
                     Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE")
             ));
             upgrade.setItemMeta(meta);
-            inventory.setItem(48, upgrade);
+            inventoryChest.setItem(48, upgrade);
         }
 
         ItemStack next = CustomItemRegistry.getByName("menu:close_button").getBest();
-        inventory.setItem(49, next);
+        inventoryChest.setItem(49, next);
 
-        player.openInventory(inventory);
+        player.openInventory(inventoryChest);
         city.setChestWatcher(player.getUniqueId());
         city.setChestMenu(this);
-        this.inventory = inventory;
+        this.inventory = inventoryChest;
     }
 }

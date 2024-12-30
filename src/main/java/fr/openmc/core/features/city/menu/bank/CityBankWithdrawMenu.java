@@ -16,7 +16,6 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -45,6 +44,7 @@ public class CityBankWithdrawMenu extends Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent click) {
+        // empty
     }
 
     @Override
@@ -72,7 +72,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawAll = List.of(
-                    Component.text("§cVous n'avez pas le droit de faire ceci")
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -81,7 +81,7 @@ public class CityBankWithdrawMenu extends Menu {
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyTake) {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYTAKE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
             if (halfMoneyBankCity != 0) {
@@ -107,7 +107,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawHalf = List.of(
-                    Component.text("§cVous n'avez pas le droit de faire ceci")
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -116,7 +116,7 @@ public class CityBankWithdrawMenu extends Menu {
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyTake ) {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYTAKE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -141,7 +141,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawInput = List.of(
-                    Component.text("§cVous n'avez pas le droit de faire ceci")
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -150,7 +150,7 @@ public class CityBankWithdrawMenu extends Menu {
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyTake) {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYTAKE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 

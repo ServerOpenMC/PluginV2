@@ -40,7 +40,8 @@ public class NoCityMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent clùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùùick) {
+    public void onInventoryClick(InventoryClickEvent click) {
+        //empty
     }
 
     @Override
@@ -48,35 +49,35 @@ public class NoCityMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        List<Component> lore_create = new ArrayList<>();
-        lore_create.add(Component.text("§7Vous pouvez aussi créer §dvotre Ville"));
-        lore_create.add(Component.text("§7Faites §d/city create <name>"));
+        List<Component> loreCreate = new ArrayList<>();
+        loreCreate.add(Component.text("§7Vous pouvez aussi créer §dvotre Ville"));
+        loreCreate.add(Component.text("§7Faites §d/city create <name>"));
 
-        Component name_notif;
-        List<Component> lore_notif = new ArrayList<>();
+        Component nameNotif;
+        List<Component> loreNotif = new ArrayList<>();
         if (!CityCommands.invitations.containsKey(player)) {
-            name_notif = Component.text("§7Vous n'avez aucune §6invitation");
-            lore_notif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
-            lore_notif.add(Component.text("§6via /city invite"));
+            nameNotif = Component.text("§7Vous n'avez aucune §6invitation");
+            loreNotif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
+            loreNotif.add(Component.text("§6via /city invite"));
 
             inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
-                itemMeta.itemName(name_notif);
-                itemMeta.lore(lore_notif);
-            }).setOnClick(inventoryClickEvent -> {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
-            }));
+                itemMeta.itemName(nameNotif);
+                itemMeta.lore(loreNotif);
+            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessageType(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
         } else {
-            name_notif = Component.text("§7Vous avez une §6invitation");
+            nameNotif = Component.text("§7Vous avez une §6invitation");
 
             Player inviter = CityCommands.invitations.get(player);
             City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
 
-            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName()));
-            lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER"));
+            assert inviterCity != null;
+
+            loreNotif.add(Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName()));
+            loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER"));
 
             inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
-                itemMeta.itemName(name_notif);
-                itemMeta.lore(lore_notif);
+                itemMeta.itemName(nameNotif);
+                itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> {
                 ConfirmMenu menu = new ConfirmMenu(player, new NoCityMenu(player), this::accept, this::refuse, "§7Accepter", "§7Refuser" + inviter.getName());
                 menu.open();
@@ -85,7 +86,7 @@ public class NoCityMenu extends Menu {
 
         inventory.put(11, new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
             itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
-            itemMeta.lore(lore_create);
+            itemMeta.lore(loreCreate);
         }));
 
         return inventory;
