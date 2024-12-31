@@ -61,7 +61,7 @@ public class ConfirmMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-        String messageTeam = "La Team";
+        String messageTeam = "La Team ";
 
         String campName = contestManager.data.get(getCampName);
         String campColor = contestManager.data.get(getColor);

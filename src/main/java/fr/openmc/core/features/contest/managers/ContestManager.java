@@ -135,7 +135,7 @@ public class ContestManager {
 
     // CONTEST DATA
     public void initContestData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT (camp1, camp2, color1, color2, phase, startdate, points1, points2) FROM contest WHERE 1")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest WHERE 1")) {
             ResultSet result = states.executeQuery();
             if (result.next()) {
                 String camp1 = result.getString("camp1");
@@ -176,7 +176,7 @@ public class ContestManager {
 
     // CONTEST PLAYER DATA
     public void loadContestPlayerData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT (minecraft_uuid, name, point_dep, camps) FROM contest_camps")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String uuid = result.getString("minecraft_uuid");
@@ -515,7 +515,9 @@ public class ContestManager {
 
         List<Map<String, Object>> filteredTrades = contestTrades.stream()
                 .filter(trade -> (boolean) trade.get("selected") == bool)
-                .map(trade -> (Map<String, Object>) trade).toList();
+                .map(trade -> (Map<String, Object>) trade)
+                .collect(Collectors.toList());
+
         Collections.shuffle(filteredTrades);
 
         return filteredTrades.stream().limit(12).collect(Collectors.toList());
