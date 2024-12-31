@@ -68,4 +68,21 @@ public class InputUtils {
             return -1;
         }
     }
+
+    /**
+     * Check if input was for a name
+     * @param input Input of Player
+     * @return Boolean
+     */
+    public static boolean isInputCityName(String input) {
+        if (input.length() < 24) {
+            return true;
+        }
+
+        if (!input.matches("[a-zA-Z0-9\\s]+")) {
+            return true;
+        }
+
+        return false;
+    }
 }

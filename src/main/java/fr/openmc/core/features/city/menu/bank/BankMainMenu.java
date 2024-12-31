@@ -48,10 +48,14 @@ public class BankMainMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
+        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE);
+        boolean hasPermissionMoneyTake = city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE);
+        boolean hasPermissionMoneyBalance = city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE);
+
         List<Component> loreBankCity;
 
-        if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE)) {
-            if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE) || city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE)) {
+        if (hasPermissionMoneyBalance) {
+            if (hasPermissionMoneyTake || hasPermissionMoneyGive) {
                 loreBankCity = List.of(
                         Component.text("§7Votre ville a en stock §6" + city.getBalance() + EconomyManager.getEconomyIcon()),
                         Component.text("§7Prochain intéret dans ..."), //todo: faire un intéret de 2% ou 3% tout les 3j?
@@ -64,7 +68,7 @@ public class BankMainMenu extends Menu {
                 );
             }
         } else {
-            if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE) || city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE)) {
+            if (hasPermissionMoneyTake || hasPermissionMoneyGive) {
                 loreBankCity = List.of(
                         Component.text("§7Vous n'avez pas le §cdroit de visionner la banque!"),
                         Component.text("§e§lCLIQUEZ ICI POUR GERER L'ARGENT")
@@ -80,7 +84,7 @@ public class BankMainMenu extends Menu {
             itemMeta.itemName(Component.text("§6La Banque de votre Ville"));
             itemMeta.lore(loreBankCity);
         }).setOnClick(inventoryClickEvent -> {
-            if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE) || city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE)) {
+            if (hasPermissionMoneyTake || hasPermissionMoneyGive) {
                 CityBankMenu menu = new CityBankMenu(player);
                 menu.open();
             }

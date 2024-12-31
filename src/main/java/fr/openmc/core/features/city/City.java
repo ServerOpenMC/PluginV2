@@ -120,8 +120,9 @@ public class City {
                 e.printStackTrace();
             }
         });
-
-        Bukkit.getPluginManager().callEvent(new ChunkClaimedEvent(this, chunk));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new ChunkClaimedEvent(this, chunk));
+        });
     }
 
     public boolean removeChunk(int chunkX, int chunkZ) {
@@ -273,7 +274,9 @@ public class City {
      * @param newName The new name for the city.
      */
     public void renameCity(String newName) {
-        Bukkit.getPluginManager().callEvent(new CityRenameEvent(this.name, this));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new CityRenameEvent(this.name, this));
+                });
         name = newName;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -340,7 +343,9 @@ public class City {
      * @param diff The amount to be added to the existing balance.
      */
     public void updateBalance(Double diff) {
-        Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, balance, balance+diff));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, balance, balance + diff));
+                });
         setBalance(balance+diff);
     }
 
@@ -442,8 +447,9 @@ public class City {
                     e.printStackTrace();
                 }
             });
-
-            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, false));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, false));
+            });
             return true;
         }
         return false;
@@ -485,7 +491,9 @@ public class City {
                     e.printStackTrace();
                 }
             });
-            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, true));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, true));
+            });
         }
     }
 
@@ -499,9 +507,9 @@ public class City {
         forgetPlayer(player);
         CityManager.uncachePlayer(player);
         members.remove(player);
-
-        Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(Bukkit.getOfflinePlayer(player), this));
-
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(Bukkit.getOfflinePlayer(player), this));
+        });
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE player=?");
             statement.setString(1, player.toString());
@@ -520,7 +528,9 @@ public class City {
      */
     public void addPlayer(UUID player) {
         members.add(player);
-        Bukkit.getPluginManager().callEvent(new MemberJoinEvent(Bukkit.getOfflinePlayer(player), this));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new MemberJoinEvent(Bukkit.getOfflinePlayer(player), this));
+                });
         CityManager.cachePlayer(player, this);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -559,8 +569,9 @@ public class City {
                 e.printStackTrace();
             }
         });
-
-        Bukkit.getPluginManager().callEvent(new CityDeleteEvent(this));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityDeleteEvent(this));
+        });
     }
 
     public void upgradeChest() {

@@ -131,7 +131,9 @@ public class CityManager implements Listener {
             }
         });
         City city = new City(cityUUID);
-        Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
+        });
         return city;
     }
 

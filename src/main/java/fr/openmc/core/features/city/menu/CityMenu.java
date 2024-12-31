@@ -7,6 +7,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -52,12 +54,33 @@ public class CityMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        inventory.put(4, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
-            itemMeta.itemName(Component.text("§d" + city.getCityName()));
-            itemMeta.lore(List.of(
+        boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
+        boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
+        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
+
+        List<Component> loreModifyCity;
+
+        if (hasPermissionRenameCity || hasPermissionOwner) {
+            loreModifyCity = List.of(
+                    Component.text("§7Maire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                    Component.text("§7Membre(s) : " + city.getMembers().size()),
+                    Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
+            );
+        } else {
+            loreModifyCity = List.of(
                     Component.text("§7Maire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
                     Component.text("§7Membre(s) : " + city.getMembers().size())
-            ));
+            );
+        }
+
+        inventory.put(4, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
+            itemMeta.itemName(Component.text("§d" + city.getCityName()));
+            itemMeta.lore(loreModifyCity);
+        }).setOnClick(inventoryClickEvent -> {
+            if (hasPermissionOwner) {
+                CityModifyMenu menu = new CityModifyMenu(player);
+                menu.open();
+            }
         }));
 
         inventory.put(8, new ItemBuilder(this, Material.DRAGON_EGG, itemMeta -> {
@@ -95,15 +118,25 @@ public class CityMenu extends Menu {
             ));
         }));
 
-        inventory.put(36, new ItemBuilder(this, Material.CHEST, itemMeta -> {
-            itemMeta.itemName(Component.text("§aLe Coffre de la Ville"));
-            itemMeta.lore(List.of(
+        List<Component> loreChestCity;
+
+        if (hasPermissionChest) {
+            loreChestCity = List.of(
                     Component.text("§7Acceder au Coffre de votre Ville pour"),
                     Component.text("§7stocker des items en commun"),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
-            ));
+            );
+        } else {
+            loreChestCity = List.of(
+                    Component.text("§7Vous n'avez pas le §cdroit de visionner le coffre !")
+            );
+        }
+
+        inventory.put(36, new ItemBuilder(this, Material.CHEST, itemMeta -> {
+            itemMeta.itemName(Component.text("§aLe Coffre de la Ville"));
+            itemMeta.lore(loreChestCity);
         }).setOnClick(inventoryClickEvent -> {
-            if (!city.hasPermission(player.getUniqueId(), CPermission.CHEST)) {
+            if (!hasPermissionChest) {
                 MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas les permissions de voir le coffre"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -129,16 +162,18 @@ public class CityMenu extends Menu {
         }));
 
 
-        inventory.put(44, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
-            itemMeta.itemName(Component.text("§cPartir de la Ville"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Vous allez §cquitter §7" + city.getCityName()),
-                    Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
-            ));
-        }).setOnClick(inventoryClickEvent -> {
-            ConfirmMenu menu = new ConfirmMenu(player, null, this::acceptLeave, this::refuseLeave, "§7Voulez vous vraiment partir de " + city.getCityName() + " ?", "§7Rester dans la ville "  + city.getCityName());
-            menu.open();
-        }));
+        if (!hasPermissionOwner) {
+            inventory.put(44, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
+                itemMeta.itemName(Component.text("§cPartir de la Ville"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Vous allez §cquitter §7" + city.getCityName()),
+                        Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
+                ));
+            }).setOnClick(inventoryClickEvent -> {
+                ConfirmMenu menu = new ConfirmMenu(player, null, this::acceptLeave, this::refuseLeave, "§7Voulez vous vraiment partir de " + city.getCityName() + " ?", "§7Rester dans la ville " + city.getCityName());
+                menu.open();
+            }));
+        }
 
         return inventory;
     }
