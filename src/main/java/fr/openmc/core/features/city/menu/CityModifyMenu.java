@@ -65,7 +65,7 @@ public class CityModifyMenu extends Menu {
             loreRename = List.of(
                     Component.text("§7Vous pouvez renommer votre §dville§7."),
                     Component.text(""),
-                    Component.text("§7Nom actuel : §6" + city.getCityName()),
+                    Component.text("§7Nom actuel : §d" + city.getCityName()),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR LE MODIFIER")
             );
@@ -79,6 +79,12 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§7Renommer votre §dville"));
             itemMeta.lore(loreRename);
         }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             if (!hasPermissionRenameCity) {
                 MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNORENAME.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -98,7 +104,6 @@ public class CityModifyMenu extends Menu {
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
 
-                            System.out.println(input);
                             if (InputUtils.isInputCityName(input)) {
                                 City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
@@ -125,7 +130,7 @@ public class CityModifyMenu extends Menu {
 
         if (hasPermissionOwner) {
             loreTransfer = List.of(
-                    Component.text("§7La Ville sera transferer à la personne que vous séléctionnerez"),
+                    Component.text("§dLa Ville §7sera transferer à §dla personne §7que vous séléctionnerez"),
                     Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
             );
         } else {
@@ -138,13 +143,25 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§7Transferer la §dVille"));
             itemMeta.lore(loreTransfer);
         }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             if (!hasPermissionOwner) {
                 MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
+            if (city.getMembers().size()-1 == 0) {
+                MessagesManager.sendMessageType(player, Component.text("Il y a pas de membre a qui vous pouvez transferer la ville"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             CityTransferMenu menu = new CityTransferMenu(player);
             menu.open();
+
         }));
 
 
@@ -165,6 +182,13 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§7Supprimer la ville"));
             itemMeta.lore(loreDelete);
         }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+
             if (!hasPermissionOwner) {
                 MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -181,6 +205,12 @@ public class CityModifyMenu extends Menu {
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             CityMenu menu = new CityMenu(player);
             menu.open();
         }));

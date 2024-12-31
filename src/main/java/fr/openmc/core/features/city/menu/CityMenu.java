@@ -77,6 +77,12 @@ public class CityMenu extends Menu {
             itemMeta.itemName(Component.text("§d" + city.getCityName()));
             itemMeta.lore(loreModifyCity);
         }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             if (hasPermissionOwner) {
                 CityModifyMenu menu = new CityModifyMenu(player);
                 menu.open();
@@ -136,6 +142,12 @@ public class CityMenu extends Menu {
             itemMeta.itemName(Component.text("§aLe Coffre de la Ville"));
             itemMeta.lore(loreChestCity);
         }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             if (!hasPermissionChest) {
                 MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas les permissions de voir le coffre"), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -157,6 +169,12 @@ public class CityMenu extends Menu {
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX COMPTES")
             ));
         }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             BankMainMenu menu = new BankMainMenu(player);
             menu.open();
         }));
@@ -170,6 +188,12 @@ public class CityMenu extends Menu {
                         Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
                 ));
             }).setOnClick(inventoryClickEvent -> {
+                City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+                if (cityCheck == null) {
+                    MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    return;
+                }
+
                 ConfirmMenu menu = new ConfirmMenu(player, null, this::acceptLeave, this::refuseLeave, "§7Voulez vous vraiment partir de " + city.getCityName() + " ?", "§7Rester dans la ville " + city.getCityName());
                 menu.open();
             }));

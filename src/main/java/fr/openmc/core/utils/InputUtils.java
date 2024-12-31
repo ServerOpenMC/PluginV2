@@ -75,14 +75,18 @@ public class InputUtils {
      * @return Boolean
      */
     public static boolean isInputCityName(String input) {
-        if (input.length() < 24) {
-            return true;
+        if (input == null || input.isEmpty()) {
+            return false;
+        }
+
+        if (input.length() > 24) {
+            return false;
         }
 
         if (!input.matches("[a-zA-Z0-9\\s]+")) {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 }

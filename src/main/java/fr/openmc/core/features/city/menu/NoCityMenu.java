@@ -1,11 +1,15 @@
 package fr.openmc.core.features.city.menu;
 
+import de.rapha149.signgui.SignGUI;
+import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -18,10 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NoCityMenu extends Menu {
 
@@ -49,9 +50,13 @@ public class NoCityMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        List<Component> loreCreate = new ArrayList<>();
-        loreCreate.add(Component.text("§7Vous pouvez aussi créer §dvotre Ville"));
-        loreCreate.add(Component.text("§7Faites §d/city create <name>"));
+        List<Component> loreCreate = List.of(
+                Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
+                Component.text("§7Faites §d/city create <name> §7 ou bien cliquez ici !"),
+                Component.text(""),
+                Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
+        );
+
 
         Component nameNotif;
         List<Component> loreNotif = new ArrayList<>();
@@ -79,7 +84,7 @@ public class NoCityMenu extends Menu {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> {
-                ConfirmMenu menu = new ConfirmMenu(player, new NoCityMenu(player), this::accept, this::refuse, "§7Accepter", "§7Refuser" + inviter.getName());
+                ConfirmMenu menu = new ConfirmMenu(player, new NoCityMenu(player), this::acceptInvite, this::refuseInvite, "§7Accepter", "§7Refuser" + inviter.getName());
                 menu.open();
             }));
         }
@@ -87,16 +92,50 @@ public class NoCityMenu extends Menu {
         inventory.put(11, new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
             itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
             itemMeta.lore(loreCreate);
+        }).setOnClick(inventoryClickEvent -> {
+            if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            String[] lines = new String[4];
+            lines[0] = "";
+            lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
+            lines[2] = "Entrez votre nom";
+            lines[3] = "de ville ci dessus";
+
+            SignGUI gui = null;
+            try {
+                gui = SignGUI.builder()
+                        .setLines(null, lines[1] , lines[2], lines[3])
+                        .setType(ItemUtils.getSignType(player))
+                        .setHandler((p, result) -> {
+                            String input = result.getLine(0);
+
+                            if (InputUtils.isInputCityName(input)) {
+                                CityCommands.createCity(player, input);
+                            } else {
+                                MessagesManager.sendMessageType(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                            }
+
+                            return Collections.emptyList();
+                        })
+                        .build();
+            } catch (SignGUIVersionException e) {
+                throw new RuntimeException(e);
+            }
+
+            gui.open(player);
         }));
 
         return inventory;
     }
 
-    private void accept() {
+    private void acceptInvite() {
         Bukkit.dispatchCommand(getOwner(), "city accept");
     }
 
-    private void refuse() {
+    private void refuseInvite() {
         Bukkit.dispatchCommand(getOwner(), "city deny");
     }
 }

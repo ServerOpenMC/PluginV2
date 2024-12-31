@@ -98,7 +98,7 @@ public class CityCommands {
             return;
         }
 
-        if (InputUtils.isInputCityName(name)) {
+        if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessageType(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum 24 caractères."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -428,12 +428,18 @@ public class CityCommands {
             return;
         }
 
-        if (InputUtils.isInputCityName(name)) {
+        if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessageType(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         MessagesManager.sendMessageType(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
+
+        createCity(player, name);
+    }
+
+    public static void createCity(Player player, String name) {
+        UUID uuid = player.getUniqueId();
 
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
