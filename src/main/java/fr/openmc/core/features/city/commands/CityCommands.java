@@ -5,6 +5,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -43,22 +44,17 @@ public class CityCommands {
         return 5000 + ((chunkCount-25) * 1000);
     }
 
-    private boolean isInvalidName(String name) {
-        if (name.length() > 24) {
-            return true;
-        }
-
-        if (!name.matches("[a-zA-Z0-9]+")) {
-            return true;
-        }
-
-        return false;
-    }
-
     @DefaultFor("~")
     void main(Player player) {
-        CityMenu menu = new CityMenu(player);
-        menu.open();
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (playerCity == null) {
+            NoCityMenu menu = new NoCityMenu(player);
+            menu.open();
+        } else {
+            CityMenu menu = new CityMenu(player);
+            menu.open();
+        }
     }
 
     @Subcommand("accept")
@@ -102,7 +98,7 @@ public class CityCommands {
             return;
         }
 
-        if (isInvalidName(name)) {
+        if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessageType(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum 24 caractères."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -432,12 +428,18 @@ public class CityCommands {
             return;
         }
 
-        if (isInvalidName(name)) {
+        if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessageType(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         MessagesManager.sendMessageType(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
+
+        createCity(player, name);
+    }
+
+    public static void createCity(Player player, String name) {
+        UUID uuid = player.getUniqueId();
 
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 

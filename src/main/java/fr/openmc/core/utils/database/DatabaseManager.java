@@ -24,7 +24,7 @@ public class DatabaseManager {
             TransactionsManager.init_db(connection);
             AnalyticsManager.init_db(connection);
             CityManager.init_db(connection);
-            ContestManager.init_db(connection);
+            ContestManager.initDb(connection);
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
         } catch (SQLException e) {

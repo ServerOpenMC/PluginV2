@@ -37,14 +37,8 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 public class MailboxManager {
     private static final OMCPlugin plugin = OMCPlugin.getInstance();
 
-    public MailboxManager() {
-        OMCPlugin.registerEvents(
-                new MailboxListener()
-        );
-
-        CommandsManager.getHandler().register(
-            new MailboxCommand(OMCPlugin.getInstance())
-        );
+    private MailboxManager() {
+        // for sonar
     }
 
     public static void init_db(Connection conn) throws SQLException {

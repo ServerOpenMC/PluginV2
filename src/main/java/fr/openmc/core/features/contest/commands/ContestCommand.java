@@ -62,8 +62,11 @@ public class ContestCommand {
             case 2:
                 this.contestManager.initPhase2();
                 break;
-             case 3:
+            case 3:
                 this.contestManager.initPhase3();
+                break;
+            default:
+                this.contestManager.initPhase1();
                 break;
         }
     }

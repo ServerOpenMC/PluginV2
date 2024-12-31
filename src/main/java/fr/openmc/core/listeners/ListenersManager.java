@@ -1,6 +1,7 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.mailboxes.MailboxListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ public class ListenersManager {
                 new SessionsListener(),
                 new JoinMessageListener(),
                 new ClockInfos(),
+                new MailboxListener(),
                 new DisableCreakings()
         );
     }

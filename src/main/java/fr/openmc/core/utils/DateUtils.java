@@ -30,16 +30,17 @@ public class DateUtils {
             Duration duration = Duration.between(dateTime, now);
             long minutes = duration.toMinutes();
 
+            String repetMsg="Il y a ";
             if (minutes < 1) {
                 return "À l'instant";
             } else if (minutes < 60) {
-                return "Il y a " + minutes + " minute" + (minutes > 1 ? "s" : "");
+                return repetMsg + minutes + " minute" + (minutes > 1 ? "s" : "");
             } else if (duration.toHours() < 24) {
                 long hours = duration.toHours();
-                return "Il y a " + hours + " heure" + (hours > 1 ? "s" : "");
+                return repetMsg + hours + " heure" + (hours > 1 ? "s" : "");
             } else if (duration.toDays() <= 5) {
                 long days = duration.toDays();
-                return "Il y a " + days + " jour" + (days > 1 ? "s" : "");
+                return repetMsg + days + " jour" + (days > 1 ? "s" : "");
             } else {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("'Le' dd/MM/yyyy 'à' HH:mm");
                 return dateTime.format(formatter);

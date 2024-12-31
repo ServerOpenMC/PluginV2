@@ -39,7 +39,9 @@ public class MoreInfoMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent click) {}
+    public void onInventoryClick(InventoryClickEvent click) {
+        //empty
+    }
 
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
@@ -70,15 +72,23 @@ public class MoreInfoMenu extends Menu {
 
         boolean ench0;
         boolean ench1;
-        if (phase==2) {
-            ench1 = false;
-            ench0 = true;
-        } else if (phase==3) {
-            ench0 = false;
-            ench1 = true;
-        } else {
-            ench1 = false;
-            ench0 = false;
+
+        switch (phase) {
+            case 2 : {
+                ench1 = false;
+                ench0 = true;
+                break;
+            }
+            case 3 : {
+                ench0 = false;
+                ench1 = true;
+                break;
+            }
+            default : {
+                ench1 = false;
+                ench0 = false;
+                break;
+            }
         }
 
         inventory.put(11, new ItemBuilder(this, Material.BLUE_STAINED_GLASS_PANE, itemMeta -> {
@@ -98,9 +108,7 @@ public class MoreInfoMenu extends Menu {
             itemMeta.lore(lore2);
         }));
 
-        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aRetour"));
-        }).setBackButton());
+        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
 
         return inventory;
     }

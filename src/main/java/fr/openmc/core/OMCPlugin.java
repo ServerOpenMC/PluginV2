@@ -16,7 +16,6 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import lombok.Getter;
-import net.luckperms.api.LuckPerms;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,7 +37,7 @@ public final class OMCPlugin extends JavaPlugin {
         
         /* EXTERNALS */
         MenuLib.init(this);
-        new LuckPermsAPI(this);
+        new LuckPermsAPI();
         new PapiAPI();
 
         /* MANAGERS */
@@ -51,10 +50,10 @@ public final class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MailboxManager();
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
+        new ScoreboardManager();
 
         getLogger().info("Plugin activé");
     }

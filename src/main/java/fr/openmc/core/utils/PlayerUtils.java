@@ -1,6 +1,9 @@
 package fr.openmc.core.utils;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class PlayerUtils {
 
@@ -19,5 +22,19 @@ public class PlayerUtils {
         // TODO: Check si le block en pile, sur la tête et en dessous (trapdoor) est plein
 
         return true;
+    }
+
+    /**
+     * Return a skull of a player.
+     *
+     * @param player A Player
+     * @return a Itemstack
+     */
+    public static ItemStack getPlayerSkull(Player player) {
+        ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);
+        SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+        meta.setOwner(player.getName());
+        itemStack.setItemMeta(meta);
+        return itemStack;
     }
 }
