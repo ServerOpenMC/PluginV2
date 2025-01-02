@@ -7,12 +7,52 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 @Setter
 public class ContestPlayerManager  {
     @Getter static ContestPlayerManager instance;
     private ContestManager contestManager;
+
+    private static final Map<Integer, String> RANKS = Map.of(
+            10000, "Dictateur en ",
+            2500, "Colonel en ",
+            2000, "Addict en ",
+            1500, "Dieu en ",
+            1000, "Légende en ",
+            750, "Sénior en ",
+            500, "Pro en ",
+            250, "Semi-Pro en ",
+            100, "Amateur en ",
+            0, "Noob en "
+    );
+
+    private static final Map<Integer, Integer> GOAL_POINTS = Map.of(
+            10000, 0,
+            2500, 10000,
+            2000, 2500,
+            1500, 2000,
+            1000, 1500,
+            750, 1000,
+            500, 750,
+            250, 500,
+            100, 250,
+            0, 100
+    );
+
+    private static final Map<Integer, Integer> POINTS_TO_INT_RANK = Map.of(
+            10000, 10,
+            2500, 9,
+            2000, 8,
+            1500, 7,
+            1000, 6,
+            750, 5,
+            500, 4,
+            250, 3,
+            100, 2,
+            0, 1
+    );
 
     public ContestPlayerManager() {
         instance = this;
@@ -32,22 +72,9 @@ public class ContestPlayerManager  {
     }
 
     public String getTitleWithPoints(int points) {
-        Object[][] ranks = {
-                {10000, "Dictateur en "},
-                {2500, "Colonel en "},
-                {2000, "Addict en "},
-                {1500, "Dieu en "},
-                {1000, "Légende en "},
-                {750, "Sénior en "},
-                {500, "Pro en "},
-                {250, "Semi-Pro en "},
-                {100, "Amateur en "},
-                {0, "Noob en "}
-        };
-
-        for (Object[] rank : ranks) {
-            if (points >= (int) rank[0]) {
-                return (String) rank[1];
+        for (Map.Entry<Integer, String> entry : RANKS.entrySet()) {
+            if (points >= entry.getKey()) {
+                return entry.getValue();
             }
         }
         return "";
@@ -62,46 +89,21 @@ public class ContestPlayerManager  {
     public int getGoalPointsToRankUp(Player player) {
         int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
 
-        Object[][] goalPoints = {
-                {10000, 0},
-                {2500, 10000},
-                {2000, 2500},
-                {1500, 2000},
-                {1000, 1500},
-                {750, 1000},
-                {500, 750},
-                {250, 500},
-                {100, 250},
-                {0, 100}
-        };
-
-        for (Object[] goalPoint : goalPoints) {
-            if (points >= (int) goalPoint[0]) {
-                return (int) goalPoint[1];
+        for (Map.Entry<Integer, Integer> entry : GOAL_POINTS.entrySet()) {
+            if (points >= entry.getKey()) {
+                return entry.getValue();
             }
         }
+
         return -1;
     }
 
     public int getRankContestFromOfflineInt(OfflinePlayer player) {
         int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
 
-        Object[][] pointsToIntRank = {
-                {10000, 10},
-                {2500, 9},
-                {2000, 8},
-                {1500, 7},
-                {1000, 6},
-                {750, 5},
-                {500, 4},
-                {250, 3},
-                {100, 2},
-                {0, 1}
-        };
-
-        for (Object[] point : pointsToIntRank) {
-            if (points >= (int) point[0]) {
-                return (int) point[1];
+        for (Map.Entry<Integer, Integer> entry : POINTS_TO_INT_RANK.entrySet()) {
+            if (points >= entry.getKey()) {
+                return entry.getValue();
             }
         }
 
