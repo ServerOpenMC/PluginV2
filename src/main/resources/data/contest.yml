@@ -14,8 +14,8 @@ contestTrades:
     amount_shell: 3
     selected: false
   - ress: SHROOMLIGHT
-    amount: 2
-    amount_shell: 1
+    amount: 3
+    amount_shell: 2
     selected: false
   - ress: ROOTED_DIRT
     amount: 2
@@ -39,14 +39,14 @@ contestTrades:
     selected: false
   - ress: GOAT_HORN
     amount: 1
-    amount_shell: 6
+    amount_shell: 8
     selected: false
   - ress: PACKED_MUD
     amount: 2
     amount_shell: 1
     selected: false
   - ress: POPPED_CHORUS_FRUIT
-    amount: 3
+    amount: 2
     amount_shell: 1
     selected: false
   - ress: HEAVY_CORE
@@ -70,7 +70,7 @@ contestTrades:
     amount_shell: 1
     selected: false
   - ress: CALIBRATED_SCULK_SENSOR
-    amount: 4
+    amount: 2
     amount_shell: 1
     selected: false
   - ress: MUDDY_MANGROVE_ROOTS
@@ -83,7 +83,7 @@ contestTrades:
     selected: false
   - ress: SPONGE
     amount: 1
-    amount_shell: 2
+    amount_shell: 5
     selected: false
   - ress: MAGENTA_GLAZED_TERRACOTTA
     amount: 3
@@ -94,6 +94,14 @@ contestTrades:
     amount_shell: 2
     selected: false
   - ress: HONEYCOMB
+    amount: 2
+    amount_shell: 1
+    selected: false
+  - ress: CLOSED_EYEBLOSSOM
+    amount: 1
+    amount_shell: 3
+    selected: false
+  - ress: RESIN_BRICK
     amount: 2
     amount_shell: 1
     selected: false
@@ -176,4 +184,79 @@ contestList:
     color1: "GRAY"
     camp2: "Campagne"
     color2: "DARK_GREEN"
+    selected: 0
+  - camp1: "Football"
+    color1: "DARK_GREEN"
+    camp2: "Basketball"
+    color2: "DARK_BLUE"
+    selected: 0
+  - camp1: "Thé"
+    color1: "GREEN"
+    camp2: "Café"
+    color2: "BROWN"
+    selected: 0
+  - camp1: "Chocolat Noir"
+    color1: "DARK_PURPLE"
+    camp2: "Chocolat au Lait"
+    color2: "LIGHT_PURPLE"
+    selected: 0
+  - camp1: "DC"
+    color1: "BLACK"
+    camp2: "Marvel"
+    color2: "RED"
+    selected: 0
+  - camp1: "Loup"
+    color1: "GRAY"
+    camp2: "Renard"
+    color2: "ORANGE"
+    selected: 0
+  - camp1: "Matin"
+    color1: "GOLD"
+    camp2: "Soir"
+    color2: "DARK_GRAY"
+    selected: 0
+  - camp1: "Netflix"
+    color1: "RED"
+    camp2: "Disney+"
+    color2: "BLUE"
+    selected: 0
+  - camp1: "Camping"
+    color1: "DARK_GREEN"
+    camp2: "Hôtel"
+    color2: "WHITE"
+    selected: 0
+  - camp1: "Avion"
+    color1: "AQUA"
+    camp2: "Train"
+    color2: "DARK_GRAY"
+    selected: 0
+  - camp1: "PlayStation"
+    color1: "BLUE"
+    camp2: "Xbox"
+    color2: "GREEN"
+    selected: 0
+  - camp1: "Hiver"
+    color1: "WHITE"
+    camp2: "Printemps"
+    color2: "LIGHT_PURPLE"
+    selected: 0
+  - camp1: "Manga"
+    color1: "BLACK"
+    camp2: "Anime"
+    color2: "DARK_RED"
+    selected: 0
+  - camp1: "Plage"
+    color1: "YELLOW"
+    camp2: "Forêt"
+    color2: "DARK_GREEN"
+    selected: 0
+  - camp1: "Cinéma"
+    color1: "DARK_PURPLE"
+    camp2: "Théâtre"
+    color2: "GOLD"
+    selected: 0
+  - camp1: "Voiture"
+    color1: "DARK_GRAY"
+    camp2: "Moto"
+    color2: "RED"
     selected: 0

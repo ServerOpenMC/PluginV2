@@ -1,8 +1,10 @@
 package fr.openmc.core.utils;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 
 public class DateUtils {
     /**
@@ -45,4 +47,17 @@ public class DateUtils {
                 return dateTime.format(formatter);
             }
         }
+    public static String getTimeUntilNextMonday() {
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime nextMonday = now.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).toLocalDate().atStartOfDay();
+
+        Duration duration = Duration.between(now, nextMonday);
+
+        long days = duration.toDays();
+        long hours = duration.toHours() % 24;
+        long minutes = duration.toMinutes() % 60;
+
+        return String.format("%dd %dh %dm", days, hours, minutes);
+    }
 }

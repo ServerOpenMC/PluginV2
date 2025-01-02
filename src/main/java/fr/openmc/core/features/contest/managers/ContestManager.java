@@ -626,7 +626,7 @@ public class ContestManager {
 
     public void selectRandomlyContest() {
         List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
-        List<Map<String, Object>> orderredContestList = new ArrayList<>();
+        List<Map<String, Object>> orderedContestList = new ArrayList<>();
 
         for (Map<?, ?> contest : contestList) {
             Map<String, Object> fusionContest = new HashMap<>();
@@ -635,14 +635,22 @@ public class ContestManager {
                     fusionContest.put((String) entry.getKey(), entry.getValue());
                 }
             }
-            orderredContestList.add(fusionContest);
+            orderedContestList.add(fusionContest);
         }
 
-        orderredContestList.sort(Comparator.comparingInt(c -> (int) c.get("selected")));
+        int minSelected = orderedContestList.stream()
+                .mapToInt(c -> (int) c.get("selected"))
+                .min()
+                .orElse(0);
 
-        Map<String, Object> contest = orderredContestList.get(0);
+        List<Map<String, Object>> leastSelectedContests = orderedContestList.stream()
+                .filter(c -> (int) c.get("selected") == minSelected)
+                .toList();
 
-        data = new ContestData((String) contest.get("camp1"), (String) contest.get("camp2"), (String) contest.get("color1"), (String) contest.get("color2"), 1, "ven.", 0, 0);
+        Random random = new Random();
+        Map<String, Object> selectedContest = leastSelectedContests.get(random.nextInt(leastSelectedContests.size()));
+
+        data = new ContestData((String) selectedContest.get("camp1"), (String) selectedContest.get("camp2"), (String) selectedContest.get("color1"), (String) selectedContest.get("color2"), 1, "ven.", 0, 0);
     }
 
     public void deleteTableContest(String table) {
