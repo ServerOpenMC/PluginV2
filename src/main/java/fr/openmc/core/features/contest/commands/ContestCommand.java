@@ -93,7 +93,7 @@ public class ContestCommand {
     @Description("Permet de définir un Trade")
     @CommandPermission("ayw.command.contest.settrade")
     @AutoComplete("@trade")
-    public void setTrade(Player player, @Named("trade") String trade, int amount, int amount_shell) {
+    public void setTrade(Player player, @Named("trade") String trade, int amount, int amountShell) {
         YamlConfiguration config = ContestManager.getInstance().contestConfig;
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
@@ -102,7 +102,7 @@ public class ContestCommand {
         for (Map<?, ?> tradeEntry : trades) {
             if (tradeEntry.get("ress").equals(trade)) {
                 ((Map<String, Object>) tradeEntry).put("amount", amount);
-                ((Map<String, Object>) tradeEntry).put("amount_shell", amount_shell);
+                ((Map<String, Object>) tradeEntry).put("amount_shell", amountShell);
                 tradeFound = true;
                 break;
             }
@@ -110,7 +110,7 @@ public class ContestCommand {
 
         if (tradeFound) {
             ContestManager.getInstance().saveContestConfig();
-            MessagesManager.sendMessageType(player, Component.text("Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amount_shell + " coquillages de contest."), Prefix.STAFF, MessageType.SUCCESS, true);
+            MessagesManager.sendMessageType(player, Component.text("Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amountShell + " coquillages de contest."), Prefix.STAFF, MessageType.SUCCESS, true);
         } else {
             MessagesManager.sendMessageType(player, Component.text("Le trade n'existe pas.\n/contest settrade <mat> <amount> <amount_shell>"), Prefix.STAFF, MessageType.ERROR, true);
         }

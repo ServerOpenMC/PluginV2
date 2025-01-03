@@ -63,7 +63,7 @@ public class TradeMenu extends Menu {
 
         // ITEM ADDER
         String namespaceShellContest = "omc_contest:contest_shell";
-        Material shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest().getType();
+        ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
@@ -81,7 +81,6 @@ public class TradeMenu extends Menu {
         inventory.put(4, new ItemBuilder(this, shellContest, itemMeta -> {
             itemMeta.displayName(Component.text("§7Les Trades"));
             itemMeta.lore(loreTrade);
-            itemMeta.setCustomModelData(10000);
         }));
 
         List<Map<String, Object>> selectedTrades = contestManager.getTradeSelected(true).stream()

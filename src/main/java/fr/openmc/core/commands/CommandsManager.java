@@ -23,9 +23,6 @@ public class CommandsManager {
 
         handler.registerCondition(new CooldownInterceptor());
 
-        handler.getAutoCompleter().registerSuggestion("colorContest", SuggestionProvider.of(ContestManager.getInstance().getColorContestList()));
-        handler.getAutoCompleter().registerSuggestion("trade", SuggestionProvider.of(ContestManager.getInstance().getRessListFromConfig()));
-
         registerSuggestions();
         registerCommands();
     }
