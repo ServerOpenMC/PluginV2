@@ -163,30 +163,30 @@ public class CityManager implements Listener {
 
     public static void forgetCity(String city) {
         try {
-        City cityz = cities.remove(city);
+            City cityz = cities.remove(city);
 
-        List<BlockVector2> claimedChunksToRemove = new ArrayList<>();
-        for (BlockVector2 vector : claimedChunks.keySet()) {
-            if (claimedChunks.get(vector).equals(cityz)) {
-                claimedChunksToRemove.add(vector);
+            List<BlockVector2> claimedChunksToRemove = new ArrayList<>();
+            for (BlockVector2 vector : claimedChunks.keySet()) {
+                if (claimedChunks.get(vector).equals(cityz)) {
+                    claimedChunksToRemove.add(vector);
+                }
             }
-        }
-        for (BlockVector2 vector : claimedChunksToRemove) {
-            claimedChunks.remove(vector);
-        }
+            for (BlockVector2 vector : claimedChunksToRemove) {
+                claimedChunks.remove(vector);
+            }
 
-        List<UUID> playerCitiesToRemove = new ArrayList<>();
-        for (UUID uuid : playerCities.keySet()) {
-            if (playerCities.get(uuid).equals(cityz)) {
-                playerCitiesToRemove.add(uuid);
+            List<UUID> playerCitiesToRemove = new ArrayList<>();
+            for (UUID uuid : playerCities.keySet()) {
+                if (playerCities.get(uuid).equals(cityz)) {
+                    playerCitiesToRemove.add(uuid);
+                }
             }
+            for (UUID uuid : playerCitiesToRemove) {
+                playerCities.remove(uuid);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        for (UUID uuid : playerCitiesToRemove) {
-            playerCities.remove(uuid);
-        }
-    } catch (ConcurrentModificationException e) {
-        e.printStackTrace();
-    }
     }
 
     public static void cachePlayer(UUID uuid, City city) {

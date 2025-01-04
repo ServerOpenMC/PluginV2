@@ -16,7 +16,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -53,7 +52,7 @@ public class NoCityMenu extends Menu {
 
         List<Component> loreCreate = List.of(
                 Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
-                Component.text("§7Faites §d/city create <name> §7 ou bien cliquez ici !"),
+                Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
                 Component.text(""),
                 Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
         );
