@@ -481,7 +481,13 @@ public class CityCommands {
         city.addPlayer(uuid);
         city.addPermission(uuid, CPermission.OWNER);
 
-        MessagesManager.sendMessageType(player, Component.text("Votre ville a été créée"), Prefix.CITY, MessageType.SUCCESS, true);
+        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
+            for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
+                CityManager.claimedChunks.put(BlockVector2.at(x, z), city);
+            }
+        }
+
+        MessagesManager.sendMessageType(player, Component.text("Votre ville a été créée"+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
     }
