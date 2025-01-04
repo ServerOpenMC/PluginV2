@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.text;
+package fr.openmc.core.utils.translation;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -6,18 +6,19 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import fr.openmc.core.OMCPlugin;
 
 
-public class TextManager {
+public class TranslationManager {
 
     private final String defaultLanguage;
     private final OMCPlugin plugin;
     private final File translationFolder;
     private final Map<String, FileConfiguration> loadedLanguages;
 
-    public TextManager(OMCPlugin plugin, File translationFolder, String defaultLanguage) {
+    public TranslationManager(OMCPlugin plugin, File translationFolder, String defaultLanguage) {
         this.plugin = plugin;
         this.defaultLanguage = defaultLanguage;
         this.translationFolder = translationFolder;
@@ -27,37 +28,37 @@ public class TextManager {
     /**
      * Returns a string corresponding to the specified path and the language.
      *
-     * @param path  The path to the text, "default" for default language"
-     * @param language The language of the text
+     * @param path  The path to the translation, "default" for default language"
+     * @param language The language of the translation
      */
-    public String getText(String path, String language) {
+    public String getTranslation(String path, String language) {
         FileConfiguration languageConfig = this.loadedLanguages.get(language);
                 this.loadedLanguages.get(this.defaultLanguage);
-        if (languageConfig != null || language == this.defaultLanguage) {
-            return languageConfig.getString(path, "Missing text for path: " + path);
+        if (languageConfig != null || Objects.equals(language, this.defaultLanguage)) {
+            return languageConfig.getString(path, "Missing translation for path: " + path);
         } else {
-            return getText(path);
+            return getTranslation(path);
         }
     }
 
     /**
      * Returns a string corresponding to the specified path and the language and replaces the given placeholders with the values.
      *
-     * @param path  The path to the text
-     * @param language The language of the text, "default" for default language"
+     * @param path  The path to the translation
+     * @param language The language of the translation, "default" for default language"
      * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
      */
-    public String getText(String path, String language, String... placeholders) {
-        return this.replacePlaceholders(getText(path, language), placeholders);
+    public String getTranslation(String path, String language, String... placeholders) {
+        return this.replacePlaceholders(getTranslation(path, language), placeholders);
     }
 
     /**
      * Returns a string corresponding to the specified path and the default language.
      *
-     * @param path  The path to the text
+     * @param path  The path to the translation
      */
-    public String getText(String path) {
-        return this.getText(path, this.defaultLanguage);
+    public String getTranslation(String path) {
+        return this.getTranslation(path, this.defaultLanguage);
     }
 
 

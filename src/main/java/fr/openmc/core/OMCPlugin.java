@@ -10,10 +10,9 @@ import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
-import fr.openmc.core.utils.text.TextManager;
+import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
-import net.raidstone.wgevents.WorldGuardEvents;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +23,7 @@ import java.sql.SQLException;
 public final class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
-    @Getter static TextManager textManager;
+    @Getter static TranslationManager translationManager;
     private DatabaseManager dbManager;
 
 
@@ -51,8 +50,8 @@ public final class OMCPlugin extends JavaPlugin {
         new ListenersManager();
         new EconomyManager();
         new MotdUtils(this);
-        textManager = new TextManager(this, new File(this.getDataFolder(), "translations"), "fr");
-        textManager.loadAllLanguages();
+        translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
+        translationManager.loadAllLanguages();
 
 
         getLogger().info("Plugin activé");
