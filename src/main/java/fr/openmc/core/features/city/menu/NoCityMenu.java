@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -84,7 +85,16 @@ public class NoCityMenu extends Menu {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> {
-                ConfirmMenu menu = new ConfirmMenu(player, new NoCityMenu(player), this::acceptInvite, this::refuseInvite, "§7Accepter", "§7Refuser" + inviter.getName());
+                ConfirmMenu menu = new ConfirmMenu(player,
+                        () -> {
+                            CityCommands.acceptInvitation(player);
+                            player.closeInventory();
+                        },
+                        () -> {
+                            CityCommands.denyInvitation(player);
+                            player.closeInventory();
+                        },
+                        "§7Accepter", "§7Refuser" + inviter.getName());
                 menu.open();
             }));
         }
@@ -93,6 +103,11 @@ public class NoCityMenu extends Menu {
             itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
             itemMeta.lore(loreCreate);
         }).setOnClick(inventoryClickEvent -> {
+            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+                MessagesManager.sendMessageType(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+                return;
+            }
+
             if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
                 MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -129,13 +144,5 @@ public class NoCityMenu extends Menu {
         }));
 
         return inventory;
-    }
-
-    private void acceptInvite() {
-        Bukkit.dispatchCommand(getOwner(), "city accept");
-    }
-
-    private void refuseInvite() {
-        Bukkit.dispatchCommand(getOwner(), "city deny");
     }
 }

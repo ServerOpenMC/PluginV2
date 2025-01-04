@@ -13,6 +13,9 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -60,7 +63,8 @@ public class CityCommands {
     @Subcommand("accept")
     @CommandPermission("omc.commands.city.accept")
     @Description("Accepter une invitation")
-    void accept(Player player) {
+    public static void acceptInvitation(Player player) {
+        //TODO: faire que le joueur peut avoir plusieurs invitations (pour eviter de bloquer le joueur concerné)
         if (!invitations.containsKey(player)) {
             MessagesManager.sendMessageType(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -139,7 +143,7 @@ public class CityCommands {
     @Subcommand("deny")
     @CommandPermission("omc.commands.city.deny")
     @Description("Refuser une invitation")
-    void deny(Player player) {
+    public static void denyInvitation(Player player) {
         if (!invitations.containsKey(player)) {
             MessagesManager.sendMessageType(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -204,11 +208,7 @@ public class CityCommands {
             return;
         }
 
-        if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessageType(player, Component.text("Tu as quitté "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
-        } else {
-            MessagesManager.sendMessageType(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
-        }
+        leaveCity(player);
     }
 
     @Subcommand("invite")
@@ -238,7 +238,12 @@ public class CityCommands {
 
         invitations.put(target, sender);
         MessagesManager.sendMessageType(sender, Component.text("Tu as invité "+target.getName()+" dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
-        MessagesManager.sendMessageType(target, Component.text("Tu as été invité(e) par " + sender.getName() + "dans la ville "+city.getCityName()), Prefix.CITY, MessageType.INFO, false);
+        MessagesManager.sendMessageType(target,
+                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getCityName() + "\n")
+                        .append(Component.text("[ACCEPTER]").color(NamedTextColor.GREEN).clickEvent(ClickEvent.runCommand("/city accept")).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
+                        .append(Component.text("   "))
+                                .append(Component.text("[REFUSER]").color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("/city deny")).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
+                Prefix.CITY, MessageType.INFO, false);
     }
 
     @Subcommand("delete")
@@ -254,7 +259,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.delete")
     @Description("Supprimer votre ville")
     @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir supprimer ta ville (%sec% secondes)")
-    void delete(Player sender) {
+    public static void deleteCity(Player sender) {
         UUID uuid = sender.getUniqueId();
 
         City city = CityManager.getPlayerCity(uuid);
@@ -438,6 +443,12 @@ public class CityCommands {
         createCity(player, name);
     }
 
+    // ACTIONS
+
+    public static void leaveCity(Player player) {
+
+    }
+
     public static void createCity(Player player, String name) {
         UUID uuid = player.getUniqueId();
 
@@ -482,14 +493,15 @@ public class CityCommands {
         City city = CityManager.createCity(player, cityUUID, name);
         city.addPlayer(uuid);
         city.addPermission(uuid, CPermission.OWNER);
-
-        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-            for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
-                CityManager.claimedChunks.put(BlockVector2.at(x, z), city);
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
+                for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
+                    CityManager.claimedChunks.put(BlockVector2.at(x, z), city);
+                }
             }
-        }
+        });
 
-        MessagesManager.sendMessageType(player, Component.text("Votre ville a été créée"+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
+        MessagesManager.sendMessageType(player, Component.text("Votre ville a été crée !"), Prefix.CITY, MessageType.SUCCESS, true);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
     }

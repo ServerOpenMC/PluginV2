@@ -19,7 +19,6 @@ import java.util.Map;
 
 public class ConfirmMenu extends Menu {
 
-    private final Menu menu;
     private final String loreAcceptMsg;
     private final String loreDenyMsg;
     private final Runnable accept;
@@ -28,17 +27,15 @@ public class ConfirmMenu extends Menu {
     /**
      * Add Confirmation Menu, it must use for all
      * @param owner Player for Menu owner
-     * @param oldMenu Open your Old Menu
      * @param methodAccept Run your action when Accept
      * @param methodDeny Run your action when Accept
      * @param loreAccept Put your lore for Accept
      * @param loreDeny Run your lore for Deny
      */
-    public ConfirmMenu(Player owner, Menu oldMenu, Runnable methodAccept, Runnable methodDeny, String loreAccept, String loreDeny) {
+    public ConfirmMenu(Player owner, Runnable methodAccept, Runnable methodDeny, String loreAccept, String loreDeny) {
         super(owner);
-        this.accept = methodAccept;
-        this.deny = methodDeny;
-        this.menu = oldMenu;
+        this.accept = methodAccept != null ? methodAccept : () -> {};
+        this.deny = methodDeny != null ? methodDeny : () -> {};
         this.loreAcceptMsg = loreAccept;
         this.loreDenyMsg = loreDeny;
     }
@@ -67,9 +64,10 @@ public class ConfirmMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        List<Component> loreAccept = new ArrayList<>();
-        loreAccept.add(Component.text(loreAcceptMsg));
-        loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
+        List<Component> loreAccept = List.of(
+                Component.text(loreAcceptMsg),
+                Component.text("§e§lCLIQUEZ ICI POUR VALIDER")
+        );
 
         List<Component> loreDeny = new ArrayList<>();
         loreDeny.add(Component.text(loreDenyMsg));
@@ -83,25 +81,14 @@ public class ConfirmMenu extends Menu {
             itemMeta.lore(loreDeny);
         }).setOnClick(event -> {
             deny.run();
-            if (menu == null) {
-                player.closeInventory();
-            } else {
-                menu.open();
-            }
         }));
 
-        inventory.put(5, new ItemBuilder(this,acceptBtn, itemMeta -> {
+        inventory.put(5, new ItemBuilder(this, acceptBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§aAccepter"));
             itemMeta.lore(loreAccept);
         }).setOnClick(event -> {
             accept.run();
-            if (menu == null) {
-                player.closeInventory();
-            } else {
-                menu.open();
-            }
         }));
-
 
         return inventory;
     }

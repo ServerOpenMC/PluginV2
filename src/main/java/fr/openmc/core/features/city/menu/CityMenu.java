@@ -6,10 +6,12 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -25,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CityMenu extends Menu {
 
@@ -194,18 +197,21 @@ public class CityMenu extends Menu {
                     return;
                 }
 
-                ConfirmMenu menu = new ConfirmMenu(player, null, this::acceptLeave, this::refuseLeave, "§7Voulez vous vraiment partir de " + city.getCityName() + " ?", "§7Rester dans la ville " + city.getCityName());
+                ConfirmMenu menu = new ConfirmMenu(player,
+                        () -> {
+                            CityCommands.leaveCity(player);
+                            player.closeInventory();
+                        },
+                        () -> {
+                            player.closeInventory();
+                        },
+                        "§7Voulez vous vraiment partir de " + city.getCityName() + " ?",
+                        "§7Rester dans la ville " + city.getCityName()
+                );
                 menu.open();
             }));
         }
 
         return inventory;
-    }
-
-    private void acceptLeave() {
-        Bukkit.dispatchCommand(getOwner(), "city leave");
-    }
-
-    private void refuseLeave() {
     }
 }

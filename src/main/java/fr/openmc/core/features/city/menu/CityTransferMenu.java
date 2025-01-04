@@ -41,10 +41,6 @@ public class CityTransferMenu extends PaginatedMenu {
         return StaticSlots.BOTTOM;
     }
 
-    City cityTransfer;
-    OfflinePlayer playerTransfer;
-    Player playerWhoTransfer;
-
     @Override
     public @NotNull List<ItemStack> getItems() {
         Player player = getOwner();
@@ -56,7 +52,6 @@ public class CityTransferMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         for (UUID uuid : city.getMembers()) {
             if (uuid.equals(city.getPlayerWith(CPermission.OWNER))) {
-                // Ignore l'owner et continue avec le prochain membre
                 continue;
             }
 
@@ -74,11 +69,17 @@ public class CityTransferMenu extends PaginatedMenu {
                     return;
                 }
 
-                cityTransfer = city;
-                playerTransfer = playerOffline;
-                playerWhoTransfer = player;
+                ConfirmMenu menu = new ConfirmMenu(player,
+                        () -> {
+                            city.changeOwner(playerOffline.getUniqueId());
+                            MessagesManager.sendMessageType(player, Component.text("Le nouveau maire est "+ playerOffline.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
-                ConfirmMenu menu = new ConfirmMenu(player, null, this::acceptTransfer, this::refuseTransfer,
+                            if (playerOffline.isOnline()) {
+                                MessagesManager.sendMessageType((Player) playerOffline, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
+                            }
+                            player.closeInventory();
+                        },
+                        () -> player.closeInventory(),
                         "§7Voulez-vous vraiment donner la ville à " + playerOffline.getName() + " ?",
                         "§7Vous allez garder la ville " + playerOffline.getName());
                 menu.open();
@@ -112,19 +113,6 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
-        //empty
-    }
-
-    private void acceptTransfer() {
-        cityTransfer.changeOwner(playerTransfer.getUniqueId());
-        MessagesManager.sendMessageType(playerWhoTransfer, Component.text("Le nouveau maire est "+ playerTransfer.getName()), Prefix.CITY, MessageType.SUCCESS, false);
-
-        if (playerTransfer.isOnline()) {
-            MessagesManager.sendMessageType((Player) playerTransfer, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
-        }
-    }
-
-    private void refuseTransfer() {
         //empty
     }
 }

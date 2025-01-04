@@ -5,11 +5,14 @@ import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -22,10 +25,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CityModifyMenu extends Menu {
 
@@ -58,6 +58,7 @@ public class CityModifyMenu extends Menu {
 
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
+
 
         List<Component> loreRename;
 
@@ -99,7 +100,7 @@ public class CityModifyMenu extends Menu {
             SignGUI gui = null;
             try {
                 gui = SignGUI.builder()
-                        .setLines(null, lines[1] , lines[2], lines[3])
+                        .setLines(null, lines[1], lines[2], lines[3])
                         .setType(ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
@@ -154,7 +155,7 @@ public class CityModifyMenu extends Menu {
                 return;
             }
 
-            if (city.getMembers().size()-1 == 0) {
+            if (city.getMembers().size() - 1 == 0) {
                 MessagesManager.sendMessageType(player, Component.text("Il y a pas de membre a qui vous pouvez transferer la ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -182,20 +183,37 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§7Supprimer la ville"));
             itemMeta.lore(loreDelete);
         }).setOnClick(inventoryClickEvent -> {
+            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+                MessagesManager.sendMessageType(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+                return;
+            }
+
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+
             if (cityCheck == null) {
                 MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
-
 
             if (!hasPermissionOwner) {
                 MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
-            ConfirmMenu menu = new ConfirmMenu(player, null, this::acceptDelete, this::refuseDelete, "§7Voulez vous vraiment dissoudre la ville " + city.getCityName() + " ?", "§7Ne pas dissoudre la ville "  + city.getCityName());
+
+            ConfirmMenu menu = new ConfirmMenu(
+                    player,
+                    () -> {
+                        player.closeInventory();
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                            CityCommands.deleteCity(player);
+                        });
+                    },
+                    () -> player.closeInventory(),
+                    "§7Voulez vous vraiment dissoudre la ville " + cityCheck.getCityName() + " ?",
+                    "§7Ne pas dissoudre la ville " + cityCheck.getCityName());
             menu.open();
+
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
@@ -216,12 +234,5 @@ public class CityModifyMenu extends Menu {
         }));
 
         return inventory;
-    }
-
-    private void acceptDelete() {
-        Bukkit.dispatchCommand(getOwner(), "city delconfirm");
-    }
-
-    private void refuseDelete() {
     }
 }
