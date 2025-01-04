@@ -35,12 +35,6 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 
 // Author Gexary
 public class MailboxManager {
-    private static final OMCPlugin plugin = OMCPlugin.getInstance();
-
-    private MailboxManager() {
-        // for sonar
-    }
-
     public static void init_db(Connection conn) throws SQLException {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS mailbox_items (" +
                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
