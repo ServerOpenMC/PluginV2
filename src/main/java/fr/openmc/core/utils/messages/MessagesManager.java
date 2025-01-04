@@ -97,6 +97,8 @@ public class MessagesManager {
         PLAYERNOCITY(Component.text("Tu n'es pas dans une ville")),
         PLAYERINCITY(Component.text("le joueur est déjà dans une ville")),
 
+
+        PLAYERNOCLAIM(Component.text("Tu n'as pas la permission d'aggrandir ta ville")),
         PLAYERNOOWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire")),
         PLAYERNORENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
         PLAYERNOMONEYGIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),

@@ -60,6 +60,7 @@ public class CityMenu extends Menu {
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
         boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
+        boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CPermission.SEE_CHUNKS);
 
         List<Component> loreModifyCity;
 
@@ -99,14 +100,30 @@ public class CityMenu extends Menu {
             )); //TODO: Mascottes
         }));
 
+        List<Component> loreChunkCity;
+
+        if (hasPermissionChunkSee) {
+            loreChunkCity = List.of(
+                    Component.text("§7Votre ville a une superficie de §6" + city.getChunks().size()),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A LA CARTE")
+            );
+        } else {
+            loreChunkCity = List.of(
+                    Component.text("§7Votre ville a une superficie de §6" + city.getChunks().size())
+            );
+        }
+
         inventory.put(19, new ItemBuilder(this, Material.OAK_FENCE, itemMeta -> {
             itemMeta.itemName(Component.text("§6Taille de votre Ville"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Votre ville a une superficie de §6" + city.getChunks().size()),
-                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A LA MAP")
-            ));
+            itemMeta.lore(loreChunkCity);
         }).setOnClick(inventoryClickEvent -> {
-            // Menu des claims
+            if (!hasPermissionChunkSee) {
+                MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas les permissions de voir les claims"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            CityChunkMenu menu = new CityChunkMenu(player);
+            menu.open();
         }));
 
         ItemStack playerHead = PlayerUtils.getPlayerSkull(player);
@@ -117,7 +134,7 @@ public class CityMenu extends Menu {
                     Component.text("§7Il y a actuellement §d" + city.getMembers().size() + "§7 membre(s) dans votre ville")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            // Menu des membres
+            // membres
         }));
 
         inventory.put(25, new ItemBuilder(this, Material.NETHERITE_SWORD, itemMeta -> {

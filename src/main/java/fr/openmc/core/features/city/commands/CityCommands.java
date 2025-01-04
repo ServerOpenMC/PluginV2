@@ -43,7 +43,7 @@ public class CityCommands {
         return new Location[]{minLocation, maxLocation};
     }
 
-    private int calculatePrice(int chunkCount) {
+    private static int calculatePrice(int chunkCount) {
         return 5000 + ((chunkCount-25) * 1000);
     }
 
@@ -294,15 +294,19 @@ public class CityCommands {
             return;
         }
 
-        org.bukkit.World bWorld = sender.getWorld();
+        Chunk chunk = sender.getLocation().getChunk();
+
+        claim(sender, chunk.getX(), chunk.getZ());
+    }
+
+    public static void claim(Player player, int chunkX, int chunkZ) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        org.bukkit.World bWorld = player.getWorld();
         if (!bWorld.getName().equals("world")) {
-            MessagesManager.sendMessageType(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        Chunk chunk = sender.getLocation().getChunk();
-        int chunkX = chunk.getX();
-        int chunkZ = chunk.getZ();
         BlockVector2 chunkVec2 = BlockVector2.at(chunkX, chunkZ);
 
         AtomicBoolean isFar = new AtomicBoolean(true);
@@ -314,30 +318,31 @@ public class CityCommands {
         }
 
         if (isFar.get()) {
-            MessagesManager.sendMessageType(sender, Component.text("Ce chunk n'est pas adjacent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Ce chunk n'est pas adjacent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
             // TODO: Vérifier si le chunk est dans le spawn
-            MessagesManager.sendMessageType(sender, Component.text("Ce chunk est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Ce chunk est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city.getChunks().size() >= 50) {
-            MessagesManager.sendMessageType(sender, Component.text("Ta ville est trop grande"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Ta ville est trop grande"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         int price = calculatePrice(city.getChunks().size());
         if (city.getBalance() < price) {
-            MessagesManager.sendMessageType(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.updateBalance((double) (price*-1));
-        city.addChunk(sender.getChunk());
-        MessagesManager.sendMessageType(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
+        city.addChunk(player.getWorld().getChunkAt(chunkX, chunkZ));
+        MessagesManager.sendMessageType(player, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
+
     }
 
     @Subcommand("money give")
