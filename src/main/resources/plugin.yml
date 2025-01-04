@@ -1,7 +1,7 @@
 name: OpenMC
 version: '2.0.0'
 main: fr.openmc.core.OMCPlugin
-api-version: '1.21.1'
+api-version: '1.21.4'
 
 softdepend:
   - PlaceholderAPI
