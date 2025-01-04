@@ -1,8 +1,9 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.menu.BankMenu;
+import fr.openmc.core.features.city.menu.ChestMenu;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,26 +19,26 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class City {
-    private final String city_uuid;
+    private final String cityUUID;
     private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
     private Set<UUID> members = new HashSet<>();
     private Double balance;
     private String name;
-    private Integer bank_pages;
+    private Integer chestPages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
-    private HashMap<Integer, ItemStack[]> bankContent = new HashMap<>();
+    private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
 
-    @Getter @Setter private UUID bankWatcher;
-    @Getter @Setter private BankMenu bankMenu;
+    @Getter @Setter private UUID chestWatcher;
+    @Getter @Setter private ChestMenu chestMenu;
 
     public City(String uuid) {
-        this.city_uuid = uuid;
+        this.cityUUID = uuid;
 
         CityManager.registerCity(this);
 
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_permissions WHERE city_uuid = ?");
-            statement.setString(1, city_uuid);
+            statement.setString(1, cityUUID);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -57,14 +58,14 @@ public class City {
         }
     }
 
-    public ItemStack[] getBankContent(int page) {
-        if (bankContent.containsKey(page)) {
-            return bankContent.get(page);
+    public ItemStack[] getChestContent(int page) {
+        if (chestContent.containsKey(page)) {
+            return chestContent.get(page);
         }
 
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT content FROM city_banks WHERE city_uuid = ? AND page = ? LIMIT 1");
-            statement.setString(1, city_uuid);
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT content FROM city_chests WHERE city_uuid = ? AND page = ? LIMIT 1");
+            statement.setString(1, cityUUID);
             statement.setInt(2, page);
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -72,24 +73,24 @@ public class City {
                 if (content == null) {
                     return new ItemStack[54];
                 }
-                bankContent.put(page, ItemStack.deserializeItemsFromBytes(content));
-                return bankContent.get(page);
+                chestContent.put(page, ItemStack.deserializeItemsFromBytes(content));
+                return chestContent.get(page);
             }
         } catch (SQLException e) {
             e.printStackTrace(); // On peut pas retourner une liste vide parceque si il ferme, ça va reset son inv
-            throw new RuntimeException("Error while loading bank content");
+            throw new RuntimeException("Error while loading chest content");
         }
         return new ItemStack[54]; // ayayay
     }
 
-    public void saveBankContent(int page, ItemStack[] content) {
-        bankContent.put(page, content);
+    public void saveChestContent(int page, ItemStack[] content) {
+        chestContent.put(page, content);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_banks SET content=? WHERE city_uuid=? AND page=?");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_chests SET content=? WHERE city_uuid=? AND page=?");
                 statement.setBytes(1, ItemStack.serializeItemsAsBytes(content));
-                statement.setString(2, city_uuid);
+                statement.setString(2, cityUUID);
                 statement.setInt(3, page);
                 statement.executeUpdate();
             } catch (SQLException e) {
@@ -99,7 +100,7 @@ public class City {
     }
 
     public String getUUID() {
-        return city_uuid;
+        return cityUUID;
     }
 
     public void addChunk(Chunk chunk) {
@@ -111,7 +112,7 @@ public class City {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
-                statement.setString(1, city_uuid);
+                statement.setString(1, cityUUID);
                 statement.setInt(2, chunk.getX());
                 statement.setInt(3, chunk.getZ());
                 statement.executeUpdate();
@@ -119,6 +120,8 @@ public class City {
                 e.printStackTrace();
             }
         });
+
+        Bukkit.getPluginManager().callEvent(new ChunkClaimedEvent(this, chunk));
     }
 
     public boolean removeChunk(int chunkX, int chunkZ) {
@@ -130,7 +133,7 @@ public class City {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
-                statement.setString(1, city_uuid);
+                statement.setString(1, cityUUID);
                 statement.setInt(2, chunkX);
                 statement.setInt(3, chunkZ);
                 statement.executeUpdate();
@@ -146,7 +149,7 @@ public class City {
 
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT x, z FROM city_regions WHERE city_uuid = ?");
-            statement.setString(1, city_uuid);
+            statement.setString(1, cityUUID);
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -165,17 +168,17 @@ public class City {
         return chunks.contains(BlockVector2.at(chunkX, chunkZ));
     }
 
-    public @NotNull Integer getBankPages() {
-        if (bank_pages != null) return bank_pages;
+    public @NotNull Integer getChestPages() {
+        if (chestPages != null) return chestPages;
 
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT COUNT(page) FROM city_banks WHERE city_uuid = ?");
-            statement.setString(1, city_uuid);
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT COUNT(page) FROM city_chests WHERE city_uuid = ?");
+            statement.setString(1, cityUUID);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                bank_pages = resultSet.getInt(1);
-                return bank_pages;
+                chestPages = resultSet.getInt(1);
+                return chestPages;
             }
         } catch (SQLException err) {
             err.printStackTrace();
@@ -187,7 +190,7 @@ public class City {
         if (name != null) return name;
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT name FROM city WHERE uuid = ?");
-            statement.setString(1, city_uuid);
+            statement.setString(1, cityUUID);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -210,7 +213,7 @@ public class City {
 
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT player FROM city_members WHERE city_uuid = ?");
-            statement.setString(1, city_uuid);
+            statement.setString(1, cityUUID);
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -237,7 +240,7 @@ public class City {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET balance=? WHERE uuid=?;");
                 statement.setDouble(1, value);
-                statement.setString(2, city_uuid);
+                statement.setString(2, cityUUID);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -246,22 +249,22 @@ public class City {
         });
     }
 
-    public int addBankPages() {
-        bank_pages += 1;
-        bankContent.put(bank_pages, new ItemStack[54]);
+    public int addChestPages() {
+        chestPages += 1;
+        chestContent.put(chestPages, new ItemStack[54]);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_banks (city_uuid, page) VALUES (?, ?)");
-                statement.setString(1, city_uuid);
-                statement.setInt(2, bank_pages);
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests (city_uuid, page) VALUES (?, ?)");
+                statement.setString(1, cityUUID);
+                statement.setInt(2, chestPages);
                 statement.executeUpdate();
-                bankContent.remove(bank_pages);
+                chestContent.remove(chestPages);
             } catch (SQLException e) {
                 e.printStackTrace();
-                bank_pages -= 1;
+                chestPages -= 1;
             }
         });
-        return bank_pages;
+        return chestPages;
     }
 
     /**
@@ -270,12 +273,14 @@ public class City {
      * @param newName The new name for the city.
      */
     public void renameCity(String newName) {
+        Bukkit.getPluginManager().callEvent(new CityRenameEvent(this.name, this));
         name = newName;
+
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET name=? WHERE uuid=?;");
                 statement.setString(1, newName);
-                statement.setString(2, city_uuid);
+                statement.setString(2, cityUUID);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -294,7 +299,7 @@ public class City {
 
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT balance FROM city WHERE uuid = ?");
-            statement.setString(1, city_uuid);
+            statement.setString(1, cityUUID);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -321,7 +326,7 @@ public class City {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET owner=? WHERE uuid=?;");
                 statement.setString(1, player.toString());
-                statement.setString(2, city_uuid);
+                statement.setString(2, cityUUID);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -335,6 +340,7 @@ public class City {
      * @param diff The amount to be added to the existing balance.
      */
     public void updateBalance(Double diff) {
+        Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, balance, balance+diff));
         setBalance(balance+diff);
     }
 
@@ -349,7 +355,7 @@ public class City {
 
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT name FROM city WHERE uuid = ? LIMIT 1");
-            statement.setString(1, city_uuid);
+            statement.setString(1, cityUUID);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -366,7 +372,7 @@ public class City {
         if (!permsCache.containsKey(player)) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_permissions WHERE city_uuid = ? AND player = ?");
-                statement.setString(1, city_uuid);
+                statement.setString(1, cityUUID);
                 statement.setString(2, player.toString());
                 ResultSet rs = statement.executeQuery();
 
@@ -428,16 +434,16 @@ public class City {
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
                     PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_permissions WHERE city_uuid = ? AND player = ? AND permission = ?");
-                    statement.setString(1, city_uuid);
+                    statement.setString(1, cityUUID);
                     statement.setString(2, uuid.toString());
                     statement.setString(3, permission.toString());
-                    statement.executeUpdate();
                     statement.executeUpdate();
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             });
 
+            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, false));
             return true;
         }
         return false;
@@ -451,7 +457,7 @@ public class City {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_permissions WHERE city_uuid = ? AND player = ?");
-                statement.setString(1, city_uuid);
+                statement.setString(1, cityUUID);
                 statement.setString(2, uuid.toString());
                 statement.executeUpdate();
                 permsCache.remove(uuid);
@@ -471,7 +477,7 @@ public class City {
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
                     PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_permissions (city_uuid, player, permission) VALUES (?, ?, ?)");
-                    statement.setString(1, city_uuid);
+                    statement.setString(1, cityUUID);
                     statement.setString(2, uuid.toString());
                     statement.setString(3, permission.toString());
                     statement.executeUpdate();
@@ -479,6 +485,7 @@ public class City {
                     e.printStackTrace();
                 }
             });
+            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, true));
         }
     }
 
@@ -492,6 +499,8 @@ public class City {
         forgetPlayer(player);
         CityManager.uncachePlayer(player);
         members.remove(player);
+
+        Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(Bukkit.getOfflinePlayer(player), this));
 
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE player=?");
@@ -511,11 +520,12 @@ public class City {
      */
     public void addPlayer(UUID player) {
         members.add(player);
+        Bukkit.getPluginManager().callEvent(new MemberJoinEvent(Bukkit.getOfflinePlayer(player), this));
         CityManager.cachePlayer(player, this);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_members VALUE (?, ?)");
-                statement.setString(1, city_uuid);
+                statement.setString(1, cityUUID);
                 statement.setString(2, player.toString());
                 statement.executeUpdate();
             } catch (SQLException e) {
@@ -528,7 +538,7 @@ public class City {
      * Deletes a city, removing it from records and updating members and regions accordingly.
      */
     public void delete() {
-        CityManager.forgetCity(city_uuid);
+        CityManager.forgetCity(cityUUID);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -537,31 +547,33 @@ public class City {
                         "DELETE FROM city WHERE uuid=?",
                         "DELETE FROM city_permissions WHERE city_uuid=?",
                         "DELETE FROM city_regions WHERE city_uuid=?",
-                        "DELETE FROM city_banks WHERE city_uuid=?"
+                        "DELETE FROM city_chests WHERE city_uuid=?"
                 };
 
                 for (String sql : queries) {
                     PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql);
-                    statement.setString(1, city_uuid);
+                    statement.setString(1, cityUUID);
                     statement.executeUpdate();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
+
+        Bukkit.getPluginManager().callEvent(new CityDeleteEvent(this));
     }
 
-    public void upgradeBank() {
-        bank_pages += 1;
+    public void upgradeChest() {
+        chestPages += 1;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_banks (city_uuid, page) VALUES (?, ?)");
-                statement.setString(1, city_uuid);
-                statement.setInt(2, bank_pages);
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests (city_uuid, page) VALUES (?, ?)");
+                statement.setString(1, cityUUID);
+                statement.setInt(2, chestPages);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
-                bank_pages -= 1;
+                chestPages -= 1;
             }
         });
     }

@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -44,7 +45,7 @@ public class ProtectionListener implements Listener {
         if (isMemberOf(city, player)) return;
         event.setCancelled(true);
 
-        MessagesManager.sendMessageType(player, "Tu n'as pas le droit de faire ça !", Prefix.CITY, MessageType.ERROR, true);
+        MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, true);
     }
 
     @EventHandler

@@ -2,7 +2,8 @@ package fr.openmc.core.features.city.listeners;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.menu.BankMenu;
+import fr.openmc.core.features.city.menu.ChestMenu;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,7 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
-public class BankMenuListener implements Listener {
+public class ChestMenuListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         HumanEntity humanEntity = event.getWhoClicked();
@@ -21,7 +22,7 @@ public class BankMenuListener implements Listener {
         if (city == null) { return; }
 
         Inventory inv = event.getInventory();
-        BankMenu menu = city.getBankMenu();
+        ChestMenu menu = city.getChestMenu();
         if (menu == null) { return; }
         if (inv != menu.getInventory()) { return; }
 
@@ -34,14 +35,14 @@ public class BankMenuListener implements Listener {
         }
 
         if (event.getSlot() == 45 && menu.hasPreviousPage()) { // Previous Button
-            city.setBankMenu(new BankMenu(city, menu.getPage() - 1));
-            city.getBankMenu().open(player);
+            city.setChestMenu(new ChestMenu(city, menu.getPage() - 1));
+            city.getChestMenu().open(player);
             return;
         }
 
         if (event.getSlot() == 53 && menu.hasNextPage()) { // Next Button
-            city.setBankMenu(new BankMenu(city, menu.getPage() + 1));
-            city.getBankMenu().open(player);
+            city.setChestMenu(new ChestMenu(city, menu.getPage() + 1));
+            city.getChestMenu().open(player);
             return;
         }
 
@@ -59,21 +60,21 @@ public class BankMenuListener implements Listener {
         if (city == null) { return; }
 
         Inventory inv = event.getInventory();
-        BankMenu menu = city.getBankMenu();
+        ChestMenu menu = city.getChestMenu();
         if (menu == null) { return; }
         if (inv != menu.getInventory()) { return; }
 
         exit(city, inv, menu);
     }
 
-    private void exit(City city, Inventory inv, BankMenu menu) {
+    private void exit(City city, Inventory inv, ChestMenu menu) {
         for (int i = 45; i < 54; i++) {
             inv.clear(i);
         }
 
-        city.saveBankContent(menu.getPage(), inv.getContents());
+        city.saveChestContent(menu.getPage(), inv.getContents());
 
-        city.setBankMenu(null);
-        city.setBankWatcher(null);
+        city.setChestMenu(null);
+        city.setChestWatcher(null);
     }
 }
