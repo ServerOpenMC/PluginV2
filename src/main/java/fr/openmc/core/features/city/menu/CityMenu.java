@@ -3,9 +3,15 @@ package fr.openmc.core.features.city.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.menu.bank.BankMainMenu;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -13,15 +19,15 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CityMenu extends Menu {
 
@@ -36,7 +42,7 @@ public class CityMenu extends Menu {
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.LARGE;
+        return InventorySize.LARGER;
     }
 
     @Override
@@ -48,54 +54,164 @@ public class CityMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        List<Component> lore_create = new ArrayList<>();
-        lore_create.add(Component.text("§7Vous pouvez aussi créer §dvotre Ville"));
-        lore_create.add(Component.text("§7Faites §d/city create <name>"));
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        assert city != null;
 
-        Component name_notif;
-        List<Component> lore_notif = new ArrayList<>();
-        if (!CityCommands.invitations.containsKey(player)) {
-            name_notif = Component.text("§7Vous n'avez aucune §6invitation");
-            lore_notif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
-            lore_notif.add(Component.text("§6via /city invite"));
+        boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
+        boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
+        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
-            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
-                itemMeta.itemName(name_notif);
-                itemMeta.lore(lore_notif);
-            }).setOnClick(inventoryClickEvent -> {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
-            }));
+        List<Component> loreModifyCity;
+
+        if (hasPermissionRenameCity || hasPermissionOwner) {
+            loreModifyCity = List.of(
+                    Component.text("§7Maire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                    Component.text("§7Membre(s) : " + city.getMembers().size()),
+                    Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
+            );
         } else {
-            name_notif = Component.text("§7Vous avez une §6invitation");
+            loreModifyCity = List.of(
+                    Component.text("§7Maire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                    Component.text("§7Membre(s) : " + city.getMembers().size())
+            );
+        }
 
-            Player inviter = CityCommands.invitations.get(player);
-            City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
+        inventory.put(4, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
+            itemMeta.itemName(Component.text("§d" + city.getCityName()));
+            itemMeta.lore(loreModifyCity);
+        }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
 
-            lore_notif.add(Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName()));
-            lore_notif.add(Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER"));
+            if (hasPermissionOwner) {
+                CityModifyMenu menu = new CityModifyMenu(player);
+                menu.open();
+            }
+        }));
 
-            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
-                itemMeta.itemName(name_notif);
-                itemMeta.lore(lore_notif);
+        inventory.put(8, new ItemBuilder(this, Material.DRAGON_EGG, itemMeta -> {
+            itemMeta.itemName(Component.text("§cVotre Mascotte"));
+            itemMeta.lore(List.of(
+                    Component.text("§cVie : §7null/null")
+            )); //TODO: Mascottes
+        }));
+
+        inventory.put(19, new ItemBuilder(this, Material.OAK_FENCE, itemMeta -> {
+            itemMeta.itemName(Component.text("§6Taille de votre Ville"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Votre ville a une superficie de §6" + city.getChunks().size()),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A LA MAP")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            // Menu des claims
+        }));
+
+        ItemStack playerHead = PlayerUtils.getPlayerSkull(player);
+
+        inventory.put(22, new ItemBuilder(this, playerHead, itemMeta -> {
+            itemMeta.displayName(Component.text("§dListe des Membres"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Il y a actuellement §d" + city.getMembers().size() + "§7 membre(s) dans votre ville")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            // Menu des membres
+        }));
+
+        inventory.put(25, new ItemBuilder(this, Material.NETHERITE_SWORD, itemMeta -> {
+            itemMeta.itemName(Component.text("§5Le Statut de votre Ville"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Votre ville est en ...") //TODO: Systeme de Status des Villes (voir cdc, en paix, en guerre, commerce)
+            ));
+        }));
+
+        List<Component> loreChestCity;
+
+        if (hasPermissionChest) {
+            loreChestCity = List.of(
+                    Component.text("§7Acceder au Coffre de votre Ville pour"),
+                    Component.text("§7stocker des items en commun"),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
+            );
+        } else {
+            loreChestCity = List.of(
+                    Component.text("§7Vous n'avez pas le §cdroit de visionner le coffre !")
+            );
+        }
+
+        inventory.put(36, new ItemBuilder(this, Material.CHEST, itemMeta -> {
+            itemMeta.itemName(Component.text("§aLe Coffre de la Ville"));
+            itemMeta.lore(loreChestCity);
+        }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            if (!hasPermissionChest) {
+                MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas les permissions de voir le coffre"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            if (city.getChestWatcher() != null) {
+                MessagesManager.sendMessageType(player, Component.text("Le coffre est déjà ouvert"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            new ChestMenu(city, 1).open(player);
+        }));
+
+        inventory.put(40, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+            itemMeta.itemName(Component.text("§6La Banque"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Stocker votre argent et celle de votre ville"),
+                    Component.text("§7Contribuer au développement de votre ville"),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX COMPTES")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            BankMainMenu menu = new BankMainMenu(player);
+            menu.open();
+        }));
+
+
+        if (!hasPermissionOwner) {
+            inventory.put(44, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
+                itemMeta.itemName(Component.text("§cPartir de la Ville"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Vous allez §cquitter §7" + city.getCityName()),
+                        Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
+                ));
             }).setOnClick(inventoryClickEvent -> {
-                ConfirmMenu menu = new ConfirmMenu(player, new CityMenu(player), this::accept, this::refuse, "§7Accepter", "§7Refuser" + inviter.getName());
+                City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+                if (cityCheck == null) {
+                    MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    return;
+                }
+
+                ConfirmMenu menu = new ConfirmMenu(player,
+                        () -> {
+                            CityCommands.leaveCity(player);
+                            player.closeInventory();
+                        },
+                        () -> {
+                            player.closeInventory();
+                        },
+                        "§7Voulez vous vraiment partir de " + city.getCityName() + " ?",
+                        "§7Rester dans la ville " + city.getCityName()
+                );
                 menu.open();
             }));
         }
 
-        inventory.put(11, new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
-            itemMeta.lore(lore_create);
-        }));
-
         return inventory;
-    }
-
-    private void accept() {
-        Bukkit.dispatchCommand(getOwner(), "city accept");
-    }
-
-    private void refuse() {
-        Bukkit.dispatchCommand(getOwner(), "city deny");
     }
 }

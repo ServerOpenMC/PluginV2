@@ -1,9 +1,6 @@
 package fr.openmc.core.utils.messages;
 
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-
-import java.util.Arrays;
 
 /**
  * Enum representing various prefixes for messages.

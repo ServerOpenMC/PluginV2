@@ -52,6 +52,7 @@ public class ContributionMenu extends Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent click) {
+        // empty
     }
 
     @Override
@@ -116,11 +117,11 @@ public class ContributionMenu extends Menu {
             }
 
             try {
-                ItemStack shell_contestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
-                int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && is.isSimilar(shell_contestItem)).mapToInt(ItemStack::getAmount).sum();
+                ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
+                int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && is.isSimilar(shellContestItem)).mapToInt(ItemStack::getAmount).sum();
 
-                if (ItemUtils.hasEnoughItems(player, shell_contestItem.getType(), shellCount)) {
-                    ItemUtils.removeItemsFromInventory(player, shell_contestItem.getType(), shellCount);
+                if (ItemUtils.hasEnoughItems(player, shellContestItem.getType(), shellCount)) {
+                    ItemUtils.removeItemsFromInventory(player, shellContestItem.getType(), shellCount);
 
                     int newPlayerPoints = shellCount + contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
                     int updatedCampPoints = shellCount + contestManager.data.getInteger("points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp());
