@@ -62,7 +62,6 @@ public final class OMCPlugin extends JavaPlugin {
         translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
         translationManager.loadAllLanguages();
 
-
         getLogger().info("Plugin activé");
     }
 
