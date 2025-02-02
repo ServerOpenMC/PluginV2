@@ -5,6 +5,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
@@ -17,26 +18,26 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 public class AdminCityCommands {
     @Subcommand("deleteCity")
     @CommandPermission("omc.admins.commands.admincity.deleteCity")
-    void deleteCity(Player player, @Named("uuid") String city_uuid) {
-        City city = CityManager.getCity(city_uuid);
+    void deleteCity(Player player, @Named("uuid") String cityUUID) {
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, "La ville n'existe pas", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.delete();
-        MessagesManager.sendMessageType(player, "La ville a été supprimée", Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, Component.text("La ville a été supprimée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("info")
     @CommandPermission("omc.admins.commands.admincity.info")
     @AutoComplete("<uuid>")
-    void info(Player player, @Named("uuid") String city_uuid) {
-        City city = CityManager.getCity(city_uuid);
+    void info(Player player, @Named("uuid") String cityUUID) {
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, "Cette ville n'existe pas", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Cette ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -45,92 +46,92 @@ public class AdminCityCommands {
 
     @Subcommand("rename")
     @CommandPermission("omc.admins.commands.admincity.rename")
-    void rename(Player player, @Named("uuid") String city_uuid, @Named("nouveau nom") String newName) {
+    void rename(Player player, @Named("uuid") String cityUUID, @Named("nouveau nom") String newName) {
         // Aucune vérification de nom mais faut espérer que le nom est valide :beluclown:
-        City city = CityManager.getCity(city_uuid);
+        City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessageType(player, "La ville n'existe pas", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
         city.renameCity(newName);
 
-        MessagesManager.sendMessageType(player, "La ville a été renommée", Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, Component.text("La ville a été renommée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
-    void setOwner(Player player, @Named("uuid") String city_uuid, @Named("nouveau maire") Player newOwner) {
-        City city = CityManager.getCity(city_uuid);
+    void setOwner(Player player, @Named("uuid") String cityUUID, @Named("nouveau maire") Player newOwner) {
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, "La ville n'existe pas", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.changeOwner(newOwner.getUniqueId());
-        MessagesManager.sendMessageType(player, "Le propriété a été transférée", Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, Component.text("Le propriété a été transférée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("setBalance")
     @CommandPermission("omc.admins.commands.admincity.setBalance")
-    void setBalance(Player player, @Named("uuid") String city_uuid, @Named("balance") double newBalance) {
-        City city = CityManager.getCity(city_uuid);
+    void setBalance(Player player, @Named("uuid") String cityUUID, @Named("balance") double newBalance) {
+        City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessageType(player, "La ville n'existe pas", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.setBalance(newBalance);
-        MessagesManager.sendMessageType(player, "Le solde a été modifié", Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, Component.text("Le solde a été modifié"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("getBalance")
     @CommandPermission("omc.admins.commands.admincity.getBalance")
-    void getBalance(Player player, String city_uuid) {
-        City city = CityManager.getCity(city_uuid);
+    void getBalance(Player player, String cityUUID) {
+        City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessageType(player, "La ville n'existe pas", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
-        MessagesManager.sendMessageType(player, "Le solde de la ville est de "+ city.getBalance()+ EconomyManager.getEconomyIcon(), Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessageType(player, Component.text("Le solde de la ville est de "+ city.getBalance()+ EconomyManager.getEconomyIcon()), Prefix.STAFF, MessageType.INFO, false);
     }
 
     @Subcommand("add")
     @CommandPermission("omc.admins.commands.admincity.add")
-    void add(Player player, @Named("uuid") String city_uuid, Player newMember) {
-        City city = CityManager.getCity(city_uuid);
+    void add(Player player, @Named("uuid") String cityUUID, Player newMember) {
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, "La ville n'existe pas", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         if (CityManager.getPlayerCity(newMember.getUniqueId()) != null) {
-            MessagesManager.sendMessageType(player, "Le joueur est déjà dans une ville", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Le joueur est déjà dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.addPlayer(newMember.getUniqueId());
-        MessagesManager.sendMessageType(player, "Le joueur a été ajouté", Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, Component.text("Le joueur a été ajouté"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("remove")
     @CommandPermission("omc.admins.commands.admincity.remove")
-    void remove(Player player, @Named("uuid") String city_uuid, Player member) {
+    void remove(Player player, @Named("uuid") String cityUUID, Player member) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(player, "Le joueur n'est pas dans une ville", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         if (city.hasPermission(member.getUniqueId(), CPermission.OWNER)) {
-            MessagesManager.sendMessageType(player, "Le joueur est le propriétaire de la ville", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Le joueur est le propriétaire de la ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.removePlayer(member.getUniqueId());
-        MessagesManager.sendMessageType(player, "Le joueur a été retiré", Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessageType(player, Component.text("Le joueur a été retiré"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("getPlayer")
@@ -138,10 +139,10 @@ public class AdminCityCommands {
     void getPlayer(Player player, Player member) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(player, "Le joueur n'est pas dans une ville", Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessageType(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
-        MessagesManager.sendMessageType(player, "Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")", Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessageType(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
     }
 }

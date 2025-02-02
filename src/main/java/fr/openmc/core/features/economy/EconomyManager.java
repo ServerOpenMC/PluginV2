@@ -1,6 +1,7 @@
 package fr.openmc.core.features.economy;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Locale;
@@ -61,6 +62,16 @@ public class EconomyManager {
 
     public void saveBalances(UUID player) {
         EconomyData.saveBalances(player, getBalance(player));
+    }
+
+    public String getMiniBalance(UUID player) {
+        double balance = getBalance(player);
+
+        DecimalFormat df = new DecimalFormat("#.##");
+        return balance >= 1000000000 ? df.format(balance / 1000000000) + "B" :
+               balance >= 1000000 ? df.format(balance / 1000000) + "M" :
+               balance >= 1000 ? df.format(balance / 1000) + "k" :
+               df.format(balance);
     }
 
     public String getFormattedBalance(UUID player) {

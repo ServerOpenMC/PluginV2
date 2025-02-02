@@ -25,7 +25,6 @@ public class LuckPermsAPI {
 
         RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
         if (provider != null) {
-            plugin.lpApi = provider.getProvider();
             api = provider.getProvider();
         }
     }

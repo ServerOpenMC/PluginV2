@@ -3,8 +3,10 @@ package fr.openmc.core.utils.database;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.analytics.AnalyticsManager;
+import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyData;
 import fr.openmc.core.features.economy.TransactionsManager;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -22,6 +24,8 @@ public class DatabaseManager {
             TransactionsManager.init_db(connection);
             AnalyticsManager.init_db(connection);
             CityManager.init_db(connection);
+            ContestManager.init_db(connection);
+            MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
         } catch (SQLException e) {
             e.printStackTrace();

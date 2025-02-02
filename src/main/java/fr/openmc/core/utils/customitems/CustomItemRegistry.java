@@ -16,7 +16,7 @@ import java.util.HashSet;
 public class CustomItemRegistry {
     static HashMap<String, CustomItem> items = new HashMap<>();
     static NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
-    private static boolean hasItemsAdder = false;
+    private static final boolean hasItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
 
     public static boolean hasItemsAdder() {
         return hasItemsAdder;
@@ -24,10 +24,10 @@ public class CustomItemRegistry {
 
     static public void init() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
-        hasItemsAdder = Bukkit.getPluginManager().getPlugin("ItemsAdder") != null;
 
         // Ici, enregistrer tout les items custom
         new CloseButton();
+        new ContestShell();
         new PreviousPage();
         new NextPage();
     }

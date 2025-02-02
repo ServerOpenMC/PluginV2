@@ -12,7 +12,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class BankMenu {
+public class ChestMenu {
     private final City city;
     @Getter private final int page;
     private static ItemStack border;
@@ -31,7 +31,7 @@ public class BankMenu {
         return border.clone();
     }
 
-    public BankMenu(City city, int page) {
+    public ChestMenu(City city, int page) {
         this.city = city;
         this.page = page;
 
@@ -39,13 +39,13 @@ public class BankMenu {
             throw new IllegalArgumentException("Page must be greater than 0");
         }
 
-        if (this.page > this.city.getBankPages()) {
-            throw new IllegalArgumentException("Page must be less than or equal to " + this.city.getBankPages());
+        if (this.page > this.city.getChestPages()) {
+            throw new IllegalArgumentException("Page must be less than or equal to " + this.city.getChestPages());
         }
     }
 
     public boolean hasNextPage() {
-        return this.page < this.city.getBankPages();
+        return this.page < this.city.getChestPages();
     }
 
     public boolean hasPreviousPage() {
@@ -53,9 +53,9 @@ public class BankMenu {
     }
 
     public void open(Player player) {
-        Inventory inventory = Bukkit.createInventory(null, 54, Component.text("Banque de " + this.city.getName() + " - Page " + this.page));
+        Inventory inventory = Bukkit.createInventory(null, 54, Component.text("Coffre de " + this.city.getName() + " - Page " + this.page));
 
-        inventory.setContents(this.city.getBankContent(this.page));
+        inventory.setContents(this.city.getChestContent(this.page));
 
         for (int i = 45; i < 54; i++) {
             inventory.setItem(i, getBorder());
@@ -75,8 +75,8 @@ public class BankMenu {
         inventory.setItem(49, next);
 
         player.openInventory(inventory);
-        city.setBankWatcher(player.getUniqueId());
-        city.setBankMenu(this);
+        city.setChestWatcher(player.getUniqueId());
+        city.setChestMenu(this);
         this.inventory = inventory;
     }
 }
