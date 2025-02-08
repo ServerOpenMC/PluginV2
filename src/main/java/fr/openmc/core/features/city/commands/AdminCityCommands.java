@@ -22,12 +22,12 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.delete();
-        MessagesManager.sendMessageType(player, Component.text("La ville a été supprimée"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("La ville a été supprimée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("info")
@@ -37,7 +37,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("Cette ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Cette ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -50,12 +50,12 @@ public class AdminCityCommands {
         // Aucune vérification de nom mais faut espérer que le nom est valide :beluclown:
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
         city.renameCity(newName);
 
-        MessagesManager.sendMessageType(player, Component.text("La ville a été renommée"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("La ville a été renommée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("setOwner")
@@ -64,12 +64,12 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.changeOwner(newOwner.getUniqueId());
-        MessagesManager.sendMessageType(player, Component.text("Le propriété a été transférée"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("Le propriété a été transférée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("setBalance")
@@ -77,12 +77,12 @@ public class AdminCityCommands {
     void setBalance(Player player, @Named("uuid") String cityUUID, @Named("balance") double newBalance) {
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.setBalance(newBalance);
-        MessagesManager.sendMessageType(player, Component.text("Le solde a été modifié"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("Le solde a été modifié"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("getBalance")
@@ -90,11 +90,11 @@ public class AdminCityCommands {
     void getBalance(Player player, String cityUUID) {
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
-        MessagesManager.sendMessageType(player, Component.text("Le solde de la ville est de "+ city.getBalance()+ EconomyManager.getEconomyIcon()), Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("Le solde de la ville est de "+ city.getBalance()+ EconomyManager.getEconomyIcon()), Prefix.STAFF, MessageType.INFO, false);
     }
 
     @Subcommand("add")
@@ -103,17 +103,17 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         if (CityManager.getPlayerCity(newMember.getUniqueId()) != null) {
-            MessagesManager.sendMessageType(player, Component.text("Le joueur est déjà dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Le joueur est déjà dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.addPlayer(newMember.getUniqueId());
-        MessagesManager.sendMessageType(player, Component.text("Le joueur a été ajouté"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("Le joueur a été ajouté"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("remove")
@@ -121,17 +121,17 @@ public class AdminCityCommands {
     void remove(Player player, @Named("uuid") String cityUUID, Player member) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         if (city.hasPermission(member.getUniqueId(), CPermission.OWNER)) {
-            MessagesManager.sendMessageType(player, Component.text("Le joueur est le propriétaire de la ville"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Le joueur est le propriétaire de la ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         city.removePlayer(member.getUniqueId());
-        MessagesManager.sendMessageType(player, Component.text("Le joueur a été retiré"), Prefix.STAFF, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("Le joueur a été retiré"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("getPlayer")
@@ -139,10 +139,10 @@ public class AdminCityCommands {
     void getPlayer(Player player, Player member) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessageType(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
-        MessagesManager.sendMessageType(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
     }
 }

@@ -111,7 +111,7 @@ public class ContributionMenu extends Menu {
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
             if (!CustomItemRegistry.hasItemsAdder()) {
-                MessagesManager.sendMessageType(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                 return;
             }
 
@@ -133,9 +133,9 @@ public class ContributionMenu extends Menu {
                         contestManager.data.setPointsCamp2(updatedCampPoints);
                     }
 
-                    MessagesManager.sendMessageType(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                    MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
                 } else {
-                    MessagesManager.sendMessageType(getOwner(), Component.text("§cVous n'avez pas de Coquillage(s) de Contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de Coquillage(s) de Contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
