@@ -1,6 +1,5 @@
 package fr.openmc.core.utils.messages;
 
-import com.google.common.collect.ImmutableBiMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
