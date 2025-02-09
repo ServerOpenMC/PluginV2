@@ -45,7 +45,7 @@ public class ProtectionListener implements Listener {
         if (isMemberOf(city, player)) return;
         event.setCancelled(true);
 
-        MessagesManager.sendMessageType(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, true);
+        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, true);
     }
 
     @EventHandler

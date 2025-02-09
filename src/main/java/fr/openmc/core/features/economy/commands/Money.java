@@ -22,16 +22,16 @@ public class Money {
     @DefaultFor("~")
     public void getMoney(CommandSender sender, @Optional OfflinePlayer target) {
         if (sender instanceof Player player && target == null) {
-            MessagesManager.sendMessageType(player, Component.text("§aVous avez §e" + EconomyManager.getInstance().getFormattedBalance(player.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO,  true);
+            MessagesManager.sendMessage(player, Component.text("§aVous avez §e" + EconomyManager.getInstance().getFormattedBalance(player.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO,  true);
         } else {
             if(target == null) {
-                MessagesManager.sendMessageType(sender, MessagesManager.Message.MISSINGARGUMENT.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(sender, MessagesManager.Message.MISSINGARGUMENT.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
             if(!(sender instanceof Player player) || player.hasPermission("omc.admin.commands.money.others")) {
-                MessagesManager.sendMessageType(sender, Component.text("§e" + target.getName() + "§a a §e" + EconomyManager.getInstance().getFormattedBalance(target.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO, true);
+                MessagesManager.sendMessage(sender, Component.text("§e" + target.getName() + "§a a §e" + EconomyManager.getInstance().getFormattedBalance(target.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO, true);
             } else {
-                MessagesManager.sendMessageType(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
             }
         }
     }
@@ -41,9 +41,9 @@ public class Money {
     @CommandPermission("omc.admin.commands.money.set")
     public void setMoney(CommandSender player, OfflinePlayer target, @Range(min = 1) double amount) {
         EconomyManager.getInstance().setBalance(target.getUniqueId(), amount);
-        MessagesManager.sendMessageType(player, Component.text("§aVous avez défini l'argent de §e" + target.getName() + "§a à §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez défini l'argent de §e" + target.getName() + "§a à §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
         if(target.isOnline()) {
-            MessagesManager.sendMessageType(target.getPlayer(), Component.text("§aVotre argent a été défini à §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
+            MessagesManager.sendMessage(target.getPlayer(), Component.text("§aVotre argent a été défini à §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
         }
     }
 
@@ -52,9 +52,9 @@ public class Money {
     @CommandPermission("omc.admin.commands.money.add")
     public void addMoney(CommandSender player, OfflinePlayer target, @Range(min = 1) double amount) {
         EconomyManager.getInstance().addBalance(target.getUniqueId(), amount);
-        MessagesManager.sendMessageType(player, Component.text("§aVous avez ajouté §e" + EconomyManager.getInstance().getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté §e" + EconomyManager.getInstance().getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
         if(target.isOnline()) {
-            MessagesManager.sendMessageType(target.getPlayer(), Component.text("§aVous avez reçu §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
+            MessagesManager.sendMessage(target.getPlayer(), Component.text("§aVous avez reçu §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -72,9 +72,9 @@ public class Money {
     @CommandPermission("omc.admin.commands.money.remove")
     public void removeMoney(CommandSender player, OfflinePlayer target, @Range(min = 1) double amount) {
         if(EconomyManager.getInstance().withdrawBalance(target.getUniqueId(), amount)) {
-            MessagesManager.sendMessageType(player, Component.text("§aVous avez retiré §e" + EconomyManager.getInstance().getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(player, Component.text("§aVous avez retiré §e" + EconomyManager.getInstance().getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
             if(target.isOnline()) {
-                MessagesManager.sendMessageType(target.getPlayer(), Component.text("§cVous avez perdu §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
+                MessagesManager.sendMessage(target.getPlayer(), Component.text("§cVous avez perdu §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
             }
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -86,7 +86,7 @@ public class Money {
                 ).register();
             });
         } else {
-            MessagesManager.sendMessageType(player, Component.text("§cLe joueur n'a pas assez d'argent"), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, Component.text("§cLe joueur n'a pas assez d'argent"), Prefix.OPENMC, MessageType.ERROR, true);
         }
     }
 
@@ -95,9 +95,9 @@ public class Money {
     @CommandPermission("omc.admin.commands.money.reset")
     public void resetMoney(CommandSender player, OfflinePlayer target) {
         EconomyManager.getInstance().setBalance(target.getUniqueId(), 0);
-        MessagesManager.sendMessageType(player, Component.text("§aVous avez réinitialisé l'argent de §e" + target.getName() + "§a à §e" + EconomyManager.getInstance().getFormattedNumber(0)), Prefix.OPENMC, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez réinitialisé l'argent de §e" + target.getName() + "§a à §e" + EconomyManager.getInstance().getFormattedNumber(0)), Prefix.OPENMC, MessageType.SUCCESS, true);
         if(target.isOnline()) {
-            MessagesManager.sendMessageType(target.getPlayer(), Component.text("§aVotre argent a été réinitialisé à §e" + EconomyManager.getInstance().getFormattedNumber(0)), Prefix.OPENMC, MessageType.INFO, true);
+            MessagesManager.sendMessage(target.getPlayer(), Component.text("§aVotre argent a été réinitialisé à §e" + EconomyManager.getInstance().getFormattedNumber(0)), Prefix.OPENMC, MessageType.INFO, true);
         }
     }
 }
