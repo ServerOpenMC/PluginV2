@@ -104,7 +104,7 @@ public class TradeMenu extends Menu {
                 itemMeta.lore(loreTrades);
             }).setOnClick(inventoryClickEvent -> {
                 if (!CustomItemRegistry.hasItemsAdder()) {
-                    MessagesManager.sendMessageType(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                     return;
                 }
 
@@ -159,9 +159,9 @@ public class TradeMenu extends Menu {
                             MailboxManager.sendItems(player, player, shellContestArray);
                         }
 
-                        MessagesManager.sendMessageType(player, Component.text("§7Vous avez échangé §e" + items1 + " " + m1 + " §7contre§b " + amountShell2 + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + items1 + " " + m1 + " §7contre§b " + amountShell2 + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
-                        MessagesManager.sendMessageType(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
+                        MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
                 } else if (inventoryClickEvent.isLeftClick()) {
                     if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
@@ -179,9 +179,9 @@ public class TradeMenu extends Menu {
                         }
 
                         ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), amount);
-                        MessagesManager.sendMessageType(player, Component.text("§7Vous avez échangé §e" + amount + " " + m1 + " §7contre§b " + amountShell + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + amount + " " + m1 + " §7contre§b " + amountShell + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
-                        MessagesManager.sendMessageType(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
+                        MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
                 }
             }));

@@ -25,22 +25,22 @@ public class CitizensPermsMenu {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (hisCity == null) {
-            MessagesManager.sendMessageType(sender, Component.text("Ce joueur n'habite aucune ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'habite aucune ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city == null) {
-            MessagesManager.sendMessageType(sender, Component.text("Tu n'habites dans aucune ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Tu n'habites dans aucune ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!Objects.equals(hisCity.getUUID(), city.getUUID())) {
-            MessagesManager.sendMessageType(sender, Component.text("Ce joueur n'habite pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'habite pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
-            MessagesManager.sendMessageType(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -97,12 +97,12 @@ public class CitizensPermsMenu {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessageType(sender, Component.text("Tu n'habites dans aucune ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Tu n'habites dans aucune ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
-            MessagesManager.sendMessageType(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
