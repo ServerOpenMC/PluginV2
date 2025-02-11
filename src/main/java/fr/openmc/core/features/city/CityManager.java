@@ -2,7 +2,7 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
-import fr.openmc.core.features.city.events.CityDeleteEvent;
+import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
@@ -64,7 +64,8 @@ public class CityManager implements Listener {
 
         OMCPlugin.registerEvents(
                 new ProtectionListener(),
-                new ChestMenuListener()
+                new ChestMenuListener(),
+                new MascotsListener(OMCPlugin.getInstance())
         );
     }
 
@@ -201,6 +202,33 @@ public class CityManager implements Listener {
             }
         }
         return playerCities.get(uuid);
+    }
+
+    public static String getCityUUIDByPlayer (Player player) throws SQLException {
+        List<String> city_uuids = getAllCityUUIDs();
+        for (String uuid : city_uuids) {
+            City city = new City(uuid);
+            if (city.getMembers().contains(player.getUniqueId())){
+                return uuid;
+            }
+        }
+        return null;
+    }
+
+    public static List<String> getAllCityUUIDs() throws SQLException {
+        Connection conn = DatabaseManager.getConnection();
+        List<String> uuidList = new ArrayList<>();
+
+        String query = "SELECT uuid FROM city";
+        try (PreparedStatement statement = conn.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String uuid = resultSet.getString("uuid");
+                uuidList.add(uuid);
+            }
+        }
+        return uuidList;
     }
 
     public static void uncachePlayer(UUID uuid) {
