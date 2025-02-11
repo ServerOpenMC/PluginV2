@@ -204,17 +204,6 @@ public class CityManager implements Listener {
         return playerCities.get(uuid);
     }
 
-    public static String getCityUUIDByPlayer (Player player) throws SQLException {
-        List<String> city_uuids = getAllCityUUIDs();
-        for (String uuid : city_uuids) {
-            City city = new City(uuid);
-            if (city.getMembers().contains(player.getUniqueId())){
-                return uuid;
-            }
-        }
-        return null;
-    }
-
     public static List<String> getAllCityUUIDs() throws SQLException {
         Connection conn = DatabaseManager.getConnection();
         List<String> uuidList = new ArrayList<>();

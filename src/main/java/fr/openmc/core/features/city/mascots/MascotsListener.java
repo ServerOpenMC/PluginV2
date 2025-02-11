@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.mascots;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.MascotMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -40,7 +41,7 @@ public class MascotsListener implements Listener {
 
     // TODO chose à rejouter :
     //TODO trouver un moyen que la mascotte ne se transforme pas a cause d'un éclair
-    //TODO faire en sorte que l'objet en puisse pas être jeté/sortie de l'inventaire du joueur
+    //TODO faire en sorte que l'objet ne puisse pas être jeté/sortie de l'inventaire du joueur
     //TODO rajouter la vérification pour savoir si le joueur est maire/adjoint pour ouvrir le menu de la mascotte
     //TODO trouver un moyen d'empecher la mascotte de bouger/ être bouger
 
@@ -87,7 +88,11 @@ public class MascotsListener implements Listener {
                         return;
                     }
 
-                    if (mascotsConfig.contains("mascots." + getCityUUIDByPlayer(player))){
+                    City city = CityManager.getPlayerCity(player.getUniqueId());
+                    assert city != null;
+                    String city_uuid = city.getUUID();
+
+                    if (mascotsConfig.contains("mascots." + city_uuid)){
                         MessagesManager.sendMessage(player, Component.text("Vous possésez déjà une mascotte"), Prefix.CITY, MessageType.ERROR, false);
                         player.getInventory().remove(item);
                         e.setCancelled(true);
@@ -101,8 +106,8 @@ public class MascotsListener implements Listener {
                     int chunkX = chunk.getX();
                     int chunkZ = chunk.getZ();
                     for (String uuid : city_uuids) {
-                        City city = new City(uuid);
-                        if (city.hasChunk(chunkX,chunkZ) && !uuid.equals(String.valueOf(getCityUUIDByPlayer(player)))){
+                        City citys = new City(uuid);
+                        if (citys.hasChunk(chunkX,chunkZ) && !uuid.equals(city_uuid)){
                             MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
                             e.setCancelled(true);
                             return;
@@ -122,10 +127,10 @@ public class MascotsListener implements Listener {
                     mob.setCustomNameVisible(true);
                     PersistentDataContainer data = mob.getPersistentDataContainer();
                     // l'uuid de la ville lui est approprié pour l'identifié
-                    data.set(mascotsKey, PersistentDataType.STRING, String.valueOf(getCityUUIDByPlayer(player)));
+                    data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
-                    mascotsConfig.set("mascots." + getCityUUIDByPlayer(player) + ".level", String.valueOf(MascotsLevels.level1));
-                    mascotsConfig.set("mascots." + getCityUUIDByPlayer(player) + ".uuid", String.valueOf(mob.getUniqueId()));
+                    mascotsConfig.set("mascots." + city_uuid + ".level", String.valueOf(MascotsLevels.level1));
+                    mascotsConfig.set("mascots." + city_uuid + ".uuid", String.valueOf(mob.getUniqueId()));
                     saveMascotsConfig();
                 }
             }
@@ -143,7 +148,10 @@ public class MascotsListener implements Listener {
             if (damager instanceof Player player){
                 String mascotsUUID = data.get(mascotsKey, PersistentDataType.STRING);
                 assert mascotsUUID != null;
-                if (mascotsUUID.equals(String.valueOf(getCityUUIDByPlayer(player)))){
+                City city = CityManager.getPlayerCity(player.getUniqueId());
+                assert city != null;
+                String city_uuid = city.getUUID();
+                if (mascotsUUID.equals(city_uuid)){
                     MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer votre mascotte"), Prefix.CITY, MessageType.INFO, false);
                     e.setCancelled(true);
                     return;
@@ -184,7 +192,10 @@ public class MascotsListener implements Listener {
         if (data.has(mascotsKey, PersistentDataType.STRING)){
             String mascotsUUID = data.get(mascotsKey, PersistentDataType.STRING);
             if (mascotsUUID == null){return;}
-            if (mascotsUUID.equals(String.valueOf(getCityUUIDByPlayer(player)))){
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            assert city != null;
+            String city_uuid = city.getUUID();
+            if (mascotsUUID.equals(city_uuid)){
                 new MascotMenu(player, clickEntity).open();
             } else {
                 MessagesManager.sendMessage(player, Component.text("§cCette mascots ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
