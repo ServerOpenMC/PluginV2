@@ -15,9 +15,9 @@ public enum MascotsLevels {
     level9(2700),
     level10(3000),;
 
-    private final int Health;
+    private final int health;
 
     MascotsLevels(int health) {
-        Health = health;
+        this.health = health;
     }
 }

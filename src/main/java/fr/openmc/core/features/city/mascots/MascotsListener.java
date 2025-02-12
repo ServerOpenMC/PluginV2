@@ -29,21 +29,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 
 import static fr.openmc.core.features.city.CityManager.*;
 
 public class MascotsListener implements Listener {
-
-    // TODO chose à rejouter :
-    //TODO trouver un moyen que la mascotte ne se transforme pas a cause d'un éclair
-    //TODO faire en sorte que l'objet ne puisse pas être jeté/sortie de l'inventaire du joueur
-    //TODO rajouter la vérification pour savoir si le joueur est maire/adjoint pour ouvrir le menu de la mascotte
-    //TODO trouver un moyen d'empecher la mascotte de bouger/ être bouger
 
     public static File mascotsFile;
     public static YamlConfiguration mascotsConfig;
@@ -54,7 +45,6 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     public MascotsListener (OMCPlugin plugin) {
-        // TODO remplacer le yml par la db
         mascotsFile = new File(plugin.getDataFolder() + "/data", "mascots.yml");
         loadMascotsConfig();
         chestKey = new NamespacedKey(plugin, "mascots_chest");
@@ -62,8 +52,8 @@ public class MascotsListener implements Listener {
         List<String> city_uuids = getAllCityUUIDs();
         for (String uuid : city_uuids) {
             UUID mascotsUUID = getMascotsUUIDbyCityUUID(uuid);
-            if (mascotsUUID==null){return;}
-            MascotsRegeneration(mascotsUUID);
+            if (mascotsUUID==null){continue;}
+            mascotsRegeneration(mascotsUUID);
         }
     }
 
@@ -84,7 +74,7 @@ public class MascotsListener implements Listener {
                 if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
 
                     if (player_world!=world){
-                        MessagesManager.sendMessage(player, Component.text("Impossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
 
@@ -93,7 +83,7 @@ public class MascotsListener implements Listener {
                     String city_uuid = city.getUUID();
 
                     if (mascotsConfig.contains("mascots." + city_uuid)){
-                        MessagesManager.sendMessage(player, Component.text("Vous possésez déjà une mascotte"), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, Component.text("§cVous possésez déjà une mascotte"), Prefix.CITY, MessageType.ERROR, false);
                         player.getInventory().remove(item);
                         e.setCancelled(true);
                         return;
@@ -117,18 +107,13 @@ public class MascotsListener implements Listener {
                     player_world.getBlockAt(mascot_spawn).setType(Material.AIR);
                     LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
 
-                    mob.setAI(false);
-                    mob.setMaxHealth(300);
-                    mob.setHealth(300);
-                    mob.setPersistent(true);
-                    mob.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, true, true));
-                    mob.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, true));
-                    mob.setCustomName("§lMascotte §c" + mob.getHealth() + "/300❤");
-                    mob.setCustomNameVisible(true);
+                    setMascotsData(mob,null, 300, 300);
+
                     PersistentDataContainer data = mob.getPersistentDataContainer();
                     // l'uuid de la ville lui est approprié pour l'identifié
                     data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
+                    loadMascotsConfig();
                     mascotsConfig.set("mascots." + city_uuid + ".level", String.valueOf(MascotsLevels.level1));
                     mascotsConfig.set("mascots." + city_uuid + ".uuid", String.valueOf(mob.getUniqueId()));
                     saveMascotsConfig();
@@ -144,13 +129,17 @@ public class MascotsListener implements Listener {
         Entity damager = e.getDamager();
         PersistentDataContainer data = damageEntity.getPersistentDataContainer();
         double baseDamage;
+
         if (data.has(mascotsKey, PersistentDataType.STRING)){
+
             if (damager instanceof Player player){
+
                 String mascotsUUID = data.get(mascotsKey, PersistentDataType.STRING);
                 assert mascotsUUID != null;
                 City city = CityManager.getPlayerCity(player.getUniqueId());
                 assert city != null;
                 String city_uuid = city.getUUID();
+
                 if (mascotsUUID.equals(city_uuid)){
                     MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer votre mascotte"), Prefix.CITY, MessageType.INFO, false);
                     e.setCancelled(true);
@@ -166,17 +155,22 @@ public class MascotsListener implements Listener {
                     mob.setHealth(newHealth);
                     double maxHealth = mob.getMaxHealth();
                     mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
+
                     if (regenTasks.containsKey(damageEntity.getUniqueId())) {
                         regenTasks.get(damageEntity.getUniqueId()).cancel();
                         regenTasks.remove(damageEntity.getUniqueId());
                     }
+
                     startRegenCooldown(damageEntity.getUniqueId());
+
                     if (newHealth <= 0) {
                         mob.setHealth(0);
                     }
+
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
+
                 return;
             }
             e.setCancelled(true);
@@ -189,12 +183,15 @@ public class MascotsListener implements Listener {
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
         PersistentDataContainer data = clickEntity.getPersistentDataContainer();
+
         if (data.has(mascotsKey, PersistentDataType.STRING)){
+
             String mascotsUUID = data.get(mascotsKey, PersistentDataType.STRING);
             if (mascotsUUID == null){return;}
             City city = CityManager.getPlayerCity(player.getUniqueId());
             assert city != null;
             String city_uuid = city.getUUID();
+
             if (mascotsUUID.equals(city_uuid)){
                 new MascotMenu(player, clickEntity).open();
             } else {
@@ -212,7 +209,7 @@ public class MascotsListener implements Listener {
         BukkitRunnable cooldownTask = new BukkitRunnable() {
             @Override
             public void run() {
-                MascotsRegeneration(mascotsUUID);
+                mascotsRegeneration(mascotsUUID);
                 cooldownTasks.remove(mascotsUUID);
             }
         };
@@ -221,7 +218,7 @@ public class MascotsListener implements Listener {
         cooldownTask.runTaskLater(OMCPlugin.getInstance(), 10 * 60 * 20L);
     }
 
-    private void MascotsRegeneration(UUID mascotsUUID) {
+    private void mascotsRegeneration(UUID mascotsUUID) {
         if (regenTasks.containsKey(mascotsUUID)) {
             return;
         }
@@ -254,15 +251,18 @@ public class MascotsListener implements Listener {
         LivingEntity mob = (LivingEntity) Bukkit.getEntity(entityUUID);
         assert mob != null;
         if (mob.getPersistentDataContainer().has(mascotsKey, PersistentDataType.STRING)){
+
             loadMascotsConfig();
             MascotsLevels mascotsLevels = MascotsLevels.valueOf((String) mascotsConfig.get("mascots." + city_uuid +".level"));
             double lastHealth = mascotsLevels.getHealth();
             if (mascotsLevels != MascotsLevels.level10){
+
                 int nextLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", ""));
                 nextLevel += 1;
                 mascotsConfig.set("mascots." + city_uuid + ".level", String.valueOf(MascotsLevels.valueOf("level"+nextLevel)));
                 saveMascotsConfig();
                 mascotsLevels = MascotsLevels.valueOf((String) mascotsConfig.get("mascots." + city_uuid +".level"));
+
                 try {
                     int maxHealth = mascotsLevels.getHealth();
                     mob.setMaxHealth(maxHealth);
@@ -282,35 +282,55 @@ public class MascotsListener implements Listener {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
         LivingEntity mob = (LivingEntity) mascots;
+
         double baseHealth = mob.getHealth();
         double maxHealth = mob.getMaxHealth();
         String name = mob.getCustomName();
-        String mascotsUUID = mob.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
+        String mascotsCustomUUID = mob.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
         mob.remove();
-        assert world != null;
-        LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc,skin);
-        newMascots.setAI(false);
-        newMascots.setMaxHealth(maxHealth);
-        newMascots.setHealth(baseHealth);
-        newMascots.setPersistent(true);
-        newMascots.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, true, true));
-        newMascots.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, true));
-        newMascots.setCustomName(name);
-        newMascots.setCustomNameVisible(true);
-        PersistentDataContainer newData = newMascots.getPersistentDataContainer();
-        assert mascotsUUID != null;
-        newData.set(mascotsKey, PersistentDataType.STRING, mascotsUUID);
+
+        if (world != null) {
+
+            LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc,skin);
+            setMascotsData(newMascots, name, maxHealth, baseHealth);
+            PersistentDataContainer newData = newMascots.getPersistentDataContainer();
+
+            if (mascotsCustomUUID != null) {
+                newData.set(mascotsKey, PersistentDataType.STRING, mascotsCustomUUID);
+                loadMascotsConfig();
+                mascotsConfig.set("mascots." + mascotsCustomUUID + ".uuid", String.valueOf(newMascots.getUniqueId()));
+                saveMascotsConfig();
+            }
+        }
     }
 
-    public static void RemoveMascotsFromCity (String city_uuid) {
+    private static void setMascotsData(LivingEntity mob, String customName, double maxHealth, double baseHealth) {
+        mob.setAI(false);
+        mob.setMaxHealth(maxHealth);
+        mob.setHealth(baseHealth);
+        mob.setPersistent(true);
+        mob.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, true, true));
+        mob.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, true));
+
+        mob.setCustomName(Objects.requireNonNullElseGet(customName, () -> "§lMascotte §c" + mob.getHealth() + "/300❤"));
+
+        mob.setCustomNameVisible(true);
+    }
+
+    public static void removeMascotsFromCity (String city_uuid) {
         loadMascotsConfig();
-        UUID mascotsUUID = getMascotsUUIDbyCityUUID(city_uuid);
-        if (mascotsUUID!=null){
-            Entity mascots =  Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
-            if (mascots!=null){
-                mascots.remove();
-                mascotsConfig.set("mascots." + city_uuid, null);
+        UUID mascotUUID = getMascotsUUIDbyCityUUID(city_uuid);
+        OMCPlugin.getInstance().getLogger().info("" + mascotUUID);
+        if (mascotsConfig.contains("mascots." + city_uuid)){
+            if (mascotUUID!=null){
+                LivingEntity mascots = (LivingEntity) Bukkit.getEntity(mascotUUID);
+                if (mascots!=null){
+                    mascots.remove();
+                }
             }
+            OMCPlugin.getInstance().getLogger().info("mascots retirer");
+            mascotsConfig.set("mascots." + city_uuid, null);
+            saveMascotsConfig();
         }
     }
 
@@ -319,13 +339,17 @@ public class MascotsListener implements Listener {
             return null;
         }
         loadMascotsConfig();
-        if (!mascotsConfig.contains(city_uuid)){
+        if (!mascotsConfig.contains("mascots." + city_uuid)){
             return null;
         }
-        return (UUID) mascotsConfig.get("mascots." + city_uuid + "uuid");
+        String uuid = mascotsConfig.getString("mascots." + city_uuid + ".uuid");
+        if (uuid==null){
+            return null;
+        }
+        return UUID.fromString(uuid);
     }
 
-    public static void GiveChest (Player player) {
+    public static void giveChest (Player player) {
         if (!hasAvailableSlot(player)){
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
             return;
