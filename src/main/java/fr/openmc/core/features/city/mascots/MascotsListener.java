@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.mascots;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.MascotMenu;
@@ -30,7 +31,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
 
 import static fr.openmc.core.features.city.CityManager.*;
 
@@ -188,14 +188,23 @@ public class MascotsListener implements Listener {
 
             String mascotsUUID = data.get(mascotsKey, PersistentDataType.STRING);
             if (mascotsUUID == null){return;}
-            City city = CityManager.getPlayerCity(player.getUniqueId());
-            assert city != null;
-            String city_uuid = city.getUUID();
 
-            if (mascotsUUID.equals(city_uuid)){
-                new MascotMenu(player, clickEntity).open();
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+
+            if (city == null) {
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            String city_uuid = city.getUUID();
+            if (city.hasPermission(player.getUniqueId(), CPermission.PERMS)){
+                if (mascotsUUID.equals(city_uuid)){
+                    new MascotMenu(player, clickEntity).open();
+                } else {
+                    MessagesManager.sendMessage(player, Component.text("§cCette mascots ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
+                }
             } else {
-                MessagesManager.sendMessage(player, Component.text("§cCette mascots ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission de faire cela"), Prefix.CITY, MessageType.ERROR, false);
             }
         }
     }
