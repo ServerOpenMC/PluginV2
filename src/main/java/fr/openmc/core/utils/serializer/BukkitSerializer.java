@@ -1,4 +1,4 @@
-package fr.communaywen.core.utils.serializer;
+package fr.openmc.core.utils.serializer;
 
 import lombok.Cleanup;
 import org.bukkit.inventory.ItemStack;
