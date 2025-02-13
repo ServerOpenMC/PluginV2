@@ -71,7 +71,7 @@ jar {
     manifest {
         attributes("GIT-COMMIT" : System.getenv("GITHUB_SHA") ?: "unknown")
     }
-    destinationDirectory.set(file("C:\\Users\\tbava\\Desktop\\server\\plugins"))
+    destinationDirectory.set(file("./builds/"))
 }
 
 clean {
@@ -79,7 +79,7 @@ clean {
 }
 
 shadowJar {
-    destinationDirectory.set(file("C:\\Users\\tbava\\Desktop\\Serveur\\server\\plugins"))
+    destinationDirectory.set(file("./builds/"))
     archiveFileName = "OpenMC.jar"
 }
 
