@@ -22,10 +22,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fr.openmc.core.features.city.CityManager.*;
-import static fr.openmc.core.features.city.mascots.MascotsListener.giveChest;
-import static fr.openmc.core.features.city.mascots.MascotsListener.removeMascotsFromCity;
-
 @Command({"ville", "city"})
 public class CityCommands {
     public static HashMap<Player, Player> invitations = new HashMap<>(); // Invité, Inviteur
@@ -494,28 +490,5 @@ public class CityCommands {
         MessagesManager.sendMessage(player, Component.text("Votre ville a été créée"+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
-    }
-
-    @Subcommand("mascots remove")
-    @CommandPermission("omc.admins.commands.city.mascots.remove")
-    private void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {
-        List<String> uuidList = getAllCityUUIDs();
-        City city = CityManager.getPlayerCity(target.getUniqueId());
-        if (city != null){
-            String city_uuid = city.getUUID();
-            if (uuidList.contains(city_uuid)){
-                removeMascotsFromCity(city_uuid);
-                return;
-            }
-            MessagesManager.sendMessage(sender, Component.text("§cVille innexistante"), Prefix.CITY, MessageType.ERROR, true);
-        }
-    }
-
-    @Subcommand("mascots chest")
-    @CommandPermission("omc.admins.commands.city.mascots.chest")
-    private void giveMascotsChest (@Named("player") Player target) throws SQLException {
-        if (target.isOnline()){
-            giveChest(target);
-        }
     }
 }

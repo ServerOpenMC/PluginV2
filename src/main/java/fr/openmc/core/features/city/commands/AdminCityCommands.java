@@ -13,6 +13,13 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.sql.SQLException;
+import java.util.List;
+
+import static fr.openmc.core.features.city.CityManager.getAllCityUUIDs;
+import static fr.openmc.core.features.city.mascots.MascotsListener.giveChest;
+import static fr.openmc.core.features.city.mascots.MascotsListener.removeMascotsFromCity;
+
 @Command("admcity")
 @CommandPermission("omc.admins.commands.admincity")
 public class AdminCityCommands {
@@ -144,5 +151,29 @@ public class AdminCityCommands {
         }
 
         MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
+    }
+
+
+    @Subcommand("mascots remove")
+    @CommandPermission("omc.admins.commands.admcity.mascots.remove")
+    void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {
+        List<String> uuidList = getAllCityUUIDs();
+        City city = CityManager.getPlayerCity(target.getUniqueId());
+        if (city != null){
+            String city_uuid = city.getUUID();
+            if (uuidList.contains(city_uuid)){
+                removeMascotsFromCity(city_uuid);
+                return;
+            }
+            MessagesManager.sendMessage(sender, Component.text("§cVille innexistante"), Prefix.CITY, MessageType.ERROR, true);
+        }
+    }
+
+    @Subcommand("mascots chest")
+    @CommandPermission("omc.admins.commands.admcity.mascots.chest")
+    void giveMascotsChest (@Named("player") Player target){
+        if (target.isOnline()){
+            giveChest(target);
+        }
     }
 }
