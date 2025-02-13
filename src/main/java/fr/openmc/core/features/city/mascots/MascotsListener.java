@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static fr.openmc.core.features.city.CityManager.*;
+import static org.bukkit.Bukkit.spigot;
 
 public class MascotsListener implements Listener {
 
@@ -45,6 +47,17 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     public MascotsListener (OMCPlugin plugin) {
+
+        //changement du spigot.yml pour permettre au mascottes d'avoir 3000 coeurs
+        File spigotYML = new File("spigot.yml");
+        YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
+        spigotYMLConfig.set("settings.attribute.maxHealth.max", 6000.0);
+        try {
+            spigotYMLConfig.save(new File("spigot.yml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         mascotsFile = new File(plugin.getDataFolder() + "/data", "mascots.yml");
         loadMascotsConfig();
         chestKey = new NamespacedKey(plugin, "mascots_chest");
