@@ -8,6 +8,8 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.homes.HomeUpgradeManager;
+import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
@@ -56,6 +58,8 @@ public final class OMCPlugin extends JavaPlugin {
         new EconomyManager();
         new MailboxManager();
         new ScoreboardManager();
+        new HomesManager();
+        new HomeUpgradeManager(HomesManager.getInstance());
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
@@ -67,6 +71,7 @@ public final class OMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        HomesManager.getInstance().saveHomesData();
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
         if (dbManager != null) {

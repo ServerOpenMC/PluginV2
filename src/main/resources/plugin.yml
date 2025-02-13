@@ -7,6 +7,7 @@ softdepend:
   - PlaceholderAPI
   - LuckPerms
   - ItemsAdder
+  - WorldGuard
 
 prefix: OMC
 authors: [ La communauté ]
