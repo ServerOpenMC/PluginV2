@@ -25,6 +25,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.SQLException;
 
+import static fr.openmc.core.features.city.mascots.MascotsListener.saveFreeClaimMap;
+
 public final class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
@@ -77,6 +79,7 @@ public final class OMCPlugin extends JavaPlugin {
             }
         }
 
+        saveFreeClaimMap();
         getLogger().info("Plugin désactivé");
     }
 

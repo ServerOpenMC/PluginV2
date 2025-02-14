@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static fr.openmc.core.features.city.mascots.MascotsListener.freeClaim;
+
 @Command({"ville", "city"})
 public class CityCommands {
     public static HashMap<Player, Player> invitations = new HashMap<>(); // Invité, Inviteur
@@ -329,12 +331,22 @@ public class CityCommands {
         }
 
         int price = calculatePrice(city.getChunks().size());
-        if (city.getBalance() < price) {
-            MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-            return;
+
+        if (!freeClaim.containsKey(city.getUUID())) {
+            if (city.getBalance() < price) {
+                MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
         }
 
-        city.updateBalance((double) (price*-1));
+        if (freeClaim.containsKey(city.getUUID())){
+            freeClaim.replace(city.getUUID(), freeClaim.get(city.getUUID()) - 1);
+            if (freeClaim.get(city.getUUID())<= 0){
+                freeClaim.remove(city.getUUID());
+            }
+        } else {
+            city.updateBalance((double) (price*-1));
+        }
         city.addChunk(sender.getChunk());
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }

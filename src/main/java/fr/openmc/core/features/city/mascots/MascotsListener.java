@@ -12,13 +12,12 @@ import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +33,6 @@ import java.io.IOException;
 import java.util.*;
 
 import static fr.openmc.core.features.city.CityManager.*;
-import static org.bukkit.Bukkit.spigot;
 
 public class MascotsListener implements Listener {
 
@@ -44,6 +42,7 @@ public class MascotsListener implements Listener {
     public static NamespacedKey mascotsKey;
     private final Map<UUID, BukkitRunnable> regenTasks = new HashMap<>();
     private final Map<UUID, BukkitRunnable> cooldownTasks = new HashMap<>();
+    public static HashMap<String, Integer> freeClaim = new HashMap<>();
 
     @SneakyThrows
     public MascotsListener (OMCPlugin plugin) {
@@ -60,6 +59,14 @@ public class MascotsListener implements Listener {
 
         mascotsFile = new File(plugin.getDataFolder() + "/data", "mascots.yml");
         loadMascotsConfig();
+
+        if (mascotsConfig.getConfigurationSection("data")!=null){
+            for (String city_uuid : mascotsConfig.getConfigurationSection("data").getKeys(false)){
+                freeClaim.put(city_uuid, mascotsConfig.getInt("data." + city_uuid));
+            }
+        }
+
+        mascotsConfig.set("data", null);
         chestKey = new NamespacedKey(plugin, "mascots_chest");
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
         List<String> city_uuids = getAllCityUUIDs();
@@ -130,6 +137,7 @@ public class MascotsListener implements Listener {
                     mascotsConfig.set("mascots." + city_uuid + ".level", String.valueOf(MascotsLevels.level1));
                     mascotsConfig.set("mascots." + city_uuid + ".uuid", String.valueOf(mob.getUniqueId()));
                     saveMascotsConfig();
+                    freeClaim.put(city_uuid, 25);
                 }
             }
         }
@@ -150,7 +158,11 @@ public class MascotsListener implements Listener {
                 String mascotsUUID = data.get(mascotsKey, PersistentDataType.STRING);
                 assert mascotsUUID != null;
                 City city = CityManager.getPlayerCity(player.getUniqueId());
-                assert city != null;
+                if (city == null) {
+                    MessagesManager.sendMessage(player, Component.text( MessagesManager.Message.PLAYERNOCITY.getMessage() + "" +
+                            "vous ne pouvez donc pas attaquer cette mascots"), Prefix.CITY, MessageType.ERROR, false);
+                    return;
+                }
                 String city_uuid = city.getUUID();
 
                 if (mascotsUUID.equals(city_uuid)){
@@ -389,6 +401,41 @@ public class MascotsListener implements Listener {
         player.getInventory().addItem(specialChest);
     }
 
+    public static void addFreeClaim (int claim, Player player) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        String city_uuid = city.getUUID();
+        if (!freeClaim.containsKey(city_uuid)){
+            freeClaim.put(city_uuid, claim);
+            return;
+        }
+        freeClaim.replace(city_uuid, freeClaim.get(city_uuid)+claim);
+        MessagesManager.sendMessage(player, Component.text(claim + " claims gratuits ajoutés"), Prefix.CITY, MessageType.SUCCESS, false);
+    }
+
+    public static void removeFreeClaim (int claim, Player player) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        String city_uuid = city.getUUID();
+        if (!freeClaim.containsKey(city_uuid)){
+            MessagesManager.sendMessage(player, Component.text("§cCette ville n'a pas de claims gratuits"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        if (freeClaim.get(city_uuid)-claim <= 0){
+            freeClaim.remove(city_uuid);
+            MessagesManager.sendMessage(player, Component.text("tous les claims gratuits ont été retirés"), Prefix.CITY, MessageType.SUCCESS, false);
+            return;
+        }
+        freeClaim.replace(city_uuid, freeClaim.get(city_uuid)-claim);
+        MessagesManager.sendMessage(player, Component.text(claim + " claims gratuits retirés"), Prefix.CITY, MessageType.SUCCESS, false);
+    }
+
     public static boolean hasAvailableSlot(Player player){
         Inventory inv = player.getInventory();
         for (ItemStack item: inv.getContents()) {
@@ -416,5 +463,17 @@ public class MascotsListener implements Listener {
             OMCPlugin.getInstance().getLogger().severe("Impossible de sauvegarder le fichier de configuration des mascots");
             e.printStackTrace();
         }
+    }
+
+    public static void saveFreeClaimMap() {
+       for (String city_uuid : freeClaim.keySet()){
+           City city = CityManager.getCity(city_uuid);
+           if (city==null){
+               continue;
+           }
+           loadMascotsConfig();
+           mascotsConfig.set("data." + city_uuid, freeClaim.get(city_uuid));
+           saveMascotsConfig();
+       }
     }
 }

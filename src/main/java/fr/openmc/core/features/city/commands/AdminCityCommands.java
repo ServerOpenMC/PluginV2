@@ -17,8 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static fr.openmc.core.features.city.CityManager.getAllCityUUIDs;
-import static fr.openmc.core.features.city.mascots.MascotsListener.giveChest;
-import static fr.openmc.core.features.city.mascots.MascotsListener.removeMascotsFromCity;
+import static fr.openmc.core.features.city.mascots.MascotsListener.*;
 
 @Command("admcity")
 @CommandPermission("omc.admins.commands.admincity")
@@ -151,6 +150,18 @@ public class AdminCityCommands {
         }
 
         MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
+    }
+
+    @Subcommand("freeclaim add")
+    @CommandPermission("omc.admins.commands.admincity.freeclaim.add")
+    void freeClaimAdd(@Named("player") Player player, @Named("claim") int claim) {
+        addFreeClaim(claim, player);
+    }
+
+    @Subcommand("freeclaim remove")
+    @CommandPermission("omc.admins.commands.admincity.freeclaim.remove")
+    void freeClaimRemove(@Named("player") Player player, @Named("claim") int claim) {
+        removeFreeClaim(claim, player);
     }
 
 
