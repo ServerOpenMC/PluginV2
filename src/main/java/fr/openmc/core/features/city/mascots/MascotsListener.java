@@ -18,6 +18,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -248,6 +251,48 @@ public class MascotsListener implements Listener {
                 }
             } else {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission de faire cela"), Prefix.CITY, MessageType.ERROR, false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onItemDrop(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItemDrop().getItemStack();
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer itemData = meta.getPersistentDataContainer();
+        if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jéter cette objet"), Prefix.CITY, MessageType.ERROR, false);
+
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        ItemStack item = event.getCurrentItem();
+        if (item==null){return;}
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer itemData = meta.getPersistentDataContainer();
+        if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
+            if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
+                event.setCancelled(true);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jéter cette objet"), Prefix.CITY, MessageType.ERROR, false);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
+        Player player = event.getPlayer();
+        for (ItemStack item : event.getDrops()) {
+            ItemMeta meta = item.getItemMeta();
+            PersistentDataContainer itemData = meta.getPersistentDataContainer();
+            if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
+                event.getDrops().remove(item);
+                giveChest(player);
+                break;
             }
         }
     }
