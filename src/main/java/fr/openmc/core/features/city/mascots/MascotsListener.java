@@ -148,7 +148,7 @@ public class MascotsListener implements Listener {
                             mob.teleport(mascot_spawn);
                             movingMascots.remove(city_uuid);
                             Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "mascotte déplacer");
-                            startChronometer(mob,"mascotsCooldown", 30, null, "%null%", null, "%null%");
+                            startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                             return;
                         }
                     }
@@ -351,8 +351,7 @@ public class MascotsListener implements Listener {
             movingMascots.remove(city_uuid);
             Entity mascot = Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
             if (mascot!=null){
-                // 3600*5
-                startChronometer(mascot,"mascotsCooldown", 30, null, "%null%", null, "%null%");
+                startChronometer(mascot,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
             }
         }
     }
