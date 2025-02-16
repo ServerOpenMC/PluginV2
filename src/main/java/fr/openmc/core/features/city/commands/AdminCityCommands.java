@@ -164,7 +164,6 @@ public class AdminCityCommands {
         removeFreeClaim(claim, player);
     }
 
-
     @Subcommand("mascots remove")
     @CommandPermission("omc.admins.commands.admcity.mascots.remove")
     void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {

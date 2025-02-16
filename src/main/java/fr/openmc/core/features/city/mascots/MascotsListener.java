@@ -5,6 +5,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.MascotMenu;
+import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -18,10 +20,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,6 +38,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static fr.openmc.core.features.city.CityManager.*;
+import static fr.openmc.core.utils.chronometer.Chronometer.startChronometer;
 
 public class MascotsListener implements Listener {
 
@@ -45,7 +48,9 @@ public class MascotsListener implements Listener {
     public static NamespacedKey mascotsKey;
     private final Map<UUID, BukkitRunnable> regenTasks = new HashMap<>();
     private final Map<UUID, BukkitRunnable> cooldownTasks = new HashMap<>();
-    public static HashMap<String, Integer> freeClaim = new HashMap<>();
+    public static Map<String, Integer> freeClaim = new HashMap<>();
+    public static List<String> movingMascots = new ArrayList<>();
+    private final List<UUID> respawnGive = new ArrayList<>();
 
     @SneakyThrows
     public MascotsListener (OMCPlugin plugin) {
@@ -73,6 +78,7 @@ public class MascotsListener implements Listener {
         saveMascotsConfig();
         chestKey = new NamespacedKey(plugin, "mascots_chest");
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
+
         List<String> city_uuids = getAllCityUUIDs();
         for (String uuid : city_uuids) {
             UUID mascotsUUID = getMascotsUUIDbyCityUUID(uuid);
@@ -88,7 +94,7 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     @EventHandler
-    private void onChestPlace (BlockPlaceEvent e){
+    void onChestPlace (BlockPlaceEvent e){
         Player player = e.getPlayer();
         World world = Bukkit.getWorld("world");
         World player_world = player.getWorld();
@@ -111,7 +117,7 @@ public class MascotsListener implements Listener {
                     assert city != null;
                     String city_uuid = city.getUUID();
 
-                    if (mascotsConfig.contains("mascots." + city_uuid)){
+                    if (mascotsConfig.contains("mascots." + city_uuid) && !movingMascots.contains(city_uuid)){
                         MessagesManager.sendMessage(player, Component.text("§cVous possésez déjà une mascotte"), Prefix.CITY, MessageType.ERROR, false);
                         player.getInventory().remove(item);
                         e.setCancelled(true);
@@ -124,6 +130,7 @@ public class MascotsListener implements Listener {
                     Chunk chunk = e.getBlock().getChunk();
                     int chunkX = chunk.getX();
                     int chunkZ = chunk.getZ();
+
                     for (String uuid : city_uuids) {
                         City citys = new City(uuid);
                         if (citys.hasChunk(chunkX,chunkZ) && !uuid.equals(city_uuid)){
@@ -134,6 +141,18 @@ public class MascotsListener implements Listener {
                     }
 
                     player_world.getBlockAt(mascot_spawn).setType(Material.AIR);
+
+                    if (movingMascots.contains(city_uuid)){
+                        Entity mob = Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
+                        if (mob!=null){
+                            mob.teleport(mascot_spawn);
+                            movingMascots.remove(city_uuid);
+                            Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "mascotte déplacer");
+                            startChronometer(mob,"mascotsCooldown", 30, null, "%null%", null, "%null%");
+                            return;
+                        }
+                    }
+
                     LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
 
                     setMascotsData(mob,null, 300, 300);
@@ -157,7 +176,7 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     @EventHandler
-    private void onMascotTakeDamage (EntityDamageByEntityEvent e){
+    void onMascotTakeDamage (EntityDamageByEntityEvent e){
         Entity damageEntity = e.getEntity();
         Entity damager = e.getDamager();
         PersistentDataContainer data = damageEntity.getPersistentDataContainer();
@@ -225,7 +244,7 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     @EventHandler
-    private void onInteractWithMascots (PlayerInteractEntityEvent e){
+    void onInteractWithMascots (PlayerInteractEntityEvent e){
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
         PersistentDataContainer data = clickEntity.getPersistentDataContainer();
@@ -256,7 +275,7 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    public void onItemDrop(PlayerDropItemEvent event) {
+    void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack item = event.getItemDrop().getItemStack();
         ItemMeta meta = item.getItemMeta();
@@ -269,13 +288,29 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        ItemStack item = event.getCurrentItem();
-        if (item==null){return;}
+        ItemStack item =  event.getCursor();
         ItemMeta meta = item.getItemMeta();
+        if (meta==null){
+            return;
+        }
         PersistentDataContainer itemData = meta.getPersistentDataContainer();
         if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
+            if (event.getInventory().getType() != InventoryType.PLAYER &&
+                    event.getInventory().getType() != InventoryType.CREATIVE &&
+                    event.getInventory().getType() != InventoryType.CRAFTING ) {
+                player.sendMessage("" + event.getInventory().getType());
+                event.setCancelled(true);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cette objet ici"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+            InventoryType.SlotType slotType = event.getSlotType();
+            if (slotType == InventoryType.SlotType.CRAFTING) {
+                event.setCancelled(true);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cette objet ici"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
             if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
                 event.setCancelled(true);
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jéter cette objet"), Prefix.CITY, MessageType.ERROR, false);
@@ -284,15 +319,40 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        Player player = event.getPlayer();
+    void onPlayerDeath(PlayerDeathEvent event) {
         for (ItemStack item : event.getDrops()) {
             ItemMeta meta = item.getItemMeta();
             PersistentDataContainer itemData = meta.getPersistentDataContainer();
             if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
                 event.getDrops().remove(item);
-                giveChest(player);
+                respawnGive.add(event.getPlayer().getUniqueId());
                 break;
+            }
+        }
+    }
+
+    @EventHandler
+    void onPlayerRespawn (PlayerRespawnEvent e) {
+        Player player = e.getPlayer();
+        if (respawnGive.contains(player.getUniqueId())){
+            respawnGive.remove(player.getUniqueId());
+            giveChest(player);
+        }
+    }
+
+    @EventHandler
+    void onTimeEnd (Chronometer.ChronometerEndEvent e){
+        Entity entity = e.getEntity();
+        String group = e.getGroup();
+        if (group.equals("mascotsMove") && entity instanceof Player player){
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            assert city != null;
+            String city_uuid = city.getUUID();
+            movingMascots.remove(city_uuid);
+            Entity mascot = Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
+            if (mascot!=null){
+                // 3600*5
+                startChronometer(mascot,"mascotsCooldown", 30, null, "%null%", null, "%null%");
             }
         }
     }
