@@ -124,20 +124,16 @@ public class MascotsListener implements Listener {
                         return;
                     }
 
-                    List<String> city_uuids = getAllCityUUIDs();
                     Block block = e.getBlockPlaced();
                     Location mascot_spawn = new Location(player_world, block.getX()+0.5, block.getY(), block.getZ()+0.5);
                     Chunk chunk = e.getBlock().getChunk();
                     int chunkX = chunk.getX();
                     int chunkZ = chunk.getZ();
 
-                    for (String uuid : city_uuids) {
-                        City citys = new City(uuid);
-                        if (citys.hasChunk(chunkX,chunkZ) && !uuid.equals(city_uuid)){
-                            MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
-                            e.setCancelled(true);
-                            return;
-                        }
+                    if (!city.hasChunk(chunkX,chunkZ)){
+                        MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
+                        e.setCancelled(true);
+                        return;
                     }
 
                     player_world.getBlockAt(mascot_spawn).setType(Material.AIR);
