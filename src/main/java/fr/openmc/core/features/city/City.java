@@ -547,7 +547,7 @@ public class City {
                         "DELETE FROM city WHERE uuid=?",
                         "DELETE FROM city_permissions WHERE city_uuid=?",
                         "DELETE FROM city_regions WHERE city_uuid=?",
-                        "DELETE FROM city_chests WHERE city_uuid=?"
+                        "DELETE FROM city_chests WHERE city_uuid=?",
                 };
 
                 for (String sql : queries) {

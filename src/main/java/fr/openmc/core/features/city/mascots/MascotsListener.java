@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.MascotMenu;
+import fr.openmc.core.features.city.menu.MascotsDeadMenu;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.messages.MessageType;
@@ -18,6 +19,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
@@ -85,7 +88,7 @@ public class MascotsListener implements Listener {
             if (mascotsUUID==null){continue;}
             mascotsRegeneration(mascotsUUID);
             loadMascotsConfig();
-            if (mascotsConfig.getBoolean("mascots." + uuid + ".immunity.activate")){
+            if (mascotsConfig.getBoolean("mascots." + uuid + ".immunity.activate") && mascotsConfig.getBoolean("mascots." + uuid + ".alive")){
                 long duration = mascotsConfig.getLong("mascots." + uuid + ".immunity.time");
                 startImmunityTimer(uuid, duration);
             }
@@ -110,11 +113,16 @@ public class MascotsListener implements Listener {
 
                     if (player_world!=world){
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
+                        e.setCancelled(true);
                         return;
                     }
 
                     City city = CityManager.getPlayerCity(player.getUniqueId());
-                    assert city != null;
+                    if (city==null){
+                        MessagesManager.sendMessage(player,MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        e.setCancelled(true);
+                        return;
+                    }
                     String city_uuid = city.getUUID();
 
                     if (mascotsConfig.contains("mascots." + city_uuid) && !movingMascots.contains(city_uuid)){
@@ -144,27 +152,13 @@ public class MascotsListener implements Listener {
                             mob.teleport(mascot_spawn);
                             movingMascots.remove(city_uuid);
                             Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "mascotte déplacer");
+                            //Cooldown de 5h pour déplacer la mascottes ( se reset au relancement du serv )
                             startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                             return;
                         }
                     }
 
-                    LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
-
-                    setMascotsData(mob,null, 300, 300);
-
-                    PersistentDataContainer data = mob.getPersistentDataContainer();
-                    // l'uuid de la ville lui est approprié pour l'identifié
-                    data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
-
-                    loadMascotsConfig();
-                    mascotsConfig.set("mascots." + city_uuid + ".level", String.valueOf(MascotsLevels.level1));
-                    mascotsConfig.set("mascots." + city_uuid + ".uuid", String.valueOf(mob.getUniqueId()));
-                    mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", true);
-                    mascotsConfig.set("mascots." + city_uuid + ".immunity.time", 10080); // en minute
-                    saveMascotsConfig();
-                    startImmunityTimer(city_uuid, 10080);
-                    freeClaim.put(city_uuid, 25);
+                    spawnMascot(city_uuid, player_world, mascot_spawn);
                 }
             }
         }
@@ -260,6 +254,11 @@ public class MascotsListener implements Listener {
             String city_uuid = city.getUUID();
             if (city.hasPermission(player.getUniqueId(), CPermission.PERMS)){
                 if (mascotsUUID.equals(city_uuid)){
+                    loadMascotsConfig();
+                    if (!mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
+                        new MascotsDeadMenu(player, city_uuid);
+                        return;
+                    }
                     new MascotMenu(player, clickEntity).open();
                 } else {
                     MessagesManager.sendMessage(player, Component.text("§cCette mascots ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
@@ -267,6 +266,39 @@ public class MascotsListener implements Listener {
             } else {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission de faire cela"), Prefix.CITY, MessageType.ERROR, false);
             }
+        }
+    }
+
+    @EventHandler
+    public void onTransform(EntityTransformEvent event) {
+        Entity entity = event.getEntity();
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+        if (data.has(mascotsKey, PersistentDataType.STRING)){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPortal(EntityPortalEvent event) {
+        Entity entity = event.getEntity();
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+        if (data.has(mascotsKey, PersistentDataType.STRING)){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    void onMascotDied (EntityDeathEvent e){
+        Entity entity = e.getEntity();
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+        if (data.has(mascotsKey, PersistentDataType.STRING)){
+            loadMascotsConfig();
+            String city_uuid = data.get(mascotsKey, PersistentDataType.STRING);
+            mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", true);
+            mascotsConfig.set("mascots." + city_uuid + ".alive", false);
+            saveMascotsConfig();
+            entity.setCustomName("§lMascotte en attente de §csoins");
+            e.setCancelled(true);
         }
     }
 
@@ -355,7 +387,6 @@ public class MascotsListener implements Listener {
     private void startRegenCooldown(UUID mascotsUUID) {
         if (cooldownTasks.containsKey(mascotsUUID)) {
             cooldownTasks.get(mascotsUUID).cancel();
-            startRegenCooldown(mascotsUUID);
         }
 
         BukkitRunnable cooldownTask = new BukkitRunnable() {
@@ -373,6 +404,18 @@ public class MascotsListener implements Listener {
     private void mascotsRegeneration(UUID mascotsUUID) {
         if (regenTasks.containsKey(mascotsUUID)) {
             return;
+        }
+        if (Bukkit.getEntity(mascotsUUID)!=null){
+            PersistentDataContainer data = Bukkit.getEntity(mascotsUUID).getPersistentDataContainer();
+            if (data.has(mascotsKey, PersistentDataType.STRING)){
+                String city_uuid = data.get(mascotsKey, PersistentDataType.STRING);
+                loadMascotsConfig();
+                if (!mascotsConfig.contains("mascots." + city_uuid)){
+                    regenTasks.remove(mascotsUUID);
+                    return;
+                }
+                if (!mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){return;}
+            }
         }
         BukkitRunnable task = new BukkitRunnable() {
             @Override
@@ -399,12 +442,16 @@ public class MascotsListener implements Listener {
         task.runTaskTimer(OMCPlugin.getInstance(), 0L, 60L);
     }
 
-    private void startImmunityTimer(String city_uuid, long duration) {
+    private static void startImmunityTimer(String city_uuid, long duration) {
         BukkitRunnable immunityTask = new BukkitRunnable() {
             long endTime = duration;
             @Override
             public void run() {
                 loadMascotsConfig();
+                if (!mascotsConfig.contains("mascots." + city_uuid)){
+                    this.cancel();
+                    return;
+                }
                 if (endTime == 0){
                     mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", false);
                     mascotsConfig.set("mascots." + city_uuid + ".immunity.time", 0);
@@ -418,6 +465,34 @@ public class MascotsListener implements Listener {
             }
         };
         immunityTask.runTaskTimer(OMCPlugin.getInstance(), 1200L, 1200L); // Vérifie chaque minute
+    }
+
+    public static void giveChest (Player player) {
+        if (!hasAvailableSlot(player)){
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire : mascotte invoquée à vos coordonées"), Prefix.CITY, MessageType.ERROR, false);
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            assert city != null;
+            String city_uuid = city.getUUID();
+            spawnMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
+            return;
+        }
+
+        ItemStack specialChest = new ItemStack(Material.CHEST);
+        ItemMeta meta = specialChest.getItemMeta();
+        if (meta != null) {
+            PersistentDataContainer data = meta.getPersistentDataContainer();
+            data.set(chestKey,PersistentDataType.STRING, "id");
+            specialChest.setItemMeta(meta);
+        } else {
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            assert city != null;
+            String city_uuid = city.getUUID();
+            spawnMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
+            OMCPlugin.getInstance().getLogger().severe("Erreur lors de l'initialisation de l'ItemMeta du coffre des mascottes");
+            return;
+        }
+
+        player.getInventory().addItem(specialChest);
     }
 
     public static void upgradeMascots (String city_uuid, UUID entityUUID) {
@@ -477,6 +552,28 @@ public class MascotsListener implements Listener {
         }
     }
 
+    private static void spawnMascot(String city_uuid, World player_world, Location mascot_spawn) {
+
+        LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
+
+        setMascotsData(mob,null, 300, 300);
+
+        PersistentDataContainer data = mob.getPersistentDataContainer();
+        // l'uuid de la ville lui est approprié pour l'identifié
+        data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
+
+        loadMascotsConfig();
+        mascotsConfig.set("mascots." + city_uuid + ".level", String.valueOf(MascotsLevels.level1));
+        mascotsConfig.set("mascots." + city_uuid + ".uuid", String.valueOf(mob.getUniqueId()));
+        mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", true);
+        mascotsConfig.set("mascots." + city_uuid + ".immunity.time", 10080); // en minute
+        mascotsConfig.set("mascots." + city_uuid + ".alive", true);
+        saveMascotsConfig();
+        // immunité persistente de 7 jours pour la mascotte
+        startImmunityTimer(city_uuid, 10080);
+        freeClaim.put(city_uuid, 25);
+    }
+
     private static void setMascotsData(LivingEntity mob, String customName, double maxHealth, double baseHealth) {
         mob.setAI(false);
         mob.setMaxHealth(maxHealth);
@@ -501,6 +598,7 @@ public class MascotsListener implements Listener {
                     mascots.remove();
                 }
             }
+
             OMCPlugin.getInstance().getLogger().info("mascots retirer");
             mascotsConfig.set("mascots." + city_uuid, null);
             saveMascotsConfig();
@@ -520,24 +618,6 @@ public class MascotsListener implements Listener {
             return null;
         }
         return UUID.fromString(uuid);
-    }
-
-    public static void giveChest (Player player) {
-        if (!hasAvailableSlot(player)){
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-        ItemStack specialChest = new ItemStack(Material.CHEST);
-        ItemMeta meta = specialChest.getItemMeta();
-        if (meta != null) {
-            PersistentDataContainer data = meta.getPersistentDataContainer();
-            data.set(chestKey,PersistentDataType.STRING, "id");
-            specialChest.setItemMeta(meta);
-        } else {
-            OMCPlugin.getInstance().getLogger().severe("Erreur lors de l'initialisation de l'ItemMeta du coffre des mascottes");
-            return;
-        }
-        player.getInventory().addItem(specialChest);
     }
 
     public static void addFreeClaim (int claim, Player player) {
@@ -577,8 +657,11 @@ public class MascotsListener implements Listener {
 
     public static boolean hasAvailableSlot(Player player){
         Inventory inv = player.getInventory();
-        for (ItemStack item: inv.getContents()) {
-            if(item == null) {
+        ItemStack[] contents = inv.getContents();
+
+        for (int i = 0; i < contents.length; i++) {
+            if (i == 40) continue;
+            if (contents[i] == null) {
                 return true;
             }
         }

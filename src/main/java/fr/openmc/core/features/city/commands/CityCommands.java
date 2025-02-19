@@ -449,58 +449,6 @@ public class CityCommands {
             return;
         }
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
-
-        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
-
-        Chunk origin = player.getChunk();
-        AtomicBoolean isClaimed = new AtomicBoolean(false);
-        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-            for (int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
-                if (CityManager.isChunkClaimed(x,z)) {
-                    isClaimed.set(true);
-                    break;
-                }
-            }
-        }
-
-        if (isClaimed.get()) {
-            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
-                statement.setString(1, cityUUID);
-
-                for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-                    for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
-                        statement.setInt(2, x);
-                        statement.setInt(3, z);
-                        statement.addBatch();
-                    }
-                }
-
-                statement.executeBatch();
-                statement.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        City city = CityManager.createCity(player, cityUUID, name);
-        city.addPlayer(uuid);
-        city.addPermission(uuid, CPermission.OWNER);
-
-        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-            for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
-                CityManager.claimedChunks.put(BlockVector2.at(x, z), city);
-            }
-        }
-
-        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée"+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
-
-        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+        new CityTypeMenu(player, name).open();
     }
 }
