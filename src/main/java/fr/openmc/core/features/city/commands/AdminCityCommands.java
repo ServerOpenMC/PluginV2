@@ -17,7 +17,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static fr.openmc.core.features.city.CityManager.getAllCityUUIDs;
-import static fr.openmc.core.features.city.mascots.MascotsListener.*;
+import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 
 @Command("admcity")
 @CommandPermission("omc.admins.commands.admincity")
@@ -175,7 +175,7 @@ public class AdminCityCommands {
                 removeMascotsFromCity(city_uuid);
                 return;
             }
-            MessagesManager.sendMessage(sender, Component.text("§cVille innexistante"), Prefix.CITY, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, Component.text("§cVille innexistante"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 
@@ -185,5 +185,24 @@ public class AdminCityCommands {
         if (target.isOnline()){
             giveChest(target);
         }
+    }
+
+    @Subcommand("mascots immunityoff")
+    @CommandPermission("omc.admins.commands.admcity.mascots.immunityoff")
+    void removeMascotImmunity (Player sender, @Named("player") Player target){
+        City city = CityManager.getPlayerCity(target.getUniqueId());
+        if (city==null){
+            MessagesManager.sendMessage(sender, Component.text("§cLe joueur n'a pas de ville"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        String city_uuid = city.getUUID();
+        loadMascotsConfig();
+        if (!mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
+            MessagesManager.sendMessage(sender, Component.text("§cLa mascots est en immunité forcer"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", false);
+        mascotsConfig.set("mascots." + city_uuid + ".immunity.time", 0);
+        saveMascotsConfig();
     }
 }

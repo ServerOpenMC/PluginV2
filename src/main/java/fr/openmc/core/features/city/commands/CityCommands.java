@@ -1,13 +1,11 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.utils.BlockVector2;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -17,12 +15,10 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fr.openmc.core.features.city.mascots.MascotsListener.freeClaim;
+import static fr.openmc.core.features.city.mascots.MascotsManager.freeClaim;
 
 @Command({"ville", "city"})
 public class CityCommands {

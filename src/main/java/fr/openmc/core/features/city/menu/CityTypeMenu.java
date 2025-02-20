@@ -17,10 +17,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +28,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fr.openmc.core.features.city.mascots.MascotsListener.giveChest;
+import static fr.openmc.core.features.city.mascots.MascotsManager.giveChest;
 
 public class CityTypeMenu extends Menu {
 
@@ -148,7 +146,8 @@ public class CityTypeMenu extends Menu {
 
         player.closeInventory();
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée"+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : "+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("Vous disposez de 25 claim gratuit"), Prefix.CITY, MessageType.SUCCESS, false);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
         giveChest(player);

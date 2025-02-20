@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fr.openmc.core.features.city.mascots.MascotsListener.changeMascotsSkin;
+import static fr.openmc.core.features.city.mascots.MascotsManager.changeMascotsSkin;
 
 
 public class MascotsSkinMenu extends Menu {

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.mascots.MascotsListener.*;
+import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 import static fr.openmc.core.utils.chronometer.Chronometer.startChronometer;
 
 public class MascotMenu extends Menu {

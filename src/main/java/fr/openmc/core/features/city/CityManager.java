@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static fr.openmc.core.features.city.mascots.MascotsListener.removeMascotsFromCity;
+import static fr.openmc.core.features.city.mascots.MascotsManager.removeMascotsFromCity;
 
 public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
@@ -67,7 +67,7 @@ public class CityManager implements Listener {
         OMCPlugin.registerEvents(
                 new ProtectionListener(),
                 new ChestMenuListener(),
-                new MascotsListener(OMCPlugin.getInstance())
+                new MascotsListener()
         );
     }
 
@@ -81,7 +81,7 @@ public class CityManager implements Listener {
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city (uuid VARCHAR(8) NOT NULL PRIMARY KEY, owner VARCHAR(36) NOT NULL, name VARCHAR(32), balance DOUBLE DEFAULT 0, type VARCHAR(8));").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city (uuid VARCHAR(8) NOT NULL PRIMARY KEY, owner VARCHAR(36) NOT NULL, name VARCHAR(32), balance DOUBLE DEFAULT 0, type VARCHAR(8) NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_members (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL PRIMARY KEY);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_permissions (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_chests (city_uuid VARCHAR(8) NOT NULL, page TINYINT UNSIGNED NOT NULL, content LONGBLOB);").executeUpdate();
@@ -221,10 +221,9 @@ public class CityManager implements Listener {
 
         if (city_uuid!=null){
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE city_uuid = ?");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
                 statement.setString(1, city_uuid);
                 ResultSet rs = statement.executeQuery();
-
                 if (rs.next()) {
                     type = rs.getString("type");
                 }

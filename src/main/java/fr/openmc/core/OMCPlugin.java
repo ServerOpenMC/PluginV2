@@ -4,6 +4,7 @@ import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -25,7 +26,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.SQLException;
 
-import static fr.openmc.core.features.city.mascots.MascotsListener.saveFreeClaimMap;
+import static fr.openmc.core.features.city.mascots.MascotsManager.saveFreeClaimMap;
 
 public final class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
@@ -53,6 +54,7 @@ public final class OMCPlugin extends JavaPlugin {
         ContestManager contestManager = new ContestManager(this);
         ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
+        new MascotsManager(this); // laisser avant CityManager
         new CityManager();
         new ListenersManager();
         new EconomyManager();
