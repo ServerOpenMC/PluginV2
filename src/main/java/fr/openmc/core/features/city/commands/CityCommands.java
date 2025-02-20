@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
@@ -11,6 +12,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -18,7 +20,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fr.openmc.core.features.city.mascots.MascotsManager.freeClaim;
+import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -446,5 +448,44 @@ public class CityCommands {
         }
 
         new CityTypeMenu(player, name).open();
+    }
+
+    @Subcommand("change")
+    @CommandPermission("omc.commands.city.change")
+    @DynamicCooldown(group="city:type", message = "§cTu dois attendre avant de pouvoir changer le type de ta ville (%sec% secondes)")
+    void change (Player sender){
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        if (city==null){
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        // permettre de changer le type de ville avec un changeCityType par exemple
+        // mettre un cooldown de 5 jours
+
+        LivingEntity mob = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city.getUUID()));
+        loadMascotsConfig();
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf((String) mascotsConfig.get("mascots." + city.getUUID() +".level"));
+        String level = mascotsConfig.getString("mascots." + city.getUUID() + "level");
+        double lastHealth = mascotsLevels.getHealth();
+        int newLevel = Integer.parseInt(String.valueOf(level).replaceAll("[^0-9]", ""));
+        if (newLevel-2 < 1){
+            newLevel = 1;
+        }
+        mascotsConfig.set("mascots." + city.getUUID() + ".level", String.valueOf(MascotsLevels.valueOf("level"+newLevel)));
+        saveMascotsConfig();
+        mascotsLevels = MascotsLevels.valueOf((String) mascotsConfig.get("mascots." + city.getUUID() +".level"));
+
+        try {
+            int maxHealth = mascotsLevels.getHealth();
+            mob.setMaxHealth(maxHealth);
+            if (mob.getHealth() >= lastHealth){
+                mob.setHealth(maxHealth);
+            }
+            double currentHealth = mob.getHealth();
+            mob.setCustomName("§lMascotte §c" + currentHealth + "/" + maxHealth + "❤");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }
