@@ -17,7 +17,6 @@ public class Chronometer {
 
     // Map structure: UUID -> (Group -> Time)
     private static final HashMap<UUID, HashMap<String, Integer>> chronometer = new HashMap<>();
-
     // new @EventHandler > ChronometerEndEvent
 
     @Getter
@@ -61,6 +60,7 @@ public class Chronometer {
     public static void startChronometer(Entity entity, String group, int time, ChronometerType messageType, String message, ChronometerType finishMessageType, String finishMessage) {
         UUID entityUUID = entity.getUniqueId();
         chronometer.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, time);
+
 
         new BukkitRunnable() {
             @Override

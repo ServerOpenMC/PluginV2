@@ -22,6 +22,9 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static fr.openmc.core.features.city.listeners.CityTypeCooldown.isOnCooldown;
+import static fr.openmc.core.features.city.listeners.CityTypeCooldown.removeCityCooldown;
+import static fr.openmc.core.features.city.mascots.MascotsManager.freeClaim;
 import static fr.openmc.core.features.city.mascots.MascotsManager.removeMascotsFromCity;
 
 public class CityManager implements Listener {
@@ -187,7 +190,30 @@ public class CityManager implements Listener {
             }
         }
 
+        freeClaim.remove(city);
+        if (isOnCooldown(city)) {
+            removeCityCooldown(city);
+        }
         removeMascotsFromCity(city);
+    }
+
+    public static void changeCityType (String city_uuid) {
+        String cityType = getCityType(city_uuid);
+        if (cityType != null) {
+            cityType = cityType.equals("war") ? "peace" : "war";
+        }
+        String finalCityType = cityType;
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET type=? WHERE uuid=?;");
+                statement.setString(1, finalCityType);
+                statement.setString(2, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     public static void cachePlayer(UUID uuid, City city) {
@@ -216,6 +242,9 @@ public class CityManager implements Listener {
         return playerCities.get(uuid);
     }
 
+    /**
+     * return 'war' / 'peace' / 'null' if not found
+     */
     public static String getCityType (String city_uuid) {
         String type = null;
 

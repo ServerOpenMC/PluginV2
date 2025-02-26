@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.mascots;
 
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -15,6 +16,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -34,6 +36,7 @@ public class MascotsManager {
     public static File mascotsFile;
     public static YamlConfiguration mascotsConfig;
     public static Map<String, Integer> freeClaim = new HashMap<>();
+    public static Map<UUID, Location> mascotSpawn = new HashMap<>();
 
     public MascotsManager (OMCPlugin plugin) {
         //changement du spigot.yml pour permettre au mascottes d'avoir 3000 coeurs
@@ -60,16 +63,47 @@ public class MascotsManager {
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
     }
 
+    public static void giveMascotsEffect (String city_uuid, UUID playerUUID) {
+        if (Bukkit.getPlayer(playerUUID) instanceof Player player) {
+            if (city_uuid!=null){
+                loadMascotsConfig();
+                if (mascotsConfig.contains("mascots." + city_uuid)){
+                    String level = mascotsConfig.getString("mascots." + city_uuid + ".level");
+                    if (mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
+                        for (PotionEffect potionEffect : MascotsLevels.valueOf(level).getBonus()){
+                            player.addPotionEffect(potionEffect);
+                        }
+                    } else {
+                        for (PotionEffect potionEffect : MascotsLevels.valueOf(level).getMalus()){
+                            player.addPotionEffect(potionEffect);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public static void reviveMascots (String city_uuid) {
         loadMascotsConfig();
         if (mascotsConfig.contains("mascots." + city_uuid)){
             mascotsConfig.set("mascots." + city_uuid + ".alive", true);
             mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", false);
+            String level = mascotsConfig.getString("mascots." + city_uuid+ ".level");
             saveMascotsConfig();
             LivingEntity entity = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
             entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
             entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
             mascotsRegeneration(getMascotsUUIDbyCityUUID(city_uuid));
+            City city = CityManager.getCity(city_uuid);
+            if (city==null){return;}
+            for (UUID townMember : city.getMembers()){
+                if (Bukkit.getEntity(townMember) instanceof Player player){
+                    for (PotionEffect potionEffect : MascotsLevels.valueOf(level).getMalus()){
+                        player.removePotionEffect(potionEffect.getType());
+                    }
+                    giveMascotsEffect(city_uuid, townMember);
+                }
+            }
         }
     }
 
@@ -99,11 +133,14 @@ public class MascotsManager {
         }
 
         player.getInventory().addItem(specialChest);
+        mascotSpawn.put(player.getUniqueId(), player.getLocation());
     }
 
     public static void upgradeMascots (String city_uuid, UUID entityUUID) {
         LivingEntity mob = (LivingEntity) Bukkit.getEntity(entityUUID);
-        assert mob != null;
+        if (mob==null){
+            return;
+        }
         if (mob.getPersistentDataContainer().has(mascotsKey, PersistentDataType.STRING)){
 
             loadMascotsConfig();
@@ -275,6 +312,51 @@ public class MascotsManager {
         return false;
     }
 
+    public static boolean hasEnoughCroqStar (Player player, MascotsLevels mascotsLevels) {
+        String itemNamespace = "city:croqstar";
+        int requiredAmount = mascotsLevels.getUpgradeCost();
+        int count = 0;
+
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null) {
+                CustomStack customStack = CustomStack.byItemStack(item);
+                if (customStack != null && customStack.getNamespacedID().equals(itemNamespace)) {
+                    count += item.getAmount();
+                    if (count >= requiredAmount) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void removeCrocStar(Player player, MascotsLevels mascotsLevels) {
+        String itemNamespace = "city:croqstar";
+        PlayerInventory inventory = player.getInventory();
+        int amountToRemove = mascotsLevels.getUpgradeCost();
+
+        for (ItemStack item : inventory.getContents()) {
+            if (item != null) {
+                CustomStack customStack = CustomStack.byItemStack(item);
+                if (customStack != null && customStack.getNamespacedID().equals(itemNamespace)) {
+                    int stackAmount = item.getAmount();
+
+                    if (stackAmount > amountToRemove) {
+                        item.setAmount(stackAmount - amountToRemove);
+                        return;
+                    } else {
+                        amountToRemove -= stackAmount;
+                        item.setAmount(0);
+                    }
+                    if (amountToRemove <= 0) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     public static void loadMascotsConfig() {
         if(!mascotsFile.exists()) {
             mascotsFile.getParentFile().mkdirs();
@@ -295,14 +377,24 @@ public class MascotsManager {
     }
 
     public static void saveFreeClaimMap() {
-        for (String city_uuid : freeClaim.keySet()){
-            City city = CityManager.getCity(city_uuid);
-            if (city==null){
-                continue;
-            }
+        try {
             loadMascotsConfig();
-            mascotsConfig.set("data." + city_uuid, freeClaim.get(city_uuid));
-            saveMascotsConfig();
+            if (mascotsConfig.contains("data")){
+                mascotsConfig.set("data", null);
+                for (String city_uuid : freeClaim.keySet()){
+                    City city = CityManager.getCity(city_uuid);
+                    if (city==null){
+                        continue;
+                    }
+                    if (freeClaim.get(city_uuid)!=null){
+                        mascotsConfig.set("data." + city_uuid, freeClaim.get(city_uuid));
+                        saveMascotsConfig();
+                    }
+                }
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

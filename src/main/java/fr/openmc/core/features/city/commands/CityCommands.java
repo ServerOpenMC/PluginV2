@@ -14,12 +14,15 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static fr.openmc.core.features.city.CityManager.changeCityType;
+import static fr.openmc.core.features.city.listeners.CityTypeCooldown.*;
 import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 
 @Command({"ville", "city"})
@@ -272,6 +275,12 @@ public class CityCommands {
             return;
         }
 
+        for (UUID townMember : city.getMembers()){
+            if (Bukkit.getPlayer(townMember) instanceof Player player){
+                player.clearActivePotionEffects();
+            }
+        }
+
         city.delete();
         MessagesManager.sendMessage(sender, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
 
@@ -449,27 +458,58 @@ public class CityCommands {
 
         new CityTypeMenu(player, name).open();
     }
-
     @Subcommand("change")
     @CommandPermission("omc.commands.city.change")
-    @DynamicCooldown(group="city:type", message = "§cTu dois attendre avant de pouvoir changer le type de ta ville (%sec% secondes)")
     void change (Player sender){
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city==null){
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
+        sender.sendMessage("§cEs-tu sûr de vouloir changer le type de ta ville ?");
+        sender.sendMessage("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX");
+        sender.sendMessage("§cSi tu en es sûr fais §n/city chgconfirm");
+    }
 
-        // permettre de changer le type de ville avec un changeCityType par exemple
-        // mettre un cooldown de 5 jours
+    @Subcommand("chgconfirm")
+    @CommandPermission("omc.commands.city.chgconfirm")
+    void changeConfirm (Player sender){
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        if (city==null){
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        loadMascotsConfig();
+        if (mascotsConfig.contains("mascots." + city.getUUID())){
+            if (!mascotsConfig.getBoolean("mascots." + city.getUUID() + "alive")){
+                MessagesManager.sendMessage(sender, Component.text("vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+        }
+
+        if (isOnCooldown(city.getUUID())){
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + getRemainingCooldown(city.getUUID())/1000 + " second pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        changeCityType(city.getUUID());
+        setCooldown(city.getUUID());
 
         LivingEntity mob = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city.getUUID()));
-        loadMascotsConfig();
         MascotsLevels mascotsLevels = MascotsLevels.valueOf((String) mascotsConfig.get("mascots." + city.getUUID() +".level"));
-        String level = mascotsConfig.getString("mascots." + city.getUUID() + "level");
+
+        for (UUID townMember : city.getMembers()){
+            if (Bukkit.getPlayer(townMember) instanceof Player player){
+                for (PotionEffect potionEffect : mascotsLevels.getBonus()){
+                    player.removePotionEffect(potionEffect.getType());
+                }
+                giveMascotsEffect(city.getUUID(), player.getUniqueId());
+            }
+        }
+
         double lastHealth = mascotsLevels.getHealth();
-        int newLevel = Integer.parseInt(String.valueOf(level).replaceAll("[^0-9]", ""));
-        if (newLevel-2 < 1){
+        int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", ""))-2;
+        if (newLevel < 1){
             newLevel = 1;
         }
         mascotsConfig.set("mascots." + city.getUUID() + ".level", String.valueOf(MascotsLevels.valueOf("level"+newLevel)));

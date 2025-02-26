@@ -5,8 +5,13 @@ import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -14,8 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,10 +33,12 @@ import static fr.openmc.core.utils.chronometer.Chronometer.startChronometer;
 public class MascotMenu extends Menu {
 
     private final Entity mascots;
+    private City city;
 
     public MascotMenu(Player owner, Entity mascots) {
         super(owner);
         this.mascots = mascots;
+        this.city = CityManager.getPlayerCity(getOwner().getUniqueId());
     }
 
     @Override
@@ -53,7 +58,11 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
+        loadMascotsConfig();
         Map<Integer, ItemStack> map = new HashMap<>();
+
+        List<Component> requiredAmount = new ArrayList<>();
+        requiredAmount.add(Component.text("Nécessite " + MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city.getUUID() + ".level")).getUpgradeCost() + " Croq'Star"));
 
         map.put(11, new ItemBuilder(this, getSpawnEgg(mascots), itemMeta -> {
             itemMeta.setDisplayName("Mascottes");
@@ -73,7 +82,7 @@ public class MascotMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")){
                 if (hasAvailableSlot(getOwner())){
-                    City city = CityManager.getPlayerCity(getOwner().getUniqueId());
+                    city = CityManager.getPlayerCity(getOwner().getUniqueId());
                     if (city == null) {
                         return;
                     }
@@ -90,12 +99,23 @@ public class MascotMenu extends Menu {
 
         map.put(15, new ItemBuilder(this,Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
             itemMeta.setDisplayName("Upgrades");
+            itemMeta.lore(requiredAmount);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }).setOnClick(inventoryClickEvent -> {
-            PersistentDataContainer data = mascots.getPersistentDataContainer();
-            String mascotsUUID = data.get(mascotsKey, PersistentDataType.STRING);
-            upgradeMascots(mascotsUUID, mascots.getUniqueId());
+            loadMascotsConfig();
+            if (city == null) {
+                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+            String city_uuid = city.getUUID();
+            if (hasEnoughCroqStar(getOwner(), MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city_uuid + ".level")))){
+                removeCrocStar(getOwner(), MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city_uuid + ".level")));
+                upgradeMascots(city_uuid, mascots.getUniqueId());
+                getOwner().closeInventory();
+                return;
+            }
+            MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez de Croq'Star"), Prefix.CITY, MessageType.ERROR, false);
             getOwner().closeInventory();
         }));
 

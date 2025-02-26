@@ -18,7 +18,6 @@ import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
-import net.luckperms.api.LuckPerms;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,7 +40,7 @@ public final class OMCPlugin extends JavaPlugin {
         /* CONFIG */
         saveDefaultConfig();
         configs = this.getConfig();
-        
+
         /* EXTERNALS */
         MenuLib.init(this);
         new LuckPermsAPI(this);
@@ -73,6 +72,7 @@ public final class OMCPlugin extends JavaPlugin {
     public void onDisable() {
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
+        saveFreeClaimMap();
         if (dbManager != null) {
             try {
                 dbManager.close();
@@ -81,7 +81,6 @@ public final class OMCPlugin extends JavaPlugin {
             }
         }
 
-        saveFreeClaimMap();
         getLogger().info("Plugin désactivé");
     }
 
