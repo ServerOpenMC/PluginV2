@@ -471,7 +471,7 @@ public class CityCommands {
 
     @Subcommand("chgconfirm")
     @CommandPermission("omc.commands.city.chgconfirm")
-    void changeConfirm (Player sender){
+    public void changeConfirm (Player sender){
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city==null){
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
