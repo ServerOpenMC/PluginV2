@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -15,9 +16,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.sql.SQLException;
 import java.util.List;
-
-import static fr.openmc.core.features.city.CityManager.getAllCityUUIDs;
-import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 
 @Command("admcity")
 @CommandPermission("omc.admins.commands.admincity")
@@ -154,25 +152,25 @@ public class AdminCityCommands {
 
     @Subcommand("freeclaim add")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.add")
-    void freeClaimAdd(@Named("player") Player player, @Named("claim") int claim) {
-        addFreeClaim(claim, player);
+    public void freeClaimAdd(@Named("player") Player player, @Named("claim") int claim) {
+        MascotsManager.addFreeClaim(claim, player);
     }
 
     @Subcommand("freeclaim remove")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.remove")
-    void freeClaimRemove(@Named("player") Player player, @Named("claim") int claim) {
-        removeFreeClaim(claim, player);
+    public void freeClaimRemove(@Named("player") Player player, @Named("claim") int claim) {
+        MascotsManager.removeFreeClaim(claim, player);
     }
 
     @Subcommand("mascots remove")
     @CommandPermission("omc.admins.commands.admcity.mascots.remove")
-    void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {
-        List<String> uuidList = getAllCityUUIDs();
+    public void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {
+        List<String> uuidList = CityManager.getAllCityUUIDs();
         City city = CityManager.getPlayerCity(target.getUniqueId());
         if (city != null){
             String city_uuid = city.getUUID();
             if (uuidList.contains(city_uuid)){
-                removeMascotsFromCity(city_uuid);
+                MascotsManager.removeMascotsFromCity(city_uuid);
                 return;
             }
             MessagesManager.sendMessage(sender, Component.text("§cVille innexistante"), Prefix.CITY, MessageType.ERROR, false);
@@ -181,28 +179,33 @@ public class AdminCityCommands {
 
     @Subcommand("mascots chest")
     @CommandPermission("omc.admins.commands.admcity.mascots.chest")
-    void giveMascotsChest (@Named("player") Player target){
+    public void giveMascotsChest (@Named("player") Player target){
         if (target.isOnline()){
-            giveChest(target);
+            MascotsManager.giveChest(target);
         }
     }
 
     @Subcommand("mascots immunityoff")
     @CommandPermission("omc.admins.commands.admcity.mascots.immunityoff")
-    void removeMascotImmunity (Player sender, @Named("player") Player target){
+    public void removeMascotImmunity (Player sender, @Named("player") Player target){
         City city = CityManager.getPlayerCity(target.getUniqueId());
+
         if (city==null){
             MessagesManager.sendMessage(sender, Component.text("§cLe joueur n'a pas de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
+
         String city_uuid = city.getUUID();
-        loadMascotsConfig();
-        if (!mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
+
+
+        MascotsManager.loadMascotsConfig();
+        if (!MascotsManager.mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
             MessagesManager.sendMessage(sender, Component.text("§cLa mascots est en immunité forcer"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", false);
-        mascotsConfig.set("mascots." + city_uuid + ".immunity.time", 0);
-        saveMascotsConfig();
+
+        MascotsManager.mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", false);
+        MascotsManager.mascotsConfig.set("mascots." + city_uuid + ".immunity.time", 0);
+        MascotsManager.saveMascotsConfig();
     }
 }

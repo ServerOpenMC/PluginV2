@@ -184,14 +184,14 @@ public class Chronometer {
     /**
      * @return the remaining time
      */
-    public static int getRemainingTime (UUID entityUUID, String group){
+    public static int getRemainingTime(UUID entityUUID, String group){
         return chronometer.get(entityUUID).get(group);
     }
 
     /**
      * @return true if chronometer has expired
      */
-    public static boolean timerEnd (UUID entityUUID, String group){
+    public static boolean timerEnd(UUID entityUUID, String group){
         return chronometer.get(entityUUID).get(group) <= 0;
     }
 

@@ -87,7 +87,7 @@ public class CityTypeMenu extends Menu {
         return map;
     }
 
-    private void createCity (String type) {
+    private void createCity(String type) {
 
         UUID uuid = player.getUniqueId();
 

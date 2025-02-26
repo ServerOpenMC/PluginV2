@@ -87,7 +87,7 @@ public class CityTypeCooldown implements Listener {
         return 0;
     }
 
-    public static void removeCityCooldown (String city_uuid) {
+    public static void removeCityCooldown(String city_uuid) {
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM cooldowns WHERE city_uuid = ?");
             statement.setString(1, city_uuid);

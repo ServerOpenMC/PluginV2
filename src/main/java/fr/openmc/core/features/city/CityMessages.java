@@ -42,7 +42,7 @@ public class CityMessages {
         sendLine(sender, "Habitants", String.valueOf(citizens));
         sendLine(sender, "Superficie", String.valueOf(area));
         sendLine(sender, "Vie de la Mascotte", mascotLife);
-        sendLine(sender, "Type",type);
+        sendLine(sender, "Type", type);
 
         if (sender instanceof Player player) {
             if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE))) return;

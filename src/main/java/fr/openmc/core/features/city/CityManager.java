@@ -3,6 +3,7 @@ package fr.openmc.core.features.city;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.mascots.MascotsListener;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
@@ -22,10 +23,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static fr.openmc.core.features.city.listeners.CityTypeCooldown.isOnCooldown;
-import static fr.openmc.core.features.city.listeners.CityTypeCooldown.removeCityCooldown;
-import static fr.openmc.core.features.city.mascots.MascotsManager.freeClaim;
-import static fr.openmc.core.features.city.mascots.MascotsManager.removeMascotsFromCity;
 
 public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
@@ -190,14 +187,14 @@ public class CityManager implements Listener {
             }
         }
 
-        freeClaim.remove(city);
-        if (isOnCooldown(city)) {
-            removeCityCooldown(city);
+        MascotsManager.freeClaim.remove(city);
+        if (CityTypeCooldown.isOnCooldown(city)) {
+            CityTypeCooldown.removeCityCooldown(city);
         }
-        removeMascotsFromCity(city);
+        MascotsManager.removeMascotsFromCity(city);
     }
 
-    public static void changeCityType (String city_uuid) {
+    public static void changeCityType(String city_uuid) {
         String cityType = getCityType(city_uuid);
         if (cityType != null) {
             cityType = cityType.equals("war") ? "peace" : "war";
@@ -245,7 +242,8 @@ public class CityManager implements Listener {
     /**
      * return 'war' / 'peace' / 'null' if not found
      */
-    public static String getCityType (String city_uuid) {
+
+    public static String getCityType(String city_uuid) {
         String type = null;
 
         if (city_uuid!=null){
@@ -277,6 +275,9 @@ public class CityManager implements Listener {
                 String uuid = resultSet.getString("uuid");
                 uuidList.add(uuid);
             }
+        } catch (SQLException e){
+            e.printStackTrace();
+            return null;
         }
         return uuidList;
     }
