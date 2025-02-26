@@ -62,7 +62,7 @@ public class MascotMenu extends Menu {
         Map<Integer, ItemStack> map = new HashMap<>();
 
         List<Component> requiredAmount = new ArrayList<>();
-        requiredAmount.add(Component.text("Nécessite " + MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city.getUUID() + ".level")).getUpgradeCost() + " Croq'Star"));
+        requiredAmount.add(Component.text("Nécessite " + MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city.getUUID() + ".level")).getUpgradeCost() + " Croq'Stars"));
 
         map.put(11, new ItemBuilder(this, getSpawnEgg(mascots), itemMeta -> {
             itemMeta.setDisplayName("Mascottes");

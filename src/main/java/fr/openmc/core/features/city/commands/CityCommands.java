@@ -489,7 +489,7 @@ public class CityCommands {
         }
 
         if (isOnCooldown(city.getUUID())){
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + getRemainingCooldown(city.getUUID())/1000 + " second pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + getRemainingCooldown(city.getUUID())/1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         changeCityType(city.getUUID());

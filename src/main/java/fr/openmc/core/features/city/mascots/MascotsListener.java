@@ -92,7 +92,7 @@ public class MascotsListener implements Listener {
                     String city_uuid = city.getUUID();
 
                     if (mascotsConfig.contains("mascots." + city_uuid) && !movingMascots.contains(city_uuid)){
-                        MessagesManager.sendMessage(player, Component.text("§cVous possésez déjà une mascotte"), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, Component.text("§cVous possédez déjà une mascotte"), Prefix.CITY, MessageType.ERROR, false);
                         player.getInventory().remove(item);
                         e.setCancelled(true);
                         return;
@@ -148,8 +148,7 @@ public class MascotsListener implements Listener {
 
                     City city = CityManager.getPlayerCity(player.getUniqueId());
                     if (city == null) {
-                        MessagesManager.sendMessage(player, Component.text( MessagesManager.Message.PLAYERNOCITY.getMessage() + "" +
-                                "vous ne pouvez donc pas attaquer cette mascots"), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                         e.setCancelled(true);
                         return;
                     }
@@ -168,7 +167,7 @@ public class MascotsListener implements Listener {
                     }
 
                     if (mascotsConfig.getBoolean("mascots." + mascotsID + ".immunity.activate")){
-                        MessagesManager.sendMessage(player, Component.text("§cCette mascotte est immuniser pour le moment"), Prefix.CITY, MessageType.INFO, false);
+                        MessagesManager.sendMessage(player, Component.text("§cCette mascotte est immunisée pour le moment"), Prefix.CITY, MessageType.INFO, false);
                         e.setCancelled(true);
                         return;
                     }
@@ -241,7 +240,7 @@ public class MascotsListener implements Listener {
                     }
                     new MascotMenu(player, clickEntity).open();
                 } else {
-                    MessagesManager.sendMessage(player, Component.text("§cCette mascots ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
+                    MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
                 }
             } else {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission de faire cela"), Prefix.CITY, MessageType.ERROR, false);
@@ -253,7 +252,6 @@ public class MascotsListener implements Listener {
     void onLightningStrike(LightningStrikeEvent e) {
         Location strikeLocation = e.getLightning().getLocation();
 
-        // Vérifie si une entité protégée est proche (rayon 3 blocs)
         for (Entity entity : strikeLocation.getWorld().getNearbyEntities(strikeLocation, 3, 3, 3)) {
             if (entity instanceof LivingEntity) {
                 PersistentDataContainer data = entity.getPersistentDataContainer();
@@ -344,7 +342,7 @@ public class MascotsListener implements Listener {
         PersistentDataContainer itemData = meta.getPersistentDataContainer();
         if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jéter cette objet"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cette objet"), Prefix.CITY, MessageType.ERROR, false);
 
         }
     }
@@ -375,7 +373,7 @@ public class MascotsListener implements Listener {
             }
             if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jéter cette objet"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cette objet"), Prefix.CITY, MessageType.ERROR, false);
             }
         }
     }
