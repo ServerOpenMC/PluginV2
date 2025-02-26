@@ -167,19 +167,22 @@ public class AdminCityCommands {
     public void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {
         List<String> uuidList = CityManager.getAllCityUUIDs();
         City city = CityManager.getPlayerCity(target.getUniqueId());
+
         if (city != null){
             String city_uuid = city.getUUID();
+
             if (uuidList.contains(city_uuid)){
                 MascotsManager.removeMascotsFromCity(city_uuid);
                 return;
             }
+
             MessagesManager.sendMessage(sender, Component.text("§cVille innexistante"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 
     @Subcommand("mascots chest")
     @CommandPermission("omc.admins.commands.admcity.mascots.chest")
-    public void giveMascotsChest (@Named("player") Player target){
+    public void giveMascotsChest(@Named("player") Player target){
         if (target.isOnline()){
             MascotsManager.giveChest(target);
         }
@@ -187,7 +190,7 @@ public class AdminCityCommands {
 
     @Subcommand("mascots immunityoff")
     @CommandPermission("omc.admins.commands.admcity.mascots.immunityoff")
-    public void removeMascotImmunity (Player sender, @Named("player") Player target){
+    public void removeMascotImmunity(Player sender, @Named("player") Player target){
         City city = CityManager.getPlayerCity(target.getUniqueId());
 
         if (city==null){
