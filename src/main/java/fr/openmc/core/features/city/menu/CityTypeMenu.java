@@ -97,9 +97,9 @@ public class CityTypeMenu extends Menu {
 
         Chunk origin = player.getChunk();
         AtomicBoolean isClaimed = new AtomicBoolean(false);
-        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-            for (int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
-                if (CityManager.isChunkClaimed(x,z)) {
+        for (int x = -2; x <= 2; x++) {
+            for (int z = -2; z <= 2; z++) {
+                if (CityManager.isChunkClaimed(origin.getX() + x, origin.getZ() + z)) {
                     isClaimed.set(true);
                     break;
                 }
@@ -117,10 +117,10 @@ public class CityTypeMenu extends Menu {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
                 statement.setString(1, cityUUID);
 
-                for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-                    for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
-                        statement.setInt(2, x);
-                        statement.setInt(3, z);
+                for (int x = -2; x <= 2; x++) {
+                    for (int z = -2; z <= 2; z++) {
+                        statement.setInt(2, origin.getX() + x);
+                        statement.setInt(3, origin.getZ() + z);
                         statement.addBatch();
                     }
                 }
@@ -138,9 +138,9 @@ public class CityTypeMenu extends Menu {
         city.addPlayer(uuid);
         city.addPermission(uuid, CPermission.OWNER);
 
-        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-            for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
-                CityManager.claimedChunks.put(BlockVector2.at(x, z), city);
+        for (int x = -2; x <= 2; x++) {
+            for (int z = -2; z <= 2; z++) {
+                CityManager.claimedChunks.put(BlockVector2.at(origin.getX() + x, origin.getZ() + z), city);
             }
         }
 
