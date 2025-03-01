@@ -151,5 +151,6 @@ public class CityTypeMenu extends Menu {
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
         giveChest(player);
+
     }
 }
