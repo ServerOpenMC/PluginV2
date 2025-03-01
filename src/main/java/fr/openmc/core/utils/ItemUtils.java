@@ -100,6 +100,7 @@ public class ItemUtils {
         Inventory inv = player.getInventory();
         ItemStack[] contents = inv.getContents();
 
+        // on ne vérifie pas la main secondaire et l'armure
         for (int i = 0; i < contents.length; i++) {
             if (i >= 36 && i <= 40) continue;
 

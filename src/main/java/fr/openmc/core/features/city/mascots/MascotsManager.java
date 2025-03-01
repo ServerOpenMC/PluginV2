@@ -128,6 +128,13 @@ public class MascotsManager {
 
         if (meta != null) {
 
+            List<Component> info = new ArrayList<>();
+            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
+            info.add(Component.text("§cCe coffre n'est pas retirable"));
+            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
+
+            meta.setDisplayName("§lMascotte");
+            meta.lore(info);
             PersistentDataContainer data = meta.getPersistentDataContainer();
             data.set(chestKey,PersistentDataType.STRING, "id");
             specialChest.setItemMeta(meta);

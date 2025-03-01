@@ -61,14 +61,14 @@ public class CityTypeMenu extends Menu {
 
         List<Component> peaceInfo = new ArrayList<>();
         peaceInfo.add(Component.text("§aLa sécurité est assurée"));
-        peaceInfo.add(Component.text("§fBut : relaxez et construisez la"));
+        peaceInfo.add(Component.text("§fBut : relaxez vous et construisez la"));
         peaceInfo.add(Component.text("§fville de vos rêves"));
 
         List<Component> warInfo = new ArrayList<>();
         warInfo.add(Component.text("§cLa guerre vous attend"));
         warInfo.add(Component.text("§fBut : devenir la ville la plus puissante"));
         warInfo.add(Component.text("§cATTENTION : les autre ville en situation de guerre"));
-        warInfo.add(Component.text("§cpeuvent tuer votre mascotte et détruire TOUS"));
+        warInfo.add(Component.text("§cpeuvent tuer votre mascotte et détruire les constructions"));
 
         map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
             itemMeta.setDisplayName("§aVille en paix");
@@ -146,7 +146,7 @@ public class CityTypeMenu extends Menu {
 
         player.closeInventory();
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : "+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("Vous disposez de 25 claim gratuit"), Prefix.CITY, MessageType.SUCCESS, false);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
