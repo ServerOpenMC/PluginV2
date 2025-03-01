@@ -342,6 +342,14 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
+    void onAxolotlBucket (PlayerBucketEntityEvent e) {
+        Entity entity = e.getEntity();
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+        if (data.has(mascotsKey, PersistentDataType.STRING)){
+            e.setCancelled(true);
+        }
+    }
+
     void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack item = event.getItemDrop().getItemStack();
