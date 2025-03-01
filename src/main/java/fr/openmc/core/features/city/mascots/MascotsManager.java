@@ -189,20 +189,24 @@ public class MascotsManager {
         }
     }
 
-    public static void changeMascotsSkin (Entity mascots, EntityType skin) {
+    public static void changeMascotsSkin(Entity mascots, EntityType skin) {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
         LivingEntity mob = (LivingEntity) mascots;
+
+        if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && mob.getHeight() <= 1.0) {
+            return;
+        }
 
         double baseHealth = mob.getHealth();
         double maxHealth = mob.getMaxHealth();
         String name = mob.getCustomName();
         String mascotsCustomUUID = mob.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
+
         mob.remove();
 
         if (world != null) {
-
-            LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc,skin);
+            LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc, skin);
             setMascotsData(newMascots, name, maxHealth, baseHealth);
             PersistentDataContainer newData = newMascots.getPersistentDataContainer();
 
@@ -214,6 +218,7 @@ public class MascotsManager {
             }
         }
     }
+
 
     public static void spawnMascot(String city_uuid, World player_world, Location mascot_spawn) {
 

@@ -100,6 +100,13 @@ public class MascotsListener implements Listener {
 
                     Block block = e.getBlockPlaced();
                     Location mascot_spawn = new Location(player_world, block.getX()+0.5, block.getY(), block.getZ()+0.5);
+
+                    if (mascot_spawn.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
+                        MessagesManager.sendMessage(player, Component.text("§cIl y a un block au dessus"), Prefix.CITY, MessageType.ERROR, false);
+                        e.setCancelled(true);
+                        return;
+                    }
+
                     Chunk chunk = e.getBlock().getChunk();
                     int chunkX = chunk.getX();
                     int chunkZ = chunk.getZ();
