@@ -350,6 +350,7 @@ public class MascotsListener implements Listener {
         }
     }
 
+    @EventHandler
     void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack item = event.getItemDrop().getItemStack();

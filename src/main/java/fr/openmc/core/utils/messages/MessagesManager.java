@@ -82,6 +82,7 @@ public class MessagesManager {
         // City messages
         PLAYERNOCITY(Component.text("Tu n'es pas dans une ville")),
         PLAYERINCITY(Component.text("le joueur est déjà dans une ville")),
+        CITYNOFREECLAIM(Component.text("Cette ville n'a pas de claims gratuits")),
 
         ;
 

@@ -312,7 +312,7 @@ public class MascotsManager {
         }
         String city_uuid = city.getUUID();
         if (!freeClaim.containsKey(city_uuid)){
-            MessagesManager.sendMessage(player, Component.text("§cCette ville n'a pas de claims gratuits"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOFREECLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         if (freeClaim.get(city_uuid)-claim <= 0){
