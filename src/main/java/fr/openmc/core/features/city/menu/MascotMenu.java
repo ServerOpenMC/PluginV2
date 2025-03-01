@@ -6,6 +6,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.messages.MessageType;
@@ -81,7 +82,7 @@ public class MascotMenu extends Menu {
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }).setOnClick(inventoryClickEvent -> {
             if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")){
-                if (hasAvailableSlot(getOwner())){
+                if (ItemUtils.hasAvailableSlot(getOwner())){
                     city = CityManager.getPlayerCity(getOwner().getUniqueId());
                     if (city == null) {
                         return;

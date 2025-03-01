@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -14,7 +15,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -108,10 +108,16 @@ public class MascotsManager {
     }
 
     public static void giveChest (Player player) {
-        if (!hasAvailableSlot(player)){
+        if (!ItemUtils.hasAvailableSlot(player)){
+
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire : mascotte invoquée à vos coordonées"), Prefix.CITY, MessageType.ERROR, false);
             City city = CityManager.getPlayerCity(player.getUniqueId());
-            assert city != null;
+
+            if (city == null) {
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             String city_uuid = city.getUUID();
             spawnMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
             return;
@@ -119,13 +125,20 @@ public class MascotsManager {
 
         ItemStack specialChest = new ItemStack(Material.CHEST);
         ItemMeta meta = specialChest.getItemMeta();
+
         if (meta != null) {
+
             PersistentDataContainer data = meta.getPersistentDataContainer();
             data.set(chestKey,PersistentDataType.STRING, "id");
             specialChest.setItemMeta(meta);
+
         } else {
+
             City city = CityManager.getPlayerCity(player.getUniqueId());
-            assert city != null;
+            if (city == null) {
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
             String city_uuid = city.getUUID();
             spawnMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
             OMCPlugin.getInstance().getLogger().severe("Erreur lors de l'initialisation de l'ItemMeta du coffre des mascottes");
@@ -299,18 +312,6 @@ public class MascotsManager {
         MessagesManager.sendMessage(player, Component.text(claim + " claims gratuits retirés"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
-    public static boolean hasAvailableSlot(Player player){
-        Inventory inv = player.getInventory();
-        ItemStack[] contents = inv.getContents();
-
-        for (int i = 0; i < contents.length; i++) {
-            if (i == 40) continue;
-            if (contents[i] == null) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public static boolean hasEnoughCroqStar (Player player, MascotsLevels mascotsLevels) {
         String itemNamespace = "city:croqstar";
