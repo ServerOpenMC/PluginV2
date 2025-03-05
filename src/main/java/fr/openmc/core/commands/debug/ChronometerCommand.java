@@ -14,7 +14,7 @@ public class ChronometerCommand {
     @Description("Test du chronometre")
     private void chronometerStart(Player target,@Named("time") int time){
         if (time > 90) {
-            target.sendMessage("§4Ne pas dépasser plus de 90s pour le debugage");
+            target.sendMessage("§4Ne pas dépasser plus de 90s pour le débogage");
             return;
         }
         Chronometer.startChronometer(target, "debug", time, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, null);

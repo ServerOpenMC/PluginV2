@@ -481,7 +481,7 @@ public class CityCommands {
         MascotsManager.loadMascotsConfig();
         if (MascotsManager.mascotsConfig.contains("mascots." + city.getUUID())){
             if (!MascotsManager.mascotsConfig.getBoolean("mascots." + city.getUUID() + "alive")){
-                MessagesManager.sendMessage(sender, Component.text("vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
         }

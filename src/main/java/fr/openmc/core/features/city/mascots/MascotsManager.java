@@ -317,7 +317,7 @@ public class MascotsManager {
         }
         if (freeClaim.get(city_uuid)-claim <= 0){
             freeClaim.remove(city_uuid);
-            MessagesManager.sendMessage(player, Component.text("tous les claims gratuits ont été retirés"), Prefix.CITY, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(player, Component.text("Tous les claims gratuits ont été retirés"), Prefix.CITY, MessageType.SUCCESS, false);
             return;
         }
         freeClaim.replace(city_uuid, freeClaim.get(city_uuid)-claim);

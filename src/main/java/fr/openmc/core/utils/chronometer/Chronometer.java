@@ -129,7 +129,7 @@ public class Chronometer {
                 }
             } else {
                 if (entity instanceof Player player){
-                    player.spigot().sendMessage(messageType.getChatMessageType(), new TextComponent("chronomètre arrèté"));
+                    player.spigot().sendMessage(messageType.getChatMessageType(), new TextComponent("Chronomètre arrêté"));
                 }
             }
         }
@@ -154,7 +154,7 @@ public class Chronometer {
                 }
             } else {
                 if (entity instanceof Player player){
-                    player.spigot().sendMessage(messageType.getChatMessageType(), new TextComponent("chronomètre du " + group + " arrèté"));
+                    player.spigot().sendMessage(messageType.getChatMessageType(), new TextComponent("Chronomètre du " + group + " arrêté"));
                 }
             }
 
