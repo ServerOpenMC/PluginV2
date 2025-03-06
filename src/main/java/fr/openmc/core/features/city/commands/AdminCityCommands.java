@@ -203,7 +203,7 @@ public class AdminCityCommands {
 
         MascotsManager.loadMascotsConfig();
         if (!MascotsManager.mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
-            MessagesManager.sendMessage(sender, Component.text("§cLa mascotte est en immunité forcée    "), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("§cLa mascotte est en immunité forcée"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
