@@ -160,7 +160,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.kick")
     @Description("Exclure un habitant de votre ville")
     @AutoComplete("@city_members")
-    void kick(Player sender, @Named("exclu") OfflinePlayer player) {
+    public static void kick(Player sender, @Named("exclu") OfflinePlayer player) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessageType(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -172,7 +172,7 @@ public class CityCommands {
             return;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.KICK))) {
+        if (!(city.hasPermission(sender.getUniqueId(), CPermission.KICK))) {
             MessagesManager.sendMessageType(sender, Component.text("Tu n'as pas la permission d'exclure " + player.getName()), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

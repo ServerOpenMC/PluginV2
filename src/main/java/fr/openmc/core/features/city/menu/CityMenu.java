@@ -8,10 +8,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
-import fr.openmc.core.features.city.menu.bank.CityBankMenu;
-import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.utils.PlayerUtils;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -27,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class CityMenu extends Menu {
 
@@ -134,7 +131,8 @@ public class CityMenu extends Menu {
                     Component.text("§7Il y a actuellement §d" + city.getMembers().size() + "§7 membre(s) dans votre ville")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            // membres
+            CityPlayerListMenu menu = new CityPlayerListMenu(player);
+            menu.open();
         }));
 
         inventory.put(25, new ItemBuilder(this, Material.NETHERITE_SWORD, itemMeta -> {

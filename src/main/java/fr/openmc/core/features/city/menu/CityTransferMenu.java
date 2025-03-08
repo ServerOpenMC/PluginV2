@@ -8,6 +8,7 @@ import dev.xernas.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -38,7 +39,7 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.BOTTOM;
+        return StaticSlots.STANDARD;
     }
 
     @Override
@@ -91,18 +92,15 @@ public class CityTransferMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, Material.PAPER, itemMeta -> {
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
-            itemMeta.setCustomModelData(10003);
         }).setCloseButton());
-        map.put(48, new ItemBuilder(this, Material.PAPER, itemMeta -> {
+        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§cPage précédente"));
-            itemMeta.setCustomModelData(10005);
         }).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Material.PAPER, itemMeta -> {
+        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§aPage suivante"));
-            itemMeta.setCustomModelData(10006);
-    }).setNextPageButton());
+        }).setNextPageButton());
         return map;
     }
 
