@@ -340,7 +340,7 @@ public class CityCommands {
         }
 
         city.updateBalance((double) (price*-1));
-        city.addChunk(sender.getChunk());
+        city.addChunk(sender.getWorld().getChunkAt(chunkX, chunkZ));
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
