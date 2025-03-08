@@ -7,14 +7,14 @@ public enum CPermission {
     INVITE("Inviter"),
     KICK("Expulser"),
     CLAIM("Claim"),
+    SEE_CHUNKS("Voir les Claims"),
     RENAME("Renommer"),
     MONEY_GIVE("Donner de l'argent"),
     MONEY_BALANCE("Voir l'argent"),
     MONEY_TAKE("Prendre de l'argent"),
     PERMS("Permissions"), // Cette permission est donnée seulement par l'owner
     CHEST("Accès au Coffre"),
-    CHEST_UPGRADE("Améliorer le coffre"),
-    SEE_CHUNKS("Voir les Chunks")
+    CHEST_UPGRADE("Améliorer le coffre")
     ;
 
     @Getter
