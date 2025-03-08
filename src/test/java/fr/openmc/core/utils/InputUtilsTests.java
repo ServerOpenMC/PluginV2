@@ -2,21 +2,13 @@ package fr.openmc.core.utils;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class InputUtilsTests {
-    @BeforeEach
-    public void setUp() {
-        MockBukkit.mock();
-    }
-
-    @AfterEach
-    public void tearDown() {
-        MockBukkit.unmock();
-    }
-
     @Test
-    @DisplayName("convertion Sign Input to Money")
-    public void convertSignInputToMoney() {
+    @DisplayName("Convertion Sign Input to Money")
+    public void testConvertSignInputToMoney_ShouldGiveTheAmountInFloat() {
         Assertions.assertEquals(
                 3000000.0,
                 InputUtils.convertToMoneyValue("3m")
@@ -25,7 +17,6 @@ public class InputUtilsTests {
                 3000.0,
                 InputUtils.convertToMoneyValue("3k")
         );
-
         Assertions.assertEquals(
                 3000000.0,
                 InputUtils.convertToMoneyValue("3M")
@@ -34,7 +25,6 @@ public class InputUtilsTests {
                 3000.0,
                 InputUtils.convertToMoneyValue("3K")
         );
-
         Assertions.assertEquals(
                 1.0,
                 InputUtils.convertToMoneyValue("1")
@@ -43,99 +33,26 @@ public class InputUtilsTests {
                 3000.0,
                 InputUtils.convertToMoneyValue("3000")
         );
-
-        Assertions.assertEquals(
-                -1,
-                InputUtils.convertToMoneyValue("-3")
-        );
-
-        Assertions.assertEquals(
-                -1,
-                InputUtils.convertToMoneyValue("-1")
-        );
-
-        Assertions.assertEquals(
-                -1,
-                InputUtils.convertToMoneyValue("489y")
-        );
-
-        Assertions.assertEquals(
-                -1,
-                InputUtils.convertToMoneyValue("1.1")
-        );
-
-        Assertions.assertEquals(
-                -1,
-                InputUtils.convertToMoneyValue("4,5")
-        );
-
     }
 
-    @Test
-    @DisplayName("check is returned value is true")
-    public void isInputMoney() {
-        Assertions.assertEquals(
-                false,
-                InputUtils.isInputMoney("0")
-        );
+    @ParameterizedTest
+    @DisplayName("Conversion of input sign to -1")
+    @ValueSource(strings = {"-3", "-1", "489y", "1.1", "4,5"})
+    public void testConvertSignInputToMoney_ShouldGiveAnError(String input) {
+        Assertions.assertEquals(-1, InputUtils.convertToMoneyValue(input));
+    }
 
-        Assertions.assertEquals(
-                true,
-                InputUtils.isInputMoney("1")
-        );
+    @ParameterizedTest
+    @DisplayName("Check is returned value is true")
+    @ValueSource(strings = {"1", "3m", "3k", "3M", "3K", "3000"})
+    public void testIsInputMoney_MustReturnTrue(String input) {
+        Assertions.assertTrue(InputUtils.isInputMoney(input));
+    }
 
-        Assertions.assertEquals(
-                true,
-                InputUtils.isInputMoney("3m")
-        );
-        Assertions.assertEquals(
-                true,
-                InputUtils.isInputMoney("3k")
-        );
-
-        Assertions.assertEquals(
-                true,
-                InputUtils.isInputMoney("3M")
-        );
-        Assertions.assertEquals(
-                true,
-                InputUtils.isInputMoney("3K")
-        );
-
-        Assertions.assertEquals(
-                true,
-                InputUtils.isInputMoney("1")
-        );
-        Assertions.assertEquals(
-                true,
-                InputUtils.isInputMoney("3000")
-        );
-
-        Assertions.assertEquals(
-                false,
-                InputUtils.isInputMoney("-3")
-        );
-
-        Assertions.assertEquals(
-                false,
-                InputUtils.isInputMoney("-1")
-        );
-
-        Assertions.assertEquals(
-                false,
-                InputUtils.isInputMoney("489y")
-        );
-
-        Assertions.assertEquals(
-                false,
-                InputUtils.isInputMoney("1.1")
-        );
-
-        Assertions.assertEquals(
-                false,
-                InputUtils.isInputMoney("4,5")
-        );
-
-
+    @ParameterizedTest
+    @DisplayName("Check is returned value is false")
+    @ValueSource(strings= {"0", "-3", "-1", "489y", "1.1", "4,5"})
+    public void testIsInputMoney_MustReturnFalse(String input) {
+        Assertions.assertFalse(InputUtils.isInputMoney(input));
     }
 }
