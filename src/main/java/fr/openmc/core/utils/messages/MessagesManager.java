@@ -1,21 +1,12 @@
 package fr.openmc.core.utils.messages;
 
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.Sound;
-
-import com.google.common.collect.ImmutableBiMap;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.Map;
-
-
 
 public class MessagesManager {
 
@@ -33,7 +24,7 @@ public class MessagesManager {
      * @param sound   Indicates whether a sound should be played (true) or not (false)
      */
 
-    public static void sendMessageType(CommandSender sender, Component message, Prefix prefix, MessageType type, boolean sound) {
+    public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, boolean sound) {
         MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text("§7(" + type.getPrefix() + "§7) ")
@@ -42,13 +33,11 @@ public class MessagesManager {
                         .append(message)
                 );
 
-
         if(sender instanceof Player player && sound) {
             player.playSound(player.getLocation(), type.getSound(), 1, 1);
         }
 
         sender.sendMessage(messageComponent);
-
     }
 
 
@@ -61,26 +50,24 @@ public class MessagesManager {
      * @param prefix  The prefix for the message
      */
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix) {
-        Component messageComponent = MiniMessage.miniMessage().deserialize(prefix.getPrefix())
-                .append(Component.text(" §7» "))
-                .append(message);
-        sender.sendMessage(messageComponent);
-
+        sendMessage(sender, message, prefix, MessageType.NONE, false);
     }
         
     public static String textToSmall(String text) {
-        StringBuilder result = new StringBuilder();
-        Map<Character, Character> charMap = ImmutableBiMap.<Character, Character>builder()
-                .put('A', 'ᴀ').put('B', 'ʙ').put('C', 'ᴄ').put('D', 'ᴅ').put('E', 'ᴇ')
-                .put('F', 'ꜰ').put('G', 'ɢ').put('H', 'ʜ').put('I', 'ɪ').put('J', 'ᴊ')
-                .put('K', 'ᴋ').put('L', 'ʟ').put('M', 'ᴍ').put('N', 'ɴ').put('O', 'ᴏ')
-                .put('P', 'ǫ').put('Q', 'ʀ').put('R', 'ʀ').put('S', 'ѕ').put('T', 'ᴛ')
-                .put('U', 'ᴜ').put('V', 'ᴠ').put('W', 'ᴡ').put('X', 'ʏ').put('Y', 'ʏ').put('Z', 'ᴢ')
-                .put('1', '₁').put('2', '₂').put('3', '₃').put('4', '₄').put('5', '₅')
-                .put('6', '₆').put('7', '₇').put('8', '₈').put('9', '₉').put('0', '₀')
-                .build();
+        Map<Character, Character> charMap = Map.ofEntries(
+                Map.entry('A', 'ᴀ'), Map.entry('B', 'ʙ'), Map.entry('C', 'ᴄ'), Map.entry('D', 'ᴅ'),
+                Map.entry('E', 'ᴇ'), Map.entry('F', 'ꜰ'), Map.entry('G', 'ɢ'), Map.entry('H', 'ʜ'),
+                Map.entry('I', 'ɪ'), Map.entry('J', 'ᴊ'), Map.entry('K', 'ᴋ'), Map.entry('L', 'ʟ'),
+                Map.entry('M', 'ᴍ'), Map.entry('N', 'ɴ'), Map.entry('O', 'ᴏ'), Map.entry('P', 'ǫ'),
+                Map.entry('Q', 'ʀ'), Map.entry('R', 'ʀ'), Map.entry('S', 'ѕ'), Map.entry('T', 'ᴛ'),
+                Map.entry('U', 'ᴜ'), Map.entry('V', 'ᴠ'), Map.entry('W', 'ᴡ'), Map.entry('X', 'ʏ'),
+                Map.entry('Y', 'ʏ'), Map.entry('Z', 'ᴢ'), Map.entry('1', '₁'), Map.entry('2', '₂'),
+                Map.entry('3', '₃'), Map.entry('4', '₄'), Map.entry('5', '₅'), Map.entry('6', '₆'),
+                Map.entry('7', '₇'), Map.entry('8', '₈'), Map.entry('9', '₉'), Map.entry('0', '₀')
+        );
 
-        for (char c : text.toCharArray()) {
+        StringBuilder result = new StringBuilder();
+        for(char c : text.toCharArray()) {
             result.append(charMap.getOrDefault(c, c));
         }
 
@@ -99,6 +86,7 @@ public class MessagesManager {
         ;
 
         private final Component message;
+
         Message(Component message) {
             this.message = message;
         }

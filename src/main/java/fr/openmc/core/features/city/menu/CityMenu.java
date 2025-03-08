@@ -63,7 +63,7 @@ public class CityMenu extends Menu {
                 itemMeta.itemName(name_notif);
                 itemMeta.lore(lore_notif);
             }).setOnClick(inventoryClickEvent -> {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
             }));
         } else {
             name_notif = Component.text("§7Vous avez une §6invitation");

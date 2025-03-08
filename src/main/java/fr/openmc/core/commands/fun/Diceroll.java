@@ -20,6 +20,6 @@ public class Diceroll {
         int result = rand.nextInt(10) + 1;
 
 
-        MessagesManager.sendMessageType(player, Component.text("🎲 Le résultat est: §6" + result + "§r 🎲"), Prefix.OPENMC, MessageType.INFO, true);
+        MessagesManager.sendMessage(player, Component.text("🎲 Le résultat est: §6" + result + "§r 🎲"), Prefix.OPENMC, MessageType.INFO, true);
     }
 }
