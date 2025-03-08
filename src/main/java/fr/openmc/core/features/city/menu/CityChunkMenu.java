@@ -107,12 +107,12 @@ public class CityChunkMenu extends Menu {
                         City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
                         if (cityCheck == null) {
-                            MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                             return;
                         }
 
                         if (!hasPermissionClaim) {
-                            MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                             return;
                         }
 

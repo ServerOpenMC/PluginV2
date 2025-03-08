@@ -299,9 +299,9 @@ public class CityCommands {
         claim(sender, chunk.getX(), chunk.getZ());
     }
 
-    public static void claim(Player player, int chunkX, int chunkZ) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        org.bukkit.World bWorld = player.getWorld();
+    public static void claim(Player sender, int chunkX, int chunkZ) {
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        org.bukkit.World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
             MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -437,7 +437,7 @@ public class CityCommands {
             return;
         }
 
-        if (isInvalidName(name)) {
+        if (InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

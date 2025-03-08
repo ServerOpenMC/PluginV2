@@ -35,7 +35,7 @@ public class ChestMenuListener implements Listener {
         if (event.getSlot() == 48 && event.getCurrentItem().getType() == Material.ENDER_CHEST) { // Upgrade Button
             int price = city.getChestPages()*5000; // fonction linéaire f(x)=ax ; a=5000
             if (city.getBalance() < price) {
-                MessagesManager.sendMessageType(player, Component.text("La ville n'as pas assez d'argent ("+price+" nécessaires)"), Prefix.CITY, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, Component.text("La ville n'as pas assez d'argent ("+price+" nécessaires)"), Prefix.CITY, MessageType.ERROR, true);
                 player.closeInventory();
                 return;
             }
@@ -43,7 +43,7 @@ public class ChestMenuListener implements Listener {
             city.updateBalance((double) -price);
 
             city.upgradeChest();
-            MessagesManager.sendMessageType(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
             player.closeInventory();
             return;
         }

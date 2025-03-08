@@ -90,12 +90,12 @@ public class CityPlayerGestionMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
             if (!hasPermissionRenameCity) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNORENAME.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNORENAME.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -117,10 +117,10 @@ public class CityPlayerGestionMenu extends Menu {
                                 City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
                                 playerCity.renameCity(input);
-                                MessagesManager.sendMessageType(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
+                                MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
 
                             } else {
-                                MessagesManager.sendMessageType(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                             }
 
                             return Collections.emptyList();
@@ -154,17 +154,17 @@ public class CityPlayerGestionMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
             if (!hasPermissionOwner) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
             if (city.getMembers().size() - 1 == 0) {
-                MessagesManager.sendMessageType(player, Component.text("Il y a pas de membre a qui vous pouvez transferer la ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Il y a pas de membre a qui vous pouvez transferer la ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -192,19 +192,19 @@ public class CityPlayerGestionMenu extends Menu {
             itemMeta.lore(loreDelete);
         }).setOnClick(inventoryClickEvent -> {
             if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                MessagesManager.sendMessageType(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+                MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
                 return;
             }
 
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
             if (cityCheck == null) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
             if (!hasPermissionOwner) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -233,7 +233,7 @@ public class CityPlayerGestionMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 

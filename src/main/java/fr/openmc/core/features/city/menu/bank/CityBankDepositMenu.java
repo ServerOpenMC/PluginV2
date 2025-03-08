@@ -81,16 +81,16 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
 
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyPlayer) && moneyPlayer!=0) {
                 city.updateBalance(moneyPlayer);
-                MessagesManager.sendMessageType(player, Component.text("Tu as transféré " + moneyPlayer + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré " + moneyPlayer + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -117,15 +117,15 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), halfMoneyPlayer) && halfMoneyPlayer!=0) {
                 city.updateBalance(halfMoneyPlayer);
-                MessagesManager.sendMessageType(player, Component.text("Tu as transféré " + halfMoneyPlayer + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré " + halfMoneyPlayer + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -149,7 +149,7 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -172,12 +172,12 @@ public class CityBankDepositMenu extends Menu {
 
                                 if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
                                     city.updateBalance(moneyDeposit);
-                                    MessagesManager.sendMessageType(player, Component.text("Tu as transféré "+moneyDeposit+EconomyManager.getEconomyIcon()+" à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                                    MessagesManager.sendMessage(player, Component.text("Tu as transféré "+moneyDeposit+EconomyManager.getEconomyIcon()+" à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                                 } else {
-                                    MessagesManager.sendMessageType(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                                    MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                                 }
                             } else {
-                                MessagesManager.sendMessageType(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                             }
 
                             return Collections.emptyList();

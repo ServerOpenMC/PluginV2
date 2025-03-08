@@ -68,7 +68,7 @@ public class NoCityMenu extends Menu {
             inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
-            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessageType(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
+            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
         } else {
             nameNotif = Component.text("§7Vous avez une §6invitation");
 
@@ -103,12 +103,12 @@ public class NoCityMenu extends Menu {
             itemMeta.lore(loreCreate);
         }).setOnClick(inventoryClickEvent -> {
             if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                MessagesManager.sendMessageType(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+                MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
                 return;
             }
 
             if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
-                MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -129,7 +129,7 @@ public class NoCityMenu extends Menu {
                             if (InputUtils.isInputCityName(input)) {
                                 CityCommands.createCity(player, input);
                             } else {
-                                MessagesManager.sendMessageType(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                             }
 
                             return Collections.emptyList();

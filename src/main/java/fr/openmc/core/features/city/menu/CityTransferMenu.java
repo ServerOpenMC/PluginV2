@@ -66,17 +66,17 @@ public class CityTransferMenu extends PaginatedMenu {
                 ));
             }).setOnClick(inventoryClickEvent -> {
                 if (!hasPermissionOwner) {
-                    MessagesManager.sendMessageType(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                     return;
                 }
 
                 ConfirmMenu menu = new ConfirmMenu(player,
                         () -> {
                             city.changeOwner(playerOffline.getUniqueId());
-                            MessagesManager.sendMessageType(player, Component.text("Le nouveau maire est "+ playerOffline.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+                            MessagesManager.sendMessage(player, Component.text("Le nouveau maire est "+ playerOffline.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
                             if (playerOffline.isOnline()) {
-                                MessagesManager.sendMessageType((Player) playerOffline, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
+                                MessagesManager.sendMessage((Player) playerOffline, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
                             }
                             player.closeInventory();
                         },

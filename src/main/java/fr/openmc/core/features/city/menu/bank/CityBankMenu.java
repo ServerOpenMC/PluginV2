@@ -68,7 +68,7 @@ public class CityBankMenu extends Menu {
             itemMeta.lore(loreBankDeposit);
         }).setOnClick(inventoryClickEvent -> {
             if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE))) {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -104,7 +104,7 @@ public class CityBankMenu extends Menu {
             itemMeta.lore(loreBankTake);
         }).setOnClick(inventoryClickEvent -> {
             if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE))) {
-                MessagesManager.sendMessageType(player, Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
