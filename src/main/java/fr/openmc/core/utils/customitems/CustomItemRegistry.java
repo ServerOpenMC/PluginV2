@@ -32,6 +32,7 @@ public class CustomItemRegistry {
         new NextPage();
         new AcceptButton();
         new RefuseButton();
+        new SearchButton();
     }
 
     public static void register(String name, CustomItem item) {
