@@ -450,7 +450,12 @@ public class CityCommands {
     // ACTIONS
 
     public static void leaveCity(Player player) {
-
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        if (city.removePlayer(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("Tu as quitté "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
+        }
     }
 
     public static void createCity(Player player, String name) {
