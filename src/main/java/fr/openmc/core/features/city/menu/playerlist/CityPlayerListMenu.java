@@ -1,6 +1,8 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
 
+import de.rapha149.signgui.SignGUI;
+import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.PaginatedMenu;
 import dev.xernas.menulib.utils.ItemBuilder;
 import dev.xernas.menulib.utils.ItemUtils;
@@ -10,8 +12,12 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.menu.ConfirmMenu;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -56,7 +62,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
         for (UUID uuid : city.getMembers()) {
             OfflinePlayer playerOffline = Bukkit.getOfflinePlayer(uuid);
             String title = "";
-            if(city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
+            if(hasPermissionOwner) {
                 title = "Propriétaire ";
             } else {
                 title = "Membre ";
@@ -64,10 +70,16 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
             List<Component> lorePlayer = List.of();
             if (hasPermissionPerms && hasPermissionKick) {
-                lorePlayer = List.of(
-                        Component.text("§7Vous pouvez gérer ce joueur comme l'§cexpluser §7ou bien modifier §ases permissions"),
-                        Component.text("§e§lCLIQUEZ ICI POUR GERER CE JOUEUR")
-                        );
+                if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
+                    lorePlayer = List.of(
+                        Component.text("§7Vous ne pouvez pas éditer le propriétaire!")
+                    );
+                } else {
+                    lorePlayer = List.of(
+                            Component.text("§7Vous pouvez gérer ce joueur comme l'§cexpluser §7ou bien modifier §ases permissions"),
+                            Component.text("§e§lCLIQUEZ ICI POUR GERER CE JOUEUR")
+                    );
+                }
             } else if (hasPermissionPerms) {
                 lorePlayer = List.of(
                         Component.text("§7Vous pouvez modifier les permissions de ce joueur"),
@@ -100,6 +112,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
                 itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(finalLorePlayer);
             }).setOnClick(inventoryClickEvent -> {
+                if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
+                    return;
+                }
                 if (hasPermissionPerms && hasPermissionKick) {
                     CityPlayerGestionMenu menu = new CityPlayerGestionMenu(player, playerOffline);
                     menu.open();
@@ -131,6 +146,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public Map<Integer, ItemStack> getButtons() {
+        Player player = getOwner();
         Map<Integer, ItemStack> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
@@ -143,10 +159,37 @@ public class CityPlayerListMenu extends PaginatedMenu {
         }).setNextPageButton());
         map.put(53, new ItemBuilder(this, CustomItemRegistry.getByName("menu:search_btn").getBest(),itemMeta -> {
             itemMeta.displayName(Component.text("§7Inviter des §dpersonnes"));
-            itemMeta.lore(List.of(Component.text("Vous pouvez inviter des personnes à votre ville pour la remplir !")));
+            itemMeta.lore(List.of(Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir !")));
         }).setOnClick(inventoryClickEvent -> {
-            //TODO: bouton invite
-            //TODO: Faire un nombre maximum de membres dans une ville
+            String[] lines = new String[4];
+            lines[0] = "";
+            lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
+            lines[2] = "Entrez le nom du ";
+            lines[3] = "joueur ci dessus";
+
+            SignGUI gui = null;
+            try {
+                gui = SignGUI.builder()
+                        .setLines(null, lines[1] , lines[2], lines[3])
+                        .setType(fr.openmc.core.utils.ItemUtils.getSignType(player))
+                        .setHandler((p, result) -> {
+                            String input = result.getLine(0);
+
+                            if (InputUtils.isInputPlayer(input)) {
+                                Player playerToInvite = Bukkit.getPlayer(input);
+                                CityCommands.add(player, playerToInvite);
+                            } else {
+                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                            }
+
+                            return Collections.emptyList();
+                        })
+                        .build();
+            } catch (SignGUIVersionException e) {
+                throw new RuntimeException(e);
+            }
+
+            gui.open(player);
         }));
         return map;
     }

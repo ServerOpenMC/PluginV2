@@ -1,5 +1,7 @@
 package fr.openmc.core.utils;
 
+import org.bukkit.Bukkit;
+
 public class InputUtils {
 
     private InputUtils() {
@@ -84,6 +86,23 @@ public class InputUtils {
         }
 
         if (!input.matches("[a-zA-Z0-9\\s]+")) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if input was for a player
+     * @param input Input of Player
+     * @return Boolean
+     */
+    public static boolean isInputPlayer(String input) {
+        if (input == null || input.isEmpty()) {
+            return false;
+        }
+
+        if (Bukkit.getPlayer(input) == null) {
             return false;
         }
 

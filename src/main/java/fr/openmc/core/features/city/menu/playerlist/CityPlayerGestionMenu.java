@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.menu.CitizensPermsMenu;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.CityTransferMenu;
 import fr.openmc.core.utils.InputUtils;
@@ -64,164 +65,85 @@ public class CityPlayerGestionMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
-        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
+        boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
+        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
 
 
-        List<Component> loreRename;
+        List<Component> loreKick;
 
-        if (hasPermissionRenameCity) {
-            loreRename = List.of(
-                    Component.text("§7Vous pouvez renommer votre §dville§7."),
-                    Component.text(""),
-                    Component.text("§7Nom actuel : §d" + city.getCityName()),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR LE MODIFIER")
-            );
+        if (hasPermissionKick) {
+            if (player.getUniqueId().equals(playerTarget.getUniqueId())) {
+                loreKick = List.of(
+                        Component.text("§cVous pouvez pas vous expluser")
+                );
+            } else if (city.hasPermission(playerTarget.getUniqueId(), CPermission.OWNER)) {
+                loreKick = List.of(
+                        Component.text("§cVous pouvez pas expluser le propriétaire")
+                );
+            } else {
+                loreKick = List.of(
+                        Component.text("§7Vous pouvez expluser" + playerTarget.getName() + "§7de votre §dville§7."),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR L'EXPLUSER")
+                );
+            }
         } else {
-            loreRename = List.of(
+            loreKick = List.of(
                     MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
-        inventory.put(11, new ItemBuilder(this, ItemUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Renommer votre §dville"));
-            itemMeta.lore(loreRename);
+        inventory.put(11, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
+            itemMeta.itemName(Component.text("§cExpluser " + playerTarget.getName()));
+            itemMeta.lore(loreKick);
         }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-            if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            if (player.getUniqueId().equals(playerTarget.getUniqueId())) {
                 return;
-            }
-
-            if (!hasPermissionRenameCity) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNORENAME.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            } else if (city.hasPermission(playerTarget.getUniqueId(), CPermission.OWNER)) {
                 return;
+            } else {
+                ConfirmMenu menu = new ConfirmMenu(
+                        player,
+                        () -> {
+                            player.closeInventory();
+                            CityCommands.kick(player, playerTarget);
+                        },
+                        () -> player.closeInventory(),
+                        "§7Voulez vous vraiment expluser " + playerTarget.getName() + " ?",
+                        "§7Ne pas expluser " + playerTarget.getName());
+                menu.open();
+
             }
-
-            String[] lines = new String[4];
-            lines[0] = "";
-            lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-            lines[2] = "Entrez votre";
-            lines[3] = "nom ci dessus";
-
-            SignGUI gui = null;
-            try {
-                gui = SignGUI.builder()
-                        .setLines(null, lines[1], lines[2], lines[3])
-                        .setType(fr.openmc.core.utils.ItemUtils.getSignType(player))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
-
-                            if (InputUtils.isInputCityName(input)) {
-                                City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-
-                                playerCity.renameCity(input);
-                                MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
-
-                            } else {
-                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                            }
-
-                            return Collections.emptyList();
-                        })
-                        .build();
-            } catch (SignGUIVersionException e) {
-                throw new RuntimeException(e);
-            }
-
-            gui.open(player);
-
         }));
 
 
-        List<Component> loreTransfer;
+        List<Component> lorePlayerTarget = List.of(
+                    Component.text("§7Vous êtes entrain de modifier son status dans la §dville")
+        );
 
-        if (hasPermissionOwner) {
-            loreTransfer = List.of(
-                    Component.text("§dLa Ville §7sera transferer à §dla personne §7que vous séléctionnerez"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
-            );
-        } else {
-            loreTransfer = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
-            );
-        }
-
-        inventory.put(13, new ItemBuilder(this, Material.TOTEM_OF_UNDYING, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Transferer la §dVille"));
-            itemMeta.lore(loreTransfer);
-        }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-            if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            if (!hasPermissionOwner) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            if (city.getMembers().size() - 1 == 0) {
-                MessagesManager.sendMessage(player, Component.text("Il y a pas de membre a qui vous pouvez transferer la ville"), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            CityTransferMenu menu = new CityTransferMenu(player);
-            menu.open();
-
+        inventory.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
+            itemMeta.displayName(Component.text("§eJoueur " + playerTarget.getName()));
+            itemMeta.lore(lorePlayerTarget);
         }));
 
+        List<Component> lorePermission;
 
-        List<Component> loreDelete;
-
-        if (hasPermissionOwner) {
-            loreDelete = List.of(
-                    Component.text("§7Vous allez défénitivement §csupprimer la ville!"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+        if (hasPermissionPerms) {
+            lorePermission = List.of(
+                    Component.text("§7Vous allez modifier §ases permisisons"),
+                    Component.text("§e§lCLIQUEZ ICI POUR MODIFIER")
             );
         } else {
-            loreDelete = List.of(
+            lorePermission = List.of(
                     MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
-        inventory.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Supprimer la ville"));
-            itemMeta.lore(loreDelete);
+        inventory.put(15, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+            itemMeta.itemName(Component.text("§cModifier les permissions"));
+            itemMeta.lore(lorePermission);
         }).setOnClick(inventoryClickEvent -> {
-            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
-                return;
-            }
-
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-
-            if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            if (!hasPermissionOwner) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-
-            ConfirmMenu menu = new ConfirmMenu(
-                    player,
-                    () -> {
-                        player.closeInventory();
-                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                            CityCommands.deleteCity(player);
-                        });
-                    },
-                    () -> player.closeInventory(),
-                    "§7Voulez vous vraiment dissoudre la ville " + cityCheck.getCityName() + " ?",
-                    "§7Ne pas dissoudre la ville " + cityCheck.getCityName());
-            menu.open();
-
+            CitizensPermsMenu.openBookFor(player, playerTarget.getUniqueId());
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
@@ -237,7 +159,7 @@ public class CityPlayerGestionMenu extends Menu {
                 return;
             }
 
-            CityMenu menu = new CityMenu(player);
+            CityPlayerListMenu menu = new CityPlayerListMenu(player);
             menu.open();
         }));
 

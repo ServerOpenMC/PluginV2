@@ -214,7 +214,7 @@ public class CityCommands {
     @Subcommand("invite")
     @CommandPermission("omc.commands.city.invite")
     @Description("Inviter un joueur dans votre ville")
-    void add(Player sender, @Named("invité") Player target) {
+    public static void add(Player sender, @Named("invité") Player target) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -505,7 +505,7 @@ public class CityCommands {
             }
         });
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée"+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée"), Prefix.CITY, MessageType.SUCCESS, true);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
     }
