@@ -4,7 +4,10 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.contest.ContestData;
+import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -12,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -130,21 +134,30 @@ public class ScoreboardManager implements Listener {
             scoreboard.resetScores(entry);
         }
 
-        objective.getScore(" ").setScore(7);
-        objective.getScore("§8• §fNom: §7"+player.getName()).setScore(6);
+        objective.getScore(" ").setScore(11);
+        objective.getScore("§8• §fNom: §7"+player.getName()).setScore(10);
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
         String cityName = city != null ? city.getName() : "Aucune";
-        objective.getScore("§8• §fVille§7: "+cityName).setScore(5);
+        objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
 
         String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
-        objective.getScore("§8• §e"+EconomyManager.getEconomyIcon()+" "+balance).setScore(4);
+        objective.getScore("§8• §e"+EconomyManager.getEconomyIcon()+" "+balance).setScore(8);
 
-        objective.getScore("  ").setScore(3);
+        objective.getScore("  ").setScore(7);
 
         City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
         String chunkCityName = (chunkCity != null) ? chunkCity.getName() : "Nature";
-        objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(2);
+        objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(6);
+
+        ContestData data = ContestManager.getInstance().data;
+        int phase = data.getPhase();
+        if(phase != 1) {
+            objective.getScore(" ").setScore(5);
+            objective.getScore("§8• §6§lCONTEST!").setScore(4);
+            objective.getScore(ChatColor.valueOf(data.getColor1()) + data.getCamp1() + " §8VS " + ChatColor.valueOf(data.getColor2()) + data.getCamp2()).setScore(3);
+            objective.getScore("§cFin dans " + DateUtils.getTimeUntilNextMonday()).setScore(2);
+        }
 
         objective.getScore("   ").setScore(1);
         objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
