@@ -7,6 +7,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -22,13 +23,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static fr.openmc.core.features.city.mascots.MascotsManager.giveChest;
 
 public class CityTypeMenu extends Menu {
 
@@ -97,8 +95,8 @@ public class CityTypeMenu extends Menu {
 
         Chunk origin = player.getChunk();
         AtomicBoolean isClaimed = new AtomicBoolean(false);
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
                 if (CityManager.isChunkClaimed(origin.getX() + x, origin.getZ() + z)) {
                     isClaimed.set(true);
                     break;
@@ -117,13 +115,9 @@ public class CityTypeMenu extends Menu {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
                 statement.setString(1, cityUUID);
 
-                for (int x = -2; x <= 2; x++) {
-                    for (int z = -2; z <= 2; z++) {
-                        statement.setInt(2, origin.getX() + x);
-                        statement.setInt(3, origin.getZ() + z);
-                        statement.addBatch();
-                    }
-                }
+                statement.setInt(2, origin.getX());
+                statement.setInt(3, origin.getZ());
+                statement.addBatch();
 
                 statement.executeBatch();
                 statement.close();
@@ -138,19 +132,16 @@ public class CityTypeMenu extends Menu {
         city.addPlayer(uuid);
         city.addPermission(uuid, CPermission.OWNER);
 
-        for (int x = -2; x <= 2; x++) {
-            for (int z = -2; z <= 2; z++) {
-                CityManager.claimedChunks.put(BlockVector2.at(origin.getX() + x, origin.getZ() + z), city);
-            }
-        }
+        CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
+        MascotsManager.addFreeClaim(15, player);
 
         player.closeInventory();
 
         MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
-        MessagesManager.sendMessage(player, Component.text("Vous disposez de 25 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
-        giveChest(player);
+        MascotsManager.giveChest(player);
 
     }
 }

@@ -167,6 +167,10 @@ public class CityManager implements Listener {
     public static void forgetCity(String city) {
         City cityz = cities.remove(city);
 
+        for (UUID members : cityz.getMembers()){
+            MascotsManager.removeChest(Bukkit.getPlayer(members));
+        }
+
         Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
         while (iterator.hasNext()) {
             BlockVector2 vector = iterator.next();

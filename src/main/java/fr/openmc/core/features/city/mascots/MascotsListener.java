@@ -132,6 +132,7 @@ public class MascotsListener implements Listener {
                     }
 
                     spawnMascot(city_uuid, player_world, mascot_spawn);
+                    mascotSpawn.remove(player.getUniqueId());
                 }
             }
         }
@@ -458,13 +459,28 @@ public class MascotsListener implements Listener {
         String group = e.getGroup();
         if (group.equals("mascotsMove") && entity instanceof Player player){
             City city = CityManager.getPlayerCity(player.getUniqueId());
-            assert city != null;
+            if (city==null){
+                return;
+            }
             String city_uuid = city.getUUID();
             movingMascots.remove(city_uuid);
             Entity mascot = Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
             if (mascot!=null){
                 startChronometer(mascot,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
             }
+            return;
+        }
+
+        if (group.equals("Mascot:chest") && entity instanceof Player player){
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            if (city==null){
+                return;
+            }
+            MascotsManager.removeChest(player);
+            String city_uuid = city.getUUID();
+            Location mascot = mascotSpawn.get(player.getUniqueId());
+            spawnMascot(city_uuid, mascot.getWorld(), mascot);
+            mascotSpawn.remove(player.getUniqueId());
         }
     }
 

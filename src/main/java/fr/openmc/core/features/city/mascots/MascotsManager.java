@@ -5,6 +5,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -26,8 +28,6 @@ import org.bukkit.potion.PotionEffectType;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static fr.openmc.core.features.city.mascots.MascotsListener.*;
 
 public class MascotsManager {
 
@@ -93,7 +93,7 @@ public class MascotsManager {
             LivingEntity entity = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
             entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
             entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
-            mascotsRegeneration(getMascotsUUIDbyCityUUID(city_uuid));
+            MascotsListener.mascotsRegeneration(getMascotsUUIDbyCityUUID(city_uuid));
             City city = CityManager.getCity(city_uuid);
             if (city==null){return;}
             for (UUID townMember : city.getMembers()){
@@ -153,7 +153,32 @@ public class MascotsManager {
         }
 
         player.getInventory().addItem(specialChest);
-        mascotSpawn.put(player.getUniqueId(), player.getLocation());
+        mascotSpawn.put(player.getUniqueId(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
+        double x = player.getX();
+        double y = player.getY();
+        double z = player.getZ();
+        Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
+    }
+
+    public static void removeChest (Player player){
+        ItemStack specialChest = new ItemStack(Material.CHEST);
+        ItemMeta meta = specialChest.getItemMeta();
+        if (meta != null){
+            List<Component> info = new ArrayList<>();
+            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
+            info.add(Component.text("§cCe coffre n'est pas retirable"));
+            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
+
+            meta.setDisplayName("§lMascotte");
+            meta.lore(info);
+            PersistentDataContainer data = meta.getPersistentDataContainer();
+            data.set(chestKey,PersistentDataType.STRING, "id");
+            specialChest.setItemMeta(meta);
+
+            if (player.getInventory().contains(specialChest)){
+                player.getInventory().remove(specialChest);
+            }
+        }
     }
 
     public static void upgradeMascots (String city_uuid, UUID entityUUID) {
@@ -238,8 +263,7 @@ public class MascotsManager {
         mascotsConfig.set("mascots." + city_uuid + ".alive", true);
         saveMascotsConfig();
         // immunité persistente de 7 jours pour la mascotte
-        startImmunityTimer(city_uuid, 10080);
-        freeClaim.put(city_uuid, 25);
+        MascotsListener.startImmunityTimer(city_uuid, 10080);
     }
 
     private static void setMascotsData(LivingEntity mob, String customName, double maxHealth, double baseHealth) {
