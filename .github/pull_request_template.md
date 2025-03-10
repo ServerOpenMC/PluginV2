@@ -4,5 +4,7 @@
 * Avez-vous supprimez au maximum les imports non utilisé? :
 * Fournissez un Profileur (/spark profiler) lorsque vous éxécuter vos commandes, méthodes :
 
+* Les Issues corrigé(e)s : 
+
 ## Decrivez vos changements
 *Clairement et avec des screenshots si nécessaires*
