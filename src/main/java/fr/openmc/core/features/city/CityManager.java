@@ -174,13 +174,11 @@ public class CityManager implements Listener {
             if (Chronometer.containsChronometer(members, "Mascot:chest")){
                 if (Bukkit.getEntity(members) != null){
                     Chronometer.stopChronometer(Bukkit.getEntity(members), "Mascot:chest", null, "%null%");
-                    OMCPlugin.getInstance().getLogger().info("Mascot:chest retirer");
                 }
             }
             if (Chronometer.containsChronometer(members, "mascotsMove")){
                 if (Bukkit.getEntity(members) != null){
                     Chronometer.stopChronometer(Bukkit.getEntity(members), "mascotsMove", null, "%null%");
-                    OMCPlugin.getInstance().getLogger().info("mascotsMove retirer");
                 }
             }
         }
