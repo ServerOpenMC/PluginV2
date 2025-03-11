@@ -9,8 +9,10 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
+import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -169,6 +171,18 @@ public class CityManager implements Listener {
 
         for (UUID members : cityz.getMembers()){
             MascotsManager.removeChest(Bukkit.getPlayer(members));
+            if (Chronometer.containsChronometer(members, "Mascot:chest")){
+                if (Bukkit.getEntity(members) != null){
+                    Chronometer.stopChronometer(Bukkit.getEntity(members), "Mascot:chest", null, "%null%");
+                    OMCPlugin.getInstance().getLogger().info("Mascot:chest retirer");
+                }
+            }
+            if (Chronometer.containsChronometer(members, "mascotsMove")){
+                if (Bukkit.getEntity(members) != null){
+                    Chronometer.stopChronometer(Bukkit.getEntity(members), "mascotsMove", null, "%null%");
+                    OMCPlugin.getInstance().getLogger().info("mascotsMove retirer");
+                }
+            }
         }
 
         Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();

@@ -9,6 +9,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.BlockVector2;
+import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -141,6 +143,11 @@ public class CityTypeMenu extends Menu {
         MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+
+        double x = player.getX();
+        double y = player.getY();
+        double z = player.getZ();
+        Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
         MascotsManager.giveChest(player);
 
     }

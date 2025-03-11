@@ -154,10 +154,6 @@ public class MascotsManager {
 
         player.getInventory().addItem(specialChest);
         mascotSpawn.put(player.getUniqueId(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
-        double x = player.getX();
-        double y = player.getY();
-        double z = player.getZ();
-        Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
     }
 
     public static void removeChest (Player player){

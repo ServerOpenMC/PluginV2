@@ -36,6 +36,7 @@ import java.util.*;
 import static fr.openmc.core.features.city.CityManager.*;
 import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 import static fr.openmc.core.utils.chronometer.Chronometer.startChronometer;
+import static fr.openmc.core.utils.chronometer.Chronometer.stopChronometer;
 
 public class MascotsListener implements Listener {
 
@@ -49,14 +50,16 @@ public class MascotsListener implements Listener {
     public MascotsListener () {
 
         List<String> city_uuids = getAllCityUUIDs();
-        for (String city_uuid : city_uuids) {
-            UUID mascotsUUID = getMascotsUUIDbyCityUUID(city_uuid);
-            if (mascotsUUID==null){continue;}
-            mascotsRegeneration(mascotsUUID);
-            loadMascotsConfig();
-            if (mascotsConfig.getBoolean("mascots." + city_uuid + ".immunity.activate") && mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
-                long duration = mascotsConfig.getLong("mascots." + city_uuid + ".immunity.time");
-                startImmunityTimer(city_uuid, duration);
+        if (city_uuids!=null){
+            for (String city_uuid : city_uuids) {
+                UUID mascotsUUID = getMascotsUUIDbyCityUUID(city_uuid);
+                if (mascotsUUID==null){continue;}
+                mascotsRegeneration(mascotsUUID);
+                loadMascotsConfig();
+                if (mascotsConfig.getBoolean("mascots." + city_uuid + ".immunity.activate") && mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
+                    long duration = mascotsConfig.getLong("mascots." + city_uuid + ".immunity.time");
+                    startImmunityTimer(city_uuid, duration);
+                }
             }
         }
     }
@@ -132,6 +135,7 @@ public class MascotsListener implements Listener {
                     }
 
                     spawnMascot(city_uuid, player_world, mascot_spawn);
+                    stopChronometer(player, "Mascot:chest", null, "%null%");
                     mascotSpawn.remove(player.getUniqueId());
                 }
             }

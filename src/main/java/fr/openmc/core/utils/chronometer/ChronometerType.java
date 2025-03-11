@@ -12,6 +12,9 @@ public enum ChronometerType {
     private final ChatMessageType chatMessageType;
 
     ChronometerType(ChatMessageType chatMessageType) {
+        if (chatMessageType==null){
+            chatMessageType = ChatMessageType.SYSTEM;
+        }
         this.chatMessageType = chatMessageType;
     }
 }
