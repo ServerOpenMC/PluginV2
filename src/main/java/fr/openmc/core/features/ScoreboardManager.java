@@ -142,7 +142,7 @@ public class ScoreboardManager implements Listener {
         objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
 
         String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
-        objective.getScore("§8• §e"+EconomyManager.getEconomyIcon()+" "+balance).setScore(8);
+        objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
 
         objective.getScore("  ").setScore(7);
 

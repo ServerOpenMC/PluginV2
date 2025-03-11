@@ -11,6 +11,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -80,7 +81,7 @@ public class CityBankMenu extends Menu {
             inventory.put(13, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
                 itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
                 itemMeta.lore(List.of(
-                        Component.text("§7La ville a actuellement §6" + city.getBalance() + EconomyManager.getEconomyIcon())
+                        Component.text("§7La ville a actuellement §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false))
                         )
                 );
             }));

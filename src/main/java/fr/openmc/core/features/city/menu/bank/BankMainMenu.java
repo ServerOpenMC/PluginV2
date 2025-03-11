@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -57,13 +58,13 @@ public class BankMainMenu extends Menu {
         if (hasPermissionMoneyBalance) {
             if (hasPermissionMoneyTake || hasPermissionMoneyGive) {
                 loreBankCity = List.of(
-                        Component.text("§7Votre ville a en stock §6" + city.getBalance() + EconomyManager.getEconomyIcon()),
+                        Component.text("§7Votre ville a en stock §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                         Component.text("§7Prochain intéret dans ..."), //todo: faire un intéret de 2% ou 3% tout les 3j?
                         Component.text("§e§lCLIQUEZ ICI POUR GERER L'ARGENT")
                 );
             } else {
                 loreBankCity = List.of(
-                        Component.text("§7Votre ville a en stock §6" + city.getBalance() + EconomyManager.getEconomyIcon()),
+                        Component.text("§7Votre ville a en stock §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                         Component.text("§7Prochain intéret dans ...") //todo: faire un intéret de 2% ou 3% tout les 3j?
                 );
             }

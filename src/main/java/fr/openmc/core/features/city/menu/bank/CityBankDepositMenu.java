@@ -15,6 +15,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -66,7 +67,7 @@ public class CityBankDepositMenu extends Menu {
             loreBankDepositAll = List.of(
                     Component.text("§7Tout votre argent sera placé dans la §6Banque de la Ville"),
                     Component.text(""),
-                    Component.text("§7Montant qui sera deposé : §6" + moneyPlayer + EconomyManager.getEconomyIcon()),
+                    Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
             );
@@ -88,7 +89,7 @@ public class CityBankDepositMenu extends Menu {
 
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyPlayer) && moneyPlayer!=0) {
                 city.updateBalance(moneyPlayer);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré " + moneyPlayer + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
@@ -102,7 +103,7 @@ public class CityBankDepositMenu extends Menu {
             loreBankDepositHalf = List.of(
                     Component.text("§7La moitié de votre Argent sera placé dans la §6Banque de la Ville"),
                     Component.text(""),
-                    Component.text("§7Montant qui sera deposé : §6" + halfMoneyPlayer + EconomyManager.getEconomyIcon()),
+                    Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
             );
@@ -123,7 +124,7 @@ public class CityBankDepositMenu extends Menu {
 
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), halfMoneyPlayer) && halfMoneyPlayer!=0) {
                 city.updateBalance(halfMoneyPlayer);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré " + halfMoneyPlayer + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
@@ -172,7 +173,7 @@ public class CityBankDepositMenu extends Menu {
 
                                 if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
                                     city.updateBalance(moneyDeposit);
-                                    MessagesManager.sendMessage(player, Component.text("Tu as transféré "+moneyDeposit+EconomyManager.getEconomyIcon()+" à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                                    MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                                 } else {
                                     MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                                 }
