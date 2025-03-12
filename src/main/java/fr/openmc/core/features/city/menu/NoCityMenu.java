@@ -127,7 +127,9 @@ public class NoCityMenu extends Menu {
                             String input = result.getLine(0);
 
                             if (InputUtils.isInputCityName(input)) {
-                                CityCommands.createCity(player, input);
+                                CityTypeMenu menu = new CityTypeMenu(player, input);
+                                menu.open();
+
                             } else {
                                 MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                             }

@@ -9,8 +9,11 @@ import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
+import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -26,6 +29,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -491,6 +496,71 @@ public class CityCommands {
     }
 
     // ACTIONS
+
+    public static void createCity(Player player, String name, String type) {
+
+        UUID uuid = player.getUniqueId();
+
+        MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
+
+        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
+
+        Chunk origin = player.getChunk();
+        AtomicBoolean isClaimed = new AtomicBoolean(false);
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                if (CityManager.isChunkClaimed(origin.getX() + x, origin.getZ() + z)) {
+                    isClaimed.set(true);
+                    break;
+                }
+            }
+        }
+
+        if (isClaimed.get()) {
+            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            player.closeInventory();
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
+                statement.setString(1, cityUUID);
+
+                statement.setInt(2, origin.getX());
+                statement.setInt(3, origin.getZ());
+                statement.addBatch();
+
+                statement.executeBatch();
+                statement.close();
+            } catch (SQLException e) {
+                MessagesManager.sendMessage(player, Component.text("Une erreur est survenue, réessayez plus tard"), Prefix.CITY, MessageType.ERROR, false);
+                player.closeInventory();
+                throw new RuntimeException(e);
+            }
+        });
+
+        City city = CityManager.createCity(player, cityUUID, name, type);
+        city.addPlayer(uuid);
+        city.addPermission(uuid, CPermission.OWNER);
+
+        CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
+        MascotsManager.addFreeClaim(15, player);
+
+        player.closeInventory();
+
+        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
+
+        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+
+        double x = player.getX();
+        double y = player.getY();
+        double z = player.getZ();
+        Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
+        MascotsManager.giveChest(player);
+
+    }
 
     public static void leaveCity(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
