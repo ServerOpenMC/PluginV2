@@ -486,8 +486,8 @@ public class CityCommands {
         sender.sendMessage("§cEs-tu sûr de vouloir changer le type de ta ville ?");
         sender.sendMessage("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX");
         sender.sendMessage("§cSi tu en es sûr fais §n/city chgconfirm");
+        //TODO: mettre ConfirmMenu
 
-        createCity(player, name);
     }
 
     // ACTIONS
@@ -499,13 +499,6 @@ public class CityCommands {
         } else {
             MessagesManager.sendMessage(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
         }
-    }
-
-    public static void createCity(Player player, String name) {
-        UUID uuid = player.getUniqueId();
-
-        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
-        //TODO: mettre ConfirmMenu
     }
 
     @Subcommand("chgconfirm")
