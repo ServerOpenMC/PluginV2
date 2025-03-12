@@ -467,6 +467,8 @@ public class CityCommands {
         sender.sendMessage("§cEs-tu sûr de vouloir changer le type de ta ville ?");
         sender.sendMessage("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX");
         sender.sendMessage("§cSi tu en es sûr fais §n/city chgconfirm");
+
+        //TODO: mettre ConfirmMenu
     }
 
     @Subcommand("chgconfirm")

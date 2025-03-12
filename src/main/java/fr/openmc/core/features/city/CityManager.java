@@ -12,7 +12,6 @@ import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -88,6 +87,7 @@ public class CityManager implements Listener {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_permissions (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_chests (city_uuid VARCHAR(8) NOT NULL, page TINYINT UNSIGNED NOT NULL, content LONGBLOB);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_regions (city_uuid VARCHAR(8) NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();// Faut esperer qu'aucun clodo n'ira à 134.217.712 blocks du spawn
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_power (city_uuid VARCHAR(8) NOT NULL, power_point INT NOT NULL);").executeUpdate();
     }
 
     public static boolean isChunkClaimed(int x, int z) {
@@ -277,6 +277,25 @@ public class CityManager implements Listener {
         }
 
         return type;
+    }
+
+    public static int getCityPowerPoints(String city_uuid){
+       int power_point = 0;
+
+        if (city_uuid!=null){
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT power_point FROM city_power WHERE city_uuid = ?");
+                statement.setString(1, city_uuid);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    power_point = rs.getInt("power_point");
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+
+        return power_point;
     }
 
     public static List<String> getAllCityUUIDs() throws SQLException {

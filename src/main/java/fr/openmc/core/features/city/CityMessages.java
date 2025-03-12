@@ -24,8 +24,11 @@ public class CityMessages {
         String mascotLife = "dead";
         String cityName = city.getName();
         String mayorName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
+        int power = CityManager.getCityPowerPoints(city.getUUID());
+
         String type = CityManager.getCityType(city.getUUID());
         LivingEntity mascot = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city.getUUID()));
         if (!mascotsConfig.getBoolean("mascots." + city.getUUID() + "alive")){
@@ -41,6 +44,9 @@ public class CityMessages {
         sendLine(sender, "Maire", mayorName);
         sendLine(sender, "Habitants", String.valueOf(citizens));
         sendLine(sender, "Superficie", String.valueOf(area));
+        if (type!=null && type.equals("war")){
+            sendLine(sender, "Puissance", String.valueOf(power));
+        }
         sendLine(sender, "Vie de la Mascotte", mascotLife);
         sendLine(sender, "Type", type);
 

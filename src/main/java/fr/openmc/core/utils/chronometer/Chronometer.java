@@ -7,13 +7,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Chronometer {
+public class Chronometer{
 
     // Map structure: UUID -> (Group -> Time)
     private static final HashMap<UUID, HashMap<String, Integer>> chronometer = new HashMap<>();
@@ -65,14 +66,6 @@ public class Chronometer {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (Bukkit.getEntity(entityUUID) instanceof Player player){
-                    if (!player.isOnline()){
-                        Bukkit.getPluginManager().callEvent(new ChronometerEndEvent(entity, group));
-                        cancel();
-                        return;
-                    }
-                }
-
 
                 if (!chronometer.containsKey(entityUUID)) {
                     cancel();
@@ -103,6 +96,9 @@ public class Chronometer {
                     }
                     Bukkit.getPluginManager().callEvent(new ChronometerEndEvent(entity, group));
                     chronometer.get(entityUUID).remove(group);
+                    if (chronometer.get(entityUUID).isEmpty()){
+                        chronometer.remove(entityUUID);
+                    }
                     cancel();
                     return;
                 }

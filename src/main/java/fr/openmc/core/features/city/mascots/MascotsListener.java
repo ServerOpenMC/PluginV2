@@ -82,6 +82,7 @@ public class MascotsListener implements Listener {
 
                     if (player_world!=world){
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
+                        OMCPlugin.getInstance().getLogger().info("error world");
                         e.setCancelled(true);
                         return;
                     }
@@ -116,6 +117,7 @@ public class MascotsListener implements Listener {
 
                     if (!city.hasChunk(chunkX,chunkZ)){
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
+                        OMCPlugin.getInstance().getLogger().info("error chunk");
                         e.setCancelled(true);
                         return;
                     }
@@ -322,18 +324,23 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onMascotDied (EntityDeathEvent e){
         Entity entity = e.getEntity();
+        Player killer = e.getEntity().getKiller();
+
         PersistentDataContainer data = entity.getPersistentDataContainer();
         if (data.has(mascotsKey, PersistentDataType.STRING)){
+
             loadMascotsConfig();
             String city_uuid = data.get(mascotsKey, PersistentDataType.STRING);
             String level = mascotsConfig.getString("mascots." + city_uuid + ".level");
             mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", true);
             mascotsConfig.set("mascots." + city_uuid + ".alive", false);
             saveMascotsConfig();
+
             entity.setCustomName("§lMascotte en attente de §csoins");
             e.setCancelled(true);
+
             City city = CityManager.getCity(city_uuid);
-            if (city!=null) {
+            if (city!=null ) {
                 for (UUID townMember : city.getMembers()){
                     if (Bukkit.getEntity(townMember) instanceof Player player){
                         for (PotionEffect potionEffect : MascotsLevels.valueOf(level).getBonus()){
@@ -342,6 +349,27 @@ public class MascotsListener implements Listener {
                         giveMascotsEffect(city_uuid, townMember);
                     }
                 }
+
+                if (killer==null){
+                    return;
+                }
+                City cityEnemy = CityManager.getPlayerCity(killer.getUniqueId());
+                if (cityEnemy!=null){
+                    int point;
+
+                    if (level!=null){
+                        point = Integer.parseInt(level.replaceAll("[^0-9]", ""));
+                    } else {
+                        point = 1;
+                    }
+
+                    cityEnemy.updatePowerPoints(point);
+                    city.updatePowerPoints(-point);
+
+                    cityEnemy.updateBalance(0.15*city.getBalance()/100);
+                    city.updateBalance(-(0.15*city.getBalance()/100));
+                }
+
             }
         }
     }
@@ -446,6 +474,13 @@ public class MascotsListener implements Listener {
                 PersistentDataContainer data = itemMeta.getPersistentDataContainer();
                 if (data.has(chestKey, PersistentDataType.STRING) && data.get(chestKey, PersistentDataType.STRING)=="id"){
                     player.getInventory().remove(item);
+                    if (Chronometer.containsChronometer(player.getUniqueId(), "mascotsMove")){
+                        Entity mob = Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
+                        if (mob!=null){
+                            startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
+                        }
+                        return;
+                    }
                     if (mascotSpawn.containsKey(player.getUniqueId())){
                         Location loc = mascotSpawn.get(player.getUniqueId());
                         spawnMascot(city_uuid, loc.getWorld(), loc);
