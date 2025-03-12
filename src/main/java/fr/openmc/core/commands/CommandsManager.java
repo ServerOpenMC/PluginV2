@@ -1,7 +1,6 @@
 package fr.openmc.core.commands;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.adminshop.AdminShopCommand;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CooldownCommand;
 import fr.openmc.core.commands.fun.Playtime;
@@ -37,8 +36,7 @@ public class CommandsManager {
                 new Playtime(),
 		        new Diceroll(),
                 new CooldownCommand(),
-                new ChronometerCommand(),
-                new AdminShopCommand()
+                new ChronometerCommand()
         );
     }
 
