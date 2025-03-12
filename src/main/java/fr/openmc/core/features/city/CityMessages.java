@@ -7,7 +7,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+
+import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 
 public class CityMessages {
     private static void sendLine(Audience audience, String title, String info) {
@@ -18,10 +21,19 @@ public class CityMessages {
     }
 
     public static void sendInfo(CommandSender sender, City city) {
+        String mascotLife = "dead";
         String cityName = city.getName();
         String mayorName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
+        int power = CityManager.getCityPowerPoints(city.getUUID());
+
+        String type = CityManager.getCityType(city.getUUID());
+        LivingEntity mascot = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city.getUUID()));
+        if (!mascotsConfig.getBoolean("mascots." + city.getUUID() + "alive")){
+            mascotLife = String.valueOf(mascot.getHealth());
+        }
 
         sender.sendMessage(
                 Component.text("--- ").color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.BOLD, false).append(
@@ -32,12 +44,20 @@ public class CityMessages {
         sendLine(sender, "Maire", mayorName);
         sendLine(sender, "Habitants", String.valueOf(citizens));
         sendLine(sender, "Superficie", String.valueOf(area));
+        if (type!=null && type.equals("war")){
+            sendLine(sender, "Puissance", String.valueOf(power));
+        }
+        sendLine(sender, "Vie de la Mascotte", mascotLife);
+        sendLine(sender, "Type", type);
 
         if (sender instanceof Player player) {
             if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE))) return;
             sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
         } else {
             sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
+        }
+        if (freeClaim.containsKey(city.getUUID())){
+            sendLine(sender, "Claim gratuit", String.valueOf(freeClaim.get(city.getUUID())));
         }
     }
 }

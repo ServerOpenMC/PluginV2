@@ -96,6 +96,21 @@ public class ItemUtils {
         return totalItems >= amount;
     }
 
+    public static boolean hasAvailableSlot(Player player) {
+        Inventory inv = player.getInventory();
+        ItemStack[] contents = inv.getContents();
+
+        for (int i = 0; i < contents.length; i++) {
+            // on ne vérifie pas la main secondaire et l'armure
+            if (i >= 36 && i <= 40) continue;
+
+            if (contents[i] == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void removeItemsFromInventory(Player player, Material item, int quantity) {
         ItemStack[] contents = player.getInventory().getContents();
         int remaining = quantity;

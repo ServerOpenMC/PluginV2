@@ -2,12 +2,14 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
-import fr.openmc.core.features.city.events.CityDeleteEvent;
+import fr.openmc.core.features.city.mascots.MascotsListener;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
+import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,6 +23,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
@@ -64,7 +67,8 @@ public class CityManager implements Listener {
 
         OMCPlugin.registerEvents(
                 new ProtectionListener(),
-                new ChestMenuListener()
+                new ChestMenuListener(),
+                new MascotsListener()
         );
     }
 
@@ -78,11 +82,12 @@ public class CityManager implements Listener {
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city (uuid VARCHAR(8) NOT NULL PRIMARY KEY, owner VARCHAR(36) NOT NULL, name VARCHAR(32), balance DOUBLE DEFAULT 0);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city (uuid VARCHAR(8) NOT NULL PRIMARY KEY, owner VARCHAR(36) NOT NULL, name VARCHAR(32), balance DOUBLE DEFAULT 0, type VARCHAR(8) NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_members (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL PRIMARY KEY);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_permissions (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_chests (city_uuid VARCHAR(8) NOT NULL, page TINYINT UNSIGNED NOT NULL, content LONGBLOB);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_regions (city_uuid VARCHAR(8) NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate(); // Faut esperer qu'aucun clodo n'ira à 134.217.712 blocks du spawn
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_regions (city_uuid VARCHAR(8) NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();// Faut esperer qu'aucun clodo n'ira à 134.217.712 blocks du spawn
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_power (city_uuid VARCHAR(8) NOT NULL, power_point INT NOT NULL);").executeUpdate();
     }
 
     public static boolean isChunkClaimed(int x, int z) {
@@ -114,13 +119,14 @@ public class CityManager implements Listener {
         }
     }
 
-    public static City createCity(Player owner, String cityUUID, String name) {
+    public static City createCity(Player owner, String cityUUID, String name, String type) {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0)");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0, ?)");
                 statement.setString(1, cityUUID);
                 statement.setString(2, owner.getUniqueId().toString());
                 statement.setString(3, name);
+                statement.setString(4, type);
                 statement.executeUpdate();
 
                 statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests VALUE (?, 1, null)");
@@ -163,17 +169,64 @@ public class CityManager implements Listener {
     public static void forgetCity(String city) {
         City cityz = cities.remove(city);
 
-        for (BlockVector2 vector : claimedChunks.keySet()) {
-            if (claimedChunks.get(vector).equals(cityz)) {
-                claimedChunks.remove(vector);
+        for (UUID members : cityz.getMembers()){
+            MascotsManager.removeChest(Bukkit.getPlayer(members));
+            if (Chronometer.containsChronometer(members, "Mascot:chest")){
+                if (Bukkit.getEntity(members) != null){
+                    Chronometer.stopChronometer(Bukkit.getEntity(members), "Mascot:chest", null, "%null%");
+                }
+            }
+            if (Chronometer.containsChronometer(members, "mascotsMove")){
+                if (Bukkit.getEntity(members) != null){
+                    Chronometer.stopChronometer(Bukkit.getEntity(members), "mascotsMove", null, "%null%");
+                }
             }
         }
 
-        for (UUID uuid : playerCities.keySet()) {
-            if (playerCities.get(uuid).getUUID().equals(city)) {
-                playerCities.remove(uuid);
+        Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
+        while (iterator.hasNext()) {
+            BlockVector2 vector = iterator.next();
+            City claimedCity = claimedChunks.get(vector);
+
+            if (claimedCity != null && claimedCity.equals(cityz)) {
+                iterator.remove();
             }
         }
+
+        Iterator<UUID> playerIterator = playerCities.keySet().iterator();
+        while (playerIterator.hasNext()) {
+            UUID uuid = playerIterator.next();
+            City playerCity = playerCities.get(uuid);
+
+            if (playerCity != null && playerCity.getUUID().equals(city)) {
+                playerIterator.remove();
+            }
+        }
+
+        MascotsManager.freeClaim.remove(city);
+        if (CityTypeCooldown.isOnCooldown(city)) {
+            CityTypeCooldown.removeCityCooldown(city);
+        }
+        MascotsManager.removeMascotsFromCity(city);
+    }
+
+    public static void changeCityType(String city_uuid) {
+        String cityType = getCityType(city_uuid);
+        if (cityType != null) {
+            cityType = cityType.equals("war") ? "peace" : "war";
+        }
+        String finalCityType = cityType;
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET type=? WHERE uuid=?;");
+                statement.setString(1, finalCityType);
+                statement.setString(2, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     public static void cachePlayer(UUID uuid, City city) {
@@ -191,7 +244,6 @@ public class CityManager implements Listener {
                     return null;
                 }
 
-
                 String city = rs.getString(1);
                 cachePlayer(uuid, getCity(city));
                 return getCity(city);
@@ -201,6 +253,68 @@ public class CityManager implements Listener {
             }
         }
         return playerCities.get(uuid);
+    }
+
+    /**
+     * return 'war' / 'peace' / 'null' if not found
+     */
+
+    public static String getCityType(String city_uuid) {
+        String type = null;
+
+        if (city_uuid!=null){
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
+                statement.setString(1, city_uuid);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    type = rs.getString("type");
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return type;
+    }
+
+    public static int getCityPowerPoints(String city_uuid){
+       int power_point = 0;
+
+        if (city_uuid!=null){
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT power_point FROM city_power WHERE city_uuid = ?");
+                statement.setString(1, city_uuid);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    power_point = rs.getInt("power_point");
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+
+        return power_point;
+    }
+
+    public static List<String> getAllCityUUIDs() throws SQLException {
+        Connection conn = DatabaseManager.getConnection();
+        List<String> uuidList = new ArrayList<>();
+
+        String query = "SELECT uuid FROM city";
+        try (PreparedStatement statement = conn.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String uuid = resultSet.getString("uuid");
+                uuidList.add(uuid);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+            return null;
+        }
+        return uuidList;
     }
 
     public static void uncachePlayer(UUID uuid) {

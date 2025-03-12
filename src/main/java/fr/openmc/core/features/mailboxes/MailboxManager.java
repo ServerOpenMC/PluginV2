@@ -9,7 +9,7 @@ import fr.openmc.core.features.mailboxes.menu.letter.Letter;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.database.DatabaseManager;
-import fr.communaywen.core.utils.serializer.BukkitSerializer;
+import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
