@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu;
+package fr.openmc.core.features.city.menu.mascots;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
@@ -8,11 +8,8 @@ import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

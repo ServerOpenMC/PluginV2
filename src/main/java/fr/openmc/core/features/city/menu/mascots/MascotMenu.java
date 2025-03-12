@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu;
+package fr.openmc.core.features.city.menu.mascots;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
