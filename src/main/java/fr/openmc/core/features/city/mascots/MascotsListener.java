@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.MascotMenu;
 import fr.openmc.core.features.city.menu.MascotsDeadMenu;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -208,6 +209,7 @@ public class MascotsListener implements Listener {
                         }
 
                         startRegenCooldown(damageEntity.getUniqueId());
+                        CityCommands.startBalanceCooldown(city_uuid);
 
                         if (newHealth <= 0) {
                             mob.setHealth(0);

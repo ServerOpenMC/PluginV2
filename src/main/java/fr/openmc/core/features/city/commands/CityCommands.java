@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -17,6 +18,7 @@ import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -26,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Command({"ville", "city"})
 public class CityCommands {
     public static HashMap<Player, Player> invitations = new HashMap<>(); // Invité, Inviteur
+    public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     private Location[] getCorners(Player player) {
         World world = player.getWorld();
@@ -371,6 +374,11 @@ public class CityCommands {
             return;
         }
 
+        if (balanceCooldownTasks.containsKey(city.getUUID())){
+            MessagesManager.sendMessage(player, Component.text("Ta ville a été attaquer tu n'as donc pas accès à la banque de vlle"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), amount)) {
             city.updateBalance(amount);
             MessagesManager.sendMessage(player, Component.text("Tu as transféré "+amount+EconomyManager.getEconomyIcon()+" à la ville"), Prefix.CITY, MessageType.ERROR, false);
@@ -410,6 +418,11 @@ public class CityCommands {
 
         if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de prendre de l'argent de ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (balanceCooldownTasks.containsKey(city.getUUID())){
+            MessagesManager.sendMessage(player, Component.text("Ta ville a été attaquer tu n'as donc pas accès à la banque de vlle"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -527,5 +540,21 @@ public class CityCommands {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+    }
+
+    public static void startBalanceCooldown(String city_uuid) {
+        if (balanceCooldownTasks.containsKey(city_uuid)) {
+            balanceCooldownTasks.get(city_uuid).cancel();
+        }
+
+        BukkitRunnable cooldownTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                balanceCooldownTasks.remove(city_uuid);
+            }
+        };
+
+        balanceCooldownTasks.put(city_uuid, cooldownTask);
+        cooldownTask.runTaskLater(OMCPlugin.getInstance(), 30 * 60 * 20L);
     }
 }
