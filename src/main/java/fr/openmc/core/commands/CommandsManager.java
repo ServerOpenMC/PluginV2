@@ -1,6 +1,7 @@
 package fr.openmc.core.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CooldownCommand;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.fun.Diceroll;
@@ -31,9 +32,10 @@ public class CommandsManager {
                 new Spawn(),
                 new SetSpawn(),
                 new Playtime(),
-		        new Diceroll(),
+		            new Diceroll(),
                 new CooldownCommand(),
                 new MailboxCommand(OMCPlugin.getInstance())
+                new ChronometerCommand()
         );
     }
 

@@ -14,7 +14,8 @@ public class ListenersManager {
                 new JoinMessageListener(),
                 new ClockInfos(),
                 new MailboxListener(),
-                new DisableCreakings()
+                new DisableCreakings(),
+                new ChronometerListener()
         );
     }
 

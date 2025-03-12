@@ -41,8 +41,18 @@ public class ProtectionListener implements Listener {
 
     private void verify(Player player, Cancellable event) {
         City city = getCityByChunk(player.getChunk());
+        City cityz = CityManager.getPlayerCity(player.getUniqueId());
 
         if (isMemberOf(city, player)) return;
+        if (cityz!=null){
+            String city_type = CityManager.getCityType(city.getUUID());
+            String cityz_type = CityManager.getCityType(cityz.getUUID());
+            if (city_type!=null && cityz_type!=null){
+                if (city_type.equals("war") && cityz_type.equals("war")){
+                    return;
+                }
+            }
+        }
         event.setCancelled(true);
 
         MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, true);
