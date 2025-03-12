@@ -345,6 +345,24 @@ public class City {
     }
 
     /**
+     * Updates the power of a City by adding or removing points.
+     *
+     * @param point The amount to be added or remove to the existing power.
+     */
+    public void updatePowerPoints(int point){
+        try {
+            int result = CityManager.getCityPowerPoints(cityUUID) + point;
+            if (result<0)result=0;
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_power SET power_point=? WHERE city_uuid=?;");
+            statement.setInt(1, result);
+            statement.setString(2, cityUUID);
+            statement.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Retrieves the name of a city by its UUID.
      *
      * @return The name of the city, or null if the city does not exist.
@@ -547,7 +565,8 @@ public class City {
                         "DELETE FROM city WHERE uuid=?",
                         "DELETE FROM city_permissions WHERE city_uuid=?",
                         "DELETE FROM city_regions WHERE city_uuid=?",
-                        "DELETE FROM city_chests WHERE city_uuid=?"
+                        "DELETE FROM city_chests WHERE city_uuid=?",
+                        "DELETE FROM city_power WHERE city_uuid=?",
                 };
 
                 for (String sql : queries) {

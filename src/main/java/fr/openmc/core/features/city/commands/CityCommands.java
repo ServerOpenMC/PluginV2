@@ -1,30 +1,34 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.listeners.CityTypeCooldown;
+import fr.openmc.core.features.city.mascots.MascotsLevels;
+import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Command({"ville", "city"})
 public class CityCommands {
     public static HashMap<Player, Player> invitations = new HashMap<>(); // Invité, Inviteur
+    public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     private Location[] getCorners(Player player) {
         World world = player.getWorld();
@@ -272,6 +276,12 @@ public class CityCommands {
             return;
         }
 
+        for (UUID townMember : city.getMembers()){
+            if (Bukkit.getPlayer(townMember) instanceof Player player){
+                player.clearActivePotionEffects();
+            }
+        }
+
         city.delete();
         MessagesManager.sendMessage(sender, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
 
@@ -329,12 +339,22 @@ public class CityCommands {
         }
 
         int price = calculatePrice(city.getChunks().size());
-        if (city.getBalance() < price) {
-            MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-            return;
+
+        if (!MascotsManager.freeClaim.containsKey(city.getUUID())) {
+            if (city.getBalance() < price) {
+                MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
         }
 
-        city.updateBalance((double) (price*-1));
+        if (MascotsManager.freeClaim.containsKey(city.getUUID())){
+            MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
+            if (MascotsManager.freeClaim.get(city.getUUID())<= 0){
+                MascotsManager.freeClaim.remove(city.getUUID());
+            }
+        } else {
+            city.updateBalance((double) (price*-1));
+        }
         city.addChunk(sender.getChunk());
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }
@@ -351,6 +371,11 @@ public class CityCommands {
 
         if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (balanceCooldownTasks.containsKey(city.getUUID())){
+            MessagesManager.sendMessage(player, Component.text("Ta ville a été attaquer tu n'as donc pas accès à la banque de vlle"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -396,6 +421,11 @@ public class CityCommands {
             return;
         }
 
+        if (balanceCooldownTasks.containsKey(city.getUUID())){
+            MessagesManager.sendMessage(player, Component.text("Ta ville a été attaquer tu n'as donc pas accès à la banque de vlle"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (city.getBalance() < amount) {
             MessagesManager.sendMessage(player, Component.text("Ta ville n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
             return;
@@ -437,58 +467,94 @@ public class CityCommands {
             return;
         }
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
-
-        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
-
-        Chunk origin = player.getChunk();
-        AtomicBoolean isClaimed = new AtomicBoolean(false);
-        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-            for (int z = origin.getZ() - 2; z <= origin.getZ() + 2; z++) {
-                if (CityManager.isChunkClaimed(x,z)) {
-                    isClaimed.set(true);
-                    break;
-                }
-            }
+        new CityTypeMenu(player, name).open();
+    }
+    @Subcommand("change")
+    @CommandPermission("omc.commands.city.change")
+    public void change(Player sender) {
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        if (city==null){
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
         }
+        sender.sendMessage("§cEs-tu sûr de vouloir changer le type de ta ville ?");
+        sender.sendMessage("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX");
+        sender.sendMessage("§cSi tu en es sûr fais §n/city chgconfirm");
 
-        if (isClaimed.get()) {
-            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+        //TODO: mettre ConfirmMenu
+    }
+
+    @Subcommand("chgconfirm")
+    @CommandPermission("omc.commands.city.chgconfirm")
+    public void changeConfirm (Player sender){
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+        if (city==null){
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
-                statement.setString(1, cityUUID);
-
-                for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-                    for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
-                        statement.setInt(2, x);
-                        statement.setInt(3, z);
-                        statement.addBatch();
-                    }
-                }
-
-                statement.executeBatch();
-                statement.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        City city = CityManager.createCity(player, cityUUID, name);
-        city.addPlayer(uuid);
-        city.addPermission(uuid, CPermission.OWNER);
-
-        for (int x = origin.getX()-2; x <= origin.getX()+2; x++) {
-            for (int z = origin.getZ()-2; z <= origin.getZ()+2; z++) {
-                CityManager.claimedChunks.put(BlockVector2.at(x, z), city);
+        MascotsManager.loadMascotsConfig();
+        if (MascotsManager.mascotsConfig.contains("mascots." + city.getUUID())){
+            if (!MascotsManager.mascotsConfig.getBoolean("mascots." + city.getUUID() + "alive")){
+                MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
+                return;
             }
         }
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée"+cityUUID), Prefix.CITY, MessageType.SUCCESS, true);
+        if (CityTypeCooldown.isOnCooldown(city.getUUID())){
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + CityTypeCooldown.getRemainingCooldown(city.getUUID())/1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        CityManager.changeCityType(city.getUUID());
+        CityTypeCooldown.setCooldown(city.getUUID());
 
-        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+        LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotsManager.getMascotsUUIDbyCityUUID(city.getUUID()));
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf((String) MascotsManager.mascotsConfig.get("mascots." + city.getUUID() +".level"));
+
+        for (UUID townMember : city.getMembers()){
+            if (Bukkit.getPlayer(townMember) instanceof Player player){
+                for (PotionEffect potionEffect : mascotsLevels.getBonus()){
+                    player.removePotionEffect(potionEffect.getType());
+                }
+                MascotsManager.giveMascotsEffect(city.getUUID(), player.getUniqueId());
+            }
+        }
+
+        double lastHealth = mascotsLevels.getHealth();
+        int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", ""))-2;
+        if (newLevel < 1){
+            newLevel = 1;
+        }
+        MascotsManager.mascotsConfig.set("mascots." + city.getUUID() + ".level", String.valueOf(MascotsLevels.valueOf("level"+newLevel)));
+        MascotsManager.saveMascotsConfig();
+        mascotsLevels = MascotsLevels.valueOf((String)  MascotsManager.mascotsConfig.get("mascots." + city.getUUID() +".level"));
+
+        try {
+            int maxHealth = mascotsLevels.getHealth();
+            mob.setMaxHealth(maxHealth);
+            if (mob.getHealth() >= lastHealth){
+                mob.setHealth(maxHealth);
+            }
+            double currentHealth = mob.getHealth();
+            mob.setCustomName("§lMascotte §c" + currentHealth + "/" + maxHealth + "❤");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public static void startBalanceCooldown(String city_uuid) {
+        if (balanceCooldownTasks.containsKey(city_uuid)) {
+            balanceCooldownTasks.get(city_uuid).cancel();
+        }
+
+        BukkitRunnable cooldownTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                balanceCooldownTasks.remove(city_uuid);
+            }
+        };
+
+        balanceCooldownTasks.put(city_uuid, cooldownTask);
+        cooldownTask.runTaskLater(OMCPlugin.getInstance(), 30 * 60 * 20L);
     }
 }
