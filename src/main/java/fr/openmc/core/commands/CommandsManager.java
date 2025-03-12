@@ -32,9 +32,9 @@ public class CommandsManager {
                 new Spawn(),
                 new SetSpawn(),
                 new Playtime(),
-		            new Diceroll(),
+                new Diceroll(),
                 new CooldownCommand(),
-                new MailboxCommand(OMCPlugin.getInstance())
+                new MailboxCommand(OMCPlugin.getInstance()),
                 new ChronometerCommand()
         );
     }
