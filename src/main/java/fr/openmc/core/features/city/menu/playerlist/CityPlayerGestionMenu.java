@@ -99,8 +99,8 @@ public class CityPlayerGestionMenu extends Menu {
                             CityCommands.kick(player, playerTarget);
                         },
                         () -> player.closeInventory(),
-                        "§7Voulez vous vraiment expluser " + playerTarget.getName() + " ?",
-                        "§7Ne pas expluser " + playerTarget.getName());
+                        List.of(Component.text("§7Voulez vous vraiment expluser " + playerTarget.getName() + " ?")),
+                        List.of(Component.text("§7Ne pas expluser " + playerTarget.getName())));
                 menu.open();
 
             }

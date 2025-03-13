@@ -130,7 +130,7 @@ public class MascotsListener implements Listener {
                         if (mob!=null){
                             mob.teleport(mascot_spawn);
                             movingMascots.remove(city_uuid);
-                            Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "mascotte déplacer");
+                            Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "Mascotte déplacée!");
                             //Cooldown de 5h pour déplacer la mascottes ( se reset au relancement du serv )
                             startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                             return;
@@ -393,7 +393,7 @@ public class MascotsListener implements Listener {
         PersistentDataContainer itemData = meta.getPersistentDataContainer();
         if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cette objet"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cet objet"), Prefix.CITY, MessageType.ERROR, false);
 
         }
     }
@@ -413,18 +413,18 @@ public class MascotsListener implements Listener {
                     event.getInventory().getType() != InventoryType.CRAFTING ) {
                 player.sendMessage("" + event.getInventory().getType());
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cette objet ici"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
             InventoryType.SlotType slotType = event.getSlotType();
             if (slotType == InventoryType.SlotType.CRAFTING) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cette objet ici"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
             if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cette objet"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cet objet"), Prefix.CITY, MessageType.ERROR, false);
             }
         }
     }

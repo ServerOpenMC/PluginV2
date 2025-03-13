@@ -169,11 +169,6 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§7Supprimer la ville"));
             itemMeta.lore(loreDelete);
         }).setOnClick(inventoryClickEvent -> {
-            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
-                return;
-            }
-
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
             if (!CityManageConditions.canCityDelete(city, player)) return;
@@ -187,8 +182,8 @@ public class CityModifyMenu extends Menu {
                         });
                     },
                     () -> player.closeInventory(),
-                    "§7Voulez vous vraiment dissoudre la ville " + cityCheck.getCityName() + " ?",
-                    "§7Ne pas dissoudre la ville " + cityCheck.getCityName());
+                    List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getCityName() + " ?")),
+                    List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getCityName())));
             menu.open();
 
         }));

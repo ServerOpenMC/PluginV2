@@ -19,8 +19,8 @@ import java.util.Map;
 
 public class ConfirmMenu extends Menu {
 
-    private final String loreAcceptMsg;
-    private final String loreDenyMsg;
+    private final List<Component> loreAcceptMsg;
+    private final List<Component> loreDenyMsg;
     private final Runnable accept;
     private final Runnable deny;
 
@@ -32,7 +32,7 @@ public class ConfirmMenu extends Menu {
      * @param loreAccept Put your lore for Accept
      * @param loreDeny Run your lore for Deny
      */
-    public ConfirmMenu(Player owner, Runnable methodAccept, Runnable methodDeny, String loreAccept, String loreDeny) {
+    public ConfirmMenu(Player owner, Runnable methodAccept, Runnable methodDeny, List<Component> loreAccept, List<Component> loreDeny) {
         super(owner);
         this.accept = methodAccept != null ? methodAccept : () -> {};
         this.deny = methodDeny != null ? methodDeny : () -> {};
@@ -64,13 +64,10 @@ public class ConfirmMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        List<Component> loreAccept = List.of(
-                Component.text(loreAcceptMsg),
-                Component.text("§e§lCLIQUEZ ICI POUR VALIDER")
-        );
+        List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);;
+        loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
 
-        List<Component> loreDeny = new ArrayList<>();
-        loreDeny.add(Component.text(loreDenyMsg));
+        List<Component> loreDeny = new ArrayList<>(loreDenyMsg);;
         loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
 
         ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();

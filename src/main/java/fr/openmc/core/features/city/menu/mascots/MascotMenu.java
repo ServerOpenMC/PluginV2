@@ -6,6 +6,8 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
+import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
@@ -62,24 +64,45 @@ public class MascotMenu extends Menu {
         loadMascotsConfig();
         Map<Integer, ItemStack> map = new HashMap<>();
 
+        List<Component> loreSkinMascot = List.of(
+                Component.text("§7Vous pouvez changer l'apparence de votre §cMascotte"),
+                Component.text(""),
+                Component.text("§e§lCLIQUEZ ICI POUR CHANGER DE SKIN")
+        );
+
+        List<Component> lorePosMascot;
+
+        if (Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")){
+            lorePosMascot = List.of(
+                    Component.text("§7Vous pouvez changer la position de votre §cMascotte"),
+                    Component.text(""),
+                    Component.text("§cCooldown §7: " + DateUtils.convertSecondToTime(Chronometer.getRemainingTime(mascots.getUniqueId(), "mascotsCooldown")))
+            );
+        } else {
+            lorePosMascot = List.of(
+                    Component.text("§7Vous pouvez changer la position de votre §cMascotte"),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR LA CHANGER DE POSITION")
+            );
+        }
+
         List<Component> requiredAmount = new ArrayList<>();
-        requiredAmount.add(Component.text("Nécessite " + MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city.getUUID() + ".level")).getUpgradeCost() + " Croq'Stars"));
+        requiredAmount.add(Component.text("§7Nécessite §4" + MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city.getUUID() + ".level")).getUpgradeCost() + " Croq'Stars"));
 
         map.put(11, new ItemBuilder(this, getSpawnEgg(mascots), itemMeta -> {
-            itemMeta.setDisplayName("Mascottes");
+            itemMeta.displayName(Component.text("§7Le Skin de la §cMascotte"));
+            itemMeta.lore(loreSkinMascot);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }).setNextMenu(new MascotsSkinMenu(getOwner(), getSpawnEgg(mascots), mascots)));
 
         map.put(13, new ItemBuilder(this, Material.CHEST, itemMeta -> {
-            itemMeta.setDisplayName("Déplacer");
-            if (Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")){
-                List<String> lore = new ArrayList<>();
-                lore.add("§c en cooldown : " + Chronometer.getRemainingTime(mascots.getUniqueId(), "mascotsCooldown"));
-                itemMeta.setLore(lore);
-            }
+            itemMeta.displayName(Component.text("§7Déplacer votre §cMascotte"));
+            itemMeta.lore(lorePosMascot);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }).setOnClick(inventoryClickEvent -> {
             if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")){
                 if (ItemUtils.hasAvailableSlot(getOwner())){
@@ -89,7 +112,7 @@ public class MascotMenu extends Menu {
                     }
                     String city_uuid = city.getUUID();
                     if (!movingMascots.contains(city_uuid)) {
-                        startChronometer(getOwner(), "mascotsMove", 120, ChronometerType.ACTION_BAR, "remaining : %sec%", ChronometerType.ACTION_BAR, "§cdéplacement de la masctte annulé");
+                        startChronometer(getOwner(), "mascotsMove", 120, ChronometerType.ACTION_BAR, "Temps Restant : %sec%s", ChronometerType.ACTION_BAR, "§cDéplacement de la mascotte annulée");
                         movingMascots.add(city_uuid);
                         giveChest(getOwner());
                     }
@@ -99,10 +122,13 @@ public class MascotMenu extends Menu {
         }));
 
         map.put(15, new ItemBuilder(this,Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
-            itemMeta.setDisplayName("Upgrades");
+            itemMeta.displayName(Component.text("§7Améloiorer votre §cMascotte"));
             itemMeta.lore(requiredAmount);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         }).setOnClick(inventoryClickEvent -> {
             loadMascotsConfig();
             if (city == null) {
@@ -120,10 +146,18 @@ public class MascotMenu extends Menu {
             getOwner().closeInventory();
         }));
 
+        map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
+        }).setOnClick(event -> {
+            CityMenu menu = new CityMenu(getOwner());
+            menu.open();
+        }));
+
         return map;
     }
 
-    private Material getSpawnEgg(Entity entity) {
+    public static Material getSpawnEgg(Entity entity) {
         String eggName = entity.getType().name() + "_SPAWN_EGG";
         if (Material.matchMaterial(eggName) == null){
             return Material.ZOMBIE_SPAWN_EGG;

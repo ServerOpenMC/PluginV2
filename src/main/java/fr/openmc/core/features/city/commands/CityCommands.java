@@ -15,6 +15,7 @@ import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -34,6 +35,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static fr.openmc.core.features.city.CityManager.getCityType;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -188,12 +191,30 @@ public class CityCommands {
     @Subcommand("delete")
     @CommandPermission("omc.commands.city.delete")
     @Description("Supprimer votre ville")
-    void delMessage(Player sender) {
+    void delete(Player sender) {
+        UUID uuid = sender.getUniqueId();
 
-        //TODO: ConfirmMenu
-        sender.sendMessage("§cEs-tu sûr de vouloir supprimer ta ville ?");
-        sender.sendMessage("§cCette action est §4§lIRREVERSIBLE");
-        sender.sendMessage("§cSi tu en es sûr fais §n/city delconfirm");
+        City city = CityManager.getPlayerCity(uuid);
+
+        if (!CityManageConditions.canCityDelete(city, sender)) return;
+
+        ConfirmMenu menu = new ConfirmMenu(sender,
+                () -> {
+                    deleteCity(sender);
+                    sender.closeInventory();
+                },
+                () -> {
+                    sender.closeInventory();
+                },
+                List.of(
+                        Component.text("§cEs-tu sûr de vouloir supprimer ta ville ?"),
+                        Component.text("§cCette action est §4§lIRREVERSIBLE")
+                ),
+                List.of(
+                        Component.text("§7Ne pas supprimer la ville")
+                )
+        );
+        menu.open();
     }
 
     @Subcommand("delconfirm")
@@ -204,8 +225,6 @@ public class CityCommands {
         UUID uuid = sender.getUniqueId();
 
         City city = CityManager.getPlayerCity(uuid);
-
-        if (!CityManageConditions.canCityDelete(city, sender)) return;
 
         for (UUID townMember : city.getMembers()){
             if (Bukkit.getPlayer(townMember) instanceof Player player){
@@ -288,7 +307,6 @@ public class CityCommands {
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
-    //TODO: finir conditions
     @Subcommand("money give")
     @CommandPermission("omc.commands.city.give")
     @Description("Transferer de l'argent vers la ville")
@@ -376,16 +394,36 @@ public class CityCommands {
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        sender.sendMessage("§cEs-tu sûr de vouloir changer le type de ta ville ?");
-        sender.sendMessage("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX");
-        sender.sendMessage("§cSi tu en es sûr fais §n/city chgconfirm");
-        //TODO: mettre ConfirmMenu
+
+        String cityTypeActuel = getCityType(city.getUUID());
+        String cityTypeAfter = "";
+        if (cityTypeActuel != null) {
+            cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+            cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix§7" : "§cen guerre§7";
+        }
+
+        ConfirmMenu menu = new ConfirmMenu(sender,
+                () -> {
+                    changeConfirm(sender);
+                    sender.closeInventory();
+                },
+                () -> {
+                    sender.closeInventory();
+                },
+                List.of(
+                        Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"),
+                        Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter),
+                        Component.text("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX")
+                ),
+                List.of(
+                        Component.text("§7Ne pas changer le type de ta §dville")
+                )
+        );
+        menu.open();
 
     }
 
-    @Subcommand("chgconfirm")
-    @CommandPermission("omc.commands.city.chgconfirm")
-    public void changeConfirm(Player sender){
+    public static void changeConfirm(Player sender){
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city==null){
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);

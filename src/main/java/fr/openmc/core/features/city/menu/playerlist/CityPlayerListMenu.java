@@ -133,8 +133,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
                                     CityCommands.kick(player, playerOffline);
                                 },
                                 () -> player.closeInventory(),
-                                "§7Voulez vous vraiment expluser " + playerOffline.getName() + " ?",
-                                "§7Ne pas expluser " + playerOffline.getName());
+                                List.of(Component.text("§7Voulez vous vraiment expluser " + playerOffline.getName() + " ?")),
+                                List.of(Component.text( "§7Ne pas expluser " + playerOffline.getName())));
                         menu.open();
 
                     }

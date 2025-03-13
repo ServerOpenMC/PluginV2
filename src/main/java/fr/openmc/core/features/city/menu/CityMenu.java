@@ -9,6 +9,8 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
+import fr.openmc.core.features.city.menu.mascots.MascotMenu;
+import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
@@ -18,6 +20,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +29,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static fr.openmc.core.features.city.CityManager.getCityType;
+import static fr.openmc.core.features.city.mascots.MascotsManager.getMascotsUUIDbyCityUUID;
+import static fr.openmc.core.features.city.mascots.MascotsManager.mascotsConfig;
 
 public class CityMenu extends Menu {
 
@@ -66,6 +73,7 @@ public class CityMenu extends Menu {
             loreModifyCity = List.of(
                     Component.text("§7Maire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
                     Component.text("§7Membre(s) : " + city.getMembers().size()),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
             );
         } else {
@@ -91,11 +99,38 @@ public class CityMenu extends Menu {
             }
         }));
 
-        inventory.put(8, new ItemBuilder(this, Material.DRAGON_EGG, itemMeta -> {
+        LivingEntity mascot = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city.getUUID()));
+        assert mascot != null;
+
+        List<Component> loreMascots;
+        if (!mascotsConfig.getBoolean("mascots." + city.getUUID() + ".alive")) {
+            loreMascots = List.of(
+                    Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
+                    Component.text("§7Status : §cEn Attente de Soin"),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+            );
+        } else {
+            loreMascots = List.of(
+                    Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
+                    Component.text("§7Status : §aEn Vie"),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+            );
+        }
+
+        inventory.put(8, new ItemBuilder(this, MascotMenu.getSpawnEgg(mascot), itemMeta -> {
             itemMeta.itemName(Component.text("§cVotre Mascotte"));
-            itemMeta.lore(List.of(
-                    Component.text("§cVie : §7null/null")
-            )); //TODO: Mascottes
+            itemMeta.lore(loreMascots);
+        }).setOnClick(inventoryClickEvent -> {
+            if (!mascotsConfig.getBoolean("mascots." + city.getUUID() + ".alive")){
+                MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
+                menu.open();
+                return;
+            }
+
+            MascotMenu menu = new MascotMenu(player, mascot);
+            menu.open();
         }));
 
         List<Component> loreChunkCity;
@@ -103,6 +138,7 @@ public class CityMenu extends Menu {
         if (hasPermissionChunkSee) {
             loreChunkCity = List.of(
                     Component.text("§7Votre ville a une superficie de §6" + city.getChunks().size()),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A LA CARTE")
             );
         } else {
@@ -129,18 +165,61 @@ public class CityMenu extends Menu {
         inventory.put(22, new ItemBuilder(this, playerHead, itemMeta -> {
             itemMeta.displayName(Component.text("§dListe des Membres"));
             itemMeta.lore(List.of(
-                    Component.text("§7Il y a actuellement §d" + city.getMembers().size() + "§7 membre(s) dans votre ville")
+                    Component.text("§7Il y a actuellement §d" + city.getMembers().size() + "§7 membre(s) dans votre ville"),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR VOIR LA LISTE DES JOUEURS")
             ));
         }).setOnClick(inventoryClickEvent -> {
             CityPlayerListMenu menu = new CityPlayerListMenu(player);
             menu.open();
         }));
 
+        String type = CityManager.getCityType(city.getUUID());
+        if (type.equals("war")) {
+            type = "guerre";
+        } else if (type.equals("peace")) {
+            type = "paix";
+        } else {
+            type = "inconnu";
+        }
+        String finalType = type;
+
+        List<Component> loreType;
+        loreType = List.of(
+                Component.text("§7Votre ville est en " + finalType),
+                Component.text(""),
+                Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE")
+        );
+
         inventory.put(25, new ItemBuilder(this, Material.NETHERITE_SWORD, itemMeta -> {
             itemMeta.itemName(Component.text("§5Le Statut de votre Ville"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Votre ville est en ...") //TODO: Systeme de Status des Villes (voir cdc, en paix, en guerre, commerce)
-            ));
+            itemMeta.lore(loreType);
+        }).setOnClick(inventoryClickEvent -> {
+            String cityTypeActuel = getCityType(city.getUUID());
+            String cityTypeAfter = "";
+            if (cityTypeActuel != null) {
+                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre" : "§aen paix§7";
+                cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix" : "§cen guerre§7";
+            }
+
+            ConfirmMenu menu = new ConfirmMenu(player,
+                    () -> {
+                        CityCommands.changeConfirm(player);
+                        player.closeInventory();
+                    },
+                    () -> {
+                        player.closeInventory();
+                    },
+                    List.of(
+                            Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"),
+                            Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter),
+                            Component.text("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX")
+                    ),
+                    List.of(
+                            Component.text("§7Ne pas changer le type de ta §dville")
+                    )
+            );
+            menu.open();
         }));
 
         List<Component> loreChestCity;
@@ -149,6 +228,7 @@ public class CityMenu extends Menu {
             loreChestCity = List.of(
                     Component.text("§7Acceder au Coffre de votre Ville pour"),
                     Component.text("§7stocker des items en commun"),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
             );
         } else {
@@ -185,6 +265,7 @@ public class CityMenu extends Menu {
             itemMeta.lore(List.of(
                     Component.text("§7Stocker votre argent et celle de votre ville"),
                     Component.text("§7Contribuer au développement de votre ville"),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX COMPTES")
             ));
         }).setOnClick(inventoryClickEvent -> {
@@ -204,6 +285,7 @@ public class CityMenu extends Menu {
                 itemMeta.itemName(Component.text("§cPartir de la Ville"));
                 itemMeta.lore(List.of(
                         Component.text("§7Vous allez §cquitter §7" + city.getCityName()),
+                        Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
                 ));
             }).setOnClick(inventoryClickEvent -> {
@@ -218,8 +300,8 @@ public class CityMenu extends Menu {
                         () -> {
                             player.closeInventory();
                         },
-                        "§7Voulez vous vraiment partir de " + city.getCityName() + " ?",
-                        "§7Rester dans la ville " + city.getCityName()
+                        List.of(Component.text("§7Voulez vous vraiment partir de " + city.getCityName() + " ?")),
+                        List.of(Component.text("§7Rester dans la ville " + city.getCityName()))
                 );
                 menu.open();
             }));

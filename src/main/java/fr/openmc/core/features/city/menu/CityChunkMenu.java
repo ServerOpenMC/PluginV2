@@ -126,8 +126,8 @@ public class CityChunkMenu extends Menu {
                                     });
                                 },
                                 () -> player.closeInventory(),
-                                "§7Voulez vous vraiment claim ce chunk ?",
-                                "§7Annuler la procédure de claim");
+                                List.of(Component.text("§7Voulez vous vraiment claim ce chunk ?")),
+                                List.of(Component.text("§7Annuler la procédure de claim")));
                         menu.open();
 
                     });

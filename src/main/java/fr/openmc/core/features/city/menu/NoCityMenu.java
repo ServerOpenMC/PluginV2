@@ -5,6 +5,7 @@ import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
@@ -16,6 +17,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -61,6 +63,7 @@ public class NoCityMenu extends Menu {
         Component nameNotif;
         List<Component> loreNotif = new ArrayList<>();
         if (!CityCommands.invitations.containsKey(player)) {
+            //TODO: mettre menu sign pour inviter un joueur
             nameNotif = Component.text("§7Vous n'avez aucune §6invitation");
             loreNotif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
             loreNotif.add(Component.text("§6via /city invite"));
@@ -93,7 +96,9 @@ public class NoCityMenu extends Menu {
                             CityCommands.denyInvitation(player);
                             player.closeInventory();
                         },
-                        "§7Accepter", "§7Refuser" + inviter.getName());
+                        List.of(Component.text("§7Accepter")),
+                        List.of(Component.text("§7Refuser" + inviter.getName()))
+                );
                 menu.open();
             }));
         }
@@ -103,7 +108,7 @@ public class NoCityMenu extends Menu {
             itemMeta.lore(loreCreate);
         }).setOnClick(inventoryClickEvent -> {
             if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+                MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir créer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
                 return;
             }
 
@@ -127,8 +132,10 @@ public class NoCityMenu extends Menu {
                             String input = result.getLine(0);
 
                             if (InputUtils.isInputCityName(input)) {
-                                CityTypeMenu menu = new CityTypeMenu(player, input);
-                                menu.open();
+                                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                    CityTypeMenu menu = new CityTypeMenu(player, input);
+                                    menu.open();
+                                });
 
                             } else {
                                 MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
