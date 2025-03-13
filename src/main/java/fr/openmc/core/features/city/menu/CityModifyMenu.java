@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -81,15 +82,7 @@ public class CityModifyMenu extends Menu {
             itemMeta.lore(loreRename);
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-            if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            if (!hasPermissionRenameCity) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNORENAME.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+            if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
             String[] lines = new String[4];
             lines[0] = "";
@@ -145,15 +138,8 @@ public class CityModifyMenu extends Menu {
             itemMeta.lore(loreTransfer);
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-            if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
 
-            if (!hasPermissionOwner) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+            if (!CityManageConditions.canCityTransfer(cityCheck, player)) return;
 
             if (city.getMembers().size() - 1 == 0) {
                 MessagesManager.sendMessage(player, Component.text("Il y a pas de membre a qui vous pouvez transferer la ville"), Prefix.CITY, MessageType.ERROR, false);
@@ -190,16 +176,7 @@ public class CityModifyMenu extends Menu {
 
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
-            if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            if (!hasPermissionOwner) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
+            if (!CityManageConditions.canCityDelete(city, player)) return;
 
             ConfirmMenu menu = new ConfirmMenu(
                     player,

@@ -1,27 +1,20 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import dev.xernas.menulib.utils.ItemUtils;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
-import fr.openmc.core.features.city.menu.CityMenu;
-import fr.openmc.core.features.city.menu.CityTransferMenu;
-import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -29,7 +22,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,9 +89,7 @@ public class CityPlayerGestionMenu extends Menu {
             itemMeta.itemName(Component.text("§cExpluser " + playerTarget.getName()));
             itemMeta.lore(loreKick);
         }).setOnClick(inventoryClickEvent -> {
-            if (player.getUniqueId().equals(playerTarget.getUniqueId())) {
-                return;
-            } else if (city.hasPermission(playerTarget.getUniqueId(), CPermission.OWNER)) {
+            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget)) {
                 return;
             } else {
                 ConfirmMenu menu = new ConfirmMenu(

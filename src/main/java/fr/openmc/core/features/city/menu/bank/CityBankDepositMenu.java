@@ -8,6 +8,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -81,11 +82,7 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer tout votre §6Argent"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
-            if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
+            if (!CityBankConditions.canCityDeposit(city, player)) return;
 
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyPlayer) && moneyPlayer!=0) {
                 city.updateBalance(moneyPlayer);
@@ -117,10 +114,7 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer la moitié de votre §6Argent"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
-            if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+            if (!CityBankConditions.canCityDeposit(city, player)) return;
 
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), halfMoneyPlayer) && halfMoneyPlayer!=0) {
                 city.updateBalance(halfMoneyPlayer);
@@ -149,10 +143,7 @@ public class CityBankDepositMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer un §6montant précis"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
-            if (!hasPermissionMoneyGive) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYGIVE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+            if (!CityBankConditions.canCityDeposit(city, player)) return;
 
             String[] lines = new String[4];
             lines[0] = "";

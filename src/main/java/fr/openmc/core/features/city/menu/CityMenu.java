@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.utils.PlayerUtils;
@@ -207,10 +208,7 @@ public class CityMenu extends Menu {
                 ));
             }).setOnClick(inventoryClickEvent -> {
                 City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-                if (cityCheck == null) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
+                if (!CityLeaveCondition.canCityLeave(cityCheck, player)) return;
 
                 ConfirmMenu menu = new ConfirmMenu(player,
                         () -> {
