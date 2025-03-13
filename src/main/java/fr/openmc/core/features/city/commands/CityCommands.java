@@ -361,7 +361,7 @@ public class CityCommands {
             return;
         }
 
-        if (InputUtils.isInputCityName(name)) {
+        if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -503,6 +503,8 @@ public class CityCommands {
         double x = player.getX();
         double y = player.getY();
         double z = player.getZ();
+
+        MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
         Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
         MascotsManager.giveChest(player);
 
