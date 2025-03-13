@@ -129,4 +129,12 @@ public class ItemUtils {
             }
         }
     }
+
+    public static Component getDefaultItemName(Material material) {
+        return Component.translatable(material.translationKey());
+    }
+
+    public static Component getDefaultItemName(ItemStack itemStack) {
+        return getDefaultItemName(itemStack.getType());
+    }
 }
