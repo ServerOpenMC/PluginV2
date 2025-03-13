@@ -7,6 +7,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.features.corporation.CompanyManager;
+import fr.openmc.core.features.corporation.PlayerShopManager;
+import fr.openmc.core.features.corporation.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
@@ -18,6 +21,8 @@ import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,11 +34,18 @@ public final class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
     @Getter static TranslationManager translationManager;
+    @Getter static CompanyManager companyManager;
+    @Getter static PlayerShopManager playerShopManager;
     private DatabaseManager dbManager;
+
+    public static NamespacedKey SUPPLIER_KEY;
 
     @Override
     public void onEnable() {
         instance = this;
+
+        /* KEY */
+        SUPPLIER_KEY = new NamespacedKey(this, "supplier");
 
         /* CONFIG */
         saveDefaultConfig();
@@ -46,6 +58,8 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
+        companyManager = new CompanyManager();
+        playerShopManager = new PlayerShopManager(EconomyManager.getInstance(), new ShopBlocksManager(this));
         new CommandsManager();
         CustomItemRegistry.init();
         ContestManager contestManager = new ContestManager(this);
