@@ -63,13 +63,16 @@ public class CityCommands {
     @DefaultFor("~")
     void main(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (playerCity == null) {
-            NoCityMenu menu = new NoCityMenu(player);
-            menu.open();
+        if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:chest")) {
+                if (playerCity == null) {
+                    NoCityMenu menu = new NoCityMenu(player);
+                    menu.open();
+                } else {
+                    CityMenu menu = new CityMenu(player);
+                    menu.open();
+                }
         } else {
-            CityMenu menu = new CityMenu(player);
-            menu.open();
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas ouvrir le menu des villes si vous devez poser votre mascotte"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 

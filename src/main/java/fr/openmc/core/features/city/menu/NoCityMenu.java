@@ -63,7 +63,6 @@ public class NoCityMenu extends Menu {
         Component nameNotif;
         List<Component> loreNotif = new ArrayList<>();
         if (!CityCommands.invitations.containsKey(player)) {
-            //TODO: mettre menu sign pour inviter un joueur
             nameNotif = Component.text("§7Vous n'avez aucune §6invitation");
             loreNotif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
             loreNotif.add(Component.text("§6via /city invite"));
