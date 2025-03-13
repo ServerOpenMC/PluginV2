@@ -26,7 +26,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -54,7 +54,7 @@ public class AdminCityCommands {
         // Aucune vérification de nom mais faut espérer que le nom est valide :beluclown:
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
         city.renameCity(newName);
@@ -68,7 +68,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -81,7 +81,7 @@ public class AdminCityCommands {
     void setBalance(Player player, @Named("uuid") String cityUUID, @Named("balance") double newBalance) {
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -94,7 +94,7 @@ public class AdminCityCommands {
     void getBalance(Player player, String cityUUID) {
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -107,7 +107,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 

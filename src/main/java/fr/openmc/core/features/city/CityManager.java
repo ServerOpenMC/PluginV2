@@ -137,7 +137,9 @@ public class CityManager implements Listener {
             }
         });
         City city = new City(cityUUID);
-        Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
+        });
         return city;
     }
 
@@ -167,40 +169,44 @@ public class CityManager implements Listener {
     }
 
     public static void forgetCity(String city) {
-        City cityz = cities.remove(city);
+        try {
+            City cityz = cities.remove(city);
 
-        for (UUID members : cityz.getMembers()){
-            MascotsManager.removeChest(Bukkit.getPlayer(members));
-            if (Chronometer.containsChronometer(members, "Mascot:chest")){
-                if (Bukkit.getEntity(members) != null){
-                    Chronometer.stopChronometer(Bukkit.getEntity(members), "Mascot:chest", null, "%null%");
+            for (UUID members : cityz.getMembers()){
+                MascotsManager.removeChest(Bukkit.getPlayer(members));
+                if (Chronometer.containsChronometer(members, "Mascot:chest")){
+                    if (Bukkit.getEntity(members) != null){
+                        Chronometer.stopChronometer(Bukkit.getEntity(members), "Mascot:chest", null, "%null%");
+                    }
+                }
+                if (Chronometer.containsChronometer(members, "mascotsMove")){
+                    if (Bukkit.getEntity(members) != null){
+                        Chronometer.stopChronometer(Bukkit.getEntity(members), "mascotsMove", null, "%null%");
+                    }
                 }
             }
-            if (Chronometer.containsChronometer(members, "mascotsMove")){
-                if (Bukkit.getEntity(members) != null){
-                    Chronometer.stopChronometer(Bukkit.getEntity(members), "mascotsMove", null, "%null%");
+
+            Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
+            while (iterator.hasNext()) {
+                BlockVector2 vector = iterator.next();
+                City claimedCity = claimedChunks.get(vector);
+
+                if (claimedCity != null && claimedCity.equals(cityz)) {
+                    iterator.remove();
                 }
             }
-        }
 
-        Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
-        while (iterator.hasNext()) {
-            BlockVector2 vector = iterator.next();
-            City claimedCity = claimedChunks.get(vector);
+            Iterator<UUID> playerIterator = playerCities.keySet().iterator();
+            while (playerIterator.hasNext()) {
+                UUID uuid = playerIterator.next();
+                City playerCity = playerCities.get(uuid);
 
-            if (claimedCity != null && claimedCity.equals(cityz)) {
-                iterator.remove();
+                if (playerCity != null && playerCity.getUUID().equals(city)) {
+                    playerIterator.remove();
+                }
             }
-        }
-
-        Iterator<UUID> playerIterator = playerCities.keySet().iterator();
-        while (playerIterator.hasNext()) {
-            UUID uuid = playerIterator.next();
-            City playerCity = playerCities.get(uuid);
-
-            if (playerCity != null && playerCity.getUUID().equals(city)) {
-                playerIterator.remove();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         MascotsManager.freeClaim.remove(city);

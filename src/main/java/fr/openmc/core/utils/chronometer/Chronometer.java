@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Chronometer{
 
     // Map structure: UUID -> (Group -> Time)
-    private static final HashMap<UUID, HashMap<String, Integer>> chronometer = new HashMap<>();
+    public static final HashMap<UUID, HashMap<String, Integer>> chronometer = new HashMap<>();
     // new @EventHandler > ChronometerEndEvent
 
     @Getter

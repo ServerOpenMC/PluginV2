@@ -3,11 +3,13 @@ package fr.openmc.core.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -128,5 +130,31 @@ public class ItemUtils {
                 }
             }
         }
+    }
+
+    public static Material getSignType(Player player) {
+        HashMap<Biome, Material> biomeToSignType = new HashMap<>();
+        biomeToSignType.put(Biome.BAMBOO_JUNGLE, Material.BAMBOO_SIGN);
+        biomeToSignType.put(Biome.BIRCH_FOREST, Material.BIRCH_SIGN);
+        biomeToSignType.put(Biome.OLD_GROWTH_BIRCH_FOREST, Material.BIRCH_SIGN);
+        biomeToSignType.put(Biome.JUNGLE, Material.JUNGLE_SIGN);
+        biomeToSignType.put(Biome.SPARSE_JUNGLE, Material.JUNGLE_SIGN);
+        biomeToSignType.put(Biome.PALE_GARDEN, Material.PALE_OAK_SIGN);
+        biomeToSignType.put(Biome.CHERRY_GROVE, Material.CHERRY_SIGN);
+        biomeToSignType.put(Biome.CRIMSON_FOREST, Material.CRIMSON_SIGN);
+        biomeToSignType.put(Biome.WARPED_FOREST, Material.WARPED_SIGN);
+        biomeToSignType.put(Biome.MANGROVE_SWAMP, Material.MANGROVE_SIGN);
+        biomeToSignType.put(Biome.SAVANNA, Material.ACACIA_SIGN);
+        biomeToSignType.put(Biome.SAVANNA_PLATEAU, Material.ACACIA_SIGN);
+        biomeToSignType.put(Biome.WINDSWEPT_SAVANNA, Material.ACACIA_SIGN);
+        biomeToSignType.put(Biome.DARK_FOREST, Material.DARK_OAK_SIGN);
+        biomeToSignType.put(Biome.TAIGA, Material.SPRUCE_SIGN);
+        biomeToSignType.put(Biome.OLD_GROWTH_PINE_TAIGA, Material.SPRUCE_SIGN);
+        biomeToSignType.put(Biome.SNOWY_TAIGA, Material.SPRUCE_SIGN);
+        biomeToSignType.put(Biome.OLD_GROWTH_SPRUCE_TAIGA, Material.SPRUCE_SIGN);
+
+        Biome playerBiome = player.getWorld().getBiome(player.getLocation());
+
+        return biomeToSignType.getOrDefault(playerBiome, Material.OAK_SIGN);
     }
 }

@@ -24,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 public class TradeMenu extends Menu {
@@ -51,7 +50,9 @@ public class TradeMenu extends Menu {
         return InventorySize.LARGE;
     }
 
-    @Override public void onInventoryClick(InventoryClickEvent click) {}
+    @Override public void onInventoryClick(InventoryClickEvent click) {
+        // empty
+    }
 
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
@@ -84,8 +85,7 @@ public class TradeMenu extends Menu {
         }));
 
         List<Map<String, Object>> selectedTrades = contestManager.getTradeSelected(true).stream()
-                .sorted(Comparator.comparing(trade -> (String) trade.get("ress")))
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(trade -> (String) trade.get("ress"))).toList();
 
         List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
 
@@ -100,9 +100,7 @@ public class TradeMenu extends Menu {
                     Component.text("§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE")
             );
 
-            inventory.put(slot, new ItemBuilder(this, m, itemMeta -> {
-                itemMeta.lore(loreTrades);
-            }).setOnClick(inventoryClickEvent -> {
+            inventory.put(slot, new ItemBuilder(this, m, itemMeta -> itemMeta.lore(loreTrades)).setOnClick(inventoryClickEvent -> {
                 if (!CustomItemRegistry.hasItemsAdder()) {
                     MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                     return;
@@ -187,9 +185,7 @@ public class TradeMenu extends Menu {
             }));
         }
 
-        inventory.put(27, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aRetour"));
-        }).setBackButton());
+        inventory.put(27, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));

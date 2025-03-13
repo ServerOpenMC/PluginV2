@@ -3,7 +3,11 @@ package fr.openmc.core.features.city.listeners;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.ChestMenu;
-import net.kyori.adventure.text.TextComponent;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,6 +31,22 @@ public class ChestMenuListener implements Listener {
         if (inv != menu.getInventory()) { return; }
 
         // L'inventaire est la banque de ville, on peut *enfin* faire qqchose
+
+        if (event.getSlot() == 48 && event.getCurrentItem().getType() == Material.ENDER_CHEST) { // Upgrade Button
+            int price = city.getChestPages()*5000; // fonction linéaire f(x)=ax ; a=5000
+            if (city.getBalance() < price) {
+                MessagesManager.sendMessage(player, Component.text("La ville n'as pas assez d'argent ("+price+" nécessaires)"), Prefix.CITY, MessageType.ERROR, true);
+                player.closeInventory();
+                return;
+            }
+
+            city.updateBalance((double) -price);
+
+            city.upgradeChest();
+            MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+            player.closeInventory();
+            return;
+        }
 
         if (event.getSlot() == 49) { // Close Button
             exit(city, inv, menu);

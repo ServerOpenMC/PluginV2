@@ -1,6 +1,5 @@
 package fr.openmc.core.utils;
 
-import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.user.User;
@@ -15,7 +14,7 @@ public class LuckPermsAPI {
     @Getter private static LuckPerms api;
     private static boolean hasLuckPerms;
 
-    public LuckPermsAPI(OMCPlugin plugin) {
+    public LuckPermsAPI() {
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null) {
             hasLuckPerms = false;
             return;

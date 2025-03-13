@@ -7,6 +7,7 @@ public enum CPermission {
     INVITE("Inviter"),
     KICK("Expulser"),
     CLAIM("Claim"),
+    SEE_CHUNKS("Voir les Claims"),
     RENAME("Renommer"),
     MONEY_GIVE("Donner de l'argent"),
     MONEY_BALANCE("Voir l'argent"),

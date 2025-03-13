@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -8,12 +9,20 @@ import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
+import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -22,8 +31,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static fr.openmc.core.features.city.CityManager.getCityType;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -43,43 +56,35 @@ public class CityCommands {
         return new Location[]{minLocation, maxLocation};
     }
 
-    private int calculatePrice(int chunkCount) {
+    private static int calculatePrice(int chunkCount) {
         return 5000 + ((chunkCount-25) * 1000);
-    }
-
-    private boolean isInvalidName(String name) {
-        if (name.length() > 24) {
-            return true;
-        }
-
-        if (!name.matches("[a-zA-Z0-9]+")) {
-            return true;
-        }
-
-        return false;
     }
 
     @DefaultFor("~")
     void main(Player player) {
-        CityMenu menu = new CityMenu(player);
-        menu.open();
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:chest")) {
+                if (playerCity == null) {
+                    NoCityMenu menu = new NoCityMenu(player);
+                    menu.open();
+                } else {
+                    CityMenu menu = new CityMenu(player);
+                    menu.open();
+                }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas ouvrir le menu des villes si vous devez poser votre mascotte"), Prefix.CITY, MessageType.ERROR, false);
+        }
     }
 
     @Subcommand("accept")
     @CommandPermission("omc.commands.city.accept")
     @Description("Accepter une invitation")
-    void accept(Player player) {
-        if (!invitations.containsKey(player)) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+    public static void acceptInvitation(Player player) {
+        //TODO: faire que le joueur peut avoir plusieurs invitations (pour eviter de bloquer le joueur concerné)
         Player inviter = invitations.get(player);
         City newCity = CityManager.getPlayerCity(inviter.getUniqueId());
 
-        if (newCity == null) {
-            MessagesManager.sendMessage(inviter, Component.text("L'invitation a expiré"), Prefix.CITY, MessageType.SUCCESS, false);
-            return;
-        }
+        if (!CityInviteConditions.canCityInviteAccept(newCity, inviter, player)) return;
 
         newCity.addPlayer(player.getUniqueId());
 
@@ -97,16 +102,9 @@ public class CityCommands {
     void rename(Player player, @Named("nouveau nom") String name) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (playerCity == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-        }
+        if (!CityManageConditions.canCityRename(playerCity, player)) return;
 
-        if (!(playerCity.hasPermission(player.getUniqueId(), CPermission.RENAME))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (isInvalidName(name)) {
+        if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum 24 caractères."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -121,20 +119,8 @@ public class CityCommands {
     @AutoComplete("@city_members")
     void transfer(Player sender, @Named("maire") OfflinePlayer player) {
         City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
-        if (playerCity == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!(playerCity.hasPermission(sender.getUniqueId(), CPermission.OWNER))) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (!playerCity.getMembers().contains(sender.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityManageConditions.canCityTransfer(playerCity, sender)) return;
 
         playerCity.changeOwner(player.getUniqueId());
         MessagesManager.sendMessage(sender, Component.text("Le nouveau maire est "+player.getName()), Prefix.CITY, MessageType.SUCCESS, false);
@@ -147,11 +133,8 @@ public class CityCommands {
     @Subcommand("deny")
     @CommandPermission("omc.commands.city.deny")
     @Description("Refuser une invitation")
-    void deny(Player player) {
-        if (!invitations.containsKey(player)) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+    public static void denyInvitation(Player player) {
+        if (!CityInviteConditions.canCityInviteDeny(player)) return;
         Player inviter = invitations.get(player);
         invitations.remove(player);
 
@@ -164,27 +147,10 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.kick")
     @Description("Exclure un habitant de votre ville")
     @AutoComplete("@city_members")
-    void kick(Player sender, @Named("exclu") OfflinePlayer player) {
+    public static void kick(Player sender, @Named("exclu") OfflinePlayer player) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (sender.getUniqueId().equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas t'auto exclure de la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.KICK))) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'exclure " + player.getName()), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas exclure le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityKickCondition.canCityKickPlayer(city, sender, player)) return;
 
         if (city.removePlayer(player.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("Tu as exclu "+player.getName()+" de la ville "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
@@ -202,79 +168,66 @@ public class CityCommands {
     @Description("Quitter votre ville")
     void leave(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityLeaveCondition.canCityLeave(city, player)) return;
 
-        if (city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
-            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas quitter la ville car tu en es le maire, supprime la ou transfère la propriété"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Tu as quitté "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
-        } else {
-            MessagesManager.sendMessage(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
-        }
+        leaveCity(player);
     }
 
     @Subcommand("invite")
     @CommandPermission("omc.commands.city.invite")
     @Description("Inviter un joueur dans votre ville")
-    void add(Player sender, @Named("invité") Player target) {
+    public static void add(Player sender, @Named("invité") Player target) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!(city.hasPermission(sender.getUniqueId(), CPermission.INVITE))) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'inviter des joueurs dans la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (CityManager.getPlayerCity(target.getUniqueId()) != null) {
-            MessagesManager.sendMessage(sender, Component.text("Cette personne est déjà dans une ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (invitations.containsKey(target)) {
-            MessagesManager.sendMessage(sender, Component.text("Cette personne as déjà une invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityInviteConditions.canCityInvitePlayer(city, sender, target)) return;
 
         invitations.put(target, sender);
         MessagesManager.sendMessage(sender, Component.text("Tu as invité "+target.getName()+" dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
-        MessagesManager.sendMessage(target, Component.text("Tu as été invité(e) par " + sender.getName() + "dans la ville "+city.getCityName()), Prefix.CITY, MessageType.INFO, false);
+        MessagesManager.sendMessage(target,
+                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getCityName() + "\n")
+                        .append(Component.text("[ACCEPTER]").color(NamedTextColor.GREEN).clickEvent(ClickEvent.runCommand("/city accept")).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
+                        .append(Component.text("   "))
+                                .append(Component.text("[REFUSER]").color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("/city deny")).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
+                Prefix.CITY, MessageType.INFO, false);
     }
 
     @Subcommand("delete")
     @CommandPermission("omc.commands.city.delete")
     @Description("Supprimer votre ville")
-    void delMessage(Player sender) {
-        sender.sendMessage("§cEs-tu sûr de vouloir supprimer ta ville ?");
-        sender.sendMessage("§cCette action est §4§lIRREVERSIBLE");
-        sender.sendMessage("§cSi tu en es sûr fais §n/city delconfirm");
+    void delete(Player sender) {
+        UUID uuid = sender.getUniqueId();
+
+        City city = CityManager.getPlayerCity(uuid);
+
+        if (!CityManageConditions.canCityDelete(city, sender)) return;
+
+        ConfirmMenu menu = new ConfirmMenu(sender,
+                () -> {
+                    deleteCity(sender);
+                    sender.closeInventory();
+                },
+                () -> {
+                    sender.closeInventory();
+                },
+                List.of(
+                        Component.text("§cEs-tu sûr de vouloir supprimer ta ville ?"),
+                        Component.text("§cCette action est §4§lIRREVERSIBLE")
+                ),
+                List.of(
+                        Component.text("§7Ne pas supprimer la ville")
+                )
+        );
+        menu.open();
     }
 
     @Subcommand("delconfirm")
     @CommandPermission("omc.commands.city.delete")
     @Description("Supprimer votre ville")
     @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir supprimer ta ville (%sec% secondes)")
-    void delete(Player sender) {
+    public static void deleteCity(Player sender) {
         UUID uuid = sender.getUniqueId();
 
         City city = CityManager.getPlayerCity(uuid);
-        if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (!city.getPlayerWith(CPermission.OWNER).equals(uuid)) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
         for (UUID townMember : city.getMembers()){
             if (Bukkit.getPlayer(townMember) instanceof Player player){
@@ -293,25 +246,22 @@ public class CityCommands {
     @Description("Claim un chunk pour votre ville")
     void claim(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!(city.hasPermission(sender.getUniqueId(), CPermission.CLAIM))) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission de claim"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityClaimCondition.canCityClaim(city, sender)) return;
 
+        Chunk chunk = sender.getLocation().getChunk();
+
+        claim(sender, chunk.getX(), chunk.getZ());
+    }
+
+    public static void claim(Player sender, int chunkX, int chunkZ) {
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
         org.bukkit.World bWorld = sender.getWorld();
         if (!bWorld.getName().equals("world")) {
             MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        Chunk chunk = sender.getLocation().getChunk();
-        int chunkX = chunk.getX();
-        int chunkZ = chunk.getZ();
         BlockVector2 chunkVec2 = BlockVector2.at(chunkX, chunkZ);
 
         AtomicBoolean isFar = new AtomicBoolean(true);
@@ -355,7 +305,8 @@ public class CityCommands {
         } else {
             city.updateBalance((double) (price*-1));
         }
-        city.addChunk(sender.getChunk());
+        city.addChunk(sender.getWorld().getChunkAt(chunkX, chunkZ));
+
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
@@ -364,20 +315,8 @@ public class CityCommands {
     @Description("Transferer de l'argent vers la ville")
     void give(Player player, @Named("montant") @Range(min=1) double amount) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (balanceCooldownTasks.containsKey(city.getUUID())){
-            MessagesManager.sendMessage(player, Component.text("Ta ville a été attaquer tu n'as donc pas accès à la banque de vlle"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityBankConditions.canCityDeposit(city, player)) return;
 
         if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), amount)) {
             city.updateBalance(amount);
@@ -392,15 +331,8 @@ public class CityCommands {
     @Description("Afficher l'argent de votre ville")
     void balance(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de consulter l'argent de la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityBankConditions.canCityBalance(city, player)) return;
 
         double balance = city.getBalance();
         MessagesManager.sendMessage(player, Component.text(city.getCityName()+ " possède "+balance+EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.INFO, false);
@@ -411,20 +343,8 @@ public class CityCommands {
     @Description("Prendre de l'argent depuis votre ville")
     void take(Player player, @Named("montant") @Range(min=1) double amount) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de prendre de l'argent de ta ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (balanceCooldownTasks.containsKey(city.getUUID())){
-            MessagesManager.sendMessage(player, Component.text("Ta ville a été attaquer tu n'as donc pas accès à la banque de vlle"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
         if (city.getBalance() < amount) {
             MessagesManager.sendMessage(player, Component.text("Ta ville n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
@@ -462,7 +382,7 @@ public class CityCommands {
             return;
         }
 
-        if (isInvalidName(name)) {
+        if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -477,16 +397,36 @@ public class CityCommands {
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        sender.sendMessage("§cEs-tu sûr de vouloir changer le type de ta ville ?");
-        sender.sendMessage("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX");
-        sender.sendMessage("§cSi tu en es sûr fais §n/city chgconfirm");
 
-        //TODO: mettre ConfirmMenu
+        String cityTypeActuel = getCityType(city.getUUID());
+        String cityTypeAfter = "";
+        if (cityTypeActuel != null) {
+            cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+            cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix§7" : "§cen guerre§7";
+        }
+
+        ConfirmMenu menu = new ConfirmMenu(sender,
+                () -> {
+                    changeConfirm(sender);
+                    sender.closeInventory();
+                },
+                () -> {
+                    sender.closeInventory();
+                },
+                List.of(
+                        Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"),
+                        Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter),
+                        Component.text("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX")
+                ),
+                List.of(
+                        Component.text("§7Ne pas changer le type de ta §dville")
+                )
+        );
+        menu.open();
+
     }
 
-    @Subcommand("chgconfirm")
-    @CommandPermission("omc.commands.city.chgconfirm")
-    public void changeConfirm (Player sender){
+    public static void changeConfirm(Player sender){
         City city = CityManager.getPlayerCity(sender.getUniqueId());
         if (city==null){
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -539,6 +479,84 @@ public class CityCommands {
             mob.setCustomName("§lMascotte §c" + currentHealth + "/" + maxHealth + "❤");
         } catch (Exception exception) {
             exception.printStackTrace();
+        }
+    }
+
+    // ACTIONS
+
+    public static void createCity(Player player, String name, String type) {
+
+        UUID uuid = player.getUniqueId();
+
+        MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
+
+        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
+
+        Chunk origin = player.getChunk();
+        AtomicBoolean isClaimed = new AtomicBoolean(false);
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                if (CityManager.isChunkClaimed(origin.getX() + x, origin.getZ() + z)) {
+                    isClaimed.set(true);
+                    break;
+                }
+            }
+        }
+
+        if (isClaimed.get()) {
+            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            player.closeInventory();
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
+                statement.setString(1, cityUUID);
+
+                statement.setInt(2, origin.getX());
+                statement.setInt(3, origin.getZ());
+                statement.addBatch();
+
+                statement.executeBatch();
+                statement.close();
+            } catch (SQLException e) {
+                MessagesManager.sendMessage(player, Component.text("Une erreur est survenue, réessayez plus tard"), Prefix.CITY, MessageType.ERROR, false);
+                player.closeInventory();
+                throw new RuntimeException(e);
+            }
+        });
+
+        City city = CityManager.createCity(player, cityUUID, name, type);
+        city.addPlayer(uuid);
+        city.addPermission(uuid, CPermission.OWNER);
+
+        CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
+        MascotsManager.addFreeClaim(15, player);
+
+        player.closeInventory();
+
+        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
+        MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
+
+        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+
+        double x = player.getX();
+        double y = player.getY();
+        double z = player.getZ();
+
+        MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
+        Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
+        MascotsManager.giveChest(player);
+
+    }
+
+    public static void leaveCity(Player player) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        if (city.removePlayer(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("Tu as quitté "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 
