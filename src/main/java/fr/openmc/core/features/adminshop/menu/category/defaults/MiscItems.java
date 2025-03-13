@@ -2,7 +2,6 @@ package fr.openmc.core.features.adminshop.menu.category.defaults;
 
 import fr.openmc.core.features.adminshop.menu.category.ShopType;
 import fr.openmc.core.features.adminshop.shopinterfaces.BaseItems;
-import fr.openmc.core.features.corporation.Shop;
 import org.bukkit.Material;
 
 public enum MiscItems implements BaseItems {
