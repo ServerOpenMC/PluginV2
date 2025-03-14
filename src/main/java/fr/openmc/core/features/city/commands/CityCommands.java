@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.BlockVector2;
@@ -340,15 +341,15 @@ public class CityCommands {
 
         int price = calculatePrice(city.getChunks().size());
 
-        if (!MascotsManager.freeClaimContains(city.getUUID())) {
+        if (!MascotsManager.freeClaim.containsKey(city.getUUID())) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
         }
 
-        if (MascotsManager.freeClaimContains(city.getUUID())){
-            MascotsManager.removeFreeClaim(city.getUUID(),1);
+        if (MascotsManager.freeClaim.containsKey(city.getUUID())){
+            MascotsManager.freeClaim.remove(city.getUUID(),1);
         } else {
             city.updateBalance((double) (price*-1));
         }
@@ -500,8 +501,8 @@ public class CityCommands {
             return;
         }
 
-        if (MascotsManager.mascotsContains(city.getUUID())){
-            if (!MascotsManager.getMascotState(city.getUUID())){
+        if (MascotUtils.mascotsContains(city.getUUID())){
+            if (!MascotUtils.getMascotState(city.getUUID())){
                 MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -514,9 +515,9 @@ public class CityCommands {
         CityManager.changeCityType(city.getUUID());
         CityTypeCooldown.setCooldown(city.getUUID());
 
-        if (MascotsManager.getMascotUUIDByCityUUID(city.getUUID())!=null){
-            LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotsManager.getMascotUUIDByCityUUID(city.getUUID()));
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotsManager.getMascotLevel(city.getUUID()));
+        if (MascotUtils.getMascotUUIDOfCity(city.getUUID())!=null){
+            LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
+            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
 
             for (UUID townMember : city.getMembers()){
                 if (Bukkit.getPlayer(townMember) instanceof Player player){
@@ -532,8 +533,8 @@ public class CityCommands {
             if (newLevel < 1){
                 newLevel = 1;
             }
-            MascotsManager.setMascotLevel(city.getUUID(), newLevel);
-            mascotsLevels = MascotsLevels.valueOf("level" + MascotsManager.getMascotLevel(city.getUUID()));
+            MascotUtils.setMascotLevel(city.getUUID(), newLevel);
+            mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
 
             try {
                 int maxHealth = mascotsLevels.getHealth();

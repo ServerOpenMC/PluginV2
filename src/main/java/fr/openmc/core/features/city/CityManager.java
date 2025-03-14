@@ -203,7 +203,7 @@ public class CityManager implements Listener {
             }
         }
 
-        MascotsManager.deleteFreeClaim(city);
+        MascotsManager.freeClaim.remove(city);
         if (CityTypeCooldown.isOnCooldown(city)) {
             CityTypeCooldown.removeCityCooldown(city);
         }

@@ -38,6 +38,8 @@ public class MascotsManager {
 
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
+    public static List<Mascot> mascots = new ArrayList<>();
+    public static HashMap<String, Integer> freeClaim = new HashMap<>();
     public static Map<UUID, Location> mascotSpawn = new HashMap<>();
 
     public MascotsManager (OMCPlugin plugin) {
@@ -52,6 +54,9 @@ public class MascotsManager {
         }
         chestKey = new NamespacedKey(plugin, "mascots_chest");
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
+
+        mascots = getAllMascots();
+        freeClaim = getAllFreeClaims();
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -59,108 +64,89 @@ public class MascotsManager {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity_active BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
     }
 
-    public static boolean freeClaimContains(String city_uuid) {
-        String query = "SELECT EXISTS (SELECT 1 FROM free_claim WHERE city_uuid = ?) AS existe";
+    public static HashMap<String, Integer> getAllFreeClaims () {
+        HashMap<String, Integer> freeClaims = new HashMap<>();
+
+        String query = "SELECT city_uuid, claim FROM free_claim";
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                String cityUuid = rs.getString("city_uuid");
+                int claim = rs.getInt("claim");
+                freeClaims.put(cityUuid, claim);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return freeClaims;
+    }
+
+    public static List<Mascot> getAllMascots() {
+        List<Mascot> mascots = new ArrayList<>();
+
+        String query = "SELECT city_uuid, mascot_uuid, level, immunity, immunity_time, alive FROM mascots";
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                String cityUuid = rs.getString("city_uuid");
+                String mascotUuid = rs.getString("mascot_uuid");
+                int level = rs.getInt("level");
+                boolean immunity = rs.getBoolean("immunity");
+                long immunity_time = rs.getLong("immunity_time");
+                boolean alive = rs.getBoolean("alive");
+                mascots.add(new Mascot(cityUuid, mascotUuid, level, immunity, immunity_time, alive)); // Ajouter à la liste
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return mascots;
+    }
+
+    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
+        String query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
+            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
+                statement.setString(1, entry.getKey());
+                statement.setInt(2, entry.getValue());
+                statement.setInt(3, entry.getValue());
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void saveMascots(List<Mascot> mascots) {
+        String query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive) " +
+                "VALUES (?, ?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?";
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
-            statement.setString(1, city_uuid);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) == 1;
-                }
+            for (Mascot mascot : mascots) {
+
+                statement.setString(1, mascot.getCityUuid());
+                statement.setString(2, mascot.getMascotUuid());
+                statement.setInt(3, mascot.getLevel());
+                statement.setBoolean(4, mascot.isImmunity());
+                statement.setLong(5, mascot.getImmunity_time());
+                statement.setBoolean(6, mascot.isAlive());
+
+                statement.setString(7, mascot.getMascotUuid());
+                statement.setInt(8, mascot.getLevel());
+                statement.setBoolean(9, mascot.isImmunity());
+                statement.setLong(10, mascot.getImmunity_time());
+                statement.setBoolean(11, mascot.isAlive());
+
+                statement.addBatch();
             }
+
+            statement.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        return false;
-    }
-
-    public static int getCityFreeClaim (String city_uuid){
-        int freeClaim = 0;
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM free_claim WHERE claim = ? ");
-            statement.setString(1, city_uuid);
-            ResultSet rs = statement.executeQuery();
-
-            if (!rs.next()) {
-                return freeClaim;
-            }
-
-            freeClaim = rs.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-        return freeClaim;
-    }
-
-    public static void addFreeClaim (String city_uuid, int claim) {
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                if (getCityFreeClaim(city_uuid)==0){
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO free_claim VALUE (?, ?)");
-                    statement.setString(1, city_uuid);
-                    statement.setInt(2, claim);
-                    statement.executeUpdate();
-                } else {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE free_claim SET claim=? WHERE city_uuid=?;");
-                    statement.setInt(1, claim);
-                    statement.setString(2, city_uuid);
-                    statement.executeUpdate();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static void removeFreeClaim (String city_uuid, int claim) {
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                if (getCityFreeClaim(city_uuid) == 0 || getCityFreeClaim(city_uuid)-claim <= 0) {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM free_claim WHERE city_uuid = ?");
-                    statement.setString(1, city_uuid);
-                    statement.executeUpdate();
-                } else {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE free_claim SET claim=? WHERE city_uuid=?;");
-                    statement.setInt(1, getCityFreeClaim(city_uuid)-claim);
-                    statement.setString(2, city_uuid);
-                    statement.executeUpdate();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static void deleteFreeClaim (String city_uuid) {
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM free_claim WHERE city_uuid = ?");
-                statement.setString(1, city_uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static boolean mascotsContains(String city_uuid) {
-        String query = "SELECT EXISTS (SELECT 1 FROM mascots WHERE city_uuid = ?) AS existe";
-
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
-            statement.setString(1, city_uuid);
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) == 1;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
     }
 
     public static void createMascot (String city_uuid, World player_world, Location mascot_spawn) {
@@ -185,10 +171,12 @@ public class MascotsManager {
                 e.printStackTrace();
             }
         });
+
+        MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId());
     }
 
     public static void removeMascotsFromCity (String city_uuid) {
-        UUID mascotUUID = getMascotUUIDByCityUUID(city_uuid);
+        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
 
         if (mascotUUID!=null){
             LivingEntity mascots = (LivingEntity) Bukkit.getEntity(mascotUUID);
@@ -205,176 +193,16 @@ public class MascotsManager {
                 }
             });
         }
-    }
 
-    public static int getMascotLevel (String city_uuid){
-        int level = 0;
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE level = ? ");
-            statement.setString(1, city_uuid);
-            ResultSet rs = statement.executeQuery();
-
-            if (!rs.next()) {
-                return level;
-            }
-
-            level = rs.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-        return level;
-    }
-
-    public static void setMascotLevel (String city_uuid, int level){
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET level=? WHERE city_uuid=?;");
-                statement.setInt(1, level);
-                statement.setString(2, city_uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static UUID getMascotUUIDByCityUUID (String city_uuid) {
-        UUID uuid = null;
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE mascot_uuid = ? ");
-            statement.setString(1, city_uuid);
-            ResultSet rs = statement.executeQuery();
-
-            if (!rs.next()) {
-                return null;
-            }
-
-            uuid = UUID.fromString(rs.getString(1));
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-        return uuid;
-    }
-
-    public static void setMascotUUID (String city_uuid, UUID uuid){
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET level=? WHERE city_uuid=?;");
-                statement.setString(1, uuid.toString());
-                statement.setString(2, city_uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static boolean getMascotImmunity (String city_uuid) {
-        boolean immunity = false;
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE immunity_active = ? ");
-            statement.setString(1, city_uuid);
-            ResultSet rs = statement.executeQuery();
-
-            if (!rs.next()) {
-                return false;
-            }
-
-            immunity = rs.getBoolean(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-        return immunity;
-    }
-
-    public static void changeMascotImmunity (String city_uuid) {
-        boolean immunity = !getMascotImmunity(city_uuid);
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET immunity_active=? WHERE city_uuid=?;");
-                statement.setBoolean(1, immunity);
-                statement.setString(2, city_uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static long getMascoteImmunityTime (String city_uuid) {
-        long time = 0;
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE immunity_time = ? ");
-            statement.setString(1, city_uuid);
-            ResultSet rs = statement.executeQuery();
-
-            if (!rs.next()) {
-                return time;
-            }
-
-            time = rs.getLong(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-        return time;
-    }
-
-    public static void setMascotImmunityTime (String city_uuid, long time){
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET immunity_time=? WHERE city_uuid=?;");
-                statement.setLong(1, time);
-                statement.setString(2, city_uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public static boolean getMascotState (String city_uuid) {
-        boolean alive = false;
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE alive = ? ");
-            statement.setString(1, city_uuid);
-            ResultSet rs = statement.executeQuery();
-
-            if (!rs.next()) {
-                return false;
-            }
-
-            alive = rs.getBoolean(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-        return alive;
-    }
-
-    public static void changeMascotState (String city_uuid){
-        boolean alive = !getMascotState(city_uuid);
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET immunity_time=? WHERE city_uuid=?;");
-                statement.setBoolean(1, alive);
-                statement.setString(2, city_uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+        MascotUtils.removeMascotOfCity(city_uuid);
     }
 
     public static void giveMascotsEffect (String city_uuid, UUID playerUUID) {
         if (Bukkit.getPlayer(playerUUID) instanceof Player player) {
             if (city_uuid!=null){
-                if (mascotsContains(city_uuid)){
-                    int level = getMascotLevel(city_uuid);
-                    if (getMascotState(city_uuid)){
+                if (MascotUtils.mascotsContains(city_uuid)){
+                    int level = MascotUtils.getMascotLevel(city_uuid);
+                    if (MascotUtils.getMascotState(city_uuid)){
                         for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
                             player.addPotionEffect(potionEffect);
                         }
@@ -389,16 +217,16 @@ public class MascotsManager {
     }
 
     public static void reviveMascots (String city_uuid) {
-        if (mascotsContains(city_uuid)){
-            changeMascotState(city_uuid);
-            changeMascotImmunity(city_uuid);
-            int level = getMascotLevel(city_uuid);
-            if (getMascotUUIDByCityUUID(city_uuid)!=null){
-                LivingEntity entity = (LivingEntity) Bukkit.getEntity(getMascotUUIDByCityUUID(city_uuid));
+        if (MascotUtils.mascotsContains(city_uuid)){
+            MascotUtils.changeMascotState(city_uuid, true);
+            MascotUtils.changeMascotImmunity(city_uuid, false);
+            int level = MascotUtils.getMascotLevel(city_uuid);
+            if (MascotUtils.getMascotUUIDOfCity(city_uuid)!=null){
+                LivingEntity entity = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city_uuid));
                 if (entity!=null){
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
                     entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
-                    MascotsListener.mascotsRegeneration(getMascotUUIDByCityUUID(city_uuid));
+                    MascotsListener.mascotsRegeneration(MascotUtils.getMascotUUIDOfCity(city_uuid));
                     City city = CityManager.getCity(city_uuid);
                     if (city==null){return;}
                     for (UUID townMember : city.getMembers()){
@@ -491,12 +319,12 @@ public class MascotsManager {
         }
         if (mob.getPersistentDataContainer().has(mascotsKey, PersistentDataType.STRING)){
 
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + getMascotLevel(city_uuid));
+            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid));
             double lastHealth = mascotsLevels.getHealth();
             if (mascotsLevels != MascotsLevels.level10){
 
-                setMascotLevel(city_uuid, getMascotLevel(city_uuid)+1);
-                mascotsLevels = MascotsLevels.valueOf("level" + getMascotLevel(city_uuid));
+                MascotUtils.setMascotLevel(city_uuid, MascotUtils.getMascotLevel(city_uuid)+1);
+                mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid));
 
                 try {
                     int maxHealth = mascotsLevels.getHealth();
@@ -536,7 +364,7 @@ public class MascotsManager {
 
             if (mascotsCustomUUID != null) {
                 newData.set(mascotsKey, PersistentDataType.STRING, mascotsCustomUUID);
-                setMascotUUID(mascotsCustomUUID, newMascots.getUniqueId());
+                MascotUtils.setMascotUUID(mascotsCustomUUID, newMascots.getUniqueId());
             }
         }
     }

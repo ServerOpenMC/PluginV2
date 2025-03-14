@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -158,7 +159,11 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        MascotsManager.addFreeClaim(city.getUUID(), claim);
+        if (MascotsManager.freeClaim.get(city.getUUID())==null){
+            MascotsManager.freeClaim.put(city.getUUID(), claim);
+            return;
+        }
+        MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) + claim);
     }
 
     @Subcommand("freeclaim remove")
@@ -169,10 +174,14 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        MascotsManager.removeFreeClaim(city.getUUID(), claim);
+        if (MascotsManager.freeClaim.get(city.getUUID()) - claim <= 0){
+            MascotsManager.freeClaim.remove(city.getUUID());
+            return;
+        }
+        MascotsManager.freeClaim.remove(city.getUUID(),claim);
     }
 
-    @Subcommand("freeclaim deleter")
+    @Subcommand("freeclaim delete")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.remove")
     public void freeClaimDelete(@Named("player") Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -180,7 +189,7 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        MascotsManager.deleteFreeClaim(city.getUUID());
+        MascotsManager.freeClaim.remove(city.getUUID());
     }
 
     @Subcommand("mascots remove")
@@ -221,14 +230,14 @@ public class AdminCityCommands {
 
         String city_uuid = city.getUUID();
 
-        if (!MascotsManager.getMascotState(city_uuid)){
+        if (!MascotUtils.getMascotState(city_uuid)){
             MessagesManager.sendMessage(sender, Component.text("§cLa mascotte est en immunité forcée"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        if (MascotsManager.getMascotImmunity(city_uuid)){
-            MascotsManager.changeMascotImmunity(city_uuid);
+        if (MascotUtils.getMascotImmunity(city_uuid)){
+            MascotUtils.changeMascotImmunity(city_uuid, false);
         }
-        MascotsManager.setMascotImmunityTime(city_uuid, 0);
+        MascotUtils.setImmunityTime(city_uuid, 0);
     }
 }

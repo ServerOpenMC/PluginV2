@@ -6,6 +6,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.ItemUtils;
@@ -41,7 +42,7 @@ public class MascotsDeadMenu extends Menu {
         Map<Material, Integer> itemCount = new HashMap<>();
         requiredItemsLore.add(Component.text("§bRequière :"));
 
-        int level = MascotsManager.getMascotLevel(city_uuid);
+        int level = MascotUtils.getMascotLevel(city_uuid);
         requiredItems = MascotsLevels.valueOf("level"+level).getRequiredItems();
 
         for (ItemStack item : getOwner().getInventory().getContents()) {

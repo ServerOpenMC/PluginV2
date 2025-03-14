@@ -3,6 +3,7 @@ package fr.openmc.core.utils.database;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.analytics.AnalyticsManager;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyData;
 import fr.openmc.core.features.economy.TransactionsManager;
@@ -28,6 +29,7 @@ public class DatabaseManager {
             ContestManager.init_db(connection);
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
+            MascotsManager.init_db(connection);
             CityTypeCooldown.init_db(connection);
         } catch (SQLException e) {
             e.printStackTrace();

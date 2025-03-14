@@ -6,6 +6,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -64,7 +65,7 @@ public class MascotMenu extends Menu {
         Map<Integer, ItemStack> map = new HashMap<>();
 
         List<Component> requiredAmount = new ArrayList<>();
-        requiredAmount.add(Component.text("Nécessite " + MascotsLevels.valueOf("level" + getMascotLevel(city.getUUID())).getUpgradeCost() + " Croq'Stars"));
+        requiredAmount.add(Component.text("Nécessite " + MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID())).getUpgradeCost() + " Croq'Stars"));
 
         map.put(11, new ItemBuilder(this, getSpawnEgg(mascots), itemMeta -> {
             itemMeta.setDisplayName("Mascottes");
@@ -126,8 +127,8 @@ public class MascotMenu extends Menu {
             }
             if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_UPGRADE)){
                 String city_uuid = city.getUUID();
-                if (hasEnoughCroqStar(getOwner(), MascotsLevels.valueOf("level" + getMascotLevel(city_uuid)))){
-                    removeCrocStar(getOwner(), MascotsLevels.valueOf("level" + getMascotLevel(city_uuid)));
+                if (hasEnoughCroqStar(getOwner(), MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)))){
+                    removeCrocStar(getOwner(), MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)));
                     upgradeMascots(city_uuid, mascots.getUniqueId());
                     getOwner().closeInventory();
                     return;
