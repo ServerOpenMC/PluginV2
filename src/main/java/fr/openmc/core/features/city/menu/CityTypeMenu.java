@@ -135,7 +135,7 @@ public class CityTypeMenu extends Menu {
         city.addPermission(uuid, CPermission.OWNER);
 
         CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
-        MascotsManager.addFreeClaim(15, player);
+        MascotsManager.freeClaim.replace(cityUUID, 15);
 
         player.closeInventory();
 
