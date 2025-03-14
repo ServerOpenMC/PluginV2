@@ -42,7 +42,7 @@ public class MascotsManager {
     public static HashMap<String, Integer> freeClaim = new HashMap<>();
     public static Map<UUID, Location> mascotSpawn = new HashMap<>();
 
-    public MascotsManager (OMCPlugin plugin) {
+    public MascotsManager(OMCPlugin plugin) {
         //changement du spigot.yml pour permettre au mascottes d'avoir 3000 coeurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -64,7 +64,7 @@ public class MascotsManager {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity_active BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
     }
 
-    public static HashMap<String, Integer> getAllFreeClaims () {
+    public static HashMap<String, Integer> getAllFreeClaims() {
         HashMap<String, Integer> freeClaims = new HashMap<>();
 
         String query = "SELECT city_uuid, claim FROM free_claim";
@@ -149,7 +149,7 @@ public class MascotsManager {
         }
     }
 
-    public static void createMascot (String city_uuid, World player_world, Location mascot_spawn) {
+    public static void createMascot(String city_uuid, World player_world, Location mascot_spawn) {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
 
         setMascotsData(mob,null, 300, 300);
@@ -175,7 +175,7 @@ public class MascotsManager {
         MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId());
     }
 
-    public static void removeMascotsFromCity (String city_uuid) {
+    public static void removeMascotsFromCity(String city_uuid) {
         UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
 
         if (mascotUUID!=null){
@@ -197,7 +197,7 @@ public class MascotsManager {
         MascotUtils.removeMascotOfCity(city_uuid);
     }
 
-    public static void giveMascotsEffect (String city_uuid, UUID playerUUID) {
+    public static void giveMascotsEffect(String city_uuid, UUID playerUUID) {
         if (Bukkit.getPlayer(playerUUID) instanceof Player player) {
             if (city_uuid!=null){
                 if (MascotUtils.mascotsContains(city_uuid)){
@@ -216,7 +216,7 @@ public class MascotsManager {
         }
     }
 
-    public static void reviveMascots (String city_uuid) {
+    public static void reviveMascots(String city_uuid) {
         if (MascotUtils.mascotsContains(city_uuid)){
             MascotUtils.changeMascotState(city_uuid, true);
             MascotUtils.changeMascotImmunity(city_uuid, false);
@@ -242,7 +242,7 @@ public class MascotsManager {
         }
     }
 
-    public static void giveChest (Player player) {
+    public static void giveChest(Player player) {
         if (!ItemUtils.hasAvailableSlot(player)){
 
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire : mascotte invoquée à vos coordonées"), Prefix.CITY, MessageType.ERROR, false);
@@ -291,7 +291,7 @@ public class MascotsManager {
         mascotSpawn.put(player.getUniqueId(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
     }
 
-    public static void removeChest (Player player){
+    public static void removeChest(Player player){
         ItemStack specialChest = new ItemStack(Material.CHEST);
         ItemMeta meta = specialChest.getItemMeta();
         if (meta != null){
@@ -312,7 +312,7 @@ public class MascotsManager {
         }
     }
 
-    public static void upgradeMascots (String city_uuid, UUID entityUUID) {
+    public static void upgradeMascots(String city_uuid, UUID entityUUID) {
         LivingEntity mob = (LivingEntity) Bukkit.getEntity(entityUUID);
         if (mob==null){
             return;
@@ -384,7 +384,7 @@ public class MascotsManager {
     }
 
 
-    public static boolean hasEnoughCroqStar (Player player, MascotsLevels mascotsLevels) {
+    public static boolean hasEnoughCroqStar(Player player, MascotsLevels mascotsLevels) {
         String itemNamespace = "city:croqstar";
         int requiredAmount = mascotsLevels.getUpgradeCost();
         int count = 0;

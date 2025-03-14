@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class MascotUtils {
 
-    public static void addMascotForCity (String city_uuid, UUID mascotUUID){
+    public static void addMascotForCity(String city_uuid, UUID mascotUUID){
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 return;
@@ -15,7 +15,7 @@ public class MascotUtils {
         MascotsManager.mascots.add(newMascot);
     }
 
-    public static void removeMascotOfCity (String city_uuid){
+    public static void removeMascotOfCity(String city_uuid){
         for (Mascot mascot : MascotsManager.mascots) {
             if (mascot.getCityUuid().equals(city_uuid)) {
                 MascotsManager.mascots.remove(mascot);
@@ -44,7 +44,7 @@ public class MascotUtils {
         return false;
     }
 
-    public static int getMascotLevel (String city_uuid) {
+    public static int getMascotLevel(String city_uuid) {
         for (Mascot mascot : MascotsManager.mascots) {
             if (mascot.getCityUuid().equals(city_uuid)) {
                 return mascot.getLevel();
@@ -54,7 +54,7 @@ public class MascotUtils {
         return 0;
     }
 
-    public static boolean getMascotState (String city_uuid) {
+    public static boolean getMascotState(String city_uuid) {
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 return mascot.isAlive();
@@ -63,7 +63,7 @@ public class MascotUtils {
         return false;
     }
 
-    public static boolean getMascotImmunity (String city_uuid) {
+    public static boolean getMascotImmunity(String city_uuid) {
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 return mascot.isImmunity();
@@ -72,7 +72,7 @@ public class MascotUtils {
         return false;
     }
 
-    public static long getMascotImmunityTime (String city_uuid) {
+    public static long getMascotImmunityTime(String city_uuid) {
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 return mascot.getImmunity_time();
@@ -81,7 +81,7 @@ public class MascotUtils {
         return 0;
     }
 
-    public static void setMascotLevel (String city_uuid, int level){
+    public static void setMascotLevel(String city_uuid, int level){
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 mascot.setLevel(level);
@@ -90,7 +90,7 @@ public class MascotUtils {
         }
     }
 
-    public static void setMascotUUID (String city_uuid, UUID uuid){
+    public static void setMascotUUID(String city_uuid, UUID uuid){
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 mascot.setMascotUuid(String.valueOf(uuid));
@@ -99,7 +99,7 @@ public class MascotUtils {
         }
     }
 
-    public static void setImmunityTime (String city_uuid, long time) {
+    public static void setImmunityTime(String city_uuid, long time) {
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 mascot.setImmunity_time(time);
@@ -108,7 +108,7 @@ public class MascotUtils {
         }
     }
 
-    public static void changeMascotState (String city_uuid, boolean alive){
+    public static void changeMascotState(String city_uuid, boolean alive){
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 mascot.setAlive(alive);
@@ -117,7 +117,7 @@ public class MascotUtils {
         }
     }
 
-    public static void changeMascotImmunity (String city_uuid, boolean immunity){
+    public static void changeMascotImmunity(String city_uuid, boolean immunity){
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 mascot.setImmunity(immunity);

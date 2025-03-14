@@ -42,7 +42,7 @@ public class MascotsListener implements Listener {
     private final List<UUID> respawnGive = new ArrayList<>();
 
     @SneakyThrows
-    public MascotsListener () {
+    public MascotsListener() {
 
         List<String> city_uuids = CityManager.getAllCityUUIDs();
         if (city_uuids!=null){
@@ -60,7 +60,7 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     @EventHandler
-    void onChestPlace (BlockPlaceEvent e){
+    void onChestPlace(BlockPlaceEvent e) {
         Player player = e.getPlayer();
         World world = Bukkit.getWorld("world");
         World player_world = player.getWorld();
@@ -142,7 +142,7 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     @EventHandler
-    void onMascotTakeDamage (EntityDamageByEntityEvent e){
+    void onMascotTakeDamage(EntityDamageByEntityEvent e) {
         Entity damageEntity = e.getEntity();
         Entity damager = e.getDamager();
         PersistentDataContainer data = damageEntity.getPersistentDataContainer();
@@ -224,7 +224,7 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     @EventHandler
-    void onInteractWithMascots (PlayerInteractEntityEvent e){
+    void onInteractWithMascots(PlayerInteractEntityEvent e) {
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
         PersistentDataContainer data = clickEntity.getPersistentDataContainer();
@@ -318,7 +318,7 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    void onMascotDied (EntityDeathEvent e){
+    void onMascotDied(EntityDeathEvent e) {
         Entity entity = e.getEntity();
         Player killer = e.getEntity().getKiller();
 
@@ -362,7 +362,7 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    void onAxolotlBucket (PlayerBucketEntityEvent e) {
+    void onAxolotlBucket(PlayerBucketEntityEvent e) {
         Entity entity = e.getEntity();
         PersistentDataContainer data = entity.getPersistentDataContainer();
         if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
@@ -443,7 +443,7 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    void onPlayerRespawn (PlayerRespawnEvent e) {
+    void onPlayerRespawn(PlayerRespawnEvent e) {
         Player player = e.getPlayer();
         if (respawnGive.contains(player.getUniqueId())){
             respawnGive.remove(player.getUniqueId());
@@ -452,7 +452,7 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin (PlayerJoinEvent e) {
+    public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city != null){
@@ -462,7 +462,7 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    void onPlayerQuit (PlayerQuitEvent e) {
+    void onPlayerQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
@@ -497,7 +497,7 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
-    void onTimeEnd (Chronometer.ChronometerEndEvent e){
+    void onTimeEnd(Chronometer.ChronometerEndEvent e){
         Entity entity = e.getEntity();
         String group = e.getGroup();
         if (group.equals("mascotsMove") && entity instanceof Player player){
