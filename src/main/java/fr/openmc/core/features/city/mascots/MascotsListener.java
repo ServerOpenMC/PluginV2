@@ -41,7 +41,6 @@ import static fr.openmc.core.utils.chronometer.Chronometer.stopChronometer;
 
 public class MascotsListener implements Listener {
 
-
     public static final Map<UUID, BukkitRunnable> regenTasks = new HashMap<>();
     private final Map<UUID, BukkitRunnable> cooldownTasks = new HashMap<>();
     public static List<String> movingMascots = new ArrayList<>();
@@ -53,12 +52,11 @@ public class MascotsListener implements Listener {
         List<String> city_uuids = getAllCityUUIDs();
         if (city_uuids!=null){
             for (String city_uuid : city_uuids) {
-                UUID mascotsUUID = getMascotsUUIDbyCityUUID(city_uuid);
+                UUID mascotsUUID = getMascotUUIDByCityUUID(city_uuid);
                 if (mascotsUUID==null){continue;}
                 mascotsRegeneration(mascotsUUID);
-                loadMascotsConfig();
-                if (mascotsConfig.getBoolean("mascots." + city_uuid + ".immunity.activate") && mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
-                    long duration = mascotsConfig.getLong("mascots." + city_uuid + ".immunity.time");
+                if (getMascotImmunity(city_uuid) && getMascotState(city_uuid)){
+                    long duration = getMascoteImmunityTime(city_uuid);
                     startImmunityTimer(city_uuid, duration);
                 }
             }
@@ -96,7 +94,7 @@ public class MascotsListener implements Listener {
                     }
                     String city_uuid = city.getUUID();
 
-                    if (mascotsConfig.contains("mascots." + city_uuid) && !movingMascots.contains(city_uuid)){
+                    if (mascotsContains(city_uuid) && !movingMascots.contains(city_uuid)){
                         MessagesManager.sendMessage(player, Component.text("§cVous possédez déjà une mascotte"), Prefix.CITY, MessageType.ERROR, false);
                         player.getInventory().remove(item);
                         e.setCancelled(true);
@@ -126,18 +124,20 @@ public class MascotsListener implements Listener {
                     player_world.getBlockAt(mascot_spawn).setType(Material.AIR);
 
                     if (movingMascots.contains(city_uuid)){
-                        Entity mob = Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
-                        if (mob!=null){
-                            mob.teleport(mascot_spawn);
-                            movingMascots.remove(city_uuid);
-                            Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "mascotte déplacer");
-                            //Cooldown de 5h pour déplacer la mascottes ( se reset au relancement du serv )
-                            startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
-                            return;
+                        if (getMascotUUIDByCityUUID(city_uuid)!=null){
+                            Entity mob = Bukkit.getEntity(getMascotUUIDByCityUUID(city_uuid));
+                            if (mob!=null){
+                                mob.teleport(mascot_spawn);
+                                movingMascots.remove(city_uuid);
+                                Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "mascotte déplacer");
+                                //Cooldown de 5h pour déplacer la mascottes ( se reset au relancement du serv )
+                                startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
+                                return;
+                            }
                         }
                     }
 
-                    spawnMascot(city_uuid, player_world, mascot_spawn);
+                    createMascot(city_uuid, player_world, mascot_spawn);
                     stopChronometer(player, "Mascot:chest", null, "%null%");
                     mascotSpawn.remove(player.getUniqueId());
                 }
@@ -181,7 +181,7 @@ public class MascotsListener implements Listener {
                         return;
                     }
 
-                    if (mascotsConfig.getBoolean("mascots." + mascotsID + ".immunity.activate")){
+                    if (getMascotImmunity(city_uuid)){
                         MessagesManager.sendMessage(player, Component.text("§cCette mascotte est immunisée pour le moment"), Prefix.CITY, MessageType.INFO, false);
                         e.setCancelled(true);
                         return;
@@ -249,8 +249,7 @@ public class MascotsListener implements Listener {
             String city_uuid = city.getUUID();
             if (city.hasPermission(player.getUniqueId(), CPermission.PERMS)){
                 if (mascotsUUID.equals(city_uuid)){
-                    loadMascotsConfig();
-                    if (!mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
+                    if (!getMascotState(city_uuid)){
                         new MascotsDeadMenu(player, city_uuid).open();
                         return;
                     }
@@ -331,12 +330,10 @@ public class MascotsListener implements Listener {
         PersistentDataContainer data = entity.getPersistentDataContainer();
         if (data.has(mascotsKey, PersistentDataType.STRING)){
 
-            loadMascotsConfig();
             String city_uuid = data.get(mascotsKey, PersistentDataType.STRING);
-            String level = mascotsConfig.getString("mascots." + city_uuid + ".level");
-            mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", true);
-            mascotsConfig.set("mascots." + city_uuid + ".alive", false);
-            saveMascotsConfig();
+            int level = getMascotLevel(city_uuid);
+            changeMascotImmunity(city_uuid);
+            changeMascotState(city_uuid);
 
             entity.setCustomName("§lMascotte en attente de §csoins");
             e.setCancelled(true);
@@ -345,7 +342,7 @@ public class MascotsListener implements Listener {
             if (city!=null ) {
                 for (UUID townMember : city.getMembers()){
                     if (Bukkit.getEntity(townMember) instanceof Player player){
-                        for (PotionEffect potionEffect : MascotsLevels.valueOf(level).getBonus()){
+                        for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()){
                             player.removePotionEffect(potionEffect.getType());
                         }
                         giveMascotsEffect(city_uuid, townMember);
@@ -357,16 +354,9 @@ public class MascotsListener implements Listener {
                 }
                 City cityEnemy = CityManager.getPlayerCity(killer.getUniqueId());
                 if (cityEnemy!=null){
-                    int point;
 
-                    if (level!=null){
-                        point = Integer.parseInt(level.replaceAll("[^0-9]", ""));
-                    } else {
-                        point = 1;
-                    }
-
-                    cityEnemy.updatePowerPoints(point);
-                    city.updatePowerPoints(-point);
+                    cityEnemy.updatePowerPoints(level);
+                    city.updatePowerPoints(-level);
 
                     cityEnemy.updateBalance(0.15*city.getBalance()/100);
                     city.updateBalance(-(0.15*city.getBalance()/100));
@@ -402,6 +392,21 @@ public class MascotsListener implements Listener {
     void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         ItemStack item =  event.getCursor();
+        ItemStack clickedItem = event.getCurrentItem();
+
+        // détection pour le bundle
+        if (clickedItem != null && clickedItem.getType() == Material.BUNDLE) {
+            if (event.getClick() == ClickType.RIGHT) {
+                if (item != null && item.getType() != Material.AIR) {
+                    ItemMeta meta = item.getItemMeta();
+                    PersistentDataContainer itemData = meta.getPersistentDataContainer();
+                    if (itemData.has(chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(chestKey, PersistentDataType.STRING))) {
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        }
+
         ItemMeta meta = item.getItemMeta();
         if (meta==null){
             return;
@@ -477,15 +482,17 @@ public class MascotsListener implements Listener {
                 if (data.has(chestKey, PersistentDataType.STRING) && data.get(chestKey, PersistentDataType.STRING)=="id"){
                     player.getInventory().remove(item);
                     if (Chronometer.containsChronometer(player.getUniqueId(), "mascotsMove")){
-                        Entity mob = Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
-                        if (mob!=null){
-                            startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
+                        if (getMascotUUIDByCityUUID(city_uuid)!=null){
+                            Entity mob = Bukkit.getEntity(getMascotUUIDByCityUUID(city_uuid));
+                            if (mob!=null){
+                                startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
+                            }
+                            return;
                         }
-                        return;
                     }
                     if (mascotSpawn.containsKey(player.getUniqueId())){
                         Location loc = mascotSpawn.get(player.getUniqueId());
-                        spawnMascot(city_uuid, loc.getWorld(), loc);
+                        createMascot(city_uuid, loc.getWorld(), loc);
                         mascotSpawn.remove(player.getUniqueId());
                     }
                     break;
@@ -505,11 +512,13 @@ public class MascotsListener implements Listener {
             }
             String city_uuid = city.getUUID();
             movingMascots.remove(city_uuid);
-            Entity mascot = Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
-            if (mascot!=null){
-                startChronometer(mascot,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
+            if (getMascotUUIDByCityUUID(city_uuid)!=null){
+                Entity mascot = Bukkit.getEntity(getMascotUUIDByCityUUID(city_uuid));
+                if (mascot!=null){
+                    startChronometer(mascot,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
+                }
+                return;
             }
-            return;
         }
 
         if (group.equals("Mascot:chest") && entity instanceof Player player){
@@ -520,7 +529,7 @@ public class MascotsListener implements Listener {
             MascotsManager.removeChest(player);
             String city_uuid = city.getUUID();
             Location mascot = mascotSpawn.get(player.getUniqueId());
-            spawnMascot(city_uuid, mascot.getWorld(), mascot);
+            createMascot(city_uuid, mascot.getWorld(), mascot);
             mascotSpawn.remove(player.getUniqueId());
         }
     }
@@ -550,12 +559,11 @@ public class MascotsListener implements Listener {
             PersistentDataContainer data = Bukkit.getEntity(mascotsUUID).getPersistentDataContainer();
             if (data.has(mascotsKey, PersistentDataType.STRING)){
                 String city_uuid = data.get(mascotsKey, PersistentDataType.STRING);
-                loadMascotsConfig();
-                if (!mascotsConfig.contains("mascots." + city_uuid)){
+                if (!mascotsContains(city_uuid)){
                     regenTasks.remove(mascotsUUID);
                     return;
                 }
-                if (!mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){return;}
+                if (!getMascotState(city_uuid)){return;}
             }
         }
         BukkitRunnable task = new BukkitRunnable() {
@@ -590,21 +598,18 @@ public class MascotsListener implements Listener {
             long endTime = duration;
             @Override
             public void run() {
-                loadMascotsConfig();
-                if (!mascotsConfig.contains("mascots." + city_uuid)){
+                if (!mascotsContains(city_uuid)){
                     this.cancel();
                     return;
                 }
                 if (endTime == 0){
-                    mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", false);
-                    mascotsConfig.set("mascots." + city_uuid + ".immunity.time", 0);
-                    saveMascotsConfig();
+                    if (getMascotImmunity(city_uuid))changeMascotImmunity(city_uuid);
+                    setMascotImmunityTime(city_uuid, 0);
                     this.cancel();
                     return;
                 }
                 endTime -= 1;
-                mascotsConfig.set("mascots." + city_uuid + ".immunity.time", endTime);
-                saveMascotsConfig();
+                setMascotImmunityTime(city_uuid, endTime);
             }
         };
         immunityTask.runTaskTimer(OMCPlugin.getInstance(), 1200L, 1200L); // Vérifie chaque minute

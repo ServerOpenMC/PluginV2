@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
+import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -27,15 +28,16 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public class MascotsManager {
 
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
-    public static File mascotsFile;
-    public static YamlConfiguration mascotsConfig;
-    public static Map<String, Integer> freeClaim = new HashMap<>();
     public static Map<UUID, Location> mascotSpawn = new HashMap<>();
 
     public MascotsManager (OMCPlugin plugin) {
@@ -48,33 +50,336 @@ public class MascotsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        mascotsFile = new File(plugin.getDataFolder() + "/data", "mascots.yml");
-        loadMascotsConfig();
-
-        if (mascotsConfig.getConfigurationSection("data")!=null){
-            for (String city_uuid : mascotsConfig.getConfigurationSection("data").getKeys(false)){
-                freeClaim.put(city_uuid, mascotsConfig.getInt("data." + city_uuid));
-            }
-        }
-
-        saveMascotsConfig();
         chestKey = new NamespacedKey(plugin, "mascots_chest");
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
+    }
+
+    public static void init_db(Connection conn) throws SQLException {
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim DOUBLE DEFAULT 0);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity_active BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
+    }
+
+    public static boolean freeClaimContains(String city_uuid) {
+        String query = "SELECT EXISTS (SELECT 1 FROM free_claim WHERE city_uuid = ?) AS existe";
+
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
+            statement.setString(1, city_uuid);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) == 1;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static int getCityFreeClaim (String city_uuid){
+        int freeClaim = 0;
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM free_claim WHERE claim = ? ");
+            statement.setString(1, city_uuid);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                return freeClaim;
+            }
+
+            freeClaim = rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return freeClaim;
+    }
+
+    public static void addFreeClaim (String city_uuid, int claim) {
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                if (getCityFreeClaim(city_uuid)==0){
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO free_claim VALUE (?, ?)");
+                    statement.setString(1, city_uuid);
+                    statement.setInt(2, claim);
+                    statement.executeUpdate();
+                } else {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE free_claim SET claim=? WHERE city_uuid=?;");
+                    statement.setInt(1, claim);
+                    statement.setString(2, city_uuid);
+                    statement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static void removeFreeClaim (String city_uuid, int claim) {
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                if (getCityFreeClaim(city_uuid) == 0 || getCityFreeClaim(city_uuid)-claim <= 0) {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM free_claim WHERE city_uuid = ?");
+                    statement.setString(1, city_uuid);
+                    statement.executeUpdate();
+                } else {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE free_claim SET claim=? WHERE city_uuid=?;");
+                    statement.setInt(1, getCityFreeClaim(city_uuid)-claim);
+                    statement.setString(2, city_uuid);
+                    statement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static void deleteFreeClaim (String city_uuid) {
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM free_claim WHERE city_uuid = ?");
+                statement.setString(1, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static boolean mascotsContains(String city_uuid) {
+        String query = "SELECT EXISTS (SELECT 1 FROM mascots WHERE city_uuid = ?) AS existe";
+
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
+            statement.setString(1, city_uuid);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) == 1;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static void createMascot (String city_uuid, World player_world, Location mascot_spawn) {
+        LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
+
+        setMascotsData(mob,null, 300, 300);
+
+        PersistentDataContainer data = mob.getPersistentDataContainer();
+        // l'uuid de la ville lui est approprié pour l'identifié
+        data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
+
+        // immunité persistente de 7 jours pour la mascotte
+        MascotsListener.startImmunityTimer(city_uuid, 10080);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, ?, true)");
+                statement.setString(1, city_uuid);
+                statement.setString(2, String.valueOf(mob.getUniqueId()));
+                statement.setInt(3, 10080);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static void removeMascotsFromCity (String city_uuid) {
+        UUID mascotUUID = getMascotUUIDByCityUUID(city_uuid);
+
+        if (mascotUUID!=null){
+            LivingEntity mascots = (LivingEntity) Bukkit.getEntity(mascotUUID);
+            if (mascots!=null){
+                mascots.remove();
+            }
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                try {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM mascots WHERE city_uuid = ?");
+                    statement.setString(1, city_uuid);
+                    statement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    public static int getMascotLevel (String city_uuid){
+        int level = 0;
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE level = ? ");
+            statement.setString(1, city_uuid);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                return level;
+            }
+
+            level = rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return level;
+    }
+
+    public static void setMascotLevel (String city_uuid, int level){
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET level=? WHERE city_uuid=?;");
+                statement.setInt(1, level);
+                statement.setString(2, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static UUID getMascotUUIDByCityUUID (String city_uuid) {
+        UUID uuid = null;
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE mascot_uuid = ? ");
+            statement.setString(1, city_uuid);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                return null;
+            }
+
+            uuid = UUID.fromString(rs.getString(1));
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return uuid;
+    }
+
+    public static void setMascotUUID (String city_uuid, UUID uuid){
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET level=? WHERE city_uuid=?;");
+                statement.setString(1, uuid.toString());
+                statement.setString(2, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static boolean getMascotImmunity (String city_uuid) {
+        boolean immunity = false;
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE immunity_active = ? ");
+            statement.setString(1, city_uuid);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                return false;
+            }
+
+            immunity = rs.getBoolean(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return immunity;
+    }
+
+    public static void changeMascotImmunity (String city_uuid) {
+        boolean immunity = !getMascotImmunity(city_uuid);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET immunity_active=? WHERE city_uuid=?;");
+                statement.setBoolean(1, immunity);
+                statement.setString(2, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static long getMascoteImmunityTime (String city_uuid) {
+        long time = 0;
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE immunity_time = ? ");
+            statement.setString(1, city_uuid);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                return time;
+            }
+
+            time = rs.getLong(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return time;
+    }
+
+    public static void setMascotImmunityTime (String city_uuid, long time){
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET immunity_time=? WHERE city_uuid=?;");
+                statement.setLong(1, time);
+                statement.setString(2, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public static boolean getMascotState (String city_uuid) {
+        boolean alive = false;
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM mascots WHERE alive = ? ");
+            statement.setString(1, city_uuid);
+            ResultSet rs = statement.executeQuery();
+
+            if (!rs.next()) {
+                return false;
+            }
+
+            alive = rs.getBoolean(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return alive;
+    }
+
+    public static void changeMascotState (String city_uuid){
+        boolean alive = !getMascotState(city_uuid);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mascots SET immunity_time=? WHERE city_uuid=?;");
+                statement.setBoolean(1, alive);
+                statement.setString(2, city_uuid);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static void giveMascotsEffect (String city_uuid, UUID playerUUID) {
         if (Bukkit.getPlayer(playerUUID) instanceof Player player) {
             if (city_uuid!=null){
-                loadMascotsConfig();
-                if (mascotsConfig.contains("mascots." + city_uuid)){
-                    String level = mascotsConfig.getString("mascots." + city_uuid + ".level");
-                    if (mascotsConfig.getBoolean("mascots." + city_uuid + ".alive")){
-                        for (PotionEffect potionEffect : MascotsLevels.valueOf(level).getBonus()){
+                if (mascotsContains(city_uuid)){
+                    int level = getMascotLevel(city_uuid);
+                    if (getMascotState(city_uuid)){
+                        for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
                             player.addPotionEffect(potionEffect);
                         }
                     } else {
-                        for (PotionEffect potionEffect : MascotsLevels.valueOf(level).getMalus()){
+                        for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getMalus()){
                             player.addPotionEffect(potionEffect);
                         }
                     }
@@ -84,24 +389,26 @@ public class MascotsManager {
     }
 
     public static void reviveMascots (String city_uuid) {
-        loadMascotsConfig();
-        if (mascotsConfig.contains("mascots." + city_uuid)){
-            mascotsConfig.set("mascots." + city_uuid + ".alive", true);
-            mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", false);
-            String level = mascotsConfig.getString("mascots." + city_uuid+ ".level");
-            saveMascotsConfig();
-            LivingEntity entity = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city_uuid));
-            entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
-            entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
-            MascotsListener.mascotsRegeneration(getMascotsUUIDbyCityUUID(city_uuid));
-            City city = CityManager.getCity(city_uuid);
-            if (city==null){return;}
-            for (UUID townMember : city.getMembers()){
-                if (Bukkit.getEntity(townMember) instanceof Player player){
-                    for (PotionEffect potionEffect : MascotsLevels.valueOf(level).getMalus()){
-                        player.removePotionEffect(potionEffect.getType());
+        if (mascotsContains(city_uuid)){
+            changeMascotState(city_uuid);
+            changeMascotImmunity(city_uuid);
+            int level = getMascotLevel(city_uuid);
+            if (getMascotUUIDByCityUUID(city_uuid)!=null){
+                LivingEntity entity = (LivingEntity) Bukkit.getEntity(getMascotUUIDByCityUUID(city_uuid));
+                if (entity!=null){
+                    entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
+                    entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
+                    MascotsListener.mascotsRegeneration(getMascotUUIDByCityUUID(city_uuid));
+                    City city = CityManager.getCity(city_uuid);
+                    if (city==null){return;}
+                    for (UUID townMember : city.getMembers()){
+                        if (Bukkit.getEntity(townMember) instanceof Player player){
+                            for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getMalus()){
+                                player.removePotionEffect(potionEffect.getType());
+                            }
+                            giveMascotsEffect(city_uuid, townMember);
+                        }
                     }
-                    giveMascotsEffect(city_uuid, townMember);
                 }
             }
         }
@@ -119,7 +426,7 @@ public class MascotsManager {
             }
 
             String city_uuid = city.getUUID();
-            spawnMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
+            createMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
             return;
         }
 
@@ -147,7 +454,7 @@ public class MascotsManager {
                 return;
             }
             String city_uuid = city.getUUID();
-            spawnMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
+            createMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
             OMCPlugin.getInstance().getLogger().severe("Erreur lors de l'initialisation de l'ItemMeta du coffre des mascottes");
             return;
         }
@@ -184,16 +491,12 @@ public class MascotsManager {
         }
         if (mob.getPersistentDataContainer().has(mascotsKey, PersistentDataType.STRING)){
 
-            loadMascotsConfig();
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf((String) mascotsConfig.get("mascots." + city_uuid +".level"));
+            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + getMascotLevel(city_uuid));
             double lastHealth = mascotsLevels.getHealth();
             if (mascotsLevels != MascotsLevels.level10){
 
-                int nextLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", ""));
-                nextLevel += 1;
-                mascotsConfig.set("mascots." + city_uuid + ".level", String.valueOf(MascotsLevels.valueOf("level"+nextLevel)));
-                saveMascotsConfig();
-                mascotsLevels = MascotsLevels.valueOf((String) mascotsConfig.get("mascots." + city_uuid +".level"));
+                setMascotLevel(city_uuid, getMascotLevel(city_uuid)+1);
+                mascotsLevels = MascotsLevels.valueOf("level" + getMascotLevel(city_uuid));
 
                 try {
                     int maxHealth = mascotsLevels.getHealth();
@@ -233,33 +536,9 @@ public class MascotsManager {
 
             if (mascotsCustomUUID != null) {
                 newData.set(mascotsKey, PersistentDataType.STRING, mascotsCustomUUID);
-                loadMascotsConfig();
-                mascotsConfig.set("mascots." + mascotsCustomUUID + ".uuid", String.valueOf(newMascots.getUniqueId()));
-                saveMascotsConfig();
+                setMascotUUID(mascotsCustomUUID, newMascots.getUniqueId());
             }
         }
-    }
-
-
-    public static void spawnMascot(String city_uuid, World player_world, Location mascot_spawn) {
-
-        LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
-
-        setMascotsData(mob,null, 300, 300);
-
-        PersistentDataContainer data = mob.getPersistentDataContainer();
-        // l'uuid de la ville lui est approprié pour l'identifié
-        data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
-
-        loadMascotsConfig();
-        mascotsConfig.set("mascots." + city_uuid + ".level", String.valueOf(MascotsLevels.level1));
-        mascotsConfig.set("mascots." + city_uuid + ".uuid", String.valueOf(mob.getUniqueId()));
-        mascotsConfig.set("mascots." + city_uuid + ".immunity.activate", true);
-        mascotsConfig.set("mascots." + city_uuid + ".immunity.time", 10080); // en minute
-        mascotsConfig.set("mascots." + city_uuid + ".alive", true);
-        saveMascotsConfig();
-        // immunité persistente de 7 jours pour la mascotte
-        MascotsListener.startImmunityTimer(city_uuid, 10080);
     }
 
     private static void setMascotsData(LivingEntity mob, String customName, double maxHealth, double baseHealth) {
@@ -274,74 +553,6 @@ public class MascotsManager {
         mob.setCustomName(Objects.requireNonNullElseGet(customName, () -> "§lMascotte §c" + mob.getHealth() + "/300❤"));
 
         mob.setCustomNameVisible(true);
-    }
-
-    public static void removeMascotsFromCity (String city_uuid) {
-        loadMascotsConfig();
-        UUID mascotUUID = getMascotsUUIDbyCityUUID(city_uuid);
-        OMCPlugin.getInstance().getLogger().info("" + mascotUUID);
-        if (mascotsConfig.contains("mascots." + city_uuid)){
-            if (mascotUUID!=null){
-                LivingEntity mascots = (LivingEntity) Bukkit.getEntity(mascotUUID);
-                if (mascots!=null){
-                    mascots.remove();
-                }
-            }
-
-            OMCPlugin.getInstance().getLogger().info("mascots retirer");
-            mascotsConfig.set("mascots." + city_uuid, null);
-            saveMascotsConfig();
-        }
-    }
-
-    public static UUID getMascotsUUIDbyCityUUID(String city_uuid){
-        if (city_uuid==null){
-            return null;
-        }
-        loadMascotsConfig();
-        if (!mascotsConfig.contains("mascots." + city_uuid)){
-            return null;
-        }
-        String uuid = mascotsConfig.getString("mascots." + city_uuid + ".uuid");
-        if (uuid==null){
-            return null;
-        }
-        return UUID.fromString(uuid);
-    }
-
-    public static void addFreeClaim (int claim, Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-        String city_uuid = city.getUUID();
-        if (!freeClaim.containsKey(city_uuid)){
-            freeClaim.put(city_uuid, claim);
-            return;
-        }
-        freeClaim.replace(city_uuid, freeClaim.get(city_uuid)+claim);
-        MessagesManager.sendMessage(player, Component.text(claim + " claims gratuits ajoutés"), Prefix.CITY, MessageType.SUCCESS, false);
-    }
-
-    public static void removeFreeClaim (int claim, Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-        String city_uuid = city.getUUID();
-        if (!freeClaim.containsKey(city_uuid)){
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOFREECLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-        if (freeClaim.get(city_uuid)-claim <= 0){
-            freeClaim.remove(city_uuid);
-            MessagesManager.sendMessage(player, Component.text("Tous les claims gratuits ont été retirés"), Prefix.CITY, MessageType.SUCCESS, false);
-            return;
-        }
-        freeClaim.replace(city_uuid, freeClaim.get(city_uuid)-claim);
-        MessagesManager.sendMessage(player, Component.text(claim + " claims gratuits retirés"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
 
@@ -387,47 +598,6 @@ public class MascotsManager {
                     }
                 }
             }
-        }
-    }
-
-    public static void loadMascotsConfig() {
-        if(!mascotsFile.exists()) {
-            mascotsFile.getParentFile().mkdirs();
-            OMCPlugin.getInstance().saveResource("data/mascots.yml", false);
-        }
-
-        mascotsConfig = YamlConfiguration.loadConfiguration(mascotsFile);
-    }
-
-    public static void saveMascotsConfig() {
-        try {
-            mascotsConfig.save(mascotsFile);
-            mascotsConfig = YamlConfiguration.loadConfiguration(mascotsFile);
-        } catch (IOException e) {
-            OMCPlugin.getInstance().getLogger().severe("Impossible de sauvegarder le fichier de configuration des mascots");
-            e.printStackTrace();
-        }
-    }
-
-    public static void saveFreeClaimMap() {
-        try {
-            loadMascotsConfig();
-            if (mascotsConfig.contains("data")){
-                mascotsConfig.set("data", null);
-                for (String city_uuid : freeClaim.keySet()){
-                    City city = CityManager.getCity(city_uuid);
-                    if (city==null){
-                        continue;
-                    }
-                    if (freeClaim.get(city_uuid)!=null){
-                        mascotsConfig.set("data." + city_uuid, freeClaim.get(city_uuid));
-                        saveMascotsConfig();
-                    }
-                }
-            }
-
-        } catch (Exception e){
-            e.printStackTrace();
         }
     }
 }

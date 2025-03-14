@@ -30,10 +30,11 @@ public class CityMessages {
         int power = CityManager.getCityPowerPoints(city.getUUID());
 
         String type = CityManager.getCityType(city.getUUID());
-        LivingEntity mascot = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city.getUUID()));
-        if (!mascotsConfig.getBoolean("mascots." + city.getUUID() + "alive")){
-            mascotLife = String.valueOf(mascot.getHealth());
-        }
+        if (getMascotUUIDByCityUUID(city.getUUID())!=null){
+            LivingEntity mascot = (LivingEntity) Bukkit.getEntity(getMascotUUIDByCityUUID(city.getUUID()));
+            if (!getMascotState(city.getUUID())){
+                mascotLife = String.valueOf(mascot.getHealth());
+            }}
 
         sender.sendMessage(
                 Component.text("--- ").color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.BOLD, false).append(
@@ -56,8 +57,8 @@ public class CityMessages {
         } else {
             sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
         }
-        if (freeClaim.containsKey(city.getUUID())){
-            sendLine(sender, "Claim gratuit", String.valueOf(freeClaim.get(city.getUUID())));
+        if (freeClaimContains(city.getUUID())){
+            sendLine(sender, "Claim gratuit", String.valueOf(getCityFreeClaim(city.getUUID())));
         }
     }
 }

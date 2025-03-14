@@ -3,9 +3,15 @@ package fr.openmc.core.features.city.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -35,9 +41,8 @@ public class MascotsDeadMenu extends Menu {
         Map<Material, Integer> itemCount = new HashMap<>();
         requiredItemsLore.add(Component.text("§bRequière :"));
 
-        MascotsManager.loadMascotsConfig();
-        String level = MascotsManager.mascotsConfig.getString("mascots." + city_uuid + ".level");
-        requiredItems = MascotsLevels.valueOf(level).getRequiredItems();
+        int level = MascotsManager.getMascotLevel(city_uuid);
+        requiredItems = MascotsLevels.valueOf("level"+level).getRequiredItems();
 
         for (ItemStack item : getOwner().getInventory().getContents()) {
             if (item == null) continue;
@@ -79,11 +84,21 @@ public class MascotsDeadMenu extends Menu {
             itemMeta.setDisplayName("Soigner");
             itemMeta.lore(requiredItemsLore);
         }).setOnClick(inventoryClickEvent -> {
-            if (hasRequiredItems(getOwner(), requiredItems)) {
-                removeRequiredItems(getOwner(), requiredItems);
-                MascotsManager.reviveMascots(city_uuid);
+            City city = CityManager.getCity(city_uuid);
+            if (city == null) {
+                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 getOwner().closeInventory();
+                return;
             }
+            if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_HEAL)) {
+                if (hasRequiredItems(getOwner(), requiredItems)) {
+                    removeRequiredItems(getOwner(), requiredItems);
+                    MascotsManager.reviveMascots(city_uuid);
+                }
+            } else {
+                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            }
+            getOwner().closeInventory();
         }));
 
         return map;

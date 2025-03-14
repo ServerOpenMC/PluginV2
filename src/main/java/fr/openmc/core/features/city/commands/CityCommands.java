@@ -340,18 +340,15 @@ public class CityCommands {
 
         int price = calculatePrice(city.getChunks().size());
 
-        if (!MascotsManager.freeClaim.containsKey(city.getUUID())) {
+        if (!MascotsManager.freeClaimContains(city.getUUID())) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
         }
 
-        if (MascotsManager.freeClaim.containsKey(city.getUUID())){
-            MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
-            if (MascotsManager.freeClaim.get(city.getUUID())<= 0){
-                MascotsManager.freeClaim.remove(city.getUUID());
-            }
+        if (MascotsManager.freeClaimContains(city.getUUID())){
+            MascotsManager.removeFreeClaim(city.getUUID(),1);
         } else {
             city.updateBalance((double) (price*-1));
         }
@@ -477,6 +474,11 @@ public class CityCommands {
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
+
+        if (!city.hasPermission(sender.getUniqueId(), CPermission.TYPE)){
+            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
         sender.sendMessage("§cEs-tu sûr de vouloir changer le type de ta ville ?");
         sender.sendMessage("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX");
         sender.sendMessage("§cSi tu en es sûr fais §n/city chgconfirm");
@@ -493,9 +495,13 @@ public class CityCommands {
             return;
         }
 
-        MascotsManager.loadMascotsConfig();
-        if (MascotsManager.mascotsConfig.contains("mascots." + city.getUUID())){
-            if (!MascotsManager.mascotsConfig.getBoolean("mascots." + city.getUUID() + "alive")){
+        if (!city.hasPermission(sender.getUniqueId(), CPermission.TYPE)){
+            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (MascotsManager.mascotsContains(city.getUUID())){
+            if (!MascotsManager.getMascotState(city.getUUID())){
                 MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -508,38 +514,40 @@ public class CityCommands {
         CityManager.changeCityType(city.getUUID());
         CityTypeCooldown.setCooldown(city.getUUID());
 
-        LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotsManager.getMascotsUUIDbyCityUUID(city.getUUID()));
-        MascotsLevels mascotsLevels = MascotsLevels.valueOf((String) MascotsManager.mascotsConfig.get("mascots." + city.getUUID() +".level"));
+        if (MascotsManager.getMascotUUIDByCityUUID(city.getUUID())!=null){
+            LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotsManager.getMascotUUIDByCityUUID(city.getUUID()));
+            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotsManager.getMascotLevel(city.getUUID()));
 
-        for (UUID townMember : city.getMembers()){
-            if (Bukkit.getPlayer(townMember) instanceof Player player){
-                for (PotionEffect potionEffect : mascotsLevels.getBonus()){
-                    player.removePotionEffect(potionEffect.getType());
+            for (UUID townMember : city.getMembers()){
+                if (Bukkit.getPlayer(townMember) instanceof Player player){
+                    for (PotionEffect potionEffect : mascotsLevels.getBonus()){
+                        player.removePotionEffect(potionEffect.getType());
+                    }
+                    MascotsManager.giveMascotsEffect(city.getUUID(), player.getUniqueId());
                 }
-                MascotsManager.giveMascotsEffect(city.getUUID(), player.getUniqueId());
+            }
+
+            double lastHealth = mascotsLevels.getHealth();
+            int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", ""))-2;
+            if (newLevel < 1){
+                newLevel = 1;
+            }
+            MascotsManager.setMascotLevel(city.getUUID(), newLevel);
+            mascotsLevels = MascotsLevels.valueOf("level" + MascotsManager.getMascotLevel(city.getUUID()));
+
+            try {
+                int maxHealth = mascotsLevels.getHealth();
+                mob.setMaxHealth(maxHealth);
+                if (mob.getHealth() >= lastHealth){
+                    mob.setHealth(maxHealth);
+                }
+                double currentHealth = mob.getHealth();
+                mob.setCustomName("§lMascotte §c" + currentHealth + "/" + maxHealth + "❤");
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
         }
 
-        double lastHealth = mascotsLevels.getHealth();
-        int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", ""))-2;
-        if (newLevel < 1){
-            newLevel = 1;
-        }
-        MascotsManager.mascotsConfig.set("mascots." + city.getUUID() + ".level", String.valueOf(MascotsLevels.valueOf("level"+newLevel)));
-        MascotsManager.saveMascotsConfig();
-        mascotsLevels = MascotsLevels.valueOf((String)  MascotsManager.mascotsConfig.get("mascots." + city.getUUID() +".level"));
-
-        try {
-            int maxHealth = mascotsLevels.getHealth();
-            mob.setMaxHealth(maxHealth);
-            if (mob.getHealth() >= lastHealth){
-                mob.setHealth(maxHealth);
-            }
-            double currentHealth = mob.getHealth();
-            mob.setCustomName("§lMascotte §c" + currentHealth + "/" + maxHealth + "❤");
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
     }
 
     public static void startBalanceCooldown(String city_uuid) {
