@@ -2,6 +2,7 @@ package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.AywenCap;
 import fr.openmc.core.features.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -56,6 +57,7 @@ public final class OMCPlugin extends JavaPlugin {
         new ListenersManager();
         new EconomyManager();
         new MailboxManager();
+        new AywenCap();
         new ScoreboardManager();
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
