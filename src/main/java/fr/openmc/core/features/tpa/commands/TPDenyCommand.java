@@ -1,5 +1,6 @@
-package fr.openmc.core.features.tpa;
+package fr.openmc.core.features.tpa.commands;
 
+import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -13,7 +14,7 @@ public class TPDenyCommand {
 	@Command("tpdeny")
 	@CommandPermission("ayw.command.tpa")
 	public void tpDeny(Player player) {
-		if (!TPAQueue.QUEUE.hasPendingRequest(player)) {
+		if (! TPAQueue.QUEUE.hasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}

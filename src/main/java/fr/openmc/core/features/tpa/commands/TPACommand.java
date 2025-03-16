@@ -1,6 +1,7 @@
-package fr.openmc.core.features.tpa;
+package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -12,7 +13,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPACommand {
 	
-	private OMCPlugin plugin;
+	private final OMCPlugin plugin;
 	
 	public TPACommand(OMCPlugin plugin) {
 		this.plugin = plugin;

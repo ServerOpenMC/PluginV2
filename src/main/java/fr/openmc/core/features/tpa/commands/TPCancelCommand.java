@@ -1,5 +1,6 @@
-package fr.openmc.core.features.tpa;
+package fr.openmc.core.features.tpa.commands;
 
+import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
