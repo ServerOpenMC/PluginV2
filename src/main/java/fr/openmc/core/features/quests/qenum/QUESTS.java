@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.qenum;
 
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -10,7 +11,7 @@ public enum QUESTS {
 	BREAK_DIAMOND(Material.DIAMOND, new int[]{100, 400, 800}, TYPE.BREAK, "Richou", "diamants", REWARD.MONEY, new int[]{2500, 5000, 10000}),
 	KILL_PLAYERS(Material.IRON_SWORD, new int[]{5, 20, 30}, TYPE.KILL, "Le pro du pvp", "joueurs", REWARD.MONEY, new int[]{2500, 5000, 10000}),
 	KILL_WARDENS(Material.SCULK_SHRIEKER, new int[]{1, 2}, TYPE.KILL, "L'explorateur des profondeurs", "wardens", REWARD.MONEY, new int[]{10000, 20000}),
-	CRAFT_RTP_WAND(Material.ENDER_PEARL, new int[]{1}, TYPE.CRAFT, "Attention, ça va aller loin ...", "RTP wand", REWARD.MONEY, new int[]{500}),
+	// CRAFT_RTP_WAND(Material.ENDER_PEARL, new int[]{1}, TYPE.CRAFT, "Attention, ça va aller loin ...", "RTP wand", REWARD.MONEY, new int[]{500}),
 	EAT_KEBAB(Material.COOKED_BEEF, new int[]{10, 40, 80, 200}, TYPE.EAT, "Miam Miam", "Kebabs", REWARD.MONEY, new int[]{40, 80, 160, 1000}),
 	CRAFT_KEBAB(Material.BREAD, new int[]{1}, TYPE.CRAFT, "Kebabier un jour, Kebabier toujours", "Kebab", REWARD.MONEY, new int[]{62}),
 	WALK_BLOCKS(Material.LEATHER_BOOTS, new int[]{20000, 40000, 100000}, TYPE.WALK, "Le randonneur", "block", REWARD.MONEY, new int[]{10000, 15000, 20000}),
@@ -21,9 +22,11 @@ public enum QUESTS {
 	KILL_ZOMBIE(Material.ZOMBIE_HEAD, new int[]{1000, 4000, 10000}, TYPE.KILL, "Apocalypse zombie ?", " Zombies", REWARD.MONEY, new int[]{8000, 10000, 15000}),
 	PLACE_BLOCK(Material.GRASS_BLOCK, new int[]{2000, 8000, 40000}, TYPE.PLACE, "Builder de l'extreme !", "blocks", REWARD.MONEY, new int[]{250, 1000, 2000}),
 	MONEY_500K(Material.DIAMOND_BLOCK, new int[]{500000}, TYPE.MONEY, "Devient Elon", "$", REWARD.ITEMS, new int[]{1}, new ItemStack(Material.NETHERITE_INGOT)),
-	HOLY_BREAD(Material.BREAD, new int[]{1}, TYPE.FISH, "Le pain sacré", "relique du pain sacré pendant l'event \"Pêche miraculeuse\"", REWARD.ITEMS, new int[]{16}, new ItemStack(Material.DIAMOND_ORE)),
+	// HOLY_BREAD(Material.BREAD, new int[]{1}, TYPE.FISH, "Le pain sacré", "relique du pain sacré pendant l'event \"Pêche miraculeuse\"", REWARD.ITEMS, new int[]{16}, new ItemStack(Material.DIAMOND_ORE)),
 	SAVE_THE_EARTH(Material.OAK_SAPLING, new int[]{10, 40, 100, 1000}, TYPE.PLACE, "Sauvons la planète !", "arbres et les faire grandir avec des poudres d'os", REWARD.ITEMS, new int[]{32, 64, 128, 256}, new ItemStack(Material.OAK_LOG)),
-	CRAFT_ELEVATOR(Material.PAPER, new int[]{2, 8, 24}, TYPE.CRAFT, "Dépasse tous les niveaux !", "élévateurs", REWARD.MONEY, new int[]{200, 400, 800});
+	// CRAFT_ELEVATOR(Material.PAPER, new int[]{2, 8, 24}, TYPE.CRAFT, "Dépasse tous les niveaux !", "élévateurs", REWARD.MONEY, new int[]{200, 400, 800}),
+	IN_CITY(Material.CHEST, new int[]{1}, TYPE.OTHER, "Citoyen", "Créer ou rejoindre une ville", REWARD.MONEY, new int[]{3000}),
+	WIN_CONTEST(Material.NAUTILUS_SHELL, new int[]{1, 5, 10}, TYPE.OTHER, "Choisir son camp", "Gagner des contests",  REWARD.ITEMS, new int[]{5, 20, 50}, CustomItemRegistry.getByName("omc_contest:contest_shell").getBest());
 	
 	private final Material material;
 	private final int[] qtTiers, rewardsQtTier;

@@ -63,7 +63,6 @@ public class QuestsUtils {
 				}
 			}
 			lore.add("§7");
-			lore.add(progressBar + " §7" + progressPercent + "%");
 			
 			meta.setLore(lore);
 			item.setItemMeta(meta);

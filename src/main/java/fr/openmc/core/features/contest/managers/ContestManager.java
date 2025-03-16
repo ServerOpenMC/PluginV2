@@ -18,6 +18,8 @@ import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
 import fr.openmc.core.features.contest.listeners.ContestListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.features.quests.qenum.QUESTS;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -489,7 +491,9 @@ public class ContestManager {
 
                 money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
-
+                
+                QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.WIN_CONTEST, 1, "contest gagné(s)");
+                
             } else {
                 int moneyMin = 2000;
                 int moneyMax = 4000;

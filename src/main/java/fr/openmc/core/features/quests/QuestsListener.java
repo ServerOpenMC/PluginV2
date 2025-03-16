@@ -3,6 +3,8 @@ package fr.openmc.core.features.quests;
 import dev.lone.itemsadder.api.CustomStack;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.events.CityCreationEvent;
+import fr.openmc.core.features.city.events.MemberJoinEvent;
 import fr.openmc.core.features.quests.qenum.QUESTS;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,7 +20,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
-import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -140,15 +141,18 @@ public class QuestsListener implements Listener {
 	public void onCraftItem(CraftItemEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		
-		if (getItemsName(event.getRecipe().getResult()).equals("wand:rtpwand")) {
+		/*if (getItemsName(event.getRecipe().getResult()).equals("wand:rtpwand")) {
 			QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.CRAFT_RTP_WAND, 1, "RTP WAND crafté");
-		} else if (getItemsName(event.getRecipe().getResult()).equals("aywen:kebab")) {
-			QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.CRAFT_KEBAB, 1, "kebab crafté");
-		} else if (getItemsName(event.getRecipe().getResult()).equals("minecraft:cake")) {
-			QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.CRAFT_CAKE, 1, "gateau crafté.");
-		} else if (getItemsName(event.getRecipe().getResult()).equals("gexary:elevator")) {
-			QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.CRAFT_ELEVATOR, 1, "Elevator crafté");
 		}
+		else*/ if (getItemsName(event.getRecipe().getResult()).equals("aywen:kebab")) {
+			QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.CRAFT_KEBAB, 1, "kebab crafté");
+		}
+		else if (getItemsName(event.getRecipe().getResult()).equals("minecraft:cake")) {
+			QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.CRAFT_CAKE, 1, "gateau crafté.");
+		}
+		/*else if (getItemsName(event.getRecipe().getResult()).equals("gexary:elevator")) {
+			QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.CRAFT_ELEVATOR, 1, "Elevator crafté");
+		}*/
 		
 	}
 	
@@ -173,7 +177,7 @@ public class QuestsListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.MONITOR)
+	/*@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerFish(PlayerFishEvent event) {
 		Player player = event.getPlayer();
 		Item caught = (Item) event.getCaught();
@@ -185,7 +189,20 @@ public class QuestsListener implements Listener {
 		if (fishedItem.getType() == Material.BREAD && fishedItem.getItemMeta().getCustomModelData() == 42) {
 			QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.HOLY_BREAD, 1, "relique du pain sacré pêchée");
 		}
+	}*/
+	
+	@EventHandler
+	public void onPlayerCreateCity(CityCreationEvent e) {
+		Player player = e.getOwner();
+		QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.IN_CITY, 1, "ville créée");
 	}
+	
+	@EventHandler
+	public void onPlayerJoinCity(MemberJoinEvent e) {
+		Player player = (Player) e.getPlayer();
+		QuestsManager.manageQuestsPlayer(player.getUniqueId(), QUESTS.IN_CITY, 1, "ville rejointe");
+	}
+	
 	
 	private String getItemsName(ItemStack item) {
 		CustomStack customstack = CustomStack.byItemStack(item);
@@ -195,5 +212,4 @@ public class QuestsListener implements Listener {
 			return item.getType().name().toLowerCase();
 		}
 	}
-	
 }
