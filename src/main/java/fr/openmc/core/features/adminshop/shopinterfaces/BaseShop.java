@@ -143,30 +143,30 @@ public abstract class BaseShop extends Menu {
         // Lore
         switch (item.getType()) {
             case BUY -> {
-                lore.add("§aAcheter pour §e" + item.getPrize() + "$ §7/u");
+                lore.add("§aAcheter pour §e" + item.getBuyPrize() + "$ §7/u");
                 lore.add("§7");
                 lore.add("§8■ §7Click gauche pour §aacheter");
             }
             case SELL -> {
-                lore.add("§cVendre pour §e" + item.getPrize() + "$ §7/u");
+                lore.add("§cVendre pour §e" + item.getSellPrize() + "$ §7/u");
                 lore.add("§7");
                 lore.add("§8■ §7Click droit pour §cvendre");
             }
             case SELL_BUY -> {
-                lore.add("§aAcheter pour §e" + item.getPrize() + "$ §7/u");
-                lore.add("§cVendre pour §e" + (item.getPrize() / 2) + "$ §7/u");
+                lore.add("§aAcheter pour §e" + item.getBuyPrize() + "$ §7/u");
+                lore.add("§cVendre pour §e" + item.getSellPrize() + "$ §7/u");
                 lore.add("§7");
                 lore.add("§8■ §7Click gauche pour §aacheter");
                 lore.add("§8■ §7Click droit pour §cvendre");
             }
             case LOG -> {
-                lore.add("§aAcheter pour §e" + item.getPrize() + "$ §7/u");
+                lore.add("§aAcheter pour §e" + item.getBuyPrize() + "$ §7/u");
                 lore.add("§7");
                 lore.add("§8■ §7Click droit pour plus de variantes.");
                 lore.add("§8■ §7Click gauche pour §aacheter.");
             }
             case GLASS_PANE, GLASS, TERRACOTTA, DYE -> {
-                lore.add("§aAcheter pour §e" + item.getPrize() + "$ §7/u");
+                lore.add("§aAcheter pour §e" + item.getBuyPrize() + "$ §7/u");
                 lore.add("§7");
                 lore.add("§8■ §7Click droit pour plus de couleur.");
                 lore.add("§8■ §7Click gauche pour §aacheter.");

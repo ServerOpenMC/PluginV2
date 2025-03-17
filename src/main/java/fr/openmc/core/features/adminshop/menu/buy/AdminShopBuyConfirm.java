@@ -61,7 +61,7 @@ public class AdminShopBuyConfirm extends Menu {
 
         content.put(4, new ItemBuilder(this, material, itemMeta -> {
             itemMeta.setDisplayName(items.getName());
-            double finalPrice = items.getPrize() * quantity;
+            double finalPrice = items.getBuyPrize() * quantity;
             itemMeta.setLore(Arrays.asList(
                     "§7Quantité: §e" + quantity,
                     "§7Prix total: §e" + String.format("%.2f", finalPrice) + "$"
@@ -77,7 +77,7 @@ public class AdminShopBuyConfirm extends Menu {
     private void confirmPurchase() {
         Player player = getOwner();
         EconomyManager economy = EconomyManager.getInstance();
-        double totalPrice = items.getPrize() * quantity;
+        double totalPrice = items.getBuyPrize() * quantity;
 
         if (!hasEnoughSpace(player, material, quantity)) {
             player.sendMessage("§cVous n'avez pas assez d'espace dans votre inventaire !");

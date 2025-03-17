@@ -4,9 +4,9 @@ import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.MenuLib;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.adminshop.menu.category.colored.COLOR;
-import fr.openmc.core.features.adminshop.menu.category.colored.LEAVES;
-import fr.openmc.core.features.adminshop.menu.category.colored.LOGTYPES;
+import fr.openmc.core.features.adminshop.menu.category.colored.Color;
+import fr.openmc.core.features.adminshop.menu.category.colored.Leaves;
+import fr.openmc.core.features.adminshop.menu.category.colored.LogTypes;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,7 +51,7 @@ public class ColoredShop extends Menu {
 
         if (materialType.equalsIgnoreCase("log")){
 
-            for (LOGTYPES item : LOGTYPES.values()) {
+            for (LogTypes item : LogTypes.values()) {
 
                 if (Material.getMaterial(item.named() + "_" + materialType) == null){
                     content.put(item.getSlots(), new ItemBuilder(this, Objects.requireNonNull(Material.getMaterial(item.named() + "_STEM")), itemMeta ->  {
@@ -69,7 +69,7 @@ public class ColoredShop extends Menu {
                 );
             }
         } else if (materialType.equalsIgnoreCase("leaves")) {
-            for (LEAVES item : LEAVES.values()){
+            for (Leaves item : Leaves.values()){
                 content.put(item.getSlots(), new ItemBuilder(this, Objects.requireNonNull(Material.getMaterial(item.named() + "_" + materialType)), itemMeta ->  {
                             itemMeta.setDisplayName("§7" + materialName + " " + item.getName());
                             itemMeta.setLore(BaseShop.getStrings(item));
@@ -78,7 +78,7 @@ public class ColoredShop extends Menu {
             }
         } else {
 
-            for(COLOR item : COLOR.values()) {
+            for(Color item : Color.values()) {
 
                 content.put(item.getSlots(), new ItemBuilder(this, Objects.requireNonNull(Material.getMaterial(item.named() + "_" + materialType.toUpperCase())), itemMeta -> {
                             itemMeta.setDisplayName("§7" + materialName + " " + item.getName());

@@ -6,7 +6,7 @@ import revxrsal.commands.annotation.Command;
 
 public class AdminShopCommand {
     @Command({"adminshop", "adm"})
-    public void onpenAdminShop (Player owner) {
+    public void openAdminShop(Player owner) {
         new AdminShopMenu(owner).open();
     }
 }

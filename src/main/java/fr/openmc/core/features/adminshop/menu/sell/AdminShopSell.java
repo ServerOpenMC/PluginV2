@@ -2,7 +2,6 @@ package fr.openmc.core.features.adminshop.menu.sell;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.MenuLib;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.menu.category.ShopType;
@@ -33,7 +32,7 @@ public class AdminShopSell extends Menu {
         super(player);
         this.items = items;
         this.number = new AtomicInteger(1);
-        this.prize = new AtomicDouble(items.getPrize());
+        this.prize = new AtomicDouble(items.getSellPrize());
         this.material = material;
     }
 
@@ -104,10 +103,7 @@ public class AdminShopSell extends Menu {
     }
 
     private void updateItemMeta(ItemMeta itemMeta) {
-        double prizes;
-        if(items.getType() == ShopType.SELL_BUY) prizes = (prize.get() / 2);
-        else prizes = prize.get();
-        double finalPrize = prizes * number.get();
+        double finalPrize = prize.get() * number.get();
         itemMeta.setLore(Arrays.asList(
                 "  §8■ §7Quantité: §e" + number.get(),
                 "  §8■ §7Prix final: §e" + String.format("%.2f", finalPrize) + "$",

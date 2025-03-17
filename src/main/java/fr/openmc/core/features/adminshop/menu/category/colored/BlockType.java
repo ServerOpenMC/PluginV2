@@ -10,9 +10,9 @@ public enum BlockType {
     GLASS_PANE("Vitre"),
     TERRACOTTA("Terre cuite"),
     WOOL("Laine"),
-    LOG("bûche"),
-    LEAVES("feuilles"),
-    DYE("teinture"),
+    LOG("Bûche"),
+    LEAVES("Feuilles"),
+    DYE("Teinture"),
     ;
 
     private final String name;

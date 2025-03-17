@@ -31,7 +31,7 @@ public class AdminShopBuy extends Menu {
         super(player);
         this.items = items;
         this.number = new AtomicInteger(1);
-        this.prize = new AtomicDouble(items.getPrize());
+        this.prize = new AtomicDouble(items.getBuyPrize());
         this.material = material;
     }
 

@@ -60,9 +60,8 @@ public class AdminShopSellConfirm extends Menu {
             }
 
             EconomyManager economy = EconomyManager.getInstance();
-            double totalAmount;
-            if(items.getType() == ShopType.SELL_BUY) totalAmount = (items.getPrize() / 2) * quantity;
-            else totalAmount = items.getPrize() * quantity;
+            double totalAmount = items.getSellPrize() * quantity;
+
 
             ItemUtils.removeItemsFromInventory(getOwner(), Objects.requireNonNull(Material.getMaterial(material == null ? items.named() : items.named() + "_" + material)), quantity);
             economy.addBalance(getOwner().getUniqueId(), totalAmount);
@@ -75,8 +74,8 @@ public class AdminShopSellConfirm extends Menu {
         content.put(4, new ItemBuilder(this, Objects.requireNonNull(Material.getMaterial(material == null ? items.named() : items.named() + "_" + material)), itemMeta -> {
             itemMeta.setDisplayName(items.getName());
             double prizes = 0;
-            if(items.getType() == ShopType.SELL_BUY) prizes = (items.getPrize() / 2);
-            else prizes = items.getPrize();
+            if(items.getType() == ShopType.SELL_BUY) prizes = (items.getBuyPrize() / 2);
+            else prizes = items.getBuyPrize();
             double finalPrize = prizes * quantity;
             itemMeta.setLore(Arrays.asList(
                     "§7Quantité: §e" + quantity,
