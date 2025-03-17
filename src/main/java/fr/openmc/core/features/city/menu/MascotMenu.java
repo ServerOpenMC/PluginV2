@@ -141,6 +141,17 @@ public class MascotMenu extends Menu {
             getOwner().closeInventory();
         }));
 
+        map.put(26, new ItemBuilder(this,Material.APPLE, itemMeta -> {
+            if (MascotUtils.getMascotImmunity(city.getUUID())){
+                List<Component> lore = new ArrayList<>();
+                lore.add(Component.text("temps restant : §a§l" + MascotUtils.getMascotImmunityTime(city.getUUID())));
+                itemMeta.setDisplayName("Immunité : §aactivé");
+                itemMeta.lore(lore);
+            } else {
+                itemMeta.setDisplayName("Immunité : §adésactivé");
+            }
+        }));
+
         return map;
     }
 
