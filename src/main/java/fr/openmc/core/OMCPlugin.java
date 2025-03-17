@@ -72,7 +72,8 @@ public final class OMCPlugin extends JavaPlugin {
     public void onDisable() {
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
-        MascotsManager.saveFreeClaimMap();
+        MascotsManager.saveMascots(MascotsManager.mascots);
+        MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
         if (dbManager != null) {
             try {
                 dbManager.close();

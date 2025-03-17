@@ -26,7 +26,7 @@ public class CityTypeCooldown implements Listener {
     }
 
     @EventHandler
-    void onJoin (PlayerJoinEvent e){
+    void onJoin(PlayerJoinEvent e){
         Player player = e.getPlayer();
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city!=null){

@@ -13,7 +13,12 @@ public enum CPermission {
     MONEY_TAKE("Prendre de l'argent"),
     PERMS("Permissions"), // Cette permission est donnée seulement par l'owner
     CHEST("Accès au Coffre"),
-    CHEST_UPGRADE("Améliorer le coffre")
+    CHEST_UPGRADE("Améliorer le coffre"),
+    TYPE("Changer le type de ville"),
+    MASCOT_MOVE("Déplacer la mascotte"),
+    MASCOT_SKIN("Changer le skin de la mascotte"),
+    MASCOT_UPGRADE("Améliorer la mascotte"),
+    MASCOT_HEAL("Soigner la mascotte")
     ;
 
     @Getter
