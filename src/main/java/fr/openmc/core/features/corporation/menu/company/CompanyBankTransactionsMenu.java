@@ -51,16 +51,16 @@ public class CompanyBankTransactionsMenu extends PaginatedMenu {
             TransactionData transaction = transactions.get(i);
             int finalI = i;
             items.add(new ItemBuilder(this, Material.PAPER, itemMeta -> {
-                itemMeta.setDisplayName(ChatColor.YELLOW + "Transaction #" + finalI);
+                itemMeta.setDisplayName("§eTransaction #" + finalI);
                 List<String> lore = new ArrayList<>(List.of(
-                        ChatColor.GRAY + "■ Date: " + ChatColor.WHITE + new SimpleDateFormat("MM/dd/yyyy").format(timestamp),
-                        ChatColor.GRAY + "■ Nature: " + ChatColor.WHITE + transaction.nature(),
-                        ChatColor.GRAY + "■ Par: " + ChatColor.WHITE + Bukkit.getOfflinePlayer(transaction.sender()).getName()
+                        "§7■ Date: §f" + new SimpleDateFormat("MM/dd/yyyy").format(timestamp),
+                        "§7■ Nature: §f" + transaction.nature(),
+                        "§7■ Par: §f" + Bukkit.getOfflinePlayer(transaction.sender()).getName()
                 ));
                 if (transaction.place() != null && !transaction.place().isEmpty()) {
-                    lore.add(ChatColor.GRAY + "■ Lieu: " + ChatColor.WHITE + transaction.place());
+                    lore.add("§7■ Lieu: §f" + transaction.place());
                 }
-                lore.add(ChatColor.GRAY + "■ Montant: " + EconomyManager.getInstance().getFormattedNumber(transaction.value()));
+                lore.add("§7■ Montant: " + EconomyManager.getInstance().getFormattedNumber(transaction.value()));
                 itemMeta.setLore(lore);
             }));
         }
@@ -70,15 +70,15 @@ public class CompanyBankTransactionsMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> buttons = new HashMap<>();
-        buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName(ChatColor.GRAY + "Fermer"))
+        buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
-        ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName(ChatColor.GREEN + "Page suivante"));
+        ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
         if ((getPage() == 0 && isLastPage()) || company.getShops().isEmpty()) {
-            buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName(ChatColor.RED + "Retour"))
+            buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName("§cRetour"))
                     .setNextMenu(new CompanyMenu(getOwner(), company, false)));
             buttons.put(50, nextPageButton);
         } else {
-            buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName(ChatColor.RED + "Page précédente"))
+            buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
         }

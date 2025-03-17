@@ -24,14 +24,12 @@ import java.util.Map;
 public class ShopManageMenu extends PaginatedMenu {
 
     private final Company company;
-    private final CompanyManager companyManager;
-    private final PlayerShopManager playerShopManager;
+    private final CompanyManager companyManager = CompanyManager.getInstance();
+    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
 
-    public ShopManageMenu(Player owner, Company company, CompanyManager companyManager, PlayerShopManager playerShopManager) {
+    public ShopManageMenu(Player owner, Company company) {
         super(owner);
         this.company = company;
-        this.companyManager = companyManager;
-        this.playerShopManager = playerShopManager;
     }
 
     @Override
@@ -56,15 +54,15 @@ public class ShopManageMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> buttons = new HashMap<>();
-        buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName(ChatColor.GRAY + "Fermer"))
+        buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
-        ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName(ChatColor.GREEN + "Page suivante"));
+        ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
         if ((getPage() == 0 && isLastPage()) || company.getShops().isEmpty()) {
-            buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName(ChatColor.RED + "Retour"))
+            buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName("§cRetour"))
                     .setNextMenu(new CompanyMenu(getOwner(), company, false)));
             buttons.put(50, nextPageButton);
         } else {
-            buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName(ChatColor.RED + "Page précédente"))
+            buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
         }

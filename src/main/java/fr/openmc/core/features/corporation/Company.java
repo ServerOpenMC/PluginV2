@@ -22,8 +22,8 @@ import java.util.*;
 public class Company {
 
     private final String name;
-    private final EconomyManager economyManager;
-    private final ShopBlocksManager shopBlocksManager;
+    private final EconomyManager economyManager = EconomyManager.getInstance();
+    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
     private final Map<UUID, MerchantData> merchants = new HashMap<>();
     private final List<Shop> shops = new ArrayList<>();
     private final Queue<Long, TransactionData> transactions = new Queue<>(150);
@@ -35,11 +35,9 @@ public class Company {
 
     private int shopCounter = 0;
 
-    public Company(String name, CompanyOwner owner, EconomyManager economyManager, ShopBlocksManager shopBlocksManager) {
+    public Company(String name, CompanyOwner owner) {
         this.name = name;
         this.owner = owner;
-        this.economyManager = economyManager;
-        this.shopBlocksManager = shopBlocksManager;
     }
 
     public double getTurnover() {
@@ -67,8 +65,8 @@ public class Company {
     }
 
     public boolean createShop(Player whoCreated, Block barrel, Block cash) {
-        if (withdraw(100, whoCreated, "Création de shop", economyManager)) {
-            Shop newShop = new Shop(new ShopOwner(this), shopCounter, economyManager, shopBlocksManager);
+        if (withdraw(100, whoCreated, "Création de shop")) {
+            Shop newShop = new Shop(new ShopOwner(this), shopCounter);
             shops.add(newShop);
             economyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
@@ -85,7 +83,7 @@ public class Company {
                 if (!shop.getItems().isEmpty()) {
                     return MethodState.WARNING;
                 }
-                if (!deposit(75, player, "Suppression de shop", economyManager)) {
+                if (!deposit(75, player, "Suppression de shop")) {
                     return MethodState.SPECIAL;
                 }
                 if (!shopBlocksManager.removeShop(shop)) {
@@ -127,7 +125,7 @@ public class Company {
         removeMerchant(uuid);
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) {
-            player.sendMessage(ChatColor.RED + "Vous avez été renvoyé de l'entreprise' " + name);
+            player.sendMessage("§cVous avez été renvoyé de l'entreprise' " + name);
         }
     }
 
@@ -189,11 +187,11 @@ public class Company {
         }
     }
 
-    public boolean withdraw(double amount, Player player, String nature, EconomyManager economyManager) {
-        return withdraw(amount, player, nature, "", economyManager);
+    public boolean withdraw(double amount, Player player, String nature) {
+        return withdraw(amount, player, nature, "");
     }
 
-    public boolean withdraw(double amount, Player player, String nature, String additionalInfo, EconomyManager economyManager) {
+    public boolean withdraw(double amount, Player player, String nature, String additionalInfo) {
         if (balance >= amount) {
             balance -= amount;
             if (amount > 0) {
@@ -206,11 +204,11 @@ public class Company {
         return false;
     }
 
-    public boolean deposit(double amount, Player player, String nature, EconomyManager economyManager) {
-        return deposit(amount, player, nature, "", economyManager);
+    public boolean deposit(double amount, Player player, String nature) {
+        return deposit(amount, player, nature, "");
     }
 
-    public boolean deposit(double amount, Player player, String nature, String additionalInfo, EconomyManager economyManager) {
+    public boolean deposit(double amount, Player player, String nature, String additionalInfo) {
         if (economyManager.withdrawBalance(player.getUniqueId(), amount)) {
             balance += amount;
             if (amount > 0) {

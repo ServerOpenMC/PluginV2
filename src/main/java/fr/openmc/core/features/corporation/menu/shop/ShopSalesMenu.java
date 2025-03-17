@@ -21,15 +21,13 @@ import java.util.Map;
 
     public class ShopSalesMenu extends PaginatedMenu {
 
-        private final CompanyManager companyManager;
-        private final PlayerShopManager playerShopManager;
+        private final CompanyManager companyManager = CompanyManager.getInstance();
+        private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
         private final Shop shop;
         private final int itemIndex;
 
-        public ShopSalesMenu(Player owner, CompanyManager companyManager, PlayerShopManager playerShopManager, Shop shop, int itemIndex) {
+        public ShopSalesMenu(Player owner, Shop shop, int itemIndex) {
             super(owner);
-            this.companyManager = companyManager;
-            this.playerShopManager = playerShopManager;
             this.shop = shop;
             this.itemIndex = itemIndex;
         }
@@ -49,10 +47,10 @@ import java.util.Map;
             List<ItemStack> items = new java.util.ArrayList<>();
             for (ShopItem sale : shop.getSales()) {
                 items.add(new ItemBuilder(this, sale.getItem().getType(), itemMeta -> {
-                    itemMeta.setDisplayName(ChatColor.YELLOW + ShopItem.getItemName(sale.getItem()));
+                    itemMeta.setDisplayName("§e" + ShopItem.getItemName(sale.getItem()));
                     itemMeta.setLore(List.of(
-                            ChatColor.GRAY + "■ Prix : " + ChatColor.GREEN + sale.getPrice() + "€",
-                            ChatColor.GRAY + "■ Quantité : " + ChatColor.GREEN + sale.getAmount()
+                            "§7■ Prix : §a" + sale.getPrice() + "€",
+                            "§7■ Quantité : §a" + sale.getAmount()
                     ));
                 }));
             }
@@ -62,15 +60,15 @@ import java.util.Map;
         @Override
         public Map<Integer, ItemStack> getButtons() {
             Map<Integer, ItemStack> buttons = new HashMap<>();
-            buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName(ChatColor.GRAY + "Fermer"))
+            buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                     .setCloseButton());
-            ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName(ChatColor.GREEN + "Page suivante"));
+            ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
             if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
-                buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName(ChatColor.RED + "Retour"))
+                buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName("§cRetour"))
                         .setNextMenu(new ShopMenu(getOwner(), companyManager, playerShopManager, shop, itemIndex)));
                 buttons.put(50, nextPageButton);
             } else {
-                buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName(ChatColor.RED + "Page précédente"))
+                buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                         .setPreviousPageButton());
                 buttons.put(50, nextPageButton.setNextPageButton());
             }

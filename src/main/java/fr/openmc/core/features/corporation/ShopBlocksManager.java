@@ -3,6 +3,7 @@ package fr.openmc.core.features.corporation;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,8 +22,10 @@ public class ShopBlocksManager {
     private final Map<Location, Shop> shopsByLocation = new HashMap<>();
 
     private final OMCPlugin plugin;
+    @Getter static ShopBlocksManager instance;
 
     public ShopBlocksManager(OMCPlugin plugin) {
+        instance = this;
         this.plugin = plugin;
     }
 

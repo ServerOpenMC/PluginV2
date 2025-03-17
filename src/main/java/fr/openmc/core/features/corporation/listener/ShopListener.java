@@ -14,15 +14,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class ShopListener implements Listener {
 
-    private final CompanyManager companyManager;
-    private final PlayerShopManager playerShopManager;
-    private final ShopBlocksManager shopBlocksManager;
-
-    public ShopListener(CompanyManager companyManager, PlayerShopManager playerShopManager, ShopBlocksManager shopBlocksManager) {
-        this.companyManager = companyManager;
-        this.playerShopManager = playerShopManager;
-        this.shopBlocksManager = shopBlocksManager;
-    }
+    private final CompanyManager companyManager = CompanyManager.getInstance();
+    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
+    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
 
     //TODO ItemsAdder caisse
 
@@ -38,7 +32,7 @@ public class ShopListener implements Listener {
         if (event.getClickedBlock() == null) {
             return;
         }
-        if (event.getClickedBlock().getState() instanceof Sign sign) {
+        if (event.getClickedBlock().getState() instanceof Sign) {
             if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
                 return;
             }

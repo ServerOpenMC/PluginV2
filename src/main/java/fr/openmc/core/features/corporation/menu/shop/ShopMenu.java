@@ -10,7 +10,6 @@ import fr.openmc.core.features.corporation.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.features.city.MethodState;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -97,21 +96,21 @@ public class ShopMenu extends Menu {
         Map<Integer, ItemStack> content = fill(Material.GRAY_STAINED_GLASS_PANE);
 
         content.put(previousItemSlot, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.RED + "Item précédent");
+            itemMeta.setDisplayName("§cItem précédent");
         }).setNextMenu(new ShopMenu(getOwner(), companyManager, playerShopManager, shop, onFirstItem() ? itemIndex : itemIndex - 1)));
 
         content.put(nextItemSlot, new ItemBuilder(this, Material.LIME_CONCRETE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.GREEN + "Item suivant");
+            itemMeta.setDisplayName("§aItem suivant");
         }).setNextMenu(new ShopMenu(getOwner(), companyManager, playerShopManager, shop, onLastItem() ? itemIndex : itemIndex + 1)));
 
         content.put(closeMenuSlot, new ItemBuilder(this, Material.BARRIER, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.GRAY + "Fermer");
+            itemMeta.setDisplayName("§7Fermer");
         }).setCloseButton());
 
         if (shop.isOwner(getOwner().getUniqueId()))
             putOwnerItems(content);
         content.put(purpleSetOne, new ItemBuilder(this, Material.PURPLE_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.DARK_PURPLE + "Définir à 1");
+            itemMeta.setDisplayName("§5Définir à 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             amountToBuy = 1;
@@ -119,7 +118,7 @@ public class ShopMenu extends Menu {
         }));
 
         content.put(redRemoveTen, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.RED + "Retirer 10");
+            itemMeta.setDisplayName("§cRetirer 10");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             if (amountToBuy == 1) return;
@@ -132,7 +131,7 @@ public class ShopMenu extends Menu {
         }));
 
         content.put(redRemoveOne, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.RED + "Retirer 1");
+            itemMeta.setDisplayName("§cRetirer 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             if (amountToBuy == 1) return;
@@ -143,16 +142,16 @@ public class ShopMenu extends Menu {
         if (getCurrentItem() != null)
 
             content.put(itemSlot, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
-                itemMeta.setDisplayName(ChatColor.BOLD + "" + ChatColor.WHITE + ShopItem.getItemName(getCurrentItem().getItem()));
+                itemMeta.setDisplayName("§l§f" + ShopItem.getItemName(getCurrentItem().getItem()));
                 List<String> lore = new ArrayList<>();
-                lore.add(ChatColor.GRAY + "■ Prix: " + ChatColor.RED + (getCurrentItem().getPricePerItem() * amountToBuy) + "€");
-                lore.add(ChatColor.GRAY + "■ En stock: " + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getAmount()));
-                lore.add(ChatColor.GRAY + "■ Cliquez pour en acheter " + ChatColor.WHITE + amountToBuy);
+                lore.add("§7■ Prix: §c" + (getCurrentItem().getPricePerItem() * amountToBuy) + "€");
+                lore.add("§7■ En stock: " + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getAmount()));
+                lore.add("§7■ Cliquez pour en acheter §f" + amountToBuy);
                 itemMeta.setLore(lore);
             }).setNextMenu(new ConfirmMenu(getOwner(), this, this::buyAccept, this::refuse, "§7Accepter", "§7Refuser")));
 
         content.put(greenAddOne, new ItemBuilder(this, Material.LIME_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.GREEN + "Ajouter 1");
+            itemMeta.setDisplayName("§aAjouter 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             amountToBuy++;
@@ -160,7 +159,7 @@ public class ShopMenu extends Menu {
         }));
 
         content.put(greenAddTen, new ItemBuilder(this, Material.LIME_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.GREEN + "Ajouter 10");
+            itemMeta.setDisplayName("§aAjouter 10");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             amountToBuy += 10;
@@ -168,7 +167,7 @@ public class ShopMenu extends Menu {
         }));
 
         content.put(purpleAddSixtyFour, new ItemBuilder(this, Material.PURPLE_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.DARK_PURPLE + "Ajouter 64");
+            itemMeta.setDisplayName("§5Ajouter 64");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             if (amountToBuy == 1) amountToBuy = 64;
@@ -182,33 +181,33 @@ public class ShopMenu extends Menu {
     private void putOwnerItems(Map<Integer, ItemStack> content) {
 
         content.put(0, new ItemBuilder(this, Material.RED_DYE, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Supprimer le shop");
+            itemMeta.setDisplayName("§c§lSupprimer le shop");
         }).setNextMenu(new ConfirmMenu(getOwner(), this, this::accept, this::refuse, "§7Accepter", "§7Refuser")));
 
         content.put(3, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.GREEN + "" + ChatColor.BOLD + "Vos ventes");
+            itemMeta.setDisplayName("§a§lVos ventes");
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GRAY + "■ Ventes: " + ChatColor.WHITE + shop.getSales().size());
-            lore.add(ChatColor.GRAY + "■ Cliquer pour voir vos ventes sur ce shop");
+            lore.add("§7■ Ventes: §f" + shop.getSales().size());
+            lore.add("§7■ Cliquer pour voir vos ventes sur ce shop");
             itemMeta.setLore(lore);
-        }).setNextMenu(new ShopSalesMenu(getOwner(), companyManager, playerShopManager, shop, itemIndex)));
+        }).setNextMenu(new ShopSalesMenu(getOwner(), shop, itemIndex)));
 
         content.put(4, shop.getIcon(this, true));
 
         content.put(5, new ItemBuilder(this, Material.BARREL, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.GOLD + "" + ChatColor.BOLD + "Voir les stocks");
+            itemMeta.setDisplayName("§6§lVoir les stocks");
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GRAY + "■ Stocks: " + ChatColor.WHITE + shop.getAllItemsAmount());
-            lore.add(ChatColor.GRAY + "■ Cliquer pour voir les stocks de ce shop");
+            lore.add("§7■ Stocks: §f" + shop.getAllItemsAmount());
+            lore.add("§7■ Cliquer pour voir les stocks de ce shop");
             itemMeta.setLore(lore);
-        }).setNextMenu(new ShopStocksMenu(getOwner(), companyManager, playerShopManager, shop, itemIndex)));
+        }).setNextMenu(new ShopStocksMenu(getOwner(), shop, itemIndex)));
 
         content.put(8, new ItemBuilder(this, Material.LIME_WOOL, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.GREEN + "Ce shop vous appartient");
+            itemMeta.setDisplayName("§aCe shop vous appartient");
             if (shop.getOwner().isCompany()) {
                 if (shop.getOwner().getCompany().getOwner().isTeam()) {
                     itemMeta.setLore(List.of(
-                            ChatColor.GRAY + "■ Car vous faites partie de la team possédant l'entreprise"
+                            "§7■ Car vous faites partie de la team possédant l'entreprise"
                     ));
                 }
             }
@@ -233,32 +232,31 @@ public class ShopMenu extends Menu {
     private void buyAccept() {
         MethodState buyState = shop.buy(getCurrentItem(), amountToBuy, getOwner());
         if (buyState == MethodState.ERROR) {
-            getOwner().sendMessage(ChatColor.RED + "Vous n'avez pas assez d'argent pour acheter cet item");
+            getOwner().sendMessage("§cVous n'avez pas assez d'argent pour acheter cet item");
             getOwner().closeInventory();
             return;
         }
-        //TODO Remettre ça
-//                if (buyState == MethodState.FAILURE) {
-//                    getOwner().sendMessage(ChatColor.RED + "Vous ne pouvez pas acheter vos propres items");
-//                    getOwner().closeInventory();
-//                    return;
-//                }
+        if (buyState == MethodState.FAILURE) {
+            getOwner().sendMessage("§cVous ne pouvez pas acheter vos propres items");
+            getOwner().closeInventory();
+            return;
+        }
         if (buyState == MethodState.WARNING) {
-            getOwner().sendMessage(ChatColor.RED + "Il n'y a pas assez de stock pour acheter cet item");
+            getOwner().sendMessage("§cIl n'y a pas assez de stock pour acheter cet item");
             getOwner().closeInventory();
             return;
         }
         if (buyState == MethodState.SPECIAL) {
-            getOwner().sendMessage(ChatColor.RED + "Vous n'avez pas assez de place dans votre inventaire");
+            getOwner().sendMessage("§cVous n'avez pas assez de place dans votre inventaire");
             getOwner().closeInventory();
             return;
         }
         if (buyState == MethodState.ESCAPE) {
-            getOwner().sendMessage(ChatColor.RED + "Erreur lors de l'achat");
+            getOwner().sendMessage("§cErreur lors de l'achat");
             getOwner().closeInventory();
             return;
         }
-        getOwner().sendMessage(ChatColor.GREEN + "Vous avez bien acheté " + amountToBuy + " " + ShopItem.getItemName(getCurrentItem().getItem()) + " pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + "€");
+        getOwner().sendMessage("§aVous avez bien acheté " + amountToBuy + " " + ShopItem.getItemName(getCurrentItem().getItem()) + " pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + "€");
         getOwner().closeInventory();
     }
 
@@ -267,35 +265,35 @@ public class ShopMenu extends Menu {
         if (isInCompany) {
             MethodState deleteState = companyManager.getCompany(getOwner().getUniqueId()).deleteShop(getOwner(), shop.getUuid());
             if (deleteState == MethodState.ERROR) {
-                getOwner().sendMessage(ChatColor.RED + "Ce shop n'existe pas dans votre entreprise");
+                getOwner().sendMessage("§cCe shop n'existe pas dans votre entreprise");
                 return;
             }
             if (deleteState == MethodState.WARNING) {
-                getOwner().sendMessage(ChatColor.RED + "Ce shop n'est pas vide");
+                getOwner().sendMessage("§cCe shop n'est pas vide");
                 return;
             }
             if (deleteState == MethodState.SPECIAL) {
-                getOwner().sendMessage(ChatColor.RED + "Il vous faut au minimum le nombre d'argent remboursable pour supprimer un shop et obtenir un remboursement dans la banque de votre entreprise");
+                getOwner().sendMessage("§cIl vous faut au minimum le nombre d'argent remboursable pour supprimer un shop et obtenir un remboursement dans la banque de votre entreprise");
                 return;
             }
             if (deleteState == MethodState.ESCAPE) {
-                getOwner().sendMessage(ChatColor.RED + "Caisse introuvable (appelez un admin)");
+                getOwner().sendMessage("§cCaisse introuvable (appelez un admin)");
             }
-            getOwner().sendMessage(ChatColor.GREEN + shop.getName() + " a été supprimé !");
-            getOwner().sendMessage(ChatColor.GOLD + "[Shop]" + ChatColor.GREEN + " +75€ de remboursés sur la banque de l'entreprise");
+            getOwner().sendMessage("§a" + shop.getName() + " a été supprimé !");
+            getOwner().sendMessage("§6[Shop]§a +75€ de remboursés sur la banque de l'entreprise");
         }
         else {
             MethodState methodState = playerShopManager.deleteShop(getOwner().getUniqueId());
             if (methodState == MethodState.WARNING) {
-                getOwner().sendMessage(ChatColor.RED + "Votre shop n'est pas vide");
+                getOwner().sendMessage("§cVotre shop n'est pas vide");
                 return;
             }
             if (methodState == MethodState.ESCAPE) {
-                getOwner().sendMessage(ChatColor.RED + "Caisse introuvable (appelez un admin)");
+                getOwner().sendMessage("§cCaisse introuvable (appelez un admin)");
                 return;
             }
-            getOwner().sendMessage(ChatColor.GREEN + "Votre shop a bien été supprimé !");
-            getOwner().sendMessage(ChatColor.GOLD + "[Shop]" + ChatColor.GREEN + " +400€ de remboursés sur votre compte personnel");
+            getOwner().sendMessage("§aVotre shop a bien été supprimé !");
+            getOwner().sendMessage("§6[Shop]§a +400€ de remboursés sur votre compte personnel");
         }
         getOwner().closeInventory();
     }

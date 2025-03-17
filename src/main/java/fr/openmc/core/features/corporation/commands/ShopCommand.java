@@ -21,21 +21,15 @@ import java.util.UUID;
 @CommandPermission("ayw.command.shop")
 public class ShopCommand {
 
-    private final CompanyManager companyManager;
-    private final PlayerShopManager playerShopManager;
-    private final ShopBlocksManager shopBlocksManager;
-
-    public ShopCommand(CompanyManager companyManager, PlayerShopManager playerShopManager, ShopBlocksManager shopBlocksManager) {
-        this.companyManager = companyManager;
-        this.playerShopManager = playerShopManager;
-        this.shopBlocksManager = shopBlocksManager;
-    }
+    private final CompanyManager companyManager = CompanyManager.getInstance();
+    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
+    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
 
     @DefaultFor("~")
     public void onCommand(Player player) {
         boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
-            ShopManageMenu shopManageMenu = new ShopManageMenu(player, companyManager.getCompany(player.getUniqueId()), companyManager, playerShopManager);
+            ShopManageMenu shopManageMenu = new ShopManageMenu(player, companyManager.getCompany(player.getUniqueId()));
             shopManageMenu.open();
             return;
         }
@@ -53,38 +47,38 @@ public class ShopCommand {
         boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
         Block targetBlock = player.getTargetBlockExact(5);
         if (targetBlock == null || targetBlock.getType() != Material.BARREL) {
-            player.sendMessage(ChatColor.RED + "Vous devez regarder un tonneau pour créer un shop");
+            player.sendMessage("§cVous devez regarder un tonneau pour créer un shop");
             return;
         }
         Block aboveBlock = Objects.requireNonNull(targetBlock.getLocation().getWorld()).getBlockAt(targetBlock.getLocation().clone().add(0, 1, 0));
         if (aboveBlock.getType() != Material.AIR) {
-            player.sendMessage(ChatColor.RED + "Vous devez liberer de l'espace au dessus de votre tonneau pour créer un shop");
+            player.sendMessage("§cVous devez liberer de l'espace au dessus de votre tonneau pour créer un shop");
             return;
         }
         if (isInCompany) {
             Company company = companyManager.getCompany(player.getUniqueId());
             if (!company.isOwner(player.getUniqueId())) {
-                player.sendMessage(ChatColor.RED + "Vous devez être un des propriétaires de l'entreprise pour créer un shop");
+                player.sendMessage("§cVous devez être un des propriétaires de l'entreprise pour créer un shop");
                 return;
             }
             if (!company.createShop(player, targetBlock, aboveBlock)) {
-                player.sendMessage(ChatColor.RED + "Vous n'avez pas assez d'argent dans la banque de votre entreprise pour créer un shop (100€)");
+                player.sendMessage("§cVous n'avez pas assez d'argent dans la banque de votre entreprise pour créer un shop (100€)");
                 return;
             }
-            player.sendMessage(ChatColor.GOLD + "[Shop]" + ChatColor.RED + " -100€ sur la banque de l'entreprise");
-            player.sendMessage(ChatColor.GREEN + "Un shop a bien été crée pour votre entreprise !");
+            player.sendMessage("§6[Shop] §c -100€ sur la banque de l'entreprise");
+            player.sendMessage("§aUn shop a bien été crée pour votre entreprise !");
             return;
         }
         if (playerShopManager.hasShop(player.getUniqueId())) {
-            player.sendMessage(ChatColor.RED + "Vous avez déjà un shop");
+            player.sendMessage("§cVous avez déjà un shop");
             return;
         }
         if (!playerShopManager.createShop(player, targetBlock, aboveBlock)) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas assez d'argent pour créer un shop (500€)");
+            player.sendMessage("§cVous n'avez pas assez d'argent pour créer un shop (500€)");
             return;
         }
-        player.sendMessage(ChatColor.GOLD + "[Shop]" + ChatColor.RED + " -500€ sur votre compte personnel");
-        player.sendMessage(ChatColor.GREEN + "Vous avez bien crée un shop !");
+        player.sendMessage("§6[Shop] §c -500€ sur votre compte personnel");
+        player.sendMessage("§aVous avez bien crée un shop !");
     }
 
     @Subcommand("sell")
@@ -94,42 +88,42 @@ public class ShopCommand {
         if (isInCompany) {
             UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
             if (shopUUID == null) {
-                player.sendMessage(ChatColor.RED + "Shop non reconnu");
+                player.sendMessage("§cShop non reconnu");
                 return;
             }
             Shop shop = companyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
             if (shop == null) {
-                player.sendMessage(ChatColor.RED + "Ce shop n'appartient pas à votre entreprise");
+                player.sendMessage("§cCe shop n'appartient pas à votre entreprise");
                 return;
             }
             if (!shop.isOwner(player.getUniqueId())) {
-                player.sendMessage(ChatColor.RED + "Vous n'êtes pas un des propriétaires de ce shop");
+                player.sendMessage("§cVous n'êtes pas un des propriétaires de ce shop");
             }
             ItemStack item = player.getInventory().getItemInMainHand();
             boolean itemThere = shop.addItem(item, price);
             if (itemThere) {
-                player.sendMessage(ChatColor.RED + "Cet item est déjà dans le shop");
+                player.sendMessage("§cCet item est déjà dans le shop");
                 return;
             }
-            player.sendMessage(ChatColor.GREEN + "L'item a bien été ajouté au shop !");
+            player.sendMessage("§aL'item a bien été ajouté au shop !");
             return;
         }
         if (!playerShopManager.hasShop(player.getUniqueId())) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas de shop");
+            player.sendMessage("§cVous n'avez pas de shop");
             return;
         }
         Shop shop = playerShopManager.getPlayerShop(player.getUniqueId());
         ItemStack item = player.getInventory().getItemInMainHand();
-        if (item == null || item.getType() == Material.AIR) {
-            player.sendMessage(ChatColor.RED + "Vous devez tenir un item dans votre main");
+        if (item.getType() == Material.AIR) {
+            player.sendMessage("§cVous devez tenir un item dans votre main");
             return;
         }
         boolean itemThere = shop.addItem(item, price);
         if (itemThere) {
-            player.sendMessage(ChatColor.RED + "Cet item est déjà dans le shop");
+            player.sendMessage("§cCet item est déjà dans le shop");
             return;
         }
-        player.sendMessage(ChatColor.GREEN + "L'item a bien été ajouté au shop !");
+        player.sendMessage("§aL'item a bien été ajouté au shop !");
     }
 
     @Subcommand("unsell")
@@ -139,54 +133,54 @@ public class ShopCommand {
         if (isInCompany) {
             UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
             if (shopUUID == null) {
-                player.sendMessage(ChatColor.RED + "Shop non reconnu");
+                player.sendMessage("§cShop non reconnu");
                 return;
             }
             Shop shop = companyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
             if (shop == null) {
-                player.sendMessage(ChatColor.RED + "Ce shop n'appartient pas à votre entreprise");
+                player.sendMessage("§cCe shop n'appartient pas à votre entreprise");
                 return;
             }
             if (!shop.isOwner(player.getUniqueId())) {
-                player.sendMessage(ChatColor.RED + "Vous n'êtes pas un des propriétaires de ce shop");
+                player.sendMessage("§cVous n'êtes pas un des propriétaires de ce shop");
                 return;
             }
             if (itemIndex < 1 || itemIndex >= shop.getItems().size() + 1) {
-                player.sendMessage(ChatColor.RED + "Cet item n'est pas dans le shop");
+                player.sendMessage("§cCet item n'est pas dans le shop");
                 return;
             }
             ShopItem item = shop.getItem(itemIndex - 1);
             if (item == null) {
-                player.sendMessage(ChatColor.RED + "Cet item n'est pas dans le shop");
+                player.sendMessage("§cCet item n'est pas dans le shop");
                 return;
             }
             shop.removeItem(item);
-            player.sendMessage(ChatColor.GREEN + "L'item a bien été retiré du shop !");
+            player.sendMessage("§aL'item a bien été retiré du shop !");
             if (item.getAmount() > 0) {
                 ItemStack toGive = item.getItem().clone();
                 toGive.setAmount(item.getAmount());
                 player.getInventory().addItem(toGive);
-                player.sendMessage(ChatColor.GOLD + "Vous avez récupéré le stock restant de cet item");
+                player.sendMessage("§6Vous avez récupéré le stock restant de cet item");
             }
             return;
         }
         if (!playerShopManager.hasShop(player.getUniqueId())) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas de shop");
+            player.sendMessage("§cVous n'avez pas de shop");
             return;
         }
         Shop shop = playerShopManager.getPlayerShop(player.getUniqueId());
         ShopItem item = shop.getItem(itemIndex - 1);
         if (item == null) {
-            player.sendMessage(ChatColor.RED + "Cet item n'est pas dans le shop");
+            player.sendMessage("§cCet item n'est pas dans le shop");
             return;
         }
         shop.removeItem(item);
-        player.sendMessage(ChatColor.GREEN + "L'item a bien été retiré du shop !");
+        player.sendMessage("§aL'item a bien été retiré du shop !");
         if (item.getAmount() > 0) {
             ItemStack toGive = item.getItem().clone();
             toGive.setAmount(item.getAmount());
             player.getInventory().addItem(toGive);
-            player.sendMessage(ChatColor.GOLD + "Vous avez récupéré le stock restant de cet item");
+            player.sendMessage("§6Vous avez récupéré le stock restant de cet item");
         }
     }
 
@@ -196,57 +190,57 @@ public class ShopCommand {
         boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
         UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
         if (shopUUID == null) {
-            player.sendMessage(ChatColor.RED + "Shop non reconnu");
+            player.sendMessage("§cShop non reconnu");
             return;
         }
         if (isInCompany) {
             Shop shop = companyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
             if (shop == null) {
-                player.sendMessage(ChatColor.RED + "Ce shop n'appartient pas à votre entreprise");
+                player.sendMessage("§cCe shop n'appartient pas à votre entreprise");
                 return;
             }
             if (!companyManager.getCompany(player.getUniqueId()).isOwner(player.getUniqueId())) {
-                player.sendMessage(ChatColor.RED + "Vous devez être un des propriétaires de l'entreprise pour supprimer un shop");
+                player.sendMessage("§cVous devez être un des propriétaires de l'entreprise pour supprimer un shop");
                 return;
             }
             if (shop.isOwner(player.getUniqueId())) {
-                player.sendMessage(ChatColor.RED + "Vous n'êtes pas un des propriétaires de ce shop");
+                player.sendMessage("§cVous n'êtes pas un des propriétaires de ce shop");
                 return;
             }
             MethodState deleteState = companyManager.getCompany(player.getUniqueId()).deleteShop(player, shop.getUuid());
             if (deleteState == MethodState.ERROR) {
-                player.sendMessage(ChatColor.RED + "Ce shop n'existe pas dans votre entreprise");
+                player.sendMessage("§cCe shop n'existe pas dans votre entreprise");
                 return;
             }
             if (deleteState == MethodState.WARNING) {
-                player.sendMessage(ChatColor.RED + "Ce shop n'est pas vide");
+                player.sendMessage("§cCe shop n'est pas vide");
                 return;
             }
             if (deleteState == MethodState.SPECIAL) {
-                player.sendMessage(ChatColor.RED + "Il vous faut au minimum le nombre d'argent remboursable pour supprimer un shop et obtenir un remboursement dans la banque de votre entreprise");
+                player.sendMessage("§cIl vous faut au minimum le nombre d'argent remboursable pour supprimer un shop et obtenir un remboursement dans la banque de votre entreprise");
                 return;
             }
             if (deleteState == MethodState.ESCAPE) {
-                player.sendMessage(ChatColor.RED + "Caisse introuvable (appelez un admin)");
+                player.sendMessage("§cCaisse introuvable (appelez un admin)");
             }
-            player.sendMessage(ChatColor.GREEN + shop.getName() + " supprimé !");
-            player.sendMessage(ChatColor.GOLD + "[Shop]" + ChatColor.GREEN + " +75€ de remboursés sur la banque de l'entreprise");
+            player.sendMessage("§a" + shop.getName() + " supprimé !");
+            player.sendMessage("§6[Shop] §a +75€ de remboursés sur la banque de l'entreprise");
         }
         if (!playerShopManager.hasShop(player.getUniqueId())) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas de shop");
+            player.sendMessage("§cVous n'avez pas de shop");
             return;
         }
         MethodState methodState = playerShopManager.deleteShop(player.getUniqueId());
         if (methodState == MethodState.WARNING) {
-            player.sendMessage(ChatColor.RED + "Votre shop n'est pas vide");
+            player.sendMessage("§cVotre shop n'est pas vide");
             return;
         }
         if (methodState == MethodState.ESCAPE) {
-            player.sendMessage(ChatColor.RED + "Caisse introuvable (appelez un admin)");
+            player.sendMessage("§cCaisse introuvable (appelez un admin)");
             return;
         }
-        player.sendMessage(ChatColor.GREEN + "Votre shop a bien été supprimé !");
-        player.sendMessage(ChatColor.GOLD + "[Shop]" + ChatColor.GREEN + " +400€ de remboursés sur votre compte personnel");
+        player.sendMessage("§6Votre shop a bien été supprimé !");
+        player.sendMessage("§6[Shop] §a +400€ de remboursés sur votre compte personnel");
     }
 
     @Subcommand("manage")
@@ -254,12 +248,12 @@ public class ShopCommand {
     public void manageShop(Player player) {
         boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
-            ShopManageMenu shopManageMenu = new ShopManageMenu(player, companyManager.getCompany(player.getUniqueId()), companyManager, playerShopManager);
+            ShopManageMenu shopManageMenu = new ShopManageMenu(player, companyManager.getCompany(player.getUniqueId()));
             shopManageMenu.open();
             return;
         }
         if (!playerShopManager.hasShop(player.getUniqueId())) {
-            player.sendMessage(ChatColor.RED + "Vous n'avez pas de shop");
+            player.sendMessage("§cVous n'avez pas de shop");
             return;
         }
         ShopMenu shopMenu = new ShopMenu(player, companyManager, playerShopManager, playerShopManager.getPlayerShop(player.getUniqueId()), 0);

@@ -34,8 +34,6 @@ public final class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
     @Getter static TranslationManager translationManager;
-    @Getter static CompanyManager companyManager;
-    @Getter static PlayerShopManager playerShopManager;
     private DatabaseManager dbManager;
 
     public static NamespacedKey SUPPLIER_KEY;
@@ -58,8 +56,6 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
-        companyManager = new CompanyManager();
-        playerShopManager = new PlayerShopManager(EconomyManager.getInstance(), new ShopBlocksManager(this));
         new CommandsManager();
         CustomItemRegistry.init();
         ContestManager contestManager = new ContestManager(this);
@@ -71,6 +67,9 @@ public final class OMCPlugin extends JavaPlugin {
         new EconomyManager();
         new MailboxManager();
         new ScoreboardManager();
+        new CompanyManager();// laisser apres Economy Manager
+        new ShopBlocksManager(this);
+        new PlayerShopManager();
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);

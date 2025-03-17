@@ -23,16 +23,14 @@ import java.util.Map;
 
 public class ShopStocksMenu extends PaginatedMenu {
 
-    private final CompanyManager companyManager;
-    private final PlayerShopManager playerShopManager;
+    private final CompanyManager companyManager = CompanyManager.getInstance();
+    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
     private final Shop shop;
     private final int itemIndex;
     private ShopItem stock;
 
-    public ShopStocksMenu(Player owner, CompanyManager companyManager, PlayerShopManager playerShopManager, Shop shop, int itemIndex) {
+    public ShopStocksMenu(Player owner, Shop shop, int itemIndex) {
         super(owner);
-        this.companyManager = companyManager;
-        this.playerShopManager = playerShopManager;
         this.shop = shop;
         this.itemIndex = itemIndex;
     }
@@ -55,9 +53,9 @@ public class ShopStocksMenu extends PaginatedMenu {
             items.add(new ItemBuilder(this, stock.getItem().getType(), itemMeta -> {
                 itemMeta.setDisplayName(ChatColor.YELLOW + ShopItem.getItemName(stock.getItem()));
                 itemMeta.setLore(List.of(
-                        ChatColor.GRAY + "■ Quantitée restante: " + EconomyManager.getInstance().getFormattedNumber(stock.getAmount()),
-                        ChatColor.GRAY + "■ Prix de vente (par item) : " + EconomyManager.getInstance().getFormattedNumber(stock.getPricePerItem()),
-                        ChatColor.GRAY + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
+                        "§7■ Quantitée restante: " + EconomyManager.getInstance().getFormattedNumber(stock.getAmount()),
+                        "§7■ Prix de vente (par item) : " + EconomyManager.getInstance().getFormattedNumber(stock.getPricePerItem()),
+                        "§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
                 ));
             }).setOnClick(inventoryClickEvent -> {
                 if (stock.getAmount() > 0) {
@@ -78,15 +76,15 @@ public class ShopStocksMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> buttons = new HashMap<>();
-        buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName(ChatColor.GRAY + "Fermer"))
+        buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
-        ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName(ChatColor.GREEN + "Page suivante"));
+        ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
         if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
-            buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName(ChatColor.RED + "Retour"))
+            buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName("§cRetour"))
                     .setNextMenu(new ShopMenu(getOwner(), companyManager, playerShopManager, shop, itemIndex)));
             buttons.put(50, nextPageButton);
         } else {
-            buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName(ChatColor.RED + "Page précédente"))
+            buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
         }
@@ -105,12 +103,12 @@ public class ShopStocksMenu extends PaginatedMenu {
 
     private void accept() {
         shop.removeItem(stock);
-        getOwner().sendMessage(ChatColor.GREEN + "L'item a bien été retiré du shop !");
+        getOwner().sendMessage("§aL'item a bien été retiré du shop !");
         if (stock.getAmount() > 0) {
             ItemStack toGive = stock.getItem().clone();
             toGive.setAmount(stock.getAmount());
             getOwner().getInventory().addItem(toGive);
-            getOwner().sendMessage(ChatColor.GOLD + "Vous avez récupéré le stock restant de cet item");
+            getOwner().sendMessage("§6Vous avez récupéré le stock restant de cet item");
         }
         getOwner().closeInventory();
     }

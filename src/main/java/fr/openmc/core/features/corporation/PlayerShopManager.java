@@ -14,19 +14,20 @@ import java.util.UUID;
 public class PlayerShopManager {
 
     private final Map<UUID, Shop> playerShops = new HashMap<>();
-    private final EconomyManager economyManager;
-    private final ShopBlocksManager shopBlocksManager;
+    private final EconomyManager economyManager = EconomyManager.getInstance();
+    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
 
-    public PlayerShopManager(EconomyManager economyManager, ShopBlocksManager shopBlocksManager) {
-        this.economyManager = economyManager;
-        this.shopBlocksManager = shopBlocksManager;
+    @Getter static PlayerShopManager instance;
+
+    public PlayerShopManager() {
+        instance = this;
     }
 
     public boolean createShop(Player player, Block barrel, Block cashRegister) {
         if (!economyManager.withdrawBalance(player.getUniqueId(), 500)) {
             return false;
         }
-        Shop newShop = new Shop(new ShopOwner(player.getUniqueId()), 0, economyManager, shopBlocksManager);
+        Shop newShop = new Shop(new ShopOwner(player.getUniqueId()), 0);
         playerShops.put(player.getUniqueId(), newShop);
         shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cashRegister.getLocation()));
         shopBlocksManager.placeShop(newShop, player, false);

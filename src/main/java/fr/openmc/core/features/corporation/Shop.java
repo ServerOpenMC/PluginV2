@@ -1,6 +1,5 @@
 package fr.openmc.core.features.corporation;
 
-
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
@@ -9,7 +8,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
@@ -27,8 +25,8 @@ import java.util.*;
 public class Shop {
 
     private final ShopOwner owner;
-    private final EconomyManager economyManager;
-    private final ShopBlocksManager blocksManager;
+    private final EconomyManager economyManager = EconomyManager.getInstance();
+    private final ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
     private final List<ShopItem> items = new ArrayList<>();
     private final List<ShopItem> sales = new ArrayList<>();
     private final Map<Long, Supply> suppliers = new HashMap<>();
@@ -37,11 +35,9 @@ public class Shop {
 
     private double turnover = 0;
 
-    public Shop(ShopOwner owner, int index, EconomyManager economyManager, ShopBlocksManager blocksManager) {
+    public Shop(ShopOwner owner, int index) {
         this.owner = owner;
         this.index = index;
-        this.economyManager = economyManager;
-        this.blocksManager = blocksManager;
     }
 
     public void checkStock() {
@@ -131,16 +127,15 @@ public class Shop {
     }
 
     public MethodState buy(ShopItem item, int amount, Player buyer) {
-        if (isFull(buyer)) {
+        if (ItemUtils.hasAvailableSlot(buyer)) {
             return MethodState.SPECIAL;
         }
         if (amount > item.getAmount()) {
             return MethodState.WARNING;
         }
-        //TODO Remettre ça
-//        if (isOwner(buyer.getUniqueId())) {
-//            return MethodState.FAILURE;
-//        }
+        if (isOwner(buyer.getUniqueId())) {
+            return MethodState.FAILURE;
+        }
         item.setAmount(item.getAmount() - amount);
         turnover += item.getPrice(amount);
         if (owner.isCompany()) {
@@ -180,7 +175,7 @@ public class Shop {
             if (!supplied) {
                 return MethodState.ESCAPE;
             }
-            owner.getCompany().deposit(companyCut, buyer, "Vente", getName(), economyManager);
+            owner.getCompany().deposit(companyCut, buyer, "Vente", getName());
         }
         else {
             if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
@@ -197,7 +192,7 @@ public class Shop {
         return MethodState.SUCCESS;
     }
 
-    private Supply removeLatestSupply() {
+    private void removeLatestSupply() {
         long latest = 0;
         Supply supply = null;
         for (Map.Entry<Long, Supply> entry : suppliers.entrySet()) {
@@ -209,17 +204,16 @@ public class Shop {
         if (supply != null) {
             suppliers.remove(latest);
         }
-        return supply;
     }
 
     public ItemBuilder getIcon(Menu menu, boolean fromShopMenu) {
         return new ItemBuilder(menu, fromShopMenu ? Material.GOLD_INGOT : Material.BARREL, itemMeta -> {
-            itemMeta.setDisplayName(ChatColor.YELLOW + "" + ChatColor.BOLD + (fromShopMenu ? "Informations" : getName()));
+            itemMeta.setDisplayName("§e§l" + (fromShopMenu ? "Informations" : getName()));
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GRAY + "■ Chiffre d'affaires: " + EconomyManager.getInstance().getFormattedNumber(turnover) + "€");
-            lore.add(ChatColor.GRAY + "■ Ventes: " + ChatColor.WHITE + sales.size());
+            lore.add("§7■ Chiffre d'affaires: " + EconomyManager.getInstance().getFormattedNumber(turnover) + "€");
+            lore.add("§7■ Ventes: §f" + sales.size());
             if (!fromShopMenu)
-                lore.add(ChatColor.GRAY + "■ Cliquez pour accéder au shop");
+                lore.add("§7■ Cliquez pour accéder au shop");
             itemMeta.setLore(lore);
         });
     }
@@ -230,23 +224,6 @@ public class Shop {
             amount += item.getAmount();
         }
         return amount;
-    }
-
-    private boolean isFull(Player player) {
-        for (ItemStack item : getContentsWithoutArmorOrExtras(player)) {
-            if (item == null || item.getType() == Material.AIR) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private ItemStack[] getContentsWithoutArmorOrExtras(Player player) {
-        // Get player's inventory contents without armor or extras
-        ItemStack[] contents = player.getInventory().getContents();
-        ItemStack[] inventory = new ItemStack[36];
-        System.arraycopy(contents, 0, inventory, 0, 36);
-        return inventory;
     }
 
     public static UUID getShopPlayerLookingAt(Player player, ShopBlocksManager shopBlocksManager, boolean onlyCash) {
