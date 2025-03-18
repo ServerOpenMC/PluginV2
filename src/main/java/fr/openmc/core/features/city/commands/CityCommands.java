@@ -391,18 +391,11 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.change")
     public void change(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
-        if (city==null){
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!city.hasPermission(sender.getUniqueId(), CPermission.TYPE)){
+        if (!CityTypeConditions.canCityChangeType(city, sender)){
             MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        sender.sendMessage("§cEs-tu sûr de vouloir changer le type de ta ville ?");
-        sender.sendMessage("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX");
-        sender.sendMessage("§cSi tu en es sûr fais §n/city chgconfirm");
 
         String cityTypeActuel = getCityType(city.getUUID());
         String cityTypeAfter = "";
@@ -432,39 +425,35 @@ public class CityCommands {
 
     }
 
-    public static void changeConfirm(Player sender){
+    public static void changeConfirm(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
-        if (city==null){
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!city.hasPermission(sender.getUniqueId(), CPermission.TYPE)){
+        if (!CityTypeConditions.canCityChangeType(city, sender)){
             MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        if (MascotUtils.mascotsContains(city.getUUID())){
-            if (!MascotUtils.getMascotState(city.getUUID())){
+        if (MascotUtils.mascotsContains(city.getUUID())) {
+            if (!MascotUtils.getMascotState(city.getUUID())) {
                 MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
         }
 
-        if (CityTypeCooldown.isOnCooldown(city.getUUID())){
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + CityTypeCooldown.getRemainingCooldown(city.getUUID())/1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (CityTypeCooldown.isOnCooldown(city.getUUID())) {
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + CityTypeCooldown.getRemainingCooldown(city.getUUID()) / 1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         CityManager.changeCityType(city.getUUID());
         CityTypeCooldown.setCooldown(city.getUUID());
 
-        if (MascotUtils.getMascotUUIDOfCity(city.getUUID())!=null){
+        if (MascotUtils.getMascotUUIDOfCity(city.getUUID()) != null) {
             LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
             MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
 
-            for (UUID townMember : city.getMembers()){
-                if (Bukkit.getPlayer(townMember) instanceof Player player){
-                    for (PotionEffect potionEffect : mascotsLevels.getBonus()){
+            for (UUID townMember : city.getMembers()) {
+                if (Bukkit.getPlayer(townMember) instanceof Player player) {
+                    for (PotionEffect potionEffect : mascotsLevels.getBonus()) {
                         player.removePotionEffect(potionEffect.getType());
                     }
                     MascotsManager.giveMascotsEffect(city.getUUID(), player.getUniqueId());
@@ -472,8 +461,8 @@ public class CityCommands {
             }
 
             double lastHealth = mascotsLevels.getHealth();
-            int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", ""))-2;
-            if (newLevel < 1){
+            int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", "")) - 2;
+            if (newLevel < 1) {
                 newLevel = 1;
             }
             MascotUtils.setMascotLevel(city.getUUID(), newLevel);
@@ -482,7 +471,7 @@ public class CityCommands {
             try {
                 int maxHealth = mascotsLevels.getHealth();
                 mob.setMaxHealth(maxHealth);
-                if (mob.getHealth() >= lastHealth){
+                if (mob.getHealth() >= lastHealth) {
                     mob.setHealth(maxHealth);
                 }
                 double currentHealth = mob.getHealth();
@@ -491,6 +480,7 @@ public class CityCommands {
                 exception.printStackTrace();
             }
         }
+    }
 
     // ACTIONS
 
@@ -542,7 +532,7 @@ public class CityCommands {
         city.addPermission(uuid, CPermission.OWNER);
 
         CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
-        MascotsManager.addFreeClaim(15, player);
+        MascotsManager.freeClaim.replace(cityUUID, 15);
 
         player.closeInventory();
 

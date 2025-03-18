@@ -124,7 +124,7 @@ public class MascotsListener implements Listener {
                             if (mob!=null){
                                 mob.teleport(mascot_spawn);
                                 movingMascots.remove(city_uuid);
-                                Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "mascotte déplacer");
+                                Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "Mascotte déplacée");
                                 //Cooldown de 5h pour déplacer la mascottes ( se reset au relancement du serv )
                                 Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                                 return;
@@ -242,18 +242,14 @@ public class MascotsListener implements Listener {
             }
 
             String city_uuid = city.getUUID();
-            if (city.hasPermission(player.getUniqueId(), CPermission.PERMS)){
-                if (mascotsUUID.equals(city_uuid)){
-                    if (!MascotUtils.getMascotState(city_uuid)){
-                        new MascotsDeadMenu(player, city_uuid).open();
-                        return;
-                    }
-                    new MascotMenu(player, clickEntity).open();
-                } else {
-                    MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
+            if (mascotsUUID.equals(city_uuid)){
+                if (!MascotUtils.getMascotState(city_uuid)){
+                    new MascotsDeadMenu(player, city_uuid).open();
+                    return;
                 }
+                new MascotMenu(player, clickEntity).open();
             } else {
-                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission de faire cela"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
             }
         }
     }

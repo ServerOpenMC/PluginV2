@@ -8,6 +8,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
+import fr.openmc.core.features.city.conditions.CityTypeConditions;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
@@ -31,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
-import static fr.openmc.core.features.city.mascots.MascotsManager.getMascotsUUIDbyCityUUID;
-import static fr.openmc.core.features.city.mascots.MascotsManager.mascotsConfig;
 
 public class CityMenu extends Menu {
 
@@ -99,11 +99,11 @@ public class CityMenu extends Menu {
             }
         }));
 
-        LivingEntity mascot = (LivingEntity) Bukkit.getEntity(getMascotsUUIDbyCityUUID(city.getUUID()));
+        LivingEntity mascot = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
         assert mascot != null;
 
         List<Component> loreMascots;
-        if (!mascotsConfig.getBoolean("mascots." + city.getUUID() + ".alive")) {
+        if (!MascotUtils.getMascotState(city.getUUID())) {
             loreMascots = List.of(
                     Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
                     Component.text("§7Status : §cEn Attente de Soin"),
@@ -123,7 +123,7 @@ public class CityMenu extends Menu {
             itemMeta.itemName(Component.text("§cVotre Mascotte"));
             itemMeta.lore(loreMascots);
         }).setOnClick(inventoryClickEvent -> {
-            if (!mascotsConfig.getBoolean("mascots." + city.getUUID() + ".alive")){
+            if (!MascotUtils.getMascotState(city.getUUID())){
                 MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
                 menu.open();
                 return;
@@ -185,11 +185,18 @@ public class CityMenu extends Menu {
         String finalType = type;
 
         List<Component> loreType;
-        loreType = List.of(
-                Component.text("§7Votre ville est en " + finalType),
-                Component.text(""),
-                Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE")
-        );
+
+        if (CityTypeConditions.canCityChangeType(city, player)) {
+            loreType = List.of(
+                    Component.text("§7Votre ville est en " + finalType),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE")
+            );
+        } else {
+            loreType = List.of(
+                    Component.text("§7Votre ville est en " + finalType)
+            );
+        }
 
         inventory.put(25, new ItemBuilder(this, Material.NETHERITE_SWORD, itemMeta -> {
             itemMeta.itemName(Component.text("§5Le Statut de votre Ville"));
@@ -198,8 +205,8 @@ public class CityMenu extends Menu {
             String cityTypeActuel = getCityType(city.getUUID());
             String cityTypeAfter = "";
             if (cityTypeActuel != null) {
-                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre" : "§aen paix§7";
-                cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix" : "§cen guerre§7";
+                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+                cityTypeAfter = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
             }
 
             ConfirmMenu menu = new ConfirmMenu(player,
