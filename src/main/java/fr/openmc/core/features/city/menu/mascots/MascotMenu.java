@@ -1,10 +1,12 @@
-package fr.openmc.core.features.city.menu.mascots;
+package fr.openmc.core.features.city.menu;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.DateUtils;
@@ -61,7 +63,7 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
-        loadMascotsConfig();
+
         Map<Integer, ItemStack> map = new HashMap<>();
 
         List<Component> loreSkinMascot = List.of(
@@ -87,6 +89,7 @@ public class MascotMenu extends Menu {
         }
 
         List<Component> requiredAmount = new ArrayList<>();
+        requiredAmount.add(Component.text("Nécessite " + MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID())).getUpgradeCost() + " Croq'Stars"));
         requiredAmount.add(Component.text("§7Nécessite §4" + MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city.getUUID() + ".level")).getUpgradeCost() + " Croq'Stars"));
 
         map.put(11, new ItemBuilder(this, getSpawnEgg(mascots), itemMeta -> {
@@ -95,7 +98,14 @@ public class MascotMenu extends Menu {
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        }).setNextMenu(new MascotsSkinMenu(getOwner(), getSpawnEgg(mascots), mascots)));
+        }).setOnClick(inventoryClickEvent -> {
+            if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_SKIN)){
+                new MascotsSkinMenu(getOwner(), getSpawnEgg(mascots), mascots).open();
+            } else {
+                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                getOwner().closeInventory();
+            }
+        }));
 
         map.put(13, new ItemBuilder(this, Material.CHEST, itemMeta -> {
             itemMeta.displayName(Component.text("§7Déplacer votre §cMascotte"));
@@ -105,17 +115,23 @@ public class MascotMenu extends Menu {
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }).setOnClick(inventoryClickEvent -> {
             if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")){
-                if (ItemUtils.hasAvailableSlot(getOwner())){
-                    city = CityManager.getPlayerCity(getOwner().getUniqueId());
-                    if (city == null) {
-                        return;
+                if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)){
+                    if (ItemUtils.hasAvailableSlot(getOwner())){
+                        city = CityManager.getPlayerCity(getOwner().getUniqueId());
+                        if (city == null) {
+                            MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            getOwner().closeInventory();
+                            return;
+                        }
+                        String city_uuid = city.getUUID();
+                        if (!movingMascots.contains(city_uuid)) {
+                            startChronometer(getOwner(), "mascotsMove", 120, ChronometerType.ACTION_BAR, "remaining : %sec%", ChronometerType.ACTION_BAR, "§cdéplacement de la masctte annulé");
+                            movingMascots.add(city_uuid);
+                            giveChest(getOwner());
+                        }
                     }
-                    String city_uuid = city.getUUID();
-                    if (!movingMascots.contains(city_uuid)) {
-                        startChronometer(getOwner(), "mascotsMove", 120, ChronometerType.ACTION_BAR, "Temps Restant : %sec%s", ChronometerType.ACTION_BAR, "§cDéplacement de la mascotte annulée");
-                        movingMascots.add(city_uuid);
-                        giveChest(getOwner());
-                    }
+                } else {
+                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 }
             }
             getOwner().closeInventory();
@@ -130,20 +146,37 @@ public class MascotMenu extends Menu {
             itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
             itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         }).setOnClick(inventoryClickEvent -> {
-            loadMascotsConfig();
+
             if (city == null) {
                 MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-            String city_uuid = city.getUUID();
-            if (hasEnoughCroqStar(getOwner(), MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city_uuid + ".level")))){
-                removeCrocStar(getOwner(), MascotsLevels.valueOf(mascotsConfig.getString("mascots." + city_uuid + ".level")));
-                upgradeMascots(city_uuid, mascots.getUniqueId());
                 getOwner().closeInventory();
                 return;
             }
-            MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez de Croq'Star"), Prefix.CITY, MessageType.ERROR, false);
+            if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_UPGRADE)){
+                String city_uuid = city.getUUID();
+                if (hasEnoughCroqStar(getOwner(), MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)))){
+                    removeCrocStar(getOwner(), MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)));
+                    upgradeMascots(city_uuid, mascots.getUniqueId());
+                    getOwner().closeInventory();
+                    return;
+                }
+                MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez de Croq'Star"), Prefix.CITY, MessageType.ERROR, false);
+
+            } else {
+                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            }
             getOwner().closeInventory();
+        }));
+
+        map.put(26, new ItemBuilder(this,Material.APPLE, itemMeta -> {
+            if (MascotUtils.getMascotImmunity(city.getUUID())){
+                List<Component> lore = new ArrayList<>();
+                lore.add(Component.text("temps restant : §a§l" + MascotUtils.getMascotImmunityTime(city.getUUID())));
+                itemMeta.setDisplayName("Immunité : §aactivé");
+                itemMeta.lore(lore);
+            } else {
+                itemMeta.setDisplayName("Immunité : §adésactivé");
+            }
         }));
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
