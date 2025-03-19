@@ -9,6 +9,7 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomeIcons;
+import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -79,30 +80,8 @@ public class HomeUtil {
         return CustomStack.getInstance(iconKey).getItemStack();
     }
 
-    public static boolean isRegionConflict(Player player, Location location) {
-
-        Plugin wg = player.getServer().getPluginManager().getPlugin("WorldGuard");
-        if(wg == null || !wg.isEnabled()) return false;
-
-        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        World world = WorldGuard.getInstance().getPlatform().getMatcher().getWorldByName(player.getWorld().getName());
-        RegionManager regions = container.get(world);
-
-        if(regions == null) return false;
-
-        for(ProtectedRegion region : regions.getRegions().values()) {
-            if(isInside(region, location)) return true;
-        }
-
-        return false;
-    }
-
-    public static boolean isInside(ProtectedRegion region, Location location) {
-        return region.contains(location.getBlockX(), location.getBlockY(), location.getBlockZ());
-    }
-
     public static boolean checkName(Player player, MessagesManager msg, String name) {
-        if(isRegionConflict(player, player.getLocation())) {
+        if(WorldGuardApi.isRegionConflict(player, player.getLocation())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas ajouter un home dans une région protégée !"), Prefix.HOME, MessageType.ERROR, true);
             return true;
         }
