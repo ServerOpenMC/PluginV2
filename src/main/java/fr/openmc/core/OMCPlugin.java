@@ -16,6 +16,7 @@ import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
@@ -46,6 +47,7 @@ public final class OMCPlugin extends JavaPlugin {
         MenuLib.init(this);
         new LuckPermsAPI(this);
         new PapiAPI();
+        new WorldGuardApi();
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
