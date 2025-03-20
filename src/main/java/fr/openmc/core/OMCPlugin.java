@@ -11,6 +11,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
@@ -70,8 +71,11 @@ public final class OMCPlugin extends JavaPlugin {
     public void onDisable() {
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
+
         MascotsManager.saveMascots(MascotsManager.mascots);
         MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
+
+        CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {
             try {
                 dbManager.close();
