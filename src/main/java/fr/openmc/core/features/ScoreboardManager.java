@@ -8,6 +8,10 @@ import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItem;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -36,7 +40,7 @@ import java.util.UUID;
 public class ScoreboardManager implements Listener {
     public Set<UUID> disabledPlayers = new HashSet<>();
     public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") && Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
+    private final boolean canShowLogo = PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder();
     OMCPlugin plugin = OMCPlugin.getInstance();
 
     public ScoreboardManager() {
@@ -134,7 +138,7 @@ public class ScoreboardManager implements Listener {
             scoreboard.resetScores(entry);
         }
 
-        objective.getScore(" ").setScore(11);
+        objective.getScore(" §8------------- ").setScore(11);
         objective.getScore("§8• §fNom: §7"+player.getName()).setScore(10);
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
