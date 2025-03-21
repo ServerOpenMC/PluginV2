@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu;
+package fr.openmc.core.features.city.menu.mascots;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
@@ -9,17 +9,15 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -82,7 +80,7 @@ public class MascotsDeadMenu extends Menu {
         Map<Integer, ItemStack> map = new HashMap<>();
 
         map.put(4, new ItemBuilder(this, Material.APPLE, itemMeta -> {
-            itemMeta.setDisplayName("Soigner");
+            itemMeta.displayName(Component.text("§7Soigner votre §cMascotte"));
             itemMeta.lore(requiredItemsLore);
         }).setOnClick(inventoryClickEvent -> {
             City city = CityManager.getCity(city_uuid);
@@ -100,6 +98,14 @@ public class MascotsDeadMenu extends Menu {
                 MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             getOwner().closeInventory();
+        }));
+
+        map.put(0, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
+        }).setOnClick(event -> {
+            CityMenu menu = new CityMenu(getOwner());
+            menu.open();
         }));
 
         return map;

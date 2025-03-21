@@ -1,8 +1,10 @@
-package fr.openmc.core.features.city.menu;
+package fr.openmc.core.features.city.menu.mascots;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.menu.CityMenu;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -15,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.mascots.MascotsManager.changeMascotsSkin;
@@ -53,7 +56,7 @@ public class MascotsSkinMenu extends Menu {
         Map<Integer, ItemStack> map = new HashMap<>();
 
         map.put(3, new ItemBuilder(this, Material.PIG_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Cochon");
+            itemMeta.displayName(Component.text("§7Cochon"));
             if (egg.equals(Material.PIG_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -69,7 +72,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(4, new ItemBuilder(this, Material.PANDA_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Panda");
+            itemMeta.displayName(Component.text("§7Panda"));
             if (egg.equals(Material.PANDA_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -85,7 +88,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(5, new ItemBuilder(this, Material.SHEEP_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Mouton");
+            itemMeta.displayName(Component.text("§7Mouton"));
             if (egg.equals(Material.SHEEP_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -101,7 +104,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(10, new ItemBuilder(this, Material.AXOLOTL_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Axolotl");
+            itemMeta.displayName(Component.text("§7Axolotl"));
             if (egg.equals(Material.AXOLOTL_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -117,7 +120,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(11, new ItemBuilder(this, Material.CHICKEN_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Poulet");
+            itemMeta.displayName(Component.text("§7Poulet"));
             if (egg.equals(Material.CHICKEN_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -133,7 +136,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(12, new ItemBuilder(this, Material.COW_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Vache");
+            itemMeta.displayName(Component.text("§7Vache"));
             if (egg.equals(Material.COW_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -149,7 +152,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(13, new ItemBuilder(this, Material.GOAT_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Chèvre");
+            itemMeta.displayName(Component.text("§7Chèvre"));
             if (egg.equals(Material.GOAT_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -165,7 +168,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(14, new ItemBuilder(this, Material.MOOSHROOM_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Vache champignon");
+            itemMeta.displayName(Component.text("§7Vache champignon"));
             if (egg.equals(Material.MOOSHROOM_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -181,7 +184,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(15, new ItemBuilder(this, Material.WOLF_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Loup");
+            itemMeta.displayName(Component.text("§7Loup"));
             if (egg.equals(Material.WOLF_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -197,7 +200,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(16, new ItemBuilder(this, Material.VILLAGER_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Villageois");
+            itemMeta.displayName(Component.text("§7Villageois"));
             if (egg.equals(Material.VILLAGER_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -213,7 +216,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(21, new ItemBuilder(this, Material.SKELETON_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Squelette");
+            itemMeta.displayName(Component.text("§7Squelette"));
             if (egg.equals(Material.SKELETON_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -229,7 +232,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(22, new ItemBuilder(this, Material.SPIDER_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Araignée");
+            itemMeta.displayName(Component.text("§7Araignée"));
             if (egg.equals(Material.SPIDER_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -245,7 +248,7 @@ public class MascotsSkinMenu extends Menu {
         }));
 
         map.put(23, new ItemBuilder(this, Material.ZOMBIE_SPAWN_EGG, itemMeta -> {
-            itemMeta.setDisplayName("Zombie");
+            itemMeta.displayName(Component.text("§7Zombie"));
             if (egg.equals(Material.ZOMBIE_SPAWN_EGG)){
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -258,6 +261,14 @@ public class MascotsSkinMenu extends Menu {
             } else {
                 getOwner().playSound(getOwner().getLocation(), deniedSound, 1, 1);
             }
+        }));
+
+        map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu de votre mascotte")));
+        }).setOnClick(event -> {
+            CityMenu menu = new CityMenu(getOwner());
+            menu.open();
         }));
 
         return map;

@@ -268,7 +268,7 @@ public class MascotsManager {
             info.add(Component.text("§cCe coffre n'est pas retirable"));
             info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
 
-            meta.setDisplayName("§lMascotte");
+            meta.displayName(Component.text("§lMascotte"));
             meta.lore(info);
             PersistentDataContainer data = meta.getPersistentDataContainer();
             data.set(chestKey,PersistentDataType.STRING, "id");
@@ -300,7 +300,7 @@ public class MascotsManager {
             info.add(Component.text("§cCe coffre n'est pas retirable"));
             info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
 
-            meta.setDisplayName("§lMascotte");
+            meta.displayName(Component.text("§lMascotte"));
             meta.lore(info);
             PersistentDataContainer data = meta.getPersistentDataContainer();
             data.set(chestKey,PersistentDataType.STRING, "id");

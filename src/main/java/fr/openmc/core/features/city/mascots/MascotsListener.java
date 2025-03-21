@@ -5,8 +5,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.menu.MascotMenu;
-import fr.openmc.core.features.city.menu.MascotsDeadMenu;
+import fr.openmc.core.features.city.menu.mascots.MascotMenu;
+import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.messages.MessageType;
@@ -124,7 +124,7 @@ public class MascotsListener implements Listener {
                             if (mob!=null){
                                 mob.teleport(mascot_spawn);
                                 movingMascots.remove(city_uuid);
-                                Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "mascotte déplacer");
+                                Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "Mascotte déplacée");
                                 //Cooldown de 5h pour déplacer la mascottes ( se reset au relancement du serv )
                                 Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                                 return;
@@ -242,18 +242,14 @@ public class MascotsListener implements Listener {
             }
 
             String city_uuid = city.getUUID();
-            if (city.hasPermission(player.getUniqueId(), CPermission.PERMS)){
-                if (mascotsUUID.equals(city_uuid)){
-                    if (!MascotUtils.getMascotState(city_uuid)){
-                        new MascotsDeadMenu(player, city_uuid).open();
-                        return;
-                    }
-                    new MascotMenu(player, clickEntity).open();
-                } else {
-                    MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
+            if (mascotsUUID.equals(city_uuid)){
+                if (!MascotUtils.getMascotState(city_uuid)){
+                    new MascotsDeadMenu(player, city_uuid).open();
+                    return;
                 }
+                new MascotMenu(player, clickEntity).open();
             } else {
-                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission de faire cela"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
             }
         }
     }
@@ -378,7 +374,7 @@ public class MascotsListener implements Listener {
         PersistentDataContainer itemData = meta.getPersistentDataContainer();
         if (itemData.has(MascotsManager.chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(MascotsManager.chestKey, PersistentDataType.STRING))) {
             event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cette objet"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cet objet"), Prefix.CITY, MessageType.ERROR, false);
 
         }
     }
@@ -413,18 +409,18 @@ public class MascotsListener implements Listener {
                     event.getInventory().getType() != InventoryType.CRAFTING ) {
                 player.sendMessage("" + event.getInventory().getType());
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cette objet ici"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
             InventoryType.SlotType slotType = event.getSlotType();
             if (slotType == InventoryType.SlotType.CRAFTING) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cette objet ici"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
             if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
                 event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cette objet"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cet objet"), Prefix.CITY, MessageType.ERROR, false);
             }
         }
     }

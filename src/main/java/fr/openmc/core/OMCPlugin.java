@@ -13,6 +13,7 @@ import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
@@ -45,7 +46,7 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* EXTERNALS */
         MenuLib.init(this);
-        new LuckPermsAPI(this);
+        new LuckPermsAPI();
         new PapiAPI();
         new WorldGuardApi();
 
@@ -60,7 +61,6 @@ public final class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MailboxManager();
         new ScoreboardManager();
         new HomesManager();
         new HomeUpgradeManager(HomesManager.getInstance());
@@ -70,7 +70,6 @@ public final class OMCPlugin extends JavaPlugin {
         new MotdUtils(this);
         translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
         translationManager.loadAllLanguages();
-
         getLogger().info("Plugin activé");
     }
 
@@ -79,8 +78,11 @@ public final class OMCPlugin extends JavaPlugin {
         HomesManager.getInstance().saveHomesData();
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
+
         MascotsManager.saveMascots(MascotsManager.mascots);
         MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
+
+        CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {
             try {
                 dbManager.close();
