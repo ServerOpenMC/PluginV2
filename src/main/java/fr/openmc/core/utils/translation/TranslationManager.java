@@ -28,7 +28,7 @@ public class TranslationManager {
     /**
      * Returns a string corresponding to the specified path and the language.
      *
-     * @param path  The path to the translation, "default" for default language"
+     * @param path  The path to the translation, "default" for default language
      * @param language The language of the translation
      */
     public String getTranslation(String path, String language) {
@@ -45,7 +45,7 @@ public class TranslationManager {
      * Returns a string corresponding to the specified path and the language and replaces the given placeholders with the values.
      *
      * @param path  The path to the translation
-     * @param language The language of the translation, "default" for default language"
+     * @param language The language of the translation, "default" for default language
      * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
      */
     public String getTranslation(String path, String language, String... placeholders) {

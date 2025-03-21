@@ -10,6 +10,7 @@ import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
@@ -59,6 +60,7 @@ public final class OMCPlugin extends JavaPlugin {
         new MailboxManager();
         new ScoreboardManager();
         new TPAManager();
+        new QuestsManager(this);
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
