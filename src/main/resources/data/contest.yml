@@ -208,7 +208,7 @@ contestList:
   - camp1: "Loup"
     color1: "GRAY"
     camp2: "Renard"
-    color2: "ORANGE"
+    color2: "GOLD"
     selected: 0
   - camp1: "Matin"
     color1: "GOLD"
