@@ -9,11 +9,14 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.homes.HomeUpgradeManager;
+import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
@@ -44,6 +47,7 @@ public final class OMCPlugin extends JavaPlugin {
         MenuLib.init(this);
         new LuckPermsAPI(this);
         new PapiAPI();
+        new WorldGuardApi();
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
@@ -58,6 +62,8 @@ public final class OMCPlugin extends JavaPlugin {
         new EconomyManager();
         new MailboxManager();
         new ScoreboardManager();
+        new HomesManager();
+        new HomeUpgradeManager(HomesManager.getInstance());
         new TPAManager();
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
@@ -70,6 +76,7 @@ public final class OMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        HomesManager.getInstance().saveHomesData();
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
         MascotsManager.saveMascots(MascotsManager.mascots);

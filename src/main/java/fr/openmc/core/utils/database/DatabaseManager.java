@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyData;
 import fr.openmc.core.features.economy.TransactionsManager;
+import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import org.bukkit.Bukkit;
@@ -29,6 +30,7 @@ public class DatabaseManager {
             ContestManager.init_db(connection);
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
+            HomesManager.init_db(connection);
             MascotsManager.init_db(connection);
             CityTypeCooldown.init_db(connection);
         } catch (SQLException e) {
