@@ -1,17 +1,21 @@
 package fr.openmc.core.features.homes.command;
 
 import dev.xernas.menulib.Menu;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.menu.HomeMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.BlastingRecipe;
+import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -60,8 +64,19 @@ public class TpHome {
 
             for(Home h : homes) {
                 if (h.getName().equalsIgnoreCase(split[1])) {
-                    player.teleport(h.getLocation());
-                    MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté au home §e" + h.getName() + " §ade §e" + target.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    player.teleport(h.getLocation());
+                                    MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté au home §e" + h.getName() + " §ade §e" + target.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                                }
+                            }.runTaskLater(OMCPlugin.getInstance(), 10);
+                        }
+                    }.runTaskLater(OMCPlugin.getInstance(), 10);
                     return;
                 }
             }
@@ -85,8 +100,19 @@ public class TpHome {
 
         for(Home h : homes) {
             if(h.getName().equalsIgnoreCase(home)) {
-                player.teleport(h.getLocation());
-                MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté à votre home §e" + h.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
+                        new BukkitRunnable() {
+                            @Override
+                            public void run() {
+                                player.teleport(h.getLocation());
+                                MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté à votre home §e" + h.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                            }
+                        }.runTaskLater(OMCPlugin.getInstance(), 10);
+                    }
+                }.runTaskLater(OMCPlugin.getInstance(), 10);
                 return;
             }
         }
