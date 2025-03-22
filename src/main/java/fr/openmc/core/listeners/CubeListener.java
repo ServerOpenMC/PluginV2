@@ -2,6 +2,7 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
@@ -60,10 +61,18 @@ public class CubeListener implements Listener {
 
 
     private void createCube(Location location) {
+        World world = location.getWorld();
+        int baseX = location.getBlockX();
+        int baseY = location.getBlockY();
+        int baseZ = location.getBlockZ();
+
         for (int x = 0; x < CUBE_SIZE; x++) {
             for (int y = 0; y < CUBE_SIZE; y++) {
                 for (int z = 0; z < CUBE_SIZE; z++) {
-                    location.clone().add(x, y, z).getBlock().setType(CUBE_MATERIAL);
+                    Block block = world.getBlockAt(baseX + x, baseY + y, baseZ + z);
+                    if (block.getType() != CUBE_MATERIAL) {
+                        block.setType(CUBE_MATERIAL);
+                    }
                 }
             }
         }
