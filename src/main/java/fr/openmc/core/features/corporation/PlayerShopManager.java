@@ -6,6 +6,8 @@ import lombok.Getter;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -22,6 +24,10 @@ public class PlayerShopManager {
     public PlayerShopManager() {
         instance = this;
     }
+
+//    public static void init_db (Connection conn) throws SQLException {
+//        conn.prepareStatement("CREATE TABLE IF NOT EXISTS shop (uuid VARCHAR(8) NOT NULL PRIMARY KEY);").executeUpdate();
+//    }
 
     public boolean createShop(Player player, Block barrel, Block cashRegister) {
         if (!economyManager.withdrawBalance(player.getUniqueId(), 500)) {

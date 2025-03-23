@@ -3,6 +3,7 @@ package fr.openmc.core.features.corporation.menu.shop;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.CompanyManager;
 import fr.openmc.core.features.corporation.PlayerShopManager;
 import fr.openmc.core.features.corporation.Shop;
@@ -37,6 +38,7 @@ public class ShopMenu extends Menu {
         this.shop = shop;
         this.itemIndex = itemIndex;
         items.addAll(shop.getItems());
+        Shop.checkStock(shop);
     }
 
     @Override
@@ -146,6 +148,7 @@ public class ShopMenu extends Menu {
                 List<String> lore = new ArrayList<>();
                 lore.add("§7■ Prix: §c" + (getCurrentItem().getPricePerItem() * amountToBuy) + "€");
                 lore.add("§7■ En stock: " + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getAmount()));
+                OMCPlugin.getInstance().getLogger().info("" + getCurrentItem().getAmount());
                 lore.add("§7■ Cliquez pour en acheter §f" + amountToBuy);
                 itemMeta.setLore(lore);
             }).setNextMenu(new ConfirmMenu(getOwner(), this, this::buyAccept, this::refuse, "§7Accepter", "§7Refuser")));

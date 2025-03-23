@@ -1,6 +1,7 @@
 package fr.openmc.core.features.corporation.commands;
 
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.menu.company.ShopManageMenu;
 import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
@@ -10,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -39,6 +42,16 @@ public class ShopCommand {
         }
         ShopMenu shopMenu = new ShopMenu(player, companyManager, playerShopManager, playerShopManager.getPlayerShop(player.getUniqueId()), 0);
         shopMenu.open();
+    }
+
+    @Subcommand("id")
+    public void giveID(Player player){
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item.getType()!=Material.AIR){
+            ItemMeta itemMeta = item.getItemMeta();
+            itemMeta.getPersistentDataContainer().set(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
+            item.setItemMeta(itemMeta);
+        }
     }
 
     @Subcommand("create")

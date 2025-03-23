@@ -10,11 +10,19 @@ import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.listener.ShopListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
+import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 @Getter
 public class CompanyManager {
@@ -40,8 +48,101 @@ public class CompanyManager {
         );
     }
 
+//    public static void init_db(Connection conn) throws SQLException {
+//        conn.prepareStatement("CREATE TABLE IF NOT EXISTS company (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, name VARCHAR();").executeUpdate();
+//    }
+//
+//    public static HashMap<String, Integer> getAllFreeClaims() {
+//        HashMap<String, Integer> freeClaims = new HashMap<>();
+//
+//        String query = "SELECT city_uuid, claim FROM free_claim";
+//        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
+//             ResultSet rs = statement.executeQuery()) {
+//
+//            while (rs.next()) {
+//                String cityUuid = rs.getString("city_uuid");
+//                int claim = rs.getInt("claim");
+//                freeClaims.put(cityUuid, claim);
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return freeClaims;
+//    }
+//
+//    public static List<Mascot> getAllMascots() {
+//        List<Mascot> mascots = new ArrayList<>();
+//
+//        String query = "SELECT city_uuid, mascot_uuid, level, immunity, immunity_time, alive FROM mascots";
+//        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
+//             ResultSet rs = statement.executeQuery()) {
+//
+//            while (rs.next()) {
+//                String cityUuid = rs.getString("city_uuid");
+//                String mascotUuid = rs.getString("mascot_uuid");
+//                int level = rs.getInt("level");
+//                boolean immunity = rs.getBoolean("immunity");
+//                long immunity_time = rs.getLong("immunity_time");
+//                boolean alive = rs.getBoolean("alive");
+//                mascots.add(new Mascot(cityUuid, mascotUuid, level, immunity, immunity_time, alive)); // Ajouter à la liste
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return mascots;
+//    }
+//
+//    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
+//        String query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+//        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
+//            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
+//                statement.setString(1, entry.getKey());
+//                statement.setInt(2, entry.getValue());
+//                statement.setInt(3, entry.getValue());
+//                statement.addBatch();
+//            }
+//            statement.executeBatch();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    public static void saveMascots(List<Mascot> mascots) {
+//        String query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive) " +
+//                "VALUES (?, ?, ?, ?, ?, ?) " +
+//                "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?";
+//
+//        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
+//            for (Mascot mascot : mascots) {
+//
+//                statement.setString(1, mascot.getCityUuid());
+//                statement.setString(2, mascot.getMascotUuid());
+//                statement.setInt(3, mascot.getLevel());
+//                statement.setBoolean(4, mascot.isImmunity());
+//                statement.setLong(5, mascot.getImmunity_time());
+//                statement.setBoolean(6, mascot.isAlive());
+//
+//                statement.setString(7, mascot.getMascotUuid());
+//                statement.setInt(8, mascot.getLevel());
+//                statement.setBoolean(9, mascot.isImmunity());
+//                statement.setLong(10, mascot.getImmunity_time());
+//                statement.setBoolean(11, mascot.isAlive());
+//
+//                statement.addBatch();
+//            }
+//
+//            statement.executeBatch();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
     // Crée une nouvelle entreprise et l'ajoute à la liste des entreprises existantes
     public void createCompany(String name, CompanyOwner owner) {
+        if (name.length()>24) {
+            MessagesManager.sendMessage(Bukkit.getPlayer(owner.getPlayer()),Component.text("Le nom de votre entreprise est trop long il ne doit contenir que 24 caractères"), Prefix.ENTREPRISE, MessageType.INFO, false);
+            return;
+        }
         companies.add(new Company(name, owner));
     }
 

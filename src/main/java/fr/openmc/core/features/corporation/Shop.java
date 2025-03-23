@@ -40,46 +40,67 @@ public class Shop {
         this.index = index;
     }
 
-    public void checkStock() {
-        Multiblock multiblock = blocksManager.getMultiblock(getUuid());
-        if (multiblock != null) {
+    /**
+     * @param shop the shop we want to check the stock
+     * requirement : item need the uuid of the player who restock the shop
+     *
+     * quand un item est vendu un partie du profit reviens a celui qui a approvisionner
+     */
+    public static void checkStock(Shop shop) {
+        ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
+        Multiblock multiblock = blocksManager.getMultiblock(shop.getUuid());
+
+        if (multiblock == null) {
             return;
         }
+
         Block stockBlock = multiblock.getStockBlock().getBlock();
         if (stockBlock.getType() != Material.BARREL) {
-            blocksManager.removeShop(this);
+            blocksManager.removeShop(shop);
             return;
         }
+
         if (stockBlock.getState() instanceof Barrel barrel) {
+
             Inventory inventory = barrel.getInventory();
             for (ItemStack item : inventory.getContents()) {
                 if (item == null || item.getType() == Material.AIR) {
                     continue;
                 }
+
                 ItemMeta itemMeta = item.getItemMeta();
                 if (itemMeta == null) {
                     continue;
                 }
+
                 PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
                 if (dataContainer.has(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING)) {
+
                     String supplierUUID = dataContainer.get(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING);
                     if (supplierUUID == null) {
                         continue;
                     }
+
                     List<UUID> possibleSuppliers = new ArrayList<>();
-                    if (owner.isCompany()) {
-                        possibleSuppliers.addAll(owner.getCompany().getAllMembers());
+                    if (shop.getOwner().isCompany()) {
+                        possibleSuppliers.addAll(shop.getOwner().getCompany().getAllMembers());
                     }
-                    if (owner.isPlayer()) possibleSuppliers.add(owner.getPlayer());
+
+                    if (shop.getOwner().isPlayer()) {
+                        possibleSuppliers.add(shop.getOwner().getPlayer());
+                    }
+
                     if (!possibleSuppliers.contains(UUID.fromString(supplierUUID))) {
                         continue;
                     }
-                    boolean supplied = supply(item, UUID.fromString(supplierUUID));
+
+                    boolean supplied = shop.supply(item, UUID.fromString(supplierUUID));
                     if (supplied) inventory.remove(item);
                 }
             }
         }
     }
+
 
     public String getName() {
         return owner.isCompany() ? ("Shop #" + index) : Bukkit.getOfflinePlayer(owner.getPlayer()).getName() + "'s Shop";
@@ -115,9 +136,12 @@ public class Shop {
         items.remove(item);
     }
 
+    /**
+     * update the amount of all the item in the shop according to the items in the barrel
+     */
     public boolean supply(ItemStack item, UUID supplier) {
         for (ShopItem shopItem : items) {
-            if (shopItem.getItem().isSimilar(item)) {
+            if (shopItem.getItem().getType().equals(item.getType())) {
                 shopItem.setAmount(shopItem.getAmount() + item.getAmount());
                 suppliers.put(System.currentTimeMillis(), new Supply(supplier, shopItem.getItemID(), item.getAmount()));
                 return true;
@@ -127,7 +151,7 @@ public class Shop {
     }
 
     public MethodState buy(ShopItem item, int amount, Player buyer) {
-        if (ItemUtils.hasAvailableSlot(buyer)) {
+        if (!ItemUtils.hasAvailableSlot(buyer)) {
             return MethodState.SPECIAL;
         }
         if (amount > item.getAmount()) {
@@ -147,11 +171,7 @@ public class Shop {
             List<Supply> supplies = new ArrayList<>();
             for (Map.Entry<Long, Supply> entry : suppliers.entrySet()) {
                 if (entry.getValue().getItemId().equals(item.getItemID())) {
-                    long latest = 0;
-                    if (entry.getKey() > latest) {
-                        latest = entry.getKey();
-                        supplies.add(entry.getValue());
-                    }
+                    supplies.add(entry.getValue());
                 }
             }
             if (!supplies.isEmpty()) {
@@ -263,7 +283,5 @@ public class Shop {
             this.stockBlock = stockBlock;
             this.cashBlock = cashBlock;
         }
-
     }
-
 }
