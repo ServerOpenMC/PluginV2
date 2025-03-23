@@ -43,7 +43,9 @@ public class VoteMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent event) {}
+    public void onInventoryClick(InventoryClickEvent event) {
+        // empty
+    }
 
 
     @Override
@@ -72,36 +74,41 @@ public class VoteMenu extends Menu {
 
         ContestPlayer playerData = contestManager.dataPlayer.get(player.getUniqueId().toString());
 
+        String voteTeamMsg = "§7Votez pour la Team ";
+        String winMsg="§7Faites la gagner en déposant le plus de points";
+        String clickMsg="§c§lATTENTION! Le choix est définitif!";
+
+
         if (playerData == null) {
             ench1 = false;
             ench2 = false;
-            lore1.add(Component.text("§7Votez pour la Team ")
+            lore1.add(Component.text(voteTeamMsg)
                     .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
             );
-            lore1.add(Component.text("§7Faites la gagner en déposant le plus de points"));
-            lore1.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
+            lore1.add(Component.text(winMsg));
+            lore1.add(Component.text(clickMsg));
 
 
-            lore2.add(Component.text("§7Votez pour la Team ")
+            lore2.add(Component.text(voteTeamMsg)
                     .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2))
             );
-            lore2.add(Component.text("§7Faites la gagner en déposant le plus de points"));
-            lore2.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
+            lore2.add(Component.text(winMsg));
+            lore2.add(Component.text(clickMsg));
         } else {
             if(playerData.getCamp() <= 0) {
                 ench1 = false;
                 ench2 = false;
-                lore1.add(Component.text("§7Votez pour la Team ")
+                lore1.add(Component.text(voteTeamMsg)
                         .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
                 );
-                lore1.add(Component.text("§7Faites la gagner en déposant le plus de points"));
-                lore1.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
+                lore1.add(Component.text(winMsg));
+                lore1.add(Component.text(clickMsg));
 
-                lore2.add(Component.text("§7Votez pour la Team ")
+                lore2.add(Component.text(voteTeamMsg)
                         .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2))
                 );
-                lore2.add(Component.text("§7Faites la gagner en déposant le plus de points"));
-                lore2.add(Component.text("§c§lATTENTION! Le choix est définitif!"));
+                lore2.add(Component.text(winMsg));
+                lore2.add(Component.text(clickMsg));
 
             } else if(playerData.getCamp() == 1) {
                 lore1.add(

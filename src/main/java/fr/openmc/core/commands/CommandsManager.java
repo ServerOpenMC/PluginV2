@@ -6,11 +6,11 @@ import fr.openmc.core.commands.debug.CooldownCommand;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.utils.*;
-import fr.openmc.core.features.contest.commands.ContestCommand;
-import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.friend.FriendCommand;
+import fr.openmc.core.features.friend.FriendManager;
+import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.utils.cooldown.CooldownInterceptor;
 import lombok.Getter;
-import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 public class CommandsManager {
@@ -34,11 +34,15 @@ public class CommandsManager {
                 new Spawn(),
                 new SetSpawn(),
                 new Playtime(),
-		        new Diceroll(),
+                new Diceroll(),
                 new CooldownCommand(),
-                new ChronometerCommand()
+                new MailboxCommand(OMCPlugin.getInstance()),
+                new ChronometerCommand(),
+                new FriendCommand()
         );
     }
 
-    private void registerSuggestions() {}
+    private void registerSuggestions() {
+        FriendManager.getInstance().initCommandSuggestion();
+    }
 }

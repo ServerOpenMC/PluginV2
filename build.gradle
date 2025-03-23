@@ -21,7 +21,9 @@ dependencies {
     compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly('com.sk89q.worldguard:worldguard-bukkit:7.0.9')
 
+    implementation("de.rapha149.signgui:signgui:2.5.0")
     implementation("dev.xernas:menulib:1.1.0")
     implementation("org.jetbrains:annotations:24.1.0")
     implementation("com.github.Revxrsal.Lamp:common:3.2.1")

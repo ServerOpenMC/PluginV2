@@ -2,6 +2,7 @@ package fr.openmc.core.utils.messages;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import com.google.common.collect.ImmutableBiMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class MessagesManager {
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, boolean sound) {
         MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
-                Component.text("§7(" + type.getPrefix() + "§7) ")
+                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
                         .append(MiniMessage.miniMessage().deserialize(prefix.getPrefix()))
                         .append(Component.text(" §7» ")
                         .append(message)
@@ -77,12 +78,24 @@ public class MessagesManager {
     @Getter
     public enum Message {
         NOPERMISSION(Component.text("§cVous n'avez pas la permission d'exécuter cette commande.")),
+        NOPERMISSION2(Component.text("§cVous n'avez pas le droit de faire ceci")),
         MISSINGARGUMENT(Component.text("§cVous devez spécifier un argument.")),
+
+        MONEYPLAYERMISSING(Component.text("Tu n'as pas assez d'argent")),
 
         // City messages
         PLAYERNOCITY(Component.text("Tu n'es pas dans une ville")),
-        PLAYERINCITY(Component.text("le joueur est déjà dans une ville")),
+        PLAYERINCITY(Component.text("Tu es déjà dans une ville")),
         CITYNOFREECLAIM(Component.text("Cette ville n'a pas de claims gratuits")),
+
+
+        PLAYERNOCLAIM(Component.text("Tu n'as pas la permission d'aggrandir ta ville")),
+        PLAYERNOOWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire")),
+        PLAYERNORENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
+        PLAYERNOMONEYGIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),
+        PLAYERNOMONEYTAKE(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville")),
+
+        CITYNOTFOUND(Component.text("La ville n'existe pas")),
 
         ;
 

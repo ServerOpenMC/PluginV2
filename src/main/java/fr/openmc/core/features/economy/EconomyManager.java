@@ -67,11 +67,7 @@ public class EconomyManager {
     public String getMiniBalance(UUID player) {
         double balance = getBalance(player);
 
-        DecimalFormat df = new DecimalFormat("#.##");
-        return balance >= 1000000000 ? df.format(balance / 1000000000) + "B" :
-               balance >= 1000000 ? df.format(balance / 1000000) + "M" :
-               balance >= 1000 ? df.format(balance / 1000) + "k" :
-               df.format(balance);
+        return getFormattedSimplifiedNumber(balance);
     }
 
     public String getFormattedBalance(UUID player) {
@@ -91,9 +87,17 @@ public class EconomyManager {
         return  format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), getEconomyIcon());
     }
 
+    public String getFormattedSimplifiedNumber(double balance) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return balance >= 1000000000 ? df.format(balance / 1000000000) + "B" :
+                balance >= 1000000 ? df.format(balance / 1000000) + "M" :
+                        balance >= 1000 ? df.format(balance / 1000) + "k" :
+                                df.format(balance);
+    }
+
     public static String getEconomyIcon() {
         if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            return ChatColor.RESET +  PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
+            return PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
         }
         return "Ⓐ";
     }

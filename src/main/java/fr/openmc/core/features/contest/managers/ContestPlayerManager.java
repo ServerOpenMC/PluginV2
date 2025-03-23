@@ -140,7 +140,8 @@ public class ContestPlayerManager  {
     }
 
     public int giveRandomly(Integer min, Integer max) {
-        return new Random().nextInt(min, max);
+        Random random = new Random();
+        return random.nextInt(min, max);
     }
 
     public double getMultiMoneyFromRang(int rang) {

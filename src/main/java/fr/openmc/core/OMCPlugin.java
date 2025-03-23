@@ -12,10 +12,16 @@ import fr.openmc.core.features.corporation.PlayerShopManager;
 import fr.openmc.core.features.corporation.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.friend.FriendManager;
+import fr.openmc.core.features.homes.HomeUpgradeManager;
+import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
@@ -51,8 +57,9 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* EXTERNALS */
         MenuLib.init(this);
-        new LuckPermsAPI(this);
+        new LuckPermsAPI();
         new PapiAPI();
+        new WorldGuardApi();
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
@@ -65,8 +72,12 @@ public final class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MailboxManager();
         new ScoreboardManager();
+        new HomesManager();
+        new HomeUpgradeManager(HomesManager.getInstance());
+        new TPAManager();
+        new FriendManager();
+
         new ShopBlocksManager(this);
         new PlayerShopManager();
         new CompanyManager();// laisser apres Economy Manager
@@ -81,9 +92,14 @@ public final class OMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        HomesManager.getInstance().saveHomesData();
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
-        MascotsManager.saveFreeClaimMap();
+
+        MascotsManager.saveMascots(MascotsManager.mascots);
+        MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
+
+        CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {
             try {
                 dbManager.close();

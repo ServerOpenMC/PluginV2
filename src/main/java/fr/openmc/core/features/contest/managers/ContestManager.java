@@ -46,7 +46,7 @@ public class ContestManager {
 
     @Getter static ContestManager instance;
 
-    public File contestFile;
+    public final File contestFile;
     public YamlConfiguration contestConfig;
     private final OMCPlugin plugin;
 
@@ -54,8 +54,6 @@ public class ContestManager {
 
     public ContestData data;
     public Map<String, ContestPlayer> dataPlayer = new HashMap<>();
-
-    private BukkitRunnable eventRunnable;
 
     private final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
@@ -95,39 +93,23 @@ public class ContestManager {
         // Fill data and playerData
         initContestData();
         loadContestPlayerData();
-
-//        // Logs of data and playerData
-//        eventRunnable = new BukkitRunnable() {
-//            @Override
-//            public void run() {
-//                plugin.getLogger().info(data + " " + data.getPhase() + " " + data.getCamp1() + " " + data.getColor1() + " " + data.getPoint1() + " " + data.getCamp2() + " " + data.getColor2() + " " + data.getPoint2());
-//                plugin.getLogger().info(" ");
-//                dataPlayer.forEach((uuid, data) -> {
-//                    plugin.getLogger().info(uuid + " " + data.getCamp() + " " + data.getColor() + " " + data.getPoints() + " " + data.getName());
-//                });
-//            }
-//        };
-//
-//        // tout les minutes
-//        eventRunnable.runTaskTimer(plugin, 0, 100);
     }
 
-    public static void init_db(Connection conn) throws SQLException {
+    public static void initDb(Connection conn) throws SQLException {
         // Système de Contest
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest (phase int(11), camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int(11), points2 int(11))").executeUpdate();
         PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM contest");
+
         ResultSet rs = state.executeQuery();
 
         // push first contest
-        if(rs.next()) {
-            if(rs.getInt(1) == 0) {
-                PreparedStatement states = conn.prepareStatement("INSERT INTO contest (phase, camp1, color1, camp2, color2, startdate, points1, points2) VALUES (1, 'Mayonnaise', 'YELLOW', 'Ketchup', 'RED', ?, 0,0)");
-
-                String dateContestStart = "ven.";
-                states.setString(1, dateContestStart);
-                states.executeUpdate();
-            }
+        if (rs.next() && rs.getInt(1) == 0) {
+            PreparedStatement states = conn.prepareStatement("INSERT INTO contest (phase, camp1, color1, camp2, color2, startdate, points1, points2) VALUES (1, 'Mayonnaise', 'YELLOW', 'Ketchup', 'RED', ?, 0,0)");
+            String dateContestStart = "ven.";
+            states.setString(1, dateContestStart);
+            states.executeUpdate();
         }
+
 
         // Table camps
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest_camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int(11), point_dep int(11))").executeUpdate();
@@ -139,7 +121,7 @@ public class ContestManager {
             plugin.saveResource("data/contest.yml", false);
         }
 
-        this.contestConfig = YamlConfiguration.loadConfiguration(contestFile);
+        contestConfig = YamlConfiguration.loadConfiguration(contestFile);
     }
 
     public void saveContestConfig() {
@@ -245,14 +227,14 @@ public class ContestManager {
     public void initPhase1() {
         data.setPhase(2);
 
-        Bukkit.broadcast(Component.text(
-                "§8§m                                                     §r\n" +
-                        "§7\n" +
-                        "§6§lCONTEST!§r §7 Les votes sont ouverts !§7" +
-                        "§7\n" +
-                        "§8§o*on se retrouve au spawn pour pouvoir voter ou /contest...*\n" +
-                        "§7\n" +
-                        "§8§m                                                     §r"
+        Bukkit.broadcast(Component.text("""
+                        §8§m                                                     §r
+                        §7
+                        §6§lCONTEST!§r §7 Les votes sont ouverts !§7
+                        §7
+                        §8§o*on se retrouve au spawn pour pouvoir voter ou /contest...*
+                        §7
+                        §8§m                                                     §r"""
         ));
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -275,14 +257,14 @@ public class ContestManager {
 
         data.setPhase(3);
 
-        Bukkit.broadcast(Component.text(
-                "§8§m                                                     §r\n" +
-                        "§7\n" +
-                        "§6§lCONTEST!§r §7Les contributions ont commencé!§7" +
-                        "§7\nEchanger des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les\n" +
-                        "§8§ovia la Borne des Contest ou /contest\n" +
-                        "§7\n" +
-                        "§8§m                                                     §r"
+        Bukkit.broadcast(Component.text("""
+                        §8§m                                                     §r
+                        §7
+                        §6§lCONTEST!§r §7Les contributions ont commencé!§7
+                        §7Echanger des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les
+                        §8§ovia la Borne des Contest ou /contest
+                        §7
+                        §8§m                                                     §r"""
         ));
 
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -299,22 +281,22 @@ public class ContestManager {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);
         }
 
-        Bukkit.broadcast(Component.text(
-                "§8§m                                                     §r\n" +
-                        "§7\n" +
-                        "§6§lCONTEST!§r §7Time over! §7" +
-                        "§7\nFin du Contest, retrouvez vos récompenses et le bilan de ce Contest\n" +
-                        "§7sous forme de livre\n" +
-                        "§8§o*/contest pour voir quand le prochain contest arrive*\n" +
-                        "§7\n" +
-                        "§8§m                                                     §r"
+        Bukkit.broadcast(Component.text("""
+                        §8§m                                                     §r
+                        §7
+                        §6§lCONTEST!§r §7Time over! §7
+                        §7Fin du Contest, retrouvez vos récompenses et le bilan de ce Contest
+                        §7sous forme de livre
+                        §8§o*/contest pour voir quand le prochain contest arrive*
+                        §7
+                        §8§m                                                     §r"""
         ));
-        Component message_mail = Component.text("Vous avez reçu la lettre du Contest", NamedTextColor.DARK_GREEN)
+        Component messageMail = Component.text("Vous avez reçu la lettre du Contest", NamedTextColor.DARK_GREEN)
                 .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
                 .clickEvent(getRunCommand("mail"))
                 .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
                 .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
-        Bukkit.broadcast(message_mail);
+        Bukkit.broadcast(messageMail);
 
         // GET GLOBAL CONTEST INFORMATION
         String camp1Color = data.getColor1();
@@ -355,10 +337,8 @@ public class ContestManager {
             if (points2<points1) {
                 points2 *= multiplicateurPoint;
             }
-        } else if (vote1Taux < vote2Taux) {
-            if (points1<points2) {
-                points1 *= multiplicateurPoint;
-            }
+        } else if (vote1Taux < vote2Taux && points1<points2) {
+            points1 *= multiplicateurPoint;
         }
 
         int totalpoint = points1 + points2;
@@ -438,12 +418,12 @@ public class ContestManager {
 
         final int[] rankInt = {0};
 
-        orderedMap.forEach((uuid, data) -> {
-            NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(data.getColor());
+        orderedMap.forEach((uuid, dataOrdered) -> {
+            NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(dataOrdered.getColor());
 
             Component rankComponent = Component.text("\n§0#" + (rankInt[0] + 1) + " ")
-                    .append(Component.text(data.getName()).decoration(TextDecoration.ITALIC, false).color(playerCampColor2))
-                    .append(Component.text(" §8- §b" + data.getPoints()));
+                    .append(Component.text(dataOrdered.getName()).decoration(TextDecoration.ITALIC, false).color(playerCampColor2))
+                    .append(Component.text(" §8- §b" + dataOrdered.getPoints()));
             rankInt[0]++;
             leaderboard[0] = leaderboard[0].append(rankComponent);
         });
@@ -537,6 +517,7 @@ public class ContestManager {
                 .filter(trade -> (boolean) trade.get("selected") == bool)
                 .map(trade -> (Map<String, Object>) trade)
                 .collect(Collectors.toList());
+
         Collections.shuffle(filteredTrades);
 
         return filteredTrades.stream().limit(12).collect(Collectors.toList());
