@@ -13,27 +13,17 @@ public class Aywenite extends CustomItem {
         super("omc_items:aywenite");
     }
 
-    private ItemStack format(ItemStack initial) {
-        ItemMeta meta = initial.getItemMeta();
-        meta.displayName(Component.text("Aywenite")
-                .decoration(TextDecoration.ITALIC, false)
-                .color(NamedTextColor.LIGHT_PURPLE)
-        );
-        initial.setItemMeta(meta);
-        return initial;
-    }
-
     @Override
     public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.AMETHYST_SHARD);
-        return format(item);
+        return item;
     }
 
     @Override
     public ItemStack getItemsAdder() {
         CustomStack stack = CustomStack.getInstance("omc_items:aywenite");
         if (stack != null) {
-            return format(stack.getItemStack());
+            return stack.getItemStack();
         } else {
             return null;
         }
