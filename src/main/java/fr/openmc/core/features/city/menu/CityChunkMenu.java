@@ -9,12 +9,14 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -26,6 +28,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
+import static fr.openmc.core.features.city.commands.CityCommands.calculatePrice;
 
 public class CityChunkMenu extends Menu {
 
@@ -98,12 +103,20 @@ public class CityChunkMenu extends Menu {
                     }
                 } else {
                     if (material == null) material = Material.GRAY_STAINED_GLASS_PANE;
+                    int nbChunk = city2.getChunks().size();
+                    List<Component> listComponent = List.of(
+                            Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                            Component.text(""),
+                            Component.text("§cCoûte :"),
+                            Component.text("§8- §6"+ (double) calculatePrice(nbChunk) + "§d" + EconomyManager.getEconomyIcon()),
+                            Component.text("§8- §d"+ calculateAywenite(nbChunk) + " d'Aywenite"),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ POUR CLAIM")
+                    );
+
                     chunkItem = new ItemBuilder(this, material, itemMeta -> {
                         itemMeta.displayName(Component.text("§cClaim libre"));
-                        itemMeta.lore(List.of(
-                                Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                                Component.text("§e§lCLIQUEZ POUR CLAIM")
-                        ));
+                        itemMeta.lore(listComponent);
                     }).setOnClick(inventoryClickEvent -> {
                         City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
@@ -124,9 +137,15 @@ public class CityChunkMenu extends Menu {
                                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                                         CityCommands.claim(player, chunkX, chunkZ);
                                     });
-                                    new CityChunkMenu(player).open();
+                                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                                        new CityChunkMenu(player).open();
+                                    }, 2);
                                 },
-                                () -> new CityChunkMenu(player).open(),
+                                () -> {
+                                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                                        new CityChunkMenu(player).open();
+                                    }, 2);
+                                },
                                 List.of(Component.text("§7Voulez vous vraiment claim ce chunk ?")),
                                 List.of(Component.text("§7Annuler la procédure de claim")));
                         menu.open();
@@ -146,13 +165,10 @@ public class CityChunkMenu extends Menu {
             menu.open();
         }));
 
-        if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())> 0) {
+        if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())<0) {
             inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
                 itemMeta.displayName(Component.text("§6Claim Gratuit"));
                 itemMeta.lore(List.of(Component.text("§7Vous avez §6" + MascotsManager.freeClaim.get(city2.getUUID())+ " claim gratuit !")));
-            }).setOnClick(event -> {
-                CityMenu menu = new CityMenu(player);
-                menu.open();
             }));
         }
 
