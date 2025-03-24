@@ -4,7 +4,9 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -18,6 +20,9 @@ import static fr.openmc.core.features.city.commands.CityCommands.balanceCooldown
  * pour creer une ville (utile pour faire une modif sur menu et commandes)
  */
 public class CityCreateConditions {
+
+    public static double MONEY_CREATE = 3500.0;
+    public static int AYWENITE_CREATE = 30;
 
     /**
      * Retourne un booleen pour dire si le joueur peut faire une ville
@@ -36,10 +41,16 @@ public class CityCreateConditions {
             return false;
         }
 
-        if (EconomyManager.getInstance().getBalance(player.getUniqueId()) < 3500) {
-            MessagesManager.sendMessage(player, Component.text("§cTu n'a pas assez d'argent pour créer ta ville (3500 " + EconomyManager.getEconomyIcon() +")"), Prefix.CITY, MessageType.INFO, false);
+        if (EconomyManager.getInstance().getBalance(player.getUniqueId()) < MONEY_CREATE) {
+            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE + EconomyManager.getEconomyIcon() +")"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
+        if (!ItemUtils.hasEnoughItems(player, CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType(), AYWENITE_CREATE)) {
+            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE + EconomyManager.getEconomyIcon() +")"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         return true;
     }
 

@@ -9,6 +9,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.conditions.CityCreateConditions;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -25,6 +27,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
+import static fr.openmc.core.features.city.commands.CityCommands.calculatePrice;
 
 public class NoCityMenu extends Menu {
 
@@ -55,6 +60,10 @@ public class NoCityMenu extends Menu {
         List<Component> loreCreate = List.of(
                 Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                 Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
+                Component.text(""),
+                Component.text("§cCoûte :"),
+                Component.text("§8- §6"+ CityCreateConditions.MONEY_CREATE + "§d" + EconomyManager.getEconomyIcon()),
+                Component.text("§8- §d"+ CityCreateConditions.AYWENITE_CREATE + " d'Aywenite"),
                 Component.text(""),
                 Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
         );

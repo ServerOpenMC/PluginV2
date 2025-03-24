@@ -314,7 +314,7 @@ public class CityCommands {
         if (MascotsManager.freeClaim.containsKey(city.getUUID())){
             MascotsManager.freeClaim.remove(city.getUUID(),1);
         } else {
-            city.updateBalance((double) (price));
+            city.updateBalance((double) (price*-1));
             ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
         }
         city.addChunk(sender.getWorld().getChunkAt(chunkX, chunkZ));
@@ -387,12 +387,11 @@ public class CityCommands {
     @Description("Créer une ville")
     @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir créer une ville (%sec% secondes)")
     void create(Player player, @Named("nom") String name) {
-        UUID uuid = player.getUniqueId();
-
-        if (CityManager.getPlayerCity(uuid) != null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+        if (!CityCreateConditions.canCityCreate(player)){
+            MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
+
 
         if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
@@ -540,6 +539,10 @@ public class CityCommands {
                 throw new RuntimeException(e);
             }
         });
+
+        // innutile de recheck si le joueur a assez de ressource vu qu'on check dans CityCreateConditions
+        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE);
+        ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), CityCreateConditions.AYWENITE_CREATE);
 
         City city = CityManager.createCity(player, cityUUID, name, type);
         city.addPlayer(uuid);
