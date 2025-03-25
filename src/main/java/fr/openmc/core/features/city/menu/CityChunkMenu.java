@@ -108,7 +108,7 @@ public class CityChunkMenu extends Menu {
                             Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
                             Component.text(""),
                             Component.text("§cCoûte :"),
-                            Component.text("§8- §6"+ (double) calculatePrice(nbChunk) + "§d" + EconomyManager.getEconomyIcon()),
+                            Component.text("§8- §6"+ (double) calculatePrice(nbChunk)).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
                             Component.text("§8- §d"+ calculateAywenite(nbChunk) + " d'Aywenite"),
                             Component.text(""),
                             Component.text("§e§lCLIQUEZ POUR CLAIM")
