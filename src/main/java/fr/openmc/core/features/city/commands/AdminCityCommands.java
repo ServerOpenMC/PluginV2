@@ -178,7 +178,7 @@ public class AdminCityCommands {
             MascotsManager.freeClaim.remove(city.getUUID());
             return;
         }
-        MascotsManager.freeClaim.remove(city.getUUID(),claim);
+        MascotsManager.freeClaim.replace(city.getUUID(),MascotsManager.freeClaim.get(city.getUUID()) - claim);
     }
 
     @Subcommand("freeclaim delete")
