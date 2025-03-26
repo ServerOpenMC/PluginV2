@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyData;
 import fr.openmc.core.features.economy.TransactionsManager;
+import fr.openmc.core.features.friend.FriendSQLManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
@@ -33,6 +34,8 @@ public class DatabaseManager {
             HomesManager.init_db(connection);
             MascotsManager.init_db(connection);
             CityTypeCooldown.init_db(connection);
+            FriendSQLManager.init_db(connection);
+
         } catch (SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");

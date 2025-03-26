@@ -345,9 +345,23 @@ public class MascotsManager {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
         LivingEntity mob = (LivingEntity) mascots;
+        int cooldown = 0;
+        boolean hasCooldown = false;
 
+        // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
         if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && mob.getHeight() <= 1.0) {
             return;
+        }
+
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                Location checkLoc = mascotsLoc.clone().add(x, 0, z);
+                Material blockType = checkLoc.getBlock().getType();
+
+                if (blockType != Material.AIR) {
+                    return;
+                }
+            }
         }
 
         double baseHealth = mob.getHealth();
@@ -355,10 +369,21 @@ public class MascotsManager {
         String name = mob.getCustomName();
         String mascotsCustomUUID = mob.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
 
+        if (Chronometer.containsChronometer(mob.getUniqueId(), "mascotsCooldown")) {
+            cooldown = Chronometer.getRemainingTime(mob.getUniqueId(), "mascotsCooldown");
+            hasCooldown = true;
+            Chronometer.stopChronometer(mob, "mascotsCooldown", null, "%null%");
+        }
+
         mob.remove();
 
         if (world != null) {
             LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc, skin);
+
+            if (hasCooldown){
+                Chronometer.startChronometer(newMascots, "mascotsCooldown" , cooldown, null, "%null", null, "%null%");
+            }
+
             setMascotsData(newMascots, name, maxHealth, baseHealth);
             PersistentDataContainer newData = newMascots.getPersistentDataContainer();
 
