@@ -9,6 +9,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.conditions.CityCreateConditions;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -17,6 +19,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -25,6 +28,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
+import static fr.openmc.core.features.city.commands.CityCommands.calculatePrice;
 
 public class NoCityMenu extends Menu {
 
@@ -55,6 +61,10 @@ public class NoCityMenu extends Menu {
         List<Component> loreCreate = List.of(
                 Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                 Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
+                Component.text(""),
+                Component.text("§cCoûte :"),
+                Component.text("§8- §6"+ CityCreateConditions.MONEY_CREATE + EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                Component.text("§8- §d"+ CityCreateConditions.AYWENITE_CREATE + " d'Aywenite"),
                 Component.text(""),
                 Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
         );
@@ -106,13 +116,7 @@ public class NoCityMenu extends Menu {
             itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
             itemMeta.lore(loreCreate);
         }).setOnClick(inventoryClickEvent -> {
-            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-                MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir créer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
-                return;
-            }
-
-            if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            if (!CityCreateConditions.canCityCreate(player)) {
                 return;
             }
 
