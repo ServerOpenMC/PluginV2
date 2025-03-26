@@ -332,6 +332,15 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
+    void onFire(EntityCombustEvent e) {
+        Entity entity = e.getEntity();
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     void onMascotDied(EntityDeathEvent e) {
         Entity entity = e.getEntity();
         Player killer = e.getEntity().getKiller();
@@ -345,6 +354,7 @@ public class MascotsListener implements Listener {
             MascotUtils.changeMascotState(city_uuid, false);
 
             entity.setCustomName("§lMascotte en attente de §csoins");
+            entity.setGlowing(true);
             e.setCancelled(true);
 
             City city = CityManager.getCity(city_uuid);
