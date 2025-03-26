@@ -11,10 +11,13 @@ import fr.openmc.core.features.corporation.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.features.city.MethodState;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -28,6 +31,10 @@ public class ShopMenu extends Menu {
     private final PlayerShopManager playerShopManager;
     private final Shop shop;
     private final int itemIndex;
+    private final List<Component> accetpBuyMsg = new ArrayList<>();
+    private final List<Component> denyBuyMsg = new ArrayList<>();
+    private final List<Component> accetpMsg = new ArrayList<>();
+    private final List<Component> denyMsg = new ArrayList<>();
 
     private int amountToBuy = 1;
 
@@ -95,6 +102,11 @@ public class ShopMenu extends Menu {
             purpleAddSixtyFour = 16;
         }
 
+        accetpBuyMsg.add(Component.text("§aAcheter"));
+        denyBuyMsg.add(Component.text("§cAnnuler l'achat"));
+        accetpMsg.add(Component.text("§aSupprimer"));
+        denyMsg.add(Component.text("§cAnnuler la suppression"));
+
         Map<Integer, ItemStack> content = fill(Material.GRAY_STAINED_GLASS_PANE);
 
         content.put(previousItemSlot, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> {
@@ -151,7 +163,7 @@ public class ShopMenu extends Menu {
                 OMCPlugin.getInstance().getLogger().info("" + getCurrentItem().getAmount());
                 lore.add("§7■ Cliquez pour en acheter §f" + amountToBuy);
                 itemMeta.setLore(lore);
-            }).setNextMenu(new ConfirmMenu(getOwner(), this, this::buyAccept, this::refuse, "§7Accepter", "§7Refuser")));
+            }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, accetpBuyMsg, denyBuyMsg)));
 
         content.put(greenAddOne, new ItemBuilder(this, Material.LIME_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 1");
@@ -185,7 +197,7 @@ public class ShopMenu extends Menu {
 
         content.put(0, new ItemBuilder(this, Material.RED_DYE, itemMeta -> {
             itemMeta.setDisplayName("§c§lSupprimer le shop");
-        }).setNextMenu(new ConfirmMenu(getOwner(), this, this::accept, this::refuse, "§7Accepter", "§7Refuser")));
+        }).setNextMenu(new ConfirmMenu(getOwner(), this::accept, this::refuse, accetpMsg, denyMsg)));
 
         content.put(3, new ItemBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.setDisplayName("§a§lVos ventes");
@@ -214,6 +226,29 @@ public class ShopMenu extends Menu {
                     ));
                 }
             }
+        }));
+
+        content.put(36, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
+            itemMeta.setDisplayName("§7Comment utiliser les shops");
+        }).setOnClick(inventoryClickEvent -> {
+
+            ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+            BookMeta meta = (BookMeta) book.getItemMeta();
+            if (meta != null) {
+                meta.setTitle("Guide des Shop");
+                meta.setAuthor("Nocolm");
+                meta.addPage(
+                        "Comment utiliser les shops !\n\n" +
+                                "§l§6Stock§r :\n" +
+                                "1. Utilisez la commande §d§l/shop sell §r§7<prix> §r en tenant l'item en main\n" +
+                                "2. Ajoutez les items dans le barril §c§l* le raccourci avec les chiffres ne fonctionnera pas *\n" +
+                                "3. Ouvrez une fois le shop pour renouveler son stock"
+                );
+
+                book.setItemMeta(meta);
+            }
+            getOwner().closeInventory();
+            getOwner().openBook(book);
         }));
     }
 
