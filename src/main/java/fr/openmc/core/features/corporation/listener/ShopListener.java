@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -65,67 +66,47 @@ public class ShopListener implements Listener {
     }
 
     @EventHandler
-    public void onInteractWithBlock (PlayerInteractEvent e) {
+    public void onInteractWithBlock(PlayerInteractEvent e) {
         Block block = e.getClickedBlock();
-        if (block != null){
-            if (block.getType() == Material.BARREL) {
-                boolean isShop = shopBlocksManager.getShop(e.getClickedBlock().getLocation()) != null;
-                OMCPlugin.getInstance().getLogger().info("" + isShop);
-                if (inShopBarrel.containsKey(e.getPlayer().getUniqueId())){
-                    inShopBarrel.replace(e.getPlayer().getUniqueId(), isShop);
-                } else {
-                    inShopBarrel.put(e.getPlayer().getUniqueId(), isShop);
-                }
-            }
+        if (block != null && block.getType() == Material.BARREL) {
+            boolean isShop = shopBlocksManager.getShop(block.getLocation()) != null;
+            OMCPlugin.getInstance().getLogger().info("" + isShop);
+            inShopBarrel.put(e.getPlayer().getUniqueId(), isShop);
         }
     }
 
     @EventHandler
-    public void onShopPutItem (InventoryClickEvent e) {
-        if (inShopBarrel.containsKey(e.getWhoClicked().getUniqueId())){
-            OMCPlugin.getInstance().getLogger().info("test");
-            if (inShopBarrel.get(e.getWhoClicked().getUniqueId())){
-                OMCPlugin.getInstance().getLogger().info("test 1");
-                Player player = (Player) e.getWhoClicked();
-                Inventory clickedInventory = e.getClickedInventory();
+    public void onShopPutItem(InventoryClickEvent e) {
+        UUID playerUUID = e.getWhoClicked().getUniqueId();
+        if (inShopBarrel.getOrDefault(playerUUID, false)) {
+            Player player = (Player) e.getWhoClicked();
+            Inventory clickedInventory = e.getClickedInventory();
 
-                if (clickedInventory == null) return;
+            if (clickedInventory == null) return;
 
-                InventoryHolder holder = clickedInventory.getHolder();
+            if (clickedInventory.getHolder() instanceof Barrel) {
+                ItemStack currentItem = e.getCurrentItem();
+                ItemStack cursorItem = e.getCursor();
 
-                if (holder instanceof Barrel) {
-                    ItemStack currentItem = e.getCurrentItem();
-                    ItemStack cursorItem = e.getCursor();
+                if (e.isShiftClick() && isValidItem(currentItem)) {
+                    removeSupplierKey(currentItem);
+                }
+                // Vérifier si un item est retiré
+                else if (e.getAction().name().contains("PICKUP") && isValidItem(currentItem)) {
+                    removeSupplierKey(currentItem);
+                }
+                else if (e.getAction().name().contains("SWAP") && isValidItem(currentItem)) {
+                    removeSupplierKey(currentItem);
+                }
+                // Vérifier si un item est placé avec la souris
+                else if (e.getAction().name().contains("PLACE") && isValidItem(cursorItem)) {
+                    setSupplierKey(cursorItem, player.getUniqueId().toString());
+                }
+            } else if (clickedInventory.getHolder() instanceof Player) {
+                ItemStack currentItem = e.getCurrentItem();
 
-                    if (e.isShiftClick()) {
-                        if (currentItem != null && currentItem.getType() != Material.AIR) {
-                            if (!currentItem.getItemMeta().getPersistentDataContainer().has(OMCPlugin.SUPPLIER_KEY)) {
-                                ItemMeta itemMeta = currentItem.getItemMeta();
-                                itemMeta.getPersistentDataContainer().set(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
-                                currentItem.setItemMeta(itemMeta);
-                                OMCPlugin.getInstance().getLogger().info("itemMeta set");
-                            }
-                        }
-                    } else if (e.getAction().name().contains("PICKUP")) {
-                        if (currentItem != null && currentItem.getType() != Material.AIR) {
-                            if (!currentItem.getItemMeta().getPersistentDataContainer().has(OMCPlugin.SUPPLIER_KEY)) {
-                                ItemMeta itemMeta = currentItem.getItemMeta();
-                                currentItem.getItemMeta().getPersistentDataContainer().remove(OMCPlugin.SUPPLIER_KEY);
-                                currentItem.setItemMeta(itemMeta);
-                                OMCPlugin.getInstance().getLogger().info("itemMeta unset");
-                            }
-                        }
-                    } else if (e.getAction().name().contains("PLACE")) {
-
-                        if (cursorItem.getType() != Material.AIR) {
-                            if (!cursorItem.getItemMeta().getPersistentDataContainer().has(OMCPlugin.SUPPLIER_KEY)) {
-                                ItemMeta itemMeta =cursorItem.getItemMeta();
-                                cursorItem.getItemMeta().getPersistentDataContainer().set(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
-                                cursorItem.setItemMeta(itemMeta);
-                                OMCPlugin.getInstance().getLogger().info("itemMeta set");
-                            }
-                        }
-                    }
+                if (e.isShiftClick() && !e.getAction().name().contains("SWAP") && isValidItem(currentItem)) {
+                    setSupplierKey(currentItem, player.getUniqueId().toString());
                 }
             }
         }
@@ -133,15 +114,36 @@ public class ShopListener implements Listener {
 
     @EventHandler
     public void onItemDrag(InventoryDragEvent e) {
-        if (inShopBarrel.containsKey(e.getWhoClicked().getUniqueId())){
-            if (inShopBarrel.get(e.getWhoClicked().getUniqueId())) {
-                if (e.getInventory().getHolder() instanceof Barrel) {
-                    ItemStack item = e.getOldCursor();
-                    if (item.getItemMeta().getPersistentDataContainer().has(OMCPlugin.SUPPLIER_KEY)){
-                        item.getItemMeta().getPersistentDataContainer().remove(OMCPlugin.SUPPLIER_KEY);
-                    }
-                }
+        UUID playerUUID = e.getWhoClicked().getUniqueId();
+        if (inShopBarrel.getOrDefault(playerUUID, false) && e.getInventory().getHolder() instanceof Barrel) {
+            ItemStack item = e.getOldCursor();
+            if (isValidItem(item)) {
+                removeSupplierKey(item);
             }
         }
     }
+
+    // Vérifie si un item est valide (non null et a un ItemMeta)
+    private boolean isValidItem(ItemStack item) {
+        return item != null && item.getType() != Material.AIR;
+    }
+
+    // Ajoute la clé SUPPLIER_KEY à un item
+    private void setSupplierKey(ItemStack item, String uuid) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.getPersistentDataContainer().set(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING, uuid);
+            item.setItemMeta(meta);
+        }
+    }
+
+    // Retire la clé SUPPLIER_KEY d'un item
+    private void removeSupplierKey(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null && meta.getPersistentDataContainer().has(OMCPlugin.SUPPLIER_KEY)) {
+            meta.getPersistentDataContainer().remove(OMCPlugin.SUPPLIER_KEY);
+            item.setItemMeta(meta);
+        }
+    }
+
 }

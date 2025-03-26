@@ -9,6 +9,7 @@ import fr.openmc.core.features.corporation.Shop;
 import fr.openmc.core.features.corporation.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,8 @@ public class ShopStocksMenu extends PaginatedMenu {
     private final Shop shop;
     private final int itemIndex;
     private ShopItem stock;
+    private final List<Component> accetpMsg = new ArrayList<>();
+    private final List<Component> denyMsg = new ArrayList<>();
 
     public ShopStocksMenu(Player owner, Shop shop, int itemIndex) {
         super(owner);
@@ -48,6 +52,10 @@ public class ShopStocksMenu extends PaginatedMenu {
     @Override
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new java.util.ArrayList<>();
+
+        accetpMsg.add(Component.text(""));
+        denyMsg.add(Component.text(""));
+
         for (ShopItem stock : shop.getItems()) {
             this.stock = stock;
             items.add(new ItemBuilder(this, stock.getItem().getType(), itemMeta -> {
@@ -66,7 +74,7 @@ public class ShopStocksMenu extends PaginatedMenu {
                     open();
                 }
                 else {
-                    new ConfirmMenu(getOwner(),this, this::accept, this::refuse,"§7Accepter", "§7Refuser" ).open();
+                    new ConfirmMenu(getOwner(),this::accept, this::refuse,accetpMsg, denyMsg).open();
                 }
             }));
         }
