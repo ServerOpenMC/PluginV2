@@ -130,7 +130,6 @@ public class MascotsListener implements Listener {
 
                     if (!ignore && !city.hasChunk(chunkX,chunkZ)){
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
-                        OMCPlugin.getInstance().getLogger().info("error chunk");
                         e.setCancelled(true);
                         return;
                     }
