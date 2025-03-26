@@ -41,9 +41,10 @@ public class MascotsListener implements Listener {
     public static List<String> movingMascots = new ArrayList<>();
     private final List<UUID> respawnGive = new ArrayList<>();
 
+    public static Map<UUID, Map<String, String>> futurCreateCity = new HashMap<>();
+
     @SneakyThrows
     public MascotsListener() {
-
         List<String> city_uuids = CityManager.getAllCityUUIDs();
         if (city_uuids!=null){
             for (String city_uuid : city_uuids) {
@@ -65,6 +66,7 @@ public class MascotsListener implements Listener {
         World world = Bukkit.getWorld("world");
         World player_world = player.getWorld();
         ItemStack item = e.getItemInHand();
+        boolean ignore = false;
 
         if (item.getType() == Material.CHEST) {
             ItemMeta meta = item.getItemMeta();
@@ -81,11 +83,37 @@ public class MascotsListener implements Listener {
                         return;
                     }
 
-                    City city = CityManager.getPlayerCity(player.getUniqueId());
-                    if (city==null){
-                        MessagesManager.sendMessage(player,MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    Block block = e.getBlockPlaced();
+                    Location mascot_spawn = new Location(player_world, block.getX()+0.5, block.getY(), block.getZ()+0.5);
+
+                    if (mascot_spawn.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
+                        MessagesManager.sendMessage(player, Component.text("§cIl y a un block au dessus"), Prefix.CITY, MessageType.ERROR, false);
                         e.setCancelled(true);
                         return;
+                    }
+
+                    City city = CityManager.getPlayerCity(player.getUniqueId());
+                    if (city==null){
+                        if (!futurCreateCity.containsKey(player.getUniqueId())){
+                            MessagesManager.sendMessage(player,MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            e.setCancelled(true);
+                            return;
+                        }
+
+                        String cityName = futurCreateCity.get(player.getUniqueId()).keySet().iterator().next();
+
+                        boolean cityAdd = CityCommands.createCity(player, cityName, futurCreateCity.get(player.getUniqueId()).get(cityName));
+                        if (!cityAdd){
+                            e.setCancelled(true);
+                            return;
+                        }
+                        city = CityManager.getPlayerCity(player.getUniqueId());
+                        if (city==null){
+                            MessagesManager.sendMessage(player, Component.text("Une erreur est survenu la ville n'existe pas"), Prefix.CITY, MessageType.ERROR, false);
+                            e.setCancelled(true);
+                            return;
+                        }
+                        ignore = true;
                     }
                     String city_uuid = city.getUUID();
 
@@ -96,20 +124,11 @@ public class MascotsListener implements Listener {
                         return;
                     }
 
-                    Block block = e.getBlockPlaced();
-                    Location mascot_spawn = new Location(player_world, block.getX()+0.5, block.getY(), block.getZ()+0.5);
-
-                    if (mascot_spawn.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-                        MessagesManager.sendMessage(player, Component.text("§cIl y a un block au dessus"), Prefix.CITY, MessageType.ERROR, false);
-                        e.setCancelled(true);
-                        return;
-                    }
-
                     Chunk chunk = e.getBlock().getChunk();
                     int chunkX = chunk.getX();
                     int chunkZ = chunk.getZ();
 
-                    if (!city.hasChunk(chunkX,chunkZ)){
+                    if (!ignore && !city.hasChunk(chunkX,chunkZ)){
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre"), Prefix.CITY, MessageType.ERROR, false);
                         OMCPlugin.getInstance().getLogger().info("error chunk");
                         e.setCancelled(true);
