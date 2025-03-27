@@ -2,11 +2,26 @@ package fr.openmc.core.utils;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Locale;
 
 public class DateUtils {
+    /**
+     * Get Current day of week
+     * @return date (MONDAY, FRIDAY, SUNDAY, ...)
+     */
+    public static DayOfWeek getCurrentDayOfWeek() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.FRENCH);
+
+        LocalDate currentDate = LocalDate.now();
+        String currentDayString = currentDate.format(formatter);
+
+        //conversion ex ven. => FRIDAY
+        return DayOfWeek.from(formatter.parse(currentDayString));
+    }
     /**
      * Convert MCT to a readable duration
      * @param ticks Ticks in Minecraft

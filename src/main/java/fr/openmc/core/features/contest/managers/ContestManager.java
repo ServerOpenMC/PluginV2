@@ -95,7 +95,7 @@ public class ContestManager {
         loadContestPlayerData();
     }
 
-    public static void initDb(Connection conn) throws SQLException {
+    public static void init_db(Connection conn) throws SQLException {
         // Système de Contest
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest (phase int(11), camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int(11), points2 int(11))").executeUpdate();
         PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM contest");
@@ -532,16 +532,6 @@ public class ContestManager {
             }
         }
         saveContestConfig();
-    }
-
-    public DayOfWeek getCurrentDayOfWeek() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.FRENCH);
-
-        LocalDate currentDate = LocalDate.now();
-        String currentDayString = currentDate.format(formatter);
-
-        //conversion ex ven. => FRIDAY
-        return DayOfWeek.from(formatter.parse(currentDayString));
     }
 
     // GET TAUX DE VOTE D'UN CAMP
