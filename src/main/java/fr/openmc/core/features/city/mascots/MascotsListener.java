@@ -158,6 +158,25 @@ public class MascotsListener implements Listener {
         }
     }
 
+    @EventHandler
+    void onMascotDamageCaused(EntityDamageEvent e){
+        Entity entity = e.getEntity();
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+
+        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+            if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)){
+                e.setCancelled(true);
+            }
+
+            LivingEntity mob = (LivingEntity) entity;
+
+            double newHealth = Math.floor(mob.getHealth());
+            mob.setHealth(newHealth);
+            double maxHealth = mob.getMaxHealth();
+            mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
+        }
+    }
+
     @SneakyThrows
     @EventHandler
     void onMascotTakeDamage(EntityDamageByEntityEvent e) {
