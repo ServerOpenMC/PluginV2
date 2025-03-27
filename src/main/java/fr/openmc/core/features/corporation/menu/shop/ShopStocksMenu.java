@@ -8,6 +8,7 @@ import fr.openmc.core.features.corporation.PlayerShopManager;
 import fr.openmc.core.features.corporation.Shop;
 import fr.openmc.core.features.corporation.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -66,16 +67,7 @@ public class ShopStocksMenu extends PaginatedMenu {
                         "§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
                 ));
             }).setOnClick(inventoryClickEvent -> {
-                if (stock.getAmount() > 0) {
-                    ItemStack toGive = stock.getItem().clone();
-                    toGive.setAmount(stock.getAmount());
-                    getOwner().getInventory().addItem(toGive);
-                    stock.setAmount(0);
-                    open();
-                }
-                else {
-                    new ConfirmMenu(getOwner(),this::accept, this::refuse,accetpMsg, denyMsg).open();
-                }
+                new ConfirmMenu(getOwner(),this::accept, this::refuse,accetpMsg, denyMsg).open();
             }));
         }
         return items;
@@ -110,13 +102,20 @@ public class ShopStocksMenu extends PaginatedMenu {
     }
 
     private void accept() {
-        shop.removeItem(stock);
-        getOwner().sendMessage("§aL'item a bien été retiré du shop !");
         if (stock.getAmount() > 0) {
-            ItemStack toGive = stock.getItem().clone();
-            toGive.setAmount(stock.getAmount());
-            getOwner().getInventory().addItem(toGive);
-            getOwner().sendMessage("§6Vous avez récupéré le stock restant de cet item");
+            if (ItemUtils.hasAvailableSlot(getOwner())){
+                ItemStack toGive = stock.getItem().clone();
+                int maxPlace = ItemUtils.getFreePlacesForItem(getOwner(), stock.getItem());
+                toGive.setAmount(maxPlace);
+                getOwner().getInventory().addItem(toGive);
+                stock.setAmount(stock.getAmount()-maxPlace);
+                getOwner().sendMessage("§6Vous avez récupéré le stock restant de cet item");
+            } else {
+                getOwner().sendMessage("§cVous n'avez pas assez de place");
+            }
+        } else {
+            shop.removeItem(stock);
+            getOwner().sendMessage("§aL'item a bien été retiré du shop !");
         }
         getOwner().closeInventory();
     }
