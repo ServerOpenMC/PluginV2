@@ -5,6 +5,7 @@ import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -78,13 +79,26 @@ public final class OMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // SAUVEGARDE
+
+        // - Home
         HomesManager.getInstance().saveHomesData();
+
+        // - Contest
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
 
+        // - Mascottes
         MascotsManager.saveMascots(MascotsManager.mascots);
         MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
 
+        // - Maires
+        MayorManager mayorManager = MayorManager.getInstance();
+        mayorManager.savePlayersHasVoted();
+        mayorManager.saveElectorMayors();
+        mayorManager.saveCityMayors();
+
+        // - Cube
         CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {
             try {
