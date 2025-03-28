@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -64,6 +65,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
             String title = "";
             if(hasPermissionOwner) {
                 title = "Propriétaire ";
+            } else if (MayorManager.getInstance().cityMayor.get(city).getMayorUUID() == uuid.toString()) {
+                title = "Maire ";
             } else {
                 title = "Membre ";
             }
