@@ -1,6 +1,8 @@
 package fr.openmc.core.features.city;
 
 import fr.openmc.core.features.city.events.*;
+import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.menu.ChestMenu;
@@ -202,6 +204,12 @@ public class City {
             err.printStackTrace();
         }
         return "inconnu";
+    }
+
+    public Mayor getMayor() {
+        MayorManager mayorManager = MayorManager.getInstance();
+
+        return mayorManager.cityMayor.get(cityUUID);
     }
 
     /**

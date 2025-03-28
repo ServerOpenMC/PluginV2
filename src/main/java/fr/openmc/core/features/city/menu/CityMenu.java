@@ -68,8 +68,9 @@ public class CityMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
+
         MayorManager mayorManager = MayorManager.getInstance();
-        Mayor mayorCity = CityManager.getMayor(city.getUUID());
+        Mayor mayorCity = city.getMayor();
 
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
         boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
@@ -185,6 +186,7 @@ public class CityMenu extends Menu {
 
         List<Component> loreElections;
 
+        // si membre.size > 4
         if (mayorManager.phaseMayor==2) {
             loreElections = List.of(
                     Component.text("§7Votre ville a un §6Maire !"),
@@ -194,8 +196,9 @@ public class CityMenu extends Menu {
             );
         } else if (mayorManager.phaseMayor==1) {
             loreElections = List.of(
-                    Component.text("§6Les Elections §7sont actuellement ouverte"),
-                    Component.text("Fermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                    Component.text("§7Les Elections sont actuellement §6ouverte"),
+                    Component.text(""),
+                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX ELECTIONS")
 
@@ -205,6 +208,8 @@ public class CityMenu extends Menu {
                     Component.text("§cErreur")
             );
         }
+
+        // sinon
 
         inventory.put(23, new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
             itemMeta.displayName(Component.text("§6Les Elections"));

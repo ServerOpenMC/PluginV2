@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.MayorElector;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CityTypeMenu;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.PlayerUtils;
@@ -29,6 +30,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.DayOfWeek;
 import java.util.*;
 
 public class MayorElectionMenu extends Menu {
@@ -59,10 +61,37 @@ public class MayorElectionMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         MayorManager mayorManager = MayorManager.getInstance();
 
-        inventory.put(11, new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
-        }).setOnClick(inventoryClickEvent -> {
+        List<Component> loreElection;
+        if (mayorManager.isPlayerVoted(player)) {
+            loreElection = List.of(
+                    Component.text("§7Les Elections sont §6ouvertes§7!"),
+                    Component.text("§7Vous pouvez changer votre vote !"),
+                    Component.text(""),
+                    Component.text("§eVote Actuel §7: ").append(Component.text(mayorManager.getElectorNameVotedBy(player))).color(mayorManager.getElectorColorVotedBy(player)),
+                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
+            );
+        } else {
+            loreElection = List.of(
+                    Component.text("§7Les Elections sont §6ouvertes§7!"),
+                    Component.text("§7Choissiez le Maire qui vous plait !"),
+                    Component.text(""),
+                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
+            );
+        }
 
+        inventory.put(11, new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
+            itemMeta.itemName(Component.text("§6Les Elections"));
+            itemMeta.lore(loreElection);
+        }).setOnClick(inventoryClickEvent -> {
+            if (mayorManager.isPlayerVoted(player)) {
+                //ouvrir menu maire dispo et revotez
+            } else {
+                //ouvrir menu maire et votez
+            }  // est ce que j'en fais qu'un menu? surement oui
         }));
 
         // on regarde si le joueur s'est déjà présenter
@@ -83,14 +112,14 @@ public class MayorElectionMenu extends Menu {
             );
         }
 
-        inventory.put(15, new ItemBuilder(this, PlayerUtils.getPlayerSkull(player),itemMeta -> {
+        inventory.put(15, new ItemBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.itemName(Component.text("§7Votre §5Candidature"));
             itemMeta.lore(loreCandidature);
         }).setOnClick(inventoryClickEvent -> {
             if (mayorManager.isPlayerElector(player)) {
                 //todo show perks selected and color
             } else {
-               new MayorCreateMenu(player).open();
+               new MayorCreateMenu(player, null, null).open();
             }
         }));
 

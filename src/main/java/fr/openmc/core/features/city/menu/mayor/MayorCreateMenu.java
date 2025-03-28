@@ -5,6 +5,7 @@ import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.PlayerUtils;
 import net.kyori.adventure.text.Component;
@@ -20,7 +21,7 @@ import java.util.Map;
 
 public class MayorCreateMenu extends Menu {
 
-    public MayorCreateMenu(Player owner) {
+    public MayorCreateMenu(Player owner, Perks perk2, Perks perk3) {
         super(owner);
     }
 
@@ -45,8 +46,6 @@ public class MayorCreateMenu extends Menu {
         Player player = getOwner();
 
 
-
-
         inventory.put(11, new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
             itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
         }).setOnClick(inventoryClickEvent -> {
@@ -54,12 +53,12 @@ public class MayorCreateMenu extends Menu {
         }));
 
 
-        inventory.put(15, new ItemBuilder(this, PlayerUtils.getPlayerSkull(player),itemMeta -> {
-            itemMeta.itemName(Component.text("§7Votre §5Candidature"));
-            itemMeta.lore(loreCandidature);
-        }).setOnClick(inventoryClickEvent -> {
-
-        }));
+//        inventory.put(15, new ItemBuilder(this, PlayerUtils.getPlayerSkull(player),itemMeta -> {
+//            itemMeta.itemName(Component.text("§7Votre §5Candidature"));
+//            itemMeta.lore(loreCandidature);
+//        }).setOnClick(inventoryClickEvent -> {
+//
+//        }));
 
 
 

@@ -218,12 +218,6 @@ public class CityManager implements Listener {
         MascotsManager.removeMascotsFromCity(city);
     }
 
-    public static Mayor getMayor(String city_uuid) {
-        MayorManager mayorManager = MayorManager.getInstance();
-
-        return mayorManager.cityMayor.get(getCity(city_uuid));
-    }
-
     public static void changeCityType(String city_uuid) {
         String cityType = getCityType(city_uuid);
         if (cityType != null) {
