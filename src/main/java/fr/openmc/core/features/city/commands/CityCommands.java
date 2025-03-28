@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
@@ -75,6 +76,13 @@ public class CityCommands {
         } else {
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas ouvrir le menu des villes si vous devez poser votre mascotte"), Prefix.CITY, MessageType.ERROR, false);
         }
+    }
+
+    @Subcommand({"mayor", "maire"})
+    @CommandPermission("omc.commands.city.mayor")
+    @Description("Ouvre le menu des maires")
+    public void mayor(Player sender) {
+        new MayorElectionMenu(sender).open();
     }
 
     @Subcommand("accept")

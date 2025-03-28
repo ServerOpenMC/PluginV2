@@ -13,9 +13,8 @@ public class Mayor {
     private final int idPerk1;
     private final int idPerk2;
     private final int idPerk3;
-    private final int phase;
 
-    public Mayor(City city, String mayorName, String mayorUUID, NamedTextColor mayorColor, int idPerk1, int idPerk2, int idPerk3, int phase) {
+    public Mayor(City city, String mayorName, String mayorUUID, NamedTextColor mayorColor, int idPerk1, int idPerk2, int idPerk3) {
         this.city = city;
         this.mayorName = mayorName;
         this.mayorUUID = mayorUUID;
@@ -23,6 +22,5 @@ public class Mayor {
         this.idPerk1 = idPerk1;
         this.idPerk2 = idPerk2;
         this.idPerk3 = idPerk3;
-        this.phase = phase;
     }
 }

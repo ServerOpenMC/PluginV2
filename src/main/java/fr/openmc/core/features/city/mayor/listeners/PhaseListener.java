@@ -16,7 +16,7 @@ public class PhaseListener {
                 int phase = mayorManager.phaseMayor;
 
                 // PHASE 1 - Elections - Mardi à Mercredi
-                if (phase == 0 && DayOfWeek.TUESDAY == DateUtils.getCurrentDayOfWeek()) {
+                if (phase == 2 && DayOfWeek.TUESDAY == DateUtils.getCurrentDayOfWeek()) {
                     mayorManager.initPhase1();
                 }
 

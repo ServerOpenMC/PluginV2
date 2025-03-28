@@ -4,6 +4,8 @@ import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
@@ -214,6 +216,12 @@ public class CityManager implements Listener {
             CityTypeCooldown.removeCityCooldown(city);
         }
         MascotsManager.removeMascotsFromCity(city);
+    }
+
+    public static Mayor getMayor(String city_uuid) {
+        MayorManager mayorManager = MayorManager.getInstance();
+
+        return mayorManager.cityMayor.get(getCity(city_uuid));
     }
 
     public static void changeCityType(String city_uuid) {

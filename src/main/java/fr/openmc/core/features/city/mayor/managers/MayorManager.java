@@ -14,6 +14,9 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 
 import java.sql.Connection;
@@ -30,7 +33,7 @@ public class MayorManager {
 
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
-    public HashMap<City, MayorElector> cityElections = new HashMap<>();
+    public HashMap<City, List<MayorElector>> cityElections = new HashMap<>(){};
     public HashMap<UUID, City> playerHasVoted = new HashMap<>();
 
     public MayorManager(OMCPlugin plugin) {
@@ -46,27 +49,79 @@ public class MayorManager {
             );
         }
 
-        //COMMANDS
-        CommandsManager.getHandler().register(
-                //empty
-        );
-
+        loadMayorConstant();
         loadCityMayors();
         loadPlayersHasVoted();
         loadElectorMayors();
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getLogger().info("===== MayorManager Debug =====");
+
+                Bukkit.getLogger().info("City Mayors:");
+                System.out.println(cityMayor);
+                for (Map.Entry<City, Mayor> entry : cityMayor.entrySet()) {
+                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getMayorName() + " " + entry.getValue().getMayorUUID());
+                }
+
+                Bukkit.getLogger().info("City Elections:");
+                for (Map.Entry<City, List<MayorElector>> entry : cityElections.entrySet()) {
+                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
+                }
+
+                Bukkit.getLogger().info("Player Votes:");
+                for (Map.Entry<UUID, City> entry : playerHasVoted.entrySet()) {
+                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName());
+                }
+
+                Bukkit.getLogger().info("================================");
+            }
+        }.runTaskTimer(plugin, 0, 600L); // 600 ticks = 30 secondes
     }
 
     public static void init_db(Connection conn) throws SQLException {
         // create city_mayor : contient l'actuel maire et les réformes actuelles
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_mayor (city_uuid VARCHAR(8) NOT NULL, mayorUUID VARCHAR(36) NOT NULL, mayorName VARCHAR(36) NOT NULL, mayorColor VARCHAR(36) NOT NULL, idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), phase int(1))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_mayor (city_uuid VARCHAR(8), mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), phase int(1))").executeUpdate();
         // create city_election : contient les membres d'une ville ayant participé pour etre maire
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_election (city_uuid VARCHAR(8) NOT NULL, electorUUID VARCHAR(36) NOT NULL, electorName VARCHAR(36) NOT NULL, electorColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
         // create city_voted : contient les membres d'une ville ayant deja voté
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_voted (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) NOT NULL").executeUpdate();
-
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_voted (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) NOT NULL)").executeUpdate();
+        // create constants : contient une information universelle pour tout le monde
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mayor_constants (mayorPhase int(1))").executeUpdate();
+        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM mayor_constants");
+        ResultSet rs = state.executeQuery();
+        if (rs.next() && rs.getInt(1) == 0) {
+            PreparedStatement states = conn.prepareStatement("INSERT INTO mayor_constants (mayorPhase) VALUES (1)");
+            states.executeUpdate();
+        }
     }
 
     // Load and Save Data Methods
+    public void loadMayorConstant() {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM mayor_constants WHERE 1")) {
+            ResultSet result = states.executeQuery();
+            while (result.next()) {
+                phaseMayor = result.getInt("mayorPhase");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveMayorConstant() {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("UPDATE mayor_constants SET mayorPhase = ?")) {
+            plugin.getLogger().info("Sauvegarde des constantes pour les Maires...");
+            states.setInt(1, phaseMayor);
+
+            states.executeUpdate();
+            plugin.getLogger().info("Sauvegarde des constantes pour les Maires réussi.");
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Echec de la sauvegarde des constantes pour les Maires.");
+            throw new RuntimeException(e);
+        }
+    }
+
     public void loadCityMayors() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_mayor WHERE 1")) {
             ResultSet result = states.executeQuery();
@@ -79,9 +134,8 @@ public class MayorManager {
                 int idPerk1 = result.getInt("idPerk1");
                 int idPerk2 = result.getInt("idPerk2");
                 int idPerk3 = result.getInt("idPerk3");
-                int phase = result.getInt("phase");
 
-                cityMayor.put(city, new Mayor(city, mayor_name, mayor_uuid, mayor_color, idPerk1, idPerk2, idPerk3, phase));
+                cityMayor.put(city, new Mayor(city, mayor_name, mayor_uuid, mayor_color, idPerk1, idPerk2, idPerk3));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -90,10 +144,10 @@ public class MayorManager {
 
     public void saveCityMayors() {
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
-                "INSERT INTO city_mayor (city_uuid, mayorUUID, mayorName, mayorColor, idPerk1, idPerk2, idPerk3, phase) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                "INSERT INTO city_mayor (city_uuid, mayorUUID, mayorName, mayorColor, idPerk1, idPerk2, idPerk3) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?) " +
                         "ON DUPLICATE KEY UPDATE " +
-                        "city_uuid = VALUES(city_uuid), mayorUUID = VALUES(mayorUUID), mayorName = VALUES(mayorName), mayorColor = VALUES(mayorColor), idPerk1 = VALUES(idPerk1), idPerk2 = VALUES(idPerk2), idPerk3 = VALUES(idPerk3), phase = VALUES(phase)"
+                        "city_uuid = VALUES(city_uuid), mayorUUID = VALUES(mayorUUID), mayorName = VALUES(mayorName), mayorColor = VALUES(mayorColor), idPerk1 = VALUES(idPerk1), idPerk2 = VALUES(idPerk2), idPerk3 = VALUES(idPerk3)"
         )) {
             plugin.getLogger().info("Sauvegarde des données des Joueurs qui sont maire...");
             cityMayor.forEach((city, mayor) -> {
@@ -105,7 +159,6 @@ public class MayorManager {
                     statement.setInt(5, mayor.getIdPerk1());
                     statement.setInt(6, mayor.getIdPerk2());
                     statement.setInt(7, mayor.getIdPerk3());
-                    statement.setInt(8, mayor.getPhase());
 
                     statement.addBatch();
                 } catch (SQLException e) {
@@ -135,7 +188,9 @@ public class MayorManager {
                 int idChoicePerk3 = result.getInt("idChoicePerk3");
                 int vote = result.getInt("vote");
 
-                cityElections.put(city, new MayorElector(city, elector_name, elector_uuid, elector_color, idChoicePerk2, idChoicePerk3, vote));
+                MayorElector mayorElector = new MayorElector(city, elector_name, elector_uuid, elector_color, idChoicePerk2, idChoicePerk3, vote);
+
+                cityElections.computeIfAbsent(city, k -> new ArrayList<>()).add(mayorElector);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -143,15 +198,22 @@ public class MayorManager {
     }
 
     public void saveElectorMayors() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
-                "INSERT INTO city_election (city_uuid, electorUUID, electorName, electorColor, idChoicePerk2, idChoicePerk3, vote) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?) " +
-                        "ON DUPLICATE KEY UPDATE " +
-                        "city_uuid = VALUES(city_uuid), electorUUID = VALUES(electorUUID), electorName = VALUES(electorName), electorColor = VALUES(electorColor), idChoicePerk2 = VALUES(idChoicePerk2), idChoicePerk3 = VALUES(idChoicePerk3), vote = VALUES(vote)"
-        )) {
-            plugin.getLogger().info("Sauvegarde des données des Joueurs qui se sont présenté...");
-            cityElections.forEach((city, elector) -> {
-                try {
+        String sql = "INSERT INTO city_election (city_uuid, electorUUID, electorName, electorColor, idChoicePerk2, idChoicePerk3, vote) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "electorName = VALUES(electorName), electorColor = VALUES(electorColor), " +
+                "idChoicePerk2 = VALUES(idChoicePerk2), idChoicePerk3 = VALUES(idChoicePerk3), vote = VALUES(vote)";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            plugin.getLogger().info("Sauvegarde des données des joueurs qui se sont présentés...");
+
+            for (Map.Entry<City, List<MayorElector>> entry : cityElections.entrySet()) {
+                City city = entry.getKey();
+                List<MayorElector> electors = entry.getValue();
+
+                for (MayorElector elector : electors) {
                     statement.setString(1, city.getUUID());
                     statement.setString(2, elector.getElectorUUID());
                     statement.setString(3, elector.getElectorName());
@@ -161,20 +223,17 @@ public class MayorManager {
                     statement.setInt(7, elector.getVote());
 
                     statement.addBatch();
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 }
-            });
+            }
 
             statement.executeBatch();
+            plugin.getLogger().info("Sauvegarde des données des joueurs qui se sont présentés réussie.");
 
-            plugin.getLogger().info("Sauvegarde des données des Joueurs qui se sont présenté réussi.");
         } catch (SQLException e) {
-            plugin.getLogger().severe("Echec de la sauvegarde des données des Joueurs qui se sont présenté.");
+            plugin.getLogger().severe("Échec de la sauvegarde des données des joueurs qui se sont présentés.");
             e.printStackTrace();
         }
     }
-
     // Load and Save Data Methods
     public void loadPlayersHasVoted() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_voted")) {
@@ -235,5 +294,16 @@ public class MayorManager {
         //todo: changer de maire
 
         //todo: si aucune activité alors randomPick et owner maire
+    }
+
+    public boolean isPlayerElector(Player player) {
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (cityElections.get(playerCity) == null) return false;
+
+        boolean playerAleardyElector = cityElections.get(playerCity)
+                .stream()
+                .anyMatch(elector -> elector.getElectorUUID().equals(player.getUniqueId().toString()));
+        return playerAleardyElector;
     }
 }

@@ -10,10 +10,15 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
+import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
+import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -28,6 +33,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +67,9 @@ public class CityMenu extends Menu {
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
+
+        MayorManager mayorManager = MayorManager.getInstance();
+        Mayor mayorCity = CityManager.getMayor(city.getUUID());
 
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
         boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
@@ -174,7 +183,43 @@ public class CityMenu extends Menu {
             menu.open();
         }));
 
-        String type = CityManager.getCityType(city.getUUID());
+        List<Component> loreElections;
+
+        if (mayorManager.phaseMayor==2) {
+            loreElections = List.of(
+                    Component.text("§7Votre ville a un §6Maire !"),
+                    Component.text("§6Maire §7: ").append(Component.text(mayorCity.getMayorName())).color(mayorCity.getMayorColor()),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
+            );
+        } else if (mayorManager.phaseMayor==1) {
+            loreElections = List.of(
+                    Component.text("§6Les Elections §7sont actuellement ouverte"),
+                    Component.text("Fermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX ELECTIONS")
+
+            );
+        } else {
+            loreElections = List.of(
+                    Component.text("§cErreur")
+            );
+        }
+
+        inventory.put(23, new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
+            itemMeta.displayName(Component.text("§6Les Elections"));
+            itemMeta.lore(loreElections);
+        }).setOnClick(inventoryClickEvent -> {
+            if (mayorManager.phaseMayor==1) {
+                MayorElectionMenu menu = new MayorElectionMenu(player);
+                menu.open();
+            } else {
+                MayorMandateMenu menu = new MayorMandateMenu(player);
+                menu.open();
+            }
+        }));
+
+        String type = getCityType(city.getUUID());
         if (type.equals("war")) {
             type = "guerre";
         } else if (type.equals("peace")) {

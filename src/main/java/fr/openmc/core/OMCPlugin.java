@@ -63,6 +63,7 @@ public final class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
+        new MayorManager(this);
         new ScoreboardManager();
         new HomesManager();
         new HomeUpgradeManager(HomesManager.getInstance());
@@ -81,6 +82,13 @@ public final class OMCPlugin extends JavaPlugin {
     public void onDisable() {
         // SAUVEGARDE
 
+        // - Maires
+        MayorManager mayorManager = MayorManager.getInstance();
+        mayorManager.saveMayorConstant();
+        mayorManager.savePlayersHasVoted();
+        mayorManager.saveElectorMayors();
+        mayorManager.saveCityMayors();
+
         // - Home
         HomesManager.getInstance().saveHomesData();
 
@@ -91,12 +99,6 @@ public final class OMCPlugin extends JavaPlugin {
         // - Mascottes
         MascotsManager.saveMascots(MascotsManager.mascots);
         MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
-
-        // - Maires
-        MayorManager mayorManager = MayorManager.getInstance();
-        mayorManager.savePlayersHasVoted();
-        mayorManager.saveElectorMayors();
-        mayorManager.saveCityMayors();
 
         // - Cube
         CubeListener.clearCube(CubeListener.currentLocation);
