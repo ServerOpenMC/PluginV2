@@ -55,12 +55,13 @@ public class MayorVoteMenu extends PaginatedMenu {
 
         List<ItemStack> items = new ArrayList<>();
 
-        int totalVotes = mayorManager.cityElections.get(city).size();
+        int totalVotes = city.getMembers().size();
         for (MayorElector elector : mayorManager.cityElections.get(city)) {
             Perks perk2 = PerkManager.getPerkById(elector.getIdChoicePerk2());
             Perks perk3 = PerkManager.getPerkById(elector.getIdChoicePerk3());
             NamedTextColor color = elector.getElectorColor();
             int vote = elector.getVote();
+            MayorElector votePlayer = mayorManager.getPlayerVote(player);
 
             List<Component> loreMayor = new ArrayList<>(List.of(
                     Component.text("§8Candidat pour le Maire de " + city.getName())
@@ -77,13 +78,24 @@ public class MayorVoteMenu extends PaginatedMenu {
             loreMayor.add(Component.text(""));
             loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
 
+            boolean ench;
+            if (elector == votePlayer) {
+                ench = true;
+            } else {
+                ench = false;
+            }
+
+
             ItemStack perkItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(elector.getElectorUUID()), itemMeta -> {
                 itemMeta.displayName(Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(loreMayor);
+                itemMeta.setEnchantmentGlintOverride(ench);
             }).setOnClick(inventoryClickEvent -> {
                 if (mayorManager.isPlayerVoted(player)) {
-                    MayorElector votePlayer = mayorManager.getPlayerVote(player);
-                    if (elector == votePlayer) return;
+                    if (elector == votePlayer) {
+                        MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6Maire"), Prefix.CITY, MessageType.ERROR, false);
+                        return;
+                    };
 
                     votePlayer.setVote(votePlayer.getVote()-1);
                     mayorManager.removeVotePlayer(player);
@@ -91,6 +103,9 @@ public class MayorVoteMenu extends PaginatedMenu {
                 } else {
                    mayorManager.voteElector(player, elector);
                 }
+                MessagesManager.sendMessage(player, Component.text("§7Vous avez voté pour le ").append(Component.text("Maire " + elector.getElectorName()).color(color)), Prefix.CITY, MessageType.SUCCESS, true);
+
+                new MayorVoteMenu(player).open();
             });
 
             items.add(perkItem);

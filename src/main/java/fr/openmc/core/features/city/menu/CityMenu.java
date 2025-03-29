@@ -76,6 +76,7 @@ public class CityMenu extends Menu {
         boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
         boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CPermission.SEE_CHUNKS);
+        boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CPermission.TYPE);
 
         List<Component> loreModifyCity;
 
@@ -234,7 +235,7 @@ public class CityMenu extends Menu {
 
         List<Component> loreType;
 
-        if (CityTypeConditions.canCityChangeType(city, player)) {
+        if (hasPermissionChangeType) {
             loreType = List.of(
                     Component.text("§7Votre ville est en " + finalType),
                     Component.text(""),

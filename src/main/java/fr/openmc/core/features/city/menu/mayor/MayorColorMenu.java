@@ -103,6 +103,7 @@ public class MayorColorMenu extends Menu {
                                 MayorElector elector = new MayorElector(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
                                 MayorManager.getInstance().createElector(city, elector);
                                 MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
+                                player.closeInventory();
                                 for (UUID uuid : city.getMembers()) {
                                     Player playerMember = Bukkit.getPlayer(uuid);
                                     assert playerMember != null;
@@ -111,7 +112,6 @@ public class MayorColorMenu extends Menu {
                                         MessagesManager.sendMessage(playerMember, Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.CITY, MessageType.ERROR, false);
                                     }
                                 }
-                                player.closeInventory();
                             },
                             () -> {
                                 player.closeInventory();
@@ -128,7 +128,7 @@ public class MayorColorMenu extends Menu {
                     ConfirmMenu menu = new ConfirmMenu(player,
                             () -> {
                                 mayorElector.setElectorColor(color);
-                                MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").color(color)), Prefix.CITY, MessageType.ERROR, false);
+                                MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").color(color)), Prefix.CITY, MessageType.SUCCESS, false);
                                 player.closeInventory();
                             },
                             () -> {

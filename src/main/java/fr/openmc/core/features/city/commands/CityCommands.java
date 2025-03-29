@@ -6,7 +6,9 @@ import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
+import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
@@ -82,7 +84,13 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.mayor")
     @Description("Ouvre le menu des maires")
     public void mayor(Player sender) {
-        new MayorElectionMenu(sender).open();
+        if (MayorManager.getInstance().phaseMayor==1) {
+            MayorElectionMenu menu = new MayorElectionMenu(sender);
+            menu.open();
+        } else {
+            MayorMandateMenu menu = new MayorMandateMenu(sender);
+            menu.open();
+        }
     }
 
     @Subcommand("accept")

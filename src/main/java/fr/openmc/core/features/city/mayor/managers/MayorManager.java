@@ -343,7 +343,7 @@ public class MayorManager {
 
         boolean playerAleardyElector = cityElections.get(playerCity)
                 .stream()
-                .anyMatch(elector -> elector.getElectorUUID().equals(player.getUniqueId().toString()));
+                .anyMatch(elector -> elector.getElectorUUID().equals(player.getUniqueId()));
         return playerAleardyElector;
     }
 
