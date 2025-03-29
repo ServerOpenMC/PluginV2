@@ -5,17 +5,19 @@ import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import java.util.UUID;
+
 @Getter
 public class MayorElector {
     private final City city;
     private final String electorName;
-    private final String electorUUID;
+    private final UUID electorUUID;
     @Setter private NamedTextColor electorColor;
     private final int idChoicePerk2;
     private final int idChoicePerk3;
     @Setter private int vote;
 
-    public MayorElector(City city, String electorName, String electorUUID, NamedTextColor electorColor, int idChoicePerk2, int idChoicePerk3, int vote) {
+    public MayorElector(City city, String electorName, UUID electorUUID, NamedTextColor electorColor, int idChoicePerk2, int idChoicePerk3, int vote) {
         this.city = city;
         this.electorName = electorName;
         this.electorUUID = electorUUID;

@@ -100,7 +100,7 @@ public class MayorColorMenu extends Menu {
 
                     ConfirmMenu menu = new ConfirmMenu(player,
                             () -> {
-                                MayorElector elector = new MayorElector(city, player.getName(), player.getUniqueId().toString(), color, perk2.getId(), perk3.getId(), 0);
+                                MayorElector elector = new MayorElector(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
                                 MayorManager.getInstance().createElector(city, elector);
                                 MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
                                 for (UUID uuid : city.getMembers()) {

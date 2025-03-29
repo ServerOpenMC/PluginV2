@@ -88,5 +88,28 @@ public class ColorUtils {
         return colorToName.getOrDefault(c, "Aucun");
     }
 
+    private static final Map<NamedTextColor, String> colorCode = new HashMap<>();
+    static {
+        colorCode.put(NamedTextColor.BLACK, "§0");
+        colorCode.put(NamedTextColor.DARK_BLUE, "§1");
+        colorCode.put(NamedTextColor.DARK_GREEN, "§2");
+        colorCode.put(NamedTextColor.DARK_AQUA, "§3");
+        colorCode.put(NamedTextColor.DARK_RED, "§4");
+        colorCode.put(NamedTextColor.DARK_PURPLE, "§5");
+        colorCode.put(NamedTextColor.GOLD, "§6");
+        colorCode.put(NamedTextColor.GRAY, "§7");
+        colorCode.put(NamedTextColor.DARK_GRAY, "§8");
+        colorCode.put(NamedTextColor.BLUE, "§9");
+        colorCode.put(NamedTextColor.GREEN, "§a");
+        colorCode.put(NamedTextColor.AQUA, "§b");
+        colorCode.put(NamedTextColor.RED, "§c");
+        colorCode.put(NamedTextColor.LIGHT_PURPLE, "§d");
+        colorCode.put(NamedTextColor.YELLOW, "§e");
+        colorCode.put(NamedTextColor.WHITE, "§f");
+    };
+
+    public static String getColorCode(NamedTextColor color) {
+        return colorCode.getOrDefault(color, "§f");
+    }
 
 }

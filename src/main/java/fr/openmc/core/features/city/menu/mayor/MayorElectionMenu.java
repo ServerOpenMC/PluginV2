@@ -87,11 +87,7 @@ public class MayorElectionMenu extends Menu {
             itemMeta.itemName(Component.text("§6Les Elections"));
             itemMeta.lore(loreElection);
         }).setOnClick(inventoryClickEvent -> {
-            if (mayorManager.isPlayerVoted(player)) {
-                //ouvrir menu maire dispo et revotez
-            } else {
-                //ouvrir menu maire et votez
-            }  // est ce que j'en fais qu'un menu? surement oui
+            new MayorVoteMenu(player).open();
         }));
 
         List<Component> loreCandidature;

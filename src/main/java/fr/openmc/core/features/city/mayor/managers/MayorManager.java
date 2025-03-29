@@ -125,7 +125,7 @@ public class MayorManager {
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
                 City city = CityManager.getCity(city_uuid);
-                String mayor_uuid = result.getString("mayorUUID");
+                UUID mayor_uuid = UUID.fromString(result.getString("mayorUUID"));
                 String mayor_name = result.getString("mayorName");
                 NamedTextColor mayor_color = NamedTextColor.NAMES.valueOr(result.getString("mayorColor"), NamedTextColor.WHITE);
                 int idPerk1 = result.getInt("idPerk1");
@@ -150,7 +150,7 @@ public class MayorManager {
             cityMayor.forEach((city, mayor) -> {
                 try {
                     statement.setString(1, city.getUUID());
-                    statement.setString(2, mayor.getMayorUUID());
+                    statement.setString(2, mayor.getMayorUUID().toString());
                     statement.setString(3, mayor.getMayorName());
                     statement.setString(4, mayor.getMayorColor().toString());
                     statement.setInt(5, mayor.getIdPerk1());
@@ -178,7 +178,7 @@ public class MayorManager {
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
                 City city = CityManager.getCity(city_uuid);
-                String elector_uuid = result.getString("electorUUID");
+                UUID elector_uuid = UUID.fromString(result.getString("electorUUID"));
                 String elector_name = result.getString("electorName");
                 NamedTextColor elector_color = NamedTextColor.NAMES.valueOr(result.getString("electorColor"), NamedTextColor.WHITE);
                 int idChoicePerk2 = result.getInt("idChoicePerk2");
@@ -215,7 +215,7 @@ public class MayorManager {
 
                 for (MayorElector elector : electors) {
                     statement.setString(1, city.getUUID());
-                    statement.setString(2, elector.getElectorUUID());
+                    statement.setString(2, elector.getElectorUUID().toString());
                     statement.setString(3, elector.getElectorName());
                     statement.setString(4, elector.getElectorColor().toString());
                     statement.setInt(5, elector.getIdChoicePerk2());
@@ -281,7 +281,7 @@ public class MayorManager {
                 try {
                     statement.setString(1, mayorElector.getCity().getUUID());
                     statement.setString(2, voterUUID.toString());
-                    statement.setString(3, mayorElector.getElectorUUID());
+                    statement.setString(3, mayorElector.getElectorUUID().toString());
 
                     statement.addBatch();
                 } catch (SQLException e) {
@@ -347,8 +347,21 @@ public class MayorManager {
         return playerAleardyElector;
     }
 
+    public void removeVotePlayer(Player player) {
+        playerHasVoted.remove(player.getUniqueId());
+    }
+
+    public void voteElector(Player player, MayorElector elector) {
+        elector.setVote(elector.getVote() + 1);
+        playerHasVoted.put(player.getUniqueId(), elector);
+    }
+
     public boolean isPlayerVoted(Player player) {
         return playerHasVoted.keySet().contains(player.getUniqueId());
+    }
+
+    public MayorElector getPlayerVote(Player player) {
+        return playerHasVoted.get(player.getUniqueId());
     }
 
     public String getElectorNameVotedBy(Player player) {
