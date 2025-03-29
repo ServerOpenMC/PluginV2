@@ -3,7 +3,7 @@ package fr.openmc.core.features.contest.menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.ContestPlayer;
-import fr.openmc.core.features.contest.managers.ColorUtils;
+import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;

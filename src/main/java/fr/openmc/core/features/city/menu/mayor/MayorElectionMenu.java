@@ -98,22 +98,22 @@ public class MayorElectionMenu extends Menu {
         List<Component> loreCandidature;
         if (mayorManager.isPlayerElector(player)) {
             loreCandidature = List.of(
-                    Component.text("§7Vous vous êtes déjà §5présenter §7!"),
-                    Component.text("§7Modifier votre couleur et regardez les Réformes que vous avez choisis"),
+                    Component.text("§7Vous vous êtes déjà §3présenter §7!"),
+                    Component.text("§7Modifier votre couleur et regardez §3les Réformes §7que vous avez choisis"),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
             );
         } else {
             loreCandidature = List.of(
-                    Component.text("§7Vous pouvez vous §5inscire §7afin d'être maire !"),
-                    Component.text("§7Séléctionner vos Réformes et votre couleur !"),
+                    Component.text("§7Vous pouvez vous §3inscire §7afin d'être maire !"),
+                    Component.text("§7Séléctionner §3vos Réformes §7et votre couleur !"),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR VOUS INSCRIRE")
             );
         }
 
         inventory.put(15, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Votre §5Candidature"));
+            itemMeta.itemName(Component.text("§7Votre §3Candidature"));
             itemMeta.lore(loreCandidature);
         }).setOnClick(inventoryClickEvent -> {
             if (mayorManager.isPlayerElector(player)) {

@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.MayorElector;
+import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -310,6 +311,12 @@ public class MayorManager {
         //todo: changer de maire
 
         //todo: si aucune activité alors randomPick et owner maire
+    }
+
+    public void createElector(City city, MayorElector elector) {
+        List<MayorElector> electors = cityElections.computeIfAbsent(city, key -> new ArrayList<>());
+
+        electors.add(elector);
     }
 
     public boolean isPlayerElector(Player player) {
