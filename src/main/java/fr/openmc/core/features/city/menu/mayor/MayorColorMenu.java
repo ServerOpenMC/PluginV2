@@ -106,6 +106,7 @@ public class MayorColorMenu extends Menu {
                                 for (UUID uuid : city.getMembers()) {
                                     Player playerMember = Bukkit.getPlayer(uuid);
                                     assert playerMember != null;
+                                    if (playerMember == player) continue;
                                     if (playerMember.isOnline()) {
                                         MessagesManager.sendMessage(playerMember, Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.CITY, MessageType.ERROR, false);
                                     }
