@@ -94,7 +94,6 @@ public class MayorElectionMenu extends Menu {
             }  // est ce que j'en fais qu'un menu? surement oui
         }));
 
-        // on regarde si le joueur s'est déjà présenter
         List<Component> loreCandidature;
         if (mayorManager.isPlayerElector(player)) {
             loreCandidature = List.of(
@@ -117,7 +116,7 @@ public class MayorElectionMenu extends Menu {
             itemMeta.lore(loreCandidature);
         }).setOnClick(inventoryClickEvent -> {
             if (mayorManager.isPlayerElector(player)) {
-                //todo show perks selected and color
+                new MayorModifyMenu(player).open();
             } else {
                new MayorCreateMenu(player, null, null).open();
             }

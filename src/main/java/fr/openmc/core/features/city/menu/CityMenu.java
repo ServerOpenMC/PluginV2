@@ -209,8 +209,6 @@ public class CityMenu extends Menu {
             );
         }
 
-        // sinon
-
         inventory.put(23, new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
             itemMeta.displayName(Component.text("§6Les Elections"));
             itemMeta.lore(loreElections);

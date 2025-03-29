@@ -319,6 +319,20 @@ public class MayorManager {
         electors.add(elector);
     }
 
+    public MayorElector getElector(Player player) {
+        UUID playerUUID = player.getUniqueId();
+
+        for (List<MayorElector> electors : cityElections.values()) {
+            for (MayorElector elector : electors) {
+                if (elector.getElectorUUID().equals(playerUUID.toString())) {
+                    return elector;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public boolean isPlayerElector(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
