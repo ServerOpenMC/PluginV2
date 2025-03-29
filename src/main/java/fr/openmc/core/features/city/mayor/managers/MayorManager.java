@@ -48,8 +48,8 @@ public class MayorManager {
 
         loadMayorConstant();
         loadCityMayors();
-        loadPlayersHasVoted();
         loadElectorMayors();
+        loadPlayersHasVoted();
 
         new BukkitRunnable() {
             @Override
@@ -239,8 +239,8 @@ public class MayorManager {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
-                String voter_uuid = result.getString("voterUUID");
-                String elector_uuid = result.getString("electorUUID");
+                UUID voter_uuid = UUID.fromString(result.getString("voterUUID"));
+                UUID elector_uuid = UUID.fromString(result.getString("electorUUID"));
 
                 City city = CityManager.getCity(city_uuid);
                 if (city == null) {
@@ -261,7 +261,7 @@ public class MayorManager {
                 }
 
                 if (electorFound != null) {
-                    playerHasVoted.put(UUID.fromString(voter_uuid), electorFound);
+                    playerHasVoted.put(voter_uuid, electorFound);
                 }
             }
         } catch (SQLException e) {
@@ -273,7 +273,7 @@ public class MayorManager {
         String sql = "INSERT INTO city_voted (city_uuid, voterUUID, electorUUID) " +
                 "VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "voterUUID = VALUES(voterUUID), electorUUID = VALUES(electorUUID)";
+                "city_uuid = VALUES(city_uuid), voterUUID = VALUES(voterUUID), electorUUID = VALUES(electorUUID)";
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql)) {
             plugin.getLogger().info("Sauvegarde des données des Joueurs qui ont voté pour un maire...");
 
@@ -327,7 +327,7 @@ public class MayorManager {
 
         for (List<MayorElector> electors : cityElections.values()) {
             for (MayorElector elector : electors) {
-                if (elector.getElectorUUID().equals(playerUUID.toString())) {
+                if (elector.getElectorUUID().equals(playerUUID)) {
                     return elector;
                 }
             }

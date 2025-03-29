@@ -128,17 +128,17 @@ public class MayorColorMenu extends Menu {
                     ConfirmMenu menu = new ConfirmMenu(player,
                             () -> {
                                 mayorElector.setElectorColor(color);
-                                MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").color(color)), Prefix.CITY, MessageType.SUCCESS, false);
+                                MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
                                 player.closeInventory();
                             },
                             () -> {
                                 player.closeInventory();
                             },
                             List.of(
-                                    Component.text("§7Changer sa ").append(Component.text("couleur ").color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").color(color))
+                                    Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
                             ),
                             List.of(
-                                    Component.text("§7Ne pas changer sa ").append(Component.text("couleur ").color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").color(color))
+                                Component.text("§7Ne pas changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
                             )
                     );
                     menu.open();

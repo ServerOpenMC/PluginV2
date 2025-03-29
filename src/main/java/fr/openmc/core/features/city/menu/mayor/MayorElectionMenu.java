@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.MayorElector;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CityTypeMenu;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -23,6 +24,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -67,7 +69,7 @@ public class MayorElectionMenu extends Menu {
                     Component.text("§7Les Elections sont §6ouvertes§7!"),
                     Component.text("§7Vous pouvez changer votre vote !"),
                     Component.text(""),
-                    Component.text("§eVote Actuel §7: ").append(Component.text(mayorManager.getElectorNameVotedBy(player))).color(mayorManager.getElectorColorVotedBy(player)),
+                    Component.text("§7Vote Actuel : ").append(Component.text(mayorManager.getElectorNameVotedBy(player))).decoration(TextDecoration.ITALIC, false).color(mayorManager.getElectorColorVotedBy(player)),
                     Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
@@ -116,6 +118,17 @@ public class MayorElectionMenu extends Menu {
             } else {
                new MayorCreateMenu(player, null, null).open();
             }
+        }));
+
+        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.itemName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Vous allez retourner au Menu de la Banque de votre ville"),
+                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            CityBankMenu menu = new CityBankMenu(player);
+            menu.open();
         }));
 
 

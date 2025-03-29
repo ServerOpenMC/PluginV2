@@ -4,6 +4,7 @@ import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.mayor.Perks;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -118,6 +119,16 @@ public class MayorCreateMenu extends Menu {
             }
         }));
 
+        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.itemName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Vous allez retourner au Menu de la Banque de votre ville"),
+                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            CityBankMenu menu = new CityBankMenu(player);
+            menu.open();
+        }));
 
         return inventory;
     }

@@ -86,8 +86,8 @@ public class MayorVoteMenu extends PaginatedMenu {
             }
 
 
-            ItemStack perkItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(elector.getElectorUUID()), itemMeta -> {
-                itemMeta.displayName(Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false));
+            ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(elector.getElectorUUID()), itemMeta -> {
+                itemMeta.displayName(Component.text("Maire " + elector.getElectorName()).color(color).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(loreMayor);
                 itemMeta.setEnchantmentGlintOverride(ench);
             }).setOnClick(inventoryClickEvent -> {
@@ -108,7 +108,7 @@ public class MayorVoteMenu extends PaginatedMenu {
                 new MayorVoteMenu(player).open();
             });
 
-            items.add(perkItem);
+            items.add(mayorItem);
 
         }
         return items;
