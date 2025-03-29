@@ -1,4 +1,4 @@
-package fr.openmc.core.features.contest.managers;
+package fr.openmc.core.utils;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -14,7 +14,7 @@ public class ColorUtils {
 
     private static final Map<NamedTextColor, NamedTextColor> colorToReadable = new HashMap<>();
     static {
-        colorToReadable.put(NamedTextColor.BLACK, NamedTextColor.BLACK);
+        colorToReadable.put(NamedTextColor.BLACK, NamedTextColor.DARK_GRAY);
         colorToReadable.put(NamedTextColor.DARK_BLUE, NamedTextColor.DARK_BLUE);
         colorToReadable.put(NamedTextColor.DARK_GREEN, NamedTextColor.DARK_GREEN);
         colorToReadable.put(NamedTextColor.DARK_AQUA, NamedTextColor.DARK_AQUA);
@@ -63,5 +63,30 @@ public class ColorUtils {
     public static NamedTextColor getNamedTextColor(String color) {
         return NamedTextColor.NAMES.valueOr(color.toLowerCase(), NamedTextColor.WHITE);
     }
+
+    private static final Map<NamedTextColor, String> colorToName = new HashMap<>();
+    static {
+        colorToName.put(NamedTextColor.BLACK, "§0Noir");
+        colorToName.put(NamedTextColor.DARK_BLUE, "§1Bleu Foncé");
+        colorToName.put(NamedTextColor.DARK_GREEN, "§2Vert Foncé");
+        colorToName.put(NamedTextColor.DARK_AQUA, "§3Aqua Foncé");
+        colorToName.put(NamedTextColor.DARK_RED, "§4Rouge Foncé");
+        colorToName.put(NamedTextColor.DARK_PURPLE, "§5Violet");
+        colorToName.put(NamedTextColor.GOLD, "§6Orange");
+        colorToName.put(NamedTextColor.GRAY, "§7Gris");
+        colorToName.put(NamedTextColor.DARK_GRAY, "§8Gris Foncé");
+        colorToName.put(NamedTextColor.BLUE, "§9Bleu");
+        colorToName.put(NamedTextColor.GREEN, "§aVert Clair");
+        colorToName.put(NamedTextColor.AQUA, "§bBleu Clair");
+        colorToName.put(NamedTextColor.RED, "§cRouge");
+        colorToName.put(NamedTextColor.LIGHT_PURPLE, "§dRose");
+        colorToName.put(NamedTextColor.YELLOW, "§eJaune");
+        colorToName.put(NamedTextColor.WHITE, "§fBlanc");
+    }
+
+    public static String getNameFromColor(NamedTextColor c) {
+        return colorToName.getOrDefault(c, "Aucun");
+    }
+
 
 }
