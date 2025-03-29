@@ -21,11 +21,8 @@ import java.util.UUID;
 
 public class CompanyBaltopMenu extends Menu {
 
-    private final CompanyManager companyManager;
-
-    public CompanyBaltopMenu(Player owner, CompanyManager companyManager) {
+    public CompanyBaltopMenu(Player owner) {
         super(owner);
-        this.companyManager = companyManager;
     }
 
     @Override
@@ -45,7 +42,7 @@ public class CompanyBaltopMenu extends Menu {
 
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
-        List<Company> companies = companyManager.getCompanies();
+        List<Company> companies = CompanyManager.companies;
         companies.sort((company1, company2) -> Double.compare(company2.getTurnover(), company1.getTurnover()));
         Map<Integer, ItemStack> content = fill(Material.GRAY_STAINED_GLASS_PANE);
         content.put(46, new ItemBuilder(this, Material.BARREL, itemMeta -> {

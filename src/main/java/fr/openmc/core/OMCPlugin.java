@@ -99,6 +99,9 @@ public final class OMCPlugin extends JavaPlugin {
         MascotsManager.saveMascots(MascotsManager.mascots);
         MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
 
+        CompanyManager.saveAllCompanies();
+        CompanyManager.saveAllShop();
+
         CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {
             try {

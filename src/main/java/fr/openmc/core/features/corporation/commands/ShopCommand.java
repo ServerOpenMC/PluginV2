@@ -74,7 +74,7 @@ public class ShopCommand {
                 player.sendMessage("§cVous devez être un des propriétaires de l'entreprise pour créer un shop");
                 return;
             }
-            if (!company.createShop(player, targetBlock, aboveBlock)) {
+            if (!company.createShop(player, targetBlock, aboveBlock, null)) {
                 player.sendMessage("§cVous n'avez pas assez d'argent dans la banque de votre entreprise pour créer un shop (100€)");
                 return;
             }
@@ -86,7 +86,7 @@ public class ShopCommand {
             player.sendMessage("§cVous avez déjà un shop");
             return;
         }
-        if (!playerShopManager.createShop(player, targetBlock, aboveBlock)) {
+        if (!playerShopManager.createShop(player, targetBlock, aboveBlock, null)) {
             player.sendMessage("§cVous n'avez pas assez d'argent pour créer un shop (500€)");
             return;
         }

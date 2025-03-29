@@ -29,11 +29,17 @@ public class PlayerShopManager {
 //        conn.prepareStatement("CREATE TABLE IF NOT EXISTS shop (uuid VARCHAR(8) NOT NULL PRIMARY KEY);").executeUpdate();
 //    }
 
-    public boolean createShop(Player player, Block barrel, Block cashRegister) {
+    public boolean createShop(Player player, Block barrel, Block cashRegister, UUID shop_uuid) {
         if (!economyManager.withdrawBalance(player.getUniqueId(), 500)) {
             return false;
         }
-        Shop newShop = new Shop(new ShopOwner(player.getUniqueId()), 0);
+        Shop newShop;
+        if (shop_uuid!=null){
+            newShop = new Shop(new ShopOwner(player.getUniqueId()), 0, shop_uuid);
+        } else {
+            newShop = new Shop(new ShopOwner(player.getUniqueId()), 0);
+        }
+
         playerShops.put(player.getUniqueId(), newShop);
         shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cashRegister.getLocation()));
         shopBlocksManager.placeShop(newShop, player, false);

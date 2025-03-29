@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.MethodState;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,13 +32,20 @@ public class Shop {
     private final List<ShopItem> sales = new ArrayList<>();
     private final Map<Long, Supply> suppliers = new HashMap<>();
     private final int index;
-    private final UUID uuid = UUID.randomUUID();
+    private final UUID uuid;
 
     private double turnover = 0;
 
     public Shop(ShopOwner owner, int index) {
         this.owner = owner;
         this.index = index;
+        this.uuid  = UUID.randomUUID();
+    }
+
+    public Shop(ShopOwner owner, int index, UUID uuid) {
+        this.owner = owner;
+        this.index = index;
+        this.uuid = uuid;
     }
 
     /**
@@ -262,15 +270,6 @@ public class Shop {
             return null;
         }
         return shop.getUuid();
-    }
-
-    public static List<Shop> getAllShops(CompanyManager companyManager, PlayerShopManager playerShopManager) {
-        List<Shop> shops = new ArrayList<>();
-        for (Company company : companyManager.getCompanies()) {
-            shops.addAll(company.getShops());
-        }
-        shops.addAll(playerShopManager.getPlayerShops().values());
-        return shops;
     }
 
     @Getter

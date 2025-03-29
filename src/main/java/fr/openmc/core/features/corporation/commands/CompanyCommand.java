@@ -175,7 +175,7 @@ public class CompanyCommand {
     @Subcommand("baltop")
     @Description("Afficher le top des entreprises")
     public void baltop(Player player) {
-        CompanyBaltopMenu menu = new CompanyBaltopMenu(player, manager);
+        CompanyBaltopMenu menu = new CompanyBaltopMenu(player);
         menu.open();
     }
 

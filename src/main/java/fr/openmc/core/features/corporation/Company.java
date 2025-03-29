@@ -29,6 +29,7 @@ public class Company {
     private final Queue<Long, TransactionData> transactions = new Queue<>(150);
     private final double turnover = 0;
     private CompanyOwner owner;
+    @Setter
     private double balance = 0;
     @Setter
     private double cut = 0.25;
@@ -64,13 +65,20 @@ public class Company {
         return null;
     }
 
-    public boolean createShop(Player whoCreated, Block barrel, Block cash) {
+    public boolean createShop(Player whoCreated, Block barrel, Block cash, UUID shopUUID) {
         if (withdraw(100, whoCreated, "Création de shop")) {
-            Shop newShop = new Shop(new ShopOwner(this), shopCounter);
+            Shop newShop;
+            if (shopUUID==null){
+                newShop = new Shop(new ShopOwner(this), shopCounter);
+                economyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
+            } else {
+                newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
+            }
             shops.add(newShop);
-            economyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
-            shopBlocksManager.placeShop(newShop, whoCreated, true);
+            if (shopUUID==null){
+                shopBlocksManager.placeShop(newShop, whoCreated, true);
+            }
             shopCounter++;
             return true;
         }
