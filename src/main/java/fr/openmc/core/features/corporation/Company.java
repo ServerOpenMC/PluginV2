@@ -65,7 +65,15 @@ public class Company {
         return null;
     }
 
-    public boolean createShop(Player whoCreated, Block barrel, Block cash, UUID shopUUID) {
+    public boolean createShop(UUID playerUUID, Block barrel, Block cash, UUID shopUUID) {
+        Player whoCreated = Bukkit.getPlayer(playerUUID);
+        if (whoCreated==null){
+            Shop newShop;
+            newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
+            shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
+            shopCounter++;
+            return true;
+        }
         if (withdraw(100, whoCreated, "Création de shop")) {
             Shop newShop;
             if (shopUUID==null){

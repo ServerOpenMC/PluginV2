@@ -15,6 +15,7 @@ import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -22,6 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -66,6 +68,7 @@ public class CompanyManager {
                     "item LONGBLOB NOT NULL, " +
                     "shop_uuid VARCHAR(36) NOT NULL, " +
                     "price DOUBLE NOT NULL, " +
+                    "amount INT NOT NULL, " +
                     "PRIMARY KEY (shop_uuid, item(255)))");
 
             stmt.addBatch("CREATE TABLE IF NOT EXISTS company (" +
@@ -139,21 +142,23 @@ public class CompanyManager {
     }
 
     public static void loadAllShops() {
+        OMCPlugin.getInstance().getLogger().info("chargements des shops...");
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
 
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement("SELECT item, shop_uuid, price FROM shops_item");
+             PreparedStatement statement = conn.prepareStatement("SELECT item, shop_uuid, price, amount FROM shops_item");
              ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
                 UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
                 double price = rs.getDouble("price");
+                int amount = rs.getInt("amount");
                 byte[] itemBytes = rs.getBytes("item");
 
                 if (itemBytes != null) {
                     ItemStack itemStack = ItemStack.deserializeBytes(itemBytes);
                     ShopItem shopItem = new ShopItem(itemStack, price);
-                    shopItem.setAmount(itemStack.getAmount());
+                    shopItem.setAmount(amount);
 
                     shopItems.computeIfAbsent(shopUuid, k -> new ArrayList<>()).add(shopItem);
                 }
@@ -174,25 +179,28 @@ public class CompanyManager {
                 double y = rs.getDouble("y");
                 double z = rs.getDouble("z");
 
-                Player player = Bukkit.getPlayer(owner);
-                if (player != null) {
-                    Block barrel = new Location(Bukkit.getWorld("world"), x, y, z).getBlock();
-                    Block cashRegister = new Location(Bukkit.getWorld("world"), x, y + 1, z).getBlock();
 
-                    if (barrel.getType() == Material.BARREL && cashRegister.getType().toString().contains("SIGN")) {
-                        if (cityUuid == null) {
-                            PlayerShopManager.getInstance().createShop(player, barrel, cashRegister, shopUuid);
-                        } else {
-                            City city = CityManager.getCity(cityUuid);
-                            if (city != null) {
-                                Company company = CompanyManager.getInstance().getCompany(city);
-                                company.createShop(player, barrel, cashRegister, shopUuid);
-                                Shop shop = PlayerShopManager.getInstance().getShopByUUID(shopUuid);
-                                for (ShopItem shopItem :shopItems.get(shopUuid)){
-                                    shop.addItem(shopItem.getItem(), shopItem.getPrice());
-                                }
-                            }
+                Block barrel = new Location(Bukkit.getWorld("world"), x, y, z).getBlock();
+                Block cashRegister = new Location(Bukkit.getWorld("world"), x, y + 1, z).getBlock();
+
+                if (barrel.getType() == Material.BARREL && cashRegister.getType().toString().contains("SIGN")) {
+                    Shop shop = null;
+                    if (cityUuid == null) {
+                        PlayerShopManager.getInstance().createShop(owner, barrel, cashRegister, shopUuid);
+                        shop = PlayerShopManager.getInstance().getShopByUUID(shopUuid);
+                    } else {
+                        City city = CityManager.getCity(cityUuid);
+                        if (city != null) {
+                            Company company = CompanyManager.getInstance().getCompany(city);
+                            company.createShop(owner, barrel, cashRegister, shopUuid);
+                            shop = company.getShop(shopUuid);
                         }
+                    }
+                    if (shop == null || shopItems.get(shopUuid)==null) {
+                        continue;
+                    }
+                    for (ShopItem shopItem : shopItems.get(shopUuid)) {
+                        shop.addItem(shopItem.getItem(), shopItem.getPricePerItem(), shopItem.getAmount());
                     }
                 }
             }
@@ -203,9 +211,20 @@ public class CompanyManager {
 
     public static void saveAllCompanies() {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des commpanies...");
-        String queryCompany = "INSERT INTO company (city_uuid, name, owner, cut, balance) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE city_uuid = ?, name = ?, owner = ?, cut = ?, balance = ?";
-        String queryMerchant = "INSERT INTO company_merchants (city_uuid, player, moneyWon) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE city_uuid = ?, player = ?, moneyWon = ?";
-        String queryMerchantData = "INSERT INTO merchants_data (uuid, content) VALUES (?, ?) ON DUPLICATE KEY UPDATE uuid = ?, content = ?";
+
+        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
+
+            stmt.executeUpdate("TRUNCATE TABLE company;");
+            stmt.executeUpdate("TRUNCATE TABLE company_merchants;");
+            stmt.executeUpdate("TRUNCATE TABLE merchants_data;");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String queryCompany = "INSERT INTO company (city_uuid, name, owner, cut, balance) VALUES (?, ?, ?, ?, ?)";
+        String queryMerchant = "INSERT INTO company_merchants (city_uuid, player, moneyWon) VALUES (?, ?, ?)";
+        String queryMerchantData = "INSERT INTO merchants_data (uuid, content) VALUES (?, ?)";
 
         try (
                 PreparedStatement stmtCompany = DatabaseManager.getConnection().prepareStatement(queryCompany);
@@ -224,11 +243,6 @@ public class CompanyManager {
                 stmtCompany.setString(3, owner.toString());
                 stmtCompany.setDouble(4, cut);
                 stmtCompany.setDouble(5, balance);
-                stmtCompany.setString(6, cityUuid);
-                stmtCompany.setString(7, name);
-                stmtCompany.setString(8, owner.toString());
-                stmtCompany.setDouble(9, cut);
-                stmtCompany.setDouble(10, balance);
                 stmtCompany.addBatch(); // Adding the company to batch
 
                 for (UUID merchantUUID : company.getMerchantsUUID()) {
@@ -236,17 +250,12 @@ public class CompanyManager {
                     stmtMerchant.setString(1, cityUuid);
                     stmtMerchant.setString(2, merchantUUID.toString());
                     stmtMerchant.setDouble(3, moneyWon);
-                    stmtMerchant.setString(4, cityUuid);
-                    stmtMerchant.setString(5, merchantUUID.toString());
-                    stmtMerchant.setDouble(6, moneyWon);
                     stmtMerchant.addBatch(); // Adding merchant info to batch
 
                     ItemStack[] items = company.getMerchants().get(merchantUUID).getDepositedItems().toArray(new ItemStack[0]);
-                    byte[] content = ItemStack.serializeItemsAsBytes(items);
+                    byte[] content = BukkitSerializer.serializeItemStacks(items);
                     stmtMerchantData.setString(1, merchantUUID.toString());
                     stmtMerchantData.setBytes(2, content);
-                    stmtMerchantData.setString(3, merchantUUID.toString());
-                    stmtMerchantData.setBytes(4, content);
                     stmtMerchantData.addBatch(); // Adding merchant data to batch
                 }
             }
@@ -255,6 +264,8 @@ public class CompanyManager {
             stmtMerchantData.executeBatch();  // Execute batch for merchant data
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des companies fini.");
     }
@@ -262,8 +273,18 @@ public class CompanyManager {
 
     public static void saveAllShop() {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des shops...");
-        String queryShop = "INSERT INTO shops (shop_uuid, owner, city_uuid, x, y, z) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE shop_uuid = ?, owner = ?, city_uuid = ?, x = ?, y = ?, z = ?";
-        String queryShopItem = "INSERT INTO shops_item (item, shop_uuid, price) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE item = ?, shop_uuid = ?, price = ?";
+
+        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
+
+            stmt.executeUpdate("TRUNCATE TABLE shops;");
+            stmt.executeUpdate("TRUNCATE TABLE shops_item;");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String queryShop = "INSERT INTO shops (shop_uuid, owner, city_uuid, x, y, z) VALUES (?, ?, ?, ?, ?, ?)";
+        String queryShopItem = "INSERT INTO shops_item (item, shop_uuid, price, amount) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmtShop = DatabaseManager.getConnection().prepareStatement(queryShop)) {
             for (Company company : companies) {
@@ -280,15 +301,14 @@ public class CompanyManager {
 
                     for (ShopItem shopItem : shop.getItems()){
                         byte[] item = shopItem.getItem().serializeAsBytes();
-                        double price = shopItem.getPrice();
+                        double price = shopItem.getPricePerItem();
+                        int amount = shopItem.getAmount();
 
                         try (PreparedStatement stmtShopItem = DatabaseManager.getConnection().prepareStatement(queryShopItem)) {
                             stmtShopItem.setBytes(1, item);
                             stmtShopItem.setString(2, shopUuid.toString());
                             stmtShopItem.setDouble(3, price);
-                            stmtShopItem.setBytes(4, item);
-                            stmtShopItem.setString(5, shopUuid.toString());
-                            stmtShopItem.setDouble(6, price);
+                            stmtShopItem.setInt(4, amount);
                             stmtShopItem.addBatch();
 
                             stmtShopItem.executeBatch();
@@ -301,12 +321,6 @@ public class CompanyManager {
                     stmtShop.setDouble(4, x);
                     stmtShop.setDouble(5, y);
                     stmtShop.setDouble(6, z);
-                    stmtShop.setString(7, shopUuid.toString());
-                    stmtShop.setString(8, owner.toString());
-                    stmtShop.setString(9, cityUuid);
-                    stmtShop.setDouble(10, x);
-                    stmtShop.setDouble(11, y);
-                    stmtShop.setDouble(12, z);
                     stmtShop.addBatch(); // Adding shop to batch
                 }
             }
@@ -323,6 +337,24 @@ public class CompanyManager {
             double y = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockY();
             double z = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockZ();
 
+            for (ShopItem shopItem : shop.getItems()){
+                byte[] item = shopItem.getItem().serializeAsBytes();
+                double price = shopItem.getPricePerItem();
+                int amount = shopItem.getAmount();
+
+                try (PreparedStatement stmtShopItem = DatabaseManager.getConnection().prepareStatement(queryShopItem)) {
+                    stmtShopItem.setBytes(1, item);
+                    stmtShopItem.setString(2, shopUuid.toString());
+                    stmtShopItem.setDouble(3, price);
+                    stmtShopItem.setInt(4, amount);
+                    stmtShopItem.addBatch();
+
+                    stmtShopItem.executeBatch();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
             try (PreparedStatement stmtShop = DatabaseManager.getConnection().prepareStatement(queryShop)) {
                 stmtShop.setString(1, shopUuid.toString());
                 stmtShop.setString(2, owner.toString());
@@ -330,12 +362,6 @@ public class CompanyManager {
                 stmtShop.setDouble(4, x);
                 stmtShop.setDouble(5, y);
                 stmtShop.setDouble(6, z);
-                stmtShop.setString(7, shopUuid.toString());
-                stmtShop.setString(8, owner.toString());
-                stmtShop.setString(9, null);
-                stmtShop.setDouble(10, x);
-                stmtShop.setDouble(11, y);
-                stmtShop.setDouble(12, z);
                 stmtShop.addBatch();  // Adding shop to batch
                 stmtShop.executeBatch(); // Execute batch for shops
             } catch (SQLException e) {

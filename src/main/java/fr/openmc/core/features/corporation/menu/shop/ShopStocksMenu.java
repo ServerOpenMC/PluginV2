@@ -3,6 +3,7 @@ package fr.openmc.core.features.corporation.menu.shop;
 import dev.xernas.menulib.PaginatedMenu;
 import dev.xernas.menulib.utils.ItemBuilder;
 import dev.xernas.menulib.utils.StaticSlots;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.CompanyManager;
 import fr.openmc.core.features.corporation.PlayerShopManager;
 import fr.openmc.core.features.corporation.Shop;
@@ -54,8 +55,8 @@ public class ShopStocksMenu extends PaginatedMenu {
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new java.util.ArrayList<>();
 
-        accetpMsg.add(Component.text(""));
-        denyMsg.add(Component.text(""));
+        accetpMsg.add(Component.text("récupérer"));
+        denyMsg.add(Component.text("annuler"));
 
         for (ShopItem stock : shop.getItems()) {
             this.stock = stock;
@@ -103,13 +104,19 @@ public class ShopStocksMenu extends PaginatedMenu {
 
     private void accept() {
         if (stock.getAmount() > 0) {
-            if (ItemUtils.hasAvailableSlot(getOwner())){
+            int maxPlace = ItemUtils.getFreePlacesForItem(getOwner(), stock.getItem());
+            if (maxPlace>0){
                 ItemStack toGive = stock.getItem().clone();
-                int maxPlace = ItemUtils.getFreePlacesForItem(getOwner(), stock.getItem());
-                toGive.setAmount(maxPlace);
+                toGive.setAmount(Math.min(maxPlace, stock.getAmount()));
+                int amount = Math.min(maxPlace, stock.getAmount());
+
                 getOwner().getInventory().addItem(toGive);
-                stock.setAmount(stock.getAmount()-maxPlace);
-                getOwner().sendMessage("§6Vous avez récupéré le stock restant de cet item");
+                stock.setAmount(stock.getAmount() - amount);
+                if (stock.getAmount()>0){
+                    getOwner().sendMessage("§6Vous avez récupéré §a" + amount + "§6 dans le stock de cet item");
+                } else {
+                    getOwner().sendMessage("§6Vous avez récupéré le stock restant de cet item");
+                }
             } else {
                 getOwner().sendMessage("§cVous n'avez pas assez de place");
             }

@@ -3,6 +3,7 @@ package fr.openmc.core.features.corporation;
 import fr.openmc.core.features.city.MethodState;
 import fr.openmc.core.features.economy.EconomyManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -25,24 +26,22 @@ public class PlayerShopManager {
         instance = this;
     }
 
-//    public static void init_db (Connection conn) throws SQLException {
-//        conn.prepareStatement("CREATE TABLE IF NOT EXISTS shop (uuid VARCHAR(8) NOT NULL PRIMARY KEY);").executeUpdate();
-//    }
-
-    public boolean createShop(Player player, Block barrel, Block cashRegister, UUID shop_uuid) {
-        if (!economyManager.withdrawBalance(player.getUniqueId(), 500)) {
+    public boolean createShop(UUID playerUUID, Block barrel, Block cashRegister, UUID shop_uuid) {
+        if (!economyManager.withdrawBalance(playerUUID, 500) && shop_uuid==null) {
             return false;
         }
         Shop newShop;
         if (shop_uuid!=null){
-            newShop = new Shop(new ShopOwner(player.getUniqueId()), 0, shop_uuid);
+            newShop = new Shop(new ShopOwner(playerUUID), 0, shop_uuid);
         } else {
-            newShop = new Shop(new ShopOwner(player.getUniqueId()), 0);
+            newShop = new Shop(new ShopOwner(playerUUID), 0);
         }
 
-        playerShops.put(player.getUniqueId(), newShop);
+        playerShops.put(playerUUID, newShop);
         shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cashRegister.getLocation()));
-        shopBlocksManager.placeShop(newShop, player, false);
+        if (shop_uuid==null){
+            shopBlocksManager.placeShop(newShop, Bukkit.getPlayer(playerUUID), false);
+        }
         return true;
     }
 

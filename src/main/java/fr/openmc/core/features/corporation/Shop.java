@@ -125,12 +125,16 @@ public class Shop {
         return owner.getPlayer().equals(uuid);
     }
 
-    public boolean addItem(ItemStack itemStack, double price) {
+    public boolean addItem(ItemStack itemStack, double price, int amount) {
+        OMCPlugin.getInstance().getLogger().info("items bien detecter");
         ShopItem item = new ShopItem(itemStack, price);
         for (ShopItem shopItem : items) {
             if (shopItem.getItem().isSimilar(itemStack)) {
                 return true;
             }
+        }
+        if (amount>1){
+            item.setAmount(amount);
         }
         items.add(item);
         return false;

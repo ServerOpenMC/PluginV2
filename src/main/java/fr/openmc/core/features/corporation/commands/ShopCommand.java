@@ -74,7 +74,7 @@ public class ShopCommand {
                 player.sendMessage("§cVous devez être un des propriétaires de l'entreprise pour créer un shop");
                 return;
             }
-            if (!company.createShop(player, targetBlock, aboveBlock, null)) {
+            if (!company.createShop(player.getUniqueId(), targetBlock, aboveBlock, null)) {
                 player.sendMessage("§cVous n'avez pas assez d'argent dans la banque de votre entreprise pour créer un shop (100€)");
                 return;
             }
@@ -86,7 +86,7 @@ public class ShopCommand {
             player.sendMessage("§cVous avez déjà un shop");
             return;
         }
-        if (!playerShopManager.createShop(player, targetBlock, aboveBlock, null)) {
+        if (!playerShopManager.createShop(player.getUniqueId(), targetBlock, aboveBlock, null)) {
             player.sendMessage("§cVous n'avez pas assez d'argent pour créer un shop (500€)");
             return;
         }
@@ -113,7 +113,7 @@ public class ShopCommand {
                 player.sendMessage("§cVous n'êtes pas un des propriétaires de ce shop");
             }
             ItemStack item = player.getInventory().getItemInMainHand();
-            boolean itemThere = shop.addItem(item, price);
+            boolean itemThere = shop.addItem(item, price, 1);
             if (itemThere) {
                 player.sendMessage("§cCet item est déjà dans le shop");
                 return;
@@ -131,7 +131,7 @@ public class ShopCommand {
             player.sendMessage("§cVous devez tenir un item dans votre main");
             return;
         }
-        boolean itemThere = shop.addItem(item, price);
+        boolean itemThere = shop.addItem(item, price, 1);
         if (itemThere) {
             player.sendMessage("§cCet item est déjà dans le shop");
             return;
