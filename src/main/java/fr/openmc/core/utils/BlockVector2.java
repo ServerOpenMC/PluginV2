@@ -19,18 +19,6 @@ public record BlockVector2(int x, int z) {
     }
 
     public static BlockVector2 at(int x, int z) {
-        switch (x) {
-            case 0:
-                if (z == 0) {
-                    return ZERO;
-                }
-                break;
-            case 1:
-                if (z == 1) {
-                    return ONE;
-                }
-        }
-
         return new BlockVector2(x, z);
     }
 
