@@ -85,8 +85,8 @@ public final class OMCPlugin extends JavaPlugin {
         // - Maires
         MayorManager mayorManager = MayorManager.getInstance();
         mayorManager.saveMayorConstant();
-        mayorManager.savePlayersHasVoted();
-        mayorManager.saveElectorMayors();
+        mayorManager.savePlayersVote();
+        mayorManager.saveMayorCandidates();
         mayorManager.saveCityMayors();
 
         // - Home

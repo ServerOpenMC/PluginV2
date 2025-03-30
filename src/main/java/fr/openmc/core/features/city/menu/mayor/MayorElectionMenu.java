@@ -55,7 +55,7 @@ public class MayorElectionMenu extends Menu {
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
         List<Component> loreElection;
-        if (mayorManager.isPlayerVoted(player)) {
+        if (mayorManager.hasVoted(player)) {
             loreElection = List.of(
                     Component.text("§7Les Elections sont §6ouvertes§7!"),
                     Component.text("§7Vous pouvez changer votre vote !"),

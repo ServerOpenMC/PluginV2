@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.MayorCandidate;
+import fr.openmc.core.features.city.mayor.MayorVote;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -27,12 +28,12 @@ public class MayorManager {
 
     private final OMCPlugin plugin;
 
-    public int MEMBER_REQ_ELECTION = 4;
+    public int MEMBER_REQ_ELECTION = 1;
 
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
     public Map<City, List<MayorCandidate>> cityElections = new HashMap<>(){};
-    public Map<UUID, MayorCandidate> playerHasVoted = new HashMap<>();
+    public Map<City, List<MayorVote>> playerVote = new HashMap<>();
 
     public MayorManager(OMCPlugin plugin) {
         instance = this;
@@ -49,8 +50,8 @@ public class MayorManager {
 
         loadMayorConstant();
         loadCityMayors();
-        loadElectorMayors();
-        loadPlayersHasVoted();
+        loadMayorCandidates();
+        loadPlayersVote();
 
         new BukkitRunnable() {
             @Override
@@ -69,8 +70,8 @@ public class MayorManager {
                 }
 
                 Bukkit.getLogger().info("Player Votes:");
-                for (Map.Entry<UUID, MayorCandidate> entry : playerHasVoted.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName());
+                for (Map.Entry<City, List<MayorVote>> entry : playerVote.entrySet()) {
+                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
                 }
 
                 Bukkit.getLogger().info("================================");
@@ -173,7 +174,7 @@ public class MayorManager {
         }
     }
 
-    public void loadElectorMayors() {
+    public void loadMayorCandidates() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_election")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
@@ -195,8 +196,7 @@ public class MayorManager {
         }
     }
 
-    public void saveElectorMayors() {
-        //String deleteSql = "DELETE FROM city_election";
+    public void saveMayorCandidates() {
         String sql = "INSERT INTO city_election (city_uuid, candidateUUID, candidateName, candidateColor, idChoicePerk2, idChoicePerk3, vote) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
@@ -204,10 +204,8 @@ public class MayorManager {
                 "idChoicePerk2 = VALUES(idChoicePerk2), idChoicePerk3 = VALUES(idChoicePerk3), vote = VALUES(vote)";
 
         try (Connection connection = DatabaseManager.getConnection();
-             //PreparedStatement deleteStmt = connection.prepareStatement(deleteSql);
 
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            //deleteStmt.executeUpdate();
             plugin.getLogger().info("Sauvegarde des données des joueurs qui se sont présentés...");
 
             for (Map.Entry<City, List<MayorCandidate>> entry : cityElections.entrySet()) {
@@ -235,7 +233,7 @@ public class MayorManager {
             e.printStackTrace();
         }
     }
-    public void loadPlayersHasVoted() {
+    public void loadPlayersVote() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_voted")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
@@ -262,7 +260,8 @@ public class MayorManager {
                 }
 
                 if (candidateFound != null) {
-                    playerHasVoted.put(voter_uuid, candidateFound);
+                    MayorVote vote = new MayorVote(voter_uuid, candidateFound);
+                    playerVote.computeIfAbsent(city, k -> new ArrayList<>()).add(vote);
                 }
             }
         } catch (SQLException e) {
@@ -270,7 +269,7 @@ public class MayorManager {
         }
     }
 
-    public void savePlayersHasVoted() {
+    public void savePlayersVote() {
         String sql = "INSERT INTO city_voted (city_uuid, voterUUID, candidateUUID) " +
                 "VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
@@ -278,15 +277,17 @@ public class MayorManager {
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql)) {
             plugin.getLogger().info("Sauvegarde des données des Joueurs qui ont voté pour un maire...");
 
-            playerHasVoted.forEach((voterUUID, mayorCandidate) -> {
-                try {
-                    statement.setString(1, mayorCandidate.getCity().getUUID());
-                    statement.setString(2, voterUUID.toString());
-                    statement.setString(3, mayorCandidate.getUUID().toString());
+            playerVote.forEach((city, mayorVotes) -> {
+                for (MayorVote vote : mayorVotes) {
+                    try {
+                        statement.setString(1, city.getUUID());
+                        statement.setString(2, vote.getVoterUUID().toString());
+                        statement.setString(3, vote.getCandidate().getUUID().toString());
 
-                    statement.addBatch();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                        statement.addBatch();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
@@ -348,19 +349,37 @@ public class MayorManager {
     }
 
     public void removeVotePlayer(Player player) {
-        playerHasVoted.remove(player.getUniqueId());
+        playerVote.forEach((city, votes) ->
+                votes.removeIf(vote -> vote.getVoterUUID().equals(player.getUniqueId()))
+        );
     }
 
-    public void voteCandidate(Player player, MayorCandidate candidate) {
+    public void voteCandidate(City playerCity, Player player, MayorCandidate candidate) {
         candidate.setVote(candidate.getVote() + 1);
-        playerHasVoted.put(player.getUniqueId(), candidate);
+        List<MayorVote> votes = playerVote.computeIfAbsent(playerCity, key -> new ArrayList<>());
+
+        votes.add(new MayorVote(player.getUniqueId(), candidate));
     }
 
-    public boolean isPlayerVoted(Player player) {
-        return playerHasVoted.keySet().contains(player.getUniqueId());
+    public boolean hasVoted(Player player) {
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (playerVote.get(playerCity) == null) return false;
+
+        return playerVote.get(playerCity)
+                .stream()
+                .anyMatch(mayorVote -> mayorVote.getVoterUUID().equals(player.getUniqueId()));
     }
 
     public MayorCandidate getPlayerVote(Player player) {
-        return playerHasVoted.get(player.getUniqueId());
+        for (List<MayorVote> votes : playerVote.values()) {
+            for (MayorVote vote : votes) {
+                if (vote.getVoterUUID().equals(player.getUniqueId())) {
+                    return vote.getCandidate();
+                }
+            }
+        }
+
+        return null;
     }
 }

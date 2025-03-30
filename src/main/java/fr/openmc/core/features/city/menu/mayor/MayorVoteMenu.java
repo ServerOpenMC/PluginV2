@@ -89,7 +89,7 @@ public class MayorVoteMenu extends PaginatedMenu {
                 itemMeta.lore(loreMayor);
                 itemMeta.setEnchantmentGlintOverride(ench);
             }).setOnClick(inventoryClickEvent -> {
-                if (mayorManager.isPlayerVoted(player)) {
+                if (mayorManager.hasVoted(player)) {
                     if (candidate == playerVote) {
                         MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6Maire"), Prefix.CITY, MessageType.ERROR, false);
                         return;
@@ -97,9 +97,9 @@ public class MayorVoteMenu extends PaginatedMenu {
 
                     playerVote.setVote(playerVote.getVote()-1);
                     mayorManager.removeVotePlayer(player);
-                    mayorManager.voteCandidate(player, candidate);
+                    mayorManager.voteCandidate(city, player, candidate);
                 } else {
-                   mayorManager.voteCandidate(player, candidate);
+                   mayorManager.voteCandidate(city, player, candidate);
                 }
                 MessagesManager.sendMessage(player, Component.text("§7Vous avez voté pour le ").append(Component.text("Maire " + candidate.getName()).color(color)), Prefix.CITY, MessageType.SUCCESS, true);
 
