@@ -3,12 +3,16 @@ package fr.openmc.core.features.city.menu.mayor;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.menu.CityMenu;
-import fr.openmc.core.features.city.menu.bank.CityBankMenu;
+import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
+import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -16,6 +20,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -104,14 +109,35 @@ public class MayorElectionMenu extends Menu {
         }
 
         if (hasPermissionOwner) {
+            List<Component> lorePerkOwner;
+            if (mayorManager.hasChoicePerkOwner(player)) {
+                Perks perk1 = PerkManager.getPerkById(city.getMayor().getIdPerk1());
+                lorePerkOwner = new ArrayList<>(List.of(
+                        Component.text("§7Vous avez déjà choisis §3votre Réforme §7!"),
+                        Component.text(""),
+                        Component.text(perk1.getName())
+                ));
+                lorePerkOwner.addAll(perk1.getLore());
+            } else {
+                lorePerkOwner = List.of(
+                        Component.text("§7Vous êtes le propriétaire de la §dVille§7!"),
+                        Component.text("§7Vous pouvez choisir une §3Réforme événementiel §7!"),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
+                );
+            }
+
             inventory.put(13, new ItemBuilder(this, PlayerUtils.getPlayerSkull(player), itemMeta -> {
-                itemMeta.itemName(Component.text("§7Votre §3Candidature"));
-                itemMeta.lore(loreCandidature);
+                itemMeta.displayName(Component.text("§7Choix d'une §3Réforme"));
+                itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
-                if (mayorManager.hasCandidated(player)) {
-                    new MayorModifyMenu(player).open();
-                } else {
-                    new MayorCreateMenu(player, null, null).open();
+                if (!mayorManager.hasChoicePerkOwner(player)) {
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), new Runnable() {
+                        @Override
+                        public void run() {
+                            new MayorCreateMenu(player, null, null, null, MenuType.OWNER_1).open();
+                        }
+                    });
                 }
             }));
         }
@@ -123,14 +149,14 @@ public class MayorElectionMenu extends Menu {
             if (mayorManager.hasCandidated(player)) {
                 new MayorModifyMenu(player).open();
             } else {
-               new MayorCreateMenu(player, null, null).open();
+               new MayorCreateMenu(player, null, null, null, MenuType.CANDIDATE).open();
             }
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de la Banque de votre ville"),
+                    Component.text("§7Vous allez retourner au Menu de votre ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {

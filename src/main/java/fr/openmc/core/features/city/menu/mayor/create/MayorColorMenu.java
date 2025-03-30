@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor;
+package fr.openmc.core.features.city.menu.mayor.create;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
@@ -26,14 +26,18 @@ import java.util.*;
 
 public class MayorColorMenu extends Menu {
     private final String type;
+    private final Perks perk1;
     private final Perks perk2;
     private final Perks perk3;
+    private final MenuType menuType;
 
-    public MayorColorMenu(Player owner, Perks perk2, Perks perk3, String type) {
+    public MayorColorMenu(Player owner, Perks perk1, Perks perk2, Perks perk3, String type, MenuType menuType) {
         super(owner);
         this.type = type;
+        this.perk1 = perk1;
         this.perk2 = perk2;
         this.perk3 = perk3;
+        this.menuType = menuType;
     }
 
     @Override
@@ -56,7 +60,7 @@ public class MayorColorMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
         City city = CityManager.getPlayerCity(player.getUniqueId());
-
+        MayorManager mayorManager = MayorManager.getInstance();
         Map<NamedTextColor, Integer> colorSlot = new HashMap<>();
         {
             colorSlot.put(NamedTextColor.RED, 3);
@@ -100,17 +104,21 @@ public class MayorColorMenu extends Menu {
 
                     ConfirmMenu menu = new ConfirmMenu(player,
                             () -> {
-                                MayorCandidate candidate = new MayorCandidate(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
-                                MayorManager.getInstance().createCandidate(city, candidate);
-                                MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
-                                player.closeInventory();
-                                for (UUID uuid : city.getMembers()) {
-                                    Player playerMember = Bukkit.getPlayer(uuid);
-                                    assert playerMember != null;
-                                    if (playerMember == player) continue;
-                                    if (playerMember.isOnline()) {
-                                        MessagesManager.sendMessage(playerMember, Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.CITY, MessageType.ERROR, false);
+                                if (menuType == MenuType.CANDIDATE) {
+                                    MayorCandidate candidate = new MayorCandidate(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
+                                    MayorManager.getInstance().createCandidate(city, candidate);
+                                    MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
+                                    player.closeInventory();
+                                    for (UUID uuid : city.getMembers()) {
+                                        Player playerMember = Bukkit.getPlayer(uuid);
+                                        assert playerMember != null;
+                                        if (playerMember == player) continue;
+                                        if (playerMember.isOnline()) {
+                                            MessagesManager.sendMessage(playerMember, Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.CITY, MessageType.ERROR, false);
+                                        }
                                     }
+                                } else { // donc si c MenuType.OWNER
+                                    mayorManager.createMayor(player, city, perk1, perk2, perk3, color);
                                 }
                             },
                             () -> {

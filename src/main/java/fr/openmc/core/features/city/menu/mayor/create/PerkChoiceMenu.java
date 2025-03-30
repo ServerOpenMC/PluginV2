@@ -1,33 +1,18 @@
-package fr.openmc.core.features.city.menu.mayor;
+package fr.openmc.core.features.city.menu.mayor.create;
 
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
-import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.PaginatedMenu;
-import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import dev.xernas.menulib.utils.ItemUtils;
 import dev.xernas.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.PerkType;
 import fr.openmc.core.features.city.mayor.Perks;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.menu.CitizensPermsMenu;
-import fr.openmc.core.features.city.menu.playerlist.CityPlayerGestionMenu;
-import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -38,13 +23,17 @@ import java.util.*;
 
 public class PerkChoiceMenu extends PaginatedMenu {
     private final String perkNumber;
+    private final Perks perk1;
     private final Perks perk2;
     private final Perks perk3;
-    public PerkChoiceMenu(Player owner, String perk, Perks perk2, Perks perk3) {
+    private final MenuType type;
+    public PerkChoiceMenu(Player owner, String perk, Perks perk1, Perks perk2, Perks perk3, MenuType type) {
         super(owner);
         this.perkNumber = perk;
+        this.perk1 = perk1;
         this.perk2 = perk2;
         this.perk3 = perk3;
+        this.type = type;
     }
 
     @Override
@@ -67,7 +56,14 @@ public class PerkChoiceMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
 
         for (Perks newPerk : Perks.values()) {
-            if (newPerk == perk2 || newPerk == perk3) continue;
+            if (type == MenuType.OWNER_1) {
+                if (newPerk.getType() == PerkType.BASIC) continue;
+            }
+            if (type == MenuType.CANDIDATE) {
+                if (newPerk.getType() == PerkType.EVENT) continue;
+            }
+
+            if (newPerk == perk1 || newPerk == perk2 || newPerk == perk3) continue;
 
             ItemStack perkItem = new ItemBuilder(this, newPerk.getMaterial(), itemMeta -> {
                 itemMeta.displayName(Component.text(newPerk.getName()));
@@ -82,10 +78,12 @@ public class PerkChoiceMenu extends PaginatedMenu {
                     return;
                 }
 
-                if (Objects.equals(perkNumber, "perk2")) {
-                    new MayorCreateMenu(player, newPerk, perk3).open();
+                if (Objects.equals(perkNumber, "perk1")) {
+                    new MayorCreateMenu(player, newPerk, perk2, perk3, type).open();
+                } else if (Objects.equals(perkNumber, "perk2")) {
+                    new MayorCreateMenu(player, perk1, newPerk, perk3, type).open();
                 } else if (Objects.equals(perkNumber, "perk3")) {
-                    new MayorCreateMenu(player, perk2, newPerk).open();
+                    new MayorCreateMenu(player, perk1, perk2, newPerk, type).open();
                 }
 
             });
@@ -101,7 +99,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Revenir en arrière"));
         }).setOnClick(inventoryClickEvent -> {
-            new MayorCreateMenu(getOwner(), perk2, perk3).open();
+            new MayorCreateMenu(getOwner(), perk1, perk2, perk3, type).open();
         }));
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§cPage précédente"));

@@ -209,7 +209,7 @@ public class City {
     public Mayor getMayor() {
         MayorManager mayorManager = MayorManager.getInstance();
 
-        return mayorManager.cityMayor.get(cityUUID);
+        return mayorManager.cityMayor.get(CityManager.getCity(cityUUID));
     }
 
     /**

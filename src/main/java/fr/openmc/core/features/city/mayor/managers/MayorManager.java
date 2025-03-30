@@ -6,7 +6,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.MayorCandidate;
 import fr.openmc.core.features.city.mayor.MayorVote;
+import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
+import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -127,8 +129,10 @@ public class MayorManager {
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
                 City city = CityManager.getCity(city_uuid);
-                UUID mayor_uuid = UUID.fromString(result.getString("mayorUUID"));
+                String mayorUUIDString = result.getString("mayorUUID");
+                UUID mayor_uuid = (mayorUUIDString != null && !mayorUUIDString.isEmpty()) ? UUID.fromString(mayorUUIDString) : null;
                 String mayor_name = result.getString("mayorName");
+                mayor_name = (mayor_name != null) ? mayor_name : "Inconnu";
                 NamedTextColor mayor_color = NamedTextColor.NAMES.valueOr(result.getString("mayorColor"), NamedTextColor.WHITE);
                 int idPerk1 = result.getInt("idPerk1");
                 int idPerk2 = result.getInt("idPerk2");
@@ -152,9 +156,9 @@ public class MayorManager {
             cityMayor.forEach((city, mayor) -> {
                 try {
                     statement.setString(1, city.getUUID());
-                    statement.setString(2, mayor.getUUID().toString());
-                    statement.setString(3, mayor.getName());
-                    statement.setString(4, mayor.getMayorColor().toString());
+                    statement.setString(2, mayor.getUUID() != null ? mayor.getUUID().toString() : null);
+                    statement.setString(3, mayor.getName() != null ? mayor.getName() : null);
+                    statement.setString(4, mayor.getMayorColor() != null ? mayor.getMayorColor().toString() : null);
                     statement.setInt(5, mayor.getIdPerk1());
                     statement.setInt(6, mayor.getIdPerk2());
                     statement.setInt(7, mayor.getIdPerk3());
@@ -253,7 +257,7 @@ public class MayorManager {
 
                 MayorCandidate candidateFound = null;
                 for (MayorCandidate candidate : candidates) {
-                    if (candidate.getUUID().equals(candidate)) {
+                    if (candidate.getUUID().equals(candidate_uuid)) {
                         candidateFound = candidate;
                         break;
                     }
@@ -381,5 +385,22 @@ public class MayorManager {
         }
 
         return null;
+    }
+
+    public boolean hasChoicePerkOwner(Player player) {
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        Mayor mayor = cityMayor.get(playerCity);
+        if (mayor == null) return false;
+        System.out.println(mayor.getIdPerk1());
+        return mayor.getIdPerk1() != 0;
+    }
+
+    public void put1Perk(City city, Perks perk1) {
+        cityMayor.put(city, new Mayor(city, null, null, null, perk1.getId(), 0, 0));
+    }
+
+    public void createMayor(Player player, City city, Perks perk1, Perks perk2, Perks perk3, NamedTextColor color) {
+        cityMayor.put(city, new Mayor(city, player.getName(), player.getUniqueId(), color, perk1.getId(), perk2.getId(), perk3.getId()));
     }
 }

@@ -7,7 +7,10 @@ import fr.openmc.core.features.city.mayor.MayorCandidate;
 import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
+import fr.openmc.core.features.city.menu.mayor.create.MayorColorMenu;
+import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -70,17 +73,17 @@ public class MayorModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§7Changer votre ").append(Component.text("couleur").color(mayorCandidate.getCandidateColor())));
             itemMeta.lore(loreColor);
         }).setOnClick(inventoryClickEvent -> {
-            new MayorColorMenu(player, null, null, "change").open();
+            new MayorColorMenu(player, null, null, null, "change", null).open();
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de la Banque de votre ville"),
+                    Component.text("§7Vous allez retourner au Menu de votre ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            CityBankMenu menu = new CityBankMenu(player);
+            CityMenu menu = new CityMenu(player);
             menu.open();
         }));
 
