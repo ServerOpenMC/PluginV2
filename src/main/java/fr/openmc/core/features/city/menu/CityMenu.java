@@ -185,41 +185,87 @@ public class CityMenu extends Menu {
             menu.open();
         }));
 
-        List<Component> loreElections;
+        List<Component> loreElections = List.of();
 
-        // si membre.size > 4
-        if (mayorManager.phaseMayor==2) {
-            loreElections = List.of(
-                    Component.text("§7Votre ville a un §6Maire !"),
-                    Component.text("§6Maire §7: ").append(Component.text(mayorCity.getMayorName())).color(mayorCity.getMayorColor()),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
-            );
-        } else if (mayorManager.phaseMayor==1) {
-            loreElections = List.of(
-                    Component.text("§7Les Elections sont actuellement §6ouverte"),
-                    Component.text(""),
-                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX ELECTIONS")
+        if (city.getMembers().size()>=mayorManager.MEMBER_REQ_ELECTION) {
+            if (mayorManager.phaseMayor == 2) {
+                loreElections = List.of(
+                        Component.text("§7Votre ville a un §6Maire !"),
+                        Component.text("§6Maire §7: ").append(Component.text(mayorCity.getName())).color(mayorCity.getMayorColor()),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
+                );
+            } else if (mayorManager.phaseMayor == 1) {
+                loreElections = List.of(
+                        Component.text("§7Les Elections sont actuellement §6ouverte"),
+                        Component.text(""),
+                        Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX ELECTIONS")
 
-            );
+                );
+            } else {
+                loreElections = List.of(
+                        Component.text("§cErreur")
+                );
+            }
         } else {
-            loreElections = List.of(
-                    Component.text("§cErreur")
-            );
+            if (mayorManager.phaseMayor == 2) {
+                loreElections = List.of(
+                        Component.text("§7Votre ville a un §6Maire !"),
+                        Component.text("§6Maire §7: ").append(Component.text(mayorCity.getName())).color(mayorCity.getMayorColor()),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
+                );
+            } else if (mayorManager.phaseMayor == 1) {
+                if (hasPermissionOwner) {
+                    loreElections = List.of(
+                            Component.text("§7Les Elections sont §6désactivées"),
+                            Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                            Component.text(""),
+                            Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
+                            Component.text(""),
+                            Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ ICI POUR CHOISIR VOS REFORMES")
+                    );
+                } else {
+                    loreElections = List.of(
+                            Component.text("§7Les Elections sont §6désactivées"),
+                            Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                            Component.text(""),
+                            Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
+                            Component.text(""),
+                            Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY))
+                    );
+                }
+            }
         }
 
+        List<Component> finalLoreElections = loreElections;
         inventory.put(23, new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
             itemMeta.displayName(Component.text("§6Les Elections"));
-            itemMeta.lore(loreElections);
+            itemMeta.lore(finalLoreElections);
         }).setOnClick(inventoryClickEvent -> {
-            if (mayorManager.phaseMayor==1) {
-                MayorElectionMenu menu = new MayorElectionMenu(player);
-                menu.open();
+            if (city.getMembers().size()>=mayorManager.MEMBER_REQ_ELECTION) {
+                if (mayorManager.phaseMayor == 1) {
+                    MayorElectionMenu menu = new MayorElectionMenu(player);
+                    menu.open();
+                } else {
+                    MayorMandateMenu menu = new MayorMandateMenu(player);
+                    menu.open();
+                }
             } else {
-                MayorMandateMenu menu = new MayorMandateMenu(player);
-                menu.open();
+                if (mayorManager.phaseMayor == 2) {
+                    MayorMandateMenu menu = new MayorMandateMenu(player);
+                    menu.open();
+                } else if (mayorManager.phaseMayor == 1) {
+                    if (hasPermissionOwner) {
+
+                    } else {
+
+                    }
+                }
             }
         }));
 

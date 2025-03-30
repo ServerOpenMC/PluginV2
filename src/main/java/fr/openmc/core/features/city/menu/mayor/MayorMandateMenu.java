@@ -53,11 +53,9 @@ public class MayorMandateMenu extends Menu {
         }));
 
         // on regarde si le joueur s'est déjà présenter
-        boolean playerAleardyElector = mayorManager.cityElections.get(playerCity)
-                .stream()
-                .anyMatch(elector -> elector.getElectorUUID().equals(player.getUniqueId().toString()));
+        boolean playerAleardyCandidate = mayorManager.hasCandidated(player);
         List<Component> loreCandidature;
-        if (playerAleardyElector) {
+        if (playerAleardyCandidate) {
             loreCandidature = List.of(
                     Component.text("§7Vous vous êtes déjà §5présenter §7!"),
                     Component.text("§7Modifier votre couleur et regardez les Réformes que vous avez choisis"),

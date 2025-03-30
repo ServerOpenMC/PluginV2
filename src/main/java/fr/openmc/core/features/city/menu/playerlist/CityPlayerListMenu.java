@@ -65,7 +65,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
             String title = "";
             if(hasPermissionOwner) {
                 title = "Propriétaire ";
-            } else if (MayorManager.getInstance().cityMayor.get(city).getMayorUUID() == uuid) {
+            } else if (MayorManager.getInstance().cityMayor.get(city).getUUID() == uuid) {
                 title = "Maire ";
             } else {
                 title = "Membre ";

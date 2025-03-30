@@ -4,8 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.Mayor;
-import fr.openmc.core.features.city.mayor.MayorElector;
-import fr.openmc.core.features.city.mayor.Perks;
+import fr.openmc.core.features.city.mayor.MayorCandidate;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -28,10 +27,12 @@ public class MayorManager {
 
     private final OMCPlugin plugin;
 
+    public int MEMBER_REQ_ELECTION = 4;
+
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
-    public Map<City, List<MayorElector>> cityElections = new HashMap<>(){};
-    public Map<UUID, MayorElector> playerHasVoted = new HashMap<>();
+    public Map<City, List<MayorCandidate>> cityElections = new HashMap<>(){};
+    public Map<UUID, MayorCandidate> playerHasVoted = new HashMap<>();
 
     public MayorManager(OMCPlugin plugin) {
         instance = this;
@@ -59,17 +60,17 @@ public class MayorManager {
                 Bukkit.getLogger().info("City Mayors:");
                 System.out.println(cityMayor);
                 for (Map.Entry<City, Mayor> entry : cityMayor.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getMayorName() + " " + entry.getValue().getMayorUUID());
+                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName() + " " + entry.getValue().getUUID());
                 }
 
                 Bukkit.getLogger().info("City Elections:");
-                for (Map.Entry<City, List<MayorElector>> entry : cityElections.entrySet()) {
+                for (Map.Entry<City, List<MayorCandidate>> entry : cityElections.entrySet()) {
                     Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
                 }
 
                 Bukkit.getLogger().info("Player Votes:");
-                for (Map.Entry<UUID, MayorElector> entry : playerHasVoted.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getElectorName());
+                for (Map.Entry<UUID, MayorCandidate> entry : playerHasVoted.entrySet()) {
+                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName());
                 }
 
                 Bukkit.getLogger().info("================================");
@@ -81,9 +82,9 @@ public class MayorManager {
         // create city_mayor : contient l'actuel maire et les réformes actuelles
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_mayor (city_uuid VARCHAR(8), mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), phase int(1))").executeUpdate();
         // create city_election : contient les membres d'une ville ayant participé pour etre maire
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_election (city_uuid VARCHAR(8) NOT NULL, electorUUID VARCHAR(36) UNIQUE NOT NULL, electorName VARCHAR(36) NOT NULL, electorColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_election (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
         // create city_voted : contient les membres d'une ville ayant deja voté
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_voted (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) UNIQUE NOT NULL, electorUUID VARCHAR(36) NOT NULL)").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_voted (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) UNIQUE NOT NULL, candidateUUID VARCHAR(36) NOT NULL)").executeUpdate();
         // create constants : contient une information universelle pour tout le monde
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS mayor_constants (mayorPhase int(1))").executeUpdate();
         PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM mayor_constants");
@@ -150,8 +151,8 @@ public class MayorManager {
             cityMayor.forEach((city, mayor) -> {
                 try {
                     statement.setString(1, city.getUUID());
-                    statement.setString(2, mayor.getMayorUUID().toString());
-                    statement.setString(3, mayor.getMayorName());
+                    statement.setString(2, mayor.getUUID().toString());
+                    statement.setString(3, mayor.getName());
                     statement.setString(4, mayor.getMayorColor().toString());
                     statement.setInt(5, mayor.getIdPerk1());
                     statement.setInt(6, mayor.getIdPerk2());
@@ -178,16 +179,16 @@ public class MayorManager {
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
                 City city = CityManager.getCity(city_uuid);
-                UUID elector_uuid = UUID.fromString(result.getString("electorUUID"));
-                String elector_name = result.getString("electorName");
-                NamedTextColor elector_color = NamedTextColor.NAMES.valueOr(result.getString("electorColor"), NamedTextColor.WHITE);
+                UUID candidate_uuid = UUID.fromString(result.getString("candidateUUID"));
+                String candidate_name = result.getString("candidateName");
+                NamedTextColor candidate_color = NamedTextColor.NAMES.valueOr(result.getString("candidateColor"), NamedTextColor.WHITE);
                 int idChoicePerk2 = result.getInt("idChoicePerk2");
                 int idChoicePerk3 = result.getInt("idChoicePerk3");
                 int vote = result.getInt("vote");
 
-                MayorElector mayorElector = new MayorElector(city, elector_name, elector_uuid, elector_color, idChoicePerk2, idChoicePerk3, vote);
+                MayorCandidate mayorCandidate = new MayorCandidate(city, candidate_name, candidate_uuid, candidate_color, idChoicePerk2, idChoicePerk3, vote);
 
-                cityElections.computeIfAbsent(city, k -> new ArrayList<>()).add(mayorElector);
+                cityElections.computeIfAbsent(city, k -> new ArrayList<>()).add(mayorCandidate);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -196,10 +197,10 @@ public class MayorManager {
 
     public void saveElectorMayors() {
         //String deleteSql = "DELETE FROM city_election";
-        String sql = "INSERT INTO city_election (city_uuid, electorUUID, electorName, electorColor, idChoicePerk2, idChoicePerk3, vote) " +
+        String sql = "INSERT INTO city_election (city_uuid, candidateUUID, candidateName, candidateColor, idChoicePerk2, idChoicePerk3, vote) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "electorName = VALUES(electorName), electorColor = VALUES(electorColor), " +
+                "candidateName = VALUES(candidateName), candidateColor = VALUES(candidateColor), " +
                 "idChoicePerk2 = VALUES(idChoicePerk2), idChoicePerk3 = VALUES(idChoicePerk3), vote = VALUES(vote)";
 
         try (Connection connection = DatabaseManager.getConnection();
@@ -209,18 +210,18 @@ public class MayorManager {
             //deleteStmt.executeUpdate();
             plugin.getLogger().info("Sauvegarde des données des joueurs qui se sont présentés...");
 
-            for (Map.Entry<City, List<MayorElector>> entry : cityElections.entrySet()) {
+            for (Map.Entry<City, List<MayorCandidate>> entry : cityElections.entrySet()) {
                 City city = entry.getKey();
-                List<MayorElector> electors = entry.getValue();
+                List<MayorCandidate> candidates = entry.getValue();
 
-                for (MayorElector elector : electors) {
+                for (MayorCandidate candidate : candidates) {
                     statement.setString(1, city.getUUID());
-                    statement.setString(2, elector.getElectorUUID().toString());
-                    statement.setString(3, elector.getElectorName());
-                    statement.setString(4, elector.getElectorColor().toString());
-                    statement.setInt(5, elector.getIdChoicePerk2());
-                    statement.setInt(6, elector.getIdChoicePerk3());
-                    statement.setInt(7, elector.getVote());
+                    statement.setString(2, candidate.getUUID().toString());
+                    statement.setString(3, candidate.getName());
+                    statement.setString(4, candidate.getCandidateColor().toString());
+                    statement.setInt(5, candidate.getIdChoicePerk2());
+                    statement.setInt(6, candidate.getIdChoicePerk3());
+                    statement.setInt(7, candidate.getVote());
 
                     statement.addBatch();
                 }
@@ -240,28 +241,28 @@ public class MayorManager {
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
                 UUID voter_uuid = UUID.fromString(result.getString("voterUUID"));
-                UUID elector_uuid = UUID.fromString(result.getString("electorUUID"));
+                UUID candidate_uuid = UUID.fromString(result.getString("candidateUUID"));
 
                 City city = CityManager.getCity(city_uuid);
                 if (city == null) {
                     continue;
                 }
 
-                List<MayorElector> electors = cityElections.get(city);
-                if (electors == null) {
+                List<MayorCandidate> candidates = cityElections.get(city);
+                if (candidates == null) {
                     continue;
                 }
 
-                MayorElector electorFound = null;
-                for (MayorElector elector : electors) {
-                    if (elector.getElectorUUID().equals(elector_uuid)) {
-                        electorFound = elector;
+                MayorCandidate candidateFound = null;
+                for (MayorCandidate candidate : candidates) {
+                    if (candidate.getUUID().equals(candidate)) {
+                        candidateFound = candidate;
                         break;
                     }
                 }
 
-                if (electorFound != null) {
-                    playerHasVoted.put(voter_uuid, electorFound);
+                if (candidateFound != null) {
+                    playerHasVoted.put(voter_uuid, candidateFound);
                 }
             }
         } catch (SQLException e) {
@@ -270,18 +271,18 @@ public class MayorManager {
     }
 
     public void savePlayersHasVoted() {
-        String sql = "INSERT INTO city_voted (city_uuid, voterUUID, electorUUID) " +
+        String sql = "INSERT INTO city_voted (city_uuid, voterUUID, candidateUUID) " +
                 "VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
-                "city_uuid = VALUES(city_uuid), voterUUID = VALUES(voterUUID), electorUUID = VALUES(electorUUID)";
+                "city_uuid = VALUES(city_uuid), voterUUID = VALUES(voterUUID), candidateUUID = VALUES(candidateUUID)";
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql)) {
             plugin.getLogger().info("Sauvegarde des données des Joueurs qui ont voté pour un maire...");
 
-            playerHasVoted.forEach((voterUUID, mayorElector) -> {
+            playerHasVoted.forEach((voterUUID, mayorCandidate) -> {
                 try {
-                    statement.setString(1, mayorElector.getCity().getUUID());
+                    statement.setString(1, mayorCandidate.getCity().getUUID());
                     statement.setString(2, voterUUID.toString());
-                    statement.setString(3, mayorElector.getElectorUUID().toString());
+                    statement.setString(3, mayorCandidate.getUUID().toString());
 
                     statement.addBatch();
                 } catch (SQLException e) {
@@ -316,19 +317,19 @@ public class MayorManager {
         //todo: si aucune activité alors randomPick et owner maire
     }
 
-    public void createElector(City city, MayorElector elector) {
-        List<MayorElector> electors = cityElections.computeIfAbsent(city, key -> new ArrayList<>());
+    public void createCandidate(City city, MayorCandidate candidate) {
+        List<MayorCandidate> candidates = cityElections.computeIfAbsent(city, key -> new ArrayList<>());
 
-        electors.add(elector);
+        candidates.add(candidate);
     }
 
-    public MayorElector getElector(Player player) {
+    public MayorCandidate getCandidate(Player player) {
         UUID playerUUID = player.getUniqueId();
 
-        for (List<MayorElector> electors : cityElections.values()) {
-            for (MayorElector elector : electors) {
-                if (elector.getElectorUUID().equals(playerUUID)) {
-                    return elector;
+        for (List<MayorCandidate> candidates : cityElections.values()) {
+            for (MayorCandidate candidate : candidates) {
+                if (candidate.getUUID().equals(playerUUID)) {
+                    return candidate;
                 }
             }
         }
@@ -336,41 +337,30 @@ public class MayorManager {
         return null;
     }
 
-    public boolean isPlayerElector(Player player) {
+    public boolean hasCandidated(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         if (cityElections.get(playerCity) == null) return false;
 
-        boolean playerAleardyElector = cityElections.get(playerCity)
+        return cityElections.get(playerCity)
                 .stream()
-                .anyMatch(elector -> elector.getElectorUUID().equals(player.getUniqueId()));
-        return playerAleardyElector;
+                .anyMatch(candidate -> candidate.getUUID().equals(player.getUniqueId()));
     }
 
     public void removeVotePlayer(Player player) {
         playerHasVoted.remove(player.getUniqueId());
     }
 
-    public void voteElector(Player player, MayorElector elector) {
-        elector.setVote(elector.getVote() + 1);
-        playerHasVoted.put(player.getUniqueId(), elector);
+    public void voteCandidate(Player player, MayorCandidate candidate) {
+        candidate.setVote(candidate.getVote() + 1);
+        playerHasVoted.put(player.getUniqueId(), candidate);
     }
 
     public boolean isPlayerVoted(Player player) {
         return playerHasVoted.keySet().contains(player.getUniqueId());
     }
 
-    public MayorElector getPlayerVote(Player player) {
+    public MayorCandidate getPlayerVote(Player player) {
         return playerHasVoted.get(player.getUniqueId());
-    }
-
-    public String getElectorNameVotedBy(Player player) {
-        MayorElector elector = playerHasVoted.get(player.getUniqueId());
-        return (elector != null) ? elector.getElectorName() : "Aucun";
-    }
-
-    public NamedTextColor getElectorColorVotedBy(Player player) {
-        MayorElector elector = playerHasVoted.get(player.getUniqueId());
-        return (elector != null) ? elector.getElectorColor() : NamedTextColor.WHITE;
     }
 }

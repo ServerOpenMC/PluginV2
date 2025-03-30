@@ -5,7 +5,7 @@ import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.MayorElector;
+import fr.openmc.core.features.city.mayor.MayorCandidate;
 import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.ColorUtils;
@@ -100,8 +100,8 @@ public class MayorColorMenu extends Menu {
 
                     ConfirmMenu menu = new ConfirmMenu(player,
                             () -> {
-                                MayorElector elector = new MayorElector(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
-                                MayorManager.getInstance().createElector(city, elector);
+                                MayorCandidate candidate = new MayorCandidate(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
+                                MayorManager.getInstance().createCandidate(city, candidate);
                                 MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
                                 player.closeInventory();
                                 for (UUID uuid : city.getMembers()) {
@@ -123,11 +123,11 @@ public class MayorColorMenu extends Menu {
                     );
                     menu.open();
                 } else if (type == "change") {
-                    MayorElector mayorElector = MayorManager.getInstance().getElector(player);
-                    NamedTextColor thisColor = mayorElector.getElectorColor();
+                    MayorCandidate mayorCandidate = MayorManager.getInstance().getCandidate(player);
+                    NamedTextColor thisColor = mayorCandidate.getCandidateColor();
                     ConfirmMenu menu = new ConfirmMenu(player,
                             () -> {
-                                mayorElector.setElectorColor(color);
+                                mayorCandidate.setCandidateColor(color);
                                 MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
                                 player.closeInventory();
                             },

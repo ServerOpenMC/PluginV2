@@ -1,31 +1,21 @@
 package fr.openmc.core.features.city.menu.mayor;
 
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.mayor.MayorElector;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.menu.CityTypeMenu;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.PlayerUtils;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -62,6 +52,7 @@ public class MayorElectionMenu extends Menu {
         Player player = getOwner();
         City city = CityManager.getPlayerCity(player.getUniqueId());
         MayorManager mayorManager = MayorManager.getInstance();
+        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
         List<Component> loreElection;
         if (mayorManager.isPlayerVoted(player)) {
@@ -69,7 +60,7 @@ public class MayorElectionMenu extends Menu {
                     Component.text("§7Les Elections sont §6ouvertes§7!"),
                     Component.text("§7Vous pouvez changer votre vote !"),
                     Component.text(""),
-                    Component.text("§7Vote Actuel : ").append(Component.text(mayorManager.getElectorNameVotedBy(player))).decoration(TextDecoration.ITALIC, false).color(mayorManager.getElectorColorVotedBy(player)),
+                    Component.text("§7Vote Actuel : ").append(Component.text(mayorManager.getPlayerVote(player).getName())).decoration(TextDecoration.ITALIC, false).color(mayorManager.getPlayerVote(player).getCandidateColor()),
                     Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
@@ -89,11 +80,14 @@ public class MayorElectionMenu extends Menu {
             itemMeta.itemName(Component.text("§6Les Elections"));
             itemMeta.lore(loreElection);
         }).setOnClick(inventoryClickEvent -> {
+            if (mayorManager.cityElections.get(city) == null) {
+                MessagesManager.sendMessage(player, Component.text("Il y a aucun volontaire pour être maire"), Prefix.CITY, MessageType.ERROR, true);
+            }
             new MayorVoteMenu(player).open();
         }));
 
         List<Component> loreCandidature;
-        if (mayorManager.isPlayerElector(player)) {
+        if (mayorManager.hasCandidated(player)) {
             loreCandidature = List.of(
                     Component.text("§7Vous vous êtes déjà §3présenter §7!"),
                     Component.text("§7Modifier votre couleur et regardez §3les Réformes §7que vous avez choisis"),
@@ -109,11 +103,24 @@ public class MayorElectionMenu extends Menu {
             );
         }
 
+        if (hasPermissionOwner) {
+            inventory.put(13, new ItemBuilder(this, PlayerUtils.getPlayerSkull(player), itemMeta -> {
+                itemMeta.itemName(Component.text("§7Votre §3Candidature"));
+                itemMeta.lore(loreCandidature);
+            }).setOnClick(inventoryClickEvent -> {
+                if (mayorManager.hasCandidated(player)) {
+                    new MayorModifyMenu(player).open();
+                } else {
+                    new MayorCreateMenu(player, null, null).open();
+                }
+            }));
+        }
+
         inventory.put(15, new ItemBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.itemName(Component.text("§7Votre §3Candidature"));
             itemMeta.lore(loreCandidature);
         }).setOnClick(inventoryClickEvent -> {
-            if (mayorManager.isPlayerElector(player)) {
+            if (mayorManager.hasCandidated(player)) {
                 new MayorModifyMenu(player).open();
             } else {
                new MayorCreateMenu(player, null, null).open();
@@ -127,7 +134,7 @@ public class MayorElectionMenu extends Menu {
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            CityBankMenu menu = new CityBankMenu(player);
+            CityMenu menu = new CityMenu(player);
             menu.open();
         }));
 
