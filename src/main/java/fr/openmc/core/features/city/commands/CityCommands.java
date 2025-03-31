@@ -239,10 +239,6 @@ public class CityCommands {
         menu.open();
     }
 
-    @Subcommand("delconfirm")
-    @CommandPermission("omc.commands.city.delete")
-    @Description("Supprimer votre ville")
-    @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir supprimer ta ville (%sec% secondes)")
     public static void deleteCity(Player sender) {
         UUID uuid = sender.getUniqueId();
 
@@ -553,17 +549,19 @@ public class CityCommands {
         MascotsManager.freeClaim.replace(cityUUID, 15);
 
         player.closeInventory();
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    // SETUP MAIRE
+                    MayorManager mayorManager = MayorManager.getInstance();
+                    System.out.println(mayorManager.phaseMayor);
+                    if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
+                        mayorManager.createMayor(null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+                    } else { // si création pendant les réformes actives
+                        // todo: pick 3 perk
+                        //  mettre proprio maire
+                        //  couleur aléatoire
+                    }
 
-        // SETUP MAIRE
-        MayorManager mayorManager = MayorManager.getInstance();
-        if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
-            mayorManager.createMayor(null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
-        } else { // si création pendant les réformes actives
-            // todo: pick 3 perk
-            //  mettre proprio maire
-            //  couleur aléatoire
-        }
-
+                });
         MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
 
