@@ -3,12 +3,8 @@ package fr.openmc.core.features.city.mayor.managers;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.Mayor;
-import fr.openmc.core.features.city.mayor.MayorCandidate;
-import fr.openmc.core.features.city.mayor.MayorVote;
-import fr.openmc.core.features.city.mayor.Perks;
+import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
-import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -83,7 +79,7 @@ public class MayorManager {
 
     public static void init_db(Connection conn) throws SQLException {
         // create city_mayor : contient l'actuel maire et les réformes actuelles
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_mayor (city_uuid VARCHAR(8), mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), phase int(1))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_mayor (city_uuid VARCHAR(8), mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), electionType VARCHAR(36))").executeUpdate();
         // create city_election : contient les membres d'une ville ayant participé pour etre maire
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_election (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
         // create city_voted : contient les membres d'une ville ayant deja voté
@@ -137,8 +133,10 @@ public class MayorManager {
                 int idPerk1 = result.getInt("idPerk1");
                 int idPerk2 = result.getInt("idPerk2");
                 int idPerk3 = result.getInt("idPerk3");
+                String electionTypeStr = result.getString("electionType");
+                ElectionType electionType = ElectionType.valueOf(electionTypeStr);
 
-                cityMayor.put(city, new Mayor(city, mayor_name, mayor_uuid, mayor_color, idPerk1, idPerk2, idPerk3));
+                cityMayor.put(city, new Mayor(city, mayor_name, mayor_uuid, mayor_color, idPerk1, idPerk2, idPerk3, electionType));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -147,10 +145,10 @@ public class MayorManager {
 
     public void saveCityMayors() {
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
-                "INSERT INTO city_mayor (city_uuid, mayorUUID, mayorName, mayorColor, idPerk1, idPerk2, idPerk3) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?) " +
+                "INSERT INTO city_mayor (city_uuid, mayorUUID, mayorName, mayorColor, idPerk1, idPerk2, idPerk3, electionType) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                         "ON DUPLICATE KEY UPDATE " +
-                        "city_uuid = VALUES(city_uuid), mayorUUID = VALUES(mayorUUID), mayorName = VALUES(mayorName), mayorColor = VALUES(mayorColor), idPerk1 = VALUES(idPerk1), idPerk2 = VALUES(idPerk2), idPerk3 = VALUES(idPerk3)"
+                        "city_uuid = VALUES(city_uuid), mayorUUID = VALUES(mayorUUID), mayorName = VALUES(mayorName), mayorColor = VALUES(mayorColor), idPerk1 = VALUES(idPerk1), idPerk2 = VALUES(idPerk2), idPerk3 = VALUES(idPerk3), electionType = VALUES(electionType)"
         )) {
             plugin.getLogger().info("Sauvegarde des données des Joueurs qui sont maire...");
             cityMayor.forEach((city, mayor) -> {
@@ -162,6 +160,7 @@ public class MayorManager {
                     statement.setInt(5, mayor.getIdPerk1());
                     statement.setInt(6, mayor.getIdPerk2());
                     statement.setInt(7, mayor.getIdPerk3());
+                    statement.setString(8, mayor.getElectionType().toString());
 
                     statement.addBatch();
                 } catch (SQLException e) {
@@ -304,12 +303,38 @@ public class MayorManager {
     }
 
     // setup elections
-    public void initPhase1() {
+    public void initPhase1() throws SQLException {
+        // ---OUVERTURE DES ELECTIONS---
         phaseMayor = 1;
-        //todo: ouverture des elections
 
-        //todo: si nb player < 4 alors owner can 3 pick perk
-        // sinon lancer election
+        // On vide toutes les tables
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            String deleteSql1 = "DELETE FROM city_mayor";
+            String deleteSql2 = "DELETE FROM city_voted";
+            String deleteSql3 = "DELETE FROM city_election";
+            try (Connection connection = DatabaseManager.getConnection()) {
+                PreparedStatement deleteStmt1 = connection.prepareStatement(deleteSql1);
+                PreparedStatement deleteStmt2 = connection.prepareStatement(deleteSql2);
+                PreparedStatement deleteStmt3 = connection.prepareStatement(deleteSql3);
+
+                deleteStmt1.executeUpdate();
+                deleteStmt2.executeUpdate();
+                deleteStmt3.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().severe("Échec du vidage des tables pour les Maires");
+                e.printStackTrace();
+            }
+        });
+        cityMayor = new HashMap<>();
+        cityElections = new HashMap<>(){};
+        playerVote = new HashMap<>();
+
+        for (City city : CityManager.getCities()) {
+            if (city.getMembers().size()>=4) {
+                createMayor(null, city, null, null, null, null, ElectionType.ELECTION);
+            }
+            createMayor(null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+        }
     }
 
     public void initPhase2() {
@@ -392,15 +417,38 @@ public class MayorManager {
 
         Mayor mayor = cityMayor.get(playerCity);
         if (mayor == null) return false;
-        System.out.println(mayor.getIdPerk1());
+
         return mayor.getIdPerk1() != 0;
     }
 
     public void put1Perk(City city, Perks perk1) {
-        cityMayor.put(city, new Mayor(city, null, null, null, perk1.getId(), 0, 0));
+        Mayor mayor = cityMayor.get(city);
+        if (mayor != null) {
+            mayor.setIdPerk1(perk1.getId());
+        } else { //au cas ou meme si théoriquement c impossible
+            cityMayor.put(city, new Mayor(city, null, null, null, perk1.getId(), 0, 0, getElectionType(city)));
+        }
     }
 
-    public void createMayor(Player player, City city, Perks perk1, Perks perk2, Perks perk3, NamedTextColor color) {
-        cityMayor.put(city, new Mayor(city, player.getName(), player.getUniqueId(), color, perk1.getId(), perk2.getId(), perk3.getId()));
+    public void createMayor(Player player, City city, Perks perk1, Perks perk2, Perks perk3, NamedTextColor color, ElectionType type) {
+        Mayor mayor = cityMayor.get(city);
+        if (mayor != null) {
+            mayor.setName(player.getName());
+            mayor.setUUID(player.getUniqueId());
+            mayor.setMayorColor(color);
+            mayor.setIdPerk1(perk1.getId());
+            mayor.setIdPerk2(perk2.getId());
+            mayor.setIdPerk3(perk3.getId());
+            mayor.setElectionType(getElectionType(city));
+        } else { // au cas ou meme si c théoriquement impossible (on défini tous les maires a la phase 1 et on le crée quand on crée la ville)
+            cityMayor.put(city, new Mayor(city, player.getName(), player.getUniqueId(), color, perk1.getId(), perk2.getId(), perk3.getId(), type));
+        }
+    }
+
+    public ElectionType getElectionType(City city) {
+        Mayor mayor = cityMayor.get(city);
+        if (mayor == null) return null;
+
+        return mayor.getElectionType();
     }
 }

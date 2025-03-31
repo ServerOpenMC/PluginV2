@@ -6,6 +6,8 @@ import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.ElectionType;
+import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
@@ -551,6 +553,16 @@ public class CityCommands {
         MascotsManager.freeClaim.replace(cityUUID, 15);
 
         player.closeInventory();
+
+        // SETUP MAIRE
+        MayorManager mayorManager = MayorManager.getInstance();
+        if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
+            mayorManager.createMayor(null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+        } else { // si création pendant les réformes actives
+            // todo: pick 3 perk
+            //  mettre proprio maire
+            //  couleur aléatoire
+        }
 
         MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);

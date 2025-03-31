@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
@@ -188,7 +189,7 @@ public class CityMenu extends Menu {
 
         List<Component> loreElections = List.of();
 
-        if (city.getMembers().size()>=mayorManager.MEMBER_REQ_ELECTION) {
+        if (mayorManager.getElectionType(city) == ElectionType.ELECTION) {
             if (mayorManager.phaseMayor == 2) {
                 loreElections = List.of(
                         Component.text("§7Votre ville a un §6Maire !"),
@@ -248,7 +249,7 @@ public class CityMenu extends Menu {
             itemMeta.displayName(Component.text("§6Les Elections"));
             itemMeta.lore(finalLoreElections);
         }).setOnClick(inventoryClickEvent -> {
-            if (city.getMembers().size()>=mayorManager.MEMBER_REQ_ELECTION) {
+            if (mayorManager.getElectionType(city) == ElectionType.ELECTION) {
                 if (mayorManager.phaseMayor == 1) {
                     MayorElectionMenu menu = new MayorElectionMenu(player);
                     menu.open();

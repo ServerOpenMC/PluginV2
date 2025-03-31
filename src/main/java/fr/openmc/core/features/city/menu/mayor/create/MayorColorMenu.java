@@ -118,7 +118,7 @@ public class MayorColorMenu extends Menu {
                                         }
                                     }
                                 } else { // donc si c MenuType.OWNER
-                                    mayorManager.createMayor(player, city, perk1, perk2, perk3, color);
+                                    mayorManager.createMayor(player, city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
                                 }
                             },
                             () -> {
