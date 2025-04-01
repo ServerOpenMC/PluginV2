@@ -28,6 +28,11 @@ public class MayorManager {
 
     public int MEMBER_REQ_ELECTION = 1;
 
+    public static String TABLE_MAYOR = "city_mayor";
+    public static String TABLE_ELECTION = "city_election";
+    public static String TABLE_VOTE = "city_vote";
+    public static String TABLE_CONSTANTS = "mayor_constants";
+
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
     public Map<City, List<MayorCandidate>> cityElections = new HashMap<>(){};
@@ -79,24 +84,24 @@ public class MayorManager {
 
     public static void init_db(Connection conn) throws SQLException {
         // create city_mayor : contient l'actuel maire et les réformes actuelles
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_mayor (city_uuid VARCHAR(8) UNIQUE, mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), electionType VARCHAR(36))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_MAYOR + " (city_uuid VARCHAR(8) UNIQUE, mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), electionType VARCHAR(36))").executeUpdate();
         // create city_election : contient les membres d'une ville ayant participé pour etre maire
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_election (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_ELECTION + " (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
         // create city_voted : contient les membres d'une ville ayant deja voté
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_voted (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) UNIQUE NOT NULL, candidateUUID VARCHAR(36) NOT NULL)").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_VOTE + " (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) UNIQUE NOT NULL, candidateUUID VARCHAR(36) NOT NULL)").executeUpdate();
         // create constants : contient une information universelle pour tout le monde
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mayor_constants (mayorPhase int(1))").executeUpdate();
-        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM mayor_constants");
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONSTANTS + " (mayorPhase int(1))").executeUpdate();
+        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_CONSTANTS);
         ResultSet rs = state.executeQuery();
         if (rs.next() && rs.getInt(1) == 0) {
-            PreparedStatement states = conn.prepareStatement("INSERT INTO mayor_constants (mayorPhase) VALUES (1)");
+            PreparedStatement states = conn.prepareStatement("INSERT INTO " + TABLE_CONSTANTS + " (mayorPhase) VALUES (1)");
             states.executeUpdate();
         }
     }
 
     // Load and Save Data Methods
     public void loadMayorConstant() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM mayor_constants WHERE 1")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_CONSTANTS + " WHERE 1")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 phaseMayor = result.getInt("mayorPhase");
@@ -107,7 +112,7 @@ public class MayorManager {
     }
 
     public void saveMayorConstant() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("UPDATE mayor_constants SET mayorPhase = ?")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("UPDATE " + TABLE_CONSTANTS + " SET mayorPhase = ?")) {
             plugin.getLogger().info("Sauvegarde des constantes pour les Maires...");
             states.setInt(1, phaseMayor);
 
@@ -120,7 +125,7 @@ public class MayorManager {
     }
 
     public void loadCityMayors() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_mayor WHERE 1")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_MAYOR + " WHERE 1")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
@@ -145,7 +150,7 @@ public class MayorManager {
 
     public void saveCityMayors() {
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
-                "INSERT INTO city_mayor (city_uuid, mayorUUID, mayorName, mayorColor, idPerk1, idPerk2, idPerk3, electionType) " +
+                "INSERT INTO " + TABLE_MAYOR + " (city_uuid, mayorUUID, mayorName, mayorColor, idPerk1, idPerk2, idPerk3, electionType) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                         "ON DUPLICATE KEY UPDATE " +
                         "city_uuid = VALUES(city_uuid), mayorUUID = VALUES(mayorUUID), mayorName = VALUES(mayorName), mayorColor = VALUES(mayorColor), idPerk1 = VALUES(idPerk1), idPerk2 = VALUES(idPerk2), idPerk3 = VALUES(idPerk3), electionType = VALUES(electionType)"
@@ -178,7 +183,7 @@ public class MayorManager {
     }
 
     public void loadMayorCandidates() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_election")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_ELECTION)) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
@@ -200,7 +205,7 @@ public class MayorManager {
     }
 
     public void saveMayorCandidates() {
-        String sql = "INSERT INTO city_election (city_uuid, candidateUUID, candidateName, candidateColor, idChoicePerk2, idChoicePerk3, vote) " +
+        String sql = "INSERT INTO " + TABLE_ELECTION + " (city_uuid, candidateUUID, candidateName, candidateColor, idChoicePerk2, idChoicePerk3, vote) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "candidateName = VALUES(candidateName), candidateColor = VALUES(candidateColor), " +
@@ -237,7 +242,7 @@ public class MayorManager {
         }
     }
     public void loadPlayersVote() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_voted")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_VOTE)) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String city_uuid = result.getString("city_uuid");
@@ -273,7 +278,7 @@ public class MayorManager {
     }
 
     public void savePlayersVote() {
-        String sql = "INSERT INTO city_voted (city_uuid, voterUUID, candidateUUID) " +
+        String sql = "INSERT INTO " + TABLE_VOTE + " (city_uuid, voterUUID, candidateUUID) " +
                 "VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "city_uuid = VALUES(city_uuid), voterUUID = VALUES(voterUUID), candidateUUID = VALUES(candidateUUID)";
@@ -309,9 +314,9 @@ public class MayorManager {
 
         // On vide toutes les tables
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            String deleteSql1 = "DELETE FROM city_mayor";
-            String deleteSql2 = "DELETE FROM city_voted";
-            String deleteSql3 = "DELETE FROM city_election";
+            String deleteSql1 = "DELETE FROM " + TABLE_MAYOR;
+            String deleteSql2 = "DELETE FROM " + TABLE_VOTE;
+            String deleteSql3 = "DELETE FROM " + TABLE_ELECTION;
             try (Connection connection = DatabaseManager.getConnection()) {
                 PreparedStatement deleteStmt1 = connection.prepareStatement(deleteSql1);
                 PreparedStatement deleteStmt2 = connection.prepareStatement(deleteSql2);
@@ -330,7 +335,7 @@ public class MayorManager {
         playerVote = new HashMap<>();
 
         for (City city : CityManager.getCities()) {
-            if (city.getMembers().size()>=4) {
+            if (city.getMembers().size()>=MEMBER_REQ_ELECTION) {
                 createMayor(null, city, null, null, null, null, ElectionType.ELECTION);
             }
             createMayor(null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);

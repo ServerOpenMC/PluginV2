@@ -20,6 +20,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static fr.openmc.core.features.city.mayor.managers.MayorManager.*;
+
 public class City {
     private final String cityUUID;
     private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
@@ -585,9 +587,9 @@ public class City {
                         "DELETE FROM city_regions WHERE city_uuid=?",
                         "DELETE FROM city_chests WHERE city_uuid=?",
                         "DELETE FROM city_power WHERE city_uuid=?",
-                        "DELETE FROM city_mayor WHERE city_uuid = ?",
-                        "DELETE FROM city_election WHERE city_uuid = ?",
-                        "DELETE FROM city_voted WHERE city_uuid = ?"
+                        "DELETE FROM " + TABLE_MAYOR + " WHERE city_uuid = ?",
+                        "DELETE FROM " + TABLE_ELECTION + " WHERE city_uuid = ?",
+                        "DELETE FROM " + TABLE_VOTE + " WHERE city_uuid = ?"
                 };
 
                 for (String sql : queries) {
