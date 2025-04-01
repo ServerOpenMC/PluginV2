@@ -5,6 +5,7 @@ import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.MayorCandidate;
 import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
@@ -136,25 +137,50 @@ public class MayorColorMenu extends Menu {
                     );
                     menu.open();
                 } else if (type == "change") {
-                    MayorCandidate mayorCandidate = MayorManager.getInstance().getCandidate(player);
-                    NamedTextColor thisColor = mayorCandidate.getCandidateColor();
-                    ConfirmMenu menu = new ConfirmMenu(player,
-                            () -> {
-                                mayorCandidate.setCandidateColor(color);
-                                MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
-                                player.closeInventory();
-                            },
-                            () -> {
-                                player.closeInventory();
-                            },
-                            List.of(
-                                    Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
-                            ),
-                            List.of(
-                                Component.text("§7Ne pas changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
-                            )
-                    );
-                    menu.open();
+                    if (mayorManager.getElectionType(city) == ElectionType.OWNER_CHOOSE) {
+                        if (city.getMayor() == null) {
+                            MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.CITY, MessageType.ERROR, false);
+                            return;
+                        }
+                        NamedTextColor thisColor = city.getMayor().getMayorColor();
+                        ConfirmMenu menu = new ConfirmMenu(player,
+                                () -> {
+                                    city.getMayor().setMayorColor(color);
+                                    MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
+                                    player.closeInventory();
+                                },
+                                () -> {
+                                    player.closeInventory();
+                                },
+                                List.of(
+                                        Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
+                                ),
+                                List.of(
+                                        Component.text("§7Ne pas changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
+                                )
+                        );
+                        menu.open();
+                    } else {
+                        MayorCandidate mayorCandidate = MayorManager.getInstance().getCandidate(player);
+                        NamedTextColor thisColor = mayorCandidate.getCandidateColor();
+                        ConfirmMenu menu = new ConfirmMenu(player,
+                                () -> {
+                                    mayorCandidate.setCandidateColor(color);
+                                    MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
+                                    player.closeInventory();
+                                },
+                                () -> {
+                                    player.closeInventory();
+                                },
+                                List.of(
+                                        Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
+                                ),
+                                List.of(
+                                        Component.text("§7Ne pas changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
+                                )
+                        );
+                        menu.open();
+                    }
                 }
             }));
         });

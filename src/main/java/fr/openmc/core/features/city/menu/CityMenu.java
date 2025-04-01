@@ -19,6 +19,7 @@ import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
+import fr.openmc.core.features.city.menu.mayor.create.MayorColorMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
@@ -30,6 +31,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -83,14 +85,14 @@ public class CityMenu extends Menu {
         boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CPermission.SEE_CHUNKS);
         boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CPermission.TYPE);
 
-        String mayorName = city.getMayor() != null ? city.getMayor().getName() : "§7Aucun";
-        NamedTextColor mayorColor = city.getMayor() != null ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
+        String mayorName = city.getMayor().getName() != null ? city.getMayor().getName() : "§7Aucun";
+        NamedTextColor mayorColor = city.getMayor().getMayorColor() != null ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
         List<Component> loreModifyCity;
 
         if (hasPermissionRenameCity || hasPermissionOwner) {
             loreModifyCity = List.of(
                     Component.text("§7Propriétaire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
-                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor)),
+                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                     Component.text("§7Membre(s) : " + city.getMembers().size()),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
@@ -98,7 +100,7 @@ public class CityMenu extends Menu {
         } else {
             loreModifyCity = List.of(
                     Component.text("§7Propriétaire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
-                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor)),
+                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                     Component.text("§7Membre(s) : " + city.getMembers().size())
             );
         }
@@ -233,6 +235,7 @@ public class CityMenu extends Menu {
                                 Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
                                 Component.text(""),
                                 Component.text("§7Vous avez déjà choisis vos §3Réformes §7!"),
+                                Component.text("§7Cependant vous pouvez changer votre couleur !"),
                                 Component.text(""),
                                 Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY))
                         );
@@ -280,9 +283,13 @@ public class CityMenu extends Menu {
                     menu.open();
                 } else if (mayorManager.phaseMayor == 1) {
                     if (hasPermissionOwner) {
-                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                            new MayorCreateMenu(player, null, null, null, MenuType.OWNER).open();
-                        });
+                        if (!mayorManager.hasMayor(city)) {
+                            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                new MayorCreateMenu(player, null, null, null, MenuType.OWNER).open();
+                            });
+                        } else {
+                            new MayorColorMenu(player, null, null, null, "change", null).open();
+                        }
 
                     }
                 }
