@@ -125,6 +125,7 @@ public class CityModifyMenu extends Menu {
         if (hasPermissionOwner) {
             loreTransfer = List.of(
                     Component.text("§dLa Ville §7sera transferer à §dla personne §7que vous séléctionnerez"),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
             );
         } else {
@@ -157,6 +158,7 @@ public class CityModifyMenu extends Menu {
         if (hasPermissionOwner) {
             loreDelete = List.of(
                     Component.text("§7Vous allez défénitivement §csupprimer la ville!"),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             );
         } else {
@@ -192,6 +194,7 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous allez retourner au Menu de votre Ville"),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {

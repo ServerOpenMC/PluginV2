@@ -19,6 +19,8 @@ import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
+import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
+import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.PlayerUtils;
@@ -27,6 +29,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -80,18 +83,22 @@ public class CityMenu extends Menu {
         boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CPermission.SEE_CHUNKS);
         boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CPermission.TYPE);
 
+        String mayorName = city.getMayor() != null ? city.getMayor().getName() : "§7Aucun";
+        NamedTextColor mayorColor = city.getMayor() != null ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
         List<Component> loreModifyCity;
 
         if (hasPermissionRenameCity || hasPermissionOwner) {
             loreModifyCity = List.of(
-                    Component.text("§7Maire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                    Component.text("§7Propriétaire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor)),
                     Component.text("§7Membre(s) : " + city.getMembers().size()),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
             );
         } else {
             loreModifyCity = List.of(
-                    Component.text("§7Maire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                    Component.text("§7Propriétaire de la Ville : " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor)),
                     Component.text("§7Membre(s) : " + city.getMembers().size())
             );
         }
@@ -188,7 +195,6 @@ public class CityMenu extends Menu {
         }));
 
         List<Component> loreElections = List.of();
-
         if (mayorManager.getElectionType(city) == ElectionType.ELECTION) {
             if (mayorManager.phaseMayor == 2) {
                 loreElections = List.of(
@@ -221,16 +227,27 @@ public class CityMenu extends Menu {
                 );
             } else if (mayorManager.phaseMayor == 1) {
                 if (hasPermissionOwner) {
-                    loreElections = List.of(
-                            Component.text("§7Les Elections sont §6désactivées"),
-                            Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
-                            Component.text(""),
-                            Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
-                            Component.text(""),
-                            Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
-                            Component.text(""),
-                            Component.text("§e§lCLIQUEZ ICI POUR CHOISIR VOS REFORMES")
-                    );
+                    if (mayorManager.hasMayor(city)) {
+                        loreElections = List.of(
+                                Component.text("§7Les Elections sont §6désactivées"),
+                                Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                Component.text(""),
+                                Component.text("§7Vous avez déjà choisis vos §3Réformes §7!"),
+                                Component.text(""),
+                                Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY))
+                        );
+                    } else {
+                        loreElections = List.of(
+                                Component.text("§7Les Elections sont §6désactivées"),
+                                Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                Component.text(""),
+                                Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
+                                Component.text(""),
+                                Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ ICI POUR CHOISIR VOS REFORMES")
+                        );
+                    }
                 } else {
                     loreElections = List.of(
                             Component.text("§7Les Elections sont §6désactivées"),
@@ -263,8 +280,9 @@ public class CityMenu extends Menu {
                     menu.open();
                 } else if (mayorManager.phaseMayor == 1) {
                     if (hasPermissionOwner) {
-
-                    } else {
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                            new MayorCreateMenu(player, null, null, null, MenuType.OWNER).open();
+                        });
 
                     }
                 }

@@ -93,6 +93,11 @@ public class MayorColorMenu extends Menu {
                             Component.text(""),
                             Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false)
                     ));
+                    if (perk1 != null) {
+                        loreAccept.add(Component.text(perk1.getName()));
+                        loreAccept.addAll(perk1.getLore());
+                        loreAccept.add(Component.text(""));
+                    }
                     loreAccept.add(Component.text(perk2.getName()));
                     loreAccept.addAll(perk2.getLore());
                     loreAccept.add(Component.text(""));
@@ -107,8 +112,6 @@ public class MayorColorMenu extends Menu {
                                 if (menuType == MenuType.CANDIDATE) {
                                     MayorCandidate candidate = new MayorCandidate(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
                                     MayorManager.getInstance().createCandidate(city, candidate);
-                                    MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
-                                    player.closeInventory();
                                     for (UUID uuid : city.getMembers()) {
                                         Player playerMember = Bukkit.getPlayer(uuid);
                                         assert playerMember != null;
@@ -120,6 +123,8 @@ public class MayorColorMenu extends Menu {
                                 } else { // donc si c MenuType.OWNER
                                     mayorManager.createMayor(player, city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
                                 }
+                                MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
+                                player.closeInventory();
                             },
                             () -> {
                                 player.closeInventory();

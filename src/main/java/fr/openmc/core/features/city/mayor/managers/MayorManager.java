@@ -79,7 +79,7 @@ public class MayorManager {
 
     public static void init_db(Connection conn) throws SQLException {
         // create city_mayor : contient l'actuel maire et les réformes actuelles
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_mayor (city_uuid VARCHAR(8), mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), electionType VARCHAR(36))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_mayor (city_uuid VARCHAR(8) UNIQUE, mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), electionType VARCHAR(36))").executeUpdate();
         // create city_election : contient les membres d'une ville ayant participé pour etre maire
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_election (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
         // create city_voted : contient les membres d'une ville ayant deja voté
@@ -421,6 +421,13 @@ public class MayorManager {
         return mayor.getIdPerk1() != 0;
     }
 
+    public boolean hasMayor(City city) {
+        Mayor mayor = cityMayor.get(city);
+        if (mayor == null) return false;
+
+        return mayor.getUUID() != null;
+    }
+
     public void put1Perk(City city, Perks perk1) {
         Mayor mayor = cityMayor.get(city);
         if (mayor != null) {
@@ -432,16 +439,21 @@ public class MayorManager {
 
     public void createMayor(Player player, City city, Perks perk1, Perks perk2, Perks perk3, NamedTextColor color, ElectionType type) {
         Mayor mayor = cityMayor.get(city);
+        String playerName = player != null ? player.getName() : null;
+        UUID playerUUID = player != null ? player.getUniqueId() : null;
+        int idPerk1 = perk1 != null ? perk1.getId() : 0;
+        int idPerk2 = perk2 != null ? perk2.getId() : 0;
+        int idPerk3 = perk3 != null ? perk3.getId() : 0;
         if (mayor != null) {
-            mayor.setName(player.getName());
-            mayor.setUUID(player.getUniqueId());
+            mayor.setName(playerName);
+            mayor.setUUID(playerUUID);
             mayor.setMayorColor(color);
-            mayor.setIdPerk1(perk1.getId());
-            mayor.setIdPerk2(perk2.getId());
-            mayor.setIdPerk3(perk3.getId());
+            mayor.setIdPerk1(idPerk1);
+            mayor.setIdPerk2(idPerk2);
+            mayor.setIdPerk3(idPerk3);
             mayor.setElectionType(getElectionType(city));
         } else { // au cas ou meme si c théoriquement impossible (on défini tous les maires a la phase 1 et on le crée quand on crée la ville)
-            cityMayor.put(city, new Mayor(city, player.getName(), player.getUniqueId(), color, perk1.getId(), perk2.getId(), perk3.getId(), type));
+            cityMayor.put(city, new Mayor(city, playerName, playerUUID, color, idPerk1, idPerk2, idPerk3, type));
         }
     }
 
