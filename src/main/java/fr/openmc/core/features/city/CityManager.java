@@ -4,8 +4,6 @@ import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.features.city.mayor.Mayor;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
@@ -64,7 +62,8 @@ public class CityManager implements Listener {
                 new AdminCityCommands(),
                 new CityPermsCommands(),
                 new CityChatCommand(),
-                new CityChestCommand()
+                new CityChestCommand(),
+                new AdminMayorCommands()
         );
 
         OMCPlugin.registerEvents(
