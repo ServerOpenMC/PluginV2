@@ -8,13 +8,16 @@ import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
@@ -39,10 +42,12 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
+import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -556,9 +561,10 @@ public class CityCommands {
         if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
             mayorManager.createMayor(null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
         } else { // si création pendant les réformes actives
-            // todo: pick 3 perk
-            //  mettre proprio maire
-            //  couleur aléatoire
+            NamedTextColor color = mayorManager.getRandomMayorColor();
+            List<Perks> perks = PerkManager.getRandomPerks();
+            mayorManager.createMayor(player, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
+            MessagesManager.sendMessage(player, Component.text("Vous avez été désigné comme §6Maire de la Ville.\n§8§oVous pourrez choisir vos Réformes dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)), Prefix.CITY, MessageType.SUCCESS, true);
         }
 
         MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
