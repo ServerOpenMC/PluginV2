@@ -21,7 +21,7 @@ public class CompanyOwner {
         this.player = owner;
     }
 
-    public boolean isTeam() {
+    public boolean isCity() {
         return city != null;
     }
 

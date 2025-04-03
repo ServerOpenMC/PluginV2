@@ -1,10 +1,7 @@
 package fr.openmc.core.features.corporation.listener;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.corporation.CompanyManager;
-import fr.openmc.core.features.corporation.PlayerShopManager;
-import fr.openmc.core.features.corporation.Shop;
-import fr.openmc.core.features.corporation.ShopBlocksManager;
+import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
@@ -69,8 +66,29 @@ public class ShopListener implements Listener {
     public void onInteractWithBlock(PlayerInteractEvent e) {
         Block block = e.getClickedBlock();
         if (block != null && block.getType() == Material.BARREL) {
-            boolean isShop = shopBlocksManager.getShop(block.getLocation()) != null;
-            OMCPlugin.getInstance().getLogger().info("" + isShop);
+            Shop shop = shopBlocksManager.getShop(block.getLocation());
+            boolean isShop = shop!=null;
+            if (isShop){
+                Company company = CompanyManager.getInstance().getCompany(e.getPlayer().getUniqueId());
+                if (company==null){
+                    if (shop.getOwner().getPlayer().equals(e.getPlayer().getUniqueId())){
+                        e.setCancelled(true);
+                        return;
+                    }
+                } else {
+                    if (!company.hasShop(shop.getUuid())){
+                        e.setCancelled(true);
+                        e.getPlayer().sendMessage("Tu n'es pas dans l'entrprise possédant ce shop");
+                        return;
+                    }
+
+                    if (!company.hasPermission(e.getPlayer().getUniqueId(), CorpPermission.SUPPLY)){
+                        e.setCancelled(true);
+                        e.getPlayer().sendMessage("Tu n'as pas la permission de réapprovisionner le shop");
+                        return;
+                    }
+                }
+            }
             inShopBarrel.put(e.getPlayer().getUniqueId(), isShop);
         }
     }
@@ -80,6 +98,11 @@ public class ShopListener implements Listener {
         UUID playerUUID = e.getWhoClicked().getUniqueId();
         if (inShopBarrel.getOrDefault(playerUUID, false)) {
             Player player = (Player) e.getWhoClicked();
+            if (CompanyManager.getInstance().getCompany(playerUUID).hasPermission(playerUUID, CorpPermission.SUPPLY)){
+                player.sendMessage("Vous n'avez pas la permission de réapprovisionner les shops dans l'entreprise");
+                player.closeInventory();
+                return;
+            }
             Inventory clickedInventory = e.getClickedInventory();
 
             if (clickedInventory == null) return;
@@ -123,7 +146,6 @@ public class ShopListener implements Listener {
         }
     }
 
-    // Vérifie si un item est valide (non null et a un ItemMeta)
     private boolean isValidItem(ItemStack item) {
         return item != null && item.getType() != Material.AIR;
     }
@@ -145,5 +167,4 @@ public class ShopListener implements Listener {
             item.setItemMeta(meta);
         }
     }
-
 }

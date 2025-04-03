@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city;
+package fr.openmc.core.features.corporation;
 
 import lombok.Getter;
 

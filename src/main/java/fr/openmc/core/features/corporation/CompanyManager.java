@@ -4,26 +4,19 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.MethodState;
 import fr.openmc.core.features.corporation.commands.CompanyCommand;
 import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.listener.ShopListener;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
 import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
+import lombok.SneakyThrows;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
@@ -56,6 +49,8 @@ public class CompanyManager {
 
     public static void init_db(Connection conn) throws SQLException {
         try (Statement stmt = conn.createStatement()) {
+            conn.prepareStatement("CREATE TABLE IF NOT EXISTS company_perms (company_uuid VARCHAR(36) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
+
             stmt.addBatch("CREATE TABLE IF NOT EXISTS shops (" +
                     "shop_uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
                     "owner VARCHAR(36), " +
@@ -209,6 +204,7 @@ public class CompanyManager {
         }
     }
 
+    @SneakyThrows
     public static void saveAllCompanies() {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des commpanies...");
 
@@ -263,8 +259,6 @@ public class CompanyManager {
             stmtMerchant.executeBatch();  // Execute batch for merchants
             stmtMerchantData.executeBatch();  // Execute batch for merchant data
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des companies fini.");
@@ -390,12 +384,8 @@ public class CompanyManager {
     }
 
     // Crée une nouvelle entreprise et l'ajoute à la liste des entreprises existantes
-    public void createCompany(String name, CompanyOwner owner) {
-        if (name.length()>24) {
-            MessagesManager.sendMessage(Bukkit.getPlayer(owner.getPlayer()),Component.text("Le nom de votre entreprise est trop long il ne doit contenir que 24 caractères"), Prefix.ENTREPRISE, MessageType.INFO, false);
-            return;
-        }
-        companies.add(new Company(name, owner));
+    public void createCompany(String name, CompanyOwner owner, boolean newMember) {
+        companies.add(new Company(name, owner, newMember));
     }
 
     // Un joueur postule pour rejoindre une entreprise
@@ -520,7 +510,7 @@ public class CompanyManager {
             if (owner.isPlayer() && owner.getPlayer().equals(player)) {
                 return company;
             }
-            if (owner.isTeam() && owner.getCity().getMembers().contains(player)) {
+            if (owner.isCity() && owner.getCity().getMembers().contains(player)) {
                 return company;
             }
         }

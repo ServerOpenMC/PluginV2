@@ -10,7 +10,7 @@ import fr.openmc.core.features.corporation.Shop;
 import fr.openmc.core.features.corporation.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
-import fr.openmc.core.features.city.MethodState;
+import fr.openmc.core.features.corporation.MethodState;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -219,7 +219,7 @@ public class ShopMenu extends Menu {
         content.put(8, new ItemBuilder(this, Material.LIME_WOOL, itemMeta -> {
             itemMeta.setDisplayName("§aCe shop vous appartient");
             if (shop.getOwner().isCompany()) {
-                if (shop.getOwner().getCompany().getOwner().isTeam()) {
+                if (shop.getOwner().getCompany().getOwner().isCity()) {
                     itemMeta.setLore(List.of(
                             "§7■ Car vous faites partie de la team possédant l'entreprise"
                     ));

@@ -2,20 +2,24 @@ package fr.openmc.core.features.corporation;
 
 
 import dev.xernas.menulib.utils.ItemUtils;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
-import fr.openmc.core.features.city.MethodState;
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.data.TransactionData;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
+import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 @Getter
@@ -24,6 +28,7 @@ public class Company {
     private final String name;
     private final EconomyManager economyManager = EconomyManager.getInstance();
     private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
+    private final HashMap<UUID, Set<CorpPermission>> permsCache = new HashMap<>();
     private final Map<UUID, MerchantData> merchants = new HashMap<>();
     private final List<Shop> shops = new ArrayList<>();
     private final Queue<Long, TransactionData> transactions = new Queue<>(150);
@@ -39,6 +44,120 @@ public class Company {
     public Company(String name, CompanyOwner owner) {
         this.name = name;
         this.owner = owner;
+        addPermission(owner.getPlayer(), CorpPermission.OWNER);
+    }
+
+    public Company(String name, CompanyOwner owner, boolean newMember) {
+        this.name = name;
+        this.owner = owner;
+
+        if (owner.isCity() && newMember){
+            City city = owner.getCity();
+            if (city!=null){
+                Company company = this;
+                for (UUID member : city.getMembers()){
+                    company.addMerchant(member, new MerchantData());
+                }
+            }
+        }
+        addPermission(owner.getPlayer(), CorpPermission.OWNER);
+    }
+
+    private void loadPermission(UUID player) {
+        if (!permsCache.containsKey(player)) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM company_perms WHERE company_uuid = ? AND player = ?");
+                statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
+                statement.setString(2, player.toString());
+                ResultSet rs = statement.executeQuery();
+
+                Set<CorpPermission> plrPerms = permsCache.getOrDefault(player, new HashSet<>());
+
+                while (rs.next()) {
+                    try {
+                        plrPerms.add(CorpPermission.valueOf(rs.getString("permission")));
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Invalid permission: " + rs.getString("permission"));
+                    }
+                }
+
+                permsCache.put(player, plrPerms);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Set<CorpPermission> getPermissions(UUID player) {
+        loadPermission(player);
+        return permsCache.get(player);
+    }
+
+    public boolean hasPermission(UUID uuid, CorpPermission permission) {
+        loadPermission(uuid);
+        Set<CorpPermission> playerPerms = permsCache.get(uuid);
+
+        if (playerPerms.contains(CorpPermission.OWNER) || playerPerms.contains(CorpPermission.CITYMEMBER)) return true;
+
+        return playerPerms.contains(permission);
+    }
+
+    public UUID getPlayerWith(CorpPermission permission) {
+        for (UUID player: permsCache.keySet()) {
+            if (permsCache.get(player).contains(permission)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public boolean removePermission(UUID uuid, CorpPermission permission) {
+        loadPermission(uuid);
+        Set<CorpPermission> playerPerms = permsCache.get(uuid);
+
+        if (playerPerms == null) {
+            return true;
+        }
+
+        if (playerPerms.contains(permission)) {
+            playerPerms.remove(permission);
+            permsCache.put(uuid, playerPerms);
+
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                try {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_permissions WHERE city_uuid = ? AND player = ? AND permission = ?");
+                    statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
+                    statement.setString(2, uuid.toString());
+                    statement.setString(3, permission.toString());
+                    statement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+            return true;
+        }
+        return false;
+    }
+
+    public void addPermission(UUID uuid, CorpPermission permission) {
+        Set<CorpPermission> playerPerms = permsCache.getOrDefault(uuid, new HashSet<>());
+
+        if (!playerPerms.contains(permission)) {
+            playerPerms.add(permission);
+            permsCache.put(uuid, playerPerms);
+
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                try {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_permissions (city_uuid, player, permission) VALUES (?, ?, ?)");
+                    statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
+                    statement.setString(2, uuid.toString());
+                    statement.setString(3, permission.toString());
+                    statement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
 
     public double getTurnover() {
@@ -56,6 +175,15 @@ public class Company {
         return null;
     }
 
+    public boolean hasShop(UUID uuid){
+        for (Shop shop : shops) {
+            if (shop.getUuid().equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Shop getShop(int shop) {
         for (Shop shopToGet : shops) {
             if (shopToGet.getIndex() == shop) {
@@ -67,14 +195,18 @@ public class Company {
 
     public boolean createShop(UUID playerUUID, Block barrel, Block cash, UUID shopUUID) {
         Player whoCreated = Bukkit.getPlayer(playerUUID);
-        if (whoCreated==null){
+        if (whoCreated==null && shopUUID != null){
             Shop newShop;
             newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
             shopCounter++;
             return true;
         }
-        if (withdraw(100, whoCreated, "Création de shop")) {
+        Company company = CompanyManager.getInstance().getCompany(playerUUID);
+        if (whoCreated != null && withdraw(100, whoCreated, "Création de shop")) {
+            if (company!=null && !company.hasPermission(playerUUID, CorpPermission.CREATESHOP)){
+                return false;
+            }
             Shop newShop;
             if (shopUUID==null){
                 newShop = new Shop(new ShopOwner(this), shopCounter);
@@ -191,7 +323,9 @@ public class Company {
     }
 
     public void setOwner(UUID uuid) {
+        removePermission(owner.getPlayer(), CorpPermission.OWNER);
         owner = new CompanyOwner(uuid);
+        addPermission(owner.getPlayer(), CorpPermission.OWNER);
     }
 
     public ItemStack getHead() {

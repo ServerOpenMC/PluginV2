@@ -5,8 +5,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.menu.company.ShopManageMenu;
 import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
-import fr.openmc.core.features.city.MethodState;
-import org.bukkit.ChatColor;
+import fr.openmc.core.features.corporation.MethodState;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -70,8 +69,8 @@ public class ShopCommand {
         }
         if (isInCompany) {
             Company company = companyManager.getCompany(player.getUniqueId());
-            if (!company.isOwner(player.getUniqueId())) {
-                player.sendMessage("§cVous devez être un des propriétaires de l'entreprise pour créer un shop");
+            if (!company.hasPermission(player.getUniqueId(), CorpPermission.CREATESHOP)) {
+                player.sendMessage("§cVous n'avez pas la permission pour créer un shop dans l'entreprise");
                 return;
             }
             if (!company.createShop(player.getUniqueId(), targetBlock, aboveBlock, null)) {
@@ -109,8 +108,9 @@ public class ShopCommand {
                 player.sendMessage("§cCe shop n'appartient pas à votre entreprise");
                 return;
             }
-            if (!shop.isOwner(player.getUniqueId())) {
-                player.sendMessage("§cVous n'êtes pas un des propriétaires de ce shop");
+            if (!CompanyManager.getInstance().getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SELLER)) {
+                player.sendMessage("§cVous n'avez pas l'autorisation de vendre un item dans ce shop de l'entrprise");
+                return;
             }
             ItemStack item = player.getInventory().getItemInMainHand();
             boolean itemThere = shop.addItem(item, price, 1);
@@ -154,9 +154,8 @@ public class ShopCommand {
                 player.sendMessage("§cCe shop n'appartient pas à votre entreprise");
                 return;
             }
-            if (!shop.isOwner(player.getUniqueId())) {
-                player.sendMessage("§cVous n'êtes pas un des propriétaires de ce shop");
-                return;
+            if (!CompanyManager.getInstance().getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SELLER)) {
+                player.sendMessage("§cVous n'avez pas l'autorisation de retirer un item en vente dans ce shop de l'entrprise");
             }
             if (itemIndex < 1 || itemIndex >= shop.getItems().size() + 1) {
                 player.sendMessage("§cCet item n'est pas dans le shop");
@@ -212,12 +211,8 @@ public class ShopCommand {
                 player.sendMessage("§cCe shop n'appartient pas à votre entreprise");
                 return;
             }
-            if (!companyManager.getCompany(player.getUniqueId()).isOwner(player.getUniqueId())) {
-                player.sendMessage("§cVous devez être un des propriétaires de l'entreprise pour supprimer un shop");
-                return;
-            }
-            if (shop.isOwner(player.getUniqueId())) {
-                player.sendMessage("§cVous n'êtes pas un des propriétaires de ce shop");
+            if (!companyManager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.DELETESHOP)) {
+                player.sendMessage("§cVous n'avez pas la permission pour supprimer un shop de l'entreprise");
                 return;
             }
             MethodState deleteState = companyManager.getCompany(player.getUniqueId()).deleteShop(player, shop.getUuid());

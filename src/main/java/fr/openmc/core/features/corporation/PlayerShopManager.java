@@ -1,14 +1,10 @@
 package fr.openmc.core.features.corporation;
 
-import fr.openmc.core.features.city.MethodState;
 import fr.openmc.core.features.economy.EconomyManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
