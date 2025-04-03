@@ -65,7 +65,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
             if (newPerk == perk1 || newPerk == perk2 || newPerk == perk3) continue;
 
-            ItemStack perkItem = new ItemBuilder(this, newPerk.getMaterial(), itemMeta -> {
+            ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
                 itemMeta.displayName(Component.text(newPerk.getName()));
                 itemMeta.lore(newPerk.getLore());
             }).setOnClick(inventoryClickEvent -> {
