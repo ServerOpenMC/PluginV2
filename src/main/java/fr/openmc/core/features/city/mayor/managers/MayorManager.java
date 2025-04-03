@@ -347,9 +347,8 @@ public class MayorManager {
         //si nb player < 4 alors activé les perk déjà mis dans mayorCity
         // donc faire systeme pour que les perks s'activent que quand phase =2
 
-        //todo: changer de maire
-
-        //todo: si aucune activité alors randomPick et owner maire
+        //todo: ajouter maire
+        // si aucune activité alors randomPick et owner maire
     }
 
     public void createCandidate(City city, MayorCandidate candidate) {

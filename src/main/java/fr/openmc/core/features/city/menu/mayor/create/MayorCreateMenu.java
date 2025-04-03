@@ -8,6 +8,9 @@ import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -219,6 +222,7 @@ public class MayorCreateMenu extends Menu {
             if (canConfirmPerk) {
                 if (type == MenuType.OWNER_1) {
                     mayorManager.put1Perk(CityManager.getPlayerCity(player.getUniqueId()), perk1);
+                    MessagesManager.sendMessage(player, Component.text("Vous avez ajouté la Réforme : " + perk1.getName()), Prefix.CITY, MessageType.SUCCESS, false);
                     player.closeInventory();
                     return;
                 }
