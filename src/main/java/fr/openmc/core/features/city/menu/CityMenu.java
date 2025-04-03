@@ -77,7 +77,6 @@ public class CityMenu extends Menu {
 
 
         MayorManager mayorManager = MayorManager.getInstance();
-        Mayor mayorCity = city.getMayor();
 
         boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
         boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
@@ -85,8 +84,8 @@ public class CityMenu extends Menu {
         boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CPermission.SEE_CHUNKS);
         boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CPermission.TYPE);
 
-        String mayorName = city.getMayor().getName() != null ? city.getMayor().getName() : "§7Aucun";
-        NamedTextColor mayorColor = city.getMayor().getMayorColor() != null ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
+        String mayorName = city.getMayor() != null ? city.getMayor().getName() : "§7Aucun";
+        NamedTextColor mayorColor = city.getMayor() != null ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
         List<Component> loreModifyCity;
 
         if (hasPermissionRenameCity || hasPermissionOwner) {
@@ -201,7 +200,7 @@ public class CityMenu extends Menu {
             if (mayorManager.phaseMayor == 2) {
                 loreElections = List.of(
                         Component.text("§7Votre ville a un §6Maire !"),
-                        Component.text("§6Maire §7: ").append(Component.text(mayorCity.getName())).color(mayorCity.getMayorColor()),
+                        Component.text("§6Maire §7: ").append(Component.text(mayorName)).color(mayorColor),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
                 );
@@ -223,7 +222,7 @@ public class CityMenu extends Menu {
             if (mayorManager.phaseMayor == 2) {
                 loreElections = List.of(
                         Component.text("§7Votre ville a un §6Maire !"),
-                        Component.text("§6Maire §7: ").append(Component.text(mayorCity.getName())).color(mayorCity.getMayorColor()),
+                        Component.text("§6Maire §7: ").append(Component.text(mayorName)).color(mayorColor),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
                 );

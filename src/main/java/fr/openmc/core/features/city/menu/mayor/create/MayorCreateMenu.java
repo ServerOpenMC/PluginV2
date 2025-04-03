@@ -63,7 +63,7 @@ public class MayorCreateMenu extends Menu {
         if (type == MenuType.OWNER_1) {
             canConfirmPerk = perk1 != null;
 
-            Material matPerk1 = (perk1 != null) ? perk1.getMaterial() : Material.DEAD_BRAIN_CORAL_BLOCK;
+            ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk1 = (perk1 != null) ? perk1.getName() : "§8Réforme Vide";
             List<Component> lorePerk1;
             if (perk1 == null) {
@@ -77,7 +77,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk1.add(Component.text(""));
                 lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(13, new ItemBuilder(this, matPerk1, itemMeta -> {
+            inventory.put(13, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
             }).setOnClick(inventoryClickEvent -> {
@@ -86,7 +86,7 @@ public class MayorCreateMenu extends Menu {
         } else if (type == MenuType.CANDIDATE) {
             canConfirmPerk = perk2 != null && perk3 != null;
 
-            Material matPerk2 = (perk2 != null) ? perk2.getMaterial() : Material.DEAD_BRAIN_CORAL_BLOCK;
+            ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
             List<Component> lorePerk2;
             if (perk2 == null) {
@@ -100,14 +100,14 @@ public class MayorCreateMenu extends Menu {
                 lorePerk2.add(Component.text(""));
                 lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(11, new ItemBuilder(this, matPerk2, itemMeta -> {
+            inventory.put(11, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player,"perk2", perk1, perk2, perk3, type).open();
             }));
 
-            Material matPerk3 = (perk3 != null) ? perk3.getMaterial() : Material.DEAD_BRAIN_CORAL_BLOCK;
+            ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
             List<Component> lorePerk3;
             if (perk3 == null) {
@@ -121,7 +121,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk3.add(Component.text(""));
                 lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(15, new ItemBuilder(this, matPerk3,itemMeta -> {
+            inventory.put(15, new ItemBuilder(this, iaPerk3,itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
             }).setOnClick(inventoryClickEvent -> {
@@ -130,7 +130,7 @@ public class MayorCreateMenu extends Menu {
         } else if (type == MenuType.OWNER) {
             canConfirmPerk = perk1 != null && perk2 != null && perk3 != null;
 
-            Material matPerk1 = (perk1 != null) ? perk1.getMaterial() : Material.DEAD_BRAIN_CORAL_BLOCK;
+            ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk1 = (perk1 != null) ? perk1.getName() : "§8Réforme Vide";
             List<Component> lorePerk1;
             if (perk1 == null) {
@@ -144,14 +144,14 @@ public class MayorCreateMenu extends Menu {
                 lorePerk1.add(Component.text(""));
                 lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(11, new ItemBuilder(this, matPerk1, itemMeta -> {
+            inventory.put(11, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player,"perk1", perk1, perk2, perk3, type).open();
             }));
 
-            Material matPerk2 = (perk2 != null) ? perk2.getMaterial() : Material.DEAD_BRAIN_CORAL_BLOCK;
+            ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
             List<Component> lorePerk2;
             if (perk2 == null) {
@@ -165,14 +165,14 @@ public class MayorCreateMenu extends Menu {
                 lorePerk2.add(Component.text(""));
                 lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(13, new ItemBuilder(this, matPerk2, itemMeta -> {
+            inventory.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player,"perk2", perk1, perk2, perk3, type).open();
             }));
 
-            Material matPerk3 = (perk3 != null) ? perk3.getMaterial() : Material.DEAD_BRAIN_CORAL_BLOCK;
+            ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
             List<Component> lorePerk3;
             if (perk3 == null) {
@@ -186,7 +186,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk3.add(Component.text(""));
                 lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(15, new ItemBuilder(this, matPerk3,itemMeta -> {
+            inventory.put(15, new ItemBuilder(this, iaPerk3,itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
             }).setOnClick(inventoryClickEvent -> {

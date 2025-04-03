@@ -549,6 +549,7 @@ public class CityCommands {
         MascotsManager.freeClaim.replace(cityUUID, 15);
 
         player.closeInventory();
+
         // SETUP MAIRE
 
         MayorManager mayorManager = MayorManager.getInstance();
