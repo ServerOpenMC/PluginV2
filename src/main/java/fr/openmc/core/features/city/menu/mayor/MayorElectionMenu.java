@@ -30,6 +30,8 @@ import org.jetbrains.annotations.NotNull;
 import java.time.DayOfWeek;
 import java.util.*;
 
+import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
+
 public class MayorElectionMenu extends Menu {
 
     public MayorElectionMenu(Player owner) {
@@ -66,7 +68,7 @@ public class MayorElectionMenu extends Menu {
                     Component.text("§7Vous pouvez changer votre vote !"),
                     Component.text(""),
                     Component.text("§7Vote Actuel : ").append(Component.text(mayorManager.getPlayerVote(player).getName())).decoration(TextDecoration.ITALIC, false).color(mayorManager.getPlayerVote(player).getCandidateColor()),
-                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
             );
@@ -75,7 +77,7 @@ public class MayorElectionMenu extends Menu {
                     Component.text("§7Les Elections sont §6ouvertes§7!"),
                     Component.text("§7Choissiez le Maire qui vous plait !"),
                     Component.text(""),
-                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                    Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
             );

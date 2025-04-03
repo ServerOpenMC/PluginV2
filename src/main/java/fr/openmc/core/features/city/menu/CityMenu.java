@@ -46,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
+import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
+import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
 
 public class CityMenu extends Menu {
 
@@ -208,7 +210,7 @@ public class CityMenu extends Menu {
                 loreElections = List.of(
                         Component.text("§7Les Elections sont actuellement §6ouverte"),
                         Component.text(""),
-                        Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                        Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX ELECTIONS")
 
@@ -236,7 +238,7 @@ public class CityMenu extends Menu {
                                 Component.text("§7Vous avez déjà choisis vos §3Réformes §7!"),
                                 Component.text("§7Cependant vous pouvez changer votre couleur !"),
                                 Component.text(""),
-                                Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY))
+                                Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY))
                         );
                     } else {
                         loreElections = List.of(
@@ -245,7 +247,7 @@ public class CityMenu extends Menu {
                                 Component.text(""),
                                 Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
                                 Component.text(""),
-                                Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY)),
+                                Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
                                 Component.text(""),
                                 Component.text("§e§lCLIQUEZ ICI POUR CHOISIR VOS REFORMES")
                         );
@@ -257,7 +259,7 @@ public class CityMenu extends Menu {
                             Component.text(""),
                             Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
                             Component.text(""),
-                            Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.THURSDAY))
+                            Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY))
                     );
                 }
             }

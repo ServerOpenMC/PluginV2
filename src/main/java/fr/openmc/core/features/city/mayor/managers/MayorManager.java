@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.util.*;
 
 public class MayorManager {
@@ -33,10 +34,33 @@ public class MayorManager {
     public static String TABLE_VOTE = "city_vote";
     public static String TABLE_CONSTANTS = "mayor_constants";
 
+    private final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
+            NamedTextColor.RED,
+            NamedTextColor.GOLD,
+            NamedTextColor.YELLOW,
+            NamedTextColor.GREEN,
+            NamedTextColor.DARK_GREEN,
+            NamedTextColor.BLUE,
+            NamedTextColor.AQUA,
+            NamedTextColor.DARK_BLUE,
+            NamedTextColor.DARK_PURPLE,
+            NamedTextColor.LIGHT_PURPLE,
+            NamedTextColor.WHITE,
+            NamedTextColor.GRAY,
+            NamedTextColor.DARK_GRAY
+    );
+
+    public static DayOfWeek PHASE_1_DAY = DayOfWeek.TUESDAY;
+    public static DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
+
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
     public Map<City, List<MayorCandidate>> cityElections = new HashMap<>(){};
     public Map<City, List<MayorVote>> playerVote = new HashMap<>();
+
+
+    private static final Random RANDOM = new Random();
+
 
     public MayorManager(OMCPlugin plugin) {
         instance = this;
@@ -466,5 +490,9 @@ public class MayorManager {
         if (mayor == null) return null;
 
         return mayor.getElectionType();
+    }
+
+    public NamedTextColor getRandomMayorColor() {
+        return LIST_MAYOR_COLOR.get(RANDOM.nextInt(LIST_MAYOR_COLOR.size()));
     }
 }
