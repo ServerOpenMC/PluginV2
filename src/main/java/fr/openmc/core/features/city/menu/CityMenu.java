@@ -224,7 +224,7 @@ public class CityMenu extends Menu {
             if (mayorManager.phaseMayor == 2) {
                 loreElections = List.of(
                         Component.text("§7Votre ville a un §6Maire !"),
-                        Component.text("§6Maire §7: ").append(Component.text(mayorName)).color(mayorColor),
+                        Component.text("§6Maire §7: ").append(Component.text(mayorName)).color(mayorColor).decoration(TextDecoration.ITALIC, false),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
                 );
@@ -311,7 +311,7 @@ public class CityMenu extends Menu {
 
         if (hasPermissionChangeType) {
             loreType = List.of(
-                    Component.text("§7Votre ville est en " + finalType),
+                    Component.text("§7Votre ville est en §5" + finalType),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE")
             );

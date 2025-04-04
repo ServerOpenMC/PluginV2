@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
+import fr.openmc.core.features.city.menu.mayor.create.MayorModifyMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.PlayerUtils;
@@ -27,7 +28,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.DayOfWeek;
 import java.util.*;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;

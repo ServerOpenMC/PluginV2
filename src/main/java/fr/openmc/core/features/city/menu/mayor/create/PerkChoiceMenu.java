@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,6 +69,8 @@ public class PerkChoiceMenu extends PaginatedMenu {
             ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
                 itemMeta.displayName(Component.text(newPerk.getName()));
                 itemMeta.lore(newPerk.getLore());
+                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
                 boolean isPerkEvent = (newPerk.getType() != null && newPerk.getType() == PerkType.EVENT) && (
                         (perk2 != null && perk2.getType() == PerkType.EVENT) ||

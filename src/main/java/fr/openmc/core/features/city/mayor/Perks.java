@@ -126,7 +126,7 @@ public enum Perks {
                     Component.text("§7Tous les minerais extraits dans la ville pendant§3 2 §7minutes"),
                     Component.text("§7donnent le double de ressources. §8(Cooldown : 1j)")
             ),
-            ItemStack.of(Material.NETHERITE_HOE),
+            ItemStack.of(Material.DIAMOND_PICKAXE),
             PerkType.EVENT
     ),
     MILITARY_DISSUASION(

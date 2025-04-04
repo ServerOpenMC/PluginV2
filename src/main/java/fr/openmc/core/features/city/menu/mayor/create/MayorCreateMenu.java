@@ -15,6 +15,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,6 +81,8 @@ public class MayorCreateMenu extends Menu {
             inventory.put(13, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player,"perk1", perk1, perk2, perk3, type).open();
             }));
@@ -103,6 +106,8 @@ public class MayorCreateMenu extends Menu {
             inventory.put(11, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player,"perk2", perk1, perk2, perk3, type).open();
             }));
@@ -124,6 +129,8 @@ public class MayorCreateMenu extends Menu {
             inventory.put(15, new ItemBuilder(this, iaPerk3,itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
             }));
@@ -147,6 +154,8 @@ public class MayorCreateMenu extends Menu {
             inventory.put(11, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player,"perk1", perk1, perk2, perk3, type).open();
             }));
@@ -168,6 +177,8 @@ public class MayorCreateMenu extends Menu {
             inventory.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player,"perk2", perk1, perk2, perk3, type).open();
             }));
@@ -189,6 +200,8 @@ public class MayorCreateMenu extends Menu {
             inventory.put(15, new ItemBuilder(this, iaPerk3,itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
             }));
