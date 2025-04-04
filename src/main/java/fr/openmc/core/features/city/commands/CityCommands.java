@@ -301,7 +301,6 @@ public class CityCommands {
 
         if (MascotsManager.freeClaim.containsKey(city.getUUID())){
             MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
-            OMCPlugin.getInstance().getLogger().info("" + MascotsManager.freeClaim.get(city.getUUID()));
 
         } else {
             city.updateBalance((double) (price*-1));
