@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor;
+package fr.openmc.core.features.city.menu.mayor.create;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
@@ -8,9 +8,6 @@ import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.menu.CityMenu;
-import fr.openmc.core.features.city.menu.bank.CityBankMenu;
-import fr.openmc.core.features.city.menu.mayor.create.MayorColorMenu;
-import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
