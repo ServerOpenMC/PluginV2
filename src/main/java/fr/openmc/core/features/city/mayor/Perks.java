@@ -86,8 +86,7 @@ public enum Perks {
                     Component.text("§7Casser une pierre donne 3% de chance d'avoir 2 d'Aywenite"),
                     Component.text("§3monstres §7et §3joueurs §7dans sa propre ville.")
             ),
-            ItemStack.of(Material.BARRIER),
-            //CustomItemRegistry.getByName("omc_items:aywenite").getBest(),
+            CustomItemRegistry.getByName("omc_items:aywenite").getBest(),
             PerkType.BASIC
     ),
     GPS_TRACKER(
