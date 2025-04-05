@@ -82,6 +82,19 @@ public class ItemUtils {
         return slot;
     }
 
+    public static int getFreePlacesForItem(Player player, ItemStack item){
+        int stackSize = item.getMaxStackSize();
+        int freePlace = stackSize * getSlotNull(player);
+
+        Inventory inventory = player.getInventory();
+        for (ItemStack stack : inventory.getStorageContents()) {
+            if (stack != null && stack.getType()==item.getType()){
+                if (stack.getAmount() != stackSize) freePlace += stackSize - stack.getAmount();
+            }
+        }
+
+        return freePlace;
+    }
 
     // IMPORT FROM AXENO
     public static boolean hasEnoughItems(Player player, Material item, int amount) {
@@ -156,5 +169,13 @@ public class ItemUtils {
         Biome playerBiome = player.getWorld().getBiome(player.getLocation());
 
         return biomeToSignType.getOrDefault(playerBiome, Material.OAK_SIGN);
+    }
+
+    public static Component getDefaultItemName(Material material) {
+        return Component.translatable(material.translationKey());
+    }
+
+    public static Component getDefaultItemName(ItemStack itemStack) {
+        return getDefaultItemName(itemStack.getType());
     }
 }
