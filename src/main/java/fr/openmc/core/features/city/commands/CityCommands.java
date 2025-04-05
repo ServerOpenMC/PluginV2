@@ -564,11 +564,11 @@ public class CityCommands {
 
         MayorManager mayorManager = MayorManager.getInstance();
         if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
-            mayorManager.createMayor(null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+            mayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
         } else { // si création pendant les réformes actives
             NamedTextColor color = mayorManager.getRandomMayorColor();
             List<Perks> perks = PerkManager.getRandomPerks();
-            mayorManager.createMayor(player, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
+            mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
             MessagesManager.sendMessage(player, Component.text("Vous avez été désigné comme §6Maire de la Ville.\n§8§oVous pourrez choisir vos Réformes dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)), Prefix.CITY, MessageType.SUCCESS, true);
         }
 

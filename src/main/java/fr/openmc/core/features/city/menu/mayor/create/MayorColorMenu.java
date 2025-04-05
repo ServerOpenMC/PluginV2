@@ -122,7 +122,7 @@ public class MayorColorMenu extends Menu {
                                         }
                                     }
                                 } else { // donc si c MenuType.OWNER
-                                    mayorManager.createMayor(player, city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
+                                    mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
                                 }
                                 MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
                                 player.closeInventory();

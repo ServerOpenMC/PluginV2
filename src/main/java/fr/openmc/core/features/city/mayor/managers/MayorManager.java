@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.mayor.managers;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.*;
@@ -360,19 +361,56 @@ public class MayorManager {
 
         for (City city : CityManager.getCities()) {
             if (city.getMembers().size()>=MEMBER_REQ_ELECTION) {
-                createMayor(null, city, null, null, null, null, ElectionType.ELECTION);
+                createMayor(null,null, city, null, null, null, null, ElectionType.ELECTION);
             }
-            createMayor(null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+            createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
         }
     }
 
     public void initPhase2() {
         phaseMayor = 2;
-        //si nb player < 4 alors activé les perk déjà mis dans mayorCity
-        // donc faire systeme pour que les perks s'activent que quand phase =2
 
-        //todo: ajouter maire
-        // si aucune activité alors randomPick et owner maire
+        // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
+        for (City city : CityManager.getCities()) {
+            UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
+            String ownerName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+            //todo: Bukkit.getOfflinePlayer consomme beaucoup, envisager de faire une liste commune pour tout le monde
+            // (mise en cache) afin de collecter le name sans redemander la methode
+            Mayor mayor = city.getMayor();
+
+            if (getElectionType(city) == ElectionType.OWNER_CHOOSE) {
+                // si maire a pas choisis les perks
+                if ((mayor.getIdPerk1() != 0) && (mayor.getIdPerk2() != 0) && (mayor.getIdPerk3() != 0)) {
+                    NamedTextColor color = getRandomMayorColor();
+                    List<Perks> perks = PerkManager.getRandomPerks();
+                    createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
+                }
+            } else {
+                if (cityElections.containsKey(city)) { // si y'a des maires qui se sont présenter
+                    List<MayorCandidate> candidates = cityElections.get(city);
+
+                    // Code fait avec ChatGPT pour avoir une complexité de O(n log(n)) au lieu de 0(n²)
+                    PriorityQueue<MayorCandidate> candidateQueue = new PriorityQueue<>(
+                            Comparator.comparingInt(MayorCandidate::getVote).reversed()
+                    );
+                    candidateQueue.addAll(candidates);
+
+                    MayorCandidate mayorWinner = candidateQueue.peek();
+                    Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+                    Perks perk2 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk2());
+                    Perks perk3 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk3());
+
+                    createMayor(mayorWinner.getName(), mayorWinner.getUUID(), city, perk1, perk2, perk3, mayorWinner.getCandidateColor(), ElectionType.ELECTION);
+
+                } else {
+                    // personne s'est présenté, owner = maire
+                    NamedTextColor color = getRandomMayorColor();
+                    List<Perks> perks = PerkManager.getRandomPerks();
+                    createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.ELECTION);
+
+                }
+            }
+        }
     }
 
     public void createCandidate(City city, MayorCandidate candidate) {
@@ -465,10 +503,8 @@ public class MayorManager {
         }
     }
 
-    public void createMayor(Player player, City city, Perks perk1, Perks perk2, Perks perk3, NamedTextColor color, ElectionType type) {
+    public void createMayor(String playerName, UUID playerUUID, City city, Perks perk1, Perks perk2, Perks perk3, NamedTextColor color, ElectionType type) {
         Mayor mayor = cityMayor.get(city);
-        String playerName = player != null ? player.getName() : null;
-        UUID playerUUID = player != null ? player.getUniqueId() : null;
         int idPerk1 = perk1 != null ? perk1.getId() : 0;
         int idPerk2 = perk2 != null ? perk2.getId() : 0;
         int idPerk3 = perk3 != null ? perk3.getId() : 0;
