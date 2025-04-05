@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
+import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.features.city.*;
@@ -299,7 +300,8 @@ public class CityCommands {
         }
 
         if (MascotsManager.freeClaim.containsKey(city.getUUID())){
-            MascotsManager.freeClaim.remove(city.getUUID(),1);
+            MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
+
         } else {
             city.updateBalance((double) (price*-1));
         }
@@ -382,6 +384,11 @@ public class CityCommands {
 
         if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (MascotsListener.futurCreateCity.containsKey(player.getUniqueId())){
+            MessagesManager.sendMessage(player, Component.text("Vous êtes déjà entrain de créer une ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -484,7 +491,7 @@ public class CityCommands {
 
     // ACTIONS
 
-    public static void createCity(Player player, String name, String type) {
+    public static boolean createCity(Player player, String name, String type) {
 
         UUID uuid = player.getUniqueId();
 
@@ -505,8 +512,7 @@ public class CityCommands {
 
         if (isClaimed.get()) {
             MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
-            player.closeInventory();
-            return;
+            return false;
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -522,7 +528,6 @@ public class CityCommands {
                 statement.close();
             } catch (SQLException e) {
                 MessagesManager.sendMessage(player, Component.text("Une erreur est survenue, réessayez plus tard"), Prefix.CITY, MessageType.ERROR, false);
-                player.closeInventory();
                 throw new RuntimeException(e);
             }
         });
@@ -532,7 +537,7 @@ public class CityCommands {
         city.addPermission(uuid, CPermission.OWNER);
 
         CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
-        MascotsManager.freeClaim.replace(cityUUID, 15);
+        MascotsManager.freeClaim.put(cityUUID, 15);
 
         player.closeInventory();
 
@@ -541,14 +546,7 @@ public class CityCommands {
 
         DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
 
-        double x = player.getX();
-        double y = player.getY();
-        double z = player.getZ();
-
-        MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
-        Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
-        MascotsManager.giveChest(player);
-
+        return true;
     }
 
     public static void leaveCity(Player player) {
