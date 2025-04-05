@@ -10,7 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
- * Le but cette classe est de regrouper toutes les conditions neccessaires
+ * Le but de cette classe est de regrouper toutes les conditions neccessaires
  * pour kick une personne (utile pour faire une modif sur menu et commandes)
  */
 public class CityKickCondition {

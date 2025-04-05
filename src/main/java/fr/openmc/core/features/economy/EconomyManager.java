@@ -97,7 +97,7 @@ public class EconomyManager {
 
     public static String getEconomyIcon() {
         if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            return PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
+            return "§r" + PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
         }
         return "Ⓐ";
     }
