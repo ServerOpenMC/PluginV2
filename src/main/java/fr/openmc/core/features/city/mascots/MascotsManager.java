@@ -59,11 +59,11 @@ public class MascotsManager {
         freeClaim = getAllFreeClaims();
 
         for (Mascot mascot : mascots){
-            if (!mascot.isAlive()){
-                UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
-                Entity mob = Bukkit.getEntity(mascotUUID);
+            UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
+            Entity mob = Bukkit.getEntity(mascotUUID);
+            if (mascot.isImmunity()){
                 if (mob != null) mob.setGlowing(true);
-            }
+            } else if (mob != null) mob.setGlowing(false);
         }
     }
 
@@ -161,6 +161,7 @@ public class MascotsManager {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
 
         setMascotsData(mob,null, 300, 300);
+        mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
         // l'uuid de la ville lui est approprié pour l'identifié
