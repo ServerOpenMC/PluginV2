@@ -160,7 +160,7 @@ public class MascotMenu extends Menu {
                 if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)){
                     ItemUtils.removeItemsFromInventory(getOwner(), matAywenite, aywenite);
                     upgradeMascots(city_uuid, mascots.getUniqueId());
-                    MessagesManager.sendMessage(getOwner(), Component.text("Vous avez améliorer votre mascotte au §cNiveau " + MascotUtils.getMascotLevel(city_uuid)), Prefix.CITY, MessageType.ERROR, false);
+                    MessagesManager.sendMessage(getOwner(), Component.text("Vous avez amélioré votre mascotte au §cNiveau " + MascotUtils.getMascotLevel(city_uuid)), Prefix.CITY, MessageType.ERROR, false);
                     getOwner().closeInventory();
                     return;
                 }
