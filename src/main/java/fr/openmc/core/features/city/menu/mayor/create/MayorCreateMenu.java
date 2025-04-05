@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -86,6 +87,17 @@ public class MayorCreateMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player,"perk1", perk1, perk2, perk3, type).open();
             }));
+
+            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.itemName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Vous allez retourner au Menu des Elections"),
+                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                ));
+            }).setOnClick(inventoryClickEvent -> {
+                MayorElectionMenu menu = new MayorElectionMenu(player);
+                menu.open();
+            }));
         } else if (type == MenuType.CANDIDATE) {
             canConfirmPerk = perk2 != null && perk3 != null;
 
@@ -133,6 +145,17 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
+            }));
+
+            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.itemName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Vous allez retourner au Menu des Elections"),
+                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                ));
+            }).setOnClick(inventoryClickEvent -> {
+                MayorElectionMenu menu = new MayorElectionMenu(player);
+                menu.open();
             }));
         } else if (type == MenuType.OWNER) {
             canConfirmPerk = perk1 != null && perk2 != null && perk3 != null;
@@ -205,6 +228,17 @@ public class MayorCreateMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
             }));
+
+            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.itemName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Vous allez retourner au Menu de votre ville"),
+                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                ));
+            }).setOnClick(inventoryClickEvent -> {
+                CityMenu menu = new CityMenu(player);
+                menu.open();
+            }));
         } else {
             canConfirmPerk = false;
         }
@@ -244,16 +278,6 @@ public class MayorCreateMenu extends Menu {
             }
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de votre ville"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
-        }).setOnClick(inventoryClickEvent -> {
-            CityMenu menu = new CityMenu(player);
-            menu.open();
-        }));
 
         return inventory;
     }
