@@ -107,6 +107,7 @@ public class MascotsListener implements Listener {
                             e.setCancelled(true);
                             return;
                         }
+                        futurCreateCity.remove(player.getUniqueId());
                         city = CityManager.getPlayerCity(player.getUniqueId());
                         if (city==null){
                             MessagesManager.sendMessage(player, Component.text("Une erreur est survenu la ville n'existe pas"), Prefix.CITY, MessageType.ERROR, false);
@@ -508,11 +509,6 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onPlayerQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            return;
-        }
-        String city_uuid = city.getUUID();
         for (ItemStack item : player.getInventory().getContents()){
             if (item!=null){
                 ItemMeta itemMeta = item.getItemMeta();
@@ -520,6 +516,12 @@ public class MascotsListener implements Listener {
                 PersistentDataContainer data = itemMeta.getPersistentDataContainer();
                 if (data.has(MascotsManager.chestKey, PersistentDataType.STRING) && data.get(MascotsManager.chestKey, PersistentDataType.STRING)=="id"){
                     player.getInventory().remove(item);
+                    futurCreateCity.remove(player.getUniqueId());
+                    City city = CityManager.getPlayerCity(player.getUniqueId());
+                    if (city == null) {
+                        return;
+                    }
+                    String city_uuid = city.getUUID();
                     if (Chronometer.containsChronometer(player.getUniqueId(), "mascotsMove")){
                         UUID masotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
                         if (masotUUID!=null){
