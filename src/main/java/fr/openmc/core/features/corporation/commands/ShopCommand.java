@@ -39,18 +39,8 @@ public class ShopCommand {
             player.sendMessage("Usage: /shop <create | manage | sell | unsell | delete> <shop>");
             return;
         }
-        ShopMenu shopMenu = new ShopMenu(player, companyManager, playerShopManager, playerShopManager.getPlayerShop(player.getUniqueId()), 0);
+        ShopMenu shopMenu = new ShopMenu(player, playerShopManager.getPlayerShop(player.getUniqueId()), 0);
         shopMenu.open();
-    }
-
-    @Subcommand("id")
-    public void giveID(Player player){
-        ItemStack item = player.getInventory().getItemInMainHand();
-        if (item.getType()!=Material.AIR){
-            ItemMeta itemMeta = item.getItemMeta();
-            itemMeta.getPersistentDataContainer().set(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING, player.getUniqueId().toString());
-            item.setItemMeta(itemMeta);
-        }
     }
 
     @Subcommand("create")
@@ -264,7 +254,7 @@ public class ShopCommand {
             player.sendMessage("§cVous n'avez pas de shop");
             return;
         }
-        ShopMenu shopMenu = new ShopMenu(player, companyManager, playerShopManager, playerShopManager.getPlayerShop(player.getUniqueId()), 0);
+        ShopMenu shopMenu = new ShopMenu(player, playerShopManager.getPlayerShop(player.getUniqueId()), 0);
         shopMenu.open();
     }
 

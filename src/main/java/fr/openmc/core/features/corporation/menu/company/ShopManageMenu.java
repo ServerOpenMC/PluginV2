@@ -46,7 +46,7 @@ public class ShopManageMenu extends PaginatedMenu {
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         for (Shop shop : company.getShops()) {
-            items.add(shop.getIcon(this, false).setNextMenu(new ShopMenu(getOwner(), companyManager, playerShopManager, shop, 0)));
+            items.add(shop.getIcon(this, false).setNextMenu(new ShopMenu(getOwner(), shop, 0)));
         }
         return items;
     }

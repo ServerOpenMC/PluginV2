@@ -57,7 +57,7 @@ public class ShopListener implements Listener {
                 return;
             }
             event.setCancelled(true);
-            ShopMenu menu = new ShopMenu(event.getPlayer(), companyManager, playerShopManager, shop, 0);
+            ShopMenu menu = new ShopMenu(event.getPlayer(), shop, 0);
             menu.open();
         }
     }

@@ -65,7 +65,7 @@ import java.util.Map;
             ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
             if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
                 buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName("§cRetour"))
-                        .setNextMenu(new ShopMenu(getOwner(), companyManager, playerShopManager, shop, itemIndex)));
+                        .setNextMenu(new ShopMenu(getOwner(), shop, itemIndex)));
                 buttons.put(50, nextPageButton);
             } else {
                 buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))

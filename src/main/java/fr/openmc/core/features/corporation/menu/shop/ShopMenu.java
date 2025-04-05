@@ -26,8 +26,8 @@ import java.util.Map;
 public class ShopMenu extends Menu {
 
     private final List<ShopItem> items = new ArrayList<>();
-    private final CompanyManager companyManager;
-    private final PlayerShopManager playerShopManager;
+    private final CompanyManager companyManager = CompanyManager.getInstance();
+    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
     private final Shop shop;
     private final int itemIndex;
     private final List<Component> accetpBuyMsg = new ArrayList<>();
@@ -37,10 +37,8 @@ public class ShopMenu extends Menu {
 
     private int amountToBuy = 1;
 
-    public ShopMenu(Player owner, CompanyManager companyManager, PlayerShopManager playerShopManager, Shop shop, int itemIndex) {
+    public ShopMenu(Player owner, Shop shop, int itemIndex) {
         super(owner);
-        this.companyManager = companyManager;
-        this.playerShopManager = playerShopManager;
         this.shop = shop;
         this.itemIndex = itemIndex;
         items.addAll(shop.getItems());
@@ -77,6 +75,9 @@ public class ShopMenu extends Menu {
         int greenAddOne;
         int greenAddTen;
         int purpleAddSixtyFour;
+
+        int catalogue;
+        //TODO company a verif ici
         if (shop.isOwner(getOwner().getUniqueId())) {
             previousItemSlot = 39;
             nextItemSlot = 41;
@@ -88,6 +89,7 @@ public class ShopMenu extends Menu {
             greenAddOne = 23;
             greenAddTen = 24;
             purpleAddSixtyFour = 25;
+            catalogue = 44;
         } else {
             previousItemSlot = 30;
             nextItemSlot = 32;
@@ -99,6 +101,7 @@ public class ShopMenu extends Menu {
             greenAddOne = 14;
             greenAddTen = 15;
             purpleAddSixtyFour = 16;
+            catalogue = 35;
         }
 
         accetpBuyMsg.add(Component.text("§aAcheter"));
@@ -110,11 +113,11 @@ public class ShopMenu extends Menu {
 
         content.put(previousItemSlot, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> {
             itemMeta.setDisplayName("§cItem précédent");
-        }).setNextMenu(new ShopMenu(getOwner(), companyManager, playerShopManager, shop, onFirstItem() ? itemIndex : itemIndex - 1)));
+        }).setNextMenu(new ShopMenu(getOwner(), shop, onFirstItem() ? itemIndex : itemIndex - 1)));
 
         content.put(nextItemSlot, new ItemBuilder(this, Material.LIME_CONCRETE, itemMeta -> {
             itemMeta.setDisplayName("§aItem suivant");
-        }).setNextMenu(new ShopMenu(getOwner(), companyManager, playerShopManager, shop, onLastItem() ? itemIndex : itemIndex + 1)));
+        }).setNextMenu(new ShopMenu(getOwner(), shop, onLastItem() ? itemIndex : itemIndex + 1)));
 
         content.put(closeMenuSlot, new ItemBuilder(this, Material.BARRIER, itemMeta -> {
             itemMeta.setDisplayName("§7Fermer");
@@ -189,6 +192,10 @@ public class ShopMenu extends Menu {
             open();
         }));
 
+        content.put(catalogue, new ItemBuilder(this, Material.CHEST, itemMeta -> {
+            itemMeta.setDisplayName("§7Catalogue");
+        }).setNextMenu(new ShopCatalogueMenu(getOwner(), shop)));
+
         return content;
     }
 
@@ -248,6 +255,8 @@ public class ShopMenu extends Menu {
             }
             getOwner().closeInventory();
             getOwner().openBook(book);
+
+            content.remove(44);
         }));
     }
 

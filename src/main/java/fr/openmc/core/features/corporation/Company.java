@@ -111,12 +111,12 @@ public class Company {
         return null;
     }
 
-    public boolean removePermission(UUID uuid, CorpPermission permission) {
+    public void removePermission(UUID uuid, CorpPermission permission) {
         loadPermission(uuid);
         Set<CorpPermission> playerPerms = permsCache.get(uuid);
 
         if (playerPerms == null) {
-            return true;
+            return;
         }
 
         if (playerPerms.contains(permission)) {
@@ -134,9 +134,7 @@ public class Company {
                     e.printStackTrace();
                 }
             });
-            return true;
         }
-        return false;
     }
 
     public void addPermission(UUID uuid, CorpPermission permission) {
