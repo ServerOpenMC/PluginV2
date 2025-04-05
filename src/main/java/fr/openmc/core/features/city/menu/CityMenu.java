@@ -85,9 +85,9 @@ public class CityMenu extends Menu {
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
         boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CPermission.SEE_CHUNKS);
         boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CPermission.TYPE);
-
-        String mayorName = city.getMayor() != null ? city.getMayor().getName() : "§7Aucun";
-        NamedTextColor mayorColor = city.getMayor() != null ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
+        
+        String mayorName = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getName() : "§7Aucun";
+        NamedTextColor mayorColor = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
         List<Component> loreModifyCity;
 
         if (hasPermissionRenameCity || hasPermissionOwner) {
