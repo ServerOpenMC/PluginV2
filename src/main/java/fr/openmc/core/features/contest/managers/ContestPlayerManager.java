@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 @Setter
 public class ContestPlayerManager  {
@@ -139,19 +138,19 @@ public class ContestPlayerManager  {
         return false;
     }
 
-    public double getMultiplicatorFromRang(int rang) {
-        HashMap<Integer, Double> rankToMultiplicatorMoney = new HashMap<>();
-        rankToMultiplicatorMoney.put(1, 1.0);
-        rankToMultiplicatorMoney.put(2, 1.1);
-        rankToMultiplicatorMoney.put(3, 1.3);
-        rankToMultiplicatorMoney.put(4, 1.4);
-        rankToMultiplicatorMoney.put(5, 1.5);
-        rankToMultiplicatorMoney.put(6, 1.6);
-        rankToMultiplicatorMoney.put(7, 1.7);
-        rankToMultiplicatorMoney.put(8, 1.8);
-        rankToMultiplicatorMoney.put(9, 2.0);
-        rankToMultiplicatorMoney.put(10, 2.4);
+    public double getMultiFromRang(int rang) {
+        HashMap<Integer, Double> rankToMultiMoney = new HashMap<>();
+        rankToMultiMoney.put(1, 1.0);
+        rankToMultiMoney.put(2, 1.1);
+        rankToMultiMoney.put(3, 1.3);
+        rankToMultiMoney.put(4, 1.4);
+        rankToMultiMoney.put(5, 1.5);
+        rankToMultiMoney.put(6, 1.6);
+        rankToMultiMoney.put(7, 1.7);
+        rankToMultiMoney.put(8, 1.8);
+        rankToMultiMoney.put(9, 2.0);
+        rankToMultiMoney.put(10, 2.4);
 
-        return rankToMultiplicatorMoney.getOrDefault(rang, 1.0);
+        return rankToMultiMoney.getOrDefault(rang, 1.0);
     }
 }

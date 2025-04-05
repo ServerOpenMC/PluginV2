@@ -463,7 +463,7 @@ public class ContestManager {
 
             int money = 0;
             int aywenite = 0;
-            double multiplicator = contestPlayerManager.getMultiplicatorFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
+            double multiplicator = contestPlayerManager.getMultiFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
             if(contestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
 
                 // Gagnant - ARGENT
