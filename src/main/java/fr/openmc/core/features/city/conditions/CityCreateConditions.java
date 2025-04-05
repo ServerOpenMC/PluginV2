@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 import static fr.openmc.core.features.city.commands.CityCommands.balanceCooldownTasks;
 
 /**
- * Le but cette classe est de regrouper toutes les conditions neccessaires
+ * Le but de cette classe est de regrouper toutes les conditions neccessaires
  * pour creer une ville (utile pour faire une modif sur menu et commandes)
  */
 public class CityCreateConditions {
