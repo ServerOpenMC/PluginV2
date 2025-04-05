@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -59,6 +60,10 @@ public class CityTypeMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> map = new HashMap<>();
 
+        double x = player.getX();
+        double y = player.getY();
+        double z = player.getZ();
+
         List<Component> peaceInfo = new ArrayList<>();
         peaceInfo.add(Component.text("§aLa sécurité est assurée"));
         peaceInfo.add(Component.text("§fObjectif : relaxez vous et construisez la"));
@@ -74,14 +79,24 @@ public class CityTypeMenu extends Menu {
             itemMeta.displayName(Component.text("§aVille en paix"));
             itemMeta.lore(peaceInfo);
         }).setOnClick(inventoryClickEvent -> {
-            CityCommands.createCity(player, name,"peace");
+            MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "peace");
+
+            MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
+            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascotte posé en " + x +" " + y + " " + z);
+            MascotsManager.giveChest(player);
+            getOwner().closeInventory();
         }));
 
         map.put(15, new ItemBuilder(this, Material.DIAMOND_SWORD, itemMeta -> {
             itemMeta.displayName(Component.text("§cVille en guerre"));
             itemMeta.lore(warInfo);
         }).setOnClick(inventoryClickEvent -> {
-            CityCommands.createCity(player, name,"war");
+            MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "war");
+
+            MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
+            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
+            MascotsManager.giveChest(player);
+            getOwner().closeInventory();
         }));
 
         return map;

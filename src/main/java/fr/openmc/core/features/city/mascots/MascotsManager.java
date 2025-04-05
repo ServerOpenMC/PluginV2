@@ -57,10 +57,18 @@ public class MascotsManager {
 
         mascots = getAllMascots();
         freeClaim = getAllFreeClaims();
+
+        for (Mascot mascot : mascots){
+            if (!mascot.isAlive()){
+                UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
+                Entity mob = Bukkit.getEntity(mascotUUID);
+                if (mob != null) mob.setGlowing(true);
+            }
+        }
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim DOUBLE DEFAULT 0);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
     }
 
@@ -226,6 +234,7 @@ public class MascotsManager {
                 if (entity!=null){
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
                     entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
+                    entity.setGlowing(false);
                     MascotsListener.mascotsRegeneration(MascotUtils.getMascotUUIDOfCity(city_uuid));
                     City city = CityManager.getCity(city_uuid);
                     if (city==null){return;}
