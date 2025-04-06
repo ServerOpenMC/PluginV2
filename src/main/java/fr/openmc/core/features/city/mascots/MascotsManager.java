@@ -57,10 +57,18 @@ public class MascotsManager {
 
         mascots = getAllMascots();
         freeClaim = getAllFreeClaims();
+
+        for (Mascot mascot : mascots){
+            UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
+            Entity mob = Bukkit.getEntity(mascotUUID);
+            if (mascot.isImmunity()){
+                if (mob != null) mob.setGlowing(true);
+            } else if (mob != null) mob.setGlowing(false);
+        }
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim DOUBLE DEFAULT 0);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
     }
 
@@ -153,6 +161,7 @@ public class MascotsManager {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
 
         setMascotsData(mob,null, 300, 300);
+        mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
         // l'uuid de la ville lui est approprié pour l'identifié
@@ -226,6 +235,7 @@ public class MascotsManager {
                 if (entity!=null){
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
                     entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
+                    entity.setGlowing(false);
                     MascotsListener.mascotsRegeneration(MascotUtils.getMascotUUIDOfCity(city_uuid));
                     City city = CityManager.getCity(city_uuid);
                     if (city==null){return;}
@@ -345,9 +355,23 @@ public class MascotsManager {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
         LivingEntity mob = (LivingEntity) mascots;
+        int cooldown = 0;
+        boolean hasCooldown = false;
 
+        // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
         if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && mob.getHeight() <= 1.0) {
             return;
+        }
+
+        for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+                Location checkLoc = mascotsLoc.clone().add(x, 0, z);
+                Material blockType = checkLoc.getBlock().getType();
+
+                if (blockType != Material.AIR) {
+                    return;
+                }
+            }
         }
 
         double baseHealth = mob.getHealth();
@@ -355,10 +379,21 @@ public class MascotsManager {
         String name = mob.getCustomName();
         String mascotsCustomUUID = mob.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
 
+        if (Chronometer.containsChronometer(mob.getUniqueId(), "mascotsCooldown")) {
+            cooldown = Chronometer.getRemainingTime(mob.getUniqueId(), "mascotsCooldown");
+            hasCooldown = true;
+            Chronometer.stopChronometer(mob, "mascotsCooldown", null, "%null%");
+        }
+
         mob.remove();
 
         if (world != null) {
             LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc, skin);
+
+            if (hasCooldown){
+                Chronometer.startChronometer(newMascots, "mascotsCooldown" , cooldown, null, "%null", null, "%null%");
+            }
+
             setMascotsData(newMascots, name, maxHealth, baseHealth);
             PersistentDataContainer newData = newMascots.getPersistentDataContainer();
 
@@ -381,51 +416,5 @@ public class MascotsManager {
         mob.setCustomName(Objects.requireNonNullElseGet(customName, () -> "§lMascotte §c" + mob.getHealth() + "/300❤"));
 
         mob.setCustomNameVisible(true);
-    }
-
-
-    public static boolean hasEnoughCroqStar(Player player, MascotsLevels mascotsLevels) {
-        String itemNamespace = "city:croqstar";
-        int requiredAmount = mascotsLevels.getUpgradeCost();
-        int count = 0;
-
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null) {
-                CustomStack customStack = CustomStack.byItemStack(item);
-                if (customStack != null && customStack.getNamespacedID().equals(itemNamespace)) {
-                    count += item.getAmount();
-                    if (count >= requiredAmount) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public static void removeCrocStar(Player player, MascotsLevels mascotsLevels) {
-        String itemNamespace = "city:croqstar";
-        PlayerInventory inventory = player.getInventory();
-        int amountToRemove = mascotsLevels.getUpgradeCost();
-
-        for (ItemStack item : inventory.getContents()) {
-            if (item != null) {
-                CustomStack customStack = CustomStack.byItemStack(item);
-                if (customStack != null && customStack.getNamespacedID().equals(itemNamespace)) {
-                    int stackAmount = item.getAmount();
-
-                    if (stackAmount > amountToRemove) {
-                        item.setAmount(stackAmount - amountToRemove);
-                        return;
-                    } else {
-                        amountToRemove -= stackAmount;
-                        item.setAmount(0);
-                    }
-                    if (amountToRemove <= 0) {
-                        return;
-                    }
-                }
-            }
-        }
     }
 }

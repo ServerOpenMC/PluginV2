@@ -8,6 +8,8 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
@@ -17,6 +19,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @Command("admcity")
 @CommandPermission("omc.admins.commands.admincity")
@@ -178,7 +181,7 @@ public class AdminCityCommands {
             MascotsManager.freeClaim.remove(city.getUUID());
             return;
         }
-        MascotsManager.freeClaim.remove(city.getUUID(),claim);
+        MascotsManager.freeClaim.replace(city.getUUID(),MascotsManager.freeClaim.get(city.getUUID()) - claim);
     }
 
     @Subcommand("freeclaim delete")
@@ -239,5 +242,10 @@ public class AdminCityCommands {
             MascotUtils.changeMascotImmunity(city_uuid, false);
         }
         MascotUtils.setImmunityTime(city_uuid, 0);
+        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+        if (mascotUUID!=null){
+            Entity mob = Bukkit.getEntity(mascotUUID);
+            if (mob!=null) mob.setGlowing(false);
+        }
     }
 }
