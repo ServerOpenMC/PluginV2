@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
+import fr.openmc.core.features.city.mayor.perks.MinerPerk;
 import fr.openmc.core.features.city.mayor.perks.RagePerk;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -76,7 +77,8 @@ public class MayorManager {
         new PhaseListener(plugin);
         OMCPlugin.registerEvents(
                 new JoinListener(),
-                new RagePerk()
+                new RagePerk(),
+                new MinerPerk()
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
