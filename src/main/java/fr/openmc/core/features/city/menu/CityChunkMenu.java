@@ -58,128 +58,136 @@ public class CityChunkMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city2 = CityManager.getPlayerCity(player.getUniqueId());
+        try {
+            City city2 = CityManager.getPlayerCity(player.getUniqueId());
 
-        boolean hasPermissionClaim = city2.hasPermission(player.getUniqueId(), CPermission.CLAIM);
+            boolean hasPermissionClaim = city2.hasPermission(player.getUniqueId(), CPermission.CLAIM);
 
-        int playerChunkX = player.getLocation().getChunk().getX();
-        int playerChunkZ = player.getLocation().getChunk().getZ();
+            int playerChunkX = player.getLocation().getChunk().getX();
+            int playerChunkZ = player.getLocation().getChunk().getZ();
 
-        int startX = playerChunkX - 4;
-        int startZ = playerChunkZ - 2;
+            int startX = playerChunkX - 4;
+            int startZ = playerChunkZ - 2;
 
-        for (int row = 0; row < 5; row++) {
-            for (int col = 0; col < 9; col++) {
-                int chunkX = startX + col;
-                int chunkZ = startZ + row;
+            for (int row = 0; row < 5; row++) {
+                for (int col = 0; col < 9; col++) {
+                    int chunkX = startX + col;
+                    int chunkZ = startZ + row;
 
-                City city = CityManager.getCityFromChunk(chunkX, chunkZ);
-                ItemStack chunkItem;
-                Material material = null;
+                    City city = CityManager.getCityFromChunk(chunkX, chunkZ);
+                    ItemStack chunkItem;
+                    Material material = null;
 
-                if (chunkX == playerChunkX && chunkZ == playerChunkZ) {
-                    material=Material.LIME_STAINED_GLASS_PANE;
-                }
+                    if (chunkX == playerChunkX && chunkZ == playerChunkZ) {
+                        material=Material.LIME_STAINED_GLASS_PANE;
+                    }
 
-                if (city != null) {
-                    if (CityManager.getPlayerCity(player.getUniqueId()).getUUID().equals(city.getUUID())) {
-                        if (material == null) material = Material.BLUE_STAINED_GLASS_PANE;
-                        chunkItem = new ItemBuilder(this, material, itemMeta -> {
-                            itemMeta.displayName(Component.text("§9Claim de votre ville"));
-                            itemMeta.lore(List.of(
-                                    Component.text("§7Ville : §d" + city.getCityName()),
-                                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
-                            ));
-                        });
+                    if (city != null) {
+                        if (CityManager.getPlayerCity(player.getUniqueId()).getUUID().equals(city.getUUID())) {
+                            if (material == null) material = Material.BLUE_STAINED_GLASS_PANE;
+                            chunkItem = new ItemBuilder(this, material, itemMeta -> {
+                                itemMeta.displayName(Component.text("§9Claim de votre ville"));
+                                itemMeta.lore(List.of(
+                                        Component.text("§7Ville : §d" + city.getCityName()),
+                                        Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
+                                ));
+                            });
+                        } else {
+                            if (material == null) material = Material.RED_STAINED_GLASS_PANE;
+                            chunkItem = new ItemBuilder(this, material, itemMeta -> {
+                                itemMeta.displayName(Component.text("§cClaim d'une ville adverse"));
+                                itemMeta.lore(List.of(
+                                        Component.text("§7Ville : §d" + city.getCityName()),
+                                        Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
+                                ));
+                            });
+                        }
                     } else {
-                        if (material == null) material = Material.RED_STAINED_GLASS_PANE;
+                        if (material == null) material = Material.GRAY_STAINED_GLASS_PANE;
+                        int nbChunk = city2.getChunks().size();
+                        List<Component> listComponent = List.of(
+                                Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                                Component.text(""),
+                                Component.text("§cCoûte :"),
+                                Component.text("§8- §6"+ (double) calculatePrice(nbChunk)).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
+                                Component.text("§8- §d"+ calculateAywenite(nbChunk) + " d'Aywenite"),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ POUR CLAIM")
+                        );
+
                         chunkItem = new ItemBuilder(this, material, itemMeta -> {
-                            itemMeta.displayName(Component.text("§cClaim d'une ville adverse"));
-                            itemMeta.lore(List.of(
-                                    Component.text("§7Ville : §d" + city.getCityName()),
-                                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
-                            ));
+                            itemMeta.displayName(Component.text("§cClaim libre"));
+                            itemMeta.lore(listComponent);
+                        }).setOnClick(inventoryClickEvent -> {
+                            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+
+                            if (cityCheck == null) {
+                                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                                return;
+                            }
+
+                            if (!hasPermissionClaim) {
+                                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                                return;
+                            }
+
+
+                            ConfirmMenu menu = new ConfirmMenu(
+                                    player,
+                                    () -> {
+                                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                            CityCommands.claim(player, chunkX, chunkZ);
+                                        });
+                                        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                                            new CityChunkMenu(player).open();
+                                        }, 2);
+                                    },
+                                    () -> {
+                                        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                                            new CityChunkMenu(player).open();
+                                        }, 2);
+                                    },
+                                    List.of(Component.text("§7Voulez vous vraiment claim ce chunk ?")),
+                                    List.of(Component.text("§7Annuler la procédure de claim")));
+                            menu.open();
+
                         });
                     }
-                } else {
-                    if (material == null) material = Material.GRAY_STAINED_GLASS_PANE;
-                    int nbChunk = city2.getChunks().size();
-                    List<Component> listComponent = List.of(
-                            Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                            Component.text(""),
-                            Component.text("§cCoûte :"),
-                            Component.text("§8- §6"+ (double) calculatePrice(nbChunk)).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
-                            Component.text("§8- §d"+ calculateAywenite(nbChunk) + " d'Aywenite"),
-                            Component.text(""),
-                            Component.text("§e§lCLIQUEZ POUR CLAIM")
-                    );
 
-                    chunkItem = new ItemBuilder(this, material, itemMeta -> {
-                        itemMeta.displayName(Component.text("§cClaim libre"));
-                        itemMeta.lore(listComponent);
-                    }).setOnClick(inventoryClickEvent -> {
-                        City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-
-                        if (cityCheck == null) {
-                            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                            return;
-                        }
-
-                        if (!hasPermissionClaim) {
-                            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                            return;
-                        }
-
-
-                        ConfirmMenu menu = new ConfirmMenu(
-                                player,
-                                () -> {
-                                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                        CityCommands.claim(player, chunkX, chunkZ);
-                                    });
-                                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                                        new CityChunkMenu(player).open();
-                                    }, 2);
-                                },
-                                () -> {
-                                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                                        new CityChunkMenu(player).open();
-                                    }, 2);
-                                },
-                                List.of(Component.text("§7Voulez vous vraiment claim ce chunk ?")),
-                                List.of(Component.text("§7Annuler la procédure de claim")));
-                        menu.open();
-
-                    });
+                    inventory.put(row * 9 + col, chunkItem);
                 }
-
-                inventory.put(row * 9 + col, chunkItem);
             }
-        }
 
-        inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
-        }).setOnClick(event -> {
-            CityMenu menu = new CityMenu(player);
-            menu.open();
-        }));
-
-        if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())<0) {
-            inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-                itemMeta.displayName(Component.text("§6Claim Gratuit"));
-                itemMeta.lore(List.of(Component.text("§7Vous avez §6" + MascotsManager.freeClaim.get(city2.getUUID())+ " claim gratuit !")));
+            inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.displayName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
+            }).setOnClick(event -> {
+                CityMenu menu = new CityMenu(player);
+                menu.open();
             }));
+
+            if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())<0) {
+                inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+                    itemMeta.displayName(Component.text("§6Claim Gratuit"));
+                    itemMeta.lore(List.of(Component.text("§7Vous avez §6" + MascotsManager.freeClaim.get(city2.getUUID())+ " claim gratuit !")));
+                }));
+            }
+
+            inventory.put(53, new ItemBuilder(this, Material.MAP, itemMeta -> {
+                itemMeta.displayName(Component.text("§6Rafraîchir la carte"));
+                itemMeta.lore(List.of(Component.text("§7Mettre à jour §6les claims affichés§7.")));
+            }).setOnClick(event -> {
+                CityChunkMenu newMenu = new CityChunkMenu(player);
+                newMenu.open();
+            }));
+
+            return inventory;
+
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
         }
-
-        inventory.put(53, new ItemBuilder(this, Material.MAP, itemMeta -> {
-            itemMeta.displayName(Component.text("§6Rafraîchir la carte"));
-            itemMeta.lore(List.of(Component.text("§7Mettre à jour §6les claims affichés§7.")));
-        }).setOnClick(event -> {
-            CityChunkMenu newMenu = new CityChunkMenu(player);
-            newMenu.open();
-        }));
-
         return inventory;
     }
 }

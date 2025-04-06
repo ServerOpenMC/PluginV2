@@ -49,49 +49,55 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<ItemStack> getItems() {
+        List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        assert city != null;
-
-        List<ItemStack> items = new ArrayList<>();
-
-        for (Perks newPerk : Perks.values()) {
-            if (type == MenuType.OWNER_1) {
-                if (newPerk.getType() == PerkType.BASIC) continue;
-            }
-            if (type == MenuType.CANDIDATE) {
-                if (newPerk.getType() == PerkType.EVENT) continue;
-            }
-
-            if (newPerk == perk1 || newPerk == perk2 || newPerk == perk3) continue;
-
-            ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
-                itemMeta.displayName(Component.text(newPerk.getName()));
-                itemMeta.lore(newPerk.getLore());
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                boolean isPerkEvent = (newPerk.getType() != null && newPerk.getType() == PerkType.EVENT) && (
-                        (perk2 != null && perk2.getType() == PerkType.EVENT) ||
-                                (perk3 != null && perk3.getType() == PerkType.EVENT)
-                );
-                if (isPerkEvent) {
-                    MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 Réformes de Type Evenement!"), Prefix.CITY, MessageType.ERROR, false);
-                    return;
+        try {
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            assert city != null;
+            for (Perks newPerk : Perks.values()) {
+                if (type == MenuType.OWNER_1) {
+                    if (newPerk.getType() == PerkType.BASIC) continue;
+                }
+                if (type == MenuType.CANDIDATE) {
+                    if (newPerk.getType() == PerkType.EVENT) continue;
                 }
 
-                if (Objects.equals(perkNumber, "perk1")) {
-                    new MayorCreateMenu(player, newPerk, perk2, perk3, type).open();
-                } else if (Objects.equals(perkNumber, "perk2")) {
-                    new MayorCreateMenu(player, perk1, newPerk, perk3, type).open();
-                } else if (Objects.equals(perkNumber, "perk3")) {
-                    new MayorCreateMenu(player, perk1, perk2, newPerk, type).open();
-                }
+                if (newPerk == perk1 || newPerk == perk2 || newPerk == perk3) continue;
 
-            });
+                ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
+                    itemMeta.displayName(Component.text(newPerk.getName()));
+                    itemMeta.lore(newPerk.getLore());
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                }).setOnClick(inventoryClickEvent -> {
+                    boolean isPerkEvent = (newPerk.getType() != null && newPerk.getType() == PerkType.EVENT) && (
+                            (perk2 != null && perk2.getType() == PerkType.EVENT) ||
+                                    (perk3 != null && perk3.getType() == PerkType.EVENT)
+                    );
+                    if (isPerkEvent) {
+                        MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 Réformes de Type Evenement!"), Prefix.CITY, MessageType.ERROR, false);
+                        return;
+                    }
 
-            items.add(perkItem);
+                    if (Objects.equals(perkNumber, "perk1")) {
+                        new MayorCreateMenu(player, newPerk, perk2, perk3, type).open();
+                    } else if (Objects.equals(perkNumber, "perk2")) {
+                        new MayorCreateMenu(player, perk1, newPerk, perk3, type).open();
+                    } else if (Objects.equals(perkNumber, "perk3")) {
+                        new MayorCreateMenu(player, perk1, perk2, newPerk, type).open();
+                    }
+
+                });
+
+                items.add(perkItem);
+            }
+            return items;
+
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
         }
         return items;
     }

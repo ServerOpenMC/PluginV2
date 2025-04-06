@@ -33,11 +33,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CityTypeMenu extends Menu {
-    Player player;
     String name;
     public CityTypeMenu(Player owner, String name) {
         super(owner);
-        this.player = owner;
         this.name = name;
     }
 
@@ -59,46 +57,53 @@ public class CityTypeMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> map = new HashMap<>();
+        Player player = getOwner();
+        try {
+            double x = player.getX();
+            double y = player.getY();
+            double z = player.getZ();
 
-        double x = player.getX();
-        double y = player.getY();
-        double z = player.getZ();
+            List<Component> peaceInfo = new ArrayList<>();
+            peaceInfo.add(Component.text("§aLa sécurité est assurée"));
+            peaceInfo.add(Component.text("§fObjectif : relaxez vous et construisez la"));
+            peaceInfo.add(Component.text("§fville de vos rêves"));
 
-        List<Component> peaceInfo = new ArrayList<>();
-        peaceInfo.add(Component.text("§aLa sécurité est assurée"));
-        peaceInfo.add(Component.text("§fObjectif : relaxez vous et construisez la"));
-        peaceInfo.add(Component.text("§fville de vos rêves"));
+            List<Component> warInfo = new ArrayList<>();
+            warInfo.add(Component.text("§cLa guerre vous attend"));
+            warInfo.add(Component.text("§fObjectif : devenir la ville la plus puissante"));
+            warInfo.add(Component.text("§cATTENTION : les autres villes en situation de guerre"));
+            warInfo.add(Component.text("§cpeuvent tuer votre mascotte et détruire les constructions"));
 
-        List<Component> warInfo = new ArrayList<>();
-        warInfo.add(Component.text("§cLa guerre vous attend"));
-        warInfo.add(Component.text("§fObjectif : devenir la ville la plus puissante"));
-        warInfo.add(Component.text("§cATTENTION : les autres villes en situation de guerre"));
-        warInfo.add(Component.text("§cpeuvent tuer votre mascotte et détruire les constructions"));
+            map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
+                itemMeta.displayName(Component.text("§aVille en paix"));
+                itemMeta.lore(peaceInfo);
+            }).setOnClick(inventoryClickEvent -> {
+                MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "peace");
 
-        map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
-            itemMeta.displayName(Component.text("§aVille en paix"));
-            itemMeta.lore(peaceInfo);
-        }).setOnClick(inventoryClickEvent -> {
-            MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "peace");
+                MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
+                Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascotte posé en " + x +" " + y + " " + z);
+                MascotsManager.giveChest(player);
+                getOwner().closeInventory();
+            }));
 
-            MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
-            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascotte posé en " + x +" " + y + " " + z);
-            MascotsManager.giveChest(player);
-            getOwner().closeInventory();
-        }));
+            map.put(15, new ItemBuilder(this, Material.DIAMOND_SWORD, itemMeta -> {
+                itemMeta.displayName(Component.text("§cVille en guerre"));
+                itemMeta.lore(warInfo);
+            }).setOnClick(inventoryClickEvent -> {
+                MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "war");
 
-        map.put(15, new ItemBuilder(this, Material.DIAMOND_SWORD, itemMeta -> {
-            itemMeta.displayName(Component.text("§cVille en guerre"));
-            itemMeta.lore(warInfo);
-        }).setOnClick(inventoryClickEvent -> {
-            MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "war");
+                MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
+                Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
+                MascotsManager.giveChest(player);
+                getOwner().closeInventory();
+            }));
 
-            MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
-            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
-            MascotsManager.giveChest(player);
-            getOwner().closeInventory();
-        }));
-
+            return map;
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
+        }
         return map;
     }
 }

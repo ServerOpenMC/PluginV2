@@ -8,7 +8,11 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -39,35 +43,42 @@ public class HomeUpgradeMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> items = new HashMap<>();
 
-        int currentHome = homesManager.getHomeLimit(getOwner().getUniqueId());
+        try {
+            int currentHome = homesManager.getHomeLimit(getOwner().getUniqueId());
 
-        int homeMaxLimit = HomeLimits.values().length - 1;
+            int homeMaxLimit = HomeLimits.values().length - 1;
 
-        HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
-        HomeLimits nextUpgrade = homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer())) != null
-                ? homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer()))
-                : lastUpgrade;
+            HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
+            HomeLimits nextUpgrade = homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer())) != null
+                    ? homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer()))
+                    : lastUpgrade;
 
-        int finalCurrentHome = currentHome;
-        items.put(4, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_upgrade").getItemStack(), itemMeta -> {
-            itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Clique gauche)");
-            List<String> lore = new ArrayList<>();
-            lore.add("§6Nombre de home actuel: §e" + finalCurrentHome);
-            if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
-                lore.add("§cVous avez atteint le nombre maximum de homes");
-            } else {
-                lore.add("§bPrix: §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon());
-                lore.add("§bAywenite: §d" + nextUpgrade.getAyweniteCost());
-                lore.add("§6Nombre de home au prochain niveau: §e" + nextUpgrade.getLimit());
-                lore.add("§7→ Clique gauche pour améliorer");
-            }
+            int finalCurrentHome = currentHome;
+            items.put(4, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_upgrade").getItemStack(), itemMeta -> {
+                itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Clique gauche)");
+                List<String> lore = new ArrayList<>();
+                lore.add("§6Nombre de home actuel: §e" + finalCurrentHome);
+                if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
+                    lore.add("§cVous avez atteint le nombre maximum de homes");
+                } else {
+                    lore.add("§bPrix: §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon());
+                    lore.add("§bAywenite: §d" + nextUpgrade.getAyweniteCost());
+                    lore.add("§6Nombre de home au prochain niveau: §e" + nextUpgrade.getLimit());
+                    lore.add("§7→ Clique gauche pour améliorer");
+                }
 
-            itemMeta.setLore(lore);
-        }).setOnClick(event -> {
-            homeUpgradeManager.upgradeHome(getOwner());
+                itemMeta.setLore(lore);
+            }).setOnClick(event -> {
+                homeUpgradeManager.upgradeHome(getOwner());
+                getOwner().closeInventory();
+            }));
+
+            return items;
+        } catch (Exception e) {
+            MessagesManager.sendMessage(getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
             getOwner().closeInventory();
-        }));
-
+            e.printStackTrace();
+        }
         return items;
     }
 

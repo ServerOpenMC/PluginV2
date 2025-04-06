@@ -5,6 +5,9 @@ import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -63,30 +66,36 @@ public class ConfirmMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
+        try {
+            List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);;
+            loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
 
-        List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);;
-        loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
+            List<Component> loreDeny = new ArrayList<>(loreDenyMsg);;
+            loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
 
-        List<Component> loreDeny = new ArrayList<>(loreDenyMsg);;
-        loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
+            ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
+            ItemStack acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
 
-        ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
-        ItemStack  acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
+            inventory.put(3, new ItemBuilder(this, refuseBtn, itemMeta -> {
+                itemMeta.displayName(Component.text("§cRefuser"));
+                itemMeta.lore(loreDeny);
+            }).setOnClick(event -> {
+                deny.run();
+            }));
 
-        inventory.put(3, new ItemBuilder(this, refuseBtn, itemMeta -> {
-            itemMeta.displayName(Component.text("§cRefuser"));
-            itemMeta.lore(loreDeny);
-        }).setOnClick(event -> {
-            deny.run();
-        }));
+            inventory.put(5, new ItemBuilder(this, acceptBtn, itemMeta -> {
+                itemMeta.displayName(Component.text("§aAccepter"));
+                itemMeta.lore(loreAccept);
+            }).setOnClick(event -> {
+                accept.run();
+            }));
 
-        inventory.put(5, new ItemBuilder(this, acceptBtn, itemMeta -> {
-            itemMeta.displayName(Component.text("§aAccepter"));
-            itemMeta.lore(loreAccept);
-        }).setOnClick(event -> {
-            accept.run();
-        }));
-
+            return inventory;
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
+        }
         return inventory;
     }
 }

@@ -78,36 +78,44 @@ public class MascotsDeadMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> map = new HashMap<>();
+        Player player = getOwner();
 
-        map.put(4, new ItemBuilder(this, Material.APPLE, itemMeta -> {
-            itemMeta.displayName(Component.text("§7Soigner votre §cMascotte"));
-            itemMeta.lore(requiredItemsLore);
-        }).setOnClick(inventoryClickEvent -> {
-            City city = CityManager.getCity(city_uuid);
-            if (city == null) {
-                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                getOwner().closeInventory();
-                return;
-            }
-            if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_HEAL)) {
-                if (hasRequiredItems(getOwner(), requiredItems)) {
-                    removeRequiredItems(getOwner(), requiredItems);
-                    MascotsManager.reviveMascots(city_uuid);
+        try {
+            map.put(4, new ItemBuilder(this, Material.APPLE, itemMeta -> {
+                itemMeta.displayName(Component.text("§7Soigner votre §cMascotte"));
+                itemMeta.lore(requiredItemsLore);
+            }).setOnClick(inventoryClickEvent -> {
+                City city = CityManager.getCity(city_uuid);
+                if (city == null) {
+                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    player.closeInventory();
+                    return;
                 }
-            } else {
-                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            }
-            getOwner().closeInventory();
-        }));
+                if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_HEAL)) {
+                    if (hasRequiredItems(player, requiredItems)) {
+                        removeRequiredItems(player, requiredItems);
+                        MascotsManager.reviveMascots(city_uuid);
+                    }
+                } else {
+                    MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                }
+                player.closeInventory();
+            }));
 
-        map.put(0, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
-        }).setOnClick(event -> {
-            CityMenu menu = new CityMenu(getOwner());
-            menu.open();
-        }));
+            map.put(0, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.displayName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
+            }).setOnClick(event -> {
+                CityMenu menu = new CityMenu(player);
+                menu.open();
+            }));
 
+            return map;
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
+        }
         return map;
     }
 
