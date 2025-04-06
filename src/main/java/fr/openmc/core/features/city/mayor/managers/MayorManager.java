@@ -422,7 +422,7 @@ public class MayorManager {
                 // personne s'est présenté, owner = maire
                 NamedTextColor color = getRandomMayorColor();
                 List<Perks> perks = PerkManager.getRandomPerksBasic();
-                createMayor(ownerName, ownerUUID, city, PerkManager.getPerkById(mayor.getIdPerk1()), perks.get(1), perks.get(2), color, ElectionType.ELECTION);
+                createMayor(ownerName, ownerUUID, city, PerkManager.getPerkById(mayor.getIdPerk1()), perks.getFirst(), perks.get(1), color, ElectionType.ELECTION);
 
             }
         }
