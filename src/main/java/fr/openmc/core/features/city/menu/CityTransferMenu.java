@@ -8,6 +8,7 @@ import dev.xernas.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -58,7 +59,7 @@ public class CityTransferMenu extends PaginatedMenu {
                     continue;
                 }
 
-                OfflinePlayer playerOffline = Bukkit.getOfflinePlayer(uuid);
+                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
                 items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
                     itemMeta.displayName(Component.text("Membre " + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));

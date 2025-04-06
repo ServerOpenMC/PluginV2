@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.menu.ConfirmMenu;
@@ -62,7 +63,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
             boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
             for (UUID uuid : city.getMembers()) {
-                OfflinePlayer playerOffline = Bukkit.getOfflinePlayer(uuid);
+                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
                 String title = "";
                 if(hasPermissionOwner) {
                     title = "Propriétaire ";

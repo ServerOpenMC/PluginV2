@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -403,7 +404,7 @@ public class MayorManager {
 
     public void runSetupMayor(City city) {
         UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
-        String ownerName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        String ownerName = CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getName();
         //todo: Bukkit.getOfflinePlayer consomme beaucoup, envisager de faire une liste commune pour tout le monde
         // (mise en cache) afin de collecter le name sans redemander la methode
         Mayor mayor = city.getMayor();

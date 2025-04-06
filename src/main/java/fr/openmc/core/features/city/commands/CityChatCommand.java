@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -35,7 +36,7 @@ public class CityChatCommand {
         );
 
         for (UUID uuid : city.getMembers()) {
-            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
             if (player.isOnline()) {
                 ((Player) player).sendMessage(msg_component);
             }

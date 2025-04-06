@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -85,7 +86,7 @@ public class MayorMandateMenu extends Menu {
             loreOwner.addAll(perk1.getLore());
 
             inventory.put(5, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)),itemMeta -> {
-                itemMeta.displayName(Component.text("§ePropriétaire " + Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()));
+                itemMeta.displayName(Component.text("§ePropriétaire " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()));
                 itemMeta.lore(loreOwner);
             }));
 

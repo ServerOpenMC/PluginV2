@@ -2,6 +2,7 @@ package fr.openmc.core.features.friend;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
@@ -23,7 +24,7 @@ public class FriendManager {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("friends", (args, sender, command) -> {
             List<UUID> friendsUUIDs = getFriendsAsync(sender.getUniqueId()).join();
             return friendsUUIDs.stream()
-                    .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
+                    .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
                     .toList();
         });
 
@@ -33,7 +34,7 @@ public class FriendManager {
                     .map(request -> request.getSenderUUID().equals(sender.getUniqueId()) ? request.getReceiverUUID() : request.getSenderUUID())
                     .toList();
             return requestUUIDs.stream()
-                    .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
+                    .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
                     .toList();
         });
     }

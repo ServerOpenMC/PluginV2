@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.MayorCandidate;
 import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -119,7 +120,7 @@ public class MayorColorMenu extends Menu {
                                     MayorManager.getInstance().createCandidate(city, candidate);
 
                                     for (UUID uuid : city.getMembers()) {
-                                        OfflinePlayer playerMember = Bukkit.getOfflinePlayer(uuid);
+                                        OfflinePlayer playerMember = CacheOfflinePlayer.getOfflinePlayer(uuid);
                                         assert playerMember != null;
                                         if (playerMember == player) continue;
                                         if (playerMember.isOnline()) {

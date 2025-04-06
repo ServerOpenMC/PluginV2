@@ -10,6 +10,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
@@ -54,7 +55,7 @@ public class CityManager implements Listener {
 
             return playerCities.keySet().stream()
                     .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
-                    .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
+                    .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.toList());
         }));
 
