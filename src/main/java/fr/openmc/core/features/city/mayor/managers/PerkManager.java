@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.mayor.managers;
 
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.mayor.PerkType;
 import fr.openmc.core.features.city.mayor.Perks;
 
@@ -69,5 +70,16 @@ public class PerkManager {
                 .toList();
 
         return eventPerks.get(RANDOM.nextInt(eventPerks.size()));
+    }
+
+    public static boolean hasPerk(City city, int idPerk) {
+        if (city.getMayor().getIdPerk1() == idPerk) {
+            return true;
+        } else if (city.getMayor().getIdPerk2() == idPerk) {
+            return true;
+        } else if (city.getMayor().getIdPerk3() == idPerk) {
+            return true;
+        }
+        return false;
     }
 }

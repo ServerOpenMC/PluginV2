@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
+import fr.openmc.core.features.city.mayor.perks.RagePerk;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -74,7 +75,8 @@ public class MayorManager {
         // LISTENERS
         new PhaseListener(plugin);
         OMCPlugin.registerEvents(
-                new JoinListener()
+                new JoinListener(),
+                new RagePerk()
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
@@ -405,8 +407,6 @@ public class MayorManager {
     public void runSetupMayor(City city) {
         UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getName();
-        //todo: Bukkit.getOfflinePlayer consomme beaucoup, envisager de faire une liste commune pour tout le monde
-        // (mise en cache) afin de collecter le name sans redemander la methode
         Mayor mayor = city.getMayor();
 
         if (getElectionType(city) == ElectionType.OWNER_CHOOSE) {
