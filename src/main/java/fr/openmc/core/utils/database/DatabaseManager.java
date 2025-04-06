@@ -8,7 +8,6 @@ import fr.openmc.core.features.economy.EconomyData;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
-import fr.openmc.core.features.quests.QuestsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -30,7 +29,6 @@ public class DatabaseManager {
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
             CityTypeCooldown.init_db(connection);
-            QuestsManager.init_db(connection);
         } catch (SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
