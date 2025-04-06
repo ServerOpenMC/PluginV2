@@ -82,7 +82,7 @@ clean {
 }
 
 shadowJar {
-    destinationDirectory.set(file("C:/Users/User/Desktop/DevMC/Paper-1.21.4_OMC/plugins"))
+    destinationDirectory.set(file("./builds/"))
     archiveFileName = "OpenMC.jar"
 }
 
