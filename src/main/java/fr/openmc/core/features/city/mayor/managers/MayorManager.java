@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -368,7 +369,18 @@ public class MayorManager {
                 createMayor(null,null, city, null, null, null, null, ElectionType.ELECTION);
             }
             createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+
         }
+
+        Bukkit.broadcast(Component.text("""
+                        §8§m                                                     §r
+                        §7
+                        §3§lMAIRE!§r §7Les Elections sont ouvertes !§7
+                        §8§oPrésentez vous, votez pour des maires, ...
+                        §8§oRegardez si vous avez assez de membres!
+                        §7
+                        §8§m                                                     §r"""
+        ));
     }
 
     public void initPhase2() {
@@ -378,8 +390,15 @@ public class MayorManager {
         for (City city : CityManager.getCities()) {
             runSetupMayor(city);
         }
-        
-        //tester si phase 2 marche
+
+        Bukkit.broadcast(Component.text("""
+                        §8§m                                                     §r
+                        §7
+                        §3§lMAIRE!§r §7Vos Réformes sont actives !§7
+                        §8§oFaites vos stratégies, farmez, et pleins d'autres choses !
+                        §7
+                        §8§m                                                     §r"""
+        ));
     }
 
     public void runSetupMayor(City city) {
