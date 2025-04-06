@@ -22,8 +22,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
 
@@ -99,39 +99,56 @@ public class CityMenu extends Menu {
             }
         }));
 
-        LivingEntity mascot = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
-        assert mascot != null;
-
+        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city.getUUID());
+        LivingEntity mascot;
         List<Component> loreMascots;
-        if (!MascotUtils.getMascotState(city.getUUID())) {
-            loreMascots = List.of(
-                    Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
-                    Component.text("§7Status : §cEn Attente de Soin"),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
-            );
+
+        if (mascotUUID!=null){
+            mascot = (LivingEntity) Bukkit.getEntity(mascotUUID);
+
+            if (!MascotUtils.getMascotState(city.getUUID())) {
+                loreMascots = List.of(
+                        Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
+                        Component.text("§7Status : §cEn Attente de Soin"),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                );
+            } else {
+                loreMascots = List.of(
+                        Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
+                        Component.text("§7Status : §aEn Vie"),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                );
+            }
         } else {
+            mascot = null;
             loreMascots = List.of(
-                    Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
-                    Component.text("§7Status : §aEn Vie"),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                    Component.text("§cMascotte Inexistante")
             );
         }
 
-        inventory.put(8, new ItemBuilder(this, MascotMenu.getSpawnEgg(mascot), itemMeta -> {
-            itemMeta.itemName(Component.text("§cVotre Mascotte"));
-            itemMeta.lore(loreMascots);
-        }).setOnClick(inventoryClickEvent -> {
-            if (!MascotUtils.getMascotState(city.getUUID())){
-                MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
-                menu.open();
-                return;
-            }
+        if (mascot!=null){
+            inventory.put(8, new ItemBuilder(this, MascotMenu.getSpawnEgg(mascot), itemMeta -> {
+                itemMeta.itemName(Component.text("§cVotre Mascotte"));
+                itemMeta.lore(loreMascots);
+            }).setOnClick(inventoryClickEvent -> {
+                if (!MascotUtils.getMascotState(city.getUUID())){
+                    MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
+                    menu.open();
+                    return;
+                }
 
-            MascotMenu menu = new MascotMenu(player, mascot);
-            menu.open();
-        }));
+                MascotMenu menu = new MascotMenu(player, mascot);
+                menu.open();
+            }));
+        } else {
+            inventory.put(8, new ItemBuilder(this, Material.ZOMBIE_SPAWN_EGG, itemMeta -> {
+                itemMeta.itemName(Component.text("§cVotre Mascotte"));
+                itemMeta.lore(loreMascots);
+            }));
+        }
+
 
         List<Component> loreChunkCity;
 
@@ -174,7 +191,7 @@ public class CityMenu extends Menu {
             menu.open();
         }));
 
-        String type = CityManager.getCityType(city.getUUID());
+        String type = getCityType(city.getUUID());
         if (type.equals("war")) {
             type = "guerre";
         } else if (type.equals("peace")) {
