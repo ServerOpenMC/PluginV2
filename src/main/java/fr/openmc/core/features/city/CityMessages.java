@@ -12,6 +12,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 
 public class CityMessages {
@@ -33,10 +35,16 @@ public class CityMessages {
 
         String type = CityManager.getCityType(city.getUUID());
         if (MascotUtils.getMascotUUIDOfCity(city.getUUID())!=null){
-            LivingEntity mascot = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
-            if (MascotUtils.getMascotState(city.getUUID())){
-                mascotLife = String.valueOf(mascot.getHealth());
-            }}
+            UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city.getUUID());
+            if (mascotUUID!=null){
+                LivingEntity mascot = (LivingEntity) Bukkit.getEntity(mascotUUID);
+                if (MascotUtils.getMascotState(city.getUUID()) && mascot!=null){
+                    mascotLife = String.valueOf(mascot.getHealth());
+                } else {
+                    mascotLife = "En attente de soin";
+                }
+            }
+        }
 
         sender.sendMessage(
                 Component.text("--- ").color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.BOLD, false).append(
