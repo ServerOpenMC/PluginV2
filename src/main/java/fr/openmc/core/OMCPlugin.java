@@ -13,6 +13,7 @@ import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.listeners.ListenersManager;
@@ -67,6 +68,7 @@ public final class OMCPlugin extends JavaPlugin {
         new HomeUpgradeManager(HomesManager.getInstance());
         new TPAManager();
         new FriendManager();
+        new QuestsManager();
 
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);

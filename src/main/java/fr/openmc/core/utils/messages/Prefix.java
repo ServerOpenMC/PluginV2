@@ -18,6 +18,7 @@ public enum Prefix {
     CONTEST("<gradient:#FFB800:#F0DF49>ᴄᴏɴᴛᴇѕᴛ</gradient>"),
     HOME("<gradient:#80EF80:#9aec9a>ʜᴏᴍᴇ</gradient>"),
     FRIEND("<gradient:#68E98B:#0EFF6D>ꜰʀɪᴇɴᴅ</gradient>"),
+    QUEST("<gradient:#4E76E3:#1A51E7>ǫᴜᴇѕᴛ</gradient>");
     ;
 
     @Getter private final String prefix;
