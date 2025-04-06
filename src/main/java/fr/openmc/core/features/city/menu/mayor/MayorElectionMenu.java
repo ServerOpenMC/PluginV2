@@ -91,6 +91,7 @@ public class MayorElectionMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 if (mayorManager.cityElections.get(city) == null) {
                     MessagesManager.sendMessage(player, Component.text("Il y a aucun volontaire pour être maire"), Prefix.MAYOR, MessageType.ERROR, true);
+                    return;
                 }
                 new MayorVoteMenu(player).open();
             }));

@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -112,22 +113,27 @@ public class MayorColorMenu extends Menu {
 
                         ConfirmMenu menu = new ConfirmMenu(player,
                                 () -> {
-                                    if (menuType == MenuType.CANDIDATE) {
-                                        MayorCandidate candidate = new MayorCandidate(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
-                                        MayorManager.getInstance().createCandidate(city, candidate);
-                                        for (UUID uuid : city.getMembers()) {
-                                            Player playerMember = Bukkit.getPlayer(uuid);
-                                            assert playerMember != null;
-                                            if (playerMember == player) continue;
-                                            if (playerMember.isOnline()) {
-                                                MessagesManager.sendMessage(playerMember, Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.MAYOR, MessageType.ERROR, false);
-                                            }
+                            try {
+                                if (menuType == MenuType.CANDIDATE) {
+                                    MayorCandidate candidate = new MayorCandidate(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
+                                    MayorManager.getInstance().createCandidate(city, candidate);
+
+                                    for (UUID uuid : city.getMembers()) {
+                                        OfflinePlayer playerMember = Bukkit.getOfflinePlayer(uuid);
+                                        assert playerMember != null;
+                                        if (playerMember == player) continue;
+                                        if (playerMember.isOnline()) {
+                                            MessagesManager.sendMessage(playerMember.getPlayer(), Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.MAYOR, MessageType.ERROR, false);
                                         }
-                                    } else { // donc si c MenuType.OWNER
-                                        mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
                                     }
-                                    MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
-                                    player.closeInventory();
+                                } else { // donc si c MenuType.OWNER
+                                    mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
+                                }
+                                MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
+                                player.closeInventory();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                                 },
                                 () -> {
                                     player.closeInventory();
@@ -139,7 +145,6 @@ public class MayorColorMenu extends Menu {
                         );
                         menu.open();
                     } else if (type == "change") {
-                        System.out.println(mayorManager.getElectionType(city));
                         if (mayorManager.getElectionType(city) == ElectionType.OWNER_CHOOSE) {
                             if (city.getMayor() == null) {
                                 MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.MAYOR, MessageType.ERROR, false);

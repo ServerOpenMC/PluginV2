@@ -124,6 +124,6 @@ public class MayorMandateMenu extends Menu {
             player.closeInventory();
             e.printStackTrace();
         }
-        return inventory;
+        return null;
     }
 }

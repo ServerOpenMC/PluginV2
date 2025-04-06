@@ -59,7 +59,6 @@ public class PerkManager {
 
         List<Perks> finalSelection = new ArrayList<>();
         finalSelection.addAll(selectedBasicPerks);
-        System.out.println(finalSelection);
 
         return finalSelection;
     }
