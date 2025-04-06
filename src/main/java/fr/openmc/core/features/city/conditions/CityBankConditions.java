@@ -13,7 +13,7 @@ import static fr.openmc.core.features.city.commands.CityCommands.balanceCooldown
 import static fr.openmc.core.features.city.commands.CityCommands.invitations;
 
 /**
- * Le but cette classe est de regrouper toutes les conditions neccessaires
+ * Le but de cette classe est de regrouper toutes les conditions neccessaires
  * pour tout ce qui est autour de la banque (utile pour faire une modif sur menu et commandes)
  */
 public class CityBankConditions {

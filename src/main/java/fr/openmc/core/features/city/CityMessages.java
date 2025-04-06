@@ -34,7 +34,7 @@ public class CityMessages {
         String type = CityManager.getCityType(city.getUUID());
         if (MascotUtils.getMascotUUIDOfCity(city.getUUID())!=null){
             LivingEntity mascot = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
-            if (!MascotUtils.getMascotState(city.getUUID())){
+            if (MascotUtils.getMascotState(city.getUUID())){
                 mascotLife = String.valueOf(mascot.getHealth());
             }}
 

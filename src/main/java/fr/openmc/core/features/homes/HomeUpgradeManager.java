@@ -1,11 +1,14 @@
 package fr.openmc.core.features.homes;
 
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class HomeUpgradeManager {
@@ -36,10 +39,11 @@ public class HomeUpgradeManager {
         int currentHomes = homesManager.getHomes(player.getUniqueId()).size();
         int currentUpgrade = homesManager.getHomeLimit(player.getUniqueId());
         HomeLimits nextUpgrade = getNextUpgrade(getCurrentUpgrade(player));
-
+        Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
         if(nextUpgrade != null) {
             double balance = EconomyManager.getInstance().getBalance(player.getUniqueId());
             int price = nextUpgrade.getPrice();
+            int aywenite = nextUpgrade.getAyweniteCost();
 
             if(currentHomes < currentUpgrade) {
                 MessagesManager.sendMessage(
@@ -53,13 +57,19 @@ public class HomeUpgradeManager {
             }
 
             if(balance >= price) {
+                if (!ItemUtils.hasEnoughItems(player, matAywenite, aywenite)) {
+                    MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite §f("+aywenite+ " nécessaires)"), Prefix.HOME, MessageType.ERROR, false);
+                    return;
+                }
+
+                ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
                 EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), price);
                 homesManager.updateHomeLimit(player.getUniqueId());
 
                 int updatedHomesLimit = homesManager.getHomeLimit(player.getUniqueId());
 
 
-                MessagesManager.sendMessage(player, Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$."), Prefix.HOME, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(player, Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$ et à §d" + aywenite + " d'Aywenite"), Prefix.HOME, MessageType.SUCCESS, true);
             } else {
                 MessagesManager.sendMessage(
                         player,
