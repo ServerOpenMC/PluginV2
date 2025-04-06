@@ -134,7 +134,13 @@ public class MascotMenu extends Menu {
         }));
 
         List<Component> requiredAmount = new ArrayList<>();
-        requiredAmount.add(Component.text("§7Nécessite §4" + MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID())).getUpgradeCost() + " Croq'Stars"));
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
+
+        if (mascotsLevels.equals(MascotsLevels.level10)){
+            requiredAmount.add(Component.text("§7Niveau max atteins"));
+        } else {
+            requiredAmount.add(Component.text("§7Nécessite §4" + mascotsLevels.getUpgradeCost() + " Croq'Stars"));
+        }
 
         map.put(15, new ItemBuilder(this,Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
             itemMeta.displayName(Component.text("§7Améloiorer votre §cMascotte"));
