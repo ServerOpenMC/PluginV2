@@ -22,6 +22,7 @@ import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
+import fr.openmc.core.utils.freeze.FreezeManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -66,8 +67,8 @@ public final class OMCPlugin extends JavaPlugin {
         new HomesManager();
         new HomeUpgradeManager(HomesManager.getInstance());
         new TPAManager();
+        new FreezeManager();
         new FriendManager();
-
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
