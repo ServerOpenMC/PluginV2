@@ -393,10 +393,15 @@ public class MayorManager {
             // si maire a pas choisis les perks
             if ((mayor.getIdPerk1() != 0) && (mayor.getIdPerk2() != 0) && (mayor.getIdPerk3() != 0)) {
                 NamedTextColor color = getRandomMayorColor();
-                List<Perks> perks = PerkManager.getRandomPerks();
+                List<Perks> perks = PerkManager.getRandomPerksAll();
                 createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
             }
         } else {
+            // si owner a pas choisi perk event
+            if (mayor.getIdPerk1() == 0) {
+                mayor.setIdPerk1(PerkManager.getRandomPerkEvent().getId());
+            }
+
             if (cityElections.containsKey(city)) { // si y'a des maires qui se sont présenter
                 List<MayorCandidate> candidates = cityElections.get(city);
 
@@ -416,8 +421,8 @@ public class MayorManager {
             } else {
                 // personne s'est présenté, owner = maire
                 NamedTextColor color = getRandomMayorColor();
-                List<Perks> perks = PerkManager.getRandomPerks();
-                createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.ELECTION);
+                List<Perks> perks = PerkManager.getRandomPerksBasic();
+                createMayor(ownerName, ownerUUID, city, PerkManager.getPerkById(mayor.getIdPerk1()), perks.get(1), perks.get(2), color, ElectionType.ELECTION);
 
             }
         }

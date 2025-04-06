@@ -18,7 +18,7 @@ public class PerkManager {
         return null;
     }
 
-    public static List<Perks> getRandomPerks() {
+    public static List<Perks> getRandomPerksAll() {
         List<Perks> eventPerks = List.of(Perks.values()).stream()
                 .filter(perk -> perk.getType() == PerkType.EVENT)
                 .toList();
@@ -42,5 +42,33 @@ public class PerkManager {
         finalSelection.addAll(selectedBasicPerks);
 
         return finalSelection;
+    }
+
+    public static List<Perks> getRandomPerksBasic() {
+        List<Perks> basicPerks = List.of(Perks.values()).stream()
+                .filter(perk -> perk.getType() == PerkType.BASIC)
+                .toList();
+
+        List<Perks> selectedBasicPerks = new ArrayList<>();
+        while (selectedBasicPerks.size() < 2) {
+            Perks randomPerk = basicPerks.get(RANDOM.nextInt(basicPerks.size()));
+            if (!selectedBasicPerks.contains(randomPerk)) {
+                selectedBasicPerks.add(randomPerk);
+            }
+        }
+
+        List<Perks> finalSelection = new ArrayList<>();
+        finalSelection.addAll(selectedBasicPerks);
+        System.out.println(finalSelection);
+
+        return finalSelection;
+    }
+
+    public static Perks getRandomPerkEvent() {
+        List<Perks> eventPerks = List.of(Perks.values()).stream()
+                .filter(perk -> perk.getType() == PerkType.EVENT)
+                .toList();
+
+        return eventPerks.get(RANDOM.nextInt(eventPerks.size()));
     }
 }
