@@ -12,24 +12,17 @@ public class ContestShell extends CustomItem {
         super("omc_contest:contest_shell");
     }
 
-    private ItemStack format(ItemStack initial) {
-        ItemMeta meta = initial.getItemMeta();
-        meta.displayName(Component.text("§bCoquillage de Contest").decoration(TextDecoration.ITALIC, false));
-        initial.setItemMeta(meta);
-        return initial;
-    }
-
     @Override
     public ItemStack getVanilla() {
         ItemStack item = new ItemStack(Material.NAUTILUS_SHELL);
-        return format(item);
+        return item;
     }
 
     @Override
     public ItemStack getItemsAdder() {
         CustomStack stack = CustomStack.getInstance("omc_contest:contest_shell");
         if (stack != null) {
-            return format(stack.getItemStack());
+            return stack.getItemStack();
         } else {
             return null;
         }

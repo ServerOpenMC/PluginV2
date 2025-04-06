@@ -8,6 +8,10 @@ import java.util.Map;
 
 public class ColorUtils {
 
+    private ColorUtils() {
+        throw new IllegalStateException("For Sonar");
+    }
+
     private static final Map<NamedTextColor, NamedTextColor> colorToReadable = new HashMap<>();
     static {
         colorToReadable.put(NamedTextColor.BLACK, NamedTextColor.BLACK);
