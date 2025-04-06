@@ -60,7 +60,7 @@ public class HomeDeleteConfirmMenu extends Menu {
                             }
                     ).setOnClick(event -> {
                         homesManager.removeHome(home);
-                        MessagesManager.sendMessage(player Component.text("§aHome §e" + home.getName() + " §asupprimé avec succès !"), Prefix.HOME, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(player, Component.text("§aHome §e" + home.getName() + " §asupprimé avec succès !"), Prefix.HOME, MessageType.SUCCESS, true);
                         player.closeInventory();
                     })
             );
