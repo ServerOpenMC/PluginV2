@@ -2,8 +2,8 @@
 # Database
 #####
 database:
-  url: "jdbc:mysql://localhost:3306/openmc"
-  username: root
+  url: "jdbc:mysql://host:port/openmc"
+  username: ""
   password: ""
 
 features:
