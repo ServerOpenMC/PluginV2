@@ -167,12 +167,19 @@ public class MascotsListener implements Listener {
                 e.setCancelled(true);
             }
 
-            LivingEntity mob = (LivingEntity) entity;
+            City city = MascotUtils.getCityFromMascot(entity.getUniqueId());
+            if (city!=null){
+                LivingEntity mob = (LivingEntity) entity;
 
-            double newHealth = Math.floor(mob.getHealth());
-            mob.setHealth(newHealth);
-            double maxHealth = mob.getMaxHealth();
-            mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
+                double newHealth = Math.floor(mob.getHealth());
+                mob.setHealth(newHealth);
+                double maxHealth = mob.getMaxHealth();
+                if (MascotUtils.getMascotImmunity(city.getUUID())){
+                    mob.setCustomName("§lMascotte en attente de §csoins");
+                } else {
+                    mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
+                }
+            }
         }
     }
 
@@ -240,7 +247,7 @@ public class MascotsListener implements Listener {
                         return;
                     }
 
-                    if (MascotUtils.getMascotImmunity(city_uuid)){
+                    if (MascotUtils.getMascotImmunity(cityEnemy_uuid)){
                         MessagesManager.sendMessage(player, Component.text("§cCette mascotte est immunisée pour le moment"), Prefix.CITY, MessageType.INFO, false);
                         e.setCancelled(true);
                         return;
@@ -410,9 +417,11 @@ public class MascotsListener implements Listener {
                     cityEnemyName = cityEnemy.getName();
                     cityEnemy.updatePowerPoints(level);
                     city.updatePowerPoints(-level);
-
-                    cityEnemy.updateBalance(0.15*city.getBalance()/100);
-                    city.updateBalance(-(0.15*city.getBalance()/100));
+                    double balance = city.getBalance();
+                    if (balance != 0){
+                        cityEnemy.updateBalance(0.15 * balance / 100);
+                        city.updateBalance(-(0.15* balance /100));
+                    }
                 }
 
                 for (UUID townMember : city.getMembers()){
