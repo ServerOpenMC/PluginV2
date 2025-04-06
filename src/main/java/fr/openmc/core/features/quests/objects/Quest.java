@@ -68,6 +68,66 @@ public class Quest {
         for(int i = 0; i < this.tiers.size(); ++i) {
             QuestTier tier = this.tiers.get(i);
             description.append("§7Palier ").append(i + 1).append(": ").append(tier.description()).append("\n");
+
+            List<QuestStep> steps = tier.getSteps();
+            if (!steps.isEmpty()) {
+                for (int j = 0; j < steps.size(); j++) {
+                    QuestStep step = steps.get(j);
+                    description.append("  §8▶ §7Étape ").append(j + 1).append(": ").append(step.getDescription()).append("\n");
+                }
+            }
+        }
+
+        return description.toString();
+    }
+
+    public String getPlayerDescription(UUID playerUUID) {
+        StringBuilder description = new StringBuilder(this.baseDescription + "\n");
+
+        int currentTierIndex = getCurrentTierIndex(playerUUID);
+        Set<Integer> completedTiers = this.completedTiers.getOrDefault(playerUUID, new HashSet<>());
+
+        for(int i = 0; i < this.tiers.size(); ++i) {
+            QuestTier tier = this.tiers.get(i);
+            String tierPrefix = i < currentTierIndex ? "§a✔ " :
+                    (i == currentTierIndex ? "§e➤ " : "§8■ ");
+
+            description.append(tierPrefix).append("§7Palier ").append(i + 1).append(": ");
+            description.append(tier.description());
+
+            if (i == currentTierIndex) {
+                int playerProgress = getProgress(playerUUID);
+                description.append(" §8(").append(playerProgress).append("/").append(tier.target()).append(")");
+            }
+
+            description.append("\n");
+
+            List<QuestStep> steps = tier.getSteps();
+            if (!steps.isEmpty()) {
+                for (int j = 0; j < steps.size(); j++) {
+                    QuestStep step = steps.get(j);
+                    String stepPrefix = "  §8▶ ";
+
+                    if (i == currentTierIndex) {
+                        boolean completed = step.isCompleted(playerUUID);
+                        stepPrefix = completed ? "  §a✓ " : "  §e→ ";
+
+                        description.append(stepPrefix).append("§7Étape ").append(j + 1).append(": ");
+                        description.append(step.getDescription());
+
+                        int stepProgress = step.getProgress(playerUUID);
+                        description.append(" §8(").append(stepProgress).append("/").append(step.getTarget()).append(")");
+                    } else if (i < currentTierIndex) {
+                        description.append("  §a✓ §7Étape ").append(j + 1).append(": ");
+                        description.append(step.getDescription());
+                    } else {
+                        description.append(stepPrefix).append("§8Étape ").append(j + 1).append(": ");
+                        description.append(step.getDescription());
+                    }
+
+                    description.append("\n");
+                }
+            }
         }
 
         return description.toString();
@@ -84,10 +144,10 @@ public class Quest {
                 tier.reward().giveReward(player);
                 boolean isLastTier = tierIndex == this.tiers.size() - 1;
                 Component titleMain = Component.text(
-                        "✦ ", TextColor.color(15770808))
+                                "✦ ", TextColor.color(15770808))
                         .append(Component.text(isLastTier
-                                ? "Quête terminée !"
-                                : "Palier " + (tierIndex + 1) + " terminé !",
+                                        ? "Quête terminée !"
+                                        : "Palier " + (tierIndex + 1) + " terminé !",
                                 TextColor.color(6216131)))
                         .append(Component.text(" ✦", TextColor.color(15770808)));
 
@@ -106,21 +166,54 @@ public class Quest {
         }
     }
 
+    public void completeStep(UUID playerUUID, int stepIndex) {
+        QuestTier currentTier = getCurrentTier(playerUUID);
+        if (currentTier == null || stepIndex >= currentTier.getSteps().size()) {
+            return;
+        }
+
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player == null || !player.isOnline()) {
+            return;
+        }
+
+        QuestStep step = currentTier.getSteps().get(stepIndex);
+        if (step.isCompleted(playerUUID)) {
+            int tierIndex = getCurrentTierIndex(playerUUID);
+            String stepName = "Étape " + (stepIndex + 1);
+
+            String message = "§a✓ §7" + stepName + " §7de §e" + this.name + " §avalidée !";
+            MessagesManager.sendMessage(player, Component.text(message), Prefix.QUEST, MessageType.SUCCESS, true);
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 2.0F);
+
+            if (currentTier.areStepsCompleted(playerUUID) && currentTier.isRequireStepsCompletion()) {
+                int currentProgress = getProgress(playerUUID);
+                if (currentProgress >= currentTier.target()) {
+                    completeTier(playerUUID, tierIndex);
+                }
+            }
+        }
+    }
+
     private void checkTierCompletion(UUID playerUUID) {
         int playerTier = this.currentTier.getOrDefault(playerUUID, 0);
         if (playerTier < this.tiers.size()) {
             QuestTier tier = this.tiers.get(playerTier);
             int currentProgress = this.progress.getOrDefault(playerUUID, 0);
             Set<Integer> playerCompletedTiers = this.completedTiers.computeIfAbsent(playerUUID, (k) -> new HashSet<>());
-            if (currentProgress == tier.target() && !playerCompletedTiers.contains(playerTier) && (playerTier == 0 || playerCompletedTiers.contains(playerTier - 1))) {
-                this.completeTier(playerUUID, playerTier);
-            }
 
+            if (currentProgress >= tier.target() && !playerCompletedTiers.contains(playerTier) &&
+                    (playerTier == 0 || playerCompletedTiers.contains(playerTier - 1))) {
+
+                if (!tier.isRequireStepsCompletion() || tier.areStepsCompleted(playerUUID)) {
+                    this.completeTier(playerUUID, playerTier);
+                }
+            }
         }
     }
 
     public void incrementProgress(UUID playerUUID, int amount) {
-        if (!this.isFullyCompleted(playerUUID) && !(Boolean)this.progressLock.getOrDefault(playerUUID, false)) {
+        if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
             this.progressLock.put(playerUUID, true);
 
             try {
@@ -134,12 +227,52 @@ public class Quest {
                 if (currentProgress < currentTarget) {
                     this.progress.put(playerUUID, newProgress);
                     this.checkTierCompletion(playerUUID);
-                    return;
                 }
             } finally {
                 this.progressLock.put(playerUUID, false);
             }
+        }
+    }
 
+    public void incrementStepProgress(UUID playerUUID, int stepIndex, int amount) {
+        QuestTier tier = getCurrentTier(playerUUID);
+        if (tier != null && stepIndex >= 0 && stepIndex < tier.getSteps().size()) {
+            QuestStep step = tier.getSteps().get(stepIndex);
+            step.incrementProgress(playerUUID, amount);
+            if (step.isCompleted(playerUUID)) {
+                completeStep(playerUUID, stepIndex);
+            }
+        }
+    }
+
+    public void incrementStepProgressByDescription(UUID playerUUID, String stepDescription, int amount) {
+        QuestTier tier = getCurrentTier(playerUUID);
+        if (tier != null) {
+            List<QuestStep> steps = tier.getSteps();
+            for (int i = 0; i < steps.size(); i++) {
+                QuestStep step = steps.get(i);
+                if (step.getDescription().equals(stepDescription)) {
+                    step.incrementProgress(playerUUID, amount);
+                    if (step.isCompleted(playerUUID)) {
+                        completeStep(playerUUID, i);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+
+    public void incrementStepProgress(UUID playerUUID, int amount) {
+        QuestTier tier = getCurrentTier(playerUUID);
+        if (tier != null && !tier.getSteps().isEmpty()) {
+            for (int i = 0; i < tier.getSteps().size(); i++) {
+                QuestStep step = tier.getSteps().get(i);
+                if (!step.isCompleted(playerUUID)) {
+                    incrementStepProgress(playerUUID, i, amount);
+                    break;
+                }
+            }
         }
     }
 }

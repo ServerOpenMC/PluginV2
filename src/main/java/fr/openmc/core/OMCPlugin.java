@@ -83,9 +83,11 @@ public final class OMCPlugin extends JavaPlugin {
         HomesManager.getInstance().saveHomesData();
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
+        QuestsManager.getInstance().saveQuests();
 
         MascotsManager.saveMascots(MascotsManager.mascots);
         MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
+
 
         CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {

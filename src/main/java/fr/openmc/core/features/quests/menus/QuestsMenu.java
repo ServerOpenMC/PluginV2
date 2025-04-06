@@ -4,6 +4,7 @@ import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
+import fr.openmc.core.features.quests.objects.QuestStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class QuestsMenu extends Menu {
         super(player);
         this.questsManager = QuestsManager.getInstance();
         this.currentPage = currentPage;
-        this.totalPages = (int) Math.ceil(this.questsManager.getPlayerQuests(player.getUniqueId()).size() / 9.0F);
+        this.totalPages = (int) Math.ceil(this.questsManager.getAllQuests().size() / 9.0F);
         TITLE = "Quests (" + currentPage + "/" + this.totalPages + ")";
     }
 
@@ -70,11 +71,11 @@ public class QuestsMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> content = new HashMap<>();
         int startIndex = this.currentPage * 9;
-        int endIndex = Math.min(startIndex + 9, this.questsManager.getPlayerQuests(this.getOwner().getUniqueId()).size());
+        int endIndex = Math.min(startIndex + 9, this.questsManager.getAllQuests().size());
         int slotIndex = 9;
 
         for(int i = startIndex; i < endIndex; ++i) {
-            Quest quest = this.questsManager.getPlayerQuests(this.getOwner().getUniqueId()).get(i);
+            Quest quest = this.questsManager.getAllQuests().get(i);
             ItemStack item = this.createQuestItem(quest);
             content.put(slotIndex, item);
             ++slotIndex;
@@ -131,7 +132,6 @@ public class QuestsMenu extends Menu {
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
 
-
         Component bar = Component.text("§8§m                                §r");
         int var10000 = quest.isFullyCompleted(playerUUID) ? currentTierIndex : currentTierIndex + 1;
         String tierDisplay = "§7[§f" + var10000 + "§8/§f" + tiersTotal + "§7]";
@@ -177,11 +177,38 @@ public class QuestsMenu extends Menu {
             lore.add(Component.text(""));
             lore.add(Component.text("§6➤ §eObjectif actuel:"));
             lore.add(Component.text("  §f" + currentTier.description()));
+
+            // Display steps if the tier has steps
+            if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
+                lore.add(Component.text(""));
+                lore.add(Component.text("§6◆ §eAvancement:"));
+
+                for (int i = 0; i < currentTier.getSteps().size(); i++) {
+                    QuestStep step = currentTier.getSteps().get(i);
+                    int stepProgress = step.getProgress(playerUUID);
+                    boolean stepCompleted = step.isCompleted(playerUUID);
+
+                    // Nouveau format d'affichage avec symboles de complétion
+                    String stepIcon = stepCompleted ? "§a✅" : "§c❌";
+                    String stepDescription = step.getDescription();
+                    // Formater correctement avec le nom de l'étape et son statut
+                    lore.add(Component.text("  §7* " + stepDescription + " " + stepIcon));
+                }
+            }
+
             if (currentTierIndex < tiersTotal - 1) {
                 QuestTier nextTier = quest.getTiers().get(currentTierIndex + 1);
                 lore.add(Component.text(""));
                 lore.add(Component.text("§7◇ §8Prochain tier:"));
                 lore.add(Component.text("  §8" + nextTier.description()));
+
+                // Display next tier steps if they exist
+                if (nextTier.getSteps() != null && !nextTier.getSteps().isEmpty()) {
+                    for (int i = 0; i < nextTier.getSteps().size(); i++) {
+                        QuestStep step = nextTier.getSteps().get(i);
+                        lore.add(Component.text("  §8▪ " + step.getDescription()));
+                    }
+                }
             }
         }
 

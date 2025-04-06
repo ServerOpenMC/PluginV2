@@ -3,6 +3,7 @@ package fr.openmc.core.features.quests;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.BreakStoneQuest;
+import fr.openmc.core.features.quests.quests.CraftDiamondArmorQuest;
 import fr.openmc.core.features.quests.quests.WalkQuests;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -17,14 +18,13 @@ public class QuestsManager {
     final Map<String, Quest> quests = new HashMap<>();
     final OMCPlugin plugin = OMCPlugin.getInstance();
     @Getter static QuestsManager instance;
-
-    // TODO: - Ajouter un système de sauvegarde des quêtes (YML)
-    // TODO: - Ajouter un système d'étapes de quêtes (Une quête peut avoir plusieurs étapes)
-    //    ex: "Craft une armure en diamant" -> "Craft un plastron en diamant" -> "Craft un pantalon en diamant" -> "Craft des bottes en diamant"
+    QuestProgressSaveManager progressSaveManager;
 
     public QuestsManager() {
         instance = this;
+        this.progressSaveManager = new QuestProgressSaveManager(this.plugin, this);
         this.loadDefaultQuests();
+        this.progressSaveManager.loadAllQuestProgress();
     }
 
     public void registerQuest(Quest quest) {
@@ -45,11 +45,20 @@ public class QuestsManager {
     public void loadDefaultQuests() {
         this.registerQuests(
                 new BreakStoneQuest(),
-                new WalkQuests()
+                new WalkQuests(),
+                new CraftDiamondArmorQuest()
         );
     }
 
-    public List<Quest> getPlayerQuests(UUID playerUUID) {
+    public List<Quest> getAllQuests() {
         return this.quests.values().stream().toList();
+    }
+
+    public void saveQuests() {
+        this.progressSaveManager.saveAllQuestProgress();
+    }
+
+    public void saveQuests(UUID playerUUID) {
+        this.progressSaveManager.savePlayerQuestProgress(playerUUID);
     }
 }
