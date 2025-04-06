@@ -10,7 +10,6 @@ import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
@@ -18,6 +17,7 @@ import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
+import fr.openmc.core.utils.freeze.FreezeListener;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -60,7 +60,7 @@ public final class OMCPlugin extends JavaPlugin {
         new MailboxManager();
         new ScoreboardManager();
         new TPAManager();
-        new QuestsManager(this);
+        new FreezeListener();
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
