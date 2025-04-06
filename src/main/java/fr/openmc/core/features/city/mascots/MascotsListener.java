@@ -127,7 +127,6 @@ public class MascotsListener implements Listener {
                     Chunk chunk = e.getBlock().getChunk();
                     int chunkX = chunk.getX();
                     int chunkZ = chunk.getZ();
-
                     if (!ignore && !city.hasChunk(chunkX,chunkZ)){
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre car ce chunk ne vous appartient pas"), Prefix.CITY, MessageType.INFO, false);
                         e.setCancelled(true);
@@ -153,7 +152,6 @@ public class MascotsListener implements Listener {
 
                     MascotsManager.createMascot(city_uuid, player_world, mascot_spawn);
                     Chronometer.stopChronometer(player, "Mascot:chest", null, "%null%");
-                    MascotsManager.mascotSpawn.remove(player.getUniqueId());
                 }
             }
         }
@@ -557,11 +555,6 @@ public class MascotsListener implements Listener {
                             return;
                         }
                     }
-                    if (MascotsManager.mascotSpawn.containsKey(player.getUniqueId())){
-                        Location loc = MascotsManager.mascotSpawn.get(player.getUniqueId());
-                        MascotsManager.createMascot(city_uuid, loc.getWorld(), loc);
-                        MascotsManager.mascotSpawn.remove(player.getUniqueId());
-                    }
                     break;
                 }
             }
@@ -595,10 +588,6 @@ public class MascotsListener implements Listener {
                 return;
             }
             MascotsManager.removeChest(player);
-            String city_uuid = city.getUUID();
-            Location mascot = MascotsManager.mascotSpawn.get(player.getUniqueId());
-            MascotsManager.createMascot(city_uuid, mascot.getWorld(), mascot);
-            MascotsManager.mascotSpawn.remove(player.getUniqueId());
         }
     }
 
