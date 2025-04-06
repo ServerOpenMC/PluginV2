@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.*;
+import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -70,6 +71,9 @@ public class MayorManager {
 
         // LISTENERS
         new PhaseListener(plugin);
+        OMCPlugin.registerEvents(
+                new JoinListener()
+        );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
                     //make listener for urne
@@ -372,45 +376,74 @@ public class MayorManager {
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : CityManager.getCities()) {
-            UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
-            String ownerName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
-            //todo: Bukkit.getOfflinePlayer consomme beaucoup, envisager de faire une liste commune pour tout le monde
-            // (mise en cache) afin de collecter le name sans redemander la methode
-            Mayor mayor = city.getMayor();
+            runSetupMayor(city);
+        }
+        
+        //tester si phase 2 marche
+    }
 
-            if (getElectionType(city) == ElectionType.OWNER_CHOOSE) {
-                // si maire a pas choisis les perks
-                if ((mayor.getIdPerk1() != 0) && (mayor.getIdPerk2() != 0) && (mayor.getIdPerk3() != 0)) {
-                    NamedTextColor color = getRandomMayorColor();
-                    List<Perks> perks = PerkManager.getRandomPerks();
-                    createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
-                }
+    public void runSetupMayor(City city) {
+        UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
+        String ownerName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        //todo: Bukkit.getOfflinePlayer consomme beaucoup, envisager de faire une liste commune pour tout le monde
+        // (mise en cache) afin de collecter le name sans redemander la methode
+        Mayor mayor = city.getMayor();
+
+        if (getElectionType(city) == ElectionType.OWNER_CHOOSE) {
+            // si maire a pas choisis les perks
+            if ((mayor.getIdPerk1() != 0) && (mayor.getIdPerk2() != 0) && (mayor.getIdPerk3() != 0)) {
+                NamedTextColor color = getRandomMayorColor();
+                List<Perks> perks = PerkManager.getRandomPerks();
+                createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
+            }
+        } else {
+            if (cityElections.containsKey(city)) { // si y'a des maires qui se sont présenter
+                List<MayorCandidate> candidates = cityElections.get(city);
+
+                // Code fait avec ChatGPT pour avoir une complexité de O(n log(n)) au lieu de 0(n²)
+                PriorityQueue<MayorCandidate> candidateQueue = new PriorityQueue<>(
+                        Comparator.comparingInt(MayorCandidate::getVote).reversed()
+                );
+                candidateQueue.addAll(candidates);
+
+                MayorCandidate mayorWinner = candidateQueue.peek();
+                Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+                Perks perk2 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk2());
+                Perks perk3 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk3());
+
+                createMayor(mayorWinner.getName(), mayorWinner.getUUID(), city, perk1, perk2, perk3, mayorWinner.getCandidateColor(), ElectionType.ELECTION);
+
             } else {
-                if (cityElections.containsKey(city)) { // si y'a des maires qui se sont présenter
-                    List<MayorCandidate> candidates = cityElections.get(city);
+                // personne s'est présenté, owner = maire
+                NamedTextColor color = getRandomMayorColor();
+                List<Perks> perks = PerkManager.getRandomPerks();
+                createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.ELECTION);
 
-                    // Code fait avec ChatGPT pour avoir une complexité de O(n log(n)) au lieu de 0(n²)
-                    PriorityQueue<MayorCandidate> candidateQueue = new PriorityQueue<>(
-                            Comparator.comparingInt(MayorCandidate::getVote).reversed()
-                    );
-                    candidateQueue.addAll(candidates);
-
-                    MayorCandidate mayorWinner = candidateQueue.peek();
-                    Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-                    Perks perk2 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk2());
-                    Perks perk3 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk3());
-
-                    createMayor(mayorWinner.getName(), mayorWinner.getUUID(), city, perk1, perk2, perk3, mayorWinner.getCandidateColor(), ElectionType.ELECTION);
-
-                } else {
-                    // personne s'est présenté, owner = maire
-                    NamedTextColor color = getRandomMayorColor();
-                    List<Perks> perks = PerkManager.getRandomPerks();
-                    createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.ELECTION);
-
-                }
             }
         }
+
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                String[] queries = {
+                        "DELETE FROM " + TABLE_ELECTION + " WHERE city_uuid = ?",
+                        "DELETE FROM " + TABLE_VOTE + " WHERE city_uuid = ?"
+                };
+
+                for (String sql : queries) {
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql);
+                    statement.setString(1, city.getUUID());
+                    statement.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
+        // on supprime donc les elections de la ville ou le maire a été élu
+        cityElections.remove(city);
+        // on supprime donc les votes de la ville ou le maire a été élu
+        playerVote.remove(city);
     }
 
     public void createCandidate(City city, MayorCandidate candidate) {

@@ -137,6 +137,7 @@ public class MayorColorMenu extends Menu {
                     );
                     menu.open();
                 } else if (type == "change") {
+                    System.out.println(mayorManager.getElectionType(city));
                     if (mayorManager.getElectionType(city) == ElectionType.OWNER_CHOOSE) {
                         if (city.getMayor() == null) {
                             MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.CITY, MessageType.ERROR, false);

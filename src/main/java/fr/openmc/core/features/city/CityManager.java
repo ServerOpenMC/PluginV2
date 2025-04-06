@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
@@ -172,6 +173,11 @@ public class CityManager implements Listener {
     public static void forgetCity(String city) {
         try {
             City cityz = cities.remove(city);
+
+            MayorManager mayorManager = MayorManager.getInstance();
+            mayorManager.cityMayor.remove(cityz);
+            mayorManager.cityElections.remove(cityz);
+            mayorManager.playerVote.remove(cityz);
 
             for (UUID members : cityz.getMembers()){
                 MascotsManager.removeChest(Bukkit.getPlayer(members));
