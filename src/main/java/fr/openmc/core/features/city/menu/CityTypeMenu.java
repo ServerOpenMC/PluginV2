@@ -78,7 +78,7 @@ public class CityTypeMenu extends Menu {
             MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "peace");
 
             MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
-            Chronometer.startChronometer(player, "Mascot:chest", 10, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Annulation de la création");
+            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Annulation de la création");
             MascotsManager.giveChest(player);
             getOwner().closeInventory();
         }));
