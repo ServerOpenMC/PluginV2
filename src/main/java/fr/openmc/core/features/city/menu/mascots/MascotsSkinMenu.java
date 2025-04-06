@@ -63,7 +63,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.PIG_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.PIG);
+                changeMascotsSkin(mascots, EntityType.PIG, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -79,7 +79,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.PANDA_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.PANDA);
+                changeMascotsSkin(mascots, EntityType.PANDA, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -95,7 +95,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.SHEEP_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.SHEEP);
+                changeMascotsSkin(mascots, EntityType.SHEEP, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -111,7 +111,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.AXOLOTL_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.AXOLOTL);
+                changeMascotsSkin(mascots, EntityType.AXOLOTL, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -127,7 +127,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.CHICKEN_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.CHICKEN);
+                changeMascotsSkin(mascots, EntityType.CHICKEN, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -143,7 +143,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.COW_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.COW);
+                changeMascotsSkin(mascots, EntityType.COW, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -159,7 +159,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.GOAT_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.GOAT);
+                changeMascotsSkin(mascots, EntityType.GOAT, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -175,7 +175,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.MOOSHROOM_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.MOOSHROOM);
+                changeMascotsSkin(mascots, EntityType.MOOSHROOM, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -191,7 +191,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.WOLF_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.WOLF);
+                changeMascotsSkin(mascots, EntityType.WOLF, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -207,7 +207,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.VILLAGER_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.VILLAGER);
+                changeMascotsSkin(mascots, EntityType.VILLAGER, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -223,7 +223,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.SKELETON_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.SKELETON);
+                changeMascotsSkin(mascots, EntityType.SKELETON, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -239,7 +239,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.SPIDER_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.SPIDER);
+                changeMascotsSkin(mascots, EntityType.SPIDER, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {
@@ -255,7 +255,7 @@ public class MascotsSkinMenu extends Menu {
             }
         }).setOnClick(inventoryClickEvent -> {
             if (!egg.equals(Material.ZOMBIE_SPAWN_EGG)){
-                changeMascotsSkin(mascots, EntityType.ZOMBIE);
+                changeMascotsSkin(mascots, EntityType.ZOMBIE, getOwner());
                 getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                 getOwner().closeInventory();
             } else {

@@ -1,5 +1,8 @@
 package fr.openmc.core.features.city.mascots;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+
 import java.util.UUID;
 
 public class MascotUtils {
@@ -124,6 +127,19 @@ public class MascotUtils {
                 return;
             }
         }
+    }
+
+    public static City getCityFromMascot(UUID mascotUUID){
+        City city = null;
+        if (mascotUUID!=null){
+            for (Mascot mascot : MascotsManager.mascots){
+                if (mascot.getMascotUuid().equals(mascotUUID.toString())){
+                    city = CityManager.getCity(mascot.getCityUuid());
+                    break;
+                }
+            }
+        }
+        return city;
     }
 }
 
