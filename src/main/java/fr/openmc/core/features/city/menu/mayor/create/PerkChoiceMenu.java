@@ -76,7 +76,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
                                     (perk3 != null && perk3.getType() == PerkType.EVENT)
                     );
                     if (isPerkEvent) {
-                        MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 Réformes de Type Evenement!"), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 Réformes de Type Evenement!"), Prefix.MAYOR, MessageType.ERROR, false);
                         return;
                     }
 

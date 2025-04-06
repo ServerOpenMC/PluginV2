@@ -270,7 +270,7 @@ public class MayorCreateMenu extends Menu {
                 if (canConfirmPerk) {
                     if (type == MenuType.OWNER_1) {
                         mayorManager.put1Perk(CityManager.getPlayerCity(player.getUniqueId()), perk1);
-                        MessagesManager.sendMessage(player, Component.text("Vous avez ajouté la Réforme : " + perk1.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+                        MessagesManager.sendMessage(player, Component.text("Vous avez ajouté la Réforme : " + perk1.getName()), Prefix.MAYOR, MessageType.SUCCESS, false);
                         player.closeInventory();
                         return;
                     }

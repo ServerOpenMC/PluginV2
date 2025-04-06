@@ -90,7 +90,7 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.lore(loreElection);
             }).setOnClick(inventoryClickEvent -> {
                 if (mayorManager.cityElections.get(city) == null) {
-                    MessagesManager.sendMessage(player, Component.text("Il y a aucun volontaire pour être maire"), Prefix.CITY, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(player, Component.text("Il y a aucun volontaire pour être maire"), Prefix.MAYOR, MessageType.ERROR, true);
                 }
                 new MayorVoteMenu(player).open();
             }));

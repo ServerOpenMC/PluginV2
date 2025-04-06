@@ -120,13 +120,13 @@ public class MayorColorMenu extends Menu {
                                             assert playerMember != null;
                                             if (playerMember == player) continue;
                                             if (playerMember.isOnline()) {
-                                                MessagesManager.sendMessage(playerMember, Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.CITY, MessageType.ERROR, false);
+                                                MessagesManager.sendMessage(playerMember, Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.MAYOR, MessageType.ERROR, false);
                                             }
                                         }
                                     } else { // donc si c MenuType.OWNER
                                         mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
                                     }
-                                    MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.CITY, MessageType.ERROR, false);
+                                    MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
                                     player.closeInventory();
                                 },
                                 () -> {
@@ -142,14 +142,14 @@ public class MayorColorMenu extends Menu {
                         System.out.println(mayorManager.getElectionType(city));
                         if (mayorManager.getElectionType(city) == ElectionType.OWNER_CHOOSE) {
                             if (city.getMayor() == null) {
-                                MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.CITY, MessageType.ERROR, false);
+                                MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.MAYOR, MessageType.ERROR, false);
                                 return;
                             }
                             NamedTextColor thisColor = city.getMayor().getMayorColor();
                             ConfirmMenu menu = new ConfirmMenu(player,
                                     () -> {
                                         city.getMayor().setMayorColor(color);
-                                        MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
+                                        MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.MAYOR, MessageType.SUCCESS, false);
                                         player.closeInventory();
                                     },
                                     () -> {
