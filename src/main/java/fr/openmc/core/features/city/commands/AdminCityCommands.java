@@ -162,11 +162,11 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        if (MascotsManager.freeClaim.get(city.getUUID())==null){
-            MascotsManager.freeClaim.put(city.getUUID(), claim);
+        if (CityManager.freeClaim.get(city.getUUID())==null){
+            CityManager.freeClaim.put(city.getUUID(), claim);
             return;
         }
-        MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) + claim);
+        CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) + claim);
     }
 
     @Subcommand("freeclaim remove")
@@ -177,11 +177,11 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        if (MascotsManager.freeClaim.get(city.getUUID()) - claim <= 0){
-            MascotsManager.freeClaim.remove(city.getUUID());
+        if (CityManager.freeClaim.get(city.getUUID()) - claim <= 0){
+            CityManager.freeClaim.remove(city.getUUID());
             return;
         }
-        MascotsManager.freeClaim.replace(city.getUUID(),MascotsManager.freeClaim.get(city.getUUID()) - claim);
+        CityManager.freeClaim.replace(city.getUUID(),CityManager.freeClaim.get(city.getUUID()) - claim);
     }
 
     @Subcommand("freeclaim delete")
@@ -192,7 +192,7 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        MascotsManager.freeClaim.remove(city.getUUID());
+        CityManager.freeClaim.remove(city.getUUID());
     }
 
     @Subcommand("mascots remove")

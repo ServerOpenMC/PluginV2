@@ -59,8 +59,8 @@ public class CityMessages {
         } else {
             sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
         }
-        if (MascotsManager.freeClaim.containsKey(city.getUUID())){
-            sendLine(sender, "Claim gratuit", String.valueOf(MascotsManager.freeClaim.get(city.getUUID())));
+        if (CityManager.freeClaim.containsKey(city.getUUID())){
+            sendLine(sender, "Claim gratuit", String.valueOf(CityManager.freeClaim.get(city.getUUID())));
         }
     }
 }

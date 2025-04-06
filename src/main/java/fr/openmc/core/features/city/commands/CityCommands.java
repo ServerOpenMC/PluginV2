@@ -292,15 +292,15 @@ public class CityCommands {
 
         int price = calculatePrice(city.getChunks().size());
 
-        if (!MascotsManager.freeClaim.containsKey(city.getUUID())) {
+        if (!CityManager.freeClaim.containsKey(city.getUUID())) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
         }
 
-        if (MascotsManager.freeClaim.containsKey(city.getUUID())){
-            MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
+        if (CityManager.freeClaim.containsKey(city.getUUID())){
+            CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) - 1);
 
         } else {
             city.updateBalance((double) (price*-1));
@@ -537,7 +537,7 @@ public class CityCommands {
         city.addPermission(uuid, CPermission.OWNER);
 
         CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
-        MascotsManager.freeClaim.put(cityUUID, 15);
+        CityManager.freeClaim.put(cityUUID, 15);
 
         player.closeInventory();
 

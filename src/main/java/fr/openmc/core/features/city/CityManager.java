@@ -29,6 +29,7 @@ public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
     public static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
+    public static HashMap<String, Integer> freeClaim = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
@@ -70,6 +71,8 @@ public class CityManager implements Listener {
                 new ChestMenuListener(),
                 new MascotsListener()
         );
+
+        freeClaim = getAllFreeClaims();
     }
 
     @EventHandler
@@ -88,6 +91,41 @@ public class CityManager implements Listener {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_chests (city_uuid VARCHAR(8) NOT NULL, page TINYINT UNSIGNED NOT NULL, content LONGBLOB);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_regions (city_uuid VARCHAR(8) NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();// Faut esperer qu'aucun clodo n'ira à 134.217.712 blocks du spawn
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_power (city_uuid VARCHAR(8) NOT NULL, power_point INT NOT NULL);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
+    }
+
+    // free claim
+    public static HashMap<String, Integer> getAllFreeClaims() {
+        HashMap<String, Integer> freeClaims = new HashMap<>();
+
+        String query = "SELECT city_uuid, claim FROM free_claim";
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                String cityUuid = rs.getString("city_uuid");
+                int claim = rs.getInt("claim");
+                freeClaims.put(cityUuid, claim);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return freeClaims;
+    }
+
+    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
+        String query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
+            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
+                statement.setString(1, entry.getKey());
+                statement.setInt(2, entry.getValue());
+                statement.setInt(3, entry.getValue());
+                statement.addBatch();
+            }
+            statement.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static boolean isChunkClaimed(int x, int z) {
@@ -209,7 +247,7 @@ public class CityManager implements Listener {
             e.printStackTrace();
         }
 
-        MascotsManager.freeClaim.remove(city);
+        freeClaim.remove(city);
         if (CityTypeCooldown.isOnCooldown(city)) {
             CityTypeCooldown.removeCityCooldown(city);
         }
