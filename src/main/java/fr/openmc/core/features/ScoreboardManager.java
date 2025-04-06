@@ -8,6 +8,10 @@ import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItem;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -36,7 +40,7 @@ import java.util.UUID;
 public class ScoreboardManager implements Listener {
     public Set<UUID> disabledPlayers = new HashSet<>();
     public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") && Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
+    private final boolean canShowLogo = PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder();
     OMCPlugin plugin = OMCPlugin.getInstance();
 
     public ScoreboardManager() {
@@ -72,11 +76,11 @@ public class ScoreboardManager implements Listener {
             player.setScoreboard(createNewScoreboard(player));
             updateScoreboard(player);
 
-            MessagesManager.sendMessage(player, Component.text("Scoreboard activé").color(NamedTextColor.GREEN), Prefix.CITY);
+            MessagesManager.sendMessage(player, Component.text("Scoreboard activé").color(NamedTextColor.GREEN), Prefix.OPENMC, MessageType.INFO, true);
         } else {
             disabledPlayers.add(uuid);
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-            MessagesManager.sendMessage(player, Component.text("Scoreboard désactivé").color(NamedTextColor.RED), Prefix.CITY);
+            MessagesManager.sendMessage(player, Component.text("Scoreboard désactivé").color(NamedTextColor.RED), Prefix.OPENMC, MessageType.INFO, true);
         }
     }
 
@@ -134,7 +138,7 @@ public class ScoreboardManager implements Listener {
             scoreboard.resetScores(entry);
         }
 
-        objective.getScore(" ").setScore(11);
+        objective.getScore(" §8------------- ").setScore(11);
         objective.getScore("§8• §fNom: §7"+player.getName()).setScore(10);
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -142,7 +146,7 @@ public class ScoreboardManager implements Listener {
         objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
 
         String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
-        objective.getScore("§8• §e"+EconomyManager.getEconomyIcon()+" "+balance).setScore(8);
+        objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
 
         objective.getScore("  ").setScore(7);
 

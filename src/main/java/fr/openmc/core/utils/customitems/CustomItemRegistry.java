@@ -27,9 +27,14 @@ public class CustomItemRegistry {
 
         // Ici, enregistrer tout les items custom
         new CloseButton();
-        new ContestShell();
         new PreviousPage();
         new NextPage();
+        new AcceptButton();
+        new RefuseButton();
+        new SearchButton();
+
+        new ContestShell();
+        new Aywenite();
     }
 
     public static void register(String name, CustomItem item) {

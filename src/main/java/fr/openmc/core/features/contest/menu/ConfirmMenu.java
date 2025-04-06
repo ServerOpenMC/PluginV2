@@ -51,7 +51,9 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent click) {}
+    public void onInventoryClick(InventoryClickEvent click) {
+        // empty
+    }
 
 
     @Override
@@ -59,17 +61,19 @@ public class ConfirmMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
+        String messageTeam = "La Team ";
+
         String campName = contestManager.data.get(getCampName);
         String campColor = contestManager.data.get(getColor);
 
         NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
         List<Component> lore1 = Arrays.asList(
-                Component.text("§7Vous allez rejoindre ").append(Component.text( "La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
+                Component.text("§7Vous allez rejoindre ").append(Component.text( messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
                 Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
         );
 
         List<Component> lore0 = Arrays.asList(
-                Component.text("§7Vous allez annuler votre choix : ").append(Component.text( "La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
+                Component.text("§7Vous allez annuler votre choix : ").append(Component.text( messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
                 Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
         );
 
@@ -93,6 +97,7 @@ public class ConfirmMenu extends Menu {
             contestManager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(player.getName(), 0, Integer.valueOf(substring), campColorF));
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
             MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
+
             player.closeInventory();
         }));
         player.openInventory(getInventory());

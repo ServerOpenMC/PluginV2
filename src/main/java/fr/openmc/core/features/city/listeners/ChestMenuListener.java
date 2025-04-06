@@ -1,9 +1,17 @@
 package fr.openmc.core.features.city.listeners;
 
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.ChestMenu;
-import net.kyori.adventure.text.TextComponent;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +19,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+
+import static fr.openmc.core.features.city.menu.ChestMenu.UPGRADE_PER_AYWENITE;
+import static fr.openmc.core.features.city.menu.ChestMenu.UPGRADE_PER_MONEY;
 
 public class ChestMenuListener implements Listener {
     @EventHandler
@@ -27,6 +38,29 @@ public class ChestMenuListener implements Listener {
         if (inv != menu.getInventory()) { return; }
 
         // L'inventaire est la banque de ville, on peut *enfin* faire qqchose
+
+        if (event.getSlot() == 48 && event.getCurrentItem().getType() == Material.ENDER_CHEST) { // Upgrade Button
+            int price = city.getChestPages()*UPGRADE_PER_MONEY; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
+            if (city.getBalance() < price) {
+                MessagesManager.sendMessage(player, Component.text("La ville n'as pas assez d'argent (" + price + EconomyManager.getEconomyIcon() +" nécessaires)"), Prefix.CITY, MessageType.ERROR, true);
+                player.closeInventory();
+                return;
+            }
+
+            int aywenite = city.getChestPages()*UPGRADE_PER_AYWENITE; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
+            if (!ItemUtils.hasEnoughItems(player, CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType(), aywenite )) {
+                MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite §f("+aywenite+ " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            city.updateBalance((double) -price);
+            ItemUtils.removeItemsFromInventory(player, CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType(), aywenite);
+
+            city.upgradeChest();
+            MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+            player.closeInventory();
+            return;
+        }
 
         if (event.getSlot() == 49) { // Close Button
             exit(city, inv, menu);
