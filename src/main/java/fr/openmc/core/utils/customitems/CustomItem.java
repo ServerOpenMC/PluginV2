@@ -50,11 +50,6 @@ public abstract class CustomItem {
             item = getVanilla();
         }
 
-        ItemMeta meta = item.getItemMeta();
-        PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(CustomItemRegistry.customNameKey, PersistentDataType.STRING, name);
-        item.setItemMeta(meta);
-
         return item;
     }
 }

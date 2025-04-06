@@ -34,6 +34,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
@@ -429,10 +430,9 @@ public class ContestManager {
 
         // STATS PERSO + REWARDS
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
-
+        AtomicInteger rank = new AtomicInteger(1);
         // For each player in contest
         orderedMap.forEach((uuid, dataPlayer1) -> {
-            int rank = 1;
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
@@ -444,7 +444,7 @@ public class ContestManager {
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
             String playerTitleContest = contestPlayerManager.getTitleWithPoints(points) + playerCampName;
-            // ex Novice en + Moutarde
+            // ex                                                             Novice en + Moutarde
 
             bookMetaPlayer.addPages(
                     Component.text("§8§lStatistiques Personnelles\n§0Votre camp : ")
@@ -452,46 +452,74 @@ public class ContestManager {
                             .append(Component.text("\n§0Votre Titre sur Le Contest §8: "))
                             .append(Component.text(playerTitleContest).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
                             .append(Component.text("\n§0Votre Rang sur Le Contest : §8#"))
-                            .append(Component.text(rank))
+                            .append(Component.text(rank.get()))
                             .append(Component.text("\n§0Points Déposés : §b" + points))
             );
 
+            List<ItemStack> itemListRewards = new ArrayList<>();
+            String textRewards = "§8§lRécompenses";
+
             int money = 0;
+            int aywenite = 0;
+            double multiplicator = contestPlayerManager.getMultiplicatorFromRank(contestPlayerManager.getRankContestFromOfflineInt(player));
             if(contestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
+
+                // Gagnant - ARGENT
                 int moneyMin = 10000;
                 int moneyMax = 12000;
-                double multi = contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
-                moneyMin = (int) (moneyMin * multi);
-                moneyMax = (int) (moneyMax * multi);
+                moneyMin = (int) (moneyMin * multiplicator);
+                moneyMax = (int) (moneyMax * multiplicator);
 
-                money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
+                Random randomMoney = new Random();
+                money = randomMoney.nextInt(moneyMin, moneyMax);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
 
+                // Gagnant - Aywenite
+                int ayweniteMin = 40;
+                int ayweniteMax = 60;
+                ayweniteMin = (int) (ayweniteMin * multiplicator);
+                ayweniteMax = (int) (ayweniteMax * multiplicator);
+                Random randomAwyenite = new Random();
+                aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
             } else {
+                // Perdant - ARGENT
                 int moneyMin = 2000;
                 int moneyMax = 4000;
-                double multi = contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
-                moneyMin = (int) (moneyMin * multi);
-                moneyMax = (int) (moneyMax * multi);
+                moneyMin = (int) (moneyMin * multiplicator);
+                moneyMax = (int) (moneyMax * multiplicator);
 
-                money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
+                Random randomMoney = new Random();
+                money = randomMoney.nextInt(moneyMin, moneyMax);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
-            }
 
-            //TODO: Mettre Item qui permet d'améliorer sa Mascotte
+                // Perdant - Aywenite
+                int ayweniteMin = 20;
+                int ayweniteMax = 25;
+                ayweniteMin = (int) (ayweniteMin * multiplicator);
+                ayweniteMax = (int) (ayweniteMax * multiplicator);
+                Random randomAwyenite = new Random();
+                aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
+            }
+            // PRINT REWARDS
+
+            textRewards += "\n§8+ §6" + money + "$ ";
+            textRewards += "\n§9+ §d" + aywenite + " d'Aywenite ";
+            textRewards += "\n§7Boost de §b" + multiplicator;
 
             bookMetaPlayer.addPages(
-                    Component.text("§8§lRécompenses\n§0+ " + money + "$ §b(x" + contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player)) + ")")
+                    Component.text(textRewards)
             );
 
             bookPlayer.setItemMeta(bookMetaPlayer);
 
-            List<ItemStack> itemlist = new ArrayList<>();
-            itemlist.add(bookPlayer);
+            ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+            ayweniteItemStack.setAmount(aywenite);
+            itemListRewards.add(bookPlayer);
+            itemListRewards.add(ayweniteItemStack);
 
-            ItemStack[] items = itemlist.toArray(new ItemStack[itemlist.size()]);
-            playerItemsMap.put(player, items);
-            rank++;
+            ItemStack[] rewards = itemListRewards.toArray(new ItemStack[itemListRewards.size()]);
+            playerItemsMap.put(player, rewards);
+            rank.getAndIncrement();
         });
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
