@@ -6,8 +6,8 @@ import fr.openmc.core.commands.debug.CooldownCommand;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.utils.*;
-import fr.openmc.core.features.quests.commands.QuestsCommand;
 import fr.openmc.core.utils.cooldown.CooldownInterceptor;
+import fr.openmc.core.utils.freeze.FreezeCommand;
 import lombok.Getter;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
@@ -35,7 +35,7 @@ public class CommandsManager {
 		        new Diceroll(),
                 new CooldownCommand(),
                 new ChronometerCommand(),
-                new QuestsCommand()
+                new FreezeCommand()
         );
     }
 

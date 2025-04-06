@@ -20,14 +20,19 @@ public class FreezeManager {
 	}
 	
 	public static void switchFreeze(Player player, Player target) {
-		if (FROZEN_PLAYERS.contains(target)) {
-			FROZEN_PLAYERS.remove(target);
-			MessagesManager.sendMessage(player, Component.text("§2Vous avez freeze §6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, false);
-			MessagesManager.sendMessage(target, Component.text("§4Vous avez été freeze"), Prefix.OPENMC, MessageType.WARNING, true);
+		if (target == null) {
+			MessagesManager.sendMessage(player, Component.text("§4Joueur introuvable"), Prefix.OPENMC, MessageType.ERROR, false);
 		} else {
-			FROZEN_PLAYERS.add(target);
-			MessagesManager.sendMessage(player, Component.text("§2Vous avez unfreeze §6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, false);
-			MessagesManager.sendMessage(target, Component.text("§2Vous avez été unfreeze"), Prefix.OPENMC, MessageType.INFO, true);
+			if (FROZEN_PLAYERS.contains(target)) {
+				FROZEN_PLAYERS.remove(target);
+				MessagesManager.sendMessage(player, Component.text("§2Vous avez unfreeze §6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, false);
+				MessagesManager.sendMessage(target, Component.text("§2Vous avez été unfreeze"), Prefix.OPENMC, MessageType.INFO, true);
+			} else {
+				FROZEN_PLAYERS.add(target);
+				target.sendTitle("§4Vous êtes freeze", "§5Si vous vous déconnectez, vous serez banni");
+				MessagesManager.sendMessage(player, Component.text("§2Vous avez freeze §6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, false);
+				MessagesManager.sendMessage(target, Component.text("§4Vous avez été freeze"), Prefix.OPENMC, MessageType.WARNING, true);
+			}
 		}
 	}
 }
