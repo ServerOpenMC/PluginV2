@@ -12,10 +12,12 @@ import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -28,6 +30,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
@@ -45,6 +48,8 @@ public class CityCommands {
     public static HashMap<Player, Player> invitations = new HashMap<>(); // Invité, Inviteur
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
+    private static ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+
     private Location[] getCorners(Player player) {
         World world = player.getWorld();
         Location location = player.getLocation();
@@ -58,8 +63,12 @@ public class CityCommands {
         return new Location[]{minLocation, maxLocation};
     }
 
-    private static int calculatePrice(int chunkCount) {
-        return 5000 + ((chunkCount-25) * 1000);
+    public static int calculatePrice(int chunkCount) {
+        return 5000 + (chunkCount * 1000);
+    }
+
+    public static int calculateAywenite(int chunkCount) {
+        return 1*chunkCount;
     }
 
     @DefaultFor("~")
@@ -222,10 +231,6 @@ public class CityCommands {
         menu.open();
     }
 
-    @Subcommand("delconfirm")
-    @CommandPermission("omc.commands.city.delete")
-    @Description("Supprimer votre ville")
-    @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir supprimer ta ville (%sec% secondes)")
     public static void deleteCity(Player sender) {
         UUID uuid = sender.getUniqueId();
 
@@ -291,10 +296,18 @@ public class CityCommands {
         }
 
         int price = calculatePrice(city.getChunks().size());
+        int aywenite = calculateAywenite(city.getChunks().size());
+
+
 
         if (!CityManager.freeClaim.containsKey(city.getUUID())) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            if (!ItemUtils.hasEnoughItems(sender.getPlayer(), ayweniteItemStack.getType(), aywenite )) {
+                MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas assez d'§dAywenite §f("+aywenite+ " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
         }
@@ -304,6 +317,7 @@ public class CityCommands {
 
         } else {
             city.updateBalance((double) (price*-1));
+            ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
         }
         city.addChunk(sender.getWorld().getChunkAt(chunkX, chunkZ));
 
@@ -375,12 +389,11 @@ public class CityCommands {
     @Description("Créer une ville")
     @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir créer une ville (%sec% secondes)")
     void create(Player player, @Named("nom") String name) {
-        UUID uuid = player.getUniqueId();
-
-        if (CityManager.getPlayerCity(uuid) != null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+        if (!CityCreateConditions.canCityCreate(player)){
+            MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
+
 
         if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
@@ -531,6 +544,10 @@ public class CityCommands {
                 throw new RuntimeException(e);
             }
         });
+
+        // innutile de recheck si le joueur a assez de ressource vu qu'on check dans CityCreateConditions
+        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE);
+        ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), CityCreateConditions.AYWENITE_CREATE);
 
         City city = CityManager.createCity(player, cityUUID, name, type);
         city.addPlayer(uuid);

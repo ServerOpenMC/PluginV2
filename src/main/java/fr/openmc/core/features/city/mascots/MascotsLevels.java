@@ -9,30 +9,30 @@ import java.util.Map;
 
 @Getter
 public enum MascotsLevels {
-    level1(300, 1, Map.of(Material.DIAMOND, 5, Material.IRON_INGOT, 10), new PotionEffect[]{
+    level1(300, 50, Map.of(Material.DIAMOND, 5, Material.IRON_INGOT, 10), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 0)
     }, new PotionEffect[0]),
 
-    level2(600, 2, Map.of(Material.DIAMOND, 5, Material.IRON_INGOT, 10), new PotionEffect[]{
+    level2(600, 100, Map.of(Material.DIAMOND, 5, Material.IRON_INGOT, 10), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 1),
     }, new PotionEffect[0]),
 
-    level3(900, 3, Map.of(Material.DIAMOND, 10, Material.IRON_INGOT, 20), new PotionEffect[]{
+    level3(900, 150, Map.of(Material.DIAMOND, 10, Material.IRON_INGOT, 20), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 1),
             invisibleEffect(PotionEffectType.WEAKNESS, 0)
     }, new PotionEffect[0]),
 
-    level4(1200, 4, Map.of(Material.DIAMOND, 15, Material.GOLD_INGOT, 10), new PotionEffect[]{
+    level4(1200, 200, Map.of(Material.DIAMOND, 15, Material.GOLD_INGOT, 10), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 1),
             invisibleEffect(PotionEffectType.WEAKNESS, 1)
     }, new PotionEffect[]{invisibleEffect(PotionEffectType.REGENERATION, 0)}),
 
-    level5(1500, 5, Map.of(Material.DIAMOND, 20, Material.GOLD_INGOT, 15), new PotionEffect[]{
+    level5(1500, 250, Map.of(Material.DIAMOND, 20, Material.GOLD_INGOT, 15), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 1),
             invisibleEffect(PotionEffectType.WEAKNESS, 2)
     }, new PotionEffect[]{invisibleEffect(PotionEffectType.REGENERATION, 0)}),
 
-    level6(1800, 7, Map.of(Material.DIAMOND, 25, Material.NETHERITE_INGOT, 1), new PotionEffect[]{
+    level6(1800, 300, Map.of(Material.DIAMOND, 25, Material.NETHERITE_INGOT, 1), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 1),
             invisibleEffect(PotionEffectType.WEAKNESS, 2),
             invisibleEffect(PotionEffectType.HUNGER, 0)
@@ -40,7 +40,7 @@ public enum MascotsLevels {
             invisibleEffect(PotionEffectType.REGENERATION, 1),
     }),
 
-    level7(2100, 10, Map.of(Material.DIAMOND, 30, Material.NETHERITE_INGOT, 2), new PotionEffect[]{
+    level7(2100, 350, Map.of(Material.DIAMOND, 30, Material.NETHERITE_INGOT, 2), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 1),
             invisibleEffect(PotionEffectType.WEAKNESS, 2),
             invisibleEffect(PotionEffectType.HUNGER, 1)
@@ -49,7 +49,7 @@ public enum MascotsLevels {
             invisibleEffect(PotionEffectType.HASTE, 0),
     }),
 
-    level8(2400, 15, Map.of(Material.DIAMOND, 40, Material.NETHERITE_INGOT, 3), new PotionEffect[]{
+    level8(2400, 400, Map.of(Material.DIAMOND, 40, Material.NETHERITE_INGOT, 3), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 1),
             invisibleEffect(PotionEffectType.WEAKNESS, 2),
             invisibleEffect(PotionEffectType.HUNGER, 1)
@@ -58,7 +58,7 @@ public enum MascotsLevels {
             invisibleEffect(PotionEffectType.HASTE, 1),
     }),
 
-    level9(2700, 20, Map.of(Material.DIAMOND, 50, Material.NETHERITE_INGOT, 4), new PotionEffect[]{
+    level9(2700, 450, Map.of(Material.DIAMOND, 50, Material.NETHERITE_INGOT, 4), new PotionEffect[]{
             invisibleEffect(PotionEffectType.SLOWNESS, 1),
             invisibleEffect(PotionEffectType.WEAKNESS, 2),
             invisibleEffect(PotionEffectType.HUNGER, 1),
