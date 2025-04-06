@@ -524,7 +524,7 @@ public class CityCommands {
         }
 
         if (isClaimed.get()) {
-            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim, les chunks autour du coffre ne doivent pas etre claim ( f3 + G pour afficher les chunks )"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
