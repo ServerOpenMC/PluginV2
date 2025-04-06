@@ -142,7 +142,7 @@ public class MascotMenu extends Menu {
         if (mascotsLevels.equals(MascotsLevels.level10)){
             requiredAmount.add(Component.text("§7Niveau max atteins"));
         } else {
-            requiredAmount.add(Component.text("§7Nécessite §d" + MascotsLevels.valueOf("level" + mascotsLevels.getUpgradeCost() + " d'Aywenite"));
+            requiredAmount.add(Component.text("§7Nécessite §d" + MascotsLevels.valueOf("level" + mascotsLevels.getUpgradeCost() + " d'Aywenite")));
         }
 
         map.put(15, new ItemBuilder(this,Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
