@@ -107,6 +107,7 @@ public class MascotsListener implements Listener {
                             e.setCancelled(true);
                             return;
                         }
+                        futurCreateCity.remove(player.getUniqueId());
                         city = CityManager.getPlayerCity(player.getUniqueId());
                         if (city==null){
                             MessagesManager.sendMessage(player, Component.text("Une erreur est survenu la ville n'existe pas"), Prefix.CITY, MessageType.ERROR, false);
@@ -137,8 +138,9 @@ public class MascotsListener implements Listener {
                     player_world.getBlockAt(mascot_spawn).setType(Material.AIR);
 
                     if (movingMascots.contains(city_uuid)){
-                        if (MascotUtils.getMascotUUIDOfCity(city_uuid)!=null){
-                            Entity mob = Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city_uuid));
+                        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+                        if (mascotUUID!=null){
+                            Entity mob = Bukkit.getEntity(mascotUUID);
                             if (mob!=null){
                                 mob.teleport(mascot_spawn);
                                 movingMascots.remove(city_uuid);
@@ -432,7 +434,7 @@ public class MascotsListener implements Listener {
         ItemStack item =  event.getCursor();
         ItemStack clickedItem = event.getCurrentItem();
 
-        // détection pour le bundle
+        // détection pour le bundle qui ne fonctionne pas...
         if (clickedItem != null && clickedItem.getType() == Material.BUNDLE) {
             if (event.getClick() == ClickType.RIGHT) {
                 if (item != null && item.getType() != Material.AIR) {
@@ -507,11 +509,6 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onPlayerQuit(PlayerQuitEvent e) {
         Player player = e.getPlayer();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            return;
-        }
-        String city_uuid = city.getUUID();
         for (ItemStack item : player.getInventory().getContents()){
             if (item!=null){
                 ItemMeta itemMeta = item.getItemMeta();
@@ -519,9 +516,16 @@ public class MascotsListener implements Listener {
                 PersistentDataContainer data = itemMeta.getPersistentDataContainer();
                 if (data.has(MascotsManager.chestKey, PersistentDataType.STRING) && data.get(MascotsManager.chestKey, PersistentDataType.STRING)=="id"){
                     player.getInventory().remove(item);
+                    futurCreateCity.remove(player.getUniqueId());
+                    City city = CityManager.getPlayerCity(player.getUniqueId());
+                    if (city == null) {
+                        return;
+                    }
+                    String city_uuid = city.getUUID();
                     if (Chronometer.containsChronometer(player.getUniqueId(), "mascotsMove")){
-                        if (MascotUtils.getMascotUUIDOfCity(city_uuid)!=null){
-                            Entity mob = Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city_uuid));
+                        UUID masotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+                        if (masotUUID!=null){
+                            Entity mob = Bukkit.getEntity(masotUUID);
                             if (mob!=null){
                                 Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                             }
@@ -550,8 +554,9 @@ public class MascotsListener implements Listener {
             }
             String city_uuid = city.getUUID();
             movingMascots.remove(city_uuid);
-            if (MascotUtils.getMascotUUIDOfCity(city_uuid)!=null){
-                Entity mascot = Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city_uuid));
+            UUID masotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+            if (masotUUID!=null){
+                Entity mascot = Bukkit.getEntity(masotUUID);
                 if (mascot!=null){
                     Chronometer.startChronometer(mascot,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                 }
@@ -593,8 +598,9 @@ public class MascotsListener implements Listener {
         if (regenTasks.containsKey(mascotsUUID)) {
             return;
         }
-        if (Bukkit.getEntity(mascotsUUID)!=null){
-            PersistentDataContainer data = Bukkit.getEntity(mascotsUUID).getPersistentDataContainer();
+        Entity mascot = Bukkit.getEntity(mascotsUUID);
+        if (mascot!=null){
+            PersistentDataContainer data = mascot.getPersistentDataContainer();
             if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
                 String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
                 if (!MascotUtils.mascotsContains(city_uuid)){
@@ -643,6 +649,11 @@ public class MascotsListener implements Listener {
                 if (endTime == 0){
                     if (MascotUtils.getMascotImmunity(city_uuid))MascotUtils.changeMascotImmunity(city_uuid, false);
                     MascotUtils.setImmunityTime(city_uuid, 0);
+                    UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+                    if (mascotUUID!=null){
+                        Entity entity = Bukkit.getEntity(mascotUUID);
+                        if (entity!=null)entity.setGlowing(false);
+                    }
                     this.cancel();
                     return;
                 }

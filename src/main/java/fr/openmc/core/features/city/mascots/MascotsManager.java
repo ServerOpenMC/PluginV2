@@ -59,11 +59,11 @@ public class MascotsManager {
         freeClaim = getAllFreeClaims();
 
         for (Mascot mascot : mascots){
-            if (!mascot.isAlive()){
-                UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
-                Entity mob = Bukkit.getEntity(mascotUUID);
+            UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
+            Entity mob = Bukkit.getEntity(mascotUUID);
+            if (mascot.isImmunity()){
                 if (mob != null) mob.setGlowing(true);
-            }
+            } else if (mob != null) mob.setGlowing(false);
         }
     }
 
@@ -161,6 +161,7 @@ public class MascotsManager {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
 
         setMascotsData(mob,null, 300, 300);
+        mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
         // l'uuid de la ville lui est approprié pour l'identifié
@@ -415,51 +416,5 @@ public class MascotsManager {
         mob.setCustomName(Objects.requireNonNullElseGet(customName, () -> "§lMascotte §c" + mob.getHealth() + "/300❤"));
 
         mob.setCustomNameVisible(true);
-    }
-
-
-    public static boolean hasEnoughCroqStar(Player player, MascotsLevels mascotsLevels) {
-        String itemNamespace = "city:croqstar";
-        int requiredAmount = mascotsLevels.getUpgradeCost();
-        int count = 0;
-
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null) {
-                CustomStack customStack = CustomStack.byItemStack(item);
-                if (customStack != null && customStack.getNamespacedID().equals(itemNamespace)) {
-                    count += item.getAmount();
-                    if (count >= requiredAmount) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public static void removeCrocStar(Player player, MascotsLevels mascotsLevels) {
-        String itemNamespace = "city:croqstar";
-        PlayerInventory inventory = player.getInventory();
-        int amountToRemove = mascotsLevels.getUpgradeCost();
-
-        for (ItemStack item : inventory.getContents()) {
-            if (item != null) {
-                CustomStack customStack = CustomStack.byItemStack(item);
-                if (customStack != null && customStack.getNamespacedID().equals(itemNamespace)) {
-                    int stackAmount = item.getAmount();
-
-                    if (stackAmount > amountToRemove) {
-                        item.setAmount(stackAmount - amountToRemove);
-                        return;
-                    } else {
-                        amountToRemove -= stackAmount;
-                        item.setAmount(0);
-                    }
-                    if (amountToRemove <= 0) {
-                        return;
-                    }
-                }
-            }
-        }
     }
 }

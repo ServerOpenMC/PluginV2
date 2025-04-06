@@ -7,6 +7,7 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,11 +17,17 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
+import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
+import static fr.openmc.core.features.city.commands.CityCommands.calculatePrice;
+
 public class ChestMenu {
     private final City city;
     @Getter private final int page;
     private static ItemStack border;
     @Getter @Setter private Inventory inventory;
+
+    public static int UPGRADE_PER_MONEY = 3000;
+    public static int UPGRADE_PER_AYWENITE = 5;
 
     private static ItemStack getBorder() {
         if (border != null) {
@@ -80,7 +87,10 @@ public class ChestMenu {
             ItemMeta meta = upgrade.getItemMeta();
             meta.displayName(Component.text("§aAméliorer le coffre"));
             meta.lore(List.of(
-                    Component.text("§7Votre ville doit avoir " + city.getChestPages()*5000 + EconomyManager.getEconomyIcon()),
+                    Component.text("§7Votre ville doit avoir : "),
+                    Component.text("§8- §6"+ city.getChestPages()*UPGRADE_PER_MONEY).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
+                    Component.text("§8- §d"+ city.getChestPages()*UPGRADE_PER_AYWENITE + " d'Aywenite"),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE")
             ));
             upgrade.setItemMeta(meta);
