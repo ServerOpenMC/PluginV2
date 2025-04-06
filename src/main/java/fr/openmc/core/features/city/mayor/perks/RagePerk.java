@@ -22,6 +22,8 @@ public class RagePerk implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
+        if (MayorManager.getInstance().phaseMayor != 2) return;
+
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
