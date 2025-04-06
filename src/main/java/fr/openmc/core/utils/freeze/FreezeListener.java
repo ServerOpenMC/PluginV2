@@ -23,7 +23,6 @@ public class FreezeListener implements Listener {
 			Date banDuration = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30));
 			Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), "Déconnexion en étant freeze !", banDuration, "Anti Déco Freeze");
 			FreezeManager.FROZEN_PLAYERS.remove(player);
-			
 		}
 	}
 
