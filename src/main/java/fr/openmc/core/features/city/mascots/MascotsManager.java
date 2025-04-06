@@ -319,6 +319,7 @@ public class MascotsManager {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
         LivingEntity mob = (LivingEntity) mascots;
+        boolean glowing = mascots.isGlowing();
         int cooldown = 0;
         boolean hasCooldown = false;
 
@@ -353,6 +354,7 @@ public class MascotsManager {
 
         if (world != null) {
             LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc, skin);
+            newMascots.setGlowing(glowing);
 
             if (hasCooldown){
                 Chronometer.startChronometer(newMascots, "mascotsCooldown" , cooldown, null, "%null", null, "%null%");
