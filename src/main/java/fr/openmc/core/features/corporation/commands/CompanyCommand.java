@@ -565,8 +565,8 @@ public class CompanyCommand {
 
     //remove permissions
     // only the owner or the owners can remove that permission
-    @Subcommand({"permission SUPERIOR give", "perms SUPERIOR give"})
-    @Description("Donner la permission SUPERIOR au joueur")
+    @Subcommand({"permission SUPERIOR remove", "perms SUPERIOR remove"})
+    @Description("Retire la permission SUPERIOR au joueur")
     void removeSuperior(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
