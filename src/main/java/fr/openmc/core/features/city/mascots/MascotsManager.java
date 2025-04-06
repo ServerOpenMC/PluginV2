@@ -247,22 +247,15 @@ public class MascotsManager {
     }
 
     public static void removeChest(Player player){
-        ItemStack specialChest = new ItemStack(Material.CHEST);
-        ItemMeta meta = specialChest.getItemMeta();
-        if (meta != null){
-            List<Component> info = new ArrayList<>();
-            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
-            info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
-
-            meta.displayName(Component.text("§lMascotte"));
-            meta.lore(info);
-            PersistentDataContainer data = meta.getPersistentDataContainer();
-            data.set(chestKey,PersistentDataType.STRING, "id");
-            specialChest.setItemMeta(meta);
-
-            if (player.getInventory().contains(specialChest)){
-                player.getInventory().remove(specialChest);
+        for (ItemStack itemStack : player.getInventory().getContents()){
+            if (itemStack!=null){
+                ItemMeta meta = itemStack.getItemMeta();
+                PersistentDataContainer data = meta.getPersistentDataContainer();
+                if (data.has(MascotsManager.chestKey, PersistentDataType.STRING)){
+                    player.getInventory().remove(itemStack);
+                    MascotsListener.futurCreateCity.remove(player.getUniqueId());
+                    break;
+                }
             }
         }
     }

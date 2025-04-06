@@ -583,11 +583,8 @@ public class MascotsListener implements Listener {
         }
 
         if (group.equals("Mascot:chest") && entity instanceof Player player){
-            City city = CityManager.getPlayerCity(player.getUniqueId());
-            if (city==null){
-                return;
-            }
             MascotsManager.removeChest(player);
+            MascotsListener.futurCreateCity.remove(player.getUniqueId());
         }
     }
 
