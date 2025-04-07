@@ -12,7 +12,6 @@ import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.listeners.ListenersManager;

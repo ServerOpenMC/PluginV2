@@ -1,7 +1,5 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
-import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
@@ -13,9 +11,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
-
-import static fr.openmc.core.features.city.commands.CityCommands.balanceCooldownTasks;
-
 /**
  * Le but de cette classe est de regrouper toutes les conditions neccessaires
  * pour creer une ville (utile pour faire une modif sur menu et commandes)
