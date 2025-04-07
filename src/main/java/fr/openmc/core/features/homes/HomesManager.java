@@ -222,7 +222,7 @@ public class HomesManager {
 
     private static void loadHomeLimit() {
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT player_uuid, limit FROM homes_limits");
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT player_uuid, `limit` FROM homes_limits");
             statement.executeQuery();
             ResultSet rs = statement.getResultSet();
 
