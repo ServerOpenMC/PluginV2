@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -28,9 +27,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-
-import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
-import static fr.openmc.core.features.city.commands.CityCommands.calculatePrice;
 
 public class NoCityMenu extends Menu {
 

@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

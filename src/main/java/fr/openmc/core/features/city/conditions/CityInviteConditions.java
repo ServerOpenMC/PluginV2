@@ -7,7 +7,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import static fr.openmc.core.features.city.commands.CityCommands.invitations;

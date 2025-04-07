@@ -10,7 +10,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -18,7 +17,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -154,6 +152,43 @@ public class CityChunkMenu extends Menu {
                         });
                     }
 
+                } else {
+                    if (material == null) material = Material.GRAY_STAINED_GLASS_PANE;
+                    int nbChunk = city2.getChunks().size();
+                    List<Component> listComponent;
+
+                    if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())>0) {
+                        listComponent = List.of(
+                                Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                                Component.text(""),
+                                Component.text("§cCoûte :"),
+                                Component.text("§8- §6Claim Gratuit"),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ POUR CLAIM")
+                        );
+                    } else {
+                        listComponent = List.of(
+                                Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                                Component.text(""),
+                                Component.text("§cCoûte :"),
+                                Component.text("§8- §6"+ (double) calculatePrice(nbChunk)).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
+                                Component.text("§8- §d"+ calculateAywenite(nbChunk) + " d'Aywenite"),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ POUR CLAIM")
+                        );
+                    }
+
+                    chunkItem = new ItemBuilder(this, material, itemMeta -> {
+                        itemMeta.displayName(Component.text("§cClaim libre"));
+                        itemMeta.lore(listComponent);
+                    }).setOnClick(inventoryClickEvent -> {
+                        City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+
+                        if (cityCheck == null) {
+                            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            return;
+                        }
+
                     inventory.put(row * 9 + col, chunkItem);
                 }
             }
@@ -179,7 +214,6 @@ public class CityChunkMenu extends Menu {
             }).setOnClick(event -> {
                 CityChunkMenu newMenu = new CityChunkMenu(player);
                 newMenu.open();
-            }));
 
             return inventory;
 

@@ -3,34 +3,21 @@ package fr.openmc.core.features.city.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CityTypeMenu extends Menu {
     String name;

@@ -133,7 +133,7 @@ public class ContestManager {
 
     // CONTEST DATA
     public void initContestData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest WHERE 1")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT (camp1, camp2, color1, color2, phase, startdate, points1, points2) FROM contest WHERE 1")) {
             ResultSet result = states.executeQuery();
             if (result.next()) {
                 String camp1 = result.getString("camp1");
@@ -174,7 +174,7 @@ public class ContestManager {
 
     // CONTEST PLAYER DATA
     public void loadContestPlayerData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT (minecraft_uuid, name, point_dep, camps) FROM contest_camps")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String uuid = result.getString("minecraft_uuid");

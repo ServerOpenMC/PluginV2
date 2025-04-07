@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.menu.ChestMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -42,7 +42,7 @@ public class City {
         CityManager.registerCity(this);
 
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_permissions WHERE city_uuid = ?");
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT (city_uuid, player, permission) FROM city_permissions WHERE city_uuid = ?");
             statement.setString(1, cityUUID);
             ResultSet rs = statement.executeQuery();
 
@@ -405,7 +405,7 @@ public class City {
     private boolean loadPermission(UUID player) {
         if (!permsCache.containsKey(player)) {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_permissions WHERE city_uuid = ? AND player = ?");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT (city_uuid, player, permission) FROM city_permissions WHERE city_uuid = ? AND player = ?");
                 statement.setString(1, cityUUID);
                 statement.setString(2, player.toString());
                 ResultSet rs = statement.executeQuery();
