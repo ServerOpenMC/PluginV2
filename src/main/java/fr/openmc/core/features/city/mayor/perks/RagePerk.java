@@ -63,7 +63,13 @@ public class RagePerk implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        UUID uuid = event.getPlayer().getUniqueId();
+        Player player = event.getPlayer();
+
+        player.removePotionEffect(PotionEffectType.STRENGTH);
+        player.removePotionEffect(PotionEffectType.RESISTANCE);
+
+
+        UUID uuid = player.getUniqueId();
         lastCityIn.remove(uuid);
     }
 }

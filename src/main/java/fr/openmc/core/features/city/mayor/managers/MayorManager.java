@@ -16,7 +16,9 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
@@ -365,17 +367,31 @@ public class MayorManager {
                 e.printStackTrace();
             }
         });
+        HashMap<City, Mayor> copyCityMayor = cityMayor;
         cityMayor = new HashMap<>();
         cityElections = new HashMap<>(){};
         playerVote = new HashMap<>();
-
         for (City city : CityManager.getCities()) {
+            // PERKS INIT
+            // Fou de Rage
+            for (UUID uuid : city.getMembers()) {
+                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
+                if (offlinePlayer.isOnline()) {
+                    Player player = offlinePlayer.getPlayer();
+                    if (PerkManager.hasPerk(copyCityMayor.get(city), 1)) {
+                        player.removePotionEffect(PotionEffectType.STRENGTH);
+                        player.removePotionEffect(PotionEffectType.RESISTANCE);
+                    }
+                }
+            }
+
             if (city.getMembers().size()>=MEMBER_REQ_ELECTION) {
                 createMayor(null,null, city, null, null, null, null, ElectionType.ELECTION);
             }
             createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
 
         }
+
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
