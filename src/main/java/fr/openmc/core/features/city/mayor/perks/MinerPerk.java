@@ -29,10 +29,8 @@ public class MinerPerk implements Listener {
             // si ville a pas le perk 3 soit MINER
             if (!PerkManager.hasPerk(playerCity.getMayor(), 3)) return;
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1, false, false));
             player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, Integer.MAX_VALUE, 1, false, false));
         } else {
-            player.removePotionEffect(PotionEffectType.SPEED);
             player.removePotionEffect(PotionEffectType.HASTE);
         }
     }
@@ -54,7 +52,6 @@ public class MinerPerk implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        player.removePotionEffect(PotionEffectType.SPEED);
         player.removePotionEffect(PotionEffectType.HASTE);
     }
 

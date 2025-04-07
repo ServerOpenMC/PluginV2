@@ -373,14 +373,18 @@ public class MayorManager {
         playerVote = new HashMap<>();
         for (City city : CityManager.getCities()) {
             // PERKS INIT
-            // Fou de Rage
             for (UUID uuid : city.getMembers()) {
                 OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
                 if (offlinePlayer.isOnline()) {
                     Player player = offlinePlayer.getPlayer();
+                    // Fou de Rage
                     if (PerkManager.hasPerk(copyCityMayor.get(city), 1)) {
                         player.removePotionEffect(PotionEffectType.STRENGTH);
                         player.removePotionEffect(PotionEffectType.RESISTANCE);
+                    }
+                    // Mineur Dévoué
+                    if (PerkManager.hasPerk(copyCityMayor.get(city), 3)) {
+                        MinerPerk.updatePlayerEffects(player);
                     }
                 }
             }
@@ -410,6 +414,17 @@ public class MayorManager {
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : CityManager.getCities()) {
             runSetupMayor(city);
+
+            for (UUID uuid : city.getMembers()) {
+                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
+                if (offlinePlayer.isOnline()) {
+                    Player player = offlinePlayer.getPlayer();
+                    // Mineur Dévoué
+                    if (PerkManager.hasPerk(city.getMayor(), 3)) {
+                        MinerPerk.updatePlayerEffects(player);
+                    }
+                }
+            }
         }
 
         Bukkit.broadcast(Component.text("""
