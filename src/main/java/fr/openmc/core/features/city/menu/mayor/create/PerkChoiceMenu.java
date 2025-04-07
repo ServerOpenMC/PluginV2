@@ -71,10 +71,12 @@ public class PerkChoiceMenu extends PaginatedMenu {
                     itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 }).setOnClick(inventoryClickEvent -> {
-                    boolean isPerkEvent = (newPerk.getType() != null && newPerk.getType() == PerkType.EVENT) && (
-                            (perk2 != null && perk2.getType() == PerkType.EVENT) ||
-                                    (perk3 != null && perk3.getType() == PerkType.EVENT)
-                    );
+                    boolean isPerkEvent = (newPerk.getType() == PerkType.EVENT) &&
+                            (
+                                    ("perk1".equals(perkNumber) && ((perk2 != null && perk2.getType() == PerkType.EVENT) || (perk3 != null && perk3.getType() == PerkType.EVENT))) ||
+                                    ("perk2".equals(perkNumber) && ((perk1 != null && perk1.getType() == PerkType.EVENT) || (perk3 != null && perk3.getType() == PerkType.EVENT))) ||
+                                    ("perk3".equals(perkNumber) && ((perk1 != null && perk1.getType() == PerkType.EVENT) || (perk2 != null && perk2.getType() == PerkType.EVENT)))
+                            );
                     if (isPerkEvent) {
                         MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 Réformes de Type Evenement!"), Prefix.MAYOR, MessageType.ERROR, false);
                         return;
