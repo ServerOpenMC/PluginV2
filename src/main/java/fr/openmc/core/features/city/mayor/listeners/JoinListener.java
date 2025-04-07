@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.mayor.listeners;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,12 @@ public class JoinListener implements Listener  {
 
         if (mayorManager.phaseMayor == 2 && mayorManager.cityMayor.get(playerCity)==null) {
             mayorManager.runSetupMayor(playerCity);
+        } else if (mayorManager.phaseMayor == 1 && mayorManager.cityMayor.get(playerCity)==null) {
+            if (playerCity.getMembers().size()>=mayorManager.MEMBER_REQ_ELECTION) {
+                mayorManager.createMayor(null,null, playerCity, null, null, null, null, ElectionType.ELECTION);
+            }
+            mayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
+
         }
     }
 }
