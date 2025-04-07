@@ -42,7 +42,7 @@ public class CityManager implements Listener {
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT (city_uuid, x, z) FROM city_regions");
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid, x, z FROM city_regions");
                     ResultSet rs = statement.executeQuery();
 
                     while (rs.next()) {
