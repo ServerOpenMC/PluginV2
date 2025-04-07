@@ -1,6 +1,5 @@
 package fr.openmc.core.features.friend;
 
-import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.utils.database.DatabaseManager;
 
 import java.sql.*;

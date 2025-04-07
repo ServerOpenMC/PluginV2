@@ -12,8 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import static fr.openmc.core.features.city.mascots.MascotsManager.*;
-
 public class CityMessages {
     private static void sendLine(Audience audience, String title, String info) {
         audience.sendMessage(Component.text(title+": ").append(
