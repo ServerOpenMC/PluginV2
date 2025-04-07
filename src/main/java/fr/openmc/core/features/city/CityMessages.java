@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city;
 
 import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -13,8 +12,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
-
-import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 
 public class CityMessages {
     private static void sendLine(Audience audience, String title, String info) {
