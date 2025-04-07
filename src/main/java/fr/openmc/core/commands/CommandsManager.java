@@ -37,7 +37,6 @@ public class CommandsManager {
                 new Playtime(),
                 new Diceroll(),
                 new CooldownCommand(),
-                new ChronometerCommand(),
                 new FreezeCommand(),
                 new MailboxCommand(OMCPlugin.getInstance()),
                 new FriendCommand()
