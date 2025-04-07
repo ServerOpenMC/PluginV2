@@ -289,7 +289,7 @@ public class MascotsManager {
         }
     }
 
-    public static void changeMascotsSkin(Entity mascots, EntityType skin, Player player) {
+    public static void changeMascotsSkin(Entity mascots, EntityType skin, Player player, Material matAywenite, int aywenite) {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
         LivingEntity mob = (LivingEntity) mascots;
@@ -344,6 +344,7 @@ public class MascotsManager {
                 MascotUtils.setMascotUUID(mascotsCustomUUID, newMascots.getUniqueId());
             }
         }
+        ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
     }
 
     private static void setMascotsData(LivingEntity mob, String customName, double maxHealth, double baseHealth) {

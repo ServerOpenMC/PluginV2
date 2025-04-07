@@ -192,9 +192,9 @@ public class CityMenu extends Menu {
         }));
 
         String type = getCityType(city.getUUID());
-        if (type.equals("war")) {
+        if (type != null && type.equals("war")) {
             type = "guerre";
-        } else if (type.equals("peace")) {
+        } else if (type != null && type.equals("peace")) {
             type = "paix";
         } else {
             type = "inconnu";

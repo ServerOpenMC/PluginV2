@@ -62,7 +62,7 @@ public class MascotsDeadMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "";
+        return "§cMascotte";
     }
 
     @Override

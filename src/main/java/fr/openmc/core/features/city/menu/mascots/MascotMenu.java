@@ -50,7 +50,7 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "";
+        return "§cMascotte";
     }
 
     @Override
@@ -142,7 +142,7 @@ public class MascotMenu extends Menu {
         if (mascotsLevels.equals(MascotsLevels.level10)){
             requiredAmount.add(Component.text("§7Niveau max atteins"));
         } else {
-            requiredAmount.add(Component.text("§7Nécessite §d" + MascotsLevels.valueOf("level" + mascotsLevels.getUpgradeCost() + " d'Aywenite")));
+            requiredAmount.add(Component.text("§7Nécessite §d" + mascotsLevels.getUpgradeCost() + " d'Aywenite"));
         }
 
         map.put(15, new ItemBuilder(this,Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
@@ -155,28 +155,30 @@ public class MascotMenu extends Menu {
             itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         }).setOnClick(inventoryClickEvent -> {
 
-            if (city == null) {
-                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                getOwner().closeInventory();
-                return;
-            }
-            if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_UPGRADE)){
-                String city_uuid = city.getUUID();
-                int aywenite = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)).getUpgradeCost();
-                Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
-                if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)){
-                    ItemUtils.removeItemsFromInventory(getOwner(), matAywenite, aywenite);
-                    upgradeMascots(city_uuid, mascots.getUniqueId());
-                    MessagesManager.sendMessage(getOwner(), Component.text("Vous avez amélioré votre mascotte au §cNiveau " + MascotUtils.getMascotLevel(city_uuid)), Prefix.CITY, MessageType.ERROR, false);
+            if (!mascotsLevels.equals(MascotsLevels.level10)){
+                if (city == null) {
+                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                     getOwner().closeInventory();
                     return;
                 }
-                MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
+                if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_UPGRADE)){
+                    String city_uuid = city.getUUID();
+                    int aywenite = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)).getUpgradeCost();
+                    Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
+                    if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)){
+                        ItemUtils.removeItemsFromInventory(getOwner(), matAywenite, aywenite);
+                        upgradeMascots(city_uuid, mascots.getUniqueId());
+                        MessagesManager.sendMessage(getOwner(), Component.text("Vous avez amélioré votre mascotte au §cNiveau " + MascotUtils.getMascotLevel(city_uuid)), Prefix.CITY, MessageType.ERROR, false);
+                        getOwner().closeInventory();
+                        return;
+                    }
+                    MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
 
-            } else {
-                MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                } else {
+                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                }
+                getOwner().closeInventory();
             }
-            getOwner().closeInventory();
         }));
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
