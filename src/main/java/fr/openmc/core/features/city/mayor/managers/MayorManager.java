@@ -471,7 +471,7 @@ public class MayorManager {
 
         if (getElectionType(city) == ElectionType.OWNER_CHOOSE) {
             // si maire a pas choisis les perks
-            if ((mayor.getIdPerk1() != 0) && (mayor.getIdPerk2() != 0) && (mayor.getIdPerk3() != 0)) {
+            if ((mayor.getIdPerk1() == 0) && (mayor.getIdPerk2() == 0) && (mayor.getIdPerk3() == 0)) {
                 NamedTextColor color = getRandomMayorColor();
                 List<Perks> perks = PerkManager.getRandomPerksAll();
                 createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
