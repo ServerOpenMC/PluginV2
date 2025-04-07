@@ -1,11 +1,8 @@
 package fr.openmc.core.utils.customitems;
 
 import dev.lone.itemsadder.api.CustomStack;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class ContestShell extends CustomItem {
     public ContestShell() {
@@ -14,8 +11,7 @@ public class ContestShell extends CustomItem {
 
     @Override
     public ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.NAUTILUS_SHELL);
-        return item;
+        return new ItemStack(Material.NAUTILUS_SHELL);
     }
 
     @Override
