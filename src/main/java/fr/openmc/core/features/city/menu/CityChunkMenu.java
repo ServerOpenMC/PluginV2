@@ -101,15 +101,28 @@ public class CityChunkMenu extends Menu {
                 } else {
                     if (material == null) material = Material.GRAY_STAINED_GLASS_PANE;
                     int nbChunk = city2.getChunks().size();
-                    List<Component> listComponent = List.of(
-                            Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                            Component.text(""),
-                            Component.text("§cCoûte :"),
-                            Component.text("§8- §6"+ (double) calculatePrice(nbChunk)).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
-                            Component.text("§8- §d"+ calculateAywenite(nbChunk) + " d'Aywenite"),
-                            Component.text(""),
-                            Component.text("§e§lCLIQUEZ POUR CLAIM")
-                    );
+                    List<Component> listComponent;
+
+                    if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())>0) {
+                        listComponent = List.of(
+                                Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                                Component.text(""),
+                                Component.text("§cCoûte :"),
+                                Component.text("§8- §6Claim Gratuit"),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ POUR CLAIM")
+                        );
+                    } else {
+                        listComponent = List.of(
+                                Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                                Component.text(""),
+                                Component.text("§cCoûte :"),
+                                Component.text("§8- §6"+ (double) calculatePrice(nbChunk)).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
+                                Component.text("§8- §d"+ calculateAywenite(nbChunk) + " d'Aywenite"),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ POUR CLAIM")
+                        );
+                    }
 
                     chunkItem = new ItemBuilder(this, material, itemMeta -> {
                         itemMeta.displayName(Component.text("§cClaim libre"));

@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -10,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import static fr.openmc.core.features.city.commands.CityCommands.balanceCooldownTasks;
-import static fr.openmc.core.features.city.commands.CityCommands.invitations;
 
 /**
  * Le but de cette classe est de regrouper toutes les conditions neccessaires

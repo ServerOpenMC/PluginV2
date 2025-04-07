@@ -1,6 +1,5 @@
 package fr.openmc.core.features.friend;
 
-import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.utils.database.DatabaseManager;
 
 import java.sql.*;
@@ -59,7 +58,7 @@ public class FriendSQLManager {
 
     public static boolean areFriends(UUID firstUUID, UUID secondUUID) {
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_NAME + " WHERE (firstPlayer_uuid = ? AND secondPlayer_uuid = ?) OR (firstPlayer_uuid = ? AND secondPlayer_uuid = ?)");
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT (firstPlayer_uuid, secondPlayer_uuid) FROM " + TABLE_NAME + " WHERE (firstPlayer_uuid = ? AND secondPlayer_uuid = ?) OR (firstPlayer_uuid = ? AND secondPlayer_uuid = ?)");
 
             statement.setString(1, firstUUID.toString());
             statement.setString(2, secondUUID.toString());

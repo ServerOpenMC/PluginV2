@@ -12,8 +12,6 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class CooldownCommand {
-    private static final DynamicCooldownManager cooldown = new DynamicCooldownManager();
-
     @Command("debug cooldown")
     @CommandPermission("omc.debug.cooldown")
     @AutoComplete("success|error")
