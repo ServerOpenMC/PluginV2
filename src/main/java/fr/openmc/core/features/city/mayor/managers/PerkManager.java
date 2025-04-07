@@ -74,11 +74,7 @@ public class PerkManager {
     }
 
     public static boolean hasPerk(Mayor mayor, int idPerk) {
-        if (mayor.getIdPerk1() == idPerk) {
-            return true;
-        } else if (mayor.getIdPerk2() == idPerk) {
-            return true;
-        } else if (mayor.getIdPerk3() == idPerk) {
+        if ((mayor.getIdPerk1() == idPerk) || (mayor.getIdPerk2() == idPerk) || (mayor.getIdPerk3() == idPerk)) {
             return true;
         }
         return false;

@@ -37,10 +37,10 @@ public class MayorManager {
 
     public int MEMBER_REQ_ELECTION = 1;
 
-    public static String TABLE_MAYOR = "city_mayor";
-    public static String TABLE_ELECTION = "city_election";
-    public static String TABLE_VOTE = "city_vote";
-    public static String TABLE_CONSTANTS = "mayor_constants";
+    public static final String TABLE_MAYOR = "city_mayor";
+    public static final String TABLE_ELECTION = "city_election";
+    public static final String TABLE_VOTE = "city_vote";
+    public static final String TABLE_CONSTANTS = "mayor_constants";
 
     private final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
@@ -58,8 +58,8 @@ public class MayorManager {
             NamedTextColor.DARK_GRAY
     );
 
-    public static DayOfWeek PHASE_1_DAY = DayOfWeek.TUESDAY;
-    public static DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
+    public static final DayOfWeek PHASE_1_DAY = DayOfWeek.TUESDAY;
+    public static final DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
 
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
