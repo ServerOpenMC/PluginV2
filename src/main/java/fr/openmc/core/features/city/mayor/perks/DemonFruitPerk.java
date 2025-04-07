@@ -1,7 +1,10 @@
 package fr.openmc.core.features.city.mayor.perks;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -61,9 +64,16 @@ public class DemonFruitPerk implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         int phase = MayorManager.getInstance().phaseMayor;
-        // si ville perk tata
-        if (hasRangeAttribute(player)) {
 
+        if (phase == 2) {
+            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            if (playerCity == null) return;
+
+            if (!PerkManager.hasPerk(playerCity.getMayor(), 4)) return;
+
+            if (!hasRangeAttribute(player)) applyReachBonus(player);
+        } else {
+            removeReachBonus(player);
         }
     }
 
@@ -71,7 +81,8 @@ public class DemonFruitPerk implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        player.removePotionEffect(PotionEffectType.SPEED);
-        player.removePotionEffect(PotionEffectType.HASTE);
+        if (hasRangeAttribute(player)) {
+            removeReachBonus(player);
+        }
     }
 }

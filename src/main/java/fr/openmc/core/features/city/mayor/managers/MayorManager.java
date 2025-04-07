@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
+import fr.openmc.core.features.city.mayor.perks.DemonFruitPerk;
 import fr.openmc.core.features.city.mayor.perks.MascotFriendlyPerk;
 import fr.openmc.core.features.city.mayor.perks.MinerPerk;
 import fr.openmc.core.features.city.mayor.perks.RagePerk;
@@ -396,6 +397,11 @@ public class MayorManager {
                     if (PerkManager.hasPerk(copyCityMayor.get(city), 15)) {
                         MascotFriendlyPerk.updatePlayerEffects(player);
                     }
+
+                    // Fruit du Démon
+                    if (PerkManager.hasPerk(copyCityMayor.get(city), 4)) {
+                        DemonFruitPerk.removeReachBonus(player);
+                    }
                 }
             }
 
@@ -437,6 +443,11 @@ public class MayorManager {
                     // Mascotte de Compagnie
                     if (PerkManager.hasPerk(city.getMayor(), 15)) {
                         MascotFriendlyPerk.updatePlayerEffects(player);
+                    }
+
+                    // Fruit du Démon
+                    if (PerkManager.hasPerk(city.getMayor(), 4)) {
+                        DemonFruitPerk.applyReachBonus(player);
                     }
                 }
             }
