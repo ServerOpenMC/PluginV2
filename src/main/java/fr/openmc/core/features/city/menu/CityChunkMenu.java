@@ -103,7 +103,7 @@ public class CityChunkMenu extends Menu {
                     int nbChunk = city2.getChunks().size();
                     List<Component> listComponent;
 
-                    if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())>0) {
+                    if (CityManager.freeClaim.containsKey(city2.getUUID()) && CityManager.freeClaim.get(city2.getUUID())>0) {
                         listComponent = List.of(
                                 Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
                                 Component.text(""),
