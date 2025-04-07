@@ -36,11 +36,9 @@ public class MascotsManager {
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
     public static List<Mascot> mascots = new ArrayList<>();
-    public static HashMap<String, Integer> freeClaim = new HashMap<>();
-    public static Map<UUID, Location> mascotSpawn = new HashMap<>();
 
     public MascotsManager(OMCPlugin plugin) {
-        //changement du spigot.yml pour permettre au mascottes d'avoir 3000 coeurs
+        //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 coeurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
         spigotYMLConfig.set("settings.attribute.maxHealth.max", 6000.0);
@@ -53,7 +51,6 @@ public class MascotsManager {
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
 
         mascots = getAllMascots();
-        freeClaim = getAllFreeClaims();
 
         for (Mascot mascot : mascots){
             UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
@@ -65,26 +62,7 @@ public class MascotsManager {
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
-    }
-
-    public static HashMap<String, Integer> getAllFreeClaims() {
-        HashMap<String, Integer> freeClaims = new HashMap<>();
-
-        String query = "SELECT city_uuid, claim FROM free_claim";
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
-             ResultSet rs = statement.executeQuery()) {
-
-            while (rs.next()) {
-                String cityUuid = rs.getString("city_uuid");
-                int claim = rs.getInt("claim");
-                freeClaims.put(cityUuid, claim);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return freeClaims;
     }
 
     public static List<Mascot> getAllMascots() {
@@ -107,21 +85,6 @@ public class MascotsManager {
             throw new RuntimeException(e);
         }
         return mascots;
-    }
-
-    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
-        String query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
-            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
-                statement.setString(1, entry.getKey());
-                statement.setInt(2, entry.getValue());
-                statement.setInt(3, entry.getValue());
-                statement.addBatch();
-            }
-            statement.executeBatch();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static void saveMascots(List<Mascot> mascots) {
@@ -251,17 +214,7 @@ public class MascotsManager {
 
     public static void giveChest(Player player) {
         if (!ItemUtils.hasAvailableSlot(player)){
-
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire : mascotte invoquée à vos coordonées"), Prefix.CITY, MessageType.ERROR, false);
-            City city = CityManager.getPlayerCity(player.getUniqueId());
-
-            if (city == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            String city_uuid = city.getUUID();
-            createMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
+            MessagesManager.sendMessage(player, Component.text("§cLibérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -271,9 +224,9 @@ public class MascotsManager {
         if (meta != null) {
 
             List<Component> info = new ArrayList<>();
-            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
+            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre et créera votre ville"));
             info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
+            info.add(Component.text("§clors de votre déconnection la création sera annuler"));
 
             meta.displayName(Component.text("§lMascotte"));
             meta.lore(info);
@@ -282,39 +235,24 @@ public class MascotsManager {
             specialChest.setItemMeta(meta);
 
         } else {
-
-            City city = CityManager.getPlayerCity(player.getUniqueId());
-            if (city == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-            String city_uuid = city.getUUID();
-            createMascot(city_uuid, player.getWorld(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
+            MessagesManager.sendMessage(player, Component.text("§cErreur : le coffre n'a pas pu être chargé"), Prefix.CITY, MessageType.ERROR, false);
             OMCPlugin.getInstance().getLogger().severe("Erreur lors de l'initialisation de l'ItemMeta du coffre des mascottes");
             return;
         }
 
         player.getInventory().addItem(specialChest);
-        mascotSpawn.put(player.getUniqueId(), new Location(player.getWorld(), player.getLocation().getBlockX()+0.5, player.getLocation().getBlockY(), player.getLocation().getBlockZ()+0.5));
     }
 
     public static void removeChest(Player player){
-        ItemStack specialChest = new ItemStack(Material.CHEST);
-        ItemMeta meta = specialChest.getItemMeta();
-        if (meta != null){
-            List<Component> info = new ArrayList<>();
-            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
-            info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
-
-            meta.displayName(Component.text("§lMascotte"));
-            meta.lore(info);
-            PersistentDataContainer data = meta.getPersistentDataContainer();
-            data.set(chestKey,PersistentDataType.STRING, "id");
-            specialChest.setItemMeta(meta);
-
-            if (player.getInventory().contains(specialChest)){
-                player.getInventory().remove(specialChest);
+        for (ItemStack itemStack : player.getInventory().getContents()){
+            if (itemStack!=null){
+                ItemMeta meta = itemStack.getItemMeta();
+                PersistentDataContainer data = meta.getPersistentDataContainer();
+                if (data.has(MascotsManager.chestKey, PersistentDataType.STRING)){
+                    player.getInventory().remove(itemStack);
+                    MascotsListener.futurCreateCity.remove(player.getUniqueId());
+                    break;
+                }
             }
         }
     }
@@ -348,15 +286,17 @@ public class MascotsManager {
         }
     }
 
-    public static void changeMascotsSkin(Entity mascots, EntityType skin) {
+    public static void changeMascotsSkin(Entity mascots, EntityType skin, Player player, Material matAywenite, int aywenite) {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
         LivingEntity mob = (LivingEntity) mascots;
+        boolean glowing = mascots.isGlowing();
         int cooldown = 0;
         boolean hasCooldown = false;
 
         // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
         if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && mob.getHeight() <= 1.0) {
+            MessagesManager.sendMessage(player, Component.text("Libérez de l'espace au dessus de la macotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
             return;
         }
 
@@ -366,6 +306,7 @@ public class MascotsManager {
                 Material blockType = checkLoc.getBlock().getType();
 
                 if (blockType != Material.AIR) {
+                    MessagesManager.sendMessage(player, Component.text("Libérez de l'espace tout autour de la macotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
                     return;
                 }
             }
@@ -386,6 +327,7 @@ public class MascotsManager {
 
         if (world != null) {
             LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc, skin);
+            newMascots.setGlowing(glowing);
 
             if (hasCooldown){
                 Chronometer.startChronometer(newMascots, "mascotsCooldown" , cooldown, null, "%null", null, "%null%");
@@ -399,6 +341,7 @@ public class MascotsManager {
                 MascotUtils.setMascotUUID(mascotsCustomUUID, newMascots.getUniqueId());
             }
         }
+        ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
     }
 
     private static void setMascotsData(LivingEntity mob, String customName, double maxHealth, double baseHealth) {

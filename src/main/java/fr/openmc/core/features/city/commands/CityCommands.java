@@ -299,7 +299,7 @@ public class CityCommands {
 
 
 
-        if (!MascotsManager.freeClaim.containsKey(city.getUUID())) {
+        if (!CityManager.freeClaim.containsKey(city.getUUID())) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -311,8 +311,8 @@ public class CityCommands {
             }
         }
 
-        if (MascotsManager.freeClaim.containsKey(city.getUUID())){
-            MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
+        if (CityManager.freeClaim.containsKey(city.getUUID())){
+            CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) - 1);
 
         } else {
             city.updateBalance((double) (price*-1));
@@ -523,7 +523,7 @@ public class CityCommands {
         }
 
         if (isClaimed.get()) {
-            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim, les chunks autour du coffre ne doivent pas etre claim ( f3 + G pour afficher les chunks )"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -553,7 +553,7 @@ public class CityCommands {
         city.addPermission(uuid, CPermission.OWNER);
 
         CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
-        MascotsManager.freeClaim.put(cityUUID, 15);
+        CityManager.freeClaim.put(cityUUID, 15);
 
         player.closeInventory();
 

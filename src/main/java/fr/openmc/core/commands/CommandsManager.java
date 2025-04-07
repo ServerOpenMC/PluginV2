@@ -39,8 +39,8 @@ public class CommandsManager {
                 new CooldownCommand(),
                 new FreezeCommand(),
                 new MailboxCommand(OMCPlugin.getInstance()),
-                new ChronometerCommand(),
-                new FriendCommand()
+                new FriendCommand(),
+                new ChronometerCommand()
         );
     }
 
