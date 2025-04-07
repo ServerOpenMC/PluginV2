@@ -139,13 +139,23 @@ public enum Perks {
             PerkType.EVENT
     ),
     IDYLLIC_RAIN(
-            13,
+            14,
             "§e§lPluie idyllique",
             List.of(
                     Component.text("§7Fait apparaître de l'§3Aywenite §7dans votre ville pendant§3 2 §7 min.")
             ),
             ItemStack.of(Material.GHAST_TEAR),
             PerkType.EVENT
+    ),
+    MASCOTS_FRIENDLY(
+            15,
+            "§e§lMascotte de Compagnie",
+            List.of(
+                    Component.text("§7A Partir du §cLevel 4 §7de la Mascotte, vous"),
+                    Component.text("§7aurez des §3effets bonus §7si la mascotte est en vie !")
+            ),
+            ItemStack.of(Material.SADDLE),
+            PerkType.BASIC
     )
     ;
 

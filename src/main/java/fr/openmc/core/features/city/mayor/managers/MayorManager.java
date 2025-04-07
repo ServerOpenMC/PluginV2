@@ -4,9 +4,11 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
+import fr.openmc.core.features.city.mayor.perks.MascotFriendlyPerk;
 import fr.openmc.core.features.city.mayor.perks.MinerPerk;
 import fr.openmc.core.features.city.mayor.perks.RagePerk;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -80,7 +82,8 @@ public class MayorManager {
         OMCPlugin.registerEvents(
                 new JoinListener(),
                 new RagePerk(),
-                new MinerPerk()
+                new MinerPerk(),
+                new MascotFriendlyPerk()
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
@@ -101,7 +104,7 @@ public class MayorManager {
                 Bukkit.getLogger().info("City Mayors:");
                 System.out.println(cityMayor);
                 for (Map.Entry<City, Mayor> entry : cityMayor.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName() + " " + entry.getValue().getUUID());
+                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName() + " " + entry.getValue().getUUID() + " " + entry.getValue().getIdPerk1()+ " " + entry.getValue().getIdPerk2()+ " " + entry.getValue().getIdPerk3());
                 }
 
                 Bukkit.getLogger().info("City Elections:");
@@ -382,9 +385,16 @@ public class MayorManager {
                         player.removePotionEffect(PotionEffectType.STRENGTH);
                         player.removePotionEffect(PotionEffectType.RESISTANCE);
                     }
+
                     // Mineur Dévoué
                     if (PerkManager.hasPerk(copyCityMayor.get(city), 3)) {
                         MinerPerk.updatePlayerEffects(player);
+                    }
+
+
+                    // Mascotte de Compagnie
+                    if (PerkManager.hasPerk(copyCityMayor.get(city), 15)) {
+                        MascotFriendlyPerk.updatePlayerEffects(player);
                     }
                 }
             }
@@ -422,6 +432,11 @@ public class MayorManager {
                     // Mineur Dévoué
                     if (PerkManager.hasPerk(city.getMayor(), 3)) {
                         MinerPerk.updatePlayerEffects(player);
+                    }
+
+                    // Mascotte de Compagnie
+                    if (PerkManager.hasPerk(city.getMayor(), 15)) {
+                        MascotFriendlyPerk.updatePlayerEffects(player);
                     }
                 }
             }
