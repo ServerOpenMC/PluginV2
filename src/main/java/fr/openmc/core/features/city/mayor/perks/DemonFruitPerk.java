@@ -1,11 +1,10 @@
 package fr.openmc.core.features.city.mayor.perks;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
-import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
@@ -13,51 +12,74 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.potion.PotionEffectType;
-
-import java.util.UUID;
 
 public class DemonFruitPerk implements Listener {
-    private static final UUID RANGE_MODIFIER_UUID = UUID.fromString("c3b98a4c-87f3-4b19-bd4c-3e6f6e4c1f2b");
-    private static final String RANGE_MODIFIER_NAME = "DemonFruitPerk";
+    private static final NamespacedKey RANGE_MODIFIER_KEY = new NamespacedKey("mayor_perks","demon_fruit");
     private static final double BONUS_VALUE = 1.0;
 
     public static void applyReachBonus(Player player) {
-        if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null) {
+        if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) {
             return;
         }
 
         player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE)
                 .getModifiers()
-                .forEach(modifier -> {
-                    if (modifier.getName().equals(RANGE_MODIFIER_NAME)) {
-                        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).removeModifier(modifier);
+                .forEach(modifierEntity -> {
+                    if (modifierEntity.getKey().equals(RANGE_MODIFIER_KEY)) {
+                        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).removeModifier(modifierEntity);
                     }
                 });
 
-        AttributeModifier modifier = new AttributeModifier(RANGE_MODIFIER_UUID, RANGE_MODIFIER_NAME, BONUS_VALUE, AttributeModifier.Operation.ADD_NUMBER);
-        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).addModifier(modifier);
+        AttributeModifier modifierEntity = new AttributeModifier(RANGE_MODIFIER_KEY, BONUS_VALUE, AttributeModifier.Operation.ADD_NUMBER);
+        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).addModifier(modifierEntity);
+
+        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE)
+                .getModifiers()
+                .forEach(modifierBlock -> {
+                    if (modifierBlock.getKey().equals(RANGE_MODIFIER_KEY)) {
+                        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).removeModifier(modifierBlock);
+                    }
+                });
+
+        AttributeModifier modifierBlock = new AttributeModifier(RANGE_MODIFIER_KEY, BONUS_VALUE, AttributeModifier.Operation.ADD_NUMBER);
+        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).addModifier(modifierBlock);
     }
 
     public static void removeReachBonus(Player player) {
-        if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null) return;
+        if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) return;
+        try {
+            player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE)
+                    .getModifiers()
+                    .stream()
+                    .filter(modifier -> modifier.getKey().equals(RANGE_MODIFIER_KEY))
+                    .forEach(modifier -> {
+                        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).removeModifier(modifier);
+                    });
 
-        player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE)
-                .getModifiers()
-                .stream()
-                .filter(modifier -> modifier.getName().equals(RANGE_MODIFIER_NAME))
-                .forEach(modifier -> player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).removeModifier(modifier));
+                player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE)
+                    .getModifiers()
+                    .stream()
+                    .filter(modifier -> modifier.getKey().equals(RANGE_MODIFIER_KEY))
+                    .forEach(modifier -> {
+                        player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).removeModifier(modifier);
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static boolean hasRangeAttribute(Player player) {
-        if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null) return false;
+        if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) return false;
 
-        double baseValue = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).getBaseValue();
-        double currentValue = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).getValue();
-        double expectedValue = baseValue + BONUS_VALUE;
+        double baseValueEntity = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).getBaseValue();
+        double currentValueEntity = player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE).getValue();
+        double expectedValueEntity = baseValueEntity + BONUS_VALUE;
 
-        return Math.abs(currentValue - expectedValue) < 0.01;
+        double baseValueBlock = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).getBaseValue();
+        double currentValueBlock = player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).getValue();
+        double expectedValueBlock = baseValueBlock + BONUS_VALUE;
+
+        return Math.abs(currentValueEntity - expectedValueEntity) < 0.01 && Math.abs(currentValueBlock - expectedValueBlock) < 0.01;
     }
 
     @EventHandler
