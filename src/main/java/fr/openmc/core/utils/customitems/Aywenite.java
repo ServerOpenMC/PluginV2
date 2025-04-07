@@ -1,12 +1,8 @@
 package fr.openmc.core.utils.customitems;
 
 import dev.lone.itemsadder.api.CustomStack;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class Aywenite extends CustomItem {
     public Aywenite() {
@@ -15,8 +11,7 @@ public class Aywenite extends CustomItem {
 
     @Override
     public ItemStack getVanilla() {
-        ItemStack item = new ItemStack(Material.AMETHYST_SHARD);
-        return item;
+        return new ItemStack(Material.AMETHYST_SHARD);
     }
 
     @Override

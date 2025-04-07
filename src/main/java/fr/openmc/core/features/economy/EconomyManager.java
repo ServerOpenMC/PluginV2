@@ -16,7 +16,6 @@ import fr.openmc.core.features.economy.commands.Pay;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 public class EconomyManager {
     @Getter private static Map<UUID, Double> balances;
