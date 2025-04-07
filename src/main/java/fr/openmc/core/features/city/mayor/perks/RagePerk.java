@@ -34,7 +34,7 @@ public class RagePerk implements Listener {
         if (playerCity == null) return;
 
         // si ville a pas le perk 1 soit FOU_DE_RAGE
-        if (!PerkManager.hasPerk(playerCity, 1)) return;
+        if (!PerkManager.hasPerk(playerCity.getMayor(), 1)) return;
 
 
         City currentCity = CityManager.getCityFromChunk(
