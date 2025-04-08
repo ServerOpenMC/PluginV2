@@ -87,12 +87,12 @@ public enum Perks {
             ),
             ItemStack.of(Material.COMPASS),
             PerkType.BASIC
-    ), //todo: finir les perk jusqu'a la pour mardi soir + repo ItemAdder aywenite decraft bloc et craft bloc
+    ),
     SYMBIOSIS(
             10,
             "§e§lSymbiose",
             List.of(
-                    Component.text("§7Réduit les dégâts subis de §35%"),
+                    Component.text("§7Réduit les dégâts subis de §315%"),
                     Component.text("§7lorsque vous êtes autour de votre §3Mascotte")
             ),
             ItemStack.of(Material.SCULK_CATALYST),
