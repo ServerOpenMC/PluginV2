@@ -49,16 +49,6 @@ public enum Perks {
             ItemStack.of(Material.CHORUS_FRUIT),
             PerkType.BASIC
     ),
-    WAR_SMITH(
-            5,
-            "§e§lForgeron de Guerre",
-            List.of(
-                    Component.text("§7Réduit l'usure des outils et armes de §310 %"),
-                    Component.text("§7pour les membres de la ville.")
-            ),
-            ItemStack.of(Material.IRON_SWORD),
-            PerkType.BASIC
-    ),
     IRON_BLOOD(
             6,
             "§e§lFer dans le Sang",

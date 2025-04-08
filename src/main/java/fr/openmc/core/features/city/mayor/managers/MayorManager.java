@@ -8,10 +8,7 @@ import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
-import fr.openmc.core.features.city.mayor.perks.DemonFruitPerk;
-import fr.openmc.core.features.city.mayor.perks.MascotFriendlyPerk;
-import fr.openmc.core.features.city.mayor.perks.MinerPerk;
-import fr.openmc.core.features.city.mayor.perks.RagePerk;
+import fr.openmc.core.features.city.mayor.perks.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -61,8 +58,8 @@ public class MayorManager {
             NamedTextColor.DARK_GRAY
     );
 
-    public static final DayOfWeek PHASE_1_DAY = DayOfWeek.TUESDAY;
-    public static final DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
+    public static final DayOfWeek PHASE_1_DAY = DayOfWeek.MONDAY;
+    public static final DayOfWeek PHASE_2_DAY = DayOfWeek.MONDAY;
 
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
