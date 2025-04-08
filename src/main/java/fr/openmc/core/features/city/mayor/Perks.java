@@ -98,7 +98,7 @@ public enum Perks {
             ),
             ItemStack.of(Material.COMPASS),
             PerkType.BASIC
-    ),
+    ), //todo: finir les perk jusqu'a la pour mardi soir + repo ItemAdder aywenite decraft bloc et craft bloc
     SYMBIOSIS(
             10,
             "§e§lSymbiose",

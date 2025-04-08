@@ -62,4 +62,5 @@ public class MinerPerk implements Listener {
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> updatePlayerEffects(player), 1L);
             };
 
-        }}
+        }
+}
