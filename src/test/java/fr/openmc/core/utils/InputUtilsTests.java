@@ -1,6 +1,5 @@
 package fr.openmc.core.utils;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

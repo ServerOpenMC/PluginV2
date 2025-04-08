@@ -1,16 +1,15 @@
 package fr.openmc.core.utils;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
 import fr.openmc.core.TestPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.Bukkit;
 import org.junit.jupiter.api.*;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
 
 public class MotdUtilsTests {
-    ServerMock server;
-    TestPlugin plugin;
+    private ServerMock server;
+    private TestPlugin plugin;
 
     @BeforeEach
     public void setUp() {

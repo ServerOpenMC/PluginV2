@@ -1,9 +1,9 @@
 package fr.openmc.core.utils;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.*;
+import org.mockbukkit.mockbukkit.MockBukkit;
 
 public class ItemsUtilTests {
     @BeforeEach
@@ -18,7 +18,7 @@ public class ItemsUtilTests {
 
     @Test
     @DisplayName("getItemTranslation with ItemStack")
-    public void getTranslationWithStack() {
+    public void testGetTranslationWithStack() {
         Assertions.assertEquals(
                 "block.minecraft.chest",
                 ItemUtils.getItemTranslation(new ItemStack(Material.CHEST)).key()
@@ -27,7 +27,7 @@ public class ItemsUtilTests {
 
     @Test
     @DisplayName("getItemTranslation with Material")
-    public void getTranslationWithMaterial() {
+    public void testGetTranslationWithMaterial() {
         Assertions.assertEquals(
                 "block.minecraft.dirt",
                 ItemUtils.getItemTranslation(Material.DIRT).key()
