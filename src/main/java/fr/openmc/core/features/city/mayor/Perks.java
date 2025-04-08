@@ -63,7 +63,7 @@ public enum Perks {
             7,
             "§e§lChasseur Urbain",
             List.of(
-                    Component.text("§7Augmente de §310 % §7les dégâts infligés aux"),
+                    Component.text("§7Augmente de §320 % §7les dégâts infligés aux"),
                     Component.text("§3monstres §7et §3joueurs §7dans sa propre ville.")
             ),
             ItemStack.of(Material.BOW),
