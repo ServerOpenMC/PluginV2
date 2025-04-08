@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -30,8 +31,10 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MascotsListener implements Listener {
 
@@ -178,6 +181,10 @@ public class MascotsListener implements Listener {
         }
     }
 
+    private final Map<City, Long> perkIronBloodCooldown = new HashMap<>();
+    private static final long COOLDOWN_TIME = 3 * 60 * 1000L;  // 3 minutes
+
+
     @SneakyThrows
     @EventHandler
     void onMascotTakeDamage(EntityDamageByEntityEvent e) {
@@ -236,6 +243,52 @@ public class MascotsListener implements Listener {
                         double maxHealth = mob.getMaxHealth();
                         mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
 
+                        if (PerkManager.hasPerk(MascotUtils.getCityFromMascot(mob.getUniqueId()).getMayor(), 6)) {
+                            long currentTime = System.currentTimeMillis();
+                            if (perkIronBloodCooldown.containsKey(city) && currentTime - perkIronBloodCooldown.get(city) < COOLDOWN_TIME) {
+                                return;
+                            }
+                            perkIronBloodCooldown.put(city, currentTime);
+                            org.bukkit.Location location = mob.getLocation().clone();
+                            location.add(0, 3, 0);
+
+                            IronGolem golem = (IronGolem) location.getWorld().spawnEntity(location, EntityType.IRON_GOLEM);
+                            golem.setPlayerCreated(false);
+                            golem.setLootTable(null);
+                            golem.setGlowing(true);
+                            golem.setHealth(30);
+
+                            Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
+                                if (!golem.isValid() || golem.isDead()) {
+                                    return;
+                                }
+                                List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
+                                        .filter(ent -> ent instanceof Player)
+                                        .map(ent -> (Player) ent)
+                                        .filter(nearbyPlayer -> {
+                                            City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
+                                            return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromMascot(mob.getUniqueId()).getUUID());
+                                        })
+                                        .collect(Collectors.toList());
+
+                                if (!nearbyEnemies.isEmpty()) {
+                                    Player target = nearbyEnemies.get(0);
+                                    golem.setAI(true);
+                                    golem.setTarget(target);
+                                    org.bukkit.util.Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();
+                                    golem.setVelocity(direction.multiply(0.5));
+                                } else {
+                                    golem.setAI(false);
+                                    golem.setTarget(null);
+                                }
+                            }, 0L, 20L);
+
+                            scheduleGolemDespawn(golem, mob.getUniqueId());
+
+                            MessagesManager.sendMessage(player, Component.text("§8§o*terremblement* Quelque chose semble arriver..."),
+                                    Prefix.CITY, MessageType.INFO, false);
+                        }
+
                         if (regenTasks.containsKey(damageEntity.getUniqueId())) {
                             regenTasks.get(damageEntity.getUniqueId()).cancel();
                             regenTasks.remove(damageEntity.getUniqueId());
@@ -258,6 +311,30 @@ public class MascotsListener implements Listener {
             }
             e.setCancelled(true);
         }
+    }
+
+    private void scheduleGolemDespawn(IronGolem golem, UUID mascotUUID) {
+        long delayInitial = 3 * 60 * 20L;  // 3 minutes
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (!golem.isValid() || golem.isDead()) {
+                return;
+            }
+
+            List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
+                    .filter(ent -> ent instanceof Player)
+                    .map(ent -> (Player) ent)
+                    .filter(nearbyPlayer -> {
+                        City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
+                        return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromMascot(mascotUUID).getUUID());
+                    })
+                    .collect(Collectors.toList());
+
+            if (nearbyEnemies.isEmpty() && golem.getTarget() == null) {
+                golem.remove();
+            } else {
+                Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> scheduleGolemDespawn(golem, mascotUUID), 200L);
+            }
+        }, delayInitial);
     }
 
     @SneakyThrows
