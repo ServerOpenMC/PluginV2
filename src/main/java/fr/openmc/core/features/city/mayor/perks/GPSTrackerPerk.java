@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.UUID;
 
-public class RagePerk implements Listener {
+public class GPSTrackerPerk implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
@@ -29,22 +29,19 @@ public class RagePerk implements Listener {
         City playerCity = CityManager.getPlayerCity(uuid);
         if (playerCity == null) return;
 
-        // si ville a pas le perk 1 soit FOU_DE_RAGE
-        if (!PerkManager.hasPerk(playerCity.getMayor(), 1)) return;
 
         City currentCity = CityManager.getCityFromChunk(
                 event.getTo().getChunk().getX(),
                 event.getTo().getChunk().getZ()
         );
 
-        player.removePotionEffect(PotionEffectType.STRENGTH);
-        player.removePotionEffect(PotionEffectType.RESISTANCE);
+        if (!PerkManager.hasPerk(currentCity.getMayor(), 9)) return;
+
+        player.removePotionEffect(PotionEffectType.GLOWING);
 
         if (currentCity != null) {
-            if (currentCity.equals(playerCity)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, PotionEffect.INFINITE_DURATION, 0, false, false));
-            } else {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, PotionEffect.INFINITE_DURATION, 0, false, false));
+            if (!currentCity.equals(playerCity)) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, PotionEffect.INFINITE_DURATION, 0, false, false));
             }
         }
     }
@@ -53,7 +50,6 @@ public class RagePerk implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        player.removePotionEffect(PotionEffectType.STRENGTH);
-        player.removePotionEffect(PotionEffectType.RESISTANCE);
+        player.removePotionEffect(PotionEffectType.GLOWING);
     }
 }

@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.mayor.perks;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
