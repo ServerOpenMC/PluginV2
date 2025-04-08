@@ -83,7 +83,8 @@ public class MayorManager {
                 new MinerPerk(),
                 new MascotFriendlyPerk(),
                 new DemonFruitPerk(),
-                new CityHunterPerk()
+                new CityHunterPerk(),
+                new AyweniterPerk()
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
