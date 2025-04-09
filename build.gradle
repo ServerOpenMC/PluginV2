@@ -41,6 +41,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.45.0")
+    testImplementation("com.h2database:h2:2.3.232")
 }
 
 def targetJavaVersion = 21

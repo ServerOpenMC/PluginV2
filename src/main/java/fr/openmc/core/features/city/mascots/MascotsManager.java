@@ -110,7 +110,13 @@ public class MascotsManager {
     }
 
     public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
-        String query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+        String query;
+        
+        if (OMCPlugin.isUnitTestVersion()) {
+            query = "MERGE INTO free_claim KEY(city_uuid) VALUES (?, ?)";
+        } else {
+            query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+        }
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
                 statement.setString(1, entry.getKey());
@@ -125,9 +131,17 @@ public class MascotsManager {
     }
 
     public static void saveMascots(List<Mascot> mascots) {
-        String query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive) " +
-                "VALUES (?, ?, ?, ?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?";
+        String query;
+
+        if (OMCPlugin.isUnitTestVersion()) {
+            query = "MERGE INTO mascots " +
+                    "KEY(city_uuid) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
+        } else {
+            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive) " +
+                    "VALUES (?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?";
+        }
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Mascot mascot : mascots) {
