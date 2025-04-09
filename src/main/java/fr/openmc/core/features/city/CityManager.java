@@ -4,7 +4,7 @@ import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.utils.BlockVector2;
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
@@ -40,7 +40,7 @@ public class CityManager implements Listener {
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_regions");
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid, x, z FROM city_regions");
                     ResultSet rs = statement.executeQuery();
 
                     while (rs.next()) {

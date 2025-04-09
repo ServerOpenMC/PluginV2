@@ -21,9 +21,6 @@ public class SendingLetter extends MailboxInv {
     private final static String INV_NAME = "\uF990\uE003";
     private final OfflinePlayer receiver;
     private final OMCPlugin plugin;
-    private List<String> playerFriends = new ArrayList<>();
-
-    int mailAccept;
 
     public SendingLetter(Player player, OfflinePlayer receiver, OMCPlugin plugin) throws SQLException {
         super(player);

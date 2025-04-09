@@ -17,17 +17,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
-import static fr.openmc.core.features.city.commands.CityCommands.calculatePrice;
-
 public class ChestMenu {
     private final City city;
     @Getter private final int page;
     private static ItemStack border;
     @Getter @Setter private Inventory inventory;
 
-    public static int UPGRADE_PER_MONEY = 3000;
-    public static int UPGRADE_PER_AYWENITE = 5;
+    public static final int UPGRADE_PER_MONEY = 3000;
+    public static final int UPGRADE_PER_AYWENITE = 5;
 
     private static ItemStack getBorder() {
         if (border != null) {
