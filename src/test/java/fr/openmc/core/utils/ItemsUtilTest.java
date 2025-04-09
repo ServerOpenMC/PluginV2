@@ -5,7 +5,8 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
 
-public class ItemsUtilTests {
+public class ItemsUtilTest {
+
     @BeforeEach
     public void setUp() {
         MockBukkit.mock();
@@ -33,4 +34,5 @@ public class ItemsUtilTests {
                 ItemUtils.getItemTranslation(Material.DIRT).key()
         );
     }
+
 }

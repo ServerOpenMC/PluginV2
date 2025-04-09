@@ -4,7 +4,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class InputUtilsTests {
+public class InputUtilsTest {
+
     @Test
     @DisplayName("Convertion Sign Input to Money")
     public void testConvertSignInputToMoney_ShouldGiveTheAmountInFloat() {
@@ -54,4 +55,5 @@ public class InputUtilsTests {
     public void testIsInputMoney_MustReturnFalse(String input) {
         Assertions.assertFalse(InputUtils.isInputMoney(input));
     }
+
 }

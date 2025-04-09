@@ -2,7 +2,7 @@ package fr.openmc.core.utils;
 
 import org.junit.jupiter.api.*;
 
-public class DateUtilsTests {
+public class DateUtilsTest {
 
     @Test
     @DisplayName("Time to Ticks")
@@ -12,4 +12,5 @@ public class DateUtilsTests {
                 DateUtils.convertTime(24000)
         );
     }
+
 }
