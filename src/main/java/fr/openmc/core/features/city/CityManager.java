@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -213,14 +214,15 @@ public class CityManager implements Listener {
                     playerIterator.remove();
                 }
             }
+
+            if (DynamicCooldownManager.isReady(UUID.fromString(cityz.getUUID()), "city:type")) {
+                DynamicCooldownManager.clear(UUID.fromString(cityz.getUUID()), "city:type");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         MascotsManager.freeClaim.remove(city);
-        if (CityTypeCooldown.isOnCooldown(city)) {
-            CityTypeCooldown.removeCityCooldown(city);
-        }
         MascotsManager.removeMascotsFromCity(city);
     }
 

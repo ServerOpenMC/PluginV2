@@ -482,12 +482,12 @@ public class CityCommands {
             }
         }
 
-        if (CityTypeCooldown.isOnCooldown(city.getUUID())) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + CityTypeCooldown.getRemainingCooldown(city.getUUID()) / 1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!DynamicCooldownManager.isReady(UUID.fromString(city.getUUID()), "city:type")) {
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DynamicCooldownManager.getRemaining(UUID.fromString(city.getUUID()), "city:type") / 1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         CityManager.changeCityType(city.getUUID());
-        CityTypeCooldown.setCooldown(city.getUUID());
+        DynamicCooldownManager.use(UUID.fromString(city.getUUID()), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
 
         if (MascotUtils.getMascotUUIDOfCity(city.getUUID()) != null) {
             LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));

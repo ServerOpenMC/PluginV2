@@ -19,6 +19,7 @@ import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.WorldGuardApi;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
@@ -75,6 +76,10 @@ public final class OMCPlugin extends JavaPlugin {
         new MotdUtils(this);
         translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
         translationManager.loadAllLanguages();
+
+        /* LOAD */
+        DynamicCooldownManager.loadCooldowns();
+
         getLogger().info("Plugin activé");
     }
 
@@ -88,6 +93,7 @@ public final class OMCPlugin extends JavaPlugin {
         mayorManager.savePlayersVote();
         mayorManager.saveMayorCandidates();
         mayorManager.saveCityMayors();
+        mayorManager.saveCityLaws();
 
         // - Home
         HomesManager.getInstance().saveHomesData();
@@ -102,6 +108,9 @@ public final class OMCPlugin extends JavaPlugin {
 
         // - Cube
         CubeListener.clearCube(CubeListener.currentLocation);
+
+        // - Cooldowns
+        DynamicCooldownManager.saveCooldowns();
         if (dbManager != null) {
             try {
                 dbManager.close();

@@ -12,6 +12,7 @@ import fr.openmc.core.features.friend.FriendSQLManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -35,7 +36,7 @@ public class DatabaseManager {
             EconomyData.init_db(connection);
             HomesManager.init_db(connection);
             MascotsManager.init_db(connection);
-            CityTypeCooldown.init_db(connection);
+            DynamicCooldownManager.init_db(connection);
             FriendSQLManager.init_db(connection);
 
         } catch (SQLException e) {

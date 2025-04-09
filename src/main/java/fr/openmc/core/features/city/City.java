@@ -2,6 +2,7 @@ package fr.openmc.core.features.city;
 
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.events.*;
+import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.OMCPlugin;
@@ -213,6 +214,12 @@ public class City {
         MayorManager mayorManager = MayorManager.getInstance();
 
         return mayorManager.cityMayor.get(CityManager.getCity(cityUUID));
+    }
+
+    public CityLaw getLaw() {
+        MayorManager mayorManager = MayorManager.getInstance();
+
+        return mayorManager.cityLaws.get(CityManager.getCity(cityUUID));
     }
 
     /**
