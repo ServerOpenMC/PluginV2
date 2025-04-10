@@ -28,7 +28,7 @@ public class PlayerUtils {
      * Return a skull of a player.
      *
      * @param player A Player
-     * @return a Itemstack
+     * @return an ItemStack
      */
     public static ItemStack getPlayerSkull(Player player) {
         ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD, 1, (short) 3);

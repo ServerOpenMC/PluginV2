@@ -23,7 +23,7 @@ public class FreezeManager {
 		if (target == null) {
 			MessagesManager.sendMessage(player, Component.text("§4Joueur introuvable"), Prefix.OPENMC, MessageType.ERROR, false);
 		} else {
-			String freezed = "";
+			String freezed;
 
 			if (FROZEN_PLAYERS.contains(target)) {
 				FROZEN_PLAYERS.remove(target);
@@ -35,7 +35,7 @@ public class FreezeManager {
 			}
 
 			MessagesManager.sendMessage(player, Component.text("§2Vous avez " + freezed + "§6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, false);
-			MessagesManager.sendMessage(target, Component.text("§4Vous avez été " + freezed), Prefix.OPENMC, MessageType.WARNING, true);
+			MessagesManager.sendMessage(target, Component.text("§4Vous avez été " + freezed), Prefix.OPENMC, MessageType.INFO, true);
 		}
 	}
 }

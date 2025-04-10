@@ -9,15 +9,15 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 /**
- * Le but de cette classe est de regrouper toutes les conditions neccessaires
- * touchant au mascottes (utile pour faire une modif sur menu et commandes)
+ * Le but de cette classe est de regrouper toutes les conditions necessaires
+ * touchant aux mascottes (utile pour faire une modif sur menu et commandes).
  */
 public class CityTypeConditions {
 
     /**
      * Retourne un booleen pour dire si la ville peut changer de typê
      *
-     * @param city la ville sur laquelle on test cela
+     * @param city la ville sur laquelle on teste cela
      * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */

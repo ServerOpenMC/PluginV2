@@ -40,7 +40,7 @@ public class MascotsManager {
     public static Map<UUID, Location> mascotSpawn = new HashMap<>();
 
     public MascotsManager(OMCPlugin plugin) {
-        //changement du spigot.yml pour permettre au mascottes d'avoir 3000 coeurs
+        //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
         spigotYMLConfig.set("settings.attribute.maxHealth.max", 6000.0);
@@ -175,10 +175,10 @@ public class MascotsManager {
         mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
-        // l'uuid de la ville lui est approprié pour l'identifié
+        // L'uuid de la ville lui est approprié pour l'identifié
         data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
-        // immunité persistente de 7 jours pour la mascotte
+        // Immunité persistante de 7 jours pour la mascotte
         MascotsListener.startImmunityTimer(city_uuid, 10080);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -242,7 +242,7 @@ public class MascotsManager {
             MascotUtils.changeMascotImmunity(city_uuid, false);
             int level = MascotUtils.getMascotLevel(city_uuid);
             if (MascotUtils.getMascotUUIDOfCity(city_uuid)!=null){
-                LivingEntity entity = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city_uuid));
+                LivingEntity entity = (LivingEntity) Bukkit.getEntity(Objects.requireNonNull(MascotUtils.getMascotUUIDOfCity(city_uuid)));
                 if (entity!=null){
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
                     entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
@@ -266,7 +266,7 @@ public class MascotsManager {
     public static void giveChest(Player player) {
         if (!ItemUtils.hasAvailableSlot(player)){
 
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire : mascotte invoquée à vos coordonées"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire : mascotte invoquée à vos coordonnées"), Prefix.CITY, MessageType.ERROR, false);
             City city = CityManager.getPlayerCity(player.getUniqueId());
 
             if (city == null) {
@@ -287,7 +287,7 @@ public class MascotsManager {
             List<Component> info = new ArrayList<>();
             info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
             info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
+            info.add(Component.text("§clors de votre déconnexion la mascotte sera placée"));
 
             meta.displayName(Component.text("§lMascotte"));
             meta.lore(info);
@@ -319,7 +319,7 @@ public class MascotsManager {
             List<Component> info = new ArrayList<>();
             info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
             info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
+            info.add(Component.text("§clors de votre déconnexion la mascotte sera placée"));
 
             meta.displayName(Component.text("§lMascotte"));
             meta.lore(info);

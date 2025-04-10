@@ -10,8 +10,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 /**
- * Le but de cette classe est de regrouper toutes les conditions neccessaires
- * pour modifier une ville (utile pour faire une modif sur menu et commandes)
+ * Le but de cette classe est de regrouper toutes les conditions necessaires
+ * pour modifier une ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityManageConditions {
 

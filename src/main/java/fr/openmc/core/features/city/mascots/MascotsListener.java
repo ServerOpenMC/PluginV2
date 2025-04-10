@@ -144,7 +144,7 @@ public class MascotsListener implements Listener {
                                 mob.teleport(mascot_spawn);
                                 movingMascots.remove(city_uuid);
                                 Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "Mascotte déplacée");
-                                //Cooldown de 5h pour déplacer la mascottes ( se reset au relancement du serv )
+                                // Cooldown de 5h pour déplacer les mascottes (se reset au relancement du serv)
                                 Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                                 return;
                             }
@@ -513,7 +513,7 @@ public class MascotsListener implements Listener {
                 ItemMeta itemMeta = item.getItemMeta();
                 if (itemMeta==null){continue;}
                 PersistentDataContainer data = itemMeta.getPersistentDataContainer();
-                if (data.has(MascotsManager.chestKey, PersistentDataType.STRING) && data.get(MascotsManager.chestKey, PersistentDataType.STRING)=="id"){
+                if (data.has(MascotsManager.chestKey, PersistentDataType.STRING) && data.get(MascotsManager.chestKey, PersistentDataType.STRING).equals("id")) {
                     player.getInventory().remove(item);
                     futurCreateCity.remove(player.getUniqueId());
                     City city = CityManager.getPlayerCity(player.getUniqueId());

@@ -9,13 +9,13 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 /**
- * Le but de cette classe est de regrouper toutes les conditions neccessaires
- * pour quitter une ville (utile pour faire une modif sur menu et commandes)
+ * Le but de cette classe est de regrouper toutes les conditions necessaires
+ * pour quitter une ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityLeaveCondition {
 
     /**
-     * Retourne un booleen pour dire si le joueur peur quitter
+     * Retourne un booleen pour dire si le joueur peut quitter
      *
      * @param city la ville sur laquelle on veut quitter
      * @param player le joueur qui veut quitter
