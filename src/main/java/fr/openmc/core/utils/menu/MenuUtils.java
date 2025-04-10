@@ -4,14 +4,6 @@ import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.ItemsAdder;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.menu.CityMenu;
-import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,9 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static fr.openmc.core.features.city.CityManager.getCityType;
+import java.util.function.Supplier;
 
 public class MenuUtils {
 	
@@ -71,23 +61,25 @@ public class MenuUtils {
 		return itemBuilder;
 	}
 
-	public static BukkitRunnable runDynamicItem(Player player, Menu menu, ItemStack item, int slot) {
-        return new BukkitRunnable() {
+	/**
+	 * Set a Item to be refresh.
+	 * [ATTENTION METTRE UN NOM DIFFERENT DES AUTRES MENUS]
+	 * @param player The Player
+	 * @param menu The Menu
+	 * @param slot Slot of Item
+	 * @param itemSupplier Supplier of Item
+	 * @return The ItemBuilder with the name set
+	 */
+	public static BukkitRunnable runDynamicItem(Player player, Menu menu, int slot, Supplier<ItemStack> itemSupplier) {
+		return new BukkitRunnable() {
 			@Override
 			public void run() {
-				try {
-					if (!player.getOpenInventory().title().equals(Component.text(menu.getName()))) {
-						cancel();
-						return;
-					}
-
-					player.getOpenInventory().getTopInventory().setItem(slot, item);
-
-				} catch (Exception e) {
-					MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-					player.closeInventory();
-					e.printStackTrace();
+				if (!player.getOpenInventory().title().equals(Component.text(menu.getName()))) {
+					cancel();
+					return;
 				}
+
+				player.getOpenInventory().getTopInventory().setItem(slot, itemSupplier.get());
 			}
 		};
 	}

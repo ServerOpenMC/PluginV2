@@ -196,7 +196,7 @@ public class MascotMenu extends Menu {
                 Supplier<ItemStack> immunityItemSupplier = () -> {
                     List<Component> lore = List.of(
                             Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),
-                            Component.text("§cTemps restant §7: " + DateUtils.convertSecondToTime(MascotUtils.getMascotImmunityTime(city.getUUID())))
+                            Component.text("§cTemps restant §7: " + DateUtils.convertMillisToTime(MascotUtils.getMascotImmunityTime(city.getUUID())))
                     );
 
                     return new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
