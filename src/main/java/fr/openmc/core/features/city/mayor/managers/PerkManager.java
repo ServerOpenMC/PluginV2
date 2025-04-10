@@ -79,4 +79,12 @@ public class PerkManager {
         }
         return false;
     }
+
+    public static Perks getPerkEvent(Mayor mayor) {
+        if (getPerkById(mayor.getIdPerk1()).getType() == PerkType.EVENT) return getPerkById(mayor.getIdPerk1());
+        if (getPerkById(mayor.getIdPerk2()).getType() == PerkType.EVENT) return getPerkById(mayor.getIdPerk2());
+        if (getPerkById(mayor.getIdPerk3()).getType() == PerkType.EVENT) return getPerkById(mayor.getIdPerk3());
+
+        return null;
+    }
 }

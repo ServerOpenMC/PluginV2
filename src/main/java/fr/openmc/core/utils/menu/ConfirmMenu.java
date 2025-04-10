@@ -80,14 +80,26 @@ public class ConfirmMenu extends Menu {
                 itemMeta.displayName(Component.text("§cRefuser"));
                 itemMeta.lore(loreDeny);
             }).setOnClick(event -> {
-                deny.run();
+                try {
+                    deny.run();
+                } catch (Exception e) {
+                    MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                    player.closeInventory();
+                    e.printStackTrace();
+                }
             }));
 
             inventory.put(5, new ItemBuilder(this, acceptBtn, itemMeta -> {
                 itemMeta.displayName(Component.text("§aAccepter"));
                 itemMeta.lore(loreAccept);
             }).setOnClick(event -> {
-                accept.run();
+                try {
+                    accept.run();
+                } catch (Exception e) {
+                    MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                    player.closeInventory();
+                    e.printStackTrace();
+                }
             }));
 
             return inventory;

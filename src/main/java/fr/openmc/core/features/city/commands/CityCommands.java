@@ -267,7 +267,7 @@ public class CityCommands {
         city.delete();
         MessagesManager.sendMessage(sender, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
 
-        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
     }
 
     @Subcommand("claim")
@@ -481,13 +481,12 @@ public class CityCommands {
                 return;
             }
         }
-
-        if (!DynamicCooldownManager.isReady(UUID.fromString(city.getUUID()), "city:type")) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DynamicCooldownManager.getRemaining(UUID.fromString(city.getUUID()), "city:type") / 1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         CityManager.changeCityType(city.getUUID());
-        DynamicCooldownManager.use(UUID.fromString(city.getUUID()), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
+        DynamicCooldownManager.use(city.getUUID(), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
 
         if (MascotUtils.getMascotUUIDOfCity(city.getUUID()) != null) {
             LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
@@ -521,6 +520,16 @@ public class CityCommands {
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
+
+            String cityTypeActuel = getCityType(city.getUUID());
+            String cityTypeAfter = "";
+            if (cityTypeActuel != null) {
+                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+                cityTypeAfter = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+            }
+
+            MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
+
         }
     }
 
@@ -595,7 +604,7 @@ public class CityCommands {
         MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
 
-        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
 
         return true;
     }

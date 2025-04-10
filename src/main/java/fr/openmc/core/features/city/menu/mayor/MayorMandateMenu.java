@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -22,6 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.lock.qual.MayReleaseLocks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -78,6 +80,41 @@ public class MayorMandateMenu extends Menu {
                 itemMeta.lore(loreMayor);
             }));
 
+            // ACCES DES LOIS
+            // - PVP ENTRE MEMBRES (activé/désactiver) - Maire
+            // - Annonce Ville (genre de broadcast ds ville) - Maire
+            // - /city warp (donc le setspawnpoint de la ville en gros) => baton de set warp - Maire
+            // - Evenement Déclanchable - Maire
+
+            // si le joueur est maire
+            inventory.put(4, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.itemName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Vous allez retourner au Menu des Elections"),
+                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                ));
+            }).setOnClick(inventoryClickEvent -> {
+                MayorElectionMenu menu = new MayorElectionMenu(player);
+                menu.open();
+            }));
+
+            if (player.getUniqueId().equals(mayor.getUUID())) {
+                List<Component> loreLaw = List.of(
+                        Component.text("§7Vous êtes le ").append(Component.text("Maire").color(mayor.getMayorColor()).append(Component.text("§7!"))),
+                        Component.text(""),
+                        Component.text("§7Vous pouvez changer les §1Lois §7et lancer des §6Evenements §7!"),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR OUVRIR UN MENU")
+
+                );
+                inventory.put(18, new ItemBuilder(this, Material.STONE_BUTTON, itemMeta -> {
+                    itemMeta.itemName(Component.text("§1Les Lois"));
+                    itemMeta.lore(loreLaw);
+                }).setOnClick(event -> {
+                    new MayorLawMenu(player).open();
+                }));
+            }
+
             List<Component> loreOwner =  new ArrayList<>(List.of(
                     Component.text("§8§oPropriétaire de " + city.getName())
             ));
@@ -119,6 +156,8 @@ public class MayorMandateMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }));
+
+
             return inventory;
         } catch (Exception e) {
             MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);

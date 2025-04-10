@@ -16,7 +16,9 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -40,6 +42,7 @@ public class MayorManager {
     public static final String TABLE_MAYOR = "city_mayor";
     public static final String TABLE_ELECTION = "city_election";
     public static final String TABLE_VOTE = "city_vote";
+    public static final String TABLE_LAW = "city_law";
     public static final String TABLE_CONSTANTS = "mayor_constants";
 
     private final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
@@ -63,6 +66,7 @@ public class MayorManager {
 
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
+    public HashMap<City, CityLaw> cityLaws = new HashMap<>();
     public Map<City, List<MayorCandidate>> cityElections = new HashMap<>(){};
     public Map<City, List<MayorVote>> playerVote = new HashMap<>();
 
@@ -98,6 +102,7 @@ public class MayorManager {
         loadCityMayors();
         loadMayorCandidates();
         loadPlayersVote();
+        loadCityLaws();
 
         new BukkitRunnable() {
             @Override
@@ -132,6 +137,8 @@ public class MayorManager {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_ELECTION + " (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
         // create city_voted : contient les membres d'une ville ayant deja voté
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_VOTE + " (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) UNIQUE NOT NULL, candidateUUID VARCHAR(36) NOT NULL)").executeUpdate();
+        // create city_law : contient les parametres d'une ville
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_LAW + " (city_uuid VARCHAR(8) UNIQUE, pvp BOOLEAN NOT NULL DEFAULT TRUE, warp_x DOUBLE, warp_y DOUBLE, warp_z DOUBLE, warp_world VARCHAR(255))").executeUpdate();
         // create constants : contient une information universelle pour tout le monde
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONSTANTS + " (mayorPhase int(1))").executeUpdate();
         PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_CONSTANTS);
@@ -284,6 +291,7 @@ public class MayorManager {
             e.printStackTrace();
         }
     }
+
     public void loadPlayersVote() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_VOTE)) {
             ResultSet result = states.executeQuery();
@@ -346,6 +354,75 @@ public class MayorManager {
             plugin.getLogger().info("Sauvegarde des données des Joueurs qui ont voté pour un maire réussie.");
         } catch (SQLException e) {
             plugin.getLogger().severe("Échec de la sauvegarde des données des Joueurs qui ont voté pour un maire.");
+            e.printStackTrace();
+        }
+    }
+
+    public void loadCityLaws() {
+        String sql = "SELECT city_uuid, pvp, warp_x, warp_y, warp_z, warp_world FROM " + TABLE_LAW;
+
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String cityUUID = resultSet.getString("city_uuid");
+                boolean pvp = resultSet.getBoolean("pvp");
+
+                double x = resultSet.getDouble("warp_x");
+                double y = resultSet.getDouble("warp_y");
+                double z = resultSet.getDouble("warp_z");
+                String worldName = resultSet.getString("warp_world");
+
+                Location warp = null;
+                if (worldName != null) {
+                    World world = Bukkit.getWorld(worldName);
+                    if (world != null) {
+                        warp = new Location(world, x, y, z);
+                    }
+                }
+
+                City city = CityManager.getCity(cityUUID);
+                if (city != null) {
+                    CityLaw law = new CityLaw(pvp, warp);
+                    cityLaws.put(city, law);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveCityLaws() {
+        String sql = "INSERT INTO " + TABLE_LAW + " (city_uuid, pvp, warp_x, warp_y, warp_z, warp_world) " +
+                "VALUES (?, ?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "pvp = VALUES(pvp), warp_x = VALUES(warp_x), warp_y = VALUES(warp_y), " +
+                "warp_z = VALUES(warp_z), warp_world = VALUES(warp_world)";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            plugin.getLogger().info("Sauvegarde des lois des villes...");
+
+            for (Map.Entry<City, CityLaw> entry : cityLaws.entrySet()) {
+                City city = entry.getKey();
+                CityLaw law = entry.getValue();
+
+                statement.setString(1, city.getUUID());
+                statement.setBoolean(2, law.isPvp());
+                statement.setDouble(3, law.getWarp() != null ? law.getWarp().getX() : 0);
+                statement.setDouble(4, law.getWarp() != null ? law.getWarp().getY() : 0);
+                statement.setDouble(5, law.getWarp() != null ? law.getWarp().getZ() : 0);
+                statement.setString(6, law.getWarp() != null ? law.getWarp().getWorld().getName() : "");
+
+                statement.addBatch();
+            }
+
+            statement.executeBatch();
+            plugin.getLogger().info("Sauvegarde des lois des villes réussie.");
+
+        } catch (SQLException e) {
+            plugin.getLogger().severe("Échec de la sauvegarde des lois des villes.");
             e.printStackTrace();
         }
     }

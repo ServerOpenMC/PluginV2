@@ -215,8 +215,8 @@ public class CityManager implements Listener {
                 }
             }
 
-            if (DynamicCooldownManager.isReady(UUID.fromString(cityz.getUUID()), "city:type")) {
-                DynamicCooldownManager.clear(UUID.fromString(cityz.getUUID()), "city:type");
+            if (DynamicCooldownManager.isReady(cityz.getUUID(), "city:type")) {
+                DynamicCooldownManager.clear(cityz.getUUID(), "city:type");
             }
         } catch (Exception e) {
             e.printStackTrace();

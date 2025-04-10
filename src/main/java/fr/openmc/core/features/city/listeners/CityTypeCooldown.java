@@ -13,10 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.UUID;
 
 public class CityTypeCooldown implements Listener {
@@ -29,8 +25,8 @@ public class CityTypeCooldown implements Listener {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city!=null){
             String city_uuid = city.getUUID();
-            if (!DynamicCooldownManager.isReady(UUID.fromString(city_uuid), "city:type")) {
-                MessagesManager.sendMessage(player, Component.text("Type de ville changeable dans : " + DynamicCooldownManager.getRemaining(UUID.fromString(city_uuid), "city:type")/1000 + "s"), Prefix.CITY, MessageType.INFO, false);
+            if (!DynamicCooldownManager.isReady(city_uuid, "city:type")) {
+                MessagesManager.sendMessage(player, Component.text("Type de ville changeable dans : " + DynamicCooldownManager.getRemaining(UUID.fromString(city_uuid).toString(), "city:type")/1000 + "s"), Prefix.CITY, MessageType.INFO, false);
             } else {
                 MessagesManager.sendMessage(player, Component.text("Type de ville changeable"), Prefix.CITY, MessageType.INFO, false);
             }
