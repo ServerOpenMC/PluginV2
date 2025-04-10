@@ -15,6 +15,11 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPAcceptCommand {
 	
+	/**
+	 * Accept a teleportation request from another player.
+	 *
+	 * @param player The player who accepts the teleportation request.
+	 */
 	@Command("tpaccept")
 	@CommandPermission("ayw.command.tpa")
 	public void tpAccept(Player player) {

@@ -16,15 +16,30 @@ public class TPAQueue {
 	private final ConcurrentHashMap<UUID, UUID> tpaRequests = new ConcurrentHashMap<>();
 	private final ConcurrentHashMap<UUID, Long> tpaRequestTime = new ConcurrentHashMap<>();
 	
+	/**
+	 * Check if the player has a pending teleport request
+	 * @param player The player to check
+	 * @return true if the player has a pending request, false otherwise
+	 */
 	public boolean hasPendingRequest(Player player) {
 		return tpaRequests.containsKey(player.getUniqueId());
 	}
 	
+	/**
+	 * Check if the player is the requester of a teleport request
+	 * @param player The player to check
+	 * @return true if the player is the requester, false otherwise
+	 */
 	public void addRequest(Player player, Player target) {
 		tpaRequests.put(target.getUniqueId(), player.getUniqueId());
 		tpaRequestTime.put(player.getUniqueId(), System.currentTimeMillis());
 	}
 	
+	/**
+	 * Check if the player is the target of a teleport request
+	 * @param player The player to check
+	 * @return true if the player is the target, false otherwise
+	 */
 	public void expireRequest(Player player, Player target) {
 		if (tpaRequests.containsKey(target.getUniqueId())) {
 			long requestTime = tpaRequestTime.get(player.getUniqueId());
@@ -37,11 +52,20 @@ public class TPAQueue {
 		}
 	}
 	
+	/**
+	 * Get the player who sent the teleport request
+	 * @param target The target player
+	 * @return The requester player, or null if not found
+	 */
 	public Player getRequester(Player target) {
 		UUID requesterUUID = tpaRequests.get(target.getUniqueId());
 		return requesterUUID == null ? null : target.getServer().getPlayer(requesterUUID);
 	}
 	
+	/**
+	 * Remove the teleport request for the target player
+	 * @param target The target player
+	 */
 	public void removeRequest(Player target) {
 		tpaRequests.remove(target.getUniqueId());
 	}

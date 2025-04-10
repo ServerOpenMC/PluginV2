@@ -19,6 +19,12 @@ public class FreezeManager {
 		Bukkit.getServer().getPluginManager().registerEvents(new FreezeListener(), OMCPlugin.getInstance());
 	}
 	
+	/**
+	 * Freeze or unfreeze a player
+	 *
+	 * @param player The player who freeze/unfreeze
+	 * @param target The player to freeze/unfreeze
+	 */
 	public static void switchFreeze(Player player, Player target) {
 		if (target == null) {
 			MessagesManager.sendMessage(player, Component.text("§4Joueur introuvable"), Prefix.OPENMC, MessageType.ERROR, false);

@@ -16,6 +16,11 @@ import java.util.concurrent.TimeUnit;
 
 public class FreezeListener implements Listener {
 	
+	/**
+	 * When a player disconnects, if he is frozen, we ban him for 30 days
+	 *
+	 * @param event PlayerQuitEvent
+	 */
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
@@ -26,25 +31,40 @@ public class FreezeListener implements Listener {
 		}
 	}
 
+	/**
+	 * When a player moves, if he is frozen, we cancel the event
+	 *
+	 * @param event PlayerMoveEvent
+	 */
 	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent e) {
-		if (FreezeManager.FROZEN_PLAYERS.contains(e.getPlayer())) {
-			e.setCancelled(true);
+	public void onPlayerMove(PlayerMoveEvent event) {
+		if (FreezeManager.FROZEN_PLAYERS.contains(event.getPlayer())) {
+			event.setCancelled(true);
 		}
 	}
 	
+	/**
+	 * When a player is damaged, if he is frozen, we cancel the event
+	 *
+	 * @param event EntityDamageEvent
+	 */
 	@EventHandler
-	public void onDamage(EntityDamageEvent e) {
-		Entity entity = e.getEntity();
+	public void onDamage(EntityDamageEvent event) {
+		Entity entity = event.getEntity();
 		if (entity instanceof Player && FreezeManager.FROZEN_PLAYERS.contains(((Player) entity).getPlayer())) {
-			e.setCancelled(true);
+			event.setCancelled(true);
 		}
 	}
 	
+	/**
+	 * When a player teleports, if he is frozen, we cancel the event
+	 *
+	 * @param event PlayerTeleportEvent
+	 */
 	@EventHandler
-	public void onTeleport(PlayerTeleportEvent e) {
-		if (FreezeManager.FROZEN_PLAYERS.contains(e.getPlayer())) {
-			e.setCancelled(true);
+	public void onTeleport(PlayerTeleportEvent event) {
+		if (FreezeManager.FROZEN_PLAYERS.contains(event.getPlayer())) {
+			event.setCancelled(true);
 		}
 	}
 }
