@@ -14,6 +14,7 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -196,7 +197,7 @@ public class MascotMenu extends Menu {
                 Supplier<ItemStack> immunityItemSupplier = () -> {
                     List<Component> lore = List.of(
                             Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),
-                            Component.text("§cTemps restant §7: " + DateUtils.convertMillisToTime(MascotUtils.getMascotImmunityTime(city.getUUID())))
+                            Component.text("§cTemps restant §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "mascot:immunity")))
                     );
 
                     return new ItemBuilder(this, Material.DIAMOND, itemMeta -> {

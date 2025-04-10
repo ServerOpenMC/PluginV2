@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -53,10 +54,6 @@ public class MascotsListener implements Listener {
                 UUID mascotsUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
                 if (mascotsUUID==null){continue;}
                 mascotsRegeneration(mascotsUUID);
-                if (MascotUtils.getMascotImmunity(city_uuid) && MascotUtils.getMascotState(city_uuid)){
-                    long duration = MascotUtils.getMascotImmunityTime(city_uuid);
-                    startImmunityTimer(city_uuid, duration);
-                }
             }
         }
     }
@@ -714,30 +711,4 @@ public class MascotsListener implements Listener {
         task.runTaskTimer(OMCPlugin.getInstance(), 0L, 60L);
     }
 
-    public static void startImmunityTimer(String city_uuid, long duration) {
-        BukkitRunnable immunityTask = new BukkitRunnable() {
-            long endTime = duration;
-            @Override
-            public void run() {
-                if (!MascotUtils.mascotsContains(city_uuid)){
-                    this.cancel();
-                    return;
-                }
-                if (endTime == 0){
-                    if (MascotUtils.getMascotImmunity(city_uuid))MascotUtils.changeMascotImmunity(city_uuid, false);
-                    MascotUtils.setImmunityTime(city_uuid, 0);
-                    UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
-                    if (mascotUUID!=null){
-                        Entity entity = Bukkit.getEntity(mascotUUID);
-                        if (entity!=null)entity.setGlowing(false);
-                    }
-                    this.cancel();
-                    return;
-                }
-                endTime -= 1;
-                MascotUtils.setImmunityTime(city_uuid, endTime);
-            }
-        };
-        immunityTask.runTaskTimer(OMCPlugin.getInstance(), 1200L, 1200L); // Vérifie chaque minute
-    }
 }

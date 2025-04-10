@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -241,7 +242,7 @@ public class AdminCityCommands {
         if (MascotUtils.getMascotImmunity(city_uuid)){
             MascotUtils.changeMascotImmunity(city_uuid, false);
         }
-        MascotUtils.setImmunityTime(city_uuid, 0);
+        DynamicCooldownManager.clear(city_uuid, "mascot:immunity");
         UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
         if (mascotUUID!=null){
             Entity mob = Bukkit.getEntity(mascotUUID);
