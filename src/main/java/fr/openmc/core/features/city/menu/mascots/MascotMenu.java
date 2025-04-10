@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu.mascots;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -14,6 +15,7 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -105,7 +107,7 @@ public class MascotMenu extends Menu {
                 );
             }
 
-            map.put(13, new ItemBuilder(this, Material.CHEST, itemMeta -> {
+            ItemStack itemMoveMascot = new ItemBuilder(this, Material.CHEST, itemMeta -> {
                 itemMeta.displayName(Component.text("§7Déplacer votre §cMascotte"));
                 itemMeta.lore(lorePosMascot);
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
@@ -133,7 +135,13 @@ public class MascotMenu extends Menu {
                     }
                 }
                 player.closeInventory();
-            }));
+            });
+            if (Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
+                MenuUtils.runDynamicItem(player, this, itemMoveMascot, 13)
+                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+            } else {
+                map.put(13, itemMoveMascot);
+            }
 
             List<Component> requiredAmount = new ArrayList<>();
             requiredAmount.add(Component.text("§7Nécessite §d" + MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID())).getUpgradeCost() + " d'Aywenite"));
@@ -186,10 +194,13 @@ public class MascotMenu extends Menu {
                         Component.text("§cTemps restant §7: " + DateUtils.convertSecondToTime(MascotUtils.getMascotImmunityTime(city.getUUID())))
                 );
 
-                map.put(26, new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
-                    itemMeta.displayName(Component.text("§7Votre §cMascotte §7est §bimmunisé§7!"));
+                ItemStack itemImmunity = new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
+                    itemMeta.displayName(Component.text("§7Votre §cMascotte §7est §bimmunisée§7!"));
                     itemMeta.lore(lore);
-                }));
+                });
+
+                MenuUtils.runDynamicItem(player, this, itemImmunity, 26)
+                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             }
 
             return map;

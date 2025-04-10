@@ -26,7 +26,9 @@ import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
+import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -39,12 +41,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.DayOfWeek;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
@@ -227,6 +228,7 @@ public class CityMenu extends Menu {
                     loreElections = List.of(
                             Component.text("§7Votre ville a un §6Maire !"),
                             Component.text("§7Maire §7: ").append(Component.text(mayorName)).color(mayorColor).decoration(TextDecoration.ITALIC, false),
+                            Component.text("§cOuverture des Elections dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)),
                             Component.text(""),
                             Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
                     );
@@ -268,7 +270,7 @@ public class CityMenu extends Menu {
             }
 
             List<Component> finalLoreElections = loreElections;
-            inventory.put(23, new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
+            ItemStack itemElection = new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
                 itemMeta.displayName(Component.text("§6Les Elections"));
                 itemMeta.lore(finalLoreElections);
             }).setOnClick(inventoryClickEvent -> {
@@ -297,7 +299,10 @@ public class CityMenu extends Menu {
                         }
                     }
                 }
-            }));
+            });
+
+            MenuUtils.runDynamicItem(player, this, itemElection, 23)
+                    .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
             String type = getCityType(city.getUUID());
             if (type.equals("war")) {
@@ -309,50 +314,64 @@ public class CityMenu extends Menu {
             }
             String finalType = type;
 
-            List<Component> loreType;
+            List<Component> updatedLore = new ArrayList<>();
+            updatedLore.add(Component.text("§7Votre ville est en §5" + finalType));
 
-            if (hasPermissionChangeType) {
-                loreType = List.of(
-                        Component.text("§7Votre ville est en §5" + finalType),
-                        Component.text(""),
-                        Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE")
-                );
-            } else {
-                loreType = List.of(
-                        Component.text("§7Votre ville est en " + finalType)
-                );
+            if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+                updatedLore.add(Component.text(""));
+                updatedLore.add(Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type"))));
             }
 
-            inventory.put(25, new ItemBuilder(this, Material.NETHERITE_SWORD, itemMeta -> {
-                itemMeta.itemName(Component.text("§5Le Statut de votre Ville"));
-                itemMeta.lore(loreType);
-            }).setOnClick(inventoryClickEvent -> {
-                String cityTypeActuel = getCityType(city.getUUID());
-                String cityTypeAfter = "";
-                if (cityTypeActuel != null) {
-                    cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
-                    cityTypeAfter = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
-                }
+            if (hasPermissionChangeType) {
+                updatedLore.add(Component.text(""));
+                updatedLore.add(Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE"));
+            }
 
-                ConfirmMenu menu = new ConfirmMenu(player,
-                        () -> {
-                            CityCommands.changeConfirm(player);
-                            player.closeInventory();
-                        },
-                        () -> {
-                            player.closeInventory();
-                        },
-                        List.of(
-                                Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"),
-                                Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter),
-                                Component.text("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX")
-                        ),
-                        List.of(
-                                Component.text("§7Ne pas changer le type de ta §dville")
-                        )
-                );
-                menu.open();
-            }));
+            ItemStack itemType = new ItemBuilder(CityMenu.this, Material.NETHERITE_SWORD, meta -> {
+                meta.itemName(Component.text("§5Le Statut de votre Ville"));
+                meta.lore(updatedLore);
+            }).setOnClick(inventoryClickEvent -> {
+                try {
+                    if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) return;
+
+                    String cityTypeActuel = getCityType(city.getUUID());
+                    String cityTypeAfter = "";
+                    if (cityTypeActuel != null) {
+                        cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+                        cityTypeAfter = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+                    }
+
+                    ConfirmMenu menu = new ConfirmMenu(player,
+                            () -> {
+                                CityCommands.changeConfirm(player);
+                                player.closeInventory();
+                            },
+                            () -> {
+                                player.closeInventory();
+                            },
+                            List.of(
+                                    Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"),
+                                    Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter),
+                                    Component.text("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX")
+                            ),
+                            List.of(
+                                    Component.text("§7Ne pas changer le type de ta §dville")
+                            )
+                    );
+                    menu.open();
+                } catch (Exception e) {
+                    MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                    e.printStackTrace();
+                }
+            });
+
+            //AFFICHAGE DYNAMIQUE
+            if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+                MenuUtils.runDynamicItem(player, this, itemType, 25)
+                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+            } else {
+                inventory.put(25, itemType);
+            }
 
             List<Component> loreChestCity;
 

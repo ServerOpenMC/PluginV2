@@ -16,6 +16,7 @@ import fr.openmc.core.features.city.menu.mayor.create.MayorModifyMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -85,7 +86,7 @@ public class MayorElectionMenu extends Menu {
                 );
             }
 
-            inventory.put(11, new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
+            ItemStack itemElection = new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
                 itemMeta.itemName(Component.text("§6Les Elections"));
                 itemMeta.lore(loreElection);
             }).setOnClick(inventoryClickEvent -> {
@@ -94,7 +95,10 @@ public class MayorElectionMenu extends Menu {
                     return;
                 }
                 new MayorVoteMenu(player).open();
-            }));
+            });
+
+            MenuUtils.runDynamicItem(player, this, itemElection, 11)
+                    .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
             List<Component> loreCandidature;
             if (mayorManager.hasCandidated(player)) {
