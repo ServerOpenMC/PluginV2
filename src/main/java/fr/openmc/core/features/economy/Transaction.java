@@ -22,8 +22,8 @@ public class Transaction {
 
     public Transaction(String recipient, String sender, double amount, String reason) {
         /*
-        Recipient: Qui as reçu le paiement
-            - CONSOLE pour le serveur (ex: adminshop)
+        Recipient : Qui a reçu le paiement
+            - CONSOLE pour le serveur (ex : adminshop)
         Sender: Qui as envoyé le paiement
             - CONSOLE pour le serveur (ex: quêtes)
 

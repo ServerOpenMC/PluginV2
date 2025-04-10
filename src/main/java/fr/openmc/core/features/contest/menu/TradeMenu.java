@@ -64,7 +64,7 @@ public class TradeMenu extends Menu {
 
         // ITEM ADDER
         String namespaceShellContest = "omc_contest:contest_shell";
-        ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
+        ItemStack shellContest = Objects.requireNonNull(CustomItemRegistry.getByName(namespaceShellContest)).getBest();
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
@@ -99,14 +99,15 @@ public class TradeMenu extends Menu {
                     Component.text("§e§lCLIQUE-GAUCHE POUR VENDRE UNE FOIS"),
                     Component.text("§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE")
             );
-
-            inventory.put(slot, new ItemBuilder(this, m, itemMeta -> itemMeta.lore(loreTrades)).setOnClick(inventoryClickEvent -> {
+	        
+	        assert m != null;
+	        inventory.put(slot, new ItemBuilder(this, m, itemMeta -> itemMeta.lore(loreTrades)).setOnClick(inventoryClickEvent -> {
                 if (!CustomItemRegistry.hasItemsAdder()) {
                     MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                     return;
                 }
 
-                String m1 = String.valueOf(inventoryClickEvent.getCurrentItem().getType());
+                String m1 = String.valueOf(Objects.requireNonNull(inventoryClickEvent.getCurrentItem()).getType());
                 int amount = (int) trade.get("amount");
                 int amountShell = (int) trade.get("amount_shell");
                 ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
@@ -164,7 +165,7 @@ public class TradeMenu extends Menu {
                 } else if (inventoryClickEvent.isLeftClick()) {
                     if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
 
-                        //mettre dans l'inv ou boite mail?
+                        //mettre dans l'inv ou boite mail ?
                         if (Arrays.asList(player.getInventory().getStorageContents()).contains(null)) {
                             shellContestItem.setAmount(amountShell);
                             for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {

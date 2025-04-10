@@ -55,7 +55,7 @@ public class AdminCityCommands {
     @Subcommand("rename")
     @CommandPermission("omc.admins.commands.admincity.rename")
     void rename(Player player, @Named("uuid") String cityUUID, @Named("nouveau nom") String newName) {
-        // Aucune vérification de nom mais faut espérer que le nom est valide :beluclown:
+        // Aucune vérification de nom, mais il faut espérer que le nom est valide
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -209,7 +209,7 @@ public class AdminCityCommands {
                 return;
             }
 
-            MessagesManager.sendMessage(sender, Component.text("§cVille innexistante"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 

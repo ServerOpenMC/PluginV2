@@ -92,7 +92,7 @@ public class BankMainMenu extends Menu {
         }));
 
         inventory.put(15, new ItemBuilder(this, Material.DIAMOND_BLOCK, itemMeta -> {
-            itemMeta.itemName(Component.text("§bVotre compte personel"));
+            itemMeta.itemName(Component.text("§bVotre compte personnel"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous avez actuellement §b..."),
                     Component.text("§7Votre prochain intéret est de §b...")

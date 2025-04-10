@@ -7,7 +7,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 public class InputUtilsTest {
 
     @Test
-    @DisplayName("Convertion Sign Input to Money")
+    @DisplayName("Conversion Sign Input to Money")
     public void testConvertSignInputToMoney_ShouldGiveTheAmountInFloat() {
         Assertions.assertEquals(
                 3000000.0,
