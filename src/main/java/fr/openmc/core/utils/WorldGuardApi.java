@@ -8,7 +8,6 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class WorldGuardApi {
 
@@ -20,7 +19,7 @@ public class WorldGuardApi {
 
     public static boolean hasWorldGuard() {
         return hasWorldGuard;
-    };
+    }
 
     public static boolean isRegionConflict(Player player, Location location) {
 

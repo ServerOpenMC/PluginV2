@@ -1,4 +1,5 @@
 package fr.openmc.core.features.contest;
+
 import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 

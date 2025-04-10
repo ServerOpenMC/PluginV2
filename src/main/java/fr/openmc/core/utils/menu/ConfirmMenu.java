@@ -64,10 +64,10 @@ public class ConfirmMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);;
+        List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);
         loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
 
-        List<Component> loreDeny = new ArrayList<>(loreDenyMsg);;
+        List<Component> loreDeny = new ArrayList<>(loreDenyMsg);
         loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
 
         ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
