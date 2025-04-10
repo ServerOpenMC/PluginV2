@@ -9,14 +9,21 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
-import org.bukkit.entity.Player;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.Nullable;
 
 public class ProtectionListener implements Listener {
@@ -39,9 +46,9 @@ public class ProtectionListener implements Listener {
         return null;
     }
 
-    private void verify(Player player, Cancellable event) {
-        City city = getCityByChunk(player.getChunk());
-        City cityz = CityManager.getPlayerCity(player.getUniqueId());
+    private void verify(Player player, Cancellable event, Location loc) {
+        City city = getCityByChunk(loc.getChunk()); // on regarde le claim ou l'action a été fait
+        City cityz = CityManager.getPlayerCity(player.getUniqueId()); // on regarde la city du membre
 
         if (isMemberOf(city, player)) return;
         if (cityz!=null){
@@ -59,32 +66,80 @@ public class ProtectionListener implements Listener {
     }
 
     @EventHandler
-    void onBlockBreak(BlockBreakEvent event) { verify(event.getPlayer(), event); }
+    void onBlockBreak(BlockBreakEvent event) { verify(event.getPlayer(), event, event.getBlock().getLocation()); }
 
     @EventHandler
-    void onInteract(PlayerInteractEvent event) { verify(event.getPlayer(), event); }
+    void onInteract(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) return; // évite les doublons
+        if (event.getInteractionPoint() == null && event.getClickedBlock() == null) return;
+
+        Location loc = event.getInteractionPoint() != null ?
+                event.getInteractionPoint() :
+                event.getClickedBlock().getLocation();
+
+        verify(event.getPlayer(), event, loc);
+    }
 
     @EventHandler
-    void onInteractAtEntity(PlayerInteractAtEntityEvent event) { verify(event.getPlayer(), event); }
+    public void onDamageEntity(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player damager)) return;
+
+        Location loc = event.getEntity().getLocation();
+        verify(damager, event, loc);
+    }
 
     @EventHandler
-    void onInteractEntity(PlayerInteractEntityEvent event) { verify(event.getPlayer(), event); }
+    void onInteractAtEntity(PlayerInteractAtEntityEvent event) { verify(event.getPlayer(), event, event.getRightClicked().getLocation()); }
 
     @EventHandler
-    void onFish(PlayerFishEvent event) { verify(event.getPlayer(), event); }
+    void onInteractEntity(PlayerInteractEntityEvent event) {
+        if (event instanceof PlayerInteractAtEntityEvent) return;
+
+        verify(event.getPlayer(), event, event.getRightClicked().getLocation());
+    }
 
     @EventHandler
-    void onShear(PlayerShearEntityEvent event) { verify(event.getPlayer(), event); }
+    void onFish(PlayerFishEvent event) { verify(event.getPlayer(), event, event.getHook().getLocation()); }
 
     @EventHandler
-    void onLeash(PlayerLeashEntityEvent event) { verify(event.getPlayer(), event); }
+    void onShear(PlayerShearEntityEvent event) { verify(event.getPlayer(), event, event.getEntity().getLocation()); }
 
     @EventHandler
-    void onUnleash(PlayerUnleashEntityEvent event) { verify(event.getPlayer(), event); }
+    void onLeash(PlayerLeashEntityEvent event) { verify(event.getPlayer(), event, event.getEntity().getLocation()); }
 
     @EventHandler
-    void onLaunchProjectile(PlayerLaunchProjectileEvent event) { verify(event.getPlayer(), event); }
+    void onUnleash(PlayerUnleashEntityEvent event) { verify(event.getPlayer(), event, event.getEntity().getLocation()); }
 
     @EventHandler
-    void onPlaceBlock(BlockPlaceEvent event) { verify(event.getPlayer(), event); }
+    void onLaunchProjectile(PlayerLaunchProjectileEvent event) {
+        verify(event.getPlayer(), event, event.getPlayer().getLocation());
+    }
+
+    @EventHandler
+    public void onEntityShootBow(EntityShootBowEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+
+        verify(player, event, event.getEntity().getLocation());
+    }
+
+    @EventHandler
+    public void onEntityDamageByProjectile(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Projectile projectile)) return;
+        if (!(projectile.getShooter() instanceof Player player)) return;
+
+        verify(player, event, event.getEntity().getLocation());
+    }
+
+    @EventHandler
+    public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
+        if (event.getEntity() instanceof ItemFrame || event.getEntity() instanceof Painting) {
+            if (event.getRemover() instanceof Player) {
+                Player player = (Player) event.getRemover();
+                verify(player, event, event.getEntity().getLocation());
+            }
+        }
+    }
+
+    @EventHandler
+    void onPlaceBlock(BlockPlaceEvent event) { verify(event.getPlayer(), event, event.getBlockPlaced().getLocation()); }
 }
