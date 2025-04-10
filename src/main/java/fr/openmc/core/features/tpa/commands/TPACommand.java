@@ -19,6 +19,11 @@ public class TPACommand {
 		this.plugin = plugin;
 	}
 	
+	/**
+	 * Command to send a teleport request to a player.
+	 * @param player The player sending the request.
+	 * @param target The target player to whom the request is sent.
+	 */
 	@Command({"tpa", "tpask"})
 	@CommandPermission("ayw.command.tpa")
 	@AutoComplete("@players")

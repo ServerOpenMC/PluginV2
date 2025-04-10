@@ -11,6 +11,10 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPDenyCommand {
 	
+	/**
+	 * Command to deny a teleportation request
+	 * @param player The player denying the request.
+	 */
 	@Command("tpdeny")
 	@CommandPermission("ayw.command.tpa")
 	public void tpDeny(Player player) {
