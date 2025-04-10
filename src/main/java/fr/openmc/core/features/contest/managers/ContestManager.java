@@ -93,6 +93,9 @@ public class ContestManager {
         loadContestPlayerData();
     }
 
+    /**
+     * Initialise la DB pour les Contests
+     */
     public static void init_db(Connection conn) throws SQLException {
         // Système de Contest
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest (phase int(11), camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int(11), points2 int(11))").executeUpdate();
@@ -113,6 +116,9 @@ public class ContestManager {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest_camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int(11), point_dep int(11))").executeUpdate();
     }
 
+    /**
+     * Charge le contest.yml
+     */
     private void loadContestConfig() {
         if(!contestFile.exists()) {
             contestFile.getParentFile().mkdirs();
@@ -122,6 +128,9 @@ public class ContestManager {
         contestConfig = YamlConfiguration.loadConfiguration(contestFile);
     }
 
+    /**
+     * Sauvegarde du contest.yml
+     */
     public void saveContestConfig() {
         try {
             contestConfig.save(contestFile);
@@ -132,6 +141,9 @@ public class ContestManager {
     }
 
     // CONTEST DATA
+    /**
+     * Initialisation des variables en fonction des données dans la DB
+     */
     public void initContestData() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT camp1, camp2, color1, color2, phase, startdate, points1, points2 FROM contest WHERE 1")) {
             ResultSet result = states.executeQuery();
@@ -152,6 +164,9 @@ public class ContestManager {
         }
     }
 
+    /**
+     * Sauvegarde des Données globales des Contests
+     */
     public void saveContestData() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("UPDATE contest SET phase = ?, camp1 = ?, color1 = ?, camp2 = ?, color2 = ?, startdate = ?, points1 = ?, points2 = ?")) {
             plugin.getLogger().info("Sauvegarde des données du Contest...");
@@ -173,6 +188,9 @@ public class ContestManager {
     }
 
     // CONTEST PLAYER DATA
+    /**
+     * Charge les données des Joueurs a propos du contests (leur profil, leur points, son camp)
+     */
     public void loadContestPlayerData() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT minecraft_uuid, name, point_dep, camps FROM contest_camps")) {
             ResultSet result = states.executeQuery();
@@ -191,6 +209,9 @@ public class ContestManager {
         }
     }
 
+    /**
+     * Sauvegarder les données des Joueurs du Contests
+     */
     public void saveContestPlayerData() {
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
                 "INSERT INTO contest_camps (minecraft_uuid, name, camps, point_dep) " +
@@ -222,6 +243,9 @@ public class ContestManager {
     }
 
     //PHASE 1
+    /**
+     * Initialisation de la phase 1 donc des votes
+     */
     public void initPhase1() {
         data.setPhase(2);
 
@@ -242,6 +266,9 @@ public class ContestManager {
         plugin.getLogger().info("[CONTEST] Ouverture des votes");
     }
     //PHASE 2
+    /**
+     * Initialisation de la phase 2 donc le commencement du Contests (ouverture des trades et des confrontations)
+     */
     public void initPhase2() {
         List<Map<String, Object>> selectedTrades = getTradeSelected(true);
         for (Map<String, Object> trade : selectedTrades) {
@@ -272,6 +299,9 @@ public class ContestManager {
         plugin.getLogger().info("[CONTEST] Ouverture des trades");
     }
     //PHASE 3
+    /**
+     * Initialisation de la phase 3 donc la fin du Contests (les récompenses ect)
+     */
     public void initPhase3() {
         data.setPhase(4);
 
@@ -534,6 +564,10 @@ public class ContestManager {
     }
 
     // TRADE METHODE
+    /**
+     * Retourne une Liste avec les trades selectionnés donc le bool pour savoir si le trade est déjà
+     * choisis ou pas
+     */
     public List<Map<String, Object>> getTradeSelected(boolean bool) {
         List<Map<?, ?>> contestTrades = contestConfig.getMapList("contestTrades");
 
@@ -547,6 +581,10 @@ public class ContestManager {
         return filteredTrades.stream().limit(12).collect(Collectors.toList());
     }
 
+
+    /**
+     * Change le boolean, si il est true il sera false
+     */
     public void updateColumnBooleanFromRandomTrades(Boolean bool, String ress) {
         List<Map<String, Object>> contestTrades = (List<Map<String, Object>>) contestConfig.get("contestTrades");
 
@@ -558,7 +596,9 @@ public class ContestManager {
         saveContestConfig();
     }
 
-    // GET TAUX DE VOTE D'UN CAMP
+    /**
+     * Calcule le Taux de Vote d'un Camp
+     */
     public Integer getVoteTaux(Integer camps) {
         return (int) dataPlayer.values().stream()
                 .filter(player -> player.getCamp() == camps)
@@ -567,6 +607,9 @@ public class ContestManager {
 
     //END CONTEST METHODE
 
+    /**
+     * Retourne une Liste contenant les ressources (ex NETHERITE_BLOCK)
+     */
     public List<String> getRessListFromConfig() {
         FileConfiguration config = plugin.getConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
@@ -579,6 +622,7 @@ public class ContestManager {
         }
         return ressList;
     }
+
 
     private void updateSelected(String camp) {
         List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
@@ -603,6 +647,10 @@ public class ContestManager {
         contestConfig.set("contestList", updatedContestList);
         saveContestConfig();
     }
+
+    /**
+     * On ajoute 1 au dernier Contest pour éviter qu'il revienne (il revient seulement si tout les contests sont passés
+     */
     public void addOneToLastContest(String camps) {
         List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
 
@@ -619,6 +667,9 @@ public class ContestManager {
         }
     }
 
+    /**
+     * Pioche un Conests en fonction de son nombre de selection
+     */
     public void selectRandomlyContest() {
         List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
         List<Map<String, Object>> orderedContestList = new ArrayList<>();
@@ -648,6 +699,9 @@ public class ContestManager {
         data = new ContestData((String) selectedContest.get("camp1"), (String) selectedContest.get("camp2"), (String) selectedContest.get("color1"), (String) selectedContest.get("color2"), 1, "ven.", 0, 0);
     }
 
+    /**
+     * Supprime une table
+     */
     public void deleteTableContest(String table) {
         String sql = "DELETE FROM " + table;
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
@@ -657,6 +711,9 @@ public class ContestManager {
         }
     }
 
+    /**
+     * Retourne une Liste contenant toutes les couleurs possibles pour faire un Contest
+     */
     public List<String> getColorContestList() {
         List<String> color = new ArrayList<>();
         for (String colorName : colorContest) {
@@ -665,6 +722,9 @@ public class ContestManager {
         return color;
     }
 
+    /**
+     * Mise d'un Contest de type innédit
+     */
     public void insertCustomContest(String camp1, String color1, String camp2, String color2) {
         data = new ContestData(camp1, color1, camp2, color2, 1, "ven.", 0, 0);
     }

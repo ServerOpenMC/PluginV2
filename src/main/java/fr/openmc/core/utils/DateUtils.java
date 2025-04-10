@@ -23,20 +23,40 @@ public class DateUtils {
         return DayOfWeek.from(formatter.parse(currentDayString));
     }
 
+    /**
+     * Convertis vos Millisecondes en un format
+     * @param millis Vos millisecondes
+     * @return format 3j 4h 2m 38s
+     */
     public static String convertMillisToTime(long millis) {
         return formatTime(millis);
     }
 
+    /**
+     * Convertis vos Ticks en un format
+     * @param ticks Vos Tick Minecraft
+     * @return format 4h 2m 38s
+     */
     public static String convertTime(long ticks) {
         long millis = ticks * 50;
         return formatTime(millis);
     }
 
+    /**
+     * Convertis vos secondes en un format
+     * @param seconds Secondes
+     * @return format 4h 2m 38s
+     */
     public static String convertSecondToTime(long seconds) {
         long millis = seconds * 1000;
         return formatTime(millis);
     }
 
+    /**
+     * Convertion millis en format
+     * @param millis Millisecondes
+     * @return format 4h 2m 38s
+     */
     private static String formatTime(long millis) {
         long seconds = millis / 1000;
         long minutes = seconds / 60;
@@ -56,6 +76,9 @@ public class DateUtils {
         return sb.toString().trim();
     }
 
+    /**
+     * Renvoie une chaine de caractère en fonction du temps passé
+     */
     public static String formatRelativeDate(LocalDateTime dateTime) {
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(dateTime, now);
@@ -78,6 +101,11 @@ public class DateUtils {
         }
     }
 
+    /**
+     * Calcule le temps entre maintenant et lundi par exemple
+     * @param day DayOfWeek
+     * @return format 4h 2m 38s
+     */
     public static String getTimeUntilNextDay(DayOfWeek day) {
         LocalDateTime now = LocalDateTime.now();
 

@@ -32,6 +32,9 @@ public class ColorUtils {
         colorToReadable.put(NamedTextColor.WHITE, NamedTextColor.GRAY);
     }
 
+    /**
+     * Retourne une couleur plus visible sur les Livres (blanc sur blanc ça se voit pas)
+     */
     public static NamedTextColor getReadableColor(NamedTextColor c) {
         return colorToReadable.getOrDefault(c, null);
     }
@@ -56,10 +59,16 @@ public class ColorUtils {
         colorToMaterial.put(NamedTextColor.WHITE, Material.WHITE_WOOL);
     }
 
+    /**
+     * Retourne une laine de couleur en fonction de la couleur rentré
+     */
     public static Material getMaterialFromColor(NamedTextColor c) {
         return colorToMaterial.getOrDefault(c, null);
     }
 
+    /**
+     * Retourne une couleur en fonction du String (LIGHT_PURPLE => NamedTextColor.LIGHT_PURPLE)
+     */
     public static NamedTextColor getNamedTextColor(String color) {
         return NamedTextColor.NAMES.valueOr(color.toLowerCase(), NamedTextColor.WHITE);
     }
@@ -84,6 +93,9 @@ public class ColorUtils {
         colorToName.put(NamedTextColor.WHITE, "§fBlanc");
     }
 
+    /**
+     * Retourne un String qui contient la couleur rentré
+     */
     public static String getNameFromColor(NamedTextColor c) {
         return colorToName.getOrDefault(c, "Aucun");
     }
@@ -108,6 +120,9 @@ public class ColorUtils {
         colorCode.put(NamedTextColor.WHITE, "§f");
     };
 
+    /**
+     * Retourne un code couleur en § en fonction de la couleur donnée
+     */
     public static String getColorCode(NamedTextColor color) {
         return colorCode.getOrDefault(color, "§f");
     }

@@ -9,6 +9,9 @@ public class PapiAPI {
         hasPAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 
+    /**
+     * Retourne si l'instance a PlaceholderAPI
+     */
     public static boolean hasPAPI() {
         return hasPAPI;
     }
