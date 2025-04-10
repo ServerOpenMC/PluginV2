@@ -28,7 +28,7 @@ public class CityTypeMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes";
+        return "Menu des villes - Type";
     }
 
     @Override

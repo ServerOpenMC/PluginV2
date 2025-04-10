@@ -30,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
 
@@ -41,7 +42,7 @@ public class MayorElectionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes";
+        return "Menu des Elections";
     }
 
     @Override
@@ -64,40 +65,42 @@ public class MayorElectionMenu extends Menu {
             MayorManager mayorManager = MayorManager.getInstance();
             boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
-            List<Component> loreElection;
-            if (mayorManager.hasVoted(player)) {
-                loreElection = List.of(
-                        Component.text("§7Les Elections sont §6ouvertes§7!"),
-                        Component.text("§7Vous pouvez changer votre vote !"),
-                        Component.text(""),
-                        Component.text("§7Vote Actuel : ").append(Component.text(mayorManager.getPlayerVote(player).getName())).decoration(TextDecoration.ITALIC, false).color(mayorManager.getPlayerVote(player).getCandidateColor()),
-                        Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                        Component.text(""),
-                        Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
-                );
-            } else {
-                loreElection = List.of(
-                        Component.text("§7Les Elections sont §6ouvertes§7!"),
-                        Component.text("§7Choissiez le Maire qui vous plait !"),
-                        Component.text(""),
-                        Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                        Component.text(""),
-                        Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
-                );
-            }
-
-            ItemStack itemElection = new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
-                itemMeta.itemName(Component.text("§6Les Elections"));
-                itemMeta.lore(loreElection);
-            }).setOnClick(inventoryClickEvent -> {
-                if (mayorManager.cityElections.get(city) == null) {
-                    MessagesManager.sendMessage(player, Component.text("Il y a aucun volontaire pour être maire"), Prefix.MAYOR, MessageType.ERROR, true);
-                    return;
+            Supplier<ItemStack> electionItemSupplier = () -> {
+                List<Component> loreElection;
+                if (mayorManager.hasVoted(player)) {
+                    loreElection = List.of(
+                            Component.text("§7Les Elections sont §6ouvertes§7!"),
+                            Component.text("§7Vous pouvez changer votre vote !"),
+                            Component.text(""),
+                            Component.text("§7Vote Actuel : ").append(Component.text(mayorManager.getPlayerVote(player).getName())).decoration(TextDecoration.ITALIC, false).color(mayorManager.getPlayerVote(player).getCandidateColor()),
+                            Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
+                    );
+                } else {
+                    loreElection = List.of(
+                            Component.text("§7Les Elections sont §6ouvertes§7!"),
+                            Component.text("§7Choissiez le Maire qui vous plait !"),
+                            Component.text(""),
+                            Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
+                    );
                 }
-                new MayorVoteMenu(player).open();
-            });
 
-            MenuUtils.runDynamicItem(player, this, itemElection, 11)
+                return new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
+                    itemMeta.itemName(Component.text("§6Les Elections"));
+                    itemMeta.lore(loreElection);
+                }).setOnClick(inventoryClickEvent -> {
+                    if (mayorManager.cityElections.get(city) == null) {
+                        MessagesManager.sendMessage(player, Component.text("Il y a aucun volontaire pour être maire"), Prefix.MAYOR, MessageType.ERROR, true);
+                        return;
+                    }
+                    new MayorVoteMenu(player).open();
+                });
+            };
+
+            MenuUtils.runDynamicItem(player, this, 11, electionItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
             List<Component> loreCandidature;

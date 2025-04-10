@@ -36,7 +36,7 @@ public class VoteMenu extends Menu {
         if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
         } else {
-            return "Menu des Contests";
+            return "Menu des Contests - Vote";
         }
     }
 

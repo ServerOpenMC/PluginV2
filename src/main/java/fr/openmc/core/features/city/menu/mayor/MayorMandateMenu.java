@@ -39,7 +39,7 @@ public class MayorMandateMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes";
+        return "Menu des Maires - Mandat";
     }
 
     @Override

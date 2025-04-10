@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class MayorLawMenu extends Menu {
 
@@ -41,7 +42,7 @@ public class MayorLawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes";
+        return "Menu des Lois";
     }
 
     @Override
@@ -115,38 +116,40 @@ public class MayorLawMenu extends Menu {
               // le bail de donner un coffre et tt
             }));
 
-            List<Component> loreLawAnnounce = new ArrayList<>(List.of(
-                    Component.text("§7Cette §1loi §7permet d'émettre un message dans toute la ville!")
-            ));
+            Supplier<ItemStack> announceItemSupplier = () -> {
+                List<Component> loreLawAnnounce = new ArrayList<>(List.of(
+                        Component.text("§7Cette §1loi §7permet d'émettre un message dans toute la ville!")
+                ));
 
-            if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:city-announce")) {
+                if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:city-announce")) {
+                    loreLawAnnounce.addAll(
+                            List.of(
+                                    Component.text(""),
+                                    Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:city-announce")))
+                            )
+                    );
+                }
+
                 loreLawAnnounce.addAll(
                         List.of(
                                 Component.text(""),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:city-announce")))
+                                Component.text("§e§lCLIQUEZ ICI POUR ECRIRE LE MESSAGE")
                         )
                 );
-            }
-
-            loreLawAnnounce.addAll(
-                    List.of(
-                            Component.text(""),
-                            Component.text("§e§lCLIQUEZ ICI POUR ECRIRE LE MESSAGE")
-                    )
-            );
 
 
-            ItemStack itemAnnounce =  new ItemBuilder(this, Material.BELL, itemMeta -> {
-                itemMeta.itemName(Component.text("§7Faire une annonce"));
-                itemMeta.lore(loreLawAnnounce);
-            }).setOnClick(inventoryClickEvent -> {
-                if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:city-announce")) {
-                    System.out.println("input from user");
-                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:city-announce", COOLDOWN_TIME_ANNOUNCE);
-                }
-            });
+                return new ItemBuilder(this, Material.BELL, itemMeta -> {
+                    itemMeta.itemName(Component.text("§7Faire une annonce"));
+                    itemMeta.lore(loreLawAnnounce);
+                }).setOnClick(inventoryClickEvent -> {
+                    if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:city-announce")) {
+                        System.out.println("input from user");
+                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:city-announce", COOLDOWN_TIME_ANNOUNCE);
+                    }
+                });
+            };
 
-            MenuUtils.runDynamicItem(player, this, itemAnnounce, 12)
+            MenuUtils.runDynamicItem(player, this, 12, announceItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
             Perks perkEvent = PerkManager.getPerkEvent(mayor);

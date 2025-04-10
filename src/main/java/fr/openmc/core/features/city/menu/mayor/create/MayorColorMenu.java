@@ -45,7 +45,7 @@ public class MayorColorMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes";
+        return "Menu des Maires - Couleur";
     }
 
     @Override

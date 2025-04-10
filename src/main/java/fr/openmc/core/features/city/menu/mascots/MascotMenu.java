@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static fr.openmc.core.features.city.mascots.MascotsListener.*;
 import static fr.openmc.core.features.city.mascots.MascotsManager.*;
@@ -51,7 +52,7 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "";
+        return "Menus des Mascottes";
     }
 
     @Override
@@ -91,56 +92,59 @@ public class MascotMenu extends Menu {
                 new MascotsSkinMenu(player, getSpawnEgg(mascots), mascots).open();
             }));
 
-            List<Component> lorePosMascot;
+            Supplier<ItemStack> moveMascotItemSupplier = () -> {
+                List<Component> lorePosMascot;
 
-            if (Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
-                lorePosMascot = List.of(
-                        Component.text("§7Vous pouvez changer la position de votre §cMascotte"),
-                        Component.text(""),
-                        Component.text("§cCooldown §7: " + DateUtils.convertSecondToTime(Chronometer.getRemainingTime(mascots.getUniqueId(), "mascotsCooldown")))
-                );
-            } else {
-                lorePosMascot = List.of(
-                        Component.text("§7Vous pouvez changer la position de votre §cMascotte"),
-                        Component.text(""),
-                        Component.text("§e§lCLIQUEZ ICI POUR LA CHANGER DE POSITION")
-                );
-            }
-
-            ItemStack itemMoveMascot = new ItemBuilder(this, Material.CHEST, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Déplacer votre §cMascotte"));
-                itemMeta.lore(lorePosMascot);
-                itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
-                    if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_MOVE)) {
-                        if (ItemUtils.hasAvailableSlot(player)) {
-                            city = CityManager.getPlayerCity(player.getUniqueId());
-                            if (city == null) {
-                                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                                player.closeInventory();
-                                return;
-                            }
-                            String city_uuid = city.getUUID();
-                            if (!movingMascots.contains(city_uuid)) {
-                                startChronometer(player, "mascotsMove", 120, ChronometerType.ACTION_BAR, "Temps Restant : %sec%s", ChronometerType.ACTION_BAR, "§cDéplacement de la Mascotte annulé");
-                                movingMascots.add(city_uuid);
-                                giveChest(player);
-                            }
-                        }
-                    } else {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    }
+                if (Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
+                    lorePosMascot = List.of(
+                            Component.text("§7Vous pouvez changer la position de votre §cMascotte"),
+                            Component.text(""),
+                            Component.text("§cCooldown §7: " + DateUtils.convertSecondToTime(Chronometer.getRemainingTime(mascots.getUniqueId(), "mascotsCooldown")))
+                    );
+                } else {
+                    lorePosMascot = List.of(
+                            Component.text("§7Vous pouvez changer la position de votre §cMascotte"),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ ICI POUR LA CHANGER DE POSITION")
+                    );
                 }
-                player.closeInventory();
-            });
+
+                return new ItemBuilder(this, Material.CHEST, itemMeta -> {
+                    itemMeta.displayName(Component.text("§7Déplacer votre §cMascotte"));
+                    itemMeta.lore(lorePosMascot);
+                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                }).setOnClick(inventoryClickEvent -> {
+                    if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
+                        if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_MOVE)) {
+                            if (ItemUtils.hasAvailableSlot(player)) {
+                                city = CityManager.getPlayerCity(player.getUniqueId());
+                                if (city == null) {
+                                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                                    player.closeInventory();
+                                    return;
+                                }
+                                String city_uuid = city.getUUID();
+                                if (!movingMascots.contains(city_uuid)) {
+                                    startChronometer(player, "mascotsMove", 120, ChronometerType.ACTION_BAR, "Temps Restant : %sec%s", ChronometerType.ACTION_BAR, "§cDéplacement de la Mascotte annulé");
+                                    movingMascots.add(city_uuid);
+                                    giveChest(player);
+                                }
+                            }
+                        } else {
+                            MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        }
+                    }
+                    player.closeInventory();
+                });
+            };
+
             if (Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
-                MenuUtils.runDynamicItem(player, this, itemMoveMascot, 13)
+                MenuUtils.runDynamicItem(player, this, 13, moveMascotItemSupplier)
                         .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             } else {
-                map.put(13, itemMoveMascot);
+                map.put(13, moveMascotItemSupplier.get());
             }
 
             List<Component> requiredAmount = new ArrayList<>();
@@ -189,17 +193,19 @@ public class MascotMenu extends Menu {
             }));
 
             if (MascotUtils.getMascotImmunity(city.getUUID())) {
-                List<Component> lore = List.of(
-                        Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),
-                        Component.text("§cTemps restant §7: " + DateUtils.convertSecondToTime(MascotUtils.getMascotImmunityTime(city.getUUID())))
-                );
+                Supplier<ItemStack> immunityItemSupplier = () -> {
+                    List<Component> lore = List.of(
+                            Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),
+                            Component.text("§cTemps restant §7: " + DateUtils.convertSecondToTime(MascotUtils.getMascotImmunityTime(city.getUUID())))
+                    );
 
-                ItemStack itemImmunity = new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
-                    itemMeta.displayName(Component.text("§7Votre §cMascotte §7est §bimmunisée§7!"));
-                    itemMeta.lore(lore);
-                });
+                    return new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
+                        itemMeta.displayName(Component.text("§7Votre §cMascotte §7est §bimmunisée§7!"));
+                        itemMeta.lore(lore);
+                    });
+                };
 
-                MenuUtils.runDynamicItem(player, this, itemImmunity, 26)
+                MenuUtils.runDynamicItem(player, this, 26, immunityItemSupplier)
                         .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             }
 

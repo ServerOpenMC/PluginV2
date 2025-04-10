@@ -41,7 +41,7 @@ public class MascotsSkinMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "";
+        return "Menu des Skins des Mascottes";
     }
 
     @Override

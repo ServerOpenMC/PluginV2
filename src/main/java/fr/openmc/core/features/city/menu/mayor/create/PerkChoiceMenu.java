@@ -123,7 +123,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Membres";
+        return "Menu des Maires - Reformes";
     }
 
     @Override
