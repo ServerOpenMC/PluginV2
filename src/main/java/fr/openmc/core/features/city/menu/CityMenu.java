@@ -305,7 +305,7 @@ public class CityMenu extends Menu {
             };
 
             MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
-                    .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+                    .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L*60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
 
             String type = getCityType(city.getUUID());
             if (type.equals("war")) {
