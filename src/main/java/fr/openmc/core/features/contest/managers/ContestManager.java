@@ -97,7 +97,7 @@ public class ContestManager {
 
     public static void initDb(Connection conn) throws SQLException {
         // Système de Contest
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest (phase int(11), camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int(11), points2 int(11))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest (phase int, camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int, points2 int)").executeUpdate();
         PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM contest");
 
         ResultSet rs = state.executeQuery();
@@ -112,7 +112,7 @@ public class ContestManager {
 
 
         // Table camps
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest_camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int(11), point_dep int(11))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest_camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int, point_dep int)").executeUpdate();
     }
 
     private void loadContestConfig() {
@@ -135,7 +135,7 @@ public class ContestManager {
 
     // CONTEST DATA
     public void initContestData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT (camp1, camp2, color1, color2, phase, startdate, points1, points2) FROM contest WHERE 1")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT camp1, camp2, color1, color2, phase, startdate, points1, points2 FROM contest WHERE 1")) {
             ResultSet result = states.executeQuery();
             if (result.next()) {
                 String camp1 = result.getString("camp1");
@@ -176,7 +176,7 @@ public class ContestManager {
 
     // CONTEST PLAYER DATA
     public void loadContestPlayerData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT (minecraft_uuid, name, point_dep, camps) FROM contest_camps")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT minecraft_uuid, name, point_dep, camps FROM contest_camps")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String uuid = result.getString("minecraft_uuid");
@@ -194,12 +194,20 @@ public class ContestManager {
     }
 
     public void saveContestPlayerData() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
-                "INSERT INTO contest_camps (minecraft_uuid, name, camps, point_dep) " +
-                        "VALUES (?, ?, ?, ?) " +
-                        "ON DUPLICATE KEY UPDATE " +
-                        "name = VALUES(name), camps = VALUES(camps), point_dep = VALUES(point_dep)"
-        )) {
+        String sql;
+        
+        if (OMCPlugin.isUnitTestVersion()) {
+            sql = "MERGE INTO contest_camps " +
+                    "KEY(minecraft_uuid) " +
+                    "VALUES (?, ?, ?, ?)";
+        } else {
+            sql = "INSERT INTO contest_camps (minecraft_uuid, name, camps, point_dep) " +
+                    "VALUES (?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE " +
+                    "name = VALUES(name), camps = VALUES(camps), point_dep = VALUES(point_dep)";
+        }
+        
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql)) {
             plugin.getLogger().info("Sauvegarde des données des Joueurs du Contest...");
             dataPlayer.forEach((uuid, playerData) -> {
                 try {

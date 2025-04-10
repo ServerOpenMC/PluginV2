@@ -33,7 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.SQLException;
 
-public final class OMCPlugin extends JavaPlugin {
+public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
     @Getter static TranslationManager translationManager;
@@ -107,5 +107,9 @@ public final class OMCPlugin extends JavaPlugin {
         for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
         }
+    }
+
+    public static boolean isUnitTestVersion() {
+        return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
     }
 }
