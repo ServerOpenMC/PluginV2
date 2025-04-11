@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu.bank;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.economy.menu.BankMainMenu;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -120,8 +121,7 @@ public class CityBankMenu extends Menu {
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            BankMainMenu menu = new BankMainMenu(player);
-            menu.open();
+            new BankMainMenu(player).open();
         }));
 
         return inventory;

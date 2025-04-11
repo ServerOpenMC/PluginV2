@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.bank;
+package fr.openmc.core.features.economy.menu;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -21,6 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 public class BankMainMenu extends Menu {
+    private boolean addReturnButton = true;
+
+    public BankMainMenu(Player owner, boolean addReturnButton) {
+        super(owner);
+
+        this.addReturnButton = addReturnButton;
+    }
 
     public BankMainMenu(Player owner) {
         super(owner);
@@ -86,18 +94,23 @@ public class BankMainMenu extends Menu {
             itemMeta.lore(loreBankCity);
         }).setOnClick(inventoryClickEvent -> {
             if (hasPermissionMoneyTake || hasPermissionMoneyGive) {
-                CityBankMenu menu = new CityBankMenu(player);
-                menu.open();
+                new CityBankMenu(player).open();
             }
         }));
 
         inventory.put(15, new ItemBuilder(this, Material.DIAMOND_BLOCK, itemMeta -> {
             itemMeta.itemName(Component.text("§bVotre compte personnel"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous avez actuellement §b..."),
-                    Component.text("§7Votre prochain intéret est de §b...")
+                    Component.text("§7Vous avez actuellement §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(EconomyManager.getInstance().getBalance(player.getUniqueId())) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                    Component.text("§7Votre prochain intéret est de §b..."),
+                    Component.text("§e§lCLIQUEZ ICI POUR GERER L'ARGENT")
             ));
+        }).setOnClick(InventoryClickEvent -> {
+            new PersonalBankMenu(player).open();
         }));
+
+        if (!addReturnButton)
+            return inventory;
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
@@ -106,11 +119,9 @@ public class BankMainMenu extends Menu {
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            CityMenu menu = new CityMenu(player);
-            menu.open();
+            new CityMenu(player).open();
         }));
 
         return inventory;
     }
-
 }
