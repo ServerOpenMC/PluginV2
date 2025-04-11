@@ -9,6 +9,8 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
@@ -17,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
@@ -89,10 +92,14 @@ public class ProtectionListener implements Listener {
     }
 
     @EventHandler
-    void onInteractAtEntity(PlayerInteractAtEntityEvent event) { verify(event.getPlayer(), event, event.getRightClicked().getLocation()); }
+    void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
+        if(event.isCancelled()) return;
+        verify(event.getPlayer(), event, event.getRightClicked().getLocation());
+    }
 
     @EventHandler
     void onInteractEntity(PlayerInteractEntityEvent event) {
+        if(event.isCancelled()) return;
         if (event instanceof PlayerInteractAtEntityEvent) return;
 
         verify(event.getPlayer(), event, event.getRightClicked().getLocation());
@@ -103,6 +110,36 @@ public class ProtectionListener implements Listener {
 
     @EventHandler
     void onShear(PlayerShearEntityEvent event) { verify(event.getPlayer(), event, event.getEntity().getLocation()); }
+
+    @EventHandler
+    public void onPlayerDamageByEntity(EntityDamageByEntityEvent event) {
+        if(event.isCancelled()) return;
+        if (!(event.getEntity() instanceof Player victim)) return;
+
+        Player attacker = null;
+        if (event.getDamager() instanceof Player) {
+            attacker = (Player) event.getDamager();
+        } else if (event.getDamager() instanceof Projectile projectile
+                && projectile.getShooter() instanceof Player) {
+            attacker = (Player) projectile.getShooter();
+        }
+
+        if (attacker == null) return;
+
+        City city = getCityByChunk(victim.getLocation().getChunk());
+
+        if (city != null && isMemberOf(city, attacker)) {
+            if (city.getLaw().isPvp()) return;
+            else {
+                event.setCancelled(true);
+                MessagesManager.sendMessage(attacker, Component.text("Vous n'avez pas le droit de faire ça ici !"),
+                        Prefix.CITY, MessageType.ERROR, true);
+                return;
+            }
+        } else {
+            verify(attacker, event, attacker.getLocation());
+        }
+    }
 
     @EventHandler
     void onLeash(PlayerLeashEntityEvent event) { verify(event.getPlayer(), event, event.getEntity().getLocation()); }
