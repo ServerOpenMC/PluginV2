@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.friend.FriendManager;
@@ -62,6 +63,7 @@ public class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
+        new BankManager();
         new ScoreboardManager();
         new HomesManager();
         new HomeUpgradeManager(HomesManager.getInstance());
