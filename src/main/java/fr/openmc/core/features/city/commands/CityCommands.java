@@ -500,9 +500,22 @@ public class CityCommands {
         }
     }
 
-    @Subcommand("bank")
+    // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
+    @Subcommand("bank view")
     public void bank(Player sender) {
         new CityBankMenu(sender).open();
+    }
+
+    @Subcommand("bank deposit")
+    void deposit(Player player, String input) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        city.depositCityBank(player, input);
+    }
+
+    @Subcommand("bank withdraw")
+    void withdraw(Player player, String input) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        city.withdrawCityBank(player, input);
     }
 
     // ACTIONS
