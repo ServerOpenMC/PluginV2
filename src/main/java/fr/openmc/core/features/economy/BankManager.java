@@ -1,16 +1,21 @@
 package fr.openmc.core.features.economy;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -22,7 +27,7 @@ public class BankManager {
     @Getter static BankManager instance;
 
     public static void init_db(Connection conn) throws SQLException {
-        // TODO: Create DB table
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS banks (player VARCHAR(36) NOT NULL PRIMARY KEY , balance DOUBLE DEFAULT 0);").executeUpdate();
     }
 
     public BankManager() {
@@ -92,15 +97,66 @@ public class BankManager {
     }
 
     private Map<UUID, Double> loadAllBanks() {
-        // TODO: load all the player banks from the database
-        return new HashMap<UUID,Double>();
+        try {
+            Map<UUID, Double> banks = new HashMap<>();
+
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT player, balance FROM banks");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                UUID player = UUID.fromString(resultSet.getString("player"));
+                double balance = resultSet.getDouble("balance");
+                banks.put(player, balance);
+            }
+
+            statement.close();
+            return banks;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void loadPlayerBank(UUID player) {
-        // TODO: load player bank from db or generate new one
+        try {
+            final Connection connection = DatabaseManager.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT balance FROM banks WHERE player = ?");
+            statement.setString(1, player.toString());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                banks.put(player, resultSet.getDouble("balance"));
+                return;
+            }
+
+            banks.put(player, Double.parseDouble("0"));
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                try {
+                    PreparedStatement newStatement = connection.prepareStatement("INSERT INTO banks (player, balance) VALUES (?, 1)");
+                    newStatement.setString(1, player.toString());
+
+                    statement.executeQuery();
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void savePlayerBank(UUID player) {
-        // TODO: save player bank to db
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                Connection connection = DatabaseManager.getConnection();
+                PreparedStatement statement = connection.prepareStatement("UPDATE banks SET balance = ? WHERE player = ?");
+                statement.setDouble(1, banks.get(player));
+                statement.setString(2, player.toString());
+
+                statement.executeUpdate();
+                statement.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
