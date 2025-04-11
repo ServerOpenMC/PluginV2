@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.entity.Player;
+
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
@@ -56,12 +60,12 @@ public class BankManager {
         savePlayerBank(player);
     }
 
-    public void addBankBalance(UUID player, String input) {
+    public void addBankBalance(Player player, String input) {
         if (InputUtils.isInputMoney(input)) {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
-            if (EconomyManager.getInstance().withdrawBalance(player, moneyDeposit)) {
-                addBankBalance(player, moneyDeposit);
+            if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
+                addBankBalance(player.getUniqueId(), moneyDeposit);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -71,15 +75,15 @@ public class BankManager {
         }
     }
 
-    public void withdrawBankBalance(UUID player, String input) {
+    public void withdrawBankBalance(Player player, String input) {
         if (InputUtils.isInputMoney(input)) {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
-            if (getBankBalance(player) < moneyDeposit) {
+            if (getBankBalance(player.getUniqueId()) < moneyDeposit) {
                 MessagesManager.sendMessage(player, Component.text("Tu n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                withdrawBankBalance(player, moneyDeposit);
-                EconomyManager.getInstance().addBalance(player, moneyDeposit);
+                withdrawBankBalance(player.getUniqueId(), moneyDeposit);
+                EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
                 MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
             }
         } else {

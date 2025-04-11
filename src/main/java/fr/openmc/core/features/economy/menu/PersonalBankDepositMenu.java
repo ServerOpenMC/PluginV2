@@ -121,7 +121,7 @@ public class PersonalBankDepositMenu extends Menu {
                         .setType(ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
-                            BankManager.getInstance().addBankBalance(player.getUniqueId(), input);
+                            BankManager.getInstance().addBankBalance(player, input);
                             return Collections.emptyList();
                         })
                         .build();

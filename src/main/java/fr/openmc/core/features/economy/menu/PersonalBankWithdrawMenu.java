@@ -123,7 +123,7 @@ public class PersonalBankWithdrawMenu extends Menu {
                         .setType(ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
-                            BankManager.getInstance().withdrawBankBalance(player.getUniqueId(), input);
+                            BankManager.getInstance().withdrawBankBalance(player, input);
                             return Collections.emptyList();
                         })
                         .build();
