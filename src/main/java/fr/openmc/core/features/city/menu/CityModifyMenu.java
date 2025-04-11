@@ -89,7 +89,7 @@ public class CityModifyMenu extends Menu {
             lines[2] = "Entrez votre";
             lines[3] = "nom ci dessus";
 
-            SignGUI gui = null;
+            SignGUI gui;
             try {
                 gui = SignGUI.builder()
                         .setLines(null, lines[1], lines[2], lines[3])
@@ -99,8 +99,9 @@ public class CityModifyMenu extends Menu {
 
                             if (InputUtils.isInputCityName(input)) {
                                 City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-
-                                playerCity.renameCity(input);
+	                            
+	                            assert playerCity != null;
+	                            playerCity.renameCity(input);
                                 MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
 
                             } else {
@@ -155,7 +156,7 @@ public class CityModifyMenu extends Menu {
 
         if (hasPermissionOwner) {
             loreDelete = List.of(
-                    Component.text("§7Vous allez défénitivement §csupprimer la ville!"),
+                    Component.text("§7Vous allez définitivement §csupprimer la ville!"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             );
         } else {
@@ -171,16 +172,15 @@ public class CityModifyMenu extends Menu {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
             if (!CityManageConditions.canCityDelete(city, player)) return;
-
-            ConfirmMenu menu = new ConfirmMenu(
+	        
+	        assert cityCheck != null;
+	        ConfirmMenu menu = new ConfirmMenu(
                     player,
                     () -> {
                         player.closeInventory();
-                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                            CityCommands.deleteCity(player);
-                        });
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.deleteCity(player));
                     },
-                    () -> player.closeInventory(),
+			        player::closeInventory,
                     List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getCityName() + " ?")),
                     List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getCityName())));
             menu.open();

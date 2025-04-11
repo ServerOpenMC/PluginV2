@@ -1,7 +1,7 @@
 # Code de conduite du Contributeur
 
 ## Engagement
-Dans l'intérêt de favoriser un environnement ouvert et accueillant, nous, en tant que contributeurs et responsables, nous engageons à faire de la participation à notre projet et à notre communauté une expérience sans harcèlement pour tous, quels que soient l'âge, la taille, le handicap, l'origine ethnique, les caractéristiques sexuelles, l'identité de genre et l'expression, le niveau d'expérience, l'éducation, le statut socio-économique, la nationalité, l'apparence personnelle, la race, la religion ou l'identité et l'orientation sexuelles.
+Dans l'intérêt de favoriser un environnement ouvert et accueillant, nous, en tant que contributeurs et responsables, nous engageons à faire de la participation à notre projet et à notre communauté une expérience sans harcèlement pour tous, quel que soit l'âge, la taille, le handicap, l'origine ethnique, les caractéristiques sexuelles, l'identité de genre et l'expression, le niveau d'expérience, l'éducation, le statut socio-économique, la nationalité, l'apparence personnelle, la race, la religion ou l'identité et l'orientation sexuelles.
 
 ## Comportement à suivre
 Les comportements à suivre sont les suivants :
@@ -28,4 +28,4 @@ Ce code de conduite s'applique à la fois en public (Issues, pull requests, Disc
 En cas de comportement abusif, harcelant ou inacceptable, veuillez contacter margouta sur Discord. Toutes les plaintes seront examinées et donneront lieu à une réponse et possiblement à une sanction appropriée. L'équipe du projet est tenue de maintenir la confidentialité à l'égard du signalement.
 
 ## Attribution
-Ce code de conduite est adapté du code de [jessesquires](https://github.com/jessesquires/.github/blob/main/CODE_OF_CONDUCT.md), lui-même adapté du [Contributor Covenant version 1.4](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html). Pour obtenir des réponses aux questions courantes sur ce code de conduite, voir [la F.A.Q.](https://www.contributor-covenant.org/faq).
+Ce code de conduite est adapté du code de [jessesquires](https://github.com/jessesquires/.github/blob/main/CODE_OF_CONDUCT.md), lui-même adapté du [Contributor Covenant version 1.4](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html). Pour obtenir des réponses aux questions courantes sur ce code de conduite, voir [la F.A.Q.](https://www.contributor-covenant.org/faq)

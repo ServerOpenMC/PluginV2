@@ -95,7 +95,7 @@ public class ContributionMenu extends Menu {
 
         //ITEMADDER
         String namespaceShellContest = "omc_contest:contest_shell";
-        ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
+        ItemStack shellContest = Objects.requireNonNull(CustomItemRegistry.getByName(namespaceShellContest)).getBest();
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.displayName(Component.text("§6§lVotre Titre"));
@@ -144,7 +144,7 @@ public class ContributionMenu extends Menu {
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.displayName(Component.text("§r§aPlus d'infos !"));
             itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));
 

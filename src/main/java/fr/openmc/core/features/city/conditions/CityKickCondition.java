@@ -10,8 +10,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
- * Le but de cette classe est de regrouper toutes les conditions neccessaires
- * pour kick une personne (utile pour faire une modif sur menu et commandes)
+ * Le but de cette classe est de regrouper toutes les conditions necessaires
+ * pour kick une personne (utile pour faire une modif sur menu et commandes).
  */
 public class CityKickCondition {
 
@@ -20,7 +20,7 @@ public class CityKickCondition {
      *
      * @param city la ville sur laquelle on fait les actions
      * @param player le joueur sur lequel tester les permissions
-     * @param playerToKick le joueur sur lequel tester si il peut etre kick
+     * @param playerToKick le joueur sur lequel tester s'il peut etre kick
      * @return booleen
      */
     public static boolean canCityKickPlayer(City city, Player player, OfflinePlayer playerToKick) {

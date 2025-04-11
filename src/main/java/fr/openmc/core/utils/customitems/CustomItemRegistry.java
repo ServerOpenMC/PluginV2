@@ -23,7 +23,7 @@ public class CustomItemRegistry {
     static public void init() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
 
-        // Ici, enregistrer tout les items custom
+        // Ici, enregistrer tous les items custom
         new CloseButton();
         new PreviousPage();
         new NextPage();

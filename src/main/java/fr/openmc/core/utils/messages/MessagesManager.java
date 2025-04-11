@@ -2,7 +2,6 @@ package fr.openmc.core.utils.messages;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import com.google.common.collect.ImmutableBiMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import lombok.Getter;
@@ -89,7 +88,7 @@ public class MessagesManager {
         CITYNOFREECLAIM(Component.text("Cette ville n'a pas de claims gratuits")),
 
 
-        PLAYERNOCLAIM(Component.text("Tu n'as pas la permission d'aggrandir ta ville")),
+        PLAYERNOCLAIM(Component.text("Tu n'as pas la permission d'agrandir ta ville")),
         PLAYERNOOWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire")),
         PLAYERNORENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
         PLAYERNOMONEYGIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),

@@ -27,10 +27,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fr.openmc.core.features.city.mascots.MascotsListener.*;
 import static fr.openmc.core.features.city.mascots.MascotsManager.*;
@@ -155,7 +152,7 @@ public class MascotMenu extends Menu {
             if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_UPGRADE)){
                 String city_uuid = city.getUUID();
                 int aywenite = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)).getUpgradeCost();
-                Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
+                Material matAywenite = Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType();
                 if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)){
                     ItemUtils.removeItemsFromInventory(getOwner(), matAywenite, aywenite);
                     upgradeMascots(city_uuid, mascots.getUniqueId());
@@ -186,7 +183,7 @@ public class MascotMenu extends Menu {
             );
 
             map.put(26, new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Votre §cMascotte §7est §bimmunisé§7!"));
+                itemMeta.displayName(Component.text("§7Votre §cMascotte §7est §bimmunisée§7!"));
                 itemMeta.lore(lore);
             }));
         }

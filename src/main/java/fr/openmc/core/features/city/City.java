@@ -77,7 +77,7 @@ public class City {
                 return chestContent.get(page);
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // On peut pas retourner une liste vide parceque si il ferme, ça va reset son inv
+            e.printStackTrace(); // On ne peut pas retourner une liste vide, car s'il ferme, ça va reset son inv
             throw new RuntimeException("Error while loading chest content");
         }
         return new ItemStack[54]; // ayayay

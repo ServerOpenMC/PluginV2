@@ -11,6 +11,10 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPCancelCommand {
 	
+	/**
+	 * Command to cancel a teleport request.
+	 * @param player The player who wants to cancel the request.
+	 */
 	@Command("tpacancel")
 	@CommandPermission("ayw.command.tpa")
 	public void tpCancel(Player player) {
