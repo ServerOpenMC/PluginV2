@@ -94,7 +94,6 @@ public class CityBankWithdrawMenu extends Menu {
             player.closeInventory();
         }));
 
-
         List<Component> loreBankWithdrawHalf;
 
         if (hasPermissionMoneyTake) {
