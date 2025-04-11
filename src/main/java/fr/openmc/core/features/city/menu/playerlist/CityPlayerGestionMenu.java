@@ -133,7 +133,7 @@ public class CityPlayerGestionMenu extends Menu {
             inventory.put(15, new ItemBuilder(this, Material.BOOK, itemMeta -> {
                 itemMeta.itemName(Component.text("§cModifier les permissions"));
                 itemMeta.lore(lorePermission);
-            }).setOnClick(inventoryClickEvent -> CitizensPermsMenu.openBookFor(player, playerTarget.getUniqueId());));
+            }).setOnClick(inventoryClickEvent -> CitizensPermsMenu.openBookFor(player, playerTarget.getUniqueId())));
 
             inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
