@@ -299,7 +299,7 @@ public class CityCommands {
 
 
 
-        if (!MascotsManager.freeClaim.containsKey(city.getUUID())) {
+        if ((!MascotsManager.freeClaim.containsKey(city.getUUID())) || (MascotsManager.freeClaim.get(city.getUUID()) <= 0)) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -309,15 +309,13 @@ public class CityCommands {
                 MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas assez d'§dAywenite §f("+aywenite+ " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
-        }
 
-        if (MascotsManager.freeClaim.containsKey(city.getUUID())){
-            MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
-
-        } else {
             city.updateBalance((double) (price*-1));
             ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
+        } else {
+            MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
         }
+
         city.addChunk(sender.getWorld().getChunkAt(chunkX, chunkZ));
 
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);

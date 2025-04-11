@@ -79,7 +79,9 @@ public class MascotsManager {
             while (rs.next()) {
                 String cityUuid = rs.getString("city_uuid");
                 int claim = rs.getInt("claim");
-                freeClaims.put(cityUuid, claim);
+                if (claim > 0) {
+                    freeClaims.put(cityUuid, claim);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -119,11 +121,20 @@ public class MascotsManager {
         }
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
-                statement.setString(1, entry.getKey());
-                statement.setInt(2, entry.getValue());
-                statement.setInt(3, entry.getValue());
-                statement.addBatch();
-            }
+                if (entry.getValue() > 0) {
+                    statement.setString(1, entry.getKey());
+                    statement.setInt(2, entry.getValue());
+                    statement.setInt(3, entry.getValue());
+                    statement.addBatch();
+                } else {
+                        try (PreparedStatement deleteStatement = DatabaseManager.getConnection().prepareStatement(
+                                "DELETE FROM free_claim WHERE city_uuid = ?")) {
+                            deleteStatement.setString(1, entry.getKey());
+                            deleteStatement.executeUpdate();
+                        }
+                    }
+
+                }
             statement.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
