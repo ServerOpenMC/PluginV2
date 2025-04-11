@@ -5,6 +5,7 @@ import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -66,7 +67,7 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
             if (halfMoneyBankPlayer != 0) {
-                // TODO: update player balance
+                BankManager.getInstance().withdrawBankBalance(player.getUniqueId(), moneyBankPlayer);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyBankPlayer);
                 MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyBankPlayer)
                             + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
@@ -89,7 +90,7 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
             if (halfMoneyBankPlayer != 0) {
-                // TODO: update player bank balance
+                BankManager.getInstance().withdrawBankBalance(player.getUniqueId(), halfMoneyBankPlayer);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), halfMoneyBankPlayer);
                 MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyBankPlayer) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
             } else {
@@ -127,11 +128,10 @@ public class PersonalBankWithdrawMenu extends Menu {
                             if (InputUtils.isInputMoney(input)) {
                                 double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
-                                // TODO: check player has enough money in the bank
-                                if (true) {
+                                if (BankManager.getInstance().getBankBalance(player.getUniqueId()) < moneyDeposit) {
                                     MessagesManager.sendMessage(player, Component.text("Tu n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
                                 } else {
-                                    // TODO update player bank balance
+                                    BankManager.getInstance().withdrawBankBalance(player, moneyDeposit);
                                     EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
                                     MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
                                 }

@@ -5,6 +5,7 @@ import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -66,7 +67,7 @@ public class PersonalBankDepositMenu extends Menu {
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyPlayer) && moneyPlayer!=0) {
-                // TODO: update bank balance
+                BankManager.getInstance().addBankBalance(player.getUniqueId(), moneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -88,7 +89,7 @@ public class PersonalBankDepositMenu extends Menu {
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), halfMoneyPlayer) && halfMoneyPlayer!=0) {
-                // TODO: update bank balance
+                BankManager.getInstance().addBankBalance(player.getUniqueId(), halfMoneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -126,7 +127,7 @@ public class PersonalBankDepositMenu extends Menu {
                                 double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
                                 if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
-                                    // TODO: update bank balance
+                                    BankManager.getInstance().addBankBalance(player.getUniqueId(), moneyDeposit);
                                     MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
                                 } else {
                                     MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
