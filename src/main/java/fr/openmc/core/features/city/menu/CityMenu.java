@@ -10,7 +10,7 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.menu.bank.BankMainMenu;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
@@ -282,8 +282,7 @@ public class CityMenu extends Menu {
                 return;
             }
 
-            BankMainMenu menu = new BankMainMenu(player);
-            menu.open();
+            new CityBankMenu(player).open();
         }));
 
 

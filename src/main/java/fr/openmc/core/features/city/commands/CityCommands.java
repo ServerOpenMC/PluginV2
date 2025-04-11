@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.mascots.MascotsManager;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -497,6 +498,24 @@ public class CityCommands {
                 exception.printStackTrace();
             }
         }
+    }
+
+    // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
+    @Subcommand("bank view")
+    public void bank(Player sender) {
+        new CityBankMenu(sender).open();
+    }
+
+    @Subcommand("bank deposit")
+    void deposit(Player player, String input) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        city.depositCityBank(player, input);
+    }
+
+    @Subcommand("bank withdraw")
+    void withdraw(Player player, String input) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        city.withdrawCityBank(player, input);
     }
 
     // ACTIONS

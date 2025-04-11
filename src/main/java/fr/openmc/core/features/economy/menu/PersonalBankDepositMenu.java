@@ -1,14 +1,11 @@
-package fr.openmc.core.features.city.menu.bank;
+package fr.openmc.core.features.economy.menu;
 
 import de.rapha149.signgui.SignGUI;
 import de.rapha149.signgui.exception.SignGUIVersionException;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.city.CPermission;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.conditions.CityBankConditions;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -27,15 +24,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CityBankDepositMenu extends Menu {
+public class PersonalBankDepositMenu extends Menu {
 
-    public CityBankDepositMenu(Player owner) {
+    public PersonalBankDepositMenu(Player owner) {
         super(owner);
     }
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes - Banque de Ville";
+        return "Menu des banques - Banque Personel";
     }
 
     @Override
@@ -53,39 +50,24 @@ public class CityBankDepositMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        assert city != null;
-
-        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE);
-
         double moneyPlayer = EconomyManager.getInstance().getBalance(player.getUniqueId());
         double halfMoneyPlayer = moneyPlayer/2;
 
-        List<Component> loreBankDepositAll;
-
-        if (hasPermissionMoneyGive) {
-            loreBankDepositAll = List.of(
-                    Component.text("§7Tout votre argent sera placé dans la §6Banque de la Ville"),
-                    Component.text(""),
-                    Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
-            );
-        } else {
-            loreBankDepositAll = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
-            );
-        }
+        List<Component> loreBankDepositAll = List.of(
+                Component.text("§7Tout votre argent sera placé dans §6Votre Banque"),
+                Component.text(""),
+                Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                Component.text(""),
+                Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
+        );
 
         inventory.put(11, new ItemBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
             itemMeta.itemName(Component.text("§7Déposer tout votre §6Argent"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityBankConditions.canCityDeposit(city, player)) return;
-
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyPlayer) && moneyPlayer!=0) {
-                city.updateBalance(moneyPlayer);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                BankManager.getInstance().addBankBalance(player.getUniqueId(), moneyPlayer);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
@@ -93,31 +75,21 @@ public class CityBankDepositMenu extends Menu {
         }));
 
 
-        List<Component> loreBankDepositHalf;
-
-        if (hasPermissionMoneyGive) {
-            loreBankDepositHalf = List.of(
-                    Component.text("§7La moitié de votre Argent sera placé dans la §6Banque de la Ville"),
-                    Component.text(""),
-                    Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
-            );
-        } else {
-            loreBankDepositHalf = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
-            );
-        }
+        List<Component> loreBankDepositHalf = List.of(
+                Component.text("§7La moitié de votre Argent sera placé dans §6Votre Banque"),
+                Component.text(""),
+                Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                Component.text(""),
+                Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
+        );
 
         inventory.put(13, new ItemBuilder(this,new ItemStack(Material.HOPPER, 32), itemMeta -> {
             itemMeta.itemName(Component.text("§7Déposer la moitié de votre §6Argent"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityBankConditions.canCityDeposit(city, player)) return;
-
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), halfMoneyPlayer) && halfMoneyPlayer!=0) {
-                city.updateBalance(halfMoneyPlayer);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                BankManager.getInstance().addBankBalance(player.getUniqueId(), halfMoneyPlayer);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
@@ -125,24 +97,16 @@ public class CityBankDepositMenu extends Menu {
         }));
 
 
-        List<Component> loreBankDepositInput;
-
-        if (hasPermissionMoneyGive) {
-            loreBankDepositInput = List.of(
-                    Component.text("§7Votre argent sera placé dans la §6Banque de la Ville"),
-                    Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
-            );
-        } else {
-            loreBankDepositInput = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
-            );
-        }
+            
+        List<Component> loreBankDepositInput = List.of(
+            Component.text("§7Votre argent sera placé dans §6Votre Banque"),
+            Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
+        );
 
         inventory.put(15, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
             itemMeta.itemName(Component.text("§7Déposer un §6montant précis"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityBankConditions.canCityDeposit(city, player)) return;
 
             String[] lines = new String[4];
             lines[0] = "";
@@ -157,7 +121,7 @@ public class CityBankDepositMenu extends Menu {
                         .setType(ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
-                            city.depositCityBank(player, input);
+                            BankManager.getInstance().addBankBalance(player, input);
                             return Collections.emptyList();
                         })
                         .build();
@@ -172,11 +136,11 @@ public class CityBankDepositMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de la Banque de votre ville"),
+                    Component.text("§7Vous allez retourner au Menu de votre banque"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {
-            CityBankMenu menu = new CityBankMenu(player);
+            PersonalBankMenu menu = new PersonalBankMenu(player);
             menu.open();
         }));
 
