@@ -3,10 +3,10 @@ package fr.openmc.core.features.city.menu.bank;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.economy.menu.BankMainMenu;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -31,7 +31,7 @@ public class CityBankMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des banques - Banque de Ville";
+        return "Menu des villes - Banque de Ville";
     }
 
     @Override
@@ -117,11 +117,12 @@ public class CityBankMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au menu des comptes en banque"),
+                    Component.text("§7Vous allez retourner au menu des villes"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
+
         }).setOnClick(inventoryClickEvent -> {
-            new BankMainMenu(player).open();
+            new CityMenu(player).open();
         }));
 
         return inventory;

@@ -80,17 +80,6 @@ public class PersonalBankMenu extends Menu {
             new PersonalBankWithdrawMenu(player).open();
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au menu des comptes en banque"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
-        }).setOnClick(inventoryClickEvent -> {
-            BankMainMenu menu = new BankMainMenu(player);
-            menu.open();
-        }));
-
         return inventory;
     }
 }

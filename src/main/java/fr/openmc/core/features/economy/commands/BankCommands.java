@@ -2,7 +2,7 @@ package fr.openmc.core.features.economy.commands;
 
 import org.bukkit.entity.Player;
 
-import fr.openmc.core.features.economy.menu.BankMainMenu;
+import fr.openmc.core.features.economy.menu.PersonalBankMenu;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
 
@@ -11,6 +11,6 @@ public class BankCommands {
 
     @DefaultFor("~")
     void openBankMenu(Player player) {
-        new BankMainMenu(player).open();
+        new PersonalBankMenu(player).open();
     }
 }
