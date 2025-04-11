@@ -22,13 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BankMainMenu extends Menu {
-    private boolean addReturnButton = true;
-
-    public BankMainMenu(Player owner, boolean addReturnButton) {
-        super(owner);
-
-        this.addReturnButton = addReturnButton;
-    }
 
     public BankMainMenu(Player owner) {
         super(owner);
@@ -36,7 +29,7 @@ public class BankMainMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes - Banque";
+        return "Menu des banques";
     }
 
     @Override
@@ -107,19 +100,6 @@ public class BankMainMenu extends Menu {
             ));
         }).setOnClick(InventoryClickEvent -> {
             new PersonalBankMenu(player).open();
-        }));
-
-        if (!addReturnButton)
-            return inventory;
-
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au menu des villes"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
-        }).setOnClick(inventoryClickEvent -> {
-            new CityMenu(player).open();
         }));
 
         return inventory;

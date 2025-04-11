@@ -33,7 +33,7 @@ public class PersonalBankDepositMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Banque Personel";
+        return "Menu des banques - Banque Personel";
     }
 
     @Override

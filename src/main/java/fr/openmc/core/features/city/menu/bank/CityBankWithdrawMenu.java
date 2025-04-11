@@ -35,7 +35,7 @@ public class CityBankWithdrawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes - Banque de Ville";
+        return "Menu des banques - Banque de Ville";
     }
 
     @Override

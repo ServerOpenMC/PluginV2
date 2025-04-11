@@ -11,6 +11,6 @@ public class BankCommands {
 
     @DefaultFor("~")
     void openBankMenu(Player player) {
-        new BankMainMenu(player, false).open();
+        new BankMainMenu(player).open();
     }
 }
