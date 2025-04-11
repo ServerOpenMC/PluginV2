@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.mascots.MascotsManager;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -497,6 +498,11 @@ public class CityCommands {
                 exception.printStackTrace();
             }
         }
+    }
+
+    @Subcommand("bank")
+    public void bank(Player sender) {
+        new CityBankMenu(sender).open();
     }
 
     // ACTIONS
