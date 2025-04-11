@@ -85,11 +85,7 @@ public class InputUtils {
             return false;
         }
 
-        if (!input.matches("[a-zA-Z0-9\\s]+")) {
-            return false;
-        }
-
-        return true;
+        return input.matches("[a-zA-Z0-9\\s]+");
     }
 
     /**
@@ -102,10 +98,6 @@ public class InputUtils {
             return false;
         }
 
-        if (Bukkit.getPlayer(input) == null) {
-            return false;
-        }
-
-        return true;
+        return Bukkit.getPlayer(input) != null;
     }
 }
