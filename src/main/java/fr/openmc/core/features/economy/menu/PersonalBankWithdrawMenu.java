@@ -7,7 +7,6 @@ import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -124,21 +123,7 @@ public class PersonalBankWithdrawMenu extends Menu {
                         .setType(ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
-
-                            if (InputUtils.isInputMoney(input)) {
-                                double moneyDeposit = InputUtils.convertToMoneyValue(input);
-
-                                if (BankManager.getInstance().getBankBalance(player.getUniqueId()) < moneyDeposit) {
-                                    MessagesManager.sendMessage(player, Component.text("Tu n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
-                                } else {
-                                    BankManager.getInstance().withdrawBankBalance(player, moneyDeposit);
-                                    EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
-                                    MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
-                                }
-                            } else {
-                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                            }
-
+                            BankManager.getInstance().withdrawBankBalance(player.getUniqueId(), input);
                             return Collections.emptyList();
                         })
                         .build();

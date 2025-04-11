@@ -7,7 +7,6 @@ import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -122,20 +121,7 @@ public class PersonalBankDepositMenu extends Menu {
                         .setType(ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
-
-                            if (InputUtils.isInputMoney(input)) {
-                                double moneyDeposit = InputUtils.convertToMoneyValue(input);
-
-                                if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
-                                    BankManager.getInstance().addBankBalance(player.getUniqueId(), moneyDeposit);
-                                    MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
-                                } else {
-                                    MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                                }
-                            } else {
-                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                            }
-
+                            BankManager.getInstance().addBankBalance(player.getUniqueId(), input);
                             return Collections.emptyList();
                         })
                         .build();
