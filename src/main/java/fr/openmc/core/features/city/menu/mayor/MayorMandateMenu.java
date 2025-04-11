@@ -87,16 +87,6 @@ public class MayorMandateMenu extends Menu {
             // - Evenement Déclanchable - Maire
 
             // si le joueur est maire
-            inventory.put(4, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.itemName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(
-                        Component.text("§7Vous allez retourner au Menu des Elections"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
-            }).setOnClick(inventoryClickEvent -> {
-                MayorElectionMenu menu = new MayorElectionMenu(player);
-                menu.open();
-            }));
 
             if (player.getUniqueId().equals(mayor.getUUID())) {
                 List<Component> loreLaw = List.of(
@@ -107,7 +97,7 @@ public class MayorMandateMenu extends Menu {
                         Component.text("§e§lCLIQUEZ ICI POUR OUVRIR UN MENU")
 
                 );
-                inventory.put(18, new ItemBuilder(this, Material.STONE_BUTTON, itemMeta -> {
+                inventory.put(4, new ItemBuilder(this, Material.STONE_BUTTON, itemMeta -> {
                     itemMeta.itemName(Component.text("§1Les Lois"));
                     itemMeta.lore(loreLaw);
                 }).setOnClick(event -> {
@@ -157,6 +147,16 @@ public class MayorMandateMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }));
 
+            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.itemName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Vous allez retourner au Menu des Elections"),
+                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                ));
+            }).setOnClick(inventoryClickEvent -> {
+                MayorElectionMenu menu = new MayorElectionMenu(player);
+                menu.open();
+            }));
 
             return inventory;
         } catch (Exception e) {

@@ -66,7 +66,7 @@ public class MayorManager {
 
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();
-    public HashMap<City, CityLaw> cityLaws = new HashMap<>();
+    public static HashMap<City, CityLaw> cityLaws = new HashMap<>();
     public Map<City, List<MayorCandidate>> cityElections = new HashMap<>(){};
     public Map<City, List<MayorVote>> playerVote = new HashMap<>();
 
@@ -115,6 +115,12 @@ public class MayorManager {
                     Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName() + " " + entry.getValue().getUUID() + " " + entry.getValue().getIdPerk1()+ " " + entry.getValue().getIdPerk2()+ " " + entry.getValue().getIdPerk3());
                 }
 
+                Bukkit.getLogger().info("City Law:");
+                System.out.println(cityLaws);
+                for (Map.Entry<City, CityLaw> entry : cityLaws.entrySet()) {
+                    Bukkit.getLogger().info(entry.getKey() + " -> war^" + entry.getValue().getWarp() + " PVP " + entry.getValue().isPvp());
+                }
+
                 Bukkit.getLogger().info("City Elections:");
                 for (Map.Entry<City, List<MayorCandidate>> entry : cityElections.entrySet()) {
                     Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
@@ -138,7 +144,7 @@ public class MayorManager {
         // create city_voted : contient les membres d'une ville ayant deja voté
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_VOTE + " (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) UNIQUE NOT NULL, candidateUUID VARCHAR(36) NOT NULL)").executeUpdate();
         // create city_law : contient les parametres d'une ville
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_LAW + " (city_uuid VARCHAR(8) UNIQUE, pvp BOOLEAN NOT NULL DEFAULT TRUE, warp_x DOUBLE, warp_y DOUBLE, warp_z DOUBLE, warp_world VARCHAR(255))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_LAW + " (city_uuid VARCHAR(8) UNIQUE, pvp BOOLEAN NOT NULL DEFAULT FALSE, warp_x DOUBLE, warp_y DOUBLE, warp_z DOUBLE, warp_world VARCHAR(255))").executeUpdate();
         // create constants : contient une information universelle pour tout le monde
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONSTANTS + " (mayorPhase int(1))").executeUpdate();
         PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_CONSTANTS);
@@ -726,5 +732,16 @@ public class MayorManager {
 
     public NamedTextColor getRandomMayorColor() {
         return LIST_MAYOR_COLOR.get(RANDOM.nextInt(LIST_MAYOR_COLOR.size()));
+    }
+
+    public static void createCityLaws(City city, boolean pvp, Location locationWarp) {
+        CityLaw laws = city.getLaw();
+        if (laws != null) {
+            laws.setPvp(pvp);
+            laws.setWarp(locationWarp);
+
+        } else { // au cas ou meme si c théoriquement impossible (on défini tous les maires a la phase 1 et on le crée quand on crée la ville)
+            cityLaws.put(city, new CityLaw(pvp, locationWarp));
+        }
     }
 }

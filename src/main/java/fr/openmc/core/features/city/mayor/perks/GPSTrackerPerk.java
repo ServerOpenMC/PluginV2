@@ -34,6 +34,7 @@ public class GPSTrackerPerk implements Listener {
                 event.getTo().getChunk().getX(),
                 event.getTo().getChunk().getZ()
         );
+        if (currentCity == null) return;
 
         if (!PerkManager.hasPerk(currentCity.getMayor(), 9)) return;
 
