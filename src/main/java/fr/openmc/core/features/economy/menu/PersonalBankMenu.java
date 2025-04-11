@@ -3,6 +3,7 @@ package fr.openmc.core.features.economy.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -61,7 +62,7 @@ public class PersonalBankMenu extends Menu {
             itemMeta.itemName(Component.text("§6Votre argent"));
             itemMeta.lore(List.of(
                 Component.text("§7Vous avez actuellement §d" +
-                        EconomyManager.getInstance().getFormattedSimplifiedNumber(EconomyManager.getInstance().getBalance(player.getUniqueId())) + " ")
+                        EconomyManager.getInstance().getFormattedSimplifiedNumber(BankManager.getInstance().getBankBalance(player.getUniqueId())) + " ")
                     .append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false))
                 )
             );

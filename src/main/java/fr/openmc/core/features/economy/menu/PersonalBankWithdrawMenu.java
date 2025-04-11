@@ -50,7 +50,7 @@ public class PersonalBankWithdrawMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        double moneyBankPlayer = EconomyManager.getInstance().getBalance(player.getUniqueId());
+        double moneyBankPlayer = BankManager.getInstance().getBankBalance(player.getUniqueId());
         double halfMoneyBankPlayer = moneyBankPlayer/2;
 
         List<Component> loreBankWithdrawAll = List.of(
