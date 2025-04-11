@@ -47,7 +47,12 @@ public class DatabaseManager {
 
     private static void connect() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            if (OMCPlugin.isUnitTestVersion()) {
+                Class.forName("org.h2.Driver");
+            } else {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            }
+
             FileConfiguration config = OMCPlugin.getConfigs();
 
             if (!(config.contains("database.url") || config.contains("database.username") || config.contains("database.password"))) {

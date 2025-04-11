@@ -5,7 +5,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -44,7 +43,7 @@ public class MascotsManager {
     public static Map<UUID, Location> mascotSpawn = new HashMap<>();
 
     public MascotsManager(OMCPlugin plugin) {
-        //changement du spigot.yml pour permettre au mascottes d'avoir 3000 coeurs
+        //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
         spigotYMLConfig.set("settings.attribute.maxHealth.max", 6000.0);
@@ -83,7 +82,9 @@ public class MascotsManager {
             while (rs.next()) {
                 String cityUuid = rs.getString("city_uuid");
                 int claim = rs.getInt("claim");
-                freeClaims.put(cityUuid, claim);
+                if (claim > 0) {
+                    freeClaims.put(cityUuid, claim);
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -113,14 +114,29 @@ public class MascotsManager {
     }
 
     public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
-        String query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+        String query;
+
+        if (OMCPlugin.isUnitTestVersion()) {
+            query = "MERGE INTO free_claim KEY(city_uuid) VALUES (?, ?)";
+        } else {
+            query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+        }
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
-                statement.setString(1, entry.getKey());
-                statement.setInt(2, entry.getValue());
-                statement.setInt(3, entry.getValue());
-                statement.addBatch();
-            }
+                if (entry.getValue() > 0) {
+                    statement.setString(1, entry.getKey());
+                    statement.setInt(2, entry.getValue());
+                    statement.setInt(3, entry.getValue());
+                    statement.addBatch();
+                } else {
+                        try (PreparedStatement deleteStatement = DatabaseManager.getConnection().prepareStatement(
+                                "DELETE FROM free_claim WHERE city_uuid = ?")) {
+                            deleteStatement.setString(1, entry.getKey());
+                            deleteStatement.executeUpdate();
+                        }
+                    }
+
+                }
             statement.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -128,9 +144,17 @@ public class MascotsManager {
     }
 
     public static void saveMascots(List<Mascot> mascots) {
-        String query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, alive) " +
-                "VALUES (?, ?, ?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, alive = ?";
+        String query;
+
+        if (OMCPlugin.isUnitTestVersion()) {
+            query = "MERGE INTO mascots " +
+                    "KEY(city_uuid) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+        } else {
+            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, alive) " +
+                    "VALUES (?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, alive = ?";
+        }
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Mascot mascot : mascots) {
@@ -162,10 +186,10 @@ public class MascotsManager {
         mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
-        // l'uuid de la ville lui est approprié pour l'identifié
+        // L'uuid de la ville lui est approprié pour l'identifié
         data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
-        // immunité persistente de 7 jours pour la mascotte
+        // Immunité persistante de 7 jours pour la mascotte
         DynamicCooldownManager.use(city_uuid, "mascot:immunity", IMMUNITY_COOLDOWN);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -224,7 +248,7 @@ public class MascotsManager {
             MascotUtils.changeMascotImmunity(city_uuid, false);
             int level = MascotUtils.getMascotLevel(city_uuid);
             if (MascotUtils.getMascotUUIDOfCity(city_uuid)!=null){
-                LivingEntity entity = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city_uuid));
+                LivingEntity entity = (LivingEntity) Bukkit.getEntity(Objects.requireNonNull(MascotUtils.getMascotUUIDOfCity(city_uuid)));
                 if (entity!=null){
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
                     entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
@@ -248,7 +272,7 @@ public class MascotsManager {
     public static void giveChest(Player player) {
         if (!ItemUtils.hasAvailableSlot(player)){
 
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire : mascotte invoquée à vos coordonées"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire : mascotte invoquée à vos coordonnées"), Prefix.CITY, MessageType.ERROR, false);
             City city = CityManager.getPlayerCity(player.getUniqueId());
 
             if (city == null) {
@@ -269,7 +293,7 @@ public class MascotsManager {
             List<Component> info = new ArrayList<>();
             info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
             info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
+            info.add(Component.text("§clors de votre déconnexion la mascotte sera placée"));
 
             meta.displayName(Component.text("§lMascotte"));
             meta.lore(info);
@@ -301,7 +325,7 @@ public class MascotsManager {
             List<Component> info = new ArrayList<>();
             info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
             info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la mascotte sera placé"));
+            info.add(Component.text("§clors de votre déconnexion la mascotte sera placée"));
 
             meta.displayName(Component.text("§lMascotte"));
             meta.lore(info);

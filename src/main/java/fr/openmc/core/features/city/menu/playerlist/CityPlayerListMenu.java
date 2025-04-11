@@ -81,7 +81,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                         );
                     } else {
                         lorePlayer = List.of(
-                                Component.text("§7Vous pouvez gérer ce joueur comme l'§cexpluser §7ou bien modifier §ases permissions"),
+                                Component.text("§7Vous pouvez gérer ce joueur comme l'§cexpulser §7ou bien modifier §ases permissions"),
                                 Component.text("§e§lCLIQUEZ ICI POUR GERER CE JOUEUR")
                         );
                     }
@@ -138,8 +138,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
                                         CityCommands.kick(player, playerOffline);
                                     },
                                     () -> player.closeInventory(),
-                                    List.of(Component.text("§7Voulez vous vraiment expluser " + playerOffline.getName() + " ?")),
-                                    List.of(Component.text( "§7Ne pas expluser " + playerOffline.getName())));
+                                    List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
+                                    List.of(Component.text( "§7Ne pas expulser " + playerOffline.getName())));
                             menu.open();
 
                         }
@@ -159,16 +159,10 @@ public class CityPlayerListMenu extends PaginatedMenu {
     public Map<Integer, ItemStack> getButtons() {
         Player player = getOwner();
         Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Fermer"));
-        }).setCloseButton());
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§cPage précédente"));
-        }).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> {
-            itemMeta.displayName(Component.text("§aPage suivante"));
-        }).setNextPageButton());
-        map.put(53, new ItemBuilder(this, CustomItemRegistry.getByName("menu:search_btn").getBest(),itemMeta -> {
+        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:close_button")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
+        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:previous_page")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
+        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:next_page")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+        map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:search_btn")).getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Inviter des §dpersonnes"));
             itemMeta.lore(List.of(Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir !")));
         }).setOnClick(inventoryClickEvent -> {
@@ -178,7 +172,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
             lines[2] = "Entrez le nom du ";
             lines[3] = "joueur ci dessus";
 
-            SignGUI gui = null;
+            SignGUI gui;
             try {
                 gui = SignGUI.builder()
                         .setLines(null, lines[1] , lines[2], lines[3])

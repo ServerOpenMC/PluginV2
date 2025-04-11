@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 import static fr.openmc.core.features.city.commands.CityCommands.invitations;
 
 /**
- * Le but de cette classe est de regrouper toutes les conditions neccessaires
- * pour inviter une personne (utile pour faire une modif sur menu et commandes)
+ * Le but de cette classe est de regrouper toutes les conditions necessaires
+ * pour inviter une personne (utile pour faire une modif sur menu et commandes).
  */
 public class CityInviteConditions {
 
@@ -22,7 +22,7 @@ public class CityInviteConditions {
      *
      * @param city la ville sur laquelle on fait les actions
      * @param player le joueur sur lequel tester les permissions
-     * @param target le joueur sur lequel tester si il peut etre inviter
+     * @param target le joueur sur lequel tester s'il peut etre inviter
      * @return booleen
      */
     public static boolean canCityInvitePlayer(City city, Player player, Player target) {
@@ -67,7 +67,7 @@ public class CityInviteConditions {
      *
      * @param newCity la ville sur laquelle on fait les actions
      * @param inviter le joueur sur lequel tester les permissions
-     * @param playerInvited le joueur sur lequel tester si il peut etre inviter
+     * @param playerInvited le joueur sur lequel tester s'il peut etre inviter
      * @return booleen
      */
     public static boolean canCityInviteAccept(City newCity, Player inviter, Player playerInvited) {

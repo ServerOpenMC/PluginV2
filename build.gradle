@@ -39,7 +39,9 @@ dependencies {
     // unit tests
     testImplementation("org.slf4j:slf4j-simple:2.0.16")
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
-    testImplementation("com.github.seeseemelk:MockBukkit-v1.21:3.133.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.45.0")
+    testImplementation("com.h2database:h2:2.3.232")
 }
 
 def targetJavaVersion = 21

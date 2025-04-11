@@ -90,7 +90,7 @@ public class CityModifyMenu extends Menu {
                 lines[2] = "Entrez votre";
                 lines[3] = "nom ci dessus";
 
-                SignGUI gui = null;
+                SignGUI gui;
                 try {
                     gui = SignGUI.builder()
                             .setLines(null, lines[1], lines[2], lines[3])
@@ -157,7 +157,7 @@ public class CityModifyMenu extends Menu {
 
             if (hasPermissionOwner) {
                 loreDelete = List.of(
-                        Component.text("§7Vous allez défénitivement §csupprimer la ville!"),
+                        Component.text("§7Vous allez définitivement §csupprimer la ville!"),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                 );

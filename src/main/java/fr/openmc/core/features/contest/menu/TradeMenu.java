@@ -165,7 +165,7 @@ public class TradeMenu extends Menu {
                     } else if (inventoryClickEvent.isLeftClick()) {
                         if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
 
-                            //mettre dans l'inv ou boite mail?
+                            //mettre dans l'inv ou boite mail ?
                             if (Arrays.asList(player.getInventory().getStorageContents()).contains(null)) {
                                 shellContestItem.setAmount(amountShell);
                                 for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {
