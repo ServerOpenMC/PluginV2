@@ -357,6 +357,11 @@ public class City {
         setBalance(balance+diff);
     }
 
+    /**
+     * Adds money to the city bank and removes it from {@link Player}
+     * @param player The player depositing into the bank
+     * @param input The input string to get the money value
+     */
     public void depositCityBank(Player player, String input) {
         if (InputUtils.isInputMoney(input)) {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
@@ -372,6 +377,11 @@ public class City {
         }
     }
 
+    /**
+     * Removes money from the city bank and add it to {@link Player}
+     * @param player The player withdrawing from the bank
+     * @param input The input string to get the money value
+     */
     public void withdrawCityBank(Player player, String input) {
         if (InputUtils.isInputMoney(input)) {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
