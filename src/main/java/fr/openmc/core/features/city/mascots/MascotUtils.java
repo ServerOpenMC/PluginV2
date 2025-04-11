@@ -1,5 +1,8 @@
 package fr.openmc.core.features.city.mascots;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+
 import java.util.UUID;
 
 public class MascotUtils {
@@ -11,7 +14,7 @@ public class MascotUtils {
             }
         }
 
-        Mascot newMascot =  new Mascot(city_uuid, mascotUUID.toString(), 1, true, 10080, true);
+        Mascot newMascot = new Mascot(city_uuid, mascotUUID.toString(), 1, true, true);
         MascotsManager.mascots.add(newMascot);
     }
 
@@ -72,15 +75,6 @@ public class MascotUtils {
         return false;
     }
 
-    public static long getMascotImmunityTime(String city_uuid) {
-        for (Mascot mascot : MascotsManager.mascots){
-            if (mascot.getCityUuid().equals(city_uuid)){
-                return mascot.getImmunity_time();
-            }
-        }
-        return 0;
-    }
-
     public static void setMascotLevel(String city_uuid, int level){
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
@@ -94,15 +88,6 @@ public class MascotUtils {
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 mascot.setMascotUuid(String.valueOf(uuid));
-                return;
-            }
-        }
-    }
-
-    public static void setImmunityTime(String city_uuid, long time) {
-        for (Mascot mascot : MascotsManager.mascots){
-            if (mascot.getCityUuid().equals(city_uuid)){
-                mascot.setImmunity_time(time);
                 return;
             }
         }
@@ -124,6 +109,19 @@ public class MascotUtils {
                 return;
             }
         }
+    }
+
+    public static City getCityFromMascot(UUID mascotUUID){
+        City city = null;
+        if (mascotUUID!=null){
+            for (Mascot mascot : MascotsManager.mascots){
+                if (mascot.getMascotUuid().equals(mascotUUID.toString())){
+                    city = CityManager.getCity(mascot.getCityUuid());
+                    break;
+                }
+            }
+        }
+        return city;
     }
 }
 

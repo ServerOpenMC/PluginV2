@@ -17,6 +17,9 @@ public class WorldGuardApi {
         hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     }
 
+    /**
+     * Retourne si l'instance a WorldGuard
+     */
     public static boolean hasWorldGuard() {
         return hasWorldGuard;
     }
@@ -38,6 +41,9 @@ public class WorldGuardApi {
         return false;
     }
 
+    /**
+     * Retourne si la positon mise est dans une région
+     */
     public static boolean isInside(ProtectedRegion region, Location location) {
         return region.contains(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }

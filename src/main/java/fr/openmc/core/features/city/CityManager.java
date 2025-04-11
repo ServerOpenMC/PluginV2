@@ -4,12 +4,15 @@ import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -53,7 +56,7 @@ public class CityManager implements Listener {
 
             return playerCities.keySet().stream()
                     .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
-                    .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
+                    .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.toList());
         }));
 
@@ -62,7 +65,8 @@ public class CityManager implements Listener {
                 new AdminCityCommands(),
                 new CityPermsCommands(),
                 new CityChatCommand(),
-                new CityChestCommand()
+                new CityChestCommand(),
+                new AdminMayorCommands()
         );
 
         OMCPlugin.registerEvents(
@@ -172,6 +176,11 @@ public class CityManager implements Listener {
         try {
             City cityz = cities.remove(city);
 
+            MayorManager mayorManager = MayorManager.getInstance();
+            mayorManager.cityMayor.remove(cityz);
+            mayorManager.cityElections.remove(cityz);
+            mayorManager.playerVote.remove(cityz);
+
             for (UUID members : cityz.getMembers()){
                 MascotsManager.removeChest(Bukkit.getPlayer(members));
                 if (Chronometer.containsChronometer(members, "Mascot:chest")){
@@ -205,14 +214,15 @@ public class CityManager implements Listener {
                     playerIterator.remove();
                 }
             }
+
+            if (DynamicCooldownManager.isReady(cityz.getUUID(), "city:type")) {
+                DynamicCooldownManager.clear(cityz.getUUID(), "city:type");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         MascotsManager.freeClaim.remove(city);
-        if (CityTypeCooldown.isOnCooldown(city)) {
-            CityTypeCooldown.removeCityCooldown(city);
-        }
         MascotsManager.removeMascotsFromCity(city);
     }
 

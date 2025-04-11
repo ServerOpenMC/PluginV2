@@ -35,6 +35,11 @@ public class ItemUtils {
         return getItemTranslation(new ItemStack(material));
     }
 
+    /**
+     * Découpe un nombre d'item en packet de 64
+     * @param items Votre ItemStack
+     * @return Une Liste d'ItemStack
+     */
     public static List<ItemStack> splitAmountIntoStack(ItemStack items) {
         int amount = items.getAmount();
 
@@ -56,6 +61,12 @@ public class ItemUtils {
         return stacks;
     }
 
+    /**
+     * Retourne le nombre d'item qui peut aller dans un Stack
+     * @param player Joueur pour acceder a son inventaire
+     * @param item Item recherché pour completer un stack
+     * @return Le nombre d'item qui peut completer un stack
+     */
     public static int getNumberItemToStack(Player player, ItemStack item) {
         Inventory inventory = player.getInventory();
         int numberitemtostack = 0;
@@ -68,6 +79,11 @@ public class ItemUtils {
         return numberitemtostack;
     }
 
+
+    /**
+     * Retourne le nombre de slot vide
+     * @param player Joueur pour acceder a son inventaire
+     */
     public static int getSlotNull(Player player) {
         Inventory inventory = player.getInventory();
 
@@ -82,8 +98,12 @@ public class ItemUtils {
         return slot;
     }
 
-
-    // IMPORT FROM AXENO
+    /**
+     * Dire si le joueur a assez d'un objet
+     * @param player Joueur pour acceder a son inventaire
+     * @param item Objet concerné
+     * @param amount Quantité nécessaire
+     */
     public static boolean hasEnoughItems(Player player, Material item, int amount) {
         int totalItems = 0;
         ItemStack[] contents = player.getInventory().getContents();
@@ -98,6 +118,10 @@ public class ItemUtils {
         return totalItems >= amount;
     }
 
+    /**
+     * Dire si le joueur a des ou un slot de libre
+     * @param player Joueur pour acceder a son inventaire
+     */
     public static boolean hasAvailableSlot(Player player) {
         Inventory inv = player.getInventory();
         ItemStack[] contents = inv.getContents();
@@ -113,6 +137,12 @@ public class ItemUtils {
         return false;
     }
 
+    /**
+     * Retirer le nombre d'objet au joueur (vérification obligatoire avant execution)
+     * @param player Joueur pour acceder a son inventaire
+     * @param item Objet a retirer
+     * @param quantity Quantité a retirer
+     */
     public static void removeItemsFromInventory(Player player, Material item, int quantity) {
         ItemStack[] contents = player.getInventory().getContents();
         int remaining = quantity;
@@ -132,6 +162,10 @@ public class ItemUtils {
         }
     }
 
+    /**
+     * Donner le Type de Panneau en fonction du biome ou il se trouve
+     * @param player Joueur pour acceder au biome ou il est
+     */
     public static Material getSignType(Player player) {
         HashMap<Biome, Material> biomeToSignType = new HashMap<>();
         biomeToSignType.put(Biome.BAMBOO_JUNGLE, Material.BAMBOO_SIGN);

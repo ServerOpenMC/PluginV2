@@ -28,10 +28,16 @@ public class LuckPermsAPI {
         }
     }
 
+    /**
+     * Retourne si l'instance a LuckPerm
+     */
     public static boolean hasLuckPerms() {
         return hasLuckPerms;
     }
 
+    /**
+     * Retourne le garde d'une personne
+     */
     public static String getPrefix(Player player) {
         if (!hasLuckPerms) return "";
 

@@ -5,6 +5,7 @@ import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -18,6 +19,7 @@ import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.WorldGuardApi;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
@@ -62,6 +64,7 @@ public class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
+        new MayorManager(this);
         new ScoreboardManager();
         new HomesManager();
         new HomeUpgradeManager(HomesManager.getInstance());
@@ -73,19 +76,41 @@ public class OMCPlugin extends JavaPlugin {
         new MotdUtils(this);
         translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
         translationManager.loadAllLanguages();
+
+        /* LOAD */
+        DynamicCooldownManager.loadCooldowns();
+
         getLogger().info("Plugin activé");
     }
 
     @Override
     public void onDisable() {
+        // SAUVEGARDE
+
+        // - Maires
+        MayorManager mayorManager = MayorManager.getInstance();
+        mayorManager.saveMayorConstant();
+        mayorManager.savePlayersVote();
+        mayorManager.saveMayorCandidates();
+        mayorManager.saveCityMayors();
+        mayorManager.saveCityLaws();
+
+        // - Home
         HomesManager.getInstance().saveHomesData();
+
+        // - Contest
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
 
+        // - Mascottes
         MascotsManager.saveMascots(MascotsManager.mascots);
         MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
 
+        // - Cube
         CubeListener.clearCube(CubeListener.currentLocation);
+
+        // - Cooldowns
+        DynamicCooldownManager.saveCooldowns();
         if (dbManager != null) {
             try {
                 dbManager.close();

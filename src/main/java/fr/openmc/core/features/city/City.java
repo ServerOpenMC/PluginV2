@@ -2,8 +2,12 @@ package fr.openmc.core.features.city;
 
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.events.*;
+import fr.openmc.core.features.city.mayor.CityLaw;
+import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.menu.ChestMenu;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +21,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+
+import static fr.openmc.core.features.city.mayor.managers.MayorManager.*;
 
 public class City {
     private final String cityUUID;
@@ -202,6 +208,18 @@ public class City {
             err.printStackTrace();
         }
         return "inconnu";
+    }
+
+    public Mayor getMayor() {
+        MayorManager mayorManager = MayorManager.getInstance();
+
+        return mayorManager.cityMayor.get(CityManager.getCity(cityUUID));
+    }
+
+    public CityLaw getLaw() {
+        MayorManager mayorManager = MayorManager.getInstance();
+
+        return mayorManager.cityLaws.get(CityManager.getCity(cityUUID));
     }
 
     /**
@@ -466,7 +484,7 @@ public class City {
                 }
             });
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, false));
+                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, CacheOfflinePlayer.getOfflinePlayer(uuid), permission, false));
             });
             return true;
         }
@@ -510,7 +528,7 @@ public class City {
                 }
             });
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, true));
+                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, CacheOfflinePlayer.getOfflinePlayer(uuid), permission, true));
             });
         }
     }
@@ -526,7 +544,7 @@ public class City {
         CityManager.uncachePlayer(player);
         members.remove(player);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(Bukkit.getOfflinePlayer(player), this));
+            Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(CacheOfflinePlayer.getOfflinePlayer(player), this));
         });
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE player=?");
@@ -547,7 +565,7 @@ public class City {
     public void addPlayer(UUID player) {
         members.add(player);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    Bukkit.getPluginManager().callEvent(new MemberJoinEvent(Bukkit.getOfflinePlayer(player), this));
+                    Bukkit.getPluginManager().callEvent(new MemberJoinEvent(CacheOfflinePlayer.getOfflinePlayer(player), this));
                 });
         CityManager.cachePlayer(player, this);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -577,6 +595,9 @@ public class City {
                         "DELETE FROM city_regions WHERE city_uuid=?",
                         "DELETE FROM city_chests WHERE city_uuid=?",
                         "DELETE FROM city_power WHERE city_uuid=?",
+                        "DELETE FROM " + TABLE_MAYOR + " WHERE city_uuid = ?",
+                        "DELETE FROM " + TABLE_ELECTION + " WHERE city_uuid = ?",
+                        "DELETE FROM " + TABLE_VOTE + " WHERE city_uuid = ?"
                 };
 
                 for (String sql : queries) {
