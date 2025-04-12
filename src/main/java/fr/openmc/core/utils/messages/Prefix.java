@@ -19,8 +19,7 @@ public enum Prefix {
     QUESTS("<gradient:#FCD05C:#FAEDCB>ǫᴜᴇѕᴛѕ</gradient>"),
     HOME("<gradient:#80EF80:#9aec9a>ʜᴏᴍᴇ</gradient>"),
     FRIEND("<gradient:#68E98B:#0EFF6D>ꜰʀɪᴇɴᴅ</gradient>"),
-    // TODO: make bank prefix look nice
-    BANK("<gradient:#68E98B:#0EFF6D>bank</gradient>"),
+    BANK("<gradient:#084CFB:#ADB6FD>ʙᴀɴᴋ</gradient>"),
     ;
 
     @Getter private final String prefix;

@@ -184,10 +184,10 @@ public class BankManager {
 
         Player sender = Bukkit.getPlayer(player);
         if (sender != null)
-            MessagesManager.sendMessage(sender, Component.text("Vous venez de percevoir " + interest*100 + "% d'intérèt, soit " + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r" + EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(sender, Component.text("Vous venez de percevoir §d" + interest*100 + "% §rd'intérèt, soit §d" + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r" + EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
-    // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE
+    // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY BANKS SAVED IN THE DB
     public void applyAllPlayerInterests() {
         banks = loadAllBanks();
         for (UUID player : banks.keySet()) {
