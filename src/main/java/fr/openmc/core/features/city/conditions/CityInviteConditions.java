@@ -70,14 +70,14 @@ public class CityInviteConditions {
      * @param playerInvited le joueur sur lequel tester s'il peut etre inviter
      * @return booleen
      */
-    public static boolean canCityInviteAccept(City newCity, Player inviter, Player playerInvited) {
-        if (!invitations.containsKey(playerInvited)) {
-            MessagesManager.sendMessage(playerInvited, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
+    public static boolean canCityInviteAccept(City newCity, Player inviter, Player invitedPlayer) {
+        if (!invitations.containsKey(invitedPlayer)) {
+            MessagesManager.sendMessage(invitedPlayer, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (newCity == null) {
-            MessagesManager.sendMessage(inviter, Component.text("L'invitation a expiré"), Prefix.CITY, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(invitedPlayer, Component.text("L'invitation a expiré"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
