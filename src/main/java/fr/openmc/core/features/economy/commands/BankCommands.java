@@ -38,6 +38,6 @@ public class BankCommands {
     @Subcommand({ "balance", "bal" })
     void withdraw(Player player) {
         double balance = BankManager.getInstance().getBankBalance(player.getUniqueId());
-        MessagesManager.sendMessage(player, Component.text("Il y a §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(balance) + "§r" + EconomyManager.getEconomyIcon() + " dans ta banque"), Prefix.CITY, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("Il y a §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(balance) + "§r" + EconomyManager.getEconomyIcon() + " dans ta banque"), Prefix.BANK, MessageType.INFO, false);
     }
 }
