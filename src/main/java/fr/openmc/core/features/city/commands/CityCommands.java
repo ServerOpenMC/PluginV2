@@ -44,7 +44,7 @@ import static fr.openmc.core.features.city.CityManager.getCityType;
 
 @Command({"ville", "city"})
 public class CityCommands {
-    public static HashMap<Player, Player> invitations = new HashMap<>(); // Invité, Inviteur
+    public static HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     private static ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
@@ -89,9 +89,13 @@ public class CityCommands {
     @Subcommand("accept")
     @CommandPermission("omc.commands.city.accept")
     @Description("Accepter une invitation")
-    public static void acceptInvitation(Player player) {
-        //TODO: faire que le joueur peut avoir plusieurs invitations (pour eviter de bloquer le joueur concerné)
-        Player inviter = invitations.get(player);
+    public static void acceptInvitation(Player player, Player inviter) {
+        List<Player> playerInvitations = invitations.get(player);
+        if (!playerInvitations.contains(inviter)) {
+            MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        
         City newCity = CityManager.getPlayerCity(inviter.getUniqueId());
 
         if (!CityInviteConditions.canCityInviteAccept(newCity, inviter, player)) return;
@@ -143,9 +147,9 @@ public class CityCommands {
     @Subcommand("deny")
     @CommandPermission("omc.commands.city.deny")
     @Description("Refuser une invitation")
-    public static void denyInvitation(Player player) {
-        if (!CityInviteConditions.canCityInviteDeny(player)) return;
-        Player inviter = invitations.get(player);
+    public static void denyInvitation(Player player, Player inviter) {
+        if (!CityInviteConditions.canCityInviteDeny(player, inviter)) return;
+
         invitations.remove(player);
 
         if (inviter.isOnline()) {
@@ -191,7 +195,12 @@ public class CityCommands {
 
         if (!CityInviteConditions.canCityInvitePlayer(city, sender, target)) return;
 
-        invitations.put(target, sender);
+        List<Player> playerInvitations = invitations.get(target);
+        if (playerInvitations == null) {
+            invitations.put(target, List.of(sender));
+        } else {
+            playerInvitations.add(sender);
+        }
         MessagesManager.sendMessage(sender, Component.text("Tu as invité "+target.getName()+" dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
         MessagesManager.sendMessage(target,
                 Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getCityName() + "\n")
