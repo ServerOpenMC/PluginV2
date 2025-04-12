@@ -2,6 +2,7 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxListener;
+import fr.openmc.core.utils.interactions.ItemInteraction;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;
@@ -16,7 +17,8 @@ public class ListenersManager {
                 new MailboxListener(),
                 new DisableCreakings(),
                 new ChronometerListener(),
-                new CubeListener(OMCPlugin.getInstance())
+                new CubeListener(OMCPlugin.getInstance()),
+                new ItemInteraction()
         );
     }
 

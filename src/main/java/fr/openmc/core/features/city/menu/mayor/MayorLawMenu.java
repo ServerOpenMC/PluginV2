@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
+import fr.openmc.core.utils.interactions.ItemInteraction;
 import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -24,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -155,11 +157,30 @@ public class MayorLawMenu extends Menu {
                     itemMeta.itemName(Component.text("§7Changer son warp"));
                     itemMeta.lore(loreLawWarp);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
-                        System.out.println("input from user");
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
-                    }
-                    // le bail de donner un coffre et tt
+//                    if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+//                        System.out.println("input from user");
+//                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
+//                    }
+                    List<Component> loreItemInterraction = List.of(
+                            Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §1Warp")
+                    );
+                    ItemStack itemToGive = new ItemStack(Material.STICK);
+                    ItemMeta itemMeta = itemToGive.getItemMeta();
+                    itemMeta.displayName(Component.text("§7Séléction du §1Warp"));
+                    itemMeta.lore(loreItemInterraction);
+                    itemToGive.setItemMeta(itemMeta);
+                    ItemInteraction.runLocationInteraction(
+                            player,
+                            itemToGive,
+                            "mayor:wait-set-warp",
+                            20,
+                            "§7Vous avez 300s pour séléctionner votre point de spawn",
+                            "§7Vous n'avez pas eu le temps de poser votre Warp",
+                            location -> {
+                                // check si coord est dans ville CityManager.getCityFromChunk? get Chunk from 3 coord
+                                System.out.println(location.getX() + " " + location.getY() + " " + location.getZ());
+                            }
+                    );
                 });
             };
 

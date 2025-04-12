@@ -162,6 +162,25 @@ public class ItemUtils {
         }
     }
 
+    public static void removeItemsFromInventory(Player player, ItemStack item, int quantity) {
+        ItemStack[] contents = player.getInventory().getContents();
+        int remaining = quantity;
+
+        for (int i = 0; i < contents.length && remaining > 0; i++) {
+            ItemStack stack = contents[i];
+            if (stack != null && stack == item) {
+                int stackAmount = stack.getAmount();
+                if (stackAmount <= remaining) {
+                    player.getInventory().setItem(i, null);
+                    remaining -= stackAmount;
+                } else {
+                    stack.setAmount(stackAmount - remaining);
+                    remaining = 0;
+                }
+            }
+        }
+    }
+
     /**
      * Donner le Type de Panneau en fonction du biome ou il se trouve
      * @param player Joueur pour acceder au biome ou il est
