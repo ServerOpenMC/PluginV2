@@ -4,11 +4,19 @@ import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.menu.ChestMenu;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -347,6 +355,47 @@ public class City {
                     Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, balance, balance + diff));
                 });
         setBalance(balance+diff);
+    }
+
+    /**
+     * Adds money to the city bank and removes it from {@link Player}
+     * @param player The player depositing into the bank
+     * @param input The input string to get the money value
+     */
+    public void depositCityBank(Player player, String input) {
+        if (InputUtils.isInputMoney(input)) {
+            double moneyDeposit = InputUtils.convertToMoneyValue(input);
+
+            if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
+                updateBalance(moneyDeposit);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            } else {
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+        }
+    }
+
+    /**
+     * Removes money from the city bank and add it to {@link Player}
+     * @param player The player withdrawing from the bank
+     * @param input The input string to get the money value
+     */
+    public void withdrawCityBank(Player player, String input) {
+        if (InputUtils.isInputMoney(input)) {
+            double moneyDeposit = InputUtils.convertToMoneyValue(input);
+
+            if (getBalance() < moneyDeposit) {
+                MessagesManager.sendMessage(player, Component.text("Ta ville n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
+            } else {
+                updateBalance(moneyDeposit * -1);
+                EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
+                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+            }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+        }
     }
 
     /**
