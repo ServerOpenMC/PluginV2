@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -208,6 +209,7 @@ public class BankManager {
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
             applyAllPlayerInterests();
+            CityManager.applyAllCityInterests();
             OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
             updateInterestTimer();
 

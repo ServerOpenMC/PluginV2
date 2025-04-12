@@ -2,6 +2,7 @@ package fr.openmc.core.features.economy.commands;
 
 import org.bukkit.entity.Player;
 
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.menu.PersonalBankMenu;
@@ -43,11 +44,12 @@ public class BankCommands {
     }
 
     @Subcommand("admin interest apply")
-    @Description("Distribue les intérèts à tout les joueurs")
+    @Description("Distribue les intérèts à tout les joueurs et a toute les villes")
     @CommandPermission("omc.admins.commands.bank.interest.apply")
     void applyInterest(Player player) {
         MessagesManager.sendMessage(player, Component.text("Distribution des intérèts en cours..."), Prefix.BANK, MessageType.INFO, false);
         BankManager.getInstance().applyAllPlayerInterests();
+        CityManager.applyAllCityInterests();
         MessagesManager.sendMessage(player, Component.text("Distribution des intérèts réussie."), Prefix.BANK, MessageType.SUCCESS, false);
     }
 }
