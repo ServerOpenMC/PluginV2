@@ -30,7 +30,7 @@ public class City {
     private final String cityUUID;
     private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
     private Set<UUID> members = new HashSet<>();
-    private Double balance;
+    private Double balance = Double.valueOf(0); // set default value cause if its null, error in updateBalance
     private String name;
     private Integer chestPages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
