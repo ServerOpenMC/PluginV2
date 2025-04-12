@@ -26,7 +26,9 @@ public class BreakDiamondQuest extends Quest implements Listener {
 
     @EventHandler
     public void onPlayerBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType() == Material.DIAMOND_ORE) {
+        if (event.getBlock().getType().equals(Material.DIAMOND_ORE)
+                || event.getBlock().getType().equals(Material.DEEPSLATE_DIAMOND_ORE)
+        ) {
             this.incrementProgress(event.getPlayer().getUniqueId());
         }
     }
