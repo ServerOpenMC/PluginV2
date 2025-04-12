@@ -1,6 +1,9 @@
 package fr.openmc.core.features.city.menu;
 
 import java.util.List;
+
+import static fr.openmc.core.features.city.commands.CityCommands.invitations;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +63,15 @@ public class InvitationsMenu extends PaginatedMenu {
 
         for (Player inviter : invitations) {
             City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
-            assert inviterCity != null;
+
+            if (inviterCity == null) {
+                invitations.remove(inviter);
+                if (invitations.size() == 0) {
+                    CityCommands.invitations.remove(player);
+                }
+                return getItems();
+            }
+
             Component invitationName = Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName());
             
             items.add(new ItemBuilder(this, Material.PAPER, itemMeta -> {
