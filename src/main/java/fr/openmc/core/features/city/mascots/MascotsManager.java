@@ -171,11 +171,7 @@ public class MascotsManager {
             if (city_uuid!=null){
                 if (MascotUtils.mascotsContains(city_uuid)){
                     int level = MascotUtils.getMascotLevel(city_uuid);
-                    if (MascotUtils.getMascotState(city_uuid)){
-                        for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
-                            player.addPotionEffect(potionEffect);
-                        }
-                    } else {
+                    if (!MascotUtils.getMascotState(city_uuid)){
                         for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getMalus()){
                             player.addPotionEffect(potionEffect);
                         }
