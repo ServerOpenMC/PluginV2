@@ -12,7 +12,7 @@ public class QuestBuilder {
     private final ItemStack icon;
     private final List<QuestTier> tiers = new ArrayList<>();
     private int currentTierTarget;
-    private QuestReward currentTierReward;
+    private List<QuestReward> currentTierRewards;
     private String currentTierDescription;
     private final List<QuestStep> currentTierSteps = new ArrayList<>();
     private boolean currentTierRequireSteps = false;
@@ -24,13 +24,13 @@ public class QuestBuilder {
     }
 
 
-    public QuestBuilder tier(int target, QuestReward reward, String description) {
+    public QuestBuilder tier(int target, String description, QuestReward... rewards) {
         if (currentTierDescription != null) {
             finishTier();
         }
 
         this.currentTierTarget = target;
-        this.currentTierReward = reward;
+        this.currentTierRewards = List.of(rewards);
         this.currentTierDescription = description;
         this.currentTierSteps.clear();
         this.currentTierRequireSteps = false;
@@ -56,8 +56,7 @@ public class QuestBuilder {
         if (currentTierDescription != null) {
             QuestTier tier = new QuestTier(
                     currentTierTarget,
-                    currentTierReward,
-                    currentTierDescription,
+                    new ArrayList<>(currentTierRewards),
                     new ArrayList<>(currentTierSteps),
                     currentTierRequireSteps
             );

@@ -1,13 +1,18 @@
 package fr.openmc.core.features.quests.objects;
 
+import fr.openmc.core.features.quests.rewards.QuestReward;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,123 +21,205 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 @Getter
 public class Quest {
 
     private final String name;
     private final String baseDescription;
     private final ItemStack icon;
+    private final boolean isLargeActionBar;
     private final List<QuestTier> tiers = new ArrayList<>();
     private final Map<UUID, Integer> progress = new ConcurrentHashMap<>();
     private final Map<UUID, Boolean> progressLock = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> currentTier = new ConcurrentHashMap<>();
     private final Map<UUID, Set<Integer>> completedTiers = new ConcurrentHashMap<>();
 
+    /**
+     * Constructor for Quest.
+     *
+     * @param name            The name of the quest
+     * @param baseDescription The base description of the quest
+     * @param icon            The icon representing the quest - ItemStack
+     */
     public Quest(String name, String baseDescription, ItemStack icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = icon;
+        this.isLargeActionBar = false;
     }
 
+    /**
+     * Constructor for Quest.
+     *
+     * @param name            The name of the quest
+     * @param baseDescription The base description of the quest
+     * @param icon            The icon representing the quest - Material
+     */
+    public Quest(String name, String baseDescription, Material icon) {
+        this.name = name;
+        this.baseDescription = baseDescription;
+        this.icon = new ItemStack(icon);
+        this.isLargeActionBar = false;
+    }
+
+    /**
+     * Constructor for Quest.
+     *
+     * @param name            The name of the quest
+     * @param baseDescription The base description of the quest
+     * @param icon            The icon representing the quest - ItemStack
+     * @param isLargeActionBar If true, the quest will be displayed in large action bar
+     */
+    public Quest(String name, String baseDescription, ItemStack icon, boolean isLargeActionBar) {
+        this.name = name;
+        this.baseDescription = baseDescription;
+        this.icon = icon;
+        this.isLargeActionBar = isLargeActionBar;
+    }
+
+    /**
+     * Constructor for Quest.
+     *
+     * @param name            The name of the quest
+     * @param baseDescription The base description of the quest
+     * @param icon            The icon representing the quest - Material
+     * @param isLargeActionBar If true, the quest will be displayed in large action bar
+     */
+    public Quest(String name, String baseDescription, Material icon, boolean isLargeActionBar) {
+        this.name = name;
+        this.baseDescription = baseDescription;
+        this.icon = new ItemStack(icon);
+        this.isLargeActionBar = isLargeActionBar;
+    }
+
+    /**
+     * Add a tier to the quest.
+     * @param tier The tier to add
+     */
     public void addTier(QuestTier tier) {
         this.tiers.add(tier);
     }
 
+    /**
+     * Add multiple tiers to the quest.
+     * @param tiers The tiers to add
+     */
+    public void addTiers(QuestTier... tiers) {
+        Collections.addAll(this.tiers, tiers);
+    }
+
+    /**
+     * Check if the quest is fully completed for a player.
+     *
+     * @param playerUUID The UUID of the player
+     * @return true if the quest is fully completed, false otherwise
+     */
     public boolean isFullyCompleted(UUID playerUUID) {
         int playerTier = this.currentTier.getOrDefault(playerUUID, 0);
         return playerTier >= this.tiers.size();
     }
 
+    /**
+     * Get the current progress of the quest for a player.
+     *
+     * @param playerUUID The UUID of the player
+     * @return the current progress of the quest for the player, or 0 if not found
+     */
     public int getProgress(UUID playerUUID) {
         return this.progress.getOrDefault(playerUUID, 0);
     }
 
+    /**
+     * Get the current tier index of the quest for a player.
+     *
+     * @param playerUUID The UUID of the player
+     * @return the current tier index of the quest for the player, or 0 if not found
+     */
     public int getCurrentTierIndex(UUID playerUUID) {
         int tierIndex = this.currentTier.getOrDefault(playerUUID, 0);
         return Math.min(tierIndex, this.tiers.size());
     }
 
+    /**
+     * Get the current tier of the quest for a player.
+     *
+     * @param playerUUID The UUID of the player
+     * @return the current tier of the quest for the player, or null if not found
+     */
     public QuestTier getCurrentTier(UUID playerUUID) {
         int tierIndex = this.getCurrentTierIndex(playerUUID);
         return tierIndex < this.tiers.size() ? this.tiers.get(tierIndex) : null;
     }
 
+    /**
+     * Get the current target of the quest for a player.
+     *
+     * @param playerUUID The UUID of the player
+     * @return the current target of the quest for the player, or 0 if not found
+     */
     public int getCurrentTarget(UUID playerUUID) {
         QuestTier tier = this.getCurrentTier(playerUUID);
-        return tier != null ? tier.target() : 0;
+        return tier != null ? tier.getTarget() : 0;
     }
 
-    public String getDescription() {
-        StringBuilder description = new StringBuilder(this.baseDescription + "\n");
-
-        for(int i = 0; i < this.tiers.size(); ++i) {
-            QuestTier tier = this.tiers.get(i);
-            description.append("§7Palier ").append(i + 1).append(": ").append(tier.description()).append("\n");
-
-            List<QuestStep> steps = tier.getSteps();
-            if (!steps.isEmpty()) {
-                for (int j = 0; j < steps.size(); j++) {
-                    QuestStep step = steps.get(j);
-                    description.append("  §8▶ §7Étape ").append(j + 1).append(": ").append(step.getDescription()).append("\n");
-                }
-            }
-        }
-
-        return description.toString();
+    /**
+     * Get the next tier index of the quest for a player.
+     *
+     * @param playerUUID The UUID of the player
+     * @return the next tier index of the quest for the player, or 0 if not found
+     */
+    public int getNextTierIndex(UUID playerUUID) {
+        int tierIndex = this.getCurrentTierIndex(playerUUID);
+        return Math.min(tierIndex + 1, this.tiers.size());
     }
 
-    public String getPlayerDescription(UUID playerUUID) {
-        StringBuilder description = new StringBuilder(this.baseDescription + "\n");
-
-        int currentTierIndex = getCurrentTierIndex(playerUUID);
-        Set<Integer> completedTiers = this.completedTiers.getOrDefault(playerUUID, new HashSet<>());
-
-        for(int i = 0; i < this.tiers.size(); ++i) {
-            QuestTier tier = this.tiers.get(i);
-            String tierPrefix = i < currentTierIndex ? "§a✔ " :
-                    (i == currentTierIndex ? "§e➤ " : "§8■ ");
-
-            description.append(tierPrefix).append("§7Palier ").append(i + 1).append(": ");
-            description.append(tier.description());
-
-            if (i == currentTierIndex) {
-                int playerProgress = getProgress(playerUUID);
-                description.append(" §8(").append(playerProgress).append("/").append(tier.target()).append(")");
-            }
-
-            description.append("\n");
-
-            List<QuestStep> steps = tier.getSteps();
-            if (!steps.isEmpty()) {
-                for (int j = 0; j < steps.size(); j++) {
-                    QuestStep step = steps.get(j);
-                    String stepPrefix = "  §8▶ ";
-
-                    if (i == currentTierIndex) {
-                        boolean completed = step.isCompleted(playerUUID);
-                        stepPrefix = completed ? "  §a✓ " : "  §e→ ";
-
-                        description.append(stepPrefix).append("§7Étape ").append(j + 1).append(": ");
-                        description.append(step.getDescription());
-
-                        int stepProgress = step.getProgress(playerUUID);
-                        description.append(" §8(").append(stepProgress).append("/").append(step.getTarget()).append(")");
-                    } else if (i < currentTierIndex) {
-                        description.append("  §a✓ §7Étape ").append(j + 1).append(": ");
-                        description.append(step.getDescription());
-                    } else {
-                        description.append(stepPrefix).append("§8Étape ").append(j + 1).append(": ");
-                        description.append(step.getDescription());
-                    }
-
-                    description.append("\n");
-                }
-            }
-        }
-
-        return description.toString();
+    /**
+     * Get the next tier target of the quest for a player.
+     *
+     * @param playerUUID The UUID of the player
+     * @return the next tier target of the quest for the player, or 0 if not found
+     */
+    public int getNextTierTarget(UUID playerUUID) {
+        int nextTierIndex = this.getNextTierIndex(playerUUID);
+        return nextTierIndex < this.tiers.size() ? this.tiers.get(nextTierIndex).getTarget() : 0;
     }
 
+    /**
+     * Get the description of the quest for a player.
+     * <p>
+     * The description can contain the placeholder {target} which will be replaced by the current target number.
+     * And the placeholder {s} which will be replaced by "s" if the current target is greater than 1.
+     * @param playerUUID The UUID of the player
+     * @return the description of the quest for the player
+     */
+    public String getDescription(UUID playerUUID) {
+        return this.baseDescription
+                .replace("{target}", String.valueOf(this.getCurrentTarget(playerUUID)))
+                .replace("{s}", this.getCurrentTarget(playerUUID) > 1 ? "s" : "");
+    }
+
+    /**
+     * Get the next tier description of the quest for a player.
+     * <p>
+     * The description can contain the placeholder {target} which will be replaced by the next tier target number.
+     * And the placeholder {s} which will be replaced by "s" if the next tier target is greater than 1.
+     * @param playerUUID The UUID of the player
+     * @return the next tier description of the quest for the player
+     */
+    public String getNextTierDescription(UUID playerUUID) {
+        return this.baseDescription
+                .replace("{target}", String.valueOf(this.getNextTierTarget(playerUUID)))
+                .replace("{s}", this.getNextTierTarget(playerUUID) > 1 ? "s" : "");
+    }
+
+    /**
+     * Complete the current tier for a player.
+     * <p>
+     * This method will give the rewards of the tier to the player and update the current tier.
+     * @param uuid the UUID of the player
+     * @param tierIndex the index of the tier to complete
+     */
     public void completeTier(UUID uuid, int tierIndex) {
         Set<Integer> playerCompletedTiers = this.completedTiers.computeIfAbsent(uuid, k -> new HashSet<>());
         if (!playerCompletedTiers.contains(tierIndex) && tierIndex < this.tiers.size() && !this.isFullyCompleted(uuid)) {
@@ -141,7 +228,9 @@ public class Quest {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null && player.isOnline()) {
                 QuestTier tier = this.tiers.get(tierIndex);
-                tier.reward().giveReward(player);
+                for (QuestReward reward : tier.getRewards()) {
+                    reward.giveReward(player);
+                }
                 boolean isLastTier = tierIndex == this.tiers.size() - 1;
                 Component titleMain = Component.text(
                                 "✦ ", TextColor.color(15770808))
@@ -166,6 +255,13 @@ public class Quest {
         }
     }
 
+    /**
+     * Complete a specific step of the current tier for a player.
+     * <p>
+     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * @param playerUUID the UUID of the player
+     * @param stepIndex the index of the step to complete
+     */
     public void completeStep(UUID playerUUID, int stepIndex) {
         QuestTier currentTier = getCurrentTier(playerUUID);
         if (currentTier == null || stepIndex >= currentTier.getSteps().size()) {
@@ -195,6 +291,13 @@ public class Quest {
         }
     }
 
+    /**
+     * Check if the current tier is completed for a player.
+     * <p>
+     * This method will check if the current progress is greater than or equal to the target of the current tier.
+     * If so, it will complete the tier.
+     * @param playerUUID the UUID of the player
+     */
     private void checkTierCompletion(UUID playerUUID) {
         int playerTier = this.currentTier.getOrDefault(playerUUID, 0);
         if (playerTier < this.tiers.size()) {
@@ -212,11 +315,30 @@ public class Quest {
         }
     }
 
+    /**
+     * Increment the progress of the quest for a player.
+     * <p>
+     * This method will check if the quest is fully completed and if not, it will increment the progress.
+     * @param playerUUID The UUID of the player
+     */
+    public void incrementProgress(UUID playerUUID) {
+        incrementProgress(playerUUID, 1);
+    }
+
+    /**
+     * Increment the progress of the quest for a player by a specified amount.
+     * <p>
+     * This method will check if the quest is fully completed and if not, it will increment the progress.
+     * @param playerUUID The UUID of the player
+     * @param amount The amount to increment the progress by
+     */
     public void incrementProgress(UUID playerUUID, int amount) {
         if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
             this.progressLock.put(playerUUID, true);
 
             try {
+                Player player = Bukkit.getPlayer(playerUUID);
+                if (player != null && player.getGameMode() != GameMode.SURVIVAL) return;
                 int currentProgress = this.progress.getOrDefault(playerUUID, 0);
                 int newProgress = currentProgress + amount;
                 int currentTarget = this.getCurrentTarget(playerUUID);
@@ -227,6 +349,20 @@ public class Quest {
                 if (currentProgress < currentTarget) {
                     this.progress.put(playerUUID, newProgress);
                     this.checkTierCompletion(playerUUID);
+
+                    if (player != null && player.isOnline()) {
+                        if (this.isLargeActionBar && newProgress % 50 != 0) return;
+                        Component actionBar = Component.text()
+                                .append(MiniMessage.miniMessage().deserialize(Prefix.QUEST.getPrefix()))
+                                .append(Component.text(" » ", NamedTextColor.DARK_GRAY))
+                                .append(Component.text("Progression de la quête ", NamedTextColor.GRAY))
+                                .append(Component.text(this.name, NamedTextColor.WHITE))
+                                .append(Component.text(" : ", NamedTextColor.GRAY))
+                                .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
+                                .build();
+
+                        player.sendActionBar(actionBar);
+                    }
                 }
             } finally {
                 this.progressLock.put(playerUUID, false);
@@ -234,6 +370,25 @@ public class Quest {
         }
     }
 
+    /**
+     * Increment the progress of a specific step of the current tier for a player.
+     * <p>
+     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * @param playerUUID the UUID of the player
+     * @param stepIndex the index of the step to increment
+     */
+    public void incrementStepProgress(UUID playerUUID, int stepIndex) {
+        incrementStepProgress(playerUUID, stepIndex, 1);
+    }
+
+    /**
+     * Increment the progress of a specific step of the current tier for a player by a specified amount.
+     * <p>
+     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * @param playerUUID the UUID of the player
+     * @param stepIndex the index of the step to increment
+     * @param amount The amount to increment the progress by
+     */
     public void incrementStepProgress(UUID playerUUID, int stepIndex, int amount) {
         QuestTier tier = getCurrentTier(playerUUID);
         if (tier != null && stepIndex >= 0 && stepIndex < tier.getSteps().size()) {
@@ -245,6 +400,14 @@ public class Quest {
         }
     }
 
+    /**
+     * Increment the progress of a specific step of the current tier for a player by a specified amount.
+     * <p>
+     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * @param playerUUID the UUID of the player
+     * @param stepDescription the description of the step to increment
+     * @param amount The amount to increment the progress by
+     */
     public void incrementStepProgressByDescription(UUID playerUUID, String stepDescription, int amount) {
         QuestTier tier = getCurrentTier(playerUUID);
         if (tier != null) {
@@ -256,20 +419,6 @@ public class Quest {
                     if (step.isCompleted(playerUUID)) {
                         completeStep(playerUUID, i);
                     }
-                    break;
-                }
-            }
-        }
-    }
-
-
-    public void incrementStepProgress(UUID playerUUID, int amount) {
-        QuestTier tier = getCurrentTier(playerUUID);
-        if (tier != null && !tier.getSteps().isEmpty()) {
-            for (int i = 0; i < tier.getSteps().size(); i++) {
-                QuestStep step = tier.getSteps().get(i);
-                if (!step.isCompleted(playerUUID)) {
-                    incrementStepProgress(playerUUID, i, amount);
                     break;
                 }
             }

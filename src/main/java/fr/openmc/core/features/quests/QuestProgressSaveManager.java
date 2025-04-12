@@ -12,6 +12,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+/**
+ * Manages the saving and loading of quest progress for players.
+ */
 public class QuestProgressSaveManager {
 
     private static final String SAVE_FOLDER = "quests";
@@ -19,6 +22,11 @@ public class QuestProgressSaveManager {
     private final QuestsManager questsManager;
     final Map<UUID, Map<String, Object>> playerQuestProgress = new ConcurrentHashMap<>();
 
+    /**
+     * Constructor for QuestProgressSaveManager.
+     * @param plugin the OMCPlugin instance
+     * @param questsManager the QuestsManager instance
+     */
     public QuestProgressSaveManager(OMCPlugin plugin, QuestsManager questsManager) {
         this.plugin = plugin;
         this.questsManager = questsManager;
@@ -28,6 +36,10 @@ public class QuestProgressSaveManager {
         }
     }
 
+    /**
+     * Loads the quest progress for a specific player.
+     * @param playerUUID the UUID of the player
+     */
     public void loadPlayerQuestProgress(UUID playerUUID) {
         File playerFile = this.getPlayerProgressFile(playerUUID);
         if (playerFile.exists()) {
@@ -68,6 +80,10 @@ public class QuestProgressSaveManager {
         }
     }
 
+    /**
+     * Saves the quest progress for a specific player.
+     * @param playerUUID the UUID of the player
+     */
     public void savePlayerQuestProgress(UUID playerUUID) {
         File playerFile = this.getPlayerProgressFile(playerUUID);
         YamlConfiguration config = new YamlConfiguration();
@@ -102,16 +118,26 @@ public class QuestProgressSaveManager {
         }
     }
 
+    /**
+     * Saves the quest progress for all players currently online.
+     */
     public void saveAllQuestProgress() {
         this.plugin.getServer().getOnlinePlayers().forEach((player) ->
                 this.savePlayerQuestProgress(player.getUniqueId())
         );
     }
 
+    /**
+     * Deletes the quest progress file for a specific player.
+     * @param playerUUID the UUID of the player
+     */
     private File getPlayerProgressFile(UUID playerUUID) {
         return new File(this.plugin.getDataFolder(), SAVE_FOLDER + File.separator + playerUUID + ".yml");
     }
 
+    /**
+     * Loads the quest progress for all players.
+     */
     public void loadAllQuestProgress() {
         File saveFolder = new File(this.plugin.getDataFolder(), SAVE_FOLDER);
         File[] playerFiles = saveFolder.listFiles((dir, name) -> name.endsWith(".yml"));

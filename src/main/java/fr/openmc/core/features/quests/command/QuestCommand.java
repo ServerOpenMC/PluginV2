@@ -1,6 +1,5 @@
 package fr.openmc.core.features.quests.command;
 
-import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.menus.QuestsMenu;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;

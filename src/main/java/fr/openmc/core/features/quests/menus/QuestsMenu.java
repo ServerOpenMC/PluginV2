@@ -16,7 +16,6 @@ import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -99,7 +98,6 @@ public class QuestsMenu extends Menu {
         for(Map.Entry<Integer, ItemStack> entry : content.entrySet()) {
             this.getInventory().setItem(entry.getKey(), entry.getValue());
         }
-
     }
 
     private void refresh() {
@@ -139,70 +137,77 @@ public class QuestsMenu extends Menu {
         meta.displayName(Component.text(nameIcon + " §e" + quest.getName() + " " + tierDisplay));
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
-        lore.add(Component.text("§7" + quest.getBaseDescription()));
+        lore.add(Component.text("§7" + quest.getDescription(playerUUID)));
         lore.add(bar);
         if (currentTier != null) {
-            String rewardDesc = "";
-            String rewardIcon = "§e⭐ ";
-            if (currentTier.reward() instanceof QuestMoneyReward questMoneyReward) {
-                rewardDesc = "§a" + questMoneyReward.getAmount() + "$";
-            } else {
-                QuestReward progressBar = currentTier.reward();
-                if (progressBar instanceof QuestItemReward questItemReward) {
-                    ItemStack rewardItem = new ItemStack(questItemReward.getMaterial());
-                    MiniMessage miniMessage = MiniMessage.miniMessage();
-                    Component defaultName = miniMessage.deserialize("<lang:" + rewardItem.getType().translationKey() + ">");
-                    rewardDesc = "§fx" + questItemReward.getAmount() + " §b" + PlainTextComponentSerializer.plainText().serialize(defaultName);
-                }
-            }
+//            StringBuilder rewardDesc = new StringBuilder();
+//            String rewardIcon = "§e⭐ ";
+//            for (QuestReward reward : currentTier.getRewards()) {
+//                if (reward instanceof QuestItemReward itemReward) {
+//                    ItemStack rewardItem = itemReward.getItemStack();
+//                    String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
+//                    rewardDesc.append("§7* ").append(itemName).append(" x").append(rewardItem.getAmount()).append("\n");
+//                } else if (reward instanceof QuestMoneyReward moneyReward) {
+//                    rewardDesc.append("§7* ").append(moneyReward.getAmount()).append("§6$");
+//                }
+//            }
 
-            lore.add(Component.text(rewardIcon + "§6Récompense: " + rewardDesc));
-            lore.add(Component.text(""));
+            if (currentTier != null) {
+                lore.add(Component.text("§6➤ §eRécompenses:"));
+                for (QuestReward reward : currentTier.getRewards()) {
+                    if (reward instanceof QuestItemReward itemReward) {
+                        ItemStack rewardItem = itemReward.getItemStack();
+                        String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
+                        lore.add(Component.text("  §7- §f" + itemName + " §7x" + rewardItem.getAmount()));
+                    } else if (reward instanceof QuestMoneyReward moneyReward) {
+                        lore.add(Component.text("  §7- §6" + moneyReward.getAmount() + "$"));
+                    }
+                }
+                lore.add(Component.text(""));
+            }
         }
 
         if (isCompleted) {
             lore.add(Component.text("  §aQuête complétée !  "));
         } else if (currentTier != null) {
             int progressPercent = (int) Math.min(100.0F, Math.ceil((double) progress / target * 100.0F));
-            int barLength = 20;
+            int barLength = 26;
             int filledLength = (int)((double)barLength * ((double)progress / (double)target));
             StringBuilder progressBar = new StringBuilder();
+            progressBar.append("§8[§m");
 
             for(int i = 0; i < barLength; ++i) {
-                progressBar.append(i < filledLength ? "§a■" : "§7□");
+                progressBar.append(i < filledLength ? "§a§m " : "§8§m ");
             }
+
+            progressBar.append("§m§8]");
 
             lore.add(Component.text("§fProgrès: §e" + progress + "§6/§e" + target + " §7(" + progressPercent + "%)"));
             lore.add(Component.text(progressBar.toString()));
             lore.add(Component.text(""));
             lore.add(Component.text("§6➤ §eObjectif actuel:"));
-            lore.add(Component.text("  §f" + currentTier.description()));
+            lore.add(Component.text("  §f" + quest.getDescription(playerUUID)));
 
-            // Display steps if the tier has steps
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
                 lore.add(Component.text(""));
                 lore.add(Component.text("§6◆ §eAvancement:"));
 
                 for (int i = 0; i < currentTier.getSteps().size(); i++) {
                     QuestStep step = currentTier.getSteps().get(i);
-                    int stepProgress = step.getProgress(playerUUID);
                     boolean stepCompleted = step.isCompleted(playerUUID);
 
-                    // Nouveau format d'affichage avec symboles de complétion
                     String stepIcon = stepCompleted ? "§a✅" : "§c❌";
                     String stepDescription = step.getDescription();
-                    // Formater correctement avec le nom de l'étape et son statut
                     lore.add(Component.text("  §7* " + stepDescription + " " + stepIcon));
                 }
             }
 
             if (currentTierIndex < tiersTotal - 1) {
                 QuestTier nextTier = quest.getTiers().get(currentTierIndex + 1);
-                lore.add(Component.text(""));
+                lore.add(bar);
                 lore.add(Component.text("§7◇ §8Prochain tier:"));
-                lore.add(Component.text("  §8" + nextTier.description()));
+                lore.add(Component.text("  §8" + quest.getNextTierDescription(playerUUID)));
 
-                // Display next tier steps if they exist
                 if (nextTier.getSteps() != null && !nextTier.getSteps().isEmpty()) {
                     for (int i = 0; i < nextTier.getSteps().size(); i++) {
                         QuestStep step = nextTier.getSteps().get(i);

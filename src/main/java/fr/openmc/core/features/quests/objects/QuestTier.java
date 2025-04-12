@@ -7,49 +7,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Represents a tier in a quest.
+ * A tier can have a target progress, rewards, and steps.
+ */
 @Getter
 public class QuestTier {
     private final int target;
-    private final QuestReward reward;
-    private final String description;
+    private final List<QuestReward> rewards;
     private final List<QuestStep> steps;
     private final boolean requireStepsCompletion;
-
 
     /**
      * Creates a new quest tier without steps.
      *
      * @param target The target progress to complete this tier
      * @param reward The reward for completing this tier
-     * @param description The description of this tier
      */
-    public QuestTier(int target, QuestReward reward, String description) {
-        this(target, reward, description, new ArrayList<>(), false);
+    public QuestTier(int target, QuestReward reward) {
+        this(target, List.of(reward), new ArrayList<>(), false);
+    }
+
+    /**
+     * Creates a new quest tier without steps, with multiple rewards.
+     *
+     * @param target The target progress to complete this tier
+     * @param rewards The reward for completing this tier
+     */
+    public QuestTier(int target, QuestReward... rewards) {
+        this(target, List.of(rewards), new ArrayList<>(), false);
     }
 
     /**
      * Creates a new quest tier with steps.
      *
      * @param target The target progress to complete this tier
-     * @param reward The reward for completing this tier
-     * @param description The description of this tier
+     * @param rewards The reward for completing this tier
      * @param steps The steps required for this tier
      * @param requireStepsCompletion If true, all steps must be completed to complete the tier
      */
-    public QuestTier(int target, QuestReward reward, String description, List<QuestStep> steps, boolean requireStepsCompletion) {
+    public QuestTier(int target, List<QuestReward> rewards, List<QuestStep> steps, boolean requireStepsCompletion) {
         this.target = target;
-        this.reward = reward;
-        this.description = description;
+        this.rewards = rewards;
         this.steps = steps;
         this.requireStepsCompletion = requireStepsCompletion;
-    }
-
-    /**
-     * Gets the formatted description with the target value.
-     * @return The formatted description
-     */
-    public String description() {
-        return this.description.replace("{number}", String.valueOf(this.target));
     }
 
     /**
@@ -58,22 +59,6 @@ public class QuestTier {
      */
     public int target() {
         return this.target;
-    }
-
-    /**
-     * Gets the reward for completing this tier.
-     * @return The reward for this tier
-     */
-    public QuestReward reward() {
-        return this.reward;
-    }
-
-    /**
-     * Adds a step to this tier.
-     * @param step The step to add
-     */
-    public void addStep(QuestStep step) {
-        this.steps.add(step);
     }
 
     /**
@@ -87,24 +72,5 @@ public class QuestTier {
         }
 
         return steps.stream().allMatch(step -> step.isCompleted(playerUUID));
-    }
-
-    /**
-     * Gets the current active step for a player.
-     * @param playerUUID The UUID of the player.
-     * @return The current step, or null if all steps are completed.
-     */
-    public QuestStep getCurrentStep(UUID playerUUID) {
-        if (steps.isEmpty()) {
-            return null;
-        }
-
-        for (QuestStep step : steps) {
-            if (!step.isCompleted(playerUUID)) {
-                return step;
-            }
-        }
-
-        return null;
     }
 }

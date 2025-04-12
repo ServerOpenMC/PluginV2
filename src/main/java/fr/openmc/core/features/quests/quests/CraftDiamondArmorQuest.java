@@ -14,20 +14,15 @@ import java.util.UUID;
 
 public class CraftDiamondArmorQuest extends Quest implements Listener {
 
-    private static final int HELMET_STEP = 0;
-    private static final int CHESTPLATE_STEP = 1;
-    private static final int LEGGINGS_STEP = 2;
-    private static final int BOOTS_STEP = 3;
-
     public CraftDiamondArmorQuest() {
         super(
                 "Armure précieuse",
-                "Fabriquez une armure complète en diamant",
+                "Fabriquer une armure complète en diamant",
                 new ItemStack(Material.DIAMOND_CHESTPLATE)
         );
 
-        Quest quest = new QuestBuilder("Armure précieuse", "Fabriquez une armure complète en diamant", new ItemStack(Material.DIAMOND_CHESTPLATE))
-                .tier(4, new QuestItemReward(Material.DIAMOND, 10), "Fabriquer une armure complète en diamant")
+        Quest quest = new QuestBuilder("Armure précieuse", "Fabriquer une armure complète en diamant", new ItemStack(Material.DIAMOND_CHESTPLATE))
+                .tier(4, "Fabriquer une armure complète en diamant",  new QuestItemReward(Material.DIAMOND, 10))
                 .step("Casque en diamant", 1)
                 .step("Plastron en diamant", 1)
                 .step("Pantalon en diamant", 1)
@@ -55,20 +50,20 @@ public class CraftDiamondArmorQuest extends Quest implements Listener {
 
         switch (craftedItem) {
             case DIAMOND_HELMET -> {
-                incrementStepProgress(playerUUID, HELMET_STEP, 1);
-                incrementProgress(playerUUID, 1);
+                this.incrementStepProgress(playerUUID, 0);
+                this.incrementProgress(playerUUID);
             }
             case DIAMOND_CHESTPLATE -> {
-                incrementStepProgress(playerUUID, CHESTPLATE_STEP, 1);
-                incrementProgress(playerUUID, 1);
+                this.incrementStepProgress(playerUUID, 1);
+                this.incrementProgress(playerUUID);
             }
             case DIAMOND_LEGGINGS -> {
-                incrementStepProgress(playerUUID, LEGGINGS_STEP, 1);
-                incrementProgress(playerUUID, 1);
+                this.incrementStepProgress(playerUUID, 2);
+                this.incrementProgress(playerUUID);
             }
             case DIAMOND_BOOTS -> {
-                incrementStepProgress(playerUUID, BOOTS_STEP, 1);
-                incrementProgress(playerUUID, 1);
+                this.incrementStepProgress(playerUUID, 3);
+                this.incrementProgress(playerUUID);
             }
         }
     }
