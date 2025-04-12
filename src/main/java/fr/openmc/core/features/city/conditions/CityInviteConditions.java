@@ -78,6 +78,9 @@ public class CityInviteConditions {
 
         if (newCity == null) {
             MessagesManager.sendMessage(invitedPlayer, Component.text("L'invitation a expiré"), Prefix.CITY, MessageType.ERROR, false);
+
+            List<Player> playerInvitations = CityCommands.invitations.get(invitedPlayer);
+            playerInvitations.remove(inviter);
             return false;
         }
 
