@@ -1,4 +1,4 @@
-package fr.openmc.core.utils;
+package fr.openmc.core.utils.api;
 
 import org.bukkit.Bukkit;
 

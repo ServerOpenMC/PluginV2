@@ -1,4 +1,4 @@
-package fr.openmc.core.utils;
+package fr.openmc.core.utils.api;
 
 import lombok.Getter;
 import net.luckperms.api.LuckPerms;

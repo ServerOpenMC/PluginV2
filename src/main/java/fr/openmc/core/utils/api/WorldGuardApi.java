@@ -1,4 +1,4 @@
-package fr.openmc.core.utils;
+package fr.openmc.core.utils.api;
 
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.WorldGuard;

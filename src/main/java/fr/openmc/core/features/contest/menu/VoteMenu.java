@@ -5,7 +5,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.api.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
