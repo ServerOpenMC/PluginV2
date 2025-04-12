@@ -33,18 +33,36 @@ public class QuestsMenu extends Menu {
     private static final ItemStack RIGHT_ARROW;
     private final int totalPages;
     private final QuestsManager questsManager;
+    private Player target;
 
     public QuestsMenu(Player player, int currentPage) {
         super(player);
         this.questsManager = QuestsManager.getInstance();
         this.currentPage = currentPage;
         this.totalPages = (int) Math.ceil(this.questsManager.getAllQuests().size() / 9.0F);
-        TITLE = "Quests (" + currentPage + "/" + this.totalPages + ")";
+        TITLE = "Quests (" + currentPage + 1 + "/" + this.totalPages + ")";
+        this.target = player;
+    }
+
+    public QuestsMenu(Player player, Player target, int currentPage) {
+        super(player);
+        this.questsManager = QuestsManager.getInstance();
+        this.currentPage = currentPage;
+        this.totalPages = (int) Math.ceil(this.questsManager.getAllQuests().size() / 9.0F);
+        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
+        this.target = target;
     }
 
     public QuestsMenu(Player player) {
         this(player, 0);
-        TITLE = "Quests";
+        this.target = player;
+        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
+    }
+
+    public QuestsMenu(Player player, Player target) {
+        this(player, 0);
+        this.target = target;
+        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
     }
 
     public @NotNull String getName() {
@@ -102,7 +120,7 @@ public class QuestsMenu extends Menu {
 
     private void refresh() {
         this.updateInventory();
-        (new QuestsMenu(this.getOwner(), this.currentPage)).open();
+        (new QuestsMenu(this.getOwner(), target, this.currentPage)).open();
     }
 
     private ItemStack createQuestItem(Quest quest) {
@@ -113,7 +131,7 @@ public class QuestsMenu extends Menu {
     }
 
     private void createItems(Quest quest, ItemStack item, ItemMeta meta) {
-        UUID playerUUID = this.getOwner().getUniqueId();
+        UUID playerUUID = this.target.getUniqueId();
         int currentTierIndex = quest.getCurrentTierIndex(playerUUID);
         int progress = quest.getProgress(playerUUID);
         int tiersTotal = quest.getTiers().size();
