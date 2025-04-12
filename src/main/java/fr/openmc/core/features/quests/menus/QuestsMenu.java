@@ -158,17 +158,6 @@ public class QuestsMenu extends Menu {
         lore.add(Component.text("§7" + quest.getDescription(playerUUID)));
         lore.add(bar);
         if (currentTier != null) {
-//            StringBuilder rewardDesc = new StringBuilder();
-//            String rewardIcon = "§e⭐ ";
-//            for (QuestReward reward : currentTier.getRewards()) {
-//                if (reward instanceof QuestItemReward itemReward) {
-//                    ItemStack rewardItem = itemReward.getItemStack();
-//                    String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
-//                    rewardDesc.append("§7* ").append(itemName).append(" x").append(rewardItem.getAmount()).append("\n");
-//                } else if (reward instanceof QuestMoneyReward moneyReward) {
-//                    rewardDesc.append("§7* ").append(moneyReward.getAmount()).append("§6$");
-//                }
-//            }
 
             if (currentTier != null) {
                 lore.add(Component.text("§6➤ §eRécompenses:"));
