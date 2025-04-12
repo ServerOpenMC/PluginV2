@@ -159,4 +159,24 @@ public class BankManager {
             }
         });
     }
+
+    // Interests calculated as proportion not percentage (eg: 0.015 = 1.5%)
+    public double calculatePlayerInterest(UUID player) {
+        return .015f;
+    }
+
+    public void applyPlayerInterest(UUID player) {
+        double interest = calculatePlayerInterest(player);
+        double amount = getBankBalance(player) * interest;
+        addBankBalance(player, amount);
+        MessagesManager.sendMessage(Bukkit.getPlayer(player), Component.text("Vous venez de percevoir " + interest*100 + "% d'intérèt, soit " + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r" + EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.SUCCESS, false);
+    }
+
+    // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE
+    public void applyAllPlayerInterests() {
+        banks = loadAllBanks();
+        for (UUID player : banks.keySet()) {
+            applyPlayerInterest(player);
+        }
+    }
 }
