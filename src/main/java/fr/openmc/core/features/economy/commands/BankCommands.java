@@ -13,6 +13,7 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({ "bank", "banque" })
 public class BankCommands {
@@ -39,5 +40,14 @@ public class BankCommands {
     void withdraw(Player player) {
         double balance = BankManager.getInstance().getBankBalance(player.getUniqueId());
         MessagesManager.sendMessage(player, Component.text("Il y a §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(balance) + "§r" + EconomyManager.getEconomyIcon() + " dans ta banque"), Prefix.BANK, MessageType.INFO, false);
+    }
+
+    @Subcommand("admin interest apply")
+    @Description("Distribue les intérèts à tout les joueurs")
+    @CommandPermission("omc.admins.commands.bank.interest.apply")
+    void applyInterest(Player player) {
+        MessagesManager.sendMessage(player, Component.text("Distribution des intérèts en cours..."), Prefix.BANK, MessageType.INFO, false);
+        BankManager.getInstance().applyAllPlayerInterests();
+        MessagesManager.sendMessage(player, Component.text("Distribution des intérèts réussie."), Prefix.BANK, MessageType.SUCCESS, false);
     }
 }
