@@ -26,11 +26,10 @@ public class MineAyweniteQuest extends Quest implements Listener {
 
     @EventHandler
     public void onPlayerBreakBlock(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        CustomBlock customBlock = CustomBlock.byAlreadyPlaced(block);
-        if (customBlock != null
-                && "omc_blocks:aywenite_ore".equals(customBlock.getNamespacedID())
-                || "omc_blocks:deepslate_aywenite_ore".equals(customBlock.getNamespacedID())
+        CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
+        if (customBlock != null && customBlock.getNamespacedID() != null &&
+                ("omc_blocks:aywenite_ore".equals(customBlock.getNamespacedID()) ||
+                "omc_blocks:deepslate_aywenite_ore".equals(customBlock.getNamespacedID()))
         ) {
             this.incrementProgress(event.getPlayer().getUniqueId());
         }
