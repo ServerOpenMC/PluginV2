@@ -130,11 +130,11 @@ public class BankManager {
             banks.put(player, Double.parseDouble("0"));
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
-                    PreparedStatement newStatement = connection.prepareStatement("INSERT INTO banks (player, balance) VALUES (?, 1)");
+                    PreparedStatement newStatement = connection.prepareStatement("INSERT INTO banks (player) VALUES (?)");
                     newStatement.setString(1, player.toString());
 
-                    statement.executeQuery();
-                    statement.close();
+                    newStatement.executeUpdate();
+                    newStatement.close();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
