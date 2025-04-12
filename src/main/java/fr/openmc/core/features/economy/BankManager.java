@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -35,6 +41,8 @@ public class BankManager {
         banks = loadAllBanks();
 
         CommandsManager.getHandler().register(new BankCommands());
+
+        updateInterestTimer();
     }
 
     public double getBankBalance(UUID player) {
@@ -173,7 +181,10 @@ public class BankManager {
         double interest = calculatePlayerInterest(player);
         double amount = getBankBalance(player) * interest;
         addBankBalance(player, amount);
-        MessagesManager.sendMessage(Bukkit.getPlayer(player), Component.text("Vous venez de percevoir " + interest*100 + "% d'intérèt, soit " + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r" + EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.SUCCESS, false);
+
+        Player sender = Bukkit.getPlayer(player);
+        if (sender != null)
+            MessagesManager.sendMessage(sender, Component.text("Vous venez de percevoir " + interest*100 + "% d'intérèt, soit " + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r" + EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE
@@ -182,5 +193,24 @@ public class BankManager {
         for (UUID player : banks.keySet()) {
             applyPlayerInterest(player);
         }
+    }
+
+    private void updateInterestTimer() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextMonday = now.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+        LocalDateTime nextThursday = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY));
+        LocalDateTime nextInterestUpdate = nextMonday.isBefore(nextThursday) ? nextMonday : nextThursday;
+        nextInterestUpdate = nextInterestUpdate.withHour(2).withMinute(2).withSecond(2);
+        
+        long secondsUntilUpdate = ChronoUnit.SECONDS.between(now, nextInterestUpdate);
+        long ticksUntilUpdate = secondsUntilUpdate * 20; // there are 20 ticks in a second
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
+            applyAllPlayerInterests();
+            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
+            updateInterestTimer();
+
+        }, ticksUntilUpdate);
     }
 }
