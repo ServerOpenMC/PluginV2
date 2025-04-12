@@ -81,6 +81,9 @@ public class CityInviteConditions {
 
             List<Player> playerInvitations = CityCommands.invitations.get(invitedPlayer);
             playerInvitations.remove(inviter);
+            if (playerInvitations.size() == 0) {
+                CityCommands.invitations.remove(invitedPlayer);
+            }
             return false;
         }
 
