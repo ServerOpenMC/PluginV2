@@ -160,9 +160,13 @@ public class BankManager {
         });
     }
 
-    // Interests calculated as proportion not percentage (eg: 0.015 = 1.5%)
+    // Interests calculated as proportion not percentage (eg: 0.03 = 3%)
     public double calculatePlayerInterest(UUID player) {
-        return .015f;
+        double interest = .03; // base interest is 3%
+
+        // TODO: link to other systems here by simply adding to the interest variable here
+        
+        return interest;
     }
 
     public void applyPlayerInterest(UUID player) {
