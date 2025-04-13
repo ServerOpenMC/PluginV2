@@ -30,7 +30,7 @@ public class City {
     private final String cityUUID;
     private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
     private Set<UUID> members = new HashSet<>();
-    private Double balance;
+    private Double balance = Double.valueOf(0); // set default value cause if its null, error in updateBalance
     private String name;
     private Integer chestPages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
@@ -655,5 +655,20 @@ public class City {
                 chestPages -= 1;
             }
         });
+    }
+
+    // Interests calculated as proportion not percentage (eg: 0.03 = 3%)
+    public double calculateCityInterest() {
+        double interest = .03; // base interest is 3%
+
+        // TODO: link to other systems here by simply adding to the interest variable here
+        
+        return interest;
+    }
+
+    public void applyCityInterest() {
+        double interest = calculateCityInterest();
+        double amount = getBalance() * interest;
+        updateBalance(amount);
     }
 }

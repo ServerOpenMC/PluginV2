@@ -63,7 +63,8 @@ public class PersonalBankMenu extends Menu {
             itemMeta.lore(List.of(
                 Component.text("§7Vous avez actuellement §d" +
                         EconomyManager.getInstance().getFormattedSimplifiedNumber(BankManager.getInstance().getBankBalance(player.getUniqueId())) + " ")
-                    .append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false))
+                    .append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                Component.text("§7Votre prochain intéret est de §b" + BankManager.getInstance().calculatePlayerInterest(player.getUniqueId())*100 + "%")
                 )
             );
         }));
