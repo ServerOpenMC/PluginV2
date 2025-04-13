@@ -166,7 +166,7 @@ public class MascotMenu extends Menu {
                     Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
                     if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)){
                         ItemUtils.removeItemsFromInventory(getOwner(), matAywenite, aywenite);
-                        upgradeMascots(city_uuid, mascots.getUniqueId());
+                        upgradeMascots(city_uuid);
                         MessagesManager.sendMessage(getOwner(), Component.text("Vous avez amélioré votre mascotte au §cNiveau " + MascotUtils.getMascotLevel(city_uuid)), Prefix.CITY, MessageType.ERROR, false);
                         getOwner().closeInventory();
                         return;

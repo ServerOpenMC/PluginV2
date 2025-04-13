@@ -211,15 +211,20 @@ public class CityManager implements Listener {
             City cityz = cities.remove(city);
 
             for (UUID members : cityz.getMembers()){
-                MascotsManager.removeChest(Bukkit.getPlayer(members));
+                cityz.removePlayer(members);
+                Player member = Bukkit.getPlayer(members);
+                if (member==null){
+                    continue;
+                }
+                MascotsManager.removeChest(member);
                 if (Chronometer.containsChronometer(members, "Mascot:chest")){
                     if (Bukkit.getEntity(members) != null){
-                        Chronometer.stopChronometer(Bukkit.getEntity(members), "Mascot:chest", null, "%null%");
+                        Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
                     }
                 }
                 if (Chronometer.containsChronometer(members, "mascotsMove")){
                     if (Bukkit.getEntity(members) != null){
-                        Chronometer.stopChronometer(Bukkit.getEntity(members), "mascotsMove", null, "%null%");
+                        Chronometer.stopChronometer(member, "mascotsMove", null, "%null%");
                     }
                 }
             }

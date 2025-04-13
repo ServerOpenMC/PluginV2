@@ -2,20 +2,43 @@ package fr.openmc.core.features.city.mascots;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.UUID;
 
 public class MascotUtils {
 
-    public static void addMascotForCity(String city_uuid, UUID mascotUUID){
+    public static void addMascotForCity(String city_uuid, UUID mascotUUID, Chunk chunk){
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
                 return;
             }
         }
 
-        Mascot newMascot =  new Mascot(city_uuid, mascotUUID.toString(), 1, true, 10080, true);
+        Mascot newMascot =  new Mascot(city_uuid, mascotUUID, 1, true, 10080, true, chunk);
         MascotsManager.mascots.add(newMascot);
+    }
+
+    public static LivingEntity loadMascot(Mascot mascot){
+        boolean toUnload = false;
+        Chunk chunk = mascot.getChunk();
+        if (!chunk.isLoaded()){
+            chunk.load();
+            toUnload = true;
+        }
+        UUID mascot_uuid = getMascotUUIDOfCity(mascot.getCityUuid());
+        if (mascot_uuid == null) {
+            return null;
+        }
+        Entity mob = Bukkit.getEntity(mascot_uuid);
+        if (mob == null){
+            return null;
+        }
+        if (toUnload) chunk.unload();
+        return (LivingEntity) mob;
     }
 
     public static void removeMascotOfCity(String city_uuid){
@@ -31,7 +54,29 @@ public class MascotUtils {
 
         for (Mascot mascot : MascotsManager.mascots) {
             if (mascot.getCityUuid().equals(city_uuid)) {
-                return UUID.fromString(mascot.getMascotUuid());
+                return mascot.getMascotUuid();
+            }
+        }
+
+        return null;
+    }
+
+    public static Mascot getMascotOfCity(String city_uuid){
+        for (Mascot mascot : MascotsManager.mascots) {
+            if (mascot.getCityUuid().equals(city_uuid)) {
+                return mascot;
+            }
+        }
+
+        return null;
+    }
+
+    public static Mascot getMascotByEntity(Entity entity){
+        if (entity!=null){
+            for (Mascot mascot : MascotsManager.mascots) {
+                if (mascot.getMascotUuid().equals(entity.getUniqueId())) {
+                    return mascot;
+                }
             }
         }
 
@@ -96,7 +141,7 @@ public class MascotUtils {
     public static void setMascotUUID(String city_uuid, UUID uuid){
         for (Mascot mascot : MascotsManager.mascots){
             if (mascot.getCityUuid().equals(city_uuid)){
-                mascot.setMascotUuid(String.valueOf(uuid));
+                mascot.setMascotUuid(uuid);
                 return;
             }
         }

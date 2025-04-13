@@ -141,6 +141,10 @@ public class MascotsListener implements Listener {
                             if (mob!=null){
                                 mob.teleport(mascot_spawn);
                                 movingMascots.remove(city_uuid);
+                                Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
+                                if (mascot!=null){
+                                    mascot.setChunk(mascot_spawn.getChunk());
+                                }
                                 Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "Mascotte déplacée");
                                 //Cooldown de 5h pour déplacer la mascottes ( se reset au relancement du serv )
                                 Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
@@ -554,9 +558,9 @@ public class MascotsListener implements Listener {
                     }
                     String city_uuid = city.getUUID();
                     if (Chronometer.containsChronometer(player.getUniqueId(), "mascotsMove")){
-                        UUID masotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
-                        if (masotUUID!=null){
-                            Entity mob = Bukkit.getEntity(masotUUID);
+                        Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
+                        if (mascot!=null){
+                            Entity mob = MascotUtils.loadMascot(mascot);
                             if (mob!=null){
                                 Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                             }
@@ -580,11 +584,12 @@ public class MascotsListener implements Listener {
             }
             String city_uuid = city.getUUID();
             movingMascots.remove(city_uuid);
-            UUID masotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
-            if (masotUUID!=null){
-                Entity mascot = Bukkit.getEntity(masotUUID);
-                if (mascot!=null){
-                    Chronometer.startChronometer(mascot,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
+            Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
+            MascotsManager.removeChest(player);
+            if (mascot!=null){
+                Entity mob = MascotUtils.loadMascot(mascot);
+                if (mob!=null){
+                    Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                 }
                 return;
             }
@@ -665,12 +670,12 @@ public class MascotsListener implements Listener {
                     this.cancel();
                     return;
                 }
-                if (endTime == 0){
+                if (endTime - 1 == 0){
                     if (MascotUtils.getMascotImmunity(city_uuid))MascotUtils.changeMascotImmunity(city_uuid, false);
                     MascotUtils.setImmunityTime(city_uuid, 0);
-                    UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
-                    if (mascotUUID!=null){
-                        Entity entity = Bukkit.getEntity(mascotUUID);
+                    Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
+                    if (mascot!=null){
+                        Entity entity = MascotUtils.loadMascot(mascot);
                         if (entity!=null)entity.setGlowing(false);
                     }
                     this.cancel();

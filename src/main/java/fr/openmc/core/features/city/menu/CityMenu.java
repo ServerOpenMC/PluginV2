@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.menu.bank.BankMainMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
@@ -99,37 +100,37 @@ public class CityMenu extends Menu {
             }
         }));
 
-        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city.getUUID());
-        LivingEntity mascot;
+        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+        LivingEntity mob;
         List<Component> loreMascots;
 
-        if (mascotUUID!=null){
-            mascot = (LivingEntity) Bukkit.getEntity(mascotUUID);
+        if (mascot!=null){
+            mob = MascotUtils.loadMascot(mascot);
 
             if (!MascotUtils.getMascotState(city.getUUID())) {
                 loreMascots = List.of(
-                        Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
+                        Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
                         Component.text("§7Status : §cEn Attente de Soin"),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
                 );
             } else {
                 loreMascots = List.of(
-                        Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
+                        Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
                         Component.text("§7Status : §aEn Vie"),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
                 );
             }
         } else {
-            mascot = null;
+            mob = null;
             loreMascots = List.of(
                     Component.text("§cMascotte Inexistante")
             );
         }
 
-        if (mascot!=null){
-            inventory.put(8, new ItemBuilder(this, MascotMenu.getSpawnEgg(mascot), itemMeta -> {
+        if (mob!=null){
+            inventory.put(8, new ItemBuilder(this, MascotMenu.getSpawnEgg(mob), itemMeta -> {
                 itemMeta.itemName(Component.text("§cVotre Mascotte"));
                 itemMeta.lore(loreMascots);
             }).setOnClick(inventoryClickEvent -> {
@@ -139,7 +140,7 @@ public class CityMenu extends Menu {
                     return;
                 }
 
-                MascotMenu menu = new MascotMenu(player, mascot);
+                MascotMenu menu = new MascotMenu(player, mob);
                 menu.open();
             }));
         } else {

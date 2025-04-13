@@ -36,6 +36,7 @@ public class MascotsManager {
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
     public static List<Mascot> mascots = new ArrayList<>();
+    public static Map<Mascot, Integer> mascotsInfos = new HashMap<>();
 
     public MascotsManager(OMCPlugin plugin) {
         //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 coeurs
@@ -53,8 +54,7 @@ public class MascotsManager {
         mascots = getAllMascots();
 
         for (Mascot mascot : mascots){
-            UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
-            Entity mob = Bukkit.getEntity(mascotUUID);
+            Entity mob = MascotUtils.loadMascot(mascot);
             if (mascot.isImmunity()){
                 if (mob != null) mob.setGlowing(true);
             } else if (mob != null) mob.setGlowing(false);
@@ -62,24 +62,30 @@ public class MascotsManager {
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();
     }
 
+    //merci Axeno ( je ne sais pas comment tu as réglé le bug mais merci )
     public static List<Mascot> getAllMascots() {
         List<Mascot> mascots = new ArrayList<>();
 
-        String query = "SELECT city_uuid, mascot_uuid, level, immunity, immunity_time, alive FROM mascots";
+        String query = "SELECT city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z FROM mascots";
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
-             ResultSet rs = statement.executeQuery()) {
+            ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
+                World world = Bukkit.getWorld("world");
                 String cityUuid = rs.getString("city_uuid");
                 String mascotUuid = rs.getString("mascot_uuid");
                 int level = rs.getInt("level");
                 boolean immunity = rs.getBoolean("immunity");
                 long immunity_time = rs.getLong("immunity_time");
                 boolean alive = rs.getBoolean("alive");
-                mascots.add(new Mascot(cityUuid, mascotUuid, level, immunity, immunity_time, alive)); // Ajouter à la liste
+
+                Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
+                System.out.println(chunk);
+                mascots.add(new Mascot(cityUuid, UUID.fromString(mascotUuid), level, immunity, immunity_time, alive, chunk)); // Ajouter à la liste
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -88,25 +94,31 @@ public class MascotsManager {
     }
 
     public static void saveMascots(List<Mascot> mascots) {
-        String query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive) " +
-                "VALUES (?, ?, ?, ?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?";
+        String query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?, x = ?, z = ?";
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Mascot mascot : mascots) {
 
                 statement.setString(1, mascot.getCityUuid());
-                statement.setString(2, mascot.getMascotUuid());
+                statement.setString(2, String.valueOf(mascot.getMascotUuid()));
                 statement.setInt(3, mascot.getLevel());
                 statement.setBoolean(4, mascot.isImmunity());
                 statement.setLong(5, mascot.getImmunity_time());
                 statement.setBoolean(6, mascot.isAlive());
+                statement.setInt(7, mascot.getChunk().getX());
+                statement.setInt(8, mascot.getChunk().getZ());
 
-                statement.setString(7, mascot.getMascotUuid());
-                statement.setInt(8, mascot.getLevel());
-                statement.setBoolean(9, mascot.isImmunity());
-                statement.setLong(10, mascot.getImmunity_time());
-                statement.setBoolean(11, mascot.isAlive());
+                OMCPlugin.getInstance().getLogger().info(mascot.getChunk().getX() + " " + mascot.getChunk().getZ());
+
+                statement.setString(9, String.valueOf(mascot.getMascotUuid()));
+                statement.setInt(10, mascot.getLevel());
+                statement.setBoolean(11, mascot.isImmunity());
+                statement.setLong(12, mascot.getImmunity_time());
+                statement.setBoolean(13, mascot.isAlive());
+                statement.setInt(14, mascot.getChunk().getX());
+                statement.setInt(15, mascot.getChunk().getZ());
 
                 statement.addBatch();
             }
@@ -121,34 +133,37 @@ public class MascotsManager {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
 
         setMascotsData(mob,null, 300, 300);
+        Chunk chunk = mascot_spawn.getChunk();
         mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
         // l'uuid de la ville lui est approprié pour l'identifié
         data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
-        // immunité persistente de 7 jours pour la mascotte
-        MascotsListener.startImmunityTimer(city_uuid, 10080);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, ?, true)");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, ?, true, ?, ?)");
                 statement.setString(1, city_uuid);
                 statement.setString(2, String.valueOf(mob.getUniqueId()));
-                statement.setInt(3, 10080);
+                statement.setInt(3, 1);
+                statement.setInt(4, chunk.getX());
+                statement.setInt(5, chunk.getZ());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
 
-        MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId());
+        MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId(), chunk);
+        // immunité persistente de 7 jours pour la mascotte
+        MascotsListener.startImmunityTimer(city_uuid, 1);
     }
 
     public static void removeMascotsFromCity(String city_uuid) {
-        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+        Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
 
-        if (mascotUUID!=null){
-            LivingEntity mascots = (LivingEntity) Bukkit.getEntity(mascotUUID);
+        if (mascot!=null){
+            LivingEntity mascots = MascotUtils.loadMascot(mascot);
             if (mascots!=null){
                 mascots.remove();
             }
@@ -186,8 +201,9 @@ public class MascotsManager {
             MascotUtils.changeMascotState(city_uuid, true);
             MascotUtils.changeMascotImmunity(city_uuid, false);
             int level = MascotUtils.getMascotLevel(city_uuid);
-            if (MascotUtils.getMascotUUIDOfCity(city_uuid)!=null){
-                LivingEntity entity = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city_uuid));
+            Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
+            if (mascot!=null){
+                LivingEntity entity = MascotUtils.loadMascot(mascot);
                 if (entity!=null){
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
                     entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
@@ -253,8 +269,12 @@ public class MascotsManager {
         }
     }
 
-    public static void upgradeMascots(String city_uuid, UUID entityUUID) {
-        LivingEntity mob = (LivingEntity) Bukkit.getEntity(entityUUID);
+    public static void upgradeMascots(String city_uuid) {
+        Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
+        if (mascot==null){
+            return;
+        }
+        LivingEntity mob = MascotUtils.loadMascot(mascot);
         if (mob==null){
             return;
         }
@@ -285,7 +305,11 @@ public class MascotsManager {
     public static void changeMascotsSkin(Entity mascots, EntityType skin, Player player, Material matAywenite, int aywenite) {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
-        LivingEntity mob = (LivingEntity) mascots;
+        Mascot mascot = MascotUtils.getMascotByEntity(mascots);
+        if (mascot==null){
+            return;
+        }
+        LivingEntity mob = MascotUtils.loadMascot(mascot);
         boolean glowing = mascots.isGlowing();
         int cooldown = 0;
         boolean hasCooldown = false;
