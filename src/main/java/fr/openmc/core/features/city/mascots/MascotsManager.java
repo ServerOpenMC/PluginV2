@@ -39,7 +39,7 @@ public class MascotsManager {
     public static Map<Mascot, Integer> mascotsInfos = new HashMap<>();
 
     public MascotsManager(OMCPlugin plugin) {
-        //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 coeurs
+        //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
         spigotYMLConfig.set("settings.attribute.maxHealth.max", 6000.0);
@@ -94,9 +94,17 @@ public class MascotsManager {
     }
 
     public static void saveMascots(List<Mascot> mascots) {
-        String query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?, x = ?, z = ?";
+        String query;
+
+        if (OMCPlugin.isUnitTestVersion()) {
+            query = "MERGE INTO mascots " +
+                    "KEY(city_uuid) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?, x = ?, z = ?";
+        }
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Mascot mascot : mascots) {
@@ -137,7 +145,7 @@ public class MascotsManager {
         mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
-        // l'uuid de la ville lui est approprié pour l'identifié
+        // L'uuid de la ville lui est approprié pour l'identifié
         data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
