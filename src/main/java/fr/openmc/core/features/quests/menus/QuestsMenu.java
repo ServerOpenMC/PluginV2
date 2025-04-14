@@ -2,6 +2,7 @@ package fr.openmc.core.features.quests.menus;
 
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestStep;
@@ -158,20 +159,17 @@ public class QuestsMenu extends Menu {
         lore.add(Component.text("§7" + quest.getDescription(playerUUID)));
         lore.add(bar);
         if (currentTier != null) {
-
-            if (currentTier != null) {
-                lore.add(Component.text("§6➤ §eRécompenses:"));
-                for (QuestReward reward : currentTier.getRewards()) {
-                    if (reward instanceof QuestItemReward itemReward) {
-                        ItemStack rewardItem = itemReward.getItemStack();
-                        String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
-                        lore.add(Component.text("  §7- §f" + itemName + " §7x" + rewardItem.getAmount()));
-                    } else if (reward instanceof QuestMoneyReward moneyReward) {
-                        lore.add(Component.text("  §7- §6" + moneyReward.getAmount() + "$"));
-                    }
+            lore.add(Component.text("§6➤ §eRécompenses:"));
+            for (QuestReward reward : currentTier.getRewards()) {
+                if (reward instanceof QuestItemReward itemReward) {
+                    ItemStack rewardItem = itemReward.getItemStack();
+                    String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
+                    lore.add(Component.text("  §7- §f" + itemName + " §7x" + rewardItem.getAmount()));
+                } else if (reward instanceof QuestMoneyReward moneyReward) {
+                    lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
                 }
-                lore.add(Component.text(""));
             }
+            lore.add(Component.text(""));
         }
 
         if (isCompleted) {
@@ -232,11 +230,11 @@ public class QuestsMenu extends Menu {
     static {
         LEFT_ARROW = new ItemStack(Material.ARROW);
         ItemMeta leftArrowMeta = LEFT_ARROW.getItemMeta();
-        leftArrowMeta.displayName(Component.text("Previous page"));
+        leftArrowMeta.displayName(Component.text("§aPage précédente"));
         LEFT_ARROW.setItemMeta(leftArrowMeta);
         RIGHT_ARROW = new ItemStack(Material.ARROW);
         ItemMeta rightArrowMeta = RIGHT_ARROW.getItemMeta();
-        rightArrowMeta.displayName(Component.text("Next page"));
+        rightArrowMeta.displayName(Component.text("§aPage suivante"));
         RIGHT_ARROW.setItemMeta(rightArrowMeta);
     }
 }
