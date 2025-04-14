@@ -36,7 +36,6 @@ public class MascotsManager {
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
     public static List<Mascot> mascots = new ArrayList<>();
-    public static HashMap<String, Integer> freeClaim = new HashMap<>();
     public static Map<UUID, Location> mascotSpawn = new HashMap<>();
 
     public MascotsManager(OMCPlugin plugin) {
@@ -53,7 +52,6 @@ public class MascotsManager {
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
 
         mascots = getAllMascots();
-        freeClaim = getAllFreeClaims();
 
         for (Mascot mascot : mascots){
             UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
@@ -65,34 +63,13 @@ public class MascotsManager {
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
-    }
-
-    public static HashMap<String, Integer> getAllFreeClaims() {
-        HashMap<String, Integer> freeClaims = new HashMap<>();
-
-        String query = "SELECT city_uuid, claim FROM free_claim";
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
-             ResultSet rs = statement.executeQuery()) {
-
-            while (rs.next()) {
-                String cityUuid = rs.getString("city_uuid");
-                int claim = rs.getInt("claim");
-                if (claim > 0) {
-                    freeClaims.put(cityUuid, claim);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return freeClaims;
     }
 
     public static List<Mascot> getAllMascots() {
         List<Mascot> mascots = new ArrayList<>();
 
-        String query = "SELECT city_uuid, mascot_uuid, level, immunity, immunity_time, alive FROM mascots";
+        String query = "SELECT city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z FROM mascots";
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
              ResultSet rs = statement.executeQuery()) {
 
@@ -109,36 +86,6 @@ public class MascotsManager {
             throw new RuntimeException(e);
         }
         return mascots;
-    }
-
-    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
-        String query;
-        
-        if (OMCPlugin.isUnitTestVersion()) {
-            query = "MERGE INTO free_claim KEY(city_uuid) VALUES (?, ?)";
-        } else {
-            query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
-        }
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
-            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
-                if (entry.getValue() > 0) {
-                    statement.setString(1, entry.getKey());
-                    statement.setInt(2, entry.getValue());
-                    statement.setInt(3, entry.getValue());
-                    statement.addBatch();
-                } else {
-                        try (PreparedStatement deleteStatement = DatabaseManager.getConnection().prepareStatement(
-                                "DELETE FROM free_claim WHERE city_uuid = ?")) {
-                            deleteStatement.setString(1, entry.getKey());
-                            deleteStatement.executeUpdate();
-                        }
-                    }
-
-                }
-            statement.executeBatch();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static void saveMascots(List<Mascot> mascots) {

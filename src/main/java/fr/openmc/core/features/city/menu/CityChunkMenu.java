@@ -104,7 +104,7 @@ public class CityChunkMenu extends Menu {
                     int nbChunk = city2.getChunks().size();
                     List<Component> listComponent;
 
-                    if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())>0) {
+                    if (CityManager.freeClaim.containsKey(city2.getUUID()) && CityManager.freeClaim.get(city2.getUUID())>0) {
                         listComponent = List.of(
                                 Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
                                 Component.text(""),
@@ -176,10 +176,10 @@ public class CityChunkMenu extends Menu {
             menu.open();
         }));
 
-        if (MascotsManager.freeClaim.containsKey(city2.getUUID()) && MascotsManager.freeClaim.get(city2.getUUID())>0) {
+        if (CityManager.freeClaim.containsKey(city2.getUUID()) && CityManager.freeClaim.get(city2.getUUID())>0) {
             inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
                 itemMeta.displayName(Component.text("§6Claim Gratuit"));
-                itemMeta.lore(List.of(Component.text("§7Vous avez §6" + MascotsManager.freeClaim.get(city2.getUUID())+ " claim gratuit !")));
+                itemMeta.lore(List.of(Component.text("§7Vous avez §6" + CityManager.freeClaim.get(city2.getUUID())+ " claim gratuit !")));
             }));
         }
 
