@@ -2,7 +2,6 @@ package fr.openmc.core.features.quests.quests;
 
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -11,7 +10,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class WalkQuests extends Quest implements Listener {
     public WalkQuests() {
-        super("Le randonneur", "Marcher {target} blocs", Material.LEATHER_BOOTS, true);
+        super("Le randonneur", "Marcher {target} blocs", Material.LEATHER_BOOTS);
 
         this.addTiers(
                 new QuestTier(4000, new QuestMoneyReward(500)),
@@ -23,7 +22,12 @@ public class WalkQuests extends Quest implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (event.getTo() != null && !event.getFrom().getBlock().equals(event.getTo().getBlock())) {
+        if (
+            (event.getFrom().getBlockX() != event.getTo().getBlockX()
+            || event.getFrom().getBlockZ() != event.getTo().getBlockZ())
+            && !event.getPlayer().isFlying()
+            && !event.getPlayer().isGliding()
+        ) {
             this.incrementProgress(event.getPlayer().getUniqueId());
         }
     }
