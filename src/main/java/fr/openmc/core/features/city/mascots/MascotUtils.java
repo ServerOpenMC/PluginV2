@@ -40,6 +40,16 @@ public class MascotUtils {
         return null;
     }
 
+    public static Mascot getMascotByUUID(UUID uuid){
+        for (Mascot mascot : MascotsManager.mascots) {
+            if (mascot.getMascotUuid().equals(uuid)) {
+                return mascot;
+            }
+        }
+
+        return null;
+    }
+
     public static Mascot getMascotOfCity(String city_uuid){
         for (Mascot mascot : MascotsManager.mascots) {
             if (mascot.getCityUuid().equals(city_uuid)) {
