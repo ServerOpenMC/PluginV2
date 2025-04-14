@@ -17,9 +17,7 @@ public class GlobalTeamManager {
     private final LuckPerms luckPerms;
     private final Map<UUID, Scoreboard> playerScoreboards;
     private List<Group> sortedGroups;
-    private final Map<Group, String>
-            groupToTeamNameCache = new ConcurrentHashMap<>(),
-            groupPrefixCache = new ConcurrentHashMap<>();
+    private final Map<Group, String> groupToTeamNameCache = new ConcurrentHashMap<>();
 
     public GlobalTeamManager(Map<UUID, Scoreboard> playerScoreboards) {
         this.luckPerms = OMCPlugin.getLuckperms();
@@ -37,11 +35,8 @@ public class GlobalTeamManager {
 
         for (int i = 0; i < sortedGroups.size(); i++) {
             Group group = sortedGroups.get(i);
-            String teamName = String.valueOf('a' + i);
+            String teamName = String.valueOf((char) ('a' + i));
             groupToTeamNameCache.put(group, teamName);
-
-            String prefix = group.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
-            groupPrefixCache.put(group, prefix != null ? prefix : "");
         }
     }
 
@@ -59,7 +54,8 @@ public class GlobalTeamManager {
     public void createTeam(Scoreboard scoreboard, String teamName, Group group) {
         Team team = scoreboard.getTeam(teamName);
         if (team == null) team = scoreboard.registerNewTeam(teamName);
-        team.prefix(Component.text(groupPrefixCache.get(group).replace('&', '§')));
+        String prefix = group.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
+        team.prefix(Component.text(prefix != null ? prefix.replace('&', '§') : ""));
     }
 
     public void updatePlayerTeam(Player player) {
@@ -67,16 +63,12 @@ public class GlobalTeamManager {
 
         Group playerGroup = getPlayerHighestWeightGroup(player);
         if (playerGroup == null) return;
-
         String teamName = groupToTeamNameCache.get(playerGroup);
         if (teamName == null) return;
-
         for (Scoreboard scoreboard : playerScoreboards.values()) {
             createTeamsIfNotExists(scoreboard);
-
-            for (Team team : scoreboard.getTeams()) {
+            for (Team team : scoreboard.getTeams())
                 if (team.hasEntry(player.getName())) team.removeEntry(player.getName());
-            }
 
             Team team = scoreboard.getTeam(teamName);
             if (team != null) team.addEntry(player.getName());
