@@ -1,5 +1,7 @@
 package fr.openmc.core.features.city.mascots;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
@@ -179,6 +181,19 @@ public class MascotUtils {
                 return;
             }
         }
+    }
+
+    public static City getCityFromMascot(UUID mascotUUID){
+        City city = null;
+        if (mascotUUID!=null){
+            for (Mascot mascot : MascotsManager.mascots){
+                if (mascot.getMascotUuid().equals(mascotUUID)){
+                    city = CityManager.getCity(mascot.getCityUuid());
+                    break;
+                }
+            }
+        }
+        return city;
     }
 }
 
