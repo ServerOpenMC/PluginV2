@@ -132,7 +132,13 @@ public class MascotMenu extends Menu {
         }));
 
         List<Component> requiredAmount = new ArrayList<>();
-        requiredAmount.add(Component.text("§7Nécessite §d" + MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID())).getUpgradeCost() + " d'Aywenite"));
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
+
+        if (mascotsLevels.equals(MascotsLevels.level10)){
+            requiredAmount.add(Component.text("§7Niveau max atteins"));
+        } else {
+            requiredAmount.add(Component.text("§7Nécessite §d" + MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID())).getUpgradeCost() + " d'Aywenite"));
+        }
 
         map.put(15, new ItemBuilder(this,Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
             itemMeta.displayName(Component.text("§7Améloiorer votre §cMascotte"));
@@ -144,6 +150,8 @@ public class MascotMenu extends Menu {
             itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         }).setOnClick(inventoryClickEvent -> {
 
+            if (mascotsLevels.equals(MascotsLevels.level10)) return;
+
             if (city == null) {
                 MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 getOwner().closeInventory();
@@ -151,11 +159,11 @@ public class MascotMenu extends Menu {
             }
             if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_UPGRADE)){
                 String city_uuid = city.getUUID();
-                int aywenite = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)).getUpgradeCost();
+                int aywenite = MascotsLevels.valueOf("level" + mascotsLevels).getUpgradeCost();
                 Material matAywenite = Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType();
                 if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)){
                     ItemUtils.removeItemsFromInventory(getOwner(), matAywenite, aywenite);
-                    upgradeMascots(city_uuid, mascots.getUniqueId());
+                    upgradeMascots(city_uuid);
                     MessagesManager.sendMessage(getOwner(), Component.text("Vous avez amélioré votre mascotte au §cNiveau " + MascotUtils.getMascotLevel(city_uuid)), Prefix.CITY, MessageType.ERROR, false);
                     getOwner().closeInventory();
                     return;

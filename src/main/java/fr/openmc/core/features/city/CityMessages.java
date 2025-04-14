@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -30,11 +30,13 @@ public class CityMessages {
         int power = CityManager.getCityPowerPoints(city.getUUID());
 
         String type = CityManager.getCityType(city.getUUID());
-        if (MascotUtils.getMascotUUIDOfCity(city.getUUID())!=null){
-            LivingEntity mascot = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
+        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+        if (mascot!=null){
+            LivingEntity mob = MascotUtils.loadMascot(mascot);
             if (MascotUtils.getMascotState(city.getUUID())){
-                mascotLife = String.valueOf(mascot.getHealth());
-            }}
+                mascotLife = String.valueOf(mob.getHealth());
+            }
+        }
 
         sender.sendMessage(
                 Component.text("--- ").color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.BOLD, false).append(
