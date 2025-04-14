@@ -2,6 +2,7 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.friend.FriendManager;
+import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -41,6 +42,8 @@ public class JoinMessageListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
         final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
+
+        QuestsManager.getInstance().saveQuests(player.getUniqueId());
 
         FriendManager.getInstance().getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
