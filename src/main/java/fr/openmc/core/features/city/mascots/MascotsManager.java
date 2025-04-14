@@ -54,7 +54,7 @@ public class MascotsManager {
         mascots = getAllMascots();
 
         for (Mascot mascot : mascots){
-            UUID mascotUUID = UUID.fromString(mascot.getMascotUuid());
+            UUID mascotUUID = mascot.getMascotUuid();
             Entity mob = Bukkit.getEntity(mascotUUID);
             if (mascot.isImmunity()){
                 if (mob != null) mob.setGlowing(true);
@@ -74,13 +74,16 @@ public class MascotsManager {
              ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
+                World world = Bukkit.getWorld(World.Environment.NORMAL.name());
+
                 String cityUuid = rs.getString("city_uuid");
                 String mascotUuid = rs.getString("mascot_uuid");
                 int level = rs.getInt("level");
                 boolean immunity = rs.getBoolean("immunity");
                 long immunity_time = rs.getLong("immunity_time");
                 boolean alive = rs.getBoolean("alive");
-                mascots.add(new Mascot(cityUuid, mascotUuid, level, immunity, immunity_time, alive)); // Ajouter à la liste
+                Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
+                mascots.add(new Mascot(cityUuid, UUID.fromString(mascotUuid), level, immunity, immunity_time, alive, chunk)); // Ajouter à la liste
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -94,28 +97,33 @@ public class MascotsManager {
         if (OMCPlugin.isUnitTestVersion()) {
             query = "MERGE INTO mascots " +
                     "KEY(city_uuid) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive) " +
-                    "VALUES (?, ?, ?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?";
+            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?, x = ?, z = ?";
         }
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Mascot mascot : mascots) {
 
                 statement.setString(1, mascot.getCityUuid());
-                statement.setString(2, mascot.getMascotUuid());
+                statement.setString(2, mascot.getMascotUuid().toString());
                 statement.setInt(3, mascot.getLevel());
                 statement.setBoolean(4, mascot.isImmunity());
                 statement.setLong(5, mascot.getImmunity_time());
                 statement.setBoolean(6, mascot.isAlive());
+                statement.setInt(7, mascot.getChunk().getX());
+                statement.setInt(8, mascot.getChunk().getZ());
 
-                statement.setString(7, mascot.getMascotUuid());
-                statement.setInt(8, mascot.getLevel());
-                statement.setBoolean(9, mascot.isImmunity());
-                statement.setLong(10, mascot.getImmunity_time());
-                statement.setBoolean(11, mascot.isAlive());
+
+                statement.setString(9, mascot.getMascotUuid().toString());
+                statement.setInt(10, mascot.getLevel());
+                statement.setBoolean(11, mascot.isImmunity());
+                statement.setLong(12, mascot.getImmunity_time());
+                statement.setBoolean(13, mascot.isAlive());
+                statement.setInt(14, mascot.getChunk().getX());
+                statement.setInt(15, mascot.getChunk().getZ());
 
                 statement.addBatch();
             }
@@ -129,6 +137,7 @@ public class MascotsManager {
     public static void createMascot(String city_uuid, World player_world, Location mascot_spawn) {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn,EntityType.ZOMBIE);
 
+        Chunk chunk = mascot_spawn.getChunk();
         setMascotsData(mob,null, 300, 300);
         mob.setGlowing(true);
 
@@ -136,21 +145,23 @@ public class MascotsManager {
         // L'uuid de la ville lui est approprié pour l'identifié
         data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
-        // Immunité persistante de 7 jours pour la mascotte
-        MascotsListener.startImmunityTimer(city_uuid, 10080);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, ?, true)");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, ?, true, ?, ?)");
                 statement.setString(1, city_uuid);
                 statement.setString(2, String.valueOf(mob.getUniqueId()));
                 statement.setInt(3, 10080);
+                statement.setInt(4, chunk.getX());
+                statement.setInt(5, chunk.getZ());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
 
-        MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId());
+        MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId(), chunk);
+        // Immunité persistante de 7 jours pour la mascotte
+        MascotsListener.startImmunityTimer(city_uuid, 10080);
     }
 
     public static void removeMascotsFromCity(String city_uuid) {
