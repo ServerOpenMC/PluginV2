@@ -78,33 +78,16 @@ public class NoCityMenu extends Menu {
                 itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
         } else {
-            nameNotif = Component.text("§7Vous avez une §6invitation");
+            List<Player> invitations = CityCommands.invitations.get(player);
+            nameNotif = Component.text("§7Vous avez §6" + invitations.size() + " invitation" + (invitations.size() > 1 ? "s" : ""));
 
-            Player inviter = CityCommands.invitations.get(player);
-            City inviterCity = CityManager.getPlayerCity(inviter.getUniqueId());
+            loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR VOIR VOS INVITATIONS"));
 
-            assert inviterCity != null;
-
-            loreNotif.add(Component.text("§7" + inviter.getName() + " vous a invité(e) dans " + inviterCity.getName()));
-            loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER"));
-
-            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
+            inventory.put(15, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
                 itemMeta.itemName(nameNotif);
                 itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> {
-                ConfirmMenu menu = new ConfirmMenu(player,
-                        () -> {
-                            CityCommands.acceptInvitation(player);
-                            player.closeInventory();
-                        },
-                        () -> {
-                            CityCommands.denyInvitation(player);
-                            player.closeInventory();
-                        },
-                        List.of(Component.text("§7Accepter")),
-                        List.of(Component.text("§7Refuser" + inviter.getName()))
-                );
-                menu.open();
+                new InvitationsMenu(player).open();
             }));
         }
 

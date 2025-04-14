@@ -15,5 +15,5 @@ public class AnalyticsManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        }
+    }
 }
