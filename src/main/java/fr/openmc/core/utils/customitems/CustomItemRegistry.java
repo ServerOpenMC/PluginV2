@@ -33,6 +33,7 @@ public class CustomItemRegistry {
 
         new ContestShell();
         new Aywenite();
+        new KebabItem();
     }
 
     public static void register(String name, CustomItem item) {
