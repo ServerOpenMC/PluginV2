@@ -40,7 +40,6 @@ public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
     @Getter static TranslationManager translationManager;
-    @Getter static LuckPerms luckperms;
     private DatabaseManager dbManager;
 
     @Override
@@ -56,14 +55,6 @@ public class OMCPlugin extends JavaPlugin {
         new LuckPermsAPI();
         new PapiAPI();
         new WorldGuardApi();
-
-        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
-        if (provider != null) {
-            luckperms = provider.getProvider();
-        } else {
-            getLogger().severe("LuckPerms not found !");
-            return;
-        }
 
         /* MANAGERS */
         dbManager = new DatabaseManager();

@@ -8,6 +8,7 @@ import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -41,14 +42,13 @@ public class ScoreboardManager implements Listener {
     public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
     private final boolean canShowLogo = PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder();
     OMCPlugin plugin = OMCPlugin.getInstance();
-    private final GlobalTeamManager globalTeamManager;
+    private GlobalTeamManager globalTeamManager = null;
 
     public ScoreboardManager() {
         OMCPlugin.registerEvents(this);
         CommandsManager.getHandler().register(this);
         Bukkit.getScheduler().runTaskTimer(plugin, this::updateAllScoreboards, 0L, 20L * 5); //20x5 = 5s
-        if (OMCPlugin.getLuckperms() != null) globalTeamManager = new GlobalTeamManager(playerScoreboards);
-        else globalTeamManager = null;
+        if (LuckPermsAPI.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
     }
 
     @EventHandler
@@ -168,6 +168,6 @@ public class ScoreboardManager implements Listener {
         objective.getScore("   ").setScore(1);
         objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
 
-        if (OMCPlugin.getLuckperms() != null && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
+        if (LuckPermsAPI.hasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
     }
 }

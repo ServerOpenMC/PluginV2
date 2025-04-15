@@ -1,6 +1,7 @@
 package fr.openmc.core.features.scoreboards;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.LuckPermsAPI;
 import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
@@ -14,16 +15,16 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GlobalTeamManager {
-    private final LuckPerms luckPerms;
+    private LuckPerms luckPerms = null;
     private final Map<UUID, Scoreboard> playerScoreboards;
     private List<Group> sortedGroups;
     private final Map<Group, String> groupToTeamNameCache = new ConcurrentHashMap<>();
 
     public GlobalTeamManager(Map<UUID, Scoreboard> playerScoreboards) {
-        this.luckPerms = OMCPlugin.getLuckperms();
         this.playerScoreboards = playerScoreboards;
 
-        if (luckPerms != null) {
+        if (LuckPermsAPI.hasLuckPerms()) {
+            this.luckPerms = LuckPermsAPI.getApi();
             initSortedGroups();
             createTeams();
         }
