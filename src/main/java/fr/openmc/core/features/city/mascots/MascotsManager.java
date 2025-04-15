@@ -62,7 +62,7 @@ public class MascotsManager {
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();
     }
 
     public static List<Mascot> getAllMascots() {
@@ -94,12 +94,12 @@ public class MascotsManager {
         String query;
 
         if (OMCPlugin.isUnitTestVersion()) {
-            query = "MERGE INTO mascots " +
-                    "KEY(city_uuid) " +
+            query = "MERGE INTO mascots" +
+                    "KEY(city_uuid)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z)" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)" +
                     "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?, x = ?, z = ?";
         }
 
