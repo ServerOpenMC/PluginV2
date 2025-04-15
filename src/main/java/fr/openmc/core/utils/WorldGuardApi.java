@@ -6,8 +6,8 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 public class WorldGuardApi {
 
@@ -42,4 +42,22 @@ public class WorldGuardApi {
         return region.contains(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
+    public static boolean doesChunkContainWGRegion(Chunk chunk) {
+        if (!hasWorldGuard()) return false;
+
+        int minX = chunk.getX() << 4;
+        int minZ = chunk.getZ() << 4;
+        int maxX = minX + 15;
+        int maxZ = minZ + 15;
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                Location location = new Location(chunk.getWorld(), x, 0, z);
+                if (isRegionConflict(location)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
