@@ -54,8 +54,17 @@ public class GlobalTeamManager {
     public void createTeam(Scoreboard scoreboard, String teamName, Group group) {
         Team team = scoreboard.getTeam(teamName);
         if (team == null) team = scoreboard.registerNewTeam(teamName);
-        String prefix = group.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
-        team.prefix(Component.text(prefix != null ? prefix.replace('&', '§') : ""));
+        setPrefix(team, group);
+    }
+
+    public void updateTeam(Scoreboard scoreboard, String teamName, Group group) {
+        Team team = scoreboard.getTeam(teamName);
+        if (team != null) setPrefix(team, group);
+    }
+
+    public void setPrefix(Team team, Group group) {
+        String prefix = Objects.requireNonNull(group.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix()).replace("&", "§");
+        team.prefix(Component.text(prefix));
     }
 
     public void updatePlayerTeam(Player player) {
@@ -69,6 +78,8 @@ public class GlobalTeamManager {
             createTeamsIfNotExists(scoreboard);
             for (Team team : scoreboard.getTeams())
                 if (team.hasEntry(player.getName())) team.removeEntry(player.getName());
+
+            updateTeam(scoreboard, teamName, playerGroup);
 
             Team team = scoreboard.getTeam(teamName);
             if (team != null) team.addEntry(player.getName());
