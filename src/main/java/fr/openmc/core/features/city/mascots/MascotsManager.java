@@ -47,6 +47,7 @@ public class MascotsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         chestKey = new NamespacedKey(plugin, "mascots_chest");
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
 
@@ -72,7 +73,7 @@ public class MascotsManager {
              ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
-                World world = Bukkit.getWorld(World.Environment.NORMAL.name());
+                World world = Bukkit.getWorld("world");
 
                 String cityUuid = rs.getString("city_uuid");
                 String mascotUuid = rs.getString("mascot_uuid");
@@ -205,19 +206,26 @@ public class MascotsManager {
 
     public static void reviveMascots(String city_uuid) {
         if (MascotUtils.mascotsContains(city_uuid)){
+
             MascotUtils.changeMascotState(city_uuid, true);
             MascotUtils.changeMascotImmunity(city_uuid, false);
             int level = MascotUtils.getMascotLevel(city_uuid);
             Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
+
             if (mascot!=null){
+
                 LivingEntity entity = MascotUtils.loadMascot(mascot);
+
                 if (entity!=null){
+
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
                     entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
                     entity.setGlowing(false);
                     MascotsListener.mascotsRegeneration(mascot.getMascotUuid());
                     City city = CityManager.getCity(city_uuid);
+
                     if (city==null){return;}
+
                     for (UUID townMember : city.getMembers()){
                         if (Bukkit.getEntity(townMember) instanceof Player player){
                             for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getMalus()){

@@ -546,6 +546,11 @@ public class CityCommands {
 
     public static boolean createCity(Player player, String name, String type) {
 
+        if (!CityCreateConditions.canCityCreate(player)){
+            MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         UUID uuid = player.getUniqueId();
 
         MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);

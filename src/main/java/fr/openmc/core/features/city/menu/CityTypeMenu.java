@@ -47,10 +47,6 @@ public class CityTypeMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> map = new HashMap<>();
 
-        double x = player.getX();
-        double y = player.getY();
-        double z = player.getZ();
-
         List<Component> peaceInfo = new ArrayList<>();
         peaceInfo.add(Component.text("§aLa sécurité est assurée"));
         peaceInfo.add(Component.text("§fObjectif : relaxez vous et construisez la"));
@@ -69,7 +65,7 @@ public class CityTypeMenu extends Menu {
             MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "peace");
 
             MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
-            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascotte posé en " + x +" " + y + " " + z);
+            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "§cCréation annulée");
             MascotsManager.giveChest(player);
             getOwner().closeInventory();
         }));
@@ -81,7 +77,7 @@ public class CityTypeMenu extends Menu {
             MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "war");
 
             MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
-            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "Mascote posé en " + x +" " + y + " " + z);
+            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "§cCréation annulée");
             MascotsManager.giveChest(player);
             getOwner().closeInventory();
         }));

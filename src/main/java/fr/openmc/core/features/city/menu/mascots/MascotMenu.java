@@ -123,6 +123,8 @@ public class MascotMenu extends Menu {
                             movingMascots.add(city_uuid);
                             giveChest(getOwner());
                         }
+                    } else {
+                        MessagesManager.sendMessage(getOwner(), Component.text("Libérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
                     }
                 } else {
                     MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -137,7 +139,7 @@ public class MascotMenu extends Menu {
         if (mascotsLevels.equals(MascotsLevels.level10)){
             requiredAmount.add(Component.text("§7Niveau max atteins"));
         } else {
-            requiredAmount.add(Component.text("§7Nécessite §d" + MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID())).getUpgradeCost() + " d'Aywenite"));
+            requiredAmount.add(Component.text("§7Nécessite §d" + mascotsLevels.getUpgradeCost() + " d'Aywenite"));
         }
 
         map.put(15, new ItemBuilder(this,Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
@@ -159,7 +161,7 @@ public class MascotMenu extends Menu {
             }
             if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_UPGRADE)){
                 String city_uuid = city.getUUID();
-                int aywenite = MascotsLevels.valueOf("level" + mascotsLevels).getUpgradeCost();
+                int aywenite = mascotsLevels.getUpgradeCost();
                 Material matAywenite = Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType();
                 if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)){
                     ItemUtils.removeItemsFromInventory(getOwner(), matAywenite, aywenite);
@@ -174,6 +176,7 @@ public class MascotMenu extends Menu {
                 MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             getOwner().closeInventory();
+
         }));
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {

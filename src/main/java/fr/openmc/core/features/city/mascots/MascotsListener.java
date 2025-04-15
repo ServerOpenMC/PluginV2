@@ -62,97 +62,99 @@ public class MascotsListener implements Listener {
         ItemStack item = e.getItemInHand();
         boolean ignore = false;
 
-        if (item.getType() == Material.CHEST) {
-            ItemMeta meta = item.getItemMeta();
+        if (item.getType() != Material.CHEST) {return;}
 
-            if (meta != null) {
-                PersistentDataContainer itemData = meta.getPersistentDataContainer();
+        ItemMeta meta = item.getItemMeta();
 
-                if (itemData.has(MascotsManager.chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(MascotsManager.chestKey, PersistentDataType.STRING))) {
+        if (meta == null) {return;}
 
-                    if (player_world!=world){
-                        MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre dans ce monde"), Prefix.CITY, MessageType.INFO, false);
-                        e.setCancelled(true);
+        PersistentDataContainer itemData = meta.getPersistentDataContainer();
+
+        if (itemData.has(MascotsManager.chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(MascotsManager.chestKey, PersistentDataType.STRING))) {
+            if (player_world!=world){
+                MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre dans ce monde"), Prefix.CITY, MessageType.INFO, false);
+                e.setCancelled(true);
+                return;
+            }
+
+            Block block = e.getBlockPlaced();
+            Location mascot_spawn = new Location(player_world, block.getX()+0.5, block.getY(), block.getZ()+0.5);
+
+            if (mascot_spawn.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
+                MessagesManager.sendMessage(player, Component.text("§cIl ne doit pas y avoir de block au dessus du coffre"), Prefix.CITY, MessageType.INFO, false);
+                e.setCancelled(true);
+                return;
+            }
+
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+
+            if (city==null){
+
+                if (!futurCreateCity.containsKey(player.getUniqueId())){
+                    MessagesManager.sendMessage(player,MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    e.setCancelled(true);
+                    return;
+                }
+
+                String cityName = futurCreateCity.get(player.getUniqueId()).keySet().iterator().next();
+                boolean cityAdd = CityCommands.createCity(player, cityName, futurCreateCity.get(player.getUniqueId()).get(cityName));
+
+                if (!cityAdd){
+                    e.setCancelled(true);
+                    return;
+                }
+
+                futurCreateCity.remove(player.getUniqueId());
+                city = CityManager.getPlayerCity(player.getUniqueId());
+
+                if (city==null){
+                    MessagesManager.sendMessage(player, Component.text("§cErreur : la ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+                    e.setCancelled(true);
+                    return;
+                }
+
+                ignore = true;
+            }
+
+            String city_uuid = city.getUUID();
+
+            if (MascotUtils.mascotsContains(city_uuid) && !movingMascots.contains(city_uuid)){
+                MessagesManager.sendMessage(player, Component.text("§cVous possédez déjà une mascotte"), Prefix.CITY, MessageType.INFO, false);
+                player.getInventory().remove(item);
+                e.setCancelled(true);
+                return;
+            }
+
+            Chunk chunk = e.getBlock().getChunk();
+            int chunkX = chunk.getX();
+            int chunkZ = chunk.getZ();
+
+            if (!ignore && !city.hasChunk(chunkX,chunkZ)){
+                MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre car ce chunk ne vous appartient pas ou est adjacent à une autre ville"), Prefix.CITY, MessageType.INFO, false);
+                e.setCancelled(true);
+                return;
+            }
+
+            player_world.getBlockAt(mascot_spawn).setType(Material.AIR);
+
+            if (movingMascots.contains(city_uuid)){
+                Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
+                if (mascot!=null){
+                    Entity mob = MascotUtils.loadMascot(mascot);
+                    if (mob!=null){
+                        mob.teleport(mascot_spawn);
+                        movingMascots.remove(city_uuid);
+                        mascot.setChunk(mascot_spawn.getChunk());
+                        Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "Mascotte déplacée");
+                        //Cooldown de 5h pour déplacer la mascotte ( se reset au relancement du serveur )
+                        Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                         return;
                     }
-
-                    Block block = e.getBlockPlaced();
-                    Location mascot_spawn = new Location(player_world, block.getX()+0.5, block.getY(), block.getZ()+0.5);
-
-                    if (mascot_spawn.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-                        MessagesManager.sendMessage(player, Component.text("§cIl ne doit pas y avoir de block au dessus du coffre"), Prefix.CITY, MessageType.INFO, false);
-                        e.setCancelled(true);
-                        return;
-                    }
-
-                    City city = CityManager.getPlayerCity(player.getUniqueId());
-
-                    if (city==null){
-                        if (!futurCreateCity.containsKey(player.getUniqueId())){
-                            MessagesManager.sendMessage(player,MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                            e.setCancelled(true);
-                            return;
-                        }
-
-                        String cityName = futurCreateCity.get(player.getUniqueId()).keySet().iterator().next();
-
-                        boolean cityAdd = CityCommands.createCity(player, cityName, futurCreateCity.get(player.getUniqueId()).get(cityName));
-                        if (!cityAdd){
-                            e.setCancelled(true);
-                            return;
-                        }
-                        futurCreateCity.remove(player.getUniqueId());
-                        city = CityManager.getPlayerCity(player.getUniqueId());
-                        if (city==null){
-                            MessagesManager.sendMessage(player, Component.text("§cErreur : la ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
-                            e.setCancelled(true);
-                            return;
-                        }
-                        ignore = true;
-                    }
-                    String city_uuid = city.getUUID();
-
-                    if (MascotUtils.mascotsContains(city_uuid) && !movingMascots.contains(city_uuid)){
-                        MessagesManager.sendMessage(player, Component.text("§cVous possédez déjà une mascotte"), Prefix.CITY, MessageType.INFO, false);
-                        player.getInventory().remove(item);
-                        e.setCancelled(true);
-                        return;
-                    }
-
-                    Chunk chunk = e.getBlock().getChunk();
-                    int chunkX = chunk.getX();
-                    int chunkZ = chunk.getZ();
-                    if (!ignore && !city.hasChunk(chunkX,chunkZ)){
-                        MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre car ce chunk ne vous appartient pas"), Prefix.CITY, MessageType.INFO, false);
-                        e.setCancelled(true);
-                        return;
-                    }
-
-                    player_world.getBlockAt(mascot_spawn).setType(Material.AIR);
-
-                    if (movingMascots.contains(city_uuid)){
-                        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
-                        if (mascotUUID!=null){
-                            Entity mob = Bukkit.getEntity(mascotUUID);
-                            if (mob!=null){
-                                mob.teleport(mascot_spawn);
-                                movingMascots.remove(city_uuid);
-                                Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
-                                if (mascot!=null){
-                                    mascot.setChunk(mascot_spawn.getChunk());
-                                }
-                                Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "Mascotte déplacée");
-                                //Cooldown de 5h pour déplacer la mascotte ( se reset au relancement du serveur )
-                                Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
-                                return;
-                            }
-                        }
-                    }
-
-                    MascotsManager.createMascot(city_uuid, player_world, mascot_spawn);
-                    Chronometer.stopChronometer(player, "Mascot:chest", null, "%null%");
                 }
             }
+
+            MascotsManager.createMascot(city_uuid, player_world, mascot_spawn);
+            Chronometer.stopChronometer(player, "Mascot:chest", null, "%null%");
         }
     }
 
