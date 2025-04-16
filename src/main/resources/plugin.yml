@@ -5,13 +5,13 @@ api-version: '1.21.4'
 
 depend:
   - WorldEdit
-  - ProtocolLib
 
 softdepend:
   - PlaceholderAPI
   - LuckPerms
   - ItemsAdder
   - WorldGuard
+  - ProtocolLib
 
 prefix: OMC
 authors: [ La communauté ]
