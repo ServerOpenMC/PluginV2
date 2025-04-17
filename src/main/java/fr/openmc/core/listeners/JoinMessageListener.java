@@ -1,6 +1,7 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.utils.LuckPermsAPI;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -23,11 +25,13 @@ public class JoinMessageListener implements Listener {
         final Player player = event.getPlayer();
         final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
 
+        TabList.getInstance().updateTabList(player);
+
         FriendManager.getInstance().getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §e" + friend.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §e" + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
@@ -36,6 +40,13 @@ public class JoinMessageListener implements Listener {
         });
 
         event.joinMessage(Component.text("§8[§a§l+§8] §r" + prefix + player.getName()));
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                TabList.getInstance().updateTabList(player);
+            }
+        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 100L);
     }
 
     @EventHandler
@@ -49,7 +60,7 @@ public class JoinMessageListener implements Listener {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + friend.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
