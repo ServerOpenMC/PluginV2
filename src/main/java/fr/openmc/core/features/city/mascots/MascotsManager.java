@@ -186,16 +186,13 @@ public class MascotsManager {
         MascotUtils.removeMascotOfCity(city_uuid);
     }
 
-    public static void giveMascotsEffect(String city_uuid, UUID playerUUID) {
+    public static void giveMascotsEffect(UUID playerUUID) {
         if (Bukkit.getPlayer(playerUUID) instanceof Player player) {
-            if (city_uuid!=null){
-                if (MascotUtils.mascotsContains(city_uuid)){
-                    int level = MascotUtils.getMascotLevel(city_uuid);
-                    if (MascotUtils.getMascotState(city_uuid)){
-                        for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
-                            player.addPotionEffect(potionEffect);
-                        }
-                    } else {
+            City city = CityManager.getPlayerCity(playerUUID);
+            if (city!=null){
+                if (MascotUtils.mascotsContains(city.getUUID())){
+                    int level = MascotUtils.getMascotLevel(city.getUUID());
+                    if (!MascotUtils.getMascotState(city.getUUID())){
                         for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getMalus()){
                             player.addPotionEffect(potionEffect);
                         }
@@ -232,7 +229,6 @@ public class MascotsManager {
                             for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getMalus()){
                                 player.removePotionEffect(potionEffect.getType());
                             }
-                            giveMascotsEffect(city_uuid, townMember);
                         }
                     }
                 }

@@ -24,6 +24,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -174,7 +175,7 @@ public class MascotsListener implements Listener {
                 double newHealth = Math.floor(mob.getHealth());
                 mob.setHealth(newHealth);
                 double maxHealth = mob.getMaxHealth();
-                if (MascotUtils.getMascotImmunity(city.getUUID())){
+                if (!MascotUtils.getMascotState(city.getUUID())){
                     mob.setCustomName("§lMascotte en attente de §csoins");
                 } else {
                     mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
@@ -413,7 +414,7 @@ public class MascotsListener implements Listener {
                         for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()){
                             player.removePotionEffect(potionEffect.getType());
                         }
-                        MascotsManager.giveMascotsEffect(city_uuid, townMember);
+                        MascotsManager.giveMascotsEffect(townMember);
                     }
                 }
 
@@ -443,6 +444,16 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
+    public void onMilkDrink(PlayerItemConsumeEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        if (item.getType() == Material.MILK_BUCKET) {
+            MascotsManager.giveMascotsEffect(player.getUniqueId());
+        }
+    }
+
+    @EventHandler
     void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         ItemStack item = event.getItemDrop().getItemStack();
@@ -458,48 +469,89 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        ItemStack item =  event.getCursor();
-        ItemStack clickedItem = event.getCurrentItem();
+        ItemStack item = event.getCursor();
 
-        // détection pour le bundle qui ne fonctionne pas...
-        if (clickedItem != null && clickedItem.getType() == Material.BUNDLE) {
-            if (event.getClick() == ClickType.RIGHT) {
-                if (item != null && item.getType() != Material.AIR) {
-                    ItemMeta meta = item.getItemMeta();
-                    PersistentDataContainer itemData = meta.getPersistentDataContainer();
-                    if (itemData.has(MascotsManager.chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(MascotsManager.chestKey, PersistentDataType.STRING))) {
-                        event.setCancelled(true);
-                    }
-                }
-            }
-        }
+        if (item == null || !item.hasItemMeta()) return;
 
         ItemMeta meta = item.getItemMeta();
-        if (meta==null){
+        PersistentDataContainer data = meta.getPersistentDataContainer();
+
+        if (!data.has(MascotsManager.chestKey, PersistentDataType.STRING)) return;
+
+        String keyValue = data.get(MascotsManager.chestKey, PersistentDataType.STRING);
+        if (!"id".equals(keyValue)) return;
+
+        ClickType click = event.getClick();
+        if (click.isKeyboardClick() || click.isShiftClick() ||
+                click == ClickType.MIDDLE ||
+                click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT ||
+                click == ClickType.DROP || click == ClickType.CONTROL_DROP || click == ClickType.NUMBER_KEY) {
+
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player, Component.text("§cAction impossible avec cet item"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        PersistentDataContainer itemData = meta.getPersistentDataContainer();
-        if (itemData.has(MascotsManager.chestKey, PersistentDataType.STRING) && "id".equals(itemData.get(MascotsManager.chestKey, PersistentDataType.STRING))) {
-            if (event.getInventory().getType() != InventoryType.PLAYER &&
-                    event.getInventory().getType() != InventoryType.CREATIVE &&
-                    event.getInventory().getType() != InventoryType.CRAFTING ) {
-                player.sendMessage("" + event.getInventory().getType());
-                event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-            InventoryType.SlotType slotType = event.getSlotType();
-            if (slotType == InventoryType.SlotType.CRAFTING) {
-                event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-            if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
-                event.setCancelled(true);
-                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cet objet"), Prefix.CITY, MessageType.ERROR, false);
-            }
+
+        Inventory inv = event.getClickedInventory();
+        if (inv == null) return;
+
+        InventoryType type = inv.getType();
+        if (type != InventoryType.PLAYER && type != InventoryType.CREATIVE && type != InventoryType.CRAFTING) {
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        InventoryType.SlotType slotType = event.getSlotType();
+        if (slotType == InventoryType.SlotType.CRAFTING || slotType == InventoryType.SlotType.ARMOR || event.getSlot() == 40) {
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas placer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
+
+    @EventHandler
+    public void onClick(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        ItemStack item = event.getCurrentItem(); // <- Changement ici !
+
+        if (item == null || !item.hasItemMeta()) return;
+
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer data = meta.getPersistentDataContainer();
+
+        if (!data.has(MascotsManager.chestKey, PersistentDataType.STRING)) return;
+        String keyValue = data.get(MascotsManager.chestKey, PersistentDataType.STRING);
+        if (!"id".equals(keyValue)) return;
+
+        ClickType click = event.getClick();
+
+        if (click.isKeyboardClick() || click.isShiftClick() ||
+                click == ClickType.MIDDLE ||
+                click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT ||
+                click == ClickType.DROP || click == ClickType.CONTROL_DROP || click == ClickType.NUMBER_KEY) {
+
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player, Component.text("§cAction impossible avec cet item"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        Inventory clickedInv = event.getClickedInventory();
+        if (clickedInv == null) return;
+
+        InventoryType type = clickedInv.getType();
+        if (type != InventoryType.PLAYER && type != InventoryType.CREATIVE && type != InventoryType.CRAFTING) {
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        InventoryType.SlotType slotType = event.getSlotType();
+        if (slotType == InventoryType.SlotType.CRAFTING || slotType == InventoryType.SlotType.ARMOR || event.getSlot() == 40) {
+            event.setCancelled(true);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas placer cet objet ici"), Prefix.CITY, MessageType.ERROR, false);
+        }
+    }
+
 
     @EventHandler
     void onPlayerDeath(PlayerDeathEvent event) {
@@ -509,11 +561,14 @@ public class MascotsListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city != null){
-            String city_uuid = city.getUUID();
-            MascotsManager.giveMascotsEffect(city_uuid, player.getUniqueId());
+
+        for (MascotsLevels levels : MascotsLevels.values()){
+            for (PotionEffect effect : levels.getMalus()){
+                player.removePotionEffect(effect.getType());
+            }
         }
+
+        MascotsManager.giveMascotsEffect(player.getUniqueId());
     }
 
     @EventHandler
