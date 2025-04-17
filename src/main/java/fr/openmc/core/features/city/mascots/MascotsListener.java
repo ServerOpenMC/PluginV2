@@ -509,6 +509,7 @@ public class MascotsListener implements Listener {
         }
     }
 
+    // avec deux cela marche donc je laisse pour l'instant
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
