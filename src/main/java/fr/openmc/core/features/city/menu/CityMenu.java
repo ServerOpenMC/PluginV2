@@ -110,7 +110,7 @@ public class CityMenu extends Menu {
             if (!MascotUtils.getMascotState(city.getUUID())) {
                 loreMascots = List.of(
                         Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
-                        Component.text("§7Status : §cEn Attente de Soin"),
+                        Component.text("§7Status : §cEn Attente de Soins"),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
                 );

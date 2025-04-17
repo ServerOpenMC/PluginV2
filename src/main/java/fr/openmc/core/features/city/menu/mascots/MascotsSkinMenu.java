@@ -89,7 +89,7 @@ public class MascotsSkinMenu extends Menu {
     private ItemStack createMascotButton(MascotOption option) {
         return new ItemBuilder(this, option.material(), itemMeta -> {
             itemMeta.displayName(Component.text("§7" + option.displayName()));
-            itemMeta.lore(List.of(Component.text("§7Nécessite §d" + option.price + " d'Aywenite")));
+            itemMeta.lore(List.of(Component.text("§7Nécessite §d" + option.price + " d'Aywenites")));
             if (egg.equals(option.material())) {
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

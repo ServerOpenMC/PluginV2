@@ -8,7 +8,6 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;

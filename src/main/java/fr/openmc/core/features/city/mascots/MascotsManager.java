@@ -16,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -293,7 +294,7 @@ public class MascotsManager {
         if (mob==null){
             return;
         }
-        if (mob.getPersistentDataContainer().has(mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(mob)){
 
             MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid));
             double lastHealth = mascotsLevels.getHealth();
@@ -386,11 +387,26 @@ public class MascotsManager {
         mob.setHealth(baseHealth);
         mob.setPersistent(true);
         mob.setRemoveWhenFarAway(false);
+
+        mob.setCustomName(Objects.requireNonNullElseGet(customName, () -> "§lMascotte §c" + mob.getHealth() + "/300❤"));
+        mob.setCustomNameVisible(true);
+
         mob.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, true, true));
         mob.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, Integer.MAX_VALUE, 0, true, true));
 
-        mob.setCustomName(Objects.requireNonNullElseGet(customName, () -> "§lMascotte §c" + mob.getHealth() + "/300❤"));
+        mob.setCanPickupItems(false);
 
-        mob.setCustomNameVisible(true);
+        EntityEquipment equipment = mob.getEquipment();
+        if (equipment != null) {
+            equipment.clear();
+
+            equipment.setHelmetDropChance(0f);
+            equipment.setChestplateDropChance(0f);
+            equipment.setLeggingsDropChance(0f);
+            equipment.setBootsDropChance(0f);
+            equipment.setItemInMainHandDropChance(0f);
+            equipment.setItemInOffHandDropChance(0f);
+        }
     }
+
 }

@@ -161,9 +161,8 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onMascotDamageCaused(EntityDamageEvent e){
         Entity entity = e.getEntity();
-        PersistentDataContainer data = entity.getPersistentDataContainer();
 
-        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(entity)){
             if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)){
                 e.setCancelled(true);
             }
@@ -189,13 +188,13 @@ public class MascotsListener implements Listener {
     void onMascotTakeDamage(EntityDamageByEntityEvent e) {
         Entity damageEntity = e.getEntity();
         Entity damager = e.getDamager();
-        PersistentDataContainer data = damageEntity.getPersistentDataContainer();
         double baseDamage;
 
-        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(damageEntity)){
 
             if (damager instanceof Player player){
 
+                PersistentDataContainer data = damageEntity.getPersistentDataContainer();
                 String mascotsID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
 
                 if (mascotsID!=null) {
@@ -294,10 +293,10 @@ public class MascotsListener implements Listener {
     void onInteractWithMascots(PlayerInteractEntityEvent e) {
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
-        PersistentDataContainer data = clickEntity.getPersistentDataContainer();
 
-        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(clickEntity)){
 
+            PersistentDataContainer data = clickEntity.getPersistentDataContainer();
             String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
             if (mascotsUUID == null){return;}
 
@@ -322,13 +321,19 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
+    public void onEntityPickupItem(EntityPickupItemEvent event) {
+        if (MascotUtils.isMascot(event.getEntity())) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     void onLightningStrike(LightningStrikeEvent e) {
         Location strikeLocation = e.getLightning().getLocation();
 
         for (Entity entity : strikeLocation.getWorld().getNearbyEntities(strikeLocation, 3, 3, 3)) {
             if (entity instanceof LivingEntity) {
-                PersistentDataContainer data = entity.getPersistentDataContainer();
-                if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)) {
+                if (MascotUtils.isMascot(entity)) {
                     e.setCancelled(true);
                     return;
                 }
@@ -341,8 +346,7 @@ public class MascotsListener implements Listener {
         Location pistonHeadLocation = e.getBlock().getRelative(e.getDirection()).getLocation();
         for (Entity entity : pistonHeadLocation.getWorld().getNearbyEntities(pistonHeadLocation, 0.5, 0.5, 0.5)) {
             if (entity instanceof LivingEntity) {
-                PersistentDataContainer data = entity.getPersistentDataContainer();
-                if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)) {
+                if (MascotUtils.isMascot(entity)) {
                     e.setCancelled(true);
                     return;
                 }
@@ -352,8 +356,7 @@ public class MascotsListener implements Listener {
             Location futureLocation = block.getRelative(e.getDirection()).getLocation();
             for (Entity entity : block.getWorld().getNearbyEntities(futureLocation, 0.5, 0.5, 0.5)) {
                 if (entity instanceof LivingEntity) {
-                    PersistentDataContainer data = entity.getPersistentDataContainer();
-                    if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)) {
+                    if (MascotUtils.isMascot(entity)) {
                         e.setCancelled(true);
                         return;
                     }
@@ -365,8 +368,7 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onTransform(EntityTransformEvent event) {
         Entity entity = event.getEntity();
-        PersistentDataContainer data = entity.getPersistentDataContainer();
-        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(entity)){
             event.setCancelled(true);
         }
     }
@@ -374,8 +376,7 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onPortal(EntityPortalEvent event) {
         Entity entity = event.getEntity();
-        PersistentDataContainer data = entity.getPersistentDataContainer();
-        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(entity)){
             event.setCancelled(true);
         }
     }
@@ -383,8 +384,7 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onFire(EntityCombustEvent e) {
         Entity entity = e.getEntity();
-        PersistentDataContainer data = entity.getPersistentDataContainer();
-        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(entity)){
             e.setCancelled(true);
         }
     }
@@ -394,9 +394,9 @@ public class MascotsListener implements Listener {
         Entity entity = e.getEntity();
         Player killer = e.getEntity().getKiller();
 
-        PersistentDataContainer data = entity.getPersistentDataContainer();
-        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(entity)){
 
+            PersistentDataContainer data = entity.getPersistentDataContainer();
             String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
             int level = MascotUtils.getMascotLevel(city_uuid);
             MascotUtils.changeMascotImmunity(city_uuid, true);
@@ -437,8 +437,7 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onAxolotlBucket(PlayerBucketEntityEvent e) {
         Entity entity = e.getEntity();
-        PersistentDataContainer data = entity.getPersistentDataContainer();
-        if (data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)){
+        if (MascotUtils.isMascot(entity)){
             e.setCancelled(true);
         }
     }

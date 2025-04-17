@@ -46,7 +46,7 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "";
+        return "§cMascotte";
     }
 
     @Override
@@ -137,13 +137,13 @@ public class MascotMenu extends Menu {
         MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
 
         if (mascotsLevels.equals(MascotsLevels.level10)){
-            requiredAmount.add(Component.text("§7Niveau max atteins"));
+            requiredAmount.add(Component.text("§7Niveau max atteint"));
         } else {
-            requiredAmount.add(Component.text("§7Nécessite §d" + mascotsLevels.getUpgradeCost() + " d'Aywenite"));
+            requiredAmount.add(Component.text("§7Nécessite §d" + mascotsLevels.getUpgradeCost() + " d'Aywenites"));
         }
 
         map.put(15, new ItemBuilder(this,Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
-            itemMeta.displayName(Component.text("§7Améloiorer votre §cMascotte"));
+            itemMeta.displayName(Component.text("§7Améliorer votre §cMascotte"));
             itemMeta.lore(requiredAmount);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
