@@ -198,10 +198,18 @@ public class BankManager {
 
     private void updateInterestTimer() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextMonday = now.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-        LocalDateTime nextThursday = now.with(TemporalAdjusters.next(DayOfWeek.THURSDAY));
+
+        LocalDateTime nextMonday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY)).withHour(2).withMinute(0).withSecond(0);
+        // if it is after 2 AM, get the monday after
+        if (nextMonday.isBefore(now))
+            nextMonday = nextMonday.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).withHour(2).withMinute(0).withSecond(0);
+
+        LocalDateTime nextThursday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY)).withHour(2).withMinute(0).withSecond(0);
+        // if it is after 2 AM, get the thursday after
+        if (nextThursday.isBefore(now))
+            nextThursday = nextThursday.with(TemporalAdjusters.next(DayOfWeek.THURSDAY)).withHour(2).withMinute(0).withSecond(0);
+
         LocalDateTime nextInterestUpdate = nextMonday.isBefore(nextThursday) ? nextMonday : nextThursday;
-        nextInterestUpdate = nextInterestUpdate.withHour(2).withMinute(2).withSecond(2);
         
         long secondsUntilUpdate = ChronoUnit.SECONDS.between(now, nextInterestUpdate);
         long ticksUntilUpdate = secondsUntilUpdate * 20; // there are 20 ticks in a second
