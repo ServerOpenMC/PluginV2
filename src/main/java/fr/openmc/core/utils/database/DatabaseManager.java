@@ -3,9 +3,13 @@ package fr.openmc.core.utils.database;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.analytics.AnalyticsManager;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyData;
 import fr.openmc.core.features.economy.TransactionsManager;
+import fr.openmc.core.features.friend.FriendSQLManager;
+import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import org.bukkit.Bukkit;
@@ -25,10 +29,15 @@ public class DatabaseManager {
             TransactionsManager.init_db(connection);
             AnalyticsManager.init_db(connection);
             CityManager.init_db(connection);
-            ContestManager.init_db(connection);
+            ContestManager.initDb(connection);
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
+            BankManager.init_db(connection);
+            HomesManager.init_db(connection);
+            MascotsManager.init_db(connection);
             CityTypeCooldown.init_db(connection);
+            FriendSQLManager.init_db(connection);
+
         } catch (SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
@@ -37,7 +46,12 @@ public class DatabaseManager {
 
     private static void connect() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            if (OMCPlugin.isUnitTestVersion()) {
+                Class.forName("org.h2.Driver");
+            } else {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+            }
+
             FileConfiguration config = OMCPlugin.getConfigs();
 
             if (!(config.contains("database.url") || config.contains("database.username") || config.contains("database.password"))) {

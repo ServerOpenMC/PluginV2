@@ -8,15 +8,24 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
-import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.friend.FriendManager;
+import fr.openmc.core.features.homes.HomeUpgradeManager;
+import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.features.scoreboards.TabList;
+import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
+import fr.openmc.core.utils.freeze.FreezeManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,7 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.SQLException;
 
-public final class OMCPlugin extends JavaPlugin {
+public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
     @Getter static TranslationManager translationManager;
@@ -42,8 +51,9 @@ public final class OMCPlugin extends JavaPlugin {
 
         /* EXTERNALS */
         MenuLib.init(this);
-        new LuckPermsAPI(this);
+        new LuckPermsAPI();
         new PapiAPI();
+        new WorldGuardApi();
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
@@ -58,21 +68,36 @@ public final class OMCPlugin extends JavaPlugin {
         new EconomyManager();
         new MailboxManager();
         new AywenCap();
+        new BankManager();
         new ScoreboardManager();
+        new HomesManager();
+        new HomeUpgradeManager(HomesManager.getInstance());
+        new TPAManager();
+        new FreezeManager();
+        new FriendManager();
+        new QuestsManager();
+        new TabList();
+
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
         translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
         translationManager.loadAllLanguages();
-
         getLogger().info("Plugin activé");
     }
 
     @Override
     public void onDisable() {
+        HomesManager.getInstance().saveHomesData();
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
-        MascotsManager.saveFreeClaimMap();
+        QuestsManager.getInstance().saveQuests();
+
+        MascotsManager.saveMascots(MascotsManager.mascots);
+        MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
+
+
+        CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {
             try {
                 dbManager.close();
@@ -88,5 +113,9 @@ public final class OMCPlugin extends JavaPlugin {
         for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
         }
+    }
+
+    public static boolean isUnitTestVersion() {
+        return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
     }
 }

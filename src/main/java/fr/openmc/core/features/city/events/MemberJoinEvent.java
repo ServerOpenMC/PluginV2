@@ -7,8 +7,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public class MemberJoinEvent extends Event {
 
     @Getter private OfflinePlayer player;

@@ -1,9 +1,6 @@
 package fr.openmc.core.utils.messages;
 
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-
-import java.util.Arrays;
 
 /**
  * Enum representing various prefixes for messages.
@@ -18,7 +15,12 @@ public enum Prefix {
     OPENMC("<gradient:#BD45E6:#F99BEB>ᴏᴘᴇɴᴍᴄ</gradient>"),
     STAFF("<gradient:#AC3535:#8C052B>ѕᴛᴀꜰꜰ</gradient>"),
     CITY("<gradient:#026404:#2E8F38>ᴄɪᴛʏ</gradient>"),
-    CONTEST("<gradient:#FFB800:#F0DF49>ᴄᴏɴᴛᴇѕᴛ</gradient>")
+    CONTEST("<gradient:#FFB800:#F0DF49>ᴄᴏɴᴛᴇѕᴛ</gradient>"),
+    QUESTS("<gradient:#FCD05C:#FAEDCB>ǫᴜᴇѕᴛѕ</gradient>"),
+    HOME("<gradient:#80EF80:#9aec9a>ʜᴏᴍᴇ</gradient>"),
+    FRIEND("<gradient:#68E98B:#0EFF6D>ꜰʀɪᴇɴᴅ</gradient>"),
+    QUEST("<gradient:#4E76E3:#1A51E7>ǫᴜᴇѕᴛ</gradient>"),
+    BANK("<gradient:#084CFB:#ADB6FD>ʙᴀɴᴋ</gradient>"),
     ;
 
     @Getter private final String prefix;

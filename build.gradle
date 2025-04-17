@@ -13,6 +13,7 @@ repositories {
     maven {url = "https://mvn.mathiasd.fr/releases"}
     maven {url = "https://maven.enginehub.org/repo/" }
     maven {url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
+    maven {url = "https://repo.dmulloy2.net/repository/public/"}
     maven {url = "https://jitpack.io"} // Laissez en dernier
 }
 
@@ -21,7 +22,10 @@ dependencies {
     compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly('com.sk89q.worldguard:worldguard-bukkit:7.0.9')
+    compileOnly("com.github.dmulloy2:ProtocolLib:-SNAPSHOT") // ProtocolLib
 
+    implementation("de.rapha149.signgui:signgui:2.5.0")
     implementation("dev.xernas:menulib:1.1.0")
     implementation("org.jetbrains:annotations:24.1.0")
     implementation("com.github.Revxrsal.Lamp:common:3.2.1")
@@ -37,7 +41,9 @@ dependencies {
     // unit tests
     testImplementation("org.slf4j:slf4j-simple:2.0.16")
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
-    testImplementation("com.github.seeseemelk:MockBukkit-v1.21:3.133.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.45.0")
+    testImplementation("com.h2database:h2:2.3.232")
 }
 
 def targetJavaVersion = 21

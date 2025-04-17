@@ -23,7 +23,7 @@ public class EconomyData {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 Connection connection = DatabaseManager.getConnection();
-                PreparedStatement statement = connection.prepareStatement("SELECT * FROM economie WHERE player = ?");
+                PreparedStatement statement = connection.prepareStatement("SELECT balance, player FROM economie WHERE player = ?");
                 statement.setString(1, player.toString());
                 ResultSet resultSet = statement.executeQuery();
 
@@ -48,7 +48,7 @@ public class EconomyData {
         try {
             Map<UUID, Double> balances = new HashMap<>();
 
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM economie");
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT player, balance FROM economie");
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 UUID player = UUID.fromString(resultSet.getString("player"));

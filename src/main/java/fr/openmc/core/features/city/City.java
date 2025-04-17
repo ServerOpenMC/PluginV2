@@ -1,14 +1,22 @@
 package fr.openmc.core.features.city;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.events.*;
-import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.menu.ChestMenu;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +30,7 @@ public class City {
     private final String cityUUID;
     private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
     private Set<UUID> members = new HashSet<>();
-    private Double balance;
+    private Double balance = Double.valueOf(0); // set default value cause if its null, error in updateBalance
     private String name;
     private Integer chestPages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
@@ -37,7 +45,7 @@ public class City {
         CityManager.registerCity(this);
 
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_permissions WHERE city_uuid = ?");
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid, player, permission FROM city_permissions WHERE city_uuid = ?");
             statement.setString(1, cityUUID);
             ResultSet rs = statement.executeQuery();
 
@@ -77,7 +85,7 @@ public class City {
                 return chestContent.get(page);
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // On peut pas retourner une liste vide parceque si il ferme, ça va reset son inv
+            e.printStackTrace(); // On ne peut pas retourner une liste vide, car s'il ferme, ça va reset son inv
             throw new RuntimeException("Error while loading chest content");
         }
         return new ItemStack[54]; // ayayay
@@ -120,8 +128,9 @@ public class City {
                 e.printStackTrace();
             }
         });
-
-        Bukkit.getPluginManager().callEvent(new ChunkClaimedEvent(this, chunk));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new ChunkClaimedEvent(this, chunk));
+        });
     }
 
     public boolean removeChunk(int chunkX, int chunkZ) {
@@ -273,7 +282,9 @@ public class City {
      * @param newName The new name for the city.
      */
     public void renameCity(String newName) {
-        Bukkit.getPluginManager().callEvent(new CityRenameEvent(this.name, this));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new CityRenameEvent(this.name, this));
+                });
         name = newName;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -340,8 +351,51 @@ public class City {
      * @param diff The amount to be added to the existing balance.
      */
     public void updateBalance(Double diff) {
-        Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, balance, balance+diff));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, balance, balance + diff));
+                });
         setBalance(balance+diff);
+    }
+
+    /**
+     * Adds money to the city bank and removes it from {@link Player}
+     * @param player The player depositing into the bank
+     * @param input The input string to get the money value
+     */
+    public void depositCityBank(Player player, String input) {
+        if (InputUtils.isInputMoney(input)) {
+            double moneyDeposit = InputUtils.convertToMoneyValue(input);
+
+            if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
+                updateBalance(moneyDeposit);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            } else {
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+        }
+    }
+
+    /**
+     * Removes money from the city bank and add it to {@link Player}
+     * @param player The player withdrawing from the bank
+     * @param input The input string to get the money value
+     */
+    public void withdrawCityBank(Player player, String input) {
+        if (InputUtils.isInputMoney(input)) {
+            double moneyDeposit = InputUtils.convertToMoneyValue(input);
+
+            if (getBalance() < moneyDeposit) {
+                MessagesManager.sendMessage(player, Component.text("Ta ville n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
+            } else {
+                updateBalance(moneyDeposit * -1);
+                EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
+                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+            }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+        }
     }
 
     /**
@@ -389,7 +443,7 @@ public class City {
     private boolean loadPermission(UUID player) {
         if (!permsCache.containsKey(player)) {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM city_permissions WHERE city_uuid = ? AND player = ?");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid, player, permission FROM city_permissions WHERE city_uuid = ? AND player = ?");
                 statement.setString(1, cityUUID);
                 statement.setString(2, player.toString());
                 ResultSet rs = statement.executeQuery();
@@ -460,8 +514,9 @@ public class City {
                     e.printStackTrace();
                 }
             });
-
-            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, false));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, false));
+            });
             return true;
         }
         return false;
@@ -503,7 +558,9 @@ public class City {
                     e.printStackTrace();
                 }
             });
-            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, true));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this, Bukkit.getOfflinePlayer(uuid), permission, true));
+            });
         }
     }
 
@@ -517,9 +574,9 @@ public class City {
         forgetPlayer(player);
         CityManager.uncachePlayer(player);
         members.remove(player);
-
-        Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(Bukkit.getOfflinePlayer(player), this));
-
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new MemberLeaveEvent(Bukkit.getOfflinePlayer(player), this));
+        });
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_members WHERE player=?");
             statement.setString(1, player.toString());
@@ -538,7 +595,9 @@ public class City {
      */
     public void addPlayer(UUID player) {
         members.add(player);
-        Bukkit.getPluginManager().callEvent(new MemberJoinEvent(Bukkit.getOfflinePlayer(player), this));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new MemberJoinEvent(Bukkit.getOfflinePlayer(player), this));
+                });
         CityManager.cachePlayer(player, this);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -578,8 +637,9 @@ public class City {
                 e.printStackTrace();
             }
         });
-
-        Bukkit.getPluginManager().callEvent(new CityDeleteEvent(this));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityDeleteEvent(this));
+        });
     }
 
     public void upgradeChest() {
@@ -595,5 +655,20 @@ public class City {
                 chestPages -= 1;
             }
         });
+    }
+
+    // Interests calculated as proportion not percentage (eg: 0.03 = 3%)
+    public double calculateCityInterest() {
+        double interest = .03; // base interest is 3%
+
+        // TODO: link to other systems here by simply adding to the interest variable here
+        
+        return interest;
+    }
+
+    public void applyCityInterest() {
+        double interest = calculateCityInterest();
+        double amount = getBalance() * interest;
+        updateBalance(amount);
     }
 }
