@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
@@ -194,6 +195,10 @@ public class MascotUtils {
             }
         }
         return city;
+    }
+
+    public static boolean isMascot(Entity entity){
+        return entity.getPersistentDataContainer().has(MascotsManager.mascotsKey, PersistentDataType.STRING);
     }
 }
 
