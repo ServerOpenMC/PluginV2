@@ -6,8 +6,8 @@
 * Les Issues corrigé(e)s/en commun : 
 
 ## Étape nécessaire afin que la PR soit fini
-*mettez des checkbox `-[]` et les cocher lorsque les taches sont finies*
-*ex. -[] Enlever tous les imports non utilisé*
+*mettez des checkbox `- []` et les cocher lorsque les taches sont finies*
+*ex. - [] Enlever tous les imports non utilisé*
 
 ## Decrivez vos changements
 *Clairement et avec des screenshots si nécessaires*
