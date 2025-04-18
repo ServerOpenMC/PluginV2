@@ -9,7 +9,6 @@ import fr.openmc.core.features.city.ChunkDataCache;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
 import fr.openmc.core.utils.ChunkPos;
@@ -72,8 +71,8 @@ public class CityChunkMenu extends Menu {
             tempPrice = calculatePrice(nbChunk);
             tempAywenite = calculateAywenite(nbChunk);
 
-            if (MascotsManager.freeClaim.containsKey(tempPlayerCityUUID)) {
-                tempFreeClaims = MascotsManager.freeClaim.get(tempPlayerCityUUID);
+            if (CityManager.freeClaim.containsKey(tempPlayerCityUUID)) {
+                tempFreeClaims = CityManager.freeClaim.get(tempPlayerCityUUID);
                 tempHasFreeClaimAvailable = tempFreeClaims > 0;
             }
         }
