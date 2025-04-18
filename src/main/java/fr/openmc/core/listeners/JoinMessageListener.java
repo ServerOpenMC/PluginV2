@@ -1,6 +1,7 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
@@ -23,7 +24,6 @@ public class JoinMessageListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
 
         TabList.getInstance().updateTabList(player);
 
@@ -41,6 +41,10 @@ public class JoinMessageListener implements Listener {
 
         event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
 
+        // Adjust player's spawn location
+        if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getInstance().getSpawnLocation());
+
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -52,7 +56,6 @@ public class JoinMessageListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
 
         QuestsManager.getInstance().saveQuests(player.getUniqueId());
 
@@ -70,4 +73,5 @@ public class JoinMessageListener implements Listener {
 
         event.quitMessage(Component.text("§8[§c§l-§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
     }
+
 }

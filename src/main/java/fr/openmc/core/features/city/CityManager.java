@@ -29,6 +29,7 @@ public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
     public static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
+    public static HashMap<String, Integer> freeClaim = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
@@ -70,6 +71,8 @@ public class CityManager implements Listener {
                 new ChestMenuListener(),
                 new MascotsListener()
         );
+
+        freeClaim = getAllFreeClaims();
     }
 
     @EventHandler
@@ -88,6 +91,57 @@ public class CityManager implements Listener {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_chests (city_uuid VARCHAR(8) NOT NULL, page TINYINT NOT NULL, content LONGBLOB);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_regions (city_uuid VARCHAR(8) NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();// Il faut esperer qu'aucun clodo n'ira à 134.217.712 blocks du spawn
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_power (city_uuid VARCHAR(8) NOT NULL, power_point INT NOT NULL);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
+    }
+
+    public static HashMap<String, Integer> getAllFreeClaims() {
+        HashMap<String, Integer> freeClaims = new HashMap<>();
+
+        String query = "SELECT city_uuid, claim FROM free_claim";
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                String cityUuid = rs.getString("city_uuid");
+                int claim = rs.getInt("claim");
+                if (claim > 0) {
+                    freeClaims.put(cityUuid, claim);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return freeClaims;
+    }
+
+    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
+        String query;
+
+        if (OMCPlugin.isUnitTestVersion()) {
+            query = "MERGE INTO free_claim KEY(city_uuid) VALUES (?, ?)";
+        } else {
+            query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+        }
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
+            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
+                if (entry.getValue() > 0) {
+                    statement.setString(1, entry.getKey());
+                    statement.setInt(2, entry.getValue());
+                    statement.setInt(3, entry.getValue());
+                    statement.addBatch();
+                } else {
+                    try (PreparedStatement deleteStatement = DatabaseManager.getConnection().prepareStatement(
+                            "DELETE FROM free_claim WHERE city_uuid = ?")) {
+                        deleteStatement.setString(1, entry.getKey());
+                        deleteStatement.executeUpdate();
+                    }
+                }
+
+            }
+            statement.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static boolean isChunkClaimed(int x, int z) {
@@ -173,17 +227,25 @@ public class CityManager implements Listener {
             City cityz = cities.remove(city);
 
             for (UUID members : cityz.getMembers()){
-                MascotsManager.removeChest(Bukkit.getPlayer(members));
+                Player member = Bukkit.getPlayer(members);
+                if (member==null){
+                    member = Bukkit.getOfflinePlayer(members).getPlayer();
+                    if (member==null){
+                        continue;
+                    }
+                }
+                MascotsManager.removeChest(member);
                 if (Chronometer.containsChronometer(members, "Mascot:chest")){
                     if (Bukkit.getEntity(members) != null){
-                        Chronometer.stopChronometer(Bukkit.getEntity(members), "Mascot:chest", null, "%null%");
+                        Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
                     }
                 }
                 if (Chronometer.containsChronometer(members, "mascotsMove")){
                     if (Bukkit.getEntity(members) != null){
-                        Chronometer.stopChronometer(Bukkit.getEntity(members), "mascotsMove", null, "%null%");
+                        Chronometer.stopChronometer(member, "mascotsMove", null, "%null%");
                     }
                 }
+                cityz.removePlayer(members);
             }
 
             Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
@@ -209,7 +271,7 @@ public class CityManager implements Listener {
             e.printStackTrace();
         }
 
-        MascotsManager.freeClaim.remove(city);
+        freeClaim.remove(city);
         if (CityTypeCooldown.isOnCooldown(city)) {
             CityTypeCooldown.removeCityCooldown(city);
         }
