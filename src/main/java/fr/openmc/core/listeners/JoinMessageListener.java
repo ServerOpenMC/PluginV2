@@ -43,7 +43,9 @@ public class JoinMessageListener implements Listener {
         event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
 
         // Adjust player's spawn location
-        if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getInstance().getSpawnLocation());
+        if (!player.hasPlayedBefore())
+            player.teleport(SpawnManager.getInstance().getSpawnLocation());
+
 
         new BukkitRunnable() {
             @Override
