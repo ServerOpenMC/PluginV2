@@ -95,12 +95,12 @@ public class MascotsManager {
         String query;
 
         if (OMCPlugin.isUnitTestVersion()) {
-            query = "MERGE INTO mascots" +
-                    "KEY(city_uuid)" +
+            query = "MERGE INTO mascots " +
+                    "KEY(city_uuid) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         } else {
-            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z)" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)" +
+            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ? )" +
                     "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?, x = ?, z = ?";
         }
 
