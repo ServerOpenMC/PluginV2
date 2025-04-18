@@ -67,7 +67,7 @@ public class Socials {
     @Command("wiki")
     @CommandPermission("omc.commands.wiki")
     @Description("Donne le lien du wiki")
-    private void blog(CommandSender sender) {
+    private void wiki(CommandSender sender) {
         sender.sendMessage(parseText(
                 "Lisez des articles sur ",
                 OMCPlugin.getConfigs().getString("wiki", "INVALID CONFIG")
