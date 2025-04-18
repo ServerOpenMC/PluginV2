@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu.mayor;
 
+import dev.lone.itemsadder.api.CustomPlayer;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;

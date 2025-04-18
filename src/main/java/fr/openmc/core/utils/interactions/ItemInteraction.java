@@ -163,18 +163,13 @@ public class ItemInteraction implements Listener {
         ItemMeta meta = protectedItem.getItemMeta();
         if (meta == null)
             return;
+
         PersistentDataContainer data = meta.getPersistentDataContainer();
         if (!data.has(NAMESPACE_KEY, PersistentDataType.STRING))
             return;
 
         if (event.getClickedInventory() != null) {
             InventoryType invType = event.getClickedInventory().getType();
-            if (invType.toString().equalsIgnoreCase("BUNDLE")) {
-                player.sendMessage("§cVous ne pouvez pas déposer cet objet dans un bundle");
-                event.setCancelled(true);
-                return;
-            }
-
             if (invType != InventoryType.PLAYER &&
                     invType != InventoryType.CREATIVE &&
                     invType != InventoryType.CRAFTING) {
@@ -190,14 +185,14 @@ public class ItemInteraction implements Listener {
             return;
         }
 
-        if (event.isShiftClick()) {
-            player.sendMessage("§cVous ne pouvez pas déplacer cet objet par shift-click");
+        if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
+            player.sendMessage("§cVous ne pouvez pas jeter cet objet");
             event.setCancelled(true);
             return;
         }
 
-        if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
-            player.sendMessage("§cVous ne pouvez pas jeter cet objet");
+        if (event.isShiftClick()) {
+            player.sendMessage("§cVous ne pouvez pas déplacer cet objet par shift-click");
             event.setCancelled(true);
             return;
         }
@@ -241,7 +236,7 @@ public class ItemInteraction implements Listener {
             return;
 
         event.setCancelled(true);
-        player.sendMessage("§cVous ne pouvez pas mettre cet objet dans un cadre");
+        MessagesManager.sendMessage(event.getPlayer(), Component.text("§cVous ne pouvez pas mettre cet item dans un cadre"), Prefix.OPENMC, MessageType.ERROR, false);
     }
 
     /*
