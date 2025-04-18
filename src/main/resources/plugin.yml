@@ -11,6 +11,7 @@ softdepend:
   - LuckPerms
   - ItemsAdder
   - WorldGuard
+  - ProtocolLib
 
 prefix: OMC
 authors: [ La communauté ]

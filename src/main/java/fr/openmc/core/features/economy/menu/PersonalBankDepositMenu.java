@@ -67,9 +67,9 @@ public class PersonalBankDepositMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyPlayer) && moneyPlayer!=0) {
                 BankManager.getInstance().addBankBalance(player.getUniqueId(), moneyPlayer);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.BANK, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -89,9 +89,9 @@ public class PersonalBankDepositMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), halfMoneyPlayer) && halfMoneyPlayer!=0) {
                 BankManager.getInstance().addBankBalance(player.getUniqueId(), halfMoneyPlayer);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.BANK, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));

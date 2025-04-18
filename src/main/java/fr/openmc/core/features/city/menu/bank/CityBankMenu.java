@@ -82,8 +82,9 @@ public class CityBankMenu extends Menu {
             inventory.put(13, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
                 itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
                 itemMeta.lore(List.of(
-                        Component.text("§7La ville a actuellement §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false))
-                        )
+                       Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                        Component.text("§7Votre prochain intéret est de §b" + city.calculateCityInterest()*100 + "%")
+                    )
                 );
             }));
         }
