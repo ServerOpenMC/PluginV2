@@ -17,7 +17,7 @@ public class ListenersManager {
                 new DisableCreakings(),
                 new ChronometerListener(),
                 new CubeListener(OMCPlugin.getInstance()),
-                new SpawnListener()
+                new RespawnListener()
         );
     }
 
