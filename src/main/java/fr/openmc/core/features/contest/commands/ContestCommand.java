@@ -62,8 +62,11 @@ public class ContestCommand {
             case 2:
                 this.contestManager.initPhase2();
                 break;
-             case 3:
+            case 3:
                 this.contestManager.initPhase3();
+                break;
+            default:
+                this.contestManager.initPhase1();
                 break;
         }
     }
@@ -80,7 +83,7 @@ public class ContestCommand {
                 contestManager.deleteTableContest("camps");
                 contestManager.insertCustomContest(camp1, color1, camp2, color2);
 
-                MessagesManager.sendMessage(player, Component.text("§aLe Contest : " + camp1 + " VS " + camp2 + " a bien été sauvegarder\nMerci d'attendre que les données en cache s'actualise."), Prefix.STAFF, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(player, Component.text("§aLe Contest : " + camp1 + " VS " + camp2 + " a bien été sauvegardé\nMerci d'attendre que les données en cache s'actualise."), Prefix.STAFF, MessageType.SUCCESS, true);
             } else {
                 MessagesManager.sendMessage(player, Component.text("§c/contest setcontest <camp1> <color1> <camp2> <color2> et color doit comporter une couleur valide"), Prefix.STAFF, MessageType.ERROR, true);
             }

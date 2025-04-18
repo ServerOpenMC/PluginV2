@@ -1,0 +1,18 @@
+#####
+# Database
+#####
+database:
+  url: "jdbc:h2:~/test"
+  username: ""
+  password: ""
+
+features:
+  analytics: true
+  transactions: true
+
+#####
+# Paramètres pour un environnement de production
+#####
+homepage: "https://openmc.fr/"
+discord: "https://discord.gg/aywen/"
+blog: "https://blog.openmc.fr/"
