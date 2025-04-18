@@ -47,7 +47,7 @@ public class LuckPermsAPI {
         if (!hasLuckPerms) return "";
 
         String prefix = getPrefix(player);
-        if (prefix.isEmpty()) return "";
+        if (prefix == null || prefix.isEmpty()) return "";
         String formattedPrefix = prefix.replace("&", "§");
         formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
 
@@ -58,7 +58,7 @@ public class LuckPermsAPI {
         if (!hasLuckPerms) return Component.empty();
 
         String prefix = group.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix();
-        if (prefix.isEmpty()) return Component.empty();
+        if (prefix == null || prefix.isEmpty()) return Component.empty();
 
         String formattedPrefix = prefix.replace("&", "§");
         formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
