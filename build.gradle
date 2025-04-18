@@ -84,7 +84,7 @@ clean {
 }
 
 shadowJar {
-    destinationDirectory.set(file("./run/plugins/"))
+    destinationDirectory.set(file("./builds/"))
     archiveFileName = "OpenMC.jar"
 }
 

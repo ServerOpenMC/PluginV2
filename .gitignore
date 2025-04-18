@@ -1,6 +1,5 @@
 # OpenMC-specific stuff
 builds/
-run/
 !.idea/icon.png
 
 # User-specific stuff
