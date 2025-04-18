@@ -6,6 +6,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.NodeType;
 import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -85,6 +86,7 @@ public class GlobalTeamManager {
 
     private Group getPlayerHighestWeightGroup(Player player) {
         var user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
+
         if (user == null) return null;
 
         return user.getNodes(NodeType.INHERITANCE).stream()
