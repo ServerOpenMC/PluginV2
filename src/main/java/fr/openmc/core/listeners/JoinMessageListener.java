@@ -31,7 +31,7 @@ public class JoinMessageListener implements Listener {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §e" + friend.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
@@ -39,7 +39,7 @@ public class JoinMessageListener implements Listener {
             return null;
         });
 
-        event.joinMessage(Component.text("§8[§a§l+§8] §r" + prefix + player.getName()));
+        event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
 
         new BukkitRunnable() {
             @Override

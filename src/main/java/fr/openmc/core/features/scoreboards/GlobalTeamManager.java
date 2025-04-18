@@ -2,17 +2,18 @@ package fr.openmc.core.features.scoreboards;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.LuckPermsAPI;
-import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.NodeType;
-import net.luckperms.api.query.QueryOptions;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GlobalTeamManager {
     private LuckPerms luckPerms = null;
@@ -55,17 +56,12 @@ public class GlobalTeamManager {
     public void createTeam(Scoreboard scoreboard, String teamName, Group group) {
         Team team = scoreboard.getTeam(teamName);
         if (team == null) team = scoreboard.registerNewTeam(teamName);
-        setPrefix(team, group);
+        team.prefix(LuckPermsAPI.getFormattedPAPIPrefix(group));
     }
 
     public void updateTeam(Scoreboard scoreboard, String teamName, Group group) {
         Team team = scoreboard.getTeam(teamName);
-        if (team != null) setPrefix(team, group);
-    }
-
-    public void setPrefix(Team team, Group group) {
-        String prefix = Objects.requireNonNull(group.getCachedData().getMetaData(QueryOptions.defaultContextualOptions()).getPrefix()).replace("&", "§");
-        team.prefix(Component.text(prefix));
+        if (team != null) team.prefix(LuckPermsAPI.getFormattedPAPIPrefix(group));
     }
 
     public void updatePlayerTeam(Player player) {
@@ -88,7 +84,7 @@ public class GlobalTeamManager {
     }
 
     private Group getPlayerHighestWeightGroup(Player player) {
-        var user = luckPerms.getUserManager().getUser(player.getUniqueId());
+        var user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
         if (user == null) return null;
 
         return user.getNodes(NodeType.INHERITANCE).stream()
