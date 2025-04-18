@@ -60,7 +60,7 @@ public class JoinMessageListener implements Listener {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + friend.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
@@ -68,6 +68,6 @@ public class JoinMessageListener implements Listener {
             return null;
         });
 
-        event.quitMessage(Component.text("§8[§c§l-§8] §r" + prefix + player.getName()));
+        event.quitMessage(Component.text("§8[§c§l-§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
     }
 }
