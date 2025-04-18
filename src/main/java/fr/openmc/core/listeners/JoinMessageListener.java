@@ -1,7 +1,11 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.friend.FriendManager;
+import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.api.LuckPermsAPI;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -12,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
@@ -20,13 +25,14 @@ public class JoinMessageListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
+
+        TabList.getInstance().updateTabList(player);
 
         FriendManager.getInstance().getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §e" + friend.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
@@ -34,19 +40,31 @@ public class JoinMessageListener implements Listener {
             return null;
         });
 
-        event.joinMessage(Component.text("§8[§a§l+§8] §r" + prefix + player.getName()));
+        event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
+
+        // Adjust player's spawn location
+        if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getInstance().getSpawnLocation());
+
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                TabList.getInstance().updateTabList(player);
+            }
+        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 100L);
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
+
+        QuestsManager.getInstance().saveQuests(player.getUniqueId());
 
         FriendManager.getInstance().getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + friend.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
@@ -54,6 +72,7 @@ public class JoinMessageListener implements Listener {
             return null;
         });
 
-        event.quitMessage(Component.text("§8[§c§l-§8] §r" + prefix + player.getName()));
+        event.quitMessage(Component.text("§8[§c§l-§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
     }
+
 }

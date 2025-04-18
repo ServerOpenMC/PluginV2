@@ -4,6 +4,11 @@ import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -24,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.mascots.MascotsManager.changeMascotsSkin;
-
 
 public class MascotsSkinMenu extends Menu {
 
@@ -60,221 +64,29 @@ public class MascotsSkinMenu extends Menu {
         Player player = getOwner();
 
         try {
-            map.put(3, new ItemBuilder(this, Material.PIG_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Cochon"));
-                if (egg.equals(Material.PIG_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.PIG_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.PIG);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
+            List<MascotOption> mascotsOptions = List.of(
+                    // price : 10 taille normale, 15 taille petite, 20 taille très petite
+                    new MascotOption(3, Material.PIG_SPAWN_EGG, EntityType.PIG, "Cochon", 15),
+                    new MascotOption(4, Material.PANDA_SPAWN_EGG, EntityType.PANDA, "Panda", 10),
+                    new MascotOption(5, Material.SHEEP_SPAWN_EGG, EntityType.SHEEP, "Mouton",10),
+                    new MascotOption(10, Material.AXOLOTL_SPAWN_EGG, EntityType.AXOLOTL, "Axolotl",20),
+                    new MascotOption(11, Material.CHICKEN_SPAWN_EGG, EntityType.CHICKEN, "Poulet",20),
+                    new MascotOption(12, Material.COW_SPAWN_EGG, EntityType.COW, "Vache",10),
+                    new MascotOption(13, Material.GOAT_SPAWN_EGG, EntityType.GOAT, "Chèvre",15),
+                    new MascotOption(14, Material.MOOSHROOM_SPAWN_EGG, EntityType.MOOSHROOM, "Vache champignon",10),
+                    new MascotOption(15, Material.WOLF_SPAWN_EGG, EntityType.WOLF, "Loup",15),
+                    new MascotOption(16, Material.VILLAGER_SPAWN_EGG, EntityType.VILLAGER, "Villageois",10),
+                    new MascotOption(21, Material.SKELETON_SPAWN_EGG, EntityType.SKELETON, "Squelette",10),
+                    new MascotOption(22, Material.SPIDER_SPAWN_EGG, EntityType.SPIDER, "Araignée",10),
+                    new MascotOption(23, Material.ZOMBIE_SPAWN_EGG, EntityType.ZOMBIE, "Zombie",10)
+            );
 
-            map.put(4, new ItemBuilder(this, Material.PANDA_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Panda"));
-                if (egg.equals(Material.PANDA_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.PANDA_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.PANDA);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
+            mascotsOptions.forEach(option -> map.put(option.slot(), createMascotButton(option)));
 
-            map.put(5, new ItemBuilder(this, Material.SHEEP_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Mouton"));
-                if (egg.equals(Material.SHEEP_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.SHEEP_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.SHEEP);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(10, new ItemBuilder(this, Material.AXOLOTL_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Axolotl"));
-                if (egg.equals(Material.AXOLOTL_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.AXOLOTL_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.AXOLOTL);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(11, new ItemBuilder(this, Material.CHICKEN_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Poulet"));
-                if (egg.equals(Material.CHICKEN_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.CHICKEN_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.CHICKEN);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(12, new ItemBuilder(this, Material.COW_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Vache"));
-                if (egg.equals(Material.COW_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.COW_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.COW);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(13, new ItemBuilder(this, Material.GOAT_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Chèvre"));
-                if (egg.equals(Material.GOAT_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.GOAT_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.GOAT);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(14, new ItemBuilder(this, Material.MOOSHROOM_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Vache champignon"));
-                if (egg.equals(Material.MOOSHROOM_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.MOOSHROOM_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.MOOSHROOM);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(15, new ItemBuilder(this, Material.WOLF_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Loup"));
-                if (egg.equals(Material.WOLF_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.WOLF_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.WOLF);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(16, new ItemBuilder(this, Material.VILLAGER_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Villageois"));
-                if (egg.equals(Material.VILLAGER_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.VILLAGER_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.VILLAGER);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(21, new ItemBuilder(this, Material.SKELETON_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Squelette"));
-                if (egg.equals(Material.SKELETON_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.SKELETON_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.SKELETON);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(22, new ItemBuilder(this, Material.SPIDER_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Araignée"));
-                if (egg.equals(Material.SPIDER_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.SPIDER_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.SPIDER);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(23, new ItemBuilder(this, Material.ZOMBIE_SPAWN_EGG, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Zombie"));
-                if (egg.equals(Material.ZOMBIE_SPAWN_EGG)){
-                    itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(inventoryClickEvent -> {
-                if (!egg.equals(Material.ZOMBIE_SPAWN_EGG)){
-                    changeMascotsSkin(mascots, EntityType.ZOMBIE);
-                    player.playSound(player.getLocation(), selectSound, 1, 1);
-                    player.closeInventory();
-                } else {
-                    player.playSound(player.getLocation(), deniedSound, 1, 1);
-                }
-            }));
-
-            map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.displayName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(Component.text("§7Retourner au menu de votre mascotte")));
-            }).setOnClick(event -> {
-                CityMenu menu = new CityMenu(player);
-                menu.open();
-            }));
+            map.put(18, new ItemBuilder(this, Material.ARROW, meta -> {
+                meta.displayName(Component.text("§aRetour"));
+                meta.lore(List.of(Component.text("§7Retourner au menu de votre mascotte")));
+            }).setOnClick(event -> new CityMenu(getOwner()).open()));
 
             return map;
         } catch (Exception e) {
@@ -284,4 +96,33 @@ public class MascotsSkinMenu extends Menu {
         }
         return map;
     }
+
+    private ItemStack createMascotButton(MascotOption option) {
+        return new ItemBuilder(this, option.material(), itemMeta -> {
+            itemMeta.displayName(Component.text("§7" + option.displayName()));
+            itemMeta.lore(List.of(Component.text("§7Nécessite §d" + option.price + " d'Aywenites")));
+            if (egg.equals(option.material())) {
+                itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
+                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
+        }).setOnClick(event -> {
+
+            if (!egg.equals(option.material())) {
+                int aywenite = option.price;
+                Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
+                if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)){
+                    changeMascotsSkin(mascots, option.entityType(), getOwner(), matAywenite, aywenite);
+                    getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
+                    getOwner().closeInventory();
+                } else {
+                    MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
+                    getOwner().closeInventory();
+                }
+            } else {
+                getOwner().playSound(getOwner().getLocation(), deniedSound, 1, 1);
+            }
+        });
+    }
+
+    private record MascotOption(int slot, Material material, EntityType entityType, String displayName, int price) {}
 }

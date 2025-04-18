@@ -73,7 +73,7 @@ public class RelocateHome {
 
         List<Home> homes = HomesManager.getHomes(player.getUniqueId());
 
-        if(WorldGuardApi.isRegionConflict(player, location)) {
+        if(WorldGuardApi.isRegionConflict(location)) {
             MessagesManager.sendMessage(player, Component.text("§cTu ne peux pas définir un home ici, tu es dans une région protégée."), Prefix.HOME, MessageType.ERROR, true);
             return;
         }

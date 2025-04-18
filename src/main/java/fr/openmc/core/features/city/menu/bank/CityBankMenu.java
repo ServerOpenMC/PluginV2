@@ -6,6 +6,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -82,8 +83,9 @@ public class CityBankMenu extends Menu {
                 inventory.put(13, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
                     itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
                     itemMeta.lore(List.of(
-                            Component.text("§7La ville a actuellement §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false))
-                            )
+                           Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                            Component.text("§7Votre prochain intéret est de §b" + city.calculateCityInterest()*100 + "%")
+                        )
                     );
                 }));
             }
@@ -117,12 +119,12 @@ public class CityBankMenu extends Menu {
             inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
                 itemMeta.lore(List.of(
-                        Component.text("§7Vous allez retourner au menu des comptes en banque"),
+                        Component.text("§7Vous allez retourner au menu des villes"),
                         Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                 ));
+
             }).setOnClick(inventoryClickEvent -> {
-                BankMainMenu menu = new BankMainMenu(player);
-                menu.open();
+                new CityMenu(player).open();
             }));
 
             return inventory;

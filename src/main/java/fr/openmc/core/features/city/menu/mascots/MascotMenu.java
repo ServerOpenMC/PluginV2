@@ -117,42 +117,42 @@ public class MascotMenu extends Menu {
                     itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
-                        if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_MOVE)) {
-                            if (ItemUtils.hasAvailableSlot(player)) {
-                                city = CityManager.getPlayerCity(player.getUniqueId());
+                    if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")){
+                        if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)){
+                            if (ItemUtils.hasAvailableSlot(getOwner())){
+                                city = CityManager.getPlayerCity(getOwner().getUniqueId());
                                 if (city == null) {
-                                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                                    player.closeInventory();
+                                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                                    getOwner().closeInventory();
                                     return;
                                 }
                                 String city_uuid = city.getUUID();
                                 if (!movingMascots.contains(city_uuid)) {
-                                    startChronometer(player, "mascotsMove", 120, ChronometerType.ACTION_BAR, "Temps Restant : %sec%s", ChronometerType.ACTION_BAR, "§cDéplacement de la Mascotte annulé");
+                                    startChronometer(getOwner(), "mascotsMove", 120, ChronometerType.ACTION_BAR, "Temps Restant : %sec%s", ChronometerType.ACTION_BAR, "§cDéplacement de la Mascotte annulé");
                                     movingMascots.add(city_uuid);
-                                    giveChest(player);
+                                    giveChest(getOwner());
                                 }
+                            } else {
+                                MessagesManager.sendMessage(getOwner(), Component.text("Libérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
                             }
                         } else {
-                            MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                         }
-                    }
+                    };
                     player.closeInventory();
-                });
-            };
+            });
+        };
+        List<Component> requiredAmount = new ArrayList<>();
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
 
-            if (Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
-                MenuUtils.runDynamicItem(player, this, 13, moveMascotItemSupplier)
-                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
-            } else {
-                map.put(13, moveMascotItemSupplier.get());
-            }
-
-            List<Component> requiredAmount = new ArrayList<>();
-            requiredAmount.add(Component.text("§7Nécessite §d" + MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID())).getUpgradeCost() + " d'Aywenite"));
+        if (mascotsLevels.equals(MascotsLevels.level10)){
+            requiredAmount.add(Component.text("§7Niveau max atteint"));
+        } else {
+            requiredAmount.add(Component.text("§7Nécessite §d" + mascotsLevels.getUpgradeCost() + " d'Aywenites"));
+        }
 
             map.put(15, new ItemBuilder(this, Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Améloiorer votre §cMascotte"));
+                itemMeta.displayName(Component.text("§7Améliorer votre §cMascotte"));
                 itemMeta.lore(requiredAmount);
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -161,6 +161,8 @@ public class MascotMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
             }).setOnClick(inventoryClickEvent -> {
 
+                if (mascotsLevels.equals(MascotsLevels.level10)) return;
+
                 if (city == null) {
                     MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                     player.closeInventory();
@@ -168,11 +170,11 @@ public class MascotMenu extends Menu {
                 }
                 if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_UPGRADE)) {
                     String city_uuid = city.getUUID();
-                    int aywenite = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city_uuid)).getUpgradeCost();
+                    int aywenite = mascotsLevels.getUpgradeCost();
                     Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
                     if (ItemUtils.hasEnoughItems(player, matAywenite, aywenite)) {
                         ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
-                        upgradeMascots(city_uuid, mascots.getUniqueId());
+                        upgradeMascots(city_uuid);
                         MessagesManager.sendMessage(player, Component.text("Vous avez amélioré votre mascotte au §cNiveau " + MascotUtils.getMascotLevel(city_uuid)), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;

@@ -8,11 +8,19 @@ import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.menu.ChestMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +36,7 @@ public class City {
     private final String cityUUID;
     private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
     private Set<UUID> members = new HashSet<>();
-    private Double balance;
+    private Double balance = Double.valueOf(0); // set default value cause if its null, error in updateBalance
     private String name;
     private Integer chestPages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
@@ -368,6 +376,47 @@ public class City {
     }
 
     /**
+     * Adds money to the city bank and removes it from {@link Player}
+     * @param player The player depositing into the bank
+     * @param input The input string to get the money value
+     */
+    public void depositCityBank(Player player, String input) {
+        if (InputUtils.isInputMoney(input)) {
+            double moneyDeposit = InputUtils.convertToMoneyValue(input);
+
+            if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
+                updateBalance(moneyDeposit);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            } else {
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+        }
+    }
+
+    /**
+     * Removes money from the city bank and add it to {@link Player}
+     * @param player The player withdrawing from the bank
+     * @param input The input string to get the money value
+     */
+    public void withdrawCityBank(Player player, String input) {
+        if (InputUtils.isInputMoney(input)) {
+            double moneyDeposit = InputUtils.convertToMoneyValue(input);
+
+            if (getBalance() < moneyDeposit) {
+                MessagesManager.sendMessage(player, Component.text("Ta ville n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
+            } else {
+                updateBalance(moneyDeposit * -1);
+                EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
+                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+            }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+        }
+    }
+
+    /**
      * Updates the power of a City by adding or removing points.
      *
      * @param point The amount to be added or remove to the existing power.
@@ -627,5 +676,20 @@ public class City {
                 chestPages -= 1;
             }
         });
+    }
+
+    // Interests calculated as proportion not percentage (eg: 0.03 = 3%)
+    public double calculateCityInterest() {
+        double interest = .03; // base interest is 3%
+
+        // TODO: link to other systems here by simply adding to the interest variable here
+
+        return interest;
+    }
+
+    public void applyCityInterest() {
+        double interest = calculateCityInterest();
+        double amount = getBalance() * interest;
+        updateBalance(amount);
     }
 }

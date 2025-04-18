@@ -18,7 +18,10 @@ public class ListenersManager {
                 new DisableCreakings(),
                 new ChronometerListener(),
                 new CubeListener(OMCPlugin.getInstance()),
-                new ItemInteraction()
+                new ItemInteraction(),
+                new CubeListener(OMCPlugin.getInstance()),
+                new RespawnListener(),
+                new AsyncChatListener(OMCPlugin.getInstance())
         );
     }
 
