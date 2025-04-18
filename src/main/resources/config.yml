@@ -10,6 +10,10 @@ features:
   analytics: true
   transactions: true
 
+chat:
+  # {prefix}, {suffix}, {name}, {message}
+  message: "&r{prefix} {name}&8: &f{message}"
+
 #####
 # Paramètres pour un environnement de production
 #####
