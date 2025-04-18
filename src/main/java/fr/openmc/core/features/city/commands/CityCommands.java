@@ -3,10 +3,7 @@ package fr.openmc.core.features.city.commands;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
-import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.MascotsLevels;
-import fr.openmc.core.features.city.mascots.MascotsListener;
-import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mascots.*;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
@@ -14,6 +11,7 @@ import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -293,9 +291,16 @@ public class CityCommands {
             return;
         }
 
+        Chunk chunk = sender.getWorld().getChunkAt(chunkX, chunkZ);
+        if (WorldGuardApi.doesChunkContainWGRegion(chunk)) {
+            MessagesManager.sendMessage(sender, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, true);
+            return;
+        }
+
         if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
-            // TODO: Vérifier si le chunk est dans le spawn
-            MessagesManager.sendMessage(sender, Component.text("Ce chunk est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            City chunkCity = CityManager.getCityFromChunk(chunkX, chunkZ);
+            String cityName = chunkCity.getCityName();
+            MessagesManager.sendMessage(sender, Component.text("Ce chunk est déjà claim par " + cityName + "."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -309,7 +314,7 @@ public class CityCommands {
 
 
 
-        if ((!MascotsManager.freeClaim.containsKey(city.getUUID())) || (MascotsManager.freeClaim.get(city.getUUID()) <= 0)) {
+        if ((!CityManager.freeClaim.containsKey(city.getUUID())) || (CityManager.freeClaim.get(city.getUUID()) <= 0)) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -323,10 +328,10 @@ public class CityCommands {
             city.updateBalance((double) (price*-1));
             ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
         } else {
-            MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
+            CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) - 1);
         }
 
-        city.addChunk(sender.getWorld().getChunkAt(chunkX, chunkZ));
+        city.addChunk(chunk);
 
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }
@@ -473,19 +478,11 @@ public class CityCommands {
         }
         CityManager.changeCityType(city.getUUID());
         CityTypeCooldown.setCooldown(city.getUUID());
+        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
 
-        if (MascotUtils.getMascotUUIDOfCity(city.getUUID()) != null) {
-            LivingEntity mob = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
+        if (mascot != null) {
+            LivingEntity mob = MascotUtils.loadMascot(mascot);
             MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
-
-            for (UUID townMember : city.getMembers()) {
-                if (Bukkit.getPlayer(townMember) instanceof Player player) {
-                    for (PotionEffect potionEffect : mascotsLevels.getBonus()) {
-                        player.removePotionEffect(potionEffect.getType());
-                    }
-                    MascotsManager.giveMascotsEffect(city.getUUID(), player.getUniqueId());
-                }
-            }
 
             double lastHealth = mascotsLevels.getHealth();
             int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", "")) - 2;
@@ -546,6 +543,11 @@ public class CityCommands {
 
     public static boolean createCity(Player player, String name, String type) {
 
+        if (!CityCreateConditions.canCityCreate(player)){
+            MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         UUID uuid = player.getUniqueId();
 
         MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
@@ -554,6 +556,12 @@ public class CityCommands {
 
         Chunk origin = player.getChunk();
         AtomicBoolean isClaimed = new AtomicBoolean(false);
+
+        if (WorldGuardApi.doesChunkContainWGRegion(origin)) {
+            MessagesManager.sendMessage(player, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
                 if (CityManager.isChunkClaimed(origin.getX() + x, origin.getZ() + z)) {
@@ -594,7 +602,7 @@ public class CityCommands {
         city.addPermission(uuid, CPermission.OWNER);
 
         CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
-        MascotsManager.freeClaim.put(cityUUID, 15);
+        CityManager.freeClaim.put(cityUUID, 15);
 
         player.closeInventory();
 

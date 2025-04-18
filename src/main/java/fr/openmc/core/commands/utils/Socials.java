@@ -63,4 +63,14 @@ public class Socials {
                 OMCPlugin.getConfigs().getString("blog", "INVALID CONFIG")
         ));
     }
+
+    @Command("wiki")
+    @CommandPermission("omc.commands.wiki")
+    @Description("Donne le lien du wiki")
+    private void wiki(CommandSender sender) {
+        sender.sendMessage(parseText(
+                "Lisez des articles sur ",
+                OMCPlugin.getConfigs().getString("wiki", "INVALID CONFIG")
+        ));
+    }
 }

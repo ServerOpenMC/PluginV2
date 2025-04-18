@@ -10,9 +10,14 @@ features:
   analytics: true
   transactions: true
 
+chat:
+  # {prefix}, {suffix}, {name}, {message}
+  message: "&r{prefix} {name}&8: &f{message}"
+
 #####
 # Paramètres pour un environnement de production
 #####
 homepage: "https://openmc.fr/"
 discord: "https://discord.gg/aywen/"
 blog: "https://blog.openmc.fr/"
+wiki: "https://wiki.openmc.fr/"

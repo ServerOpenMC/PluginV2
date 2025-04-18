@@ -74,7 +74,7 @@ public class HomeUtil {
     }
 
     public static boolean checkName(Player player, MessagesManager msg, String name) {
-        if(WorldGuardApi.isRegionConflict(player, player.getLocation())) {
+        if(WorldGuardApi.isRegionConflict(player.getLocation())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas ajouter un home dans une région protégée !"), Prefix.HOME, MessageType.ERROR, true);
             return true;
         }

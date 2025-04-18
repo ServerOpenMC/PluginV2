@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -13,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -35,6 +42,8 @@ public class BankManager {
         banks = loadAllBanks();
 
         CommandsManager.getHandler().register(new BankCommands());
+
+        updateInterestTimer();
     }
 
     public double getBankBalance(UUID player) {
@@ -71,12 +80,12 @@ public class BankManager {
 
             if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
                 addBankBalance(player.getUniqueId(), moneyDeposit);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.BANK, MessageType.ERROR, false);
             }
         } else {
-            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.BANK, MessageType.ERROR, true);
         }
     }
 
@@ -85,14 +94,14 @@ public class BankManager {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
             if (getBankBalance(player.getUniqueId()) < moneyDeposit) {
-                MessagesManager.sendMessage(player, Component.text("Tu n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu n'a pas assez d'argent en banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
                 withdrawBankBalance(player.getUniqueId(), moneyDeposit);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
             }
         } else {
-            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.BANK, MessageType.ERROR, true);
         }
     }
 
@@ -158,5 +167,60 @@ public class BankManager {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    // Interests calculated as proportion not percentage (eg: 0.03 = 3%)
+    public double calculatePlayerInterest(UUID player) {
+        double interest = .03; // base interest is 3%
+
+        // TODO: link to other systems here by simply adding to the interest variable here
+        
+        return interest;
+    }
+
+    public void applyPlayerInterest(UUID player) {
+        double interest = calculatePlayerInterest(player);
+        double amount = getBankBalance(player) * interest;
+        addBankBalance(player, amount);
+
+        Player sender = Bukkit.getPlayer(player);
+        if (sender != null)
+            MessagesManager.sendMessage(sender, Component.text("Vous venez de percevoir §d" + interest*100 + "% §rd'intérèt, soit §d" + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r" + EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.SUCCESS, false);
+    }
+
+    // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY BANKS SAVED IN THE DB
+    public void applyAllPlayerInterests() {
+        banks = loadAllBanks();
+        for (UUID player : banks.keySet()) {
+            applyPlayerInterest(player);
+        }
+    }
+
+    private void updateInterestTimer() {
+        LocalDateTime now = LocalDateTime.now();
+
+        LocalDateTime nextMonday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY)).withHour(2).withMinute(0).withSecond(0);
+        // if it is after 2 AM, get the monday after
+        if (nextMonday.isBefore(now))
+            nextMonday = nextMonday.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).withHour(2).withMinute(0).withSecond(0);
+
+        LocalDateTime nextThursday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY)).withHour(2).withMinute(0).withSecond(0);
+        // if it is after 2 AM, get the thursday after
+        if (nextThursday.isBefore(now))
+            nextThursday = nextThursday.with(TemporalAdjusters.next(DayOfWeek.THURSDAY)).withHour(2).withMinute(0).withSecond(0);
+
+        LocalDateTime nextInterestUpdate = nextMonday.isBefore(nextThursday) ? nextMonday : nextThursday;
+        
+        long secondsUntilUpdate = ChronoUnit.SECONDS.between(now, nextInterestUpdate);
+        long ticksUntilUpdate = secondsUntilUpdate * 20; // there are 20 ticks in a second
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
+            applyAllPlayerInterests();
+            CityManager.applyAllCityInterests();
+            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
+            updateInterestTimer();
+
+        }, ticksUntilUpdate);
     }
 }

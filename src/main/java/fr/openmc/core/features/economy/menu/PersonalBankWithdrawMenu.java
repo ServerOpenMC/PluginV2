@@ -69,9 +69,9 @@ public class PersonalBankWithdrawMenu extends Menu {
                 BankManager.getInstance().withdrawBankBalance(player.getUniqueId(), moneyBankPlayer);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyBankPlayer);
                 MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyBankPlayer)
-                            + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+                            + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
             } else {
-                MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.BANK, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -91,9 +91,9 @@ public class PersonalBankWithdrawMenu extends Menu {
             if (halfMoneyBankPlayer != 0) {
                 BankManager.getInstance().withdrawBankBalance(player.getUniqueId(), halfMoneyBankPlayer);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), halfMoneyBankPlayer);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyBankPlayer) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyBankPlayer) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
             } else {
-                MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.BANK, MessageType.ERROR, false);
             }
 
             player.closeInventory();

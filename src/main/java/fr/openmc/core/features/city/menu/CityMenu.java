@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
@@ -99,39 +100,55 @@ public class CityMenu extends Menu {
             }
         }));
 
-        LivingEntity mascot = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
-        assert mascot != null;
-
+        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+        LivingEntity mob;
         List<Component> loreMascots;
-        if (!MascotUtils.getMascotState(city.getUUID())) {
-            loreMascots = List.of(
-                    Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
-                    Component.text("§7Status : §cEn Attente de Soin"),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
-            );
+
+        if (mascot!=null){
+            mob = MascotUtils.loadMascot(mascot);
+
+            if (!MascotUtils.getMascotState(city.getUUID())) {
+                loreMascots = List.of(
+                        Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
+                        Component.text("§7Status : §cEn Attente de Soins"),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                );
+            } else {
+                loreMascots = List.of(
+                        Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
+                        Component.text("§7Status : §aEn Vie"),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                );
+            }
         } else {
+            mob = null;
             loreMascots = List.of(
-                    Component.text("§7Vie : §c" + mascot.getHealth() +  "§4/§c" + mascot.getMaxHealth()),
-                    Component.text("§7Status : §aEn Vie"),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                    Component.text("§cMascotte Inexistante")
             );
         }
 
-        inventory.put(8, new ItemBuilder(this, MascotMenu.getSpawnEgg(mascot), itemMeta -> {
-            itemMeta.itemName(Component.text("§cVotre Mascotte"));
-            itemMeta.lore(loreMascots);
-        }).setOnClick(inventoryClickEvent -> {
-            if (!MascotUtils.getMascotState(city.getUUID())){
-                MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
-                menu.open();
-                return;
-            }
+        if (mob!=null){
+            inventory.put(8, new ItemBuilder(this, MascotMenu.getSpawnEgg(mob), itemMeta -> {
+                itemMeta.itemName(Component.text("§cVotre Mascotte"));
+                itemMeta.lore(loreMascots);
+            }).setOnClick(inventoryClickEvent -> {
+                if (!MascotUtils.getMascotState(city.getUUID())){
+                    MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
+                    menu.open();
+                    return;
+                }
 
-            MascotMenu menu = new MascotMenu(player, mascot);
-            menu.open();
-        }));
+                MascotMenu menu = new MascotMenu(player, mob);
+                menu.open();
+            }));
+        } else {
+            inventory.put(8, new ItemBuilder(this, Material.ZOMBIE_SPAWN_EGG, itemMeta -> {
+                itemMeta.itemName(Component.text("§cVotre Mascotte"));
+                itemMeta.lore(loreMascots);
+            }));
+        }
 
         List<Component> loreChunkCity;
 

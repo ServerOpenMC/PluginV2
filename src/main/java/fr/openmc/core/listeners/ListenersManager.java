@@ -15,7 +15,9 @@ public class ListenersManager {
                 new ClockInfos(),
                 new MailboxListener(),
                 new ChronometerListener(),
-                new CubeListener(OMCPlugin.getInstance())
+                new CubeListener(OMCPlugin.getInstance()),
+                new RespawnListener(),
+                new AsyncChatListener(OMCPlugin.getInstance())
         );
     }
 
