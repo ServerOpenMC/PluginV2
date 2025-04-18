@@ -690,6 +690,6 @@ public class ContestManager {
     }
 
     public void insertCustomContest(String camp1, String color1, String camp2, String color2) {
-        data = new ContestData(camp1, color1, camp2, color2, 1, "ven.", 0, 0);
+        data = new ContestData(camp1, camp2, color1, color2, 1, "ven.", 0, 0);
     }
 }
