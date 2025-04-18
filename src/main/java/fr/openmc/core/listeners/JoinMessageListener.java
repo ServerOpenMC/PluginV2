@@ -23,7 +23,6 @@ public class JoinMessageListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
 
         TabList.getInstance().updateTabList(player);
 
