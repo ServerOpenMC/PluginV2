@@ -14,6 +14,7 @@ import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -293,9 +294,16 @@ public class CityCommands {
             return;
         }
 
+        Chunk chunk = sender.getWorld().getChunkAt(chunkX, chunkZ);
+        if (WorldGuardApi.doesChunkContainWGRegion(chunk)) {
+            MessagesManager.sendMessage(sender, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, true);
+            return;
+        }
+
         if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
-            // TODO: Vérifier si le chunk est dans le spawn
-            MessagesManager.sendMessage(sender, Component.text("Ce chunk est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            City chunkCity = CityManager.getCityFromChunk(chunkX, chunkZ);
+            String cityName = chunkCity.getCityName();
+            MessagesManager.sendMessage(sender, Component.text("Ce chunk est déjà claim par " + cityName + "."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -326,7 +334,7 @@ public class CityCommands {
             MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) - 1);
         }
 
-        city.addChunk(sender.getWorld().getChunkAt(chunkX, chunkZ));
+        city.addChunk(chunk);
 
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }
@@ -554,6 +562,12 @@ public class CityCommands {
 
         Chunk origin = player.getChunk();
         AtomicBoolean isClaimed = new AtomicBoolean(false);
+
+        if (WorldGuardApi.doesChunkContainWGRegion(origin)) {
+            MessagesManager.sendMessage(player, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         for (int x = -1; x <= 1; x++) {
             for (int z = -1; z <= 1; z++) {
                 if (CityManager.isChunkClaimed(origin.getX() + x, origin.getZ() + z)) {
