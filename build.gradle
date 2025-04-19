@@ -1,0 +1,93 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+}
+
+group = 'fr.openmc'
+version = "GIT-"+System.getenv("GITHUB_SHA") ?: "unknown"
+
+repositories {
+    mavenCentral()
+    maven {url = "https://repo.papermc.io/repository/maven-public/"}
+    maven {url = "https://oss.sonatype.org/content/groups/public/"}
+    maven {url = "https://mvn.mathiasd.fr/releases"}
+    maven {url = "https://maven.enginehub.org/repo/" }
+    maven {url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'}
+    maven {url = "https://repo.dmulloy2.net/repository/public/"}
+    maven {url = "https://jitpack.io"} // Laissez en dernier
+}
+
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    compileOnly("com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14")
+    compileOnly("net.luckperms:api:5.4")
+    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly('com.sk89q.worldguard:worldguard-bukkit:7.0.9')
+    compileOnly("com.github.dmulloy2:ProtocolLib:-SNAPSHOT") // ProtocolLib
+
+    implementation("de.rapha149.signgui:signgui:2.5.0")
+    implementation("dev.xernas:menulib:1.1.0")
+    implementation("org.jetbrains:annotations:24.1.0")
+    implementation("com.github.Revxrsal.Lamp:common:3.2.1")
+    implementation("com.github.Revxrsal.Lamp:bukkit:3.2.1")
+    implementation("net.raidstone:wgevents:1.18.1") // Version custom de Webbeh/WorldGuard-Events
+
+    // lombok
+    compileOnly("org.projectlombok:lombok:1.18.34")
+    annotationProcessor("org.projectlombok:lombok:1.18.34")
+    testCompileOnly("org.projectlombok:lombok:1.18.34")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.34")
+
+    // unit tests
+    testImplementation("org.slf4j:slf4j-simple:2.0.16")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.45.0")
+    testImplementation("com.h2database:h2:2.3.232")
+}
+
+def targetJavaVersion = 21
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release.set(targetJavaVersion)
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('paper-plugin.yml') {
+        expand props
+    }
+}
+jar {
+    manifest {
+        attributes("GIT-COMMIT" : System.getenv("GITHUB_SHA") ?: "unknown")
+    }
+    destinationDirectory.set(file("./builds/"))
+}
+
+clean {
+    delete "builds"
+}
+
+shadowJar {
+    destinationDirectory.set(file("./builds/"))
+    archiveFileName = "OpenMC.jar"
+}
+
+test { useJUnitPlatform() }
+
+apply plugin: "com.github.johnrengelman.shadow"

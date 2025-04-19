@@ -23,7 +23,7 @@ public class TransactionsManager {
 
         List<Transaction> transactions = new ArrayList<>();
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM transactions WHERE recipient = ? OR sender = ? ORDER BY date DESC LIMIT ?");
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT recipient, sender, amount, reason FROM transactions WHERE recipient = ? OR sender = ? ORDER BY date DESC LIMIT ?");
             statement.setString(1, player.toString());
             statement.setString(2, player.toString());
             statement.setInt(3, limit);

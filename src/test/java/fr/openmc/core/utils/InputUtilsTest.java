@@ -1,13 +1,13 @@
 package fr.openmc.core.utils;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class InputUtilsTests {
+public class InputUtilsTest {
+
     @Test
-    @DisplayName("Convertion Sign Input to Money")
+    @DisplayName("Conversion Sign Input to Money")
     public void testConvertSignInputToMoney_ShouldGiveTheAmountInFloat() {
         Assertions.assertEquals(
                 3000000.0,
@@ -55,4 +55,5 @@ public class InputUtilsTests {
     public void testIsInputMoney_MustReturnFalse(String input) {
         Assertions.assertFalse(InputUtils.isInputMoney(input));
     }
+
 }

@@ -1,21 +1,22 @@
 package fr.openmc.core.utils;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
-import fr.openmc.core.TestPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.bukkit.Bukkit;
-import org.junit.jupiter.api.*;
 
-public class MotdUtilsTests {
-    ServerMock server;
-    TestPlugin plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.junit.jupiter.api.*;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
+
+public class MotdUtilsTest {
+
+    private ServerMock server;
+    private JavaPlugin plugin;
 
     @BeforeEach
     public void setUp() {
         server = MockBukkit.mock();
-        plugin = MockBukkit.load(TestPlugin.class);
+        plugin = MockBukkit.createMockPlugin();
     }
 
     @AfterEach
@@ -30,9 +31,12 @@ public class MotdUtilsTests {
     @Test
     @DisplayName("MOTD switch")
     public void testMOTD() {
-        String def = getComponentContent(server.motd());
+        String motd = getComponentContent(server.motd());
+    
         new MotdUtils(plugin);
         server.getScheduler().performTicks(12001L);
-        Assertions.assertNotNull(getComponentContent(server.motd()), def);
+
+        Assertions.assertNotEquals(getComponentContent(server.motd()), motd);
     }
+
 }

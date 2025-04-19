@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -11,8 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-
-import static fr.openmc.core.features.city.mascots.MascotsManager.*;
 
 public class CityMessages {
     private static void sendLine(Audience audience, String title, String info) {
@@ -32,11 +30,13 @@ public class CityMessages {
         int power = CityManager.getCityPowerPoints(city.getUUID());
 
         String type = CityManager.getCityType(city.getUUID());
-        if (MascotUtils.getMascotUUIDOfCity(city.getUUID())!=null){
-            LivingEntity mascot = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(city.getUUID()));
-            if (!MascotUtils.getMascotState(city.getUUID())){
-                mascotLife = String.valueOf(mascot.getHealth());
-            }}
+        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+        if (mascot!=null){
+            LivingEntity mob = MascotUtils.loadMascot(mascot);
+            if (MascotUtils.getMascotState(city.getUUID())){
+                mascotLife = String.valueOf(mob.getHealth());
+            }
+        }
 
         sender.sendMessage(
                 Component.text("--- ").color(NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.BOLD, false).append(
@@ -59,8 +59,8 @@ public class CityMessages {
         } else {
             sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
         }
-        if (MascotsManager.freeClaim.containsKey(city.getUUID())){
-            sendLine(sender, "Claim gratuit", String.valueOf(MascotsManager.freeClaim.get(city.getUUID())));
+        if (CityManager.freeClaim.containsKey(city.getUUID())){
+            sendLine(sender, "Claim gratuit", String.valueOf(CityManager.freeClaim.get(city.getUUID())));
         }
     }
 }

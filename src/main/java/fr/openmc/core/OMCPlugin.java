@@ -2,11 +2,12 @@ package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
-import fr.openmc.core.features.ScoreboardManager;
+import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.corporation.CompanyManager;
 import fr.openmc.core.features.corporation.PlayerShopManager;
 import fr.openmc.core.features.corporation.ShopBlocksManager;
@@ -15,7 +16,8 @@ import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.listeners.ListenersManager;
@@ -25,6 +27,7 @@ import fr.openmc.core.utils.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
+import fr.openmc.core.utils.freeze.FreezeManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Location;
@@ -36,7 +39,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.sql.SQLException;
 
-public final class OMCPlugin extends JavaPlugin {
+public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
     @Getter static TranslationManager translationManager;
@@ -72,11 +75,15 @@ public final class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
+        new BankManager();
         new ScoreboardManager();
         new HomesManager();
         new HomeUpgradeManager(HomesManager.getInstance());
         new TPAManager();
+        new FreezeManager();
         new FriendManager();
+        new QuestsManager();
+        new TabList();
 
         new ShopBlocksManager(this);
         new PlayerShopManager();
@@ -95,9 +102,11 @@ public final class OMCPlugin extends JavaPlugin {
         HomesManager.getInstance().saveHomesData();
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
+        QuestsManager.getInstance().saveQuests();
 
         MascotsManager.saveMascots(MascotsManager.mascots);
-        MascotsManager.saveFreeClaims(MascotsManager.freeClaim);
+        CityManager.saveFreeClaims(CityManager.freeClaim);
+
 
         CompanyManager.saveAllCompanies();
         CompanyManager.saveAllShop();
@@ -118,5 +127,9 @@ public final class OMCPlugin extends JavaPlugin {
         for (Listener listener : listeners) {
             instance.getServer().getPluginManager().registerEvents(listener, instance);
         }
+    }
+
+    public static boolean isUnitTestVersion() {
+        return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
     }
 }

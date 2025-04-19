@@ -16,7 +16,6 @@ import fr.openmc.core.features.economy.commands.Pay;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 public class EconomyManager {
     @Getter private static Map<UUID, Double> balances;
@@ -87,7 +86,7 @@ public class EconomyManager {
         return  format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), getEconomyIcon());
     }
 
-    public String getFormattedSimplifiedNumber(double balance) {
+    public static String getFormattedSimplifiedNumber(double balance) {
         DecimalFormat df = new DecimalFormat("#.##");
         return balance >= 1000000000 ? df.format(balance / 1000000000) + "B" :
                 balance >= 1000000 ? df.format(balance / 1000000) + "M" :
@@ -97,9 +96,8 @@ public class EconomyManager {
 
     public static String getEconomyIcon() {
         if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            return PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
+            return "§f" + PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
         }
         return "Ⓐ";
     }
-
 }

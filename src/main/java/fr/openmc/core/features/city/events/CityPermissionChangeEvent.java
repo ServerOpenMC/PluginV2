@@ -8,8 +8,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public class CityPermissionChangeEvent extends Event {
 
     @Getter private final City city;

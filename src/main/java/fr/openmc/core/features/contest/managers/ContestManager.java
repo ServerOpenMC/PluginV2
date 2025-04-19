@@ -31,12 +31,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
@@ -44,11 +44,15 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getRunCommand
 
 public class ContestManager {
 
+    public static final String TABLE_CONTEST = "contest";
+    public static final String TABLE_CONTEST_CAMPS = "contest_camps";
+
     @Getter static ContestManager instance;
 
     public final File contestFile;
     public YamlConfiguration contestConfig;
     private final OMCPlugin plugin;
+
 
     @Setter private ContestPlayerManager contestPlayerManager;
 
@@ -97,14 +101,14 @@ public class ContestManager {
 
     public static void initDb(Connection conn) throws SQLException {
         // Système de Contest
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest (phase int(11), camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int(11), points2 int(11))").executeUpdate();
-        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM contest");
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONTEST + " (phase int, camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int, points2 int)").executeUpdate();
+        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_CONTEST);
 
         ResultSet rs = state.executeQuery();
 
         // push first contest
         if (rs.next() && rs.getInt(1) == 0) {
-            PreparedStatement states = conn.prepareStatement("INSERT INTO contest (phase, camp1, color1, camp2, color2, startdate, points1, points2) VALUES (1, 'Mayonnaise', 'YELLOW', 'Ketchup', 'RED', ?, 0,0)");
+            PreparedStatement states = conn.prepareStatement("INSERT INTO " + TABLE_CONTEST + " (phase, camp1, color1, camp2, color2, startdate, points1, points2) VALUES (1, 'Mayonnaise', 'YELLOW', 'Ketchup', 'RED', ?, 0,0)");
             String dateContestStart = "ven.";
             states.setString(1, dateContestStart);
             states.executeUpdate();
@@ -112,7 +116,7 @@ public class ContestManager {
 
 
         // Table camps
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest_camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int(11), point_dep int(11))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONTEST_CAMPS + " (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int, point_dep int)").executeUpdate();
     }
 
     private void loadContestConfig() {
@@ -135,7 +139,7 @@ public class ContestManager {
 
     // CONTEST DATA
     public void initContestData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest WHERE 1")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT camp1, camp2, color1, color2, phase, startdate, points1, points2 FROM contest WHERE 1")) {
             ResultSet result = states.executeQuery();
             if (result.next()) {
                 String camp1 = result.getString("camp1");
@@ -176,7 +180,7 @@ public class ContestManager {
 
     // CONTEST PLAYER DATA
     public void loadContestPlayerData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM contest_camps")) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT minecraft_uuid, name, point_dep, camps FROM " + TABLE_CONTEST_CAMPS)) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String uuid = result.getString("minecraft_uuid");
@@ -194,12 +198,20 @@ public class ContestManager {
     }
 
     public void saveContestPlayerData() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
-                "INSERT INTO contest_camps (minecraft_uuid, name, camps, point_dep) " +
-                        "VALUES (?, ?, ?, ?) " +
-                        "ON DUPLICATE KEY UPDATE " +
-                        "name = VALUES(name), camps = VALUES(camps), point_dep = VALUES(point_dep)"
-        )) {
+        String sql;
+        
+        if (OMCPlugin.isUnitTestVersion()) {
+            sql = "MERGE INTO " + TABLE_CONTEST_CAMPS +
+                    "KEY(minecraft_uuid) " +
+                    "VALUES (?, ?, ?, ?)";
+        } else {
+            sql = "INSERT INTO " + TABLE_CONTEST_CAMPS + " (minecraft_uuid, name, camps, point_dep) " +
+                    "VALUES (?, ?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE " +
+                    "name = VALUES(name), camps = VALUES(camps), point_dep = VALUES(point_dep)";
+        }
+        
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql)) {
             plugin.getLogger().info("Sauvegarde des données des Joueurs du Contest...");
             dataPlayer.forEach((uuid, playerData) -> {
                 try {
@@ -255,7 +267,7 @@ public class ContestManager {
             updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
         }
 
-        data.setPhase(3);
+        data.setPhase(1);
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
@@ -432,10 +444,9 @@ public class ContestManager {
 
         // STATS PERSO + REWARDS
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
-
+        AtomicInteger rank = new AtomicInteger(1);
         // For each player in contest
         orderedMap.forEach((uuid, dataPlayer1) -> {
-            int rank = 1;
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
@@ -447,7 +458,7 @@ public class ContestManager {
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
             String playerTitleContest = contestPlayerManager.getTitleWithPoints(points) + playerCampName;
-            // ex Novice en + Moutarde
+            // ex                                                             Novice en + Moutarde
 
             bookMetaPlayer.addPages(
                     Component.text("§8§lStatistiques Personnelles\n§0Votre camp : ")
@@ -455,52 +466,79 @@ public class ContestManager {
                             .append(Component.text("\n§0Votre Titre sur Le Contest §8: "))
                             .append(Component.text(playerTitleContest).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
                             .append(Component.text("\n§0Votre Rang sur Le Contest : §8#"))
-                            .append(Component.text(rank))
+                            .append(Component.text(rank.get()))
                             .append(Component.text("\n§0Points Déposés : §b" + points))
             );
 
+            List<ItemStack> itemListRewards = new ArrayList<>();
+            String textRewards = "§8§lRécompenses";
+
             int money = 0;
+            int aywenite = 0;
+            double multiplicator = contestPlayerManager.getMultiplicatorFromRank(contestPlayerManager.getRankContestFromOfflineInt(player));
             if(contestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
+
+                // Gagnant - ARGENT
                 int moneyMin = 10000;
                 int moneyMax = 12000;
-                double multi = contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
-                moneyMin = (int) (moneyMin * multi);
-                moneyMax = (int) (moneyMax * multi);
+                moneyMin = (int) (moneyMin * multiplicator);
+                moneyMax = (int) (moneyMax * multiplicator);
 
-                money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
+                Random randomMoney = new Random();
+                money = randomMoney.nextInt(moneyMin, moneyMax);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
-
+                // Gagnant - Aywenite
+                int ayweniteMin = 40;
+                int ayweniteMax = 60;
+                ayweniteMin = (int) (ayweniteMin * multiplicator);
+                ayweniteMax = (int) (ayweniteMax * multiplicator);
+                Random randomAwyenite = new Random();
+                aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
             } else {
+                // Perdant - ARGENT
                 int moneyMin = 2000;
                 int moneyMax = 4000;
-                double multi = contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player));
-                moneyMin = (int) (moneyMin * multi);
-                moneyMax = (int) (moneyMax * multi);
+                moneyMin = (int) (moneyMin * multiplicator);
+                moneyMax = (int) (moneyMax * multiplicator);
 
-                money = contestPlayerManager.giveRandomly(moneyMin, moneyMax);
+                Random randomMoney = new Random();
+                money = randomMoney.nextInt(moneyMin, moneyMax);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
-            }
 
-            //TODO: Mettre Item qui permet d'améliorer sa Mascotte
+                // Perdant - Aywenite
+                int ayweniteMin = 20;
+                int ayweniteMax = 25;
+                ayweniteMin = (int) (ayweniteMin * multiplicator);
+                ayweniteMax = (int) (ayweniteMax * multiplicator);
+                Random randomAwyenite = new Random();
+                aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
+            }
+            // PRINT REWARDS
+
+            textRewards += "\n§8+ §6" + money + "$ ";
+            textRewards += "\n§9+ §d" + aywenite + " d'Aywenite ";
+            textRewards += "\n§7Boost de §b" + multiplicator;
 
             bookMetaPlayer.addPages(
-                    Component.text("§8§lRécompenses\n§0+ " + money + "$ §b(x" + contestPlayerManager.getMultiMoneyFromRang(contestPlayerManager.getRankContestFromOfflineInt(player)) + ")")
+                    Component.text(textRewards)
             );
 
             bookPlayer.setItemMeta(bookMetaPlayer);
 
-            List<ItemStack> itemlist = new ArrayList<>();
-            itemlist.add(bookPlayer);
+            ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+            ayweniteItemStack.setAmount(aywenite);
+            itemListRewards.add(bookPlayer);
+            itemListRewards.add(ayweniteItemStack);
 
-            ItemStack[] items = itemlist.toArray(new ItemStack[itemlist.size()]);
-            playerItemsMap.put(player, items);
-            rank++;
+            ItemStack[] rewards = itemListRewards.toArray(new ItemStack[itemListRewards.size()]);
+            playerItemsMap.put(player, rewards);
+            rank.getAndIncrement();
         });
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                     addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
-                    deleteTableContest("contest_camps");
+                    deleteTableContest(ContestManager.TABLE_CONTEST_CAMPS);
                     selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
                     dataPlayer=new HashMap<>(); // on supprime les données précédentes du joueurs
                     MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
@@ -652,6 +690,6 @@ public class ContestManager {
     }
 
     public void insertCustomContest(String camp1, String color1, String camp2, String color2) {
-        data = new ContestData(camp1, color1, camp2, color2, 1, "ven.", 0, 0);
+        data = new ContestData(camp1, camp2, color1, color2, 1, "ven.", 0, 0);
     }
 }

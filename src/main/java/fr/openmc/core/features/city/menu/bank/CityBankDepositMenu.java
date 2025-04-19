@@ -10,7 +10,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -158,20 +157,7 @@ public class CityBankDepositMenu extends Menu {
                         .setType(ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
-
-                            if (InputUtils.isInputMoney(input)) {
-                                double moneyDeposit = InputUtils.convertToMoneyValue(input);
-
-                                if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
-                                    city.updateBalance(moneyDeposit);
-                                    MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
-                                } else {
-                                    MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                                }
-                            } else {
-                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                            }
-
+                            city.depositCityBank(player, input);
                             return Collections.emptyList();
                         })
                         .build();

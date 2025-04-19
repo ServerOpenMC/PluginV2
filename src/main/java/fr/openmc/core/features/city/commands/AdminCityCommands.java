@@ -8,6 +8,8 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
@@ -17,6 +19,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @Command("admcity")
 @CommandPermission("omc.admins.commands.admincity")
@@ -52,7 +55,7 @@ public class AdminCityCommands {
     @Subcommand("rename")
     @CommandPermission("omc.admins.commands.admincity.rename")
     void rename(Player player, @Named("uuid") String cityUUID, @Named("nouveau nom") String newName) {
-        // Aucune vérification de nom mais faut espérer que le nom est valide :beluclown:
+        // Aucune vérification de nom, mais il faut espérer que le nom est valide
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -159,11 +162,11 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        if (MascotsManager.freeClaim.get(city.getUUID())==null){
-            MascotsManager.freeClaim.put(city.getUUID(), claim);
+        if (CityManager.freeClaim.get(city.getUUID())==null){
+            CityManager.freeClaim.put(city.getUUID(), claim);
             return;
         }
-        MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) + claim);
+        CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) + claim);
     }
 
     @Subcommand("freeclaim remove")
@@ -174,11 +177,11 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        if (MascotsManager.freeClaim.get(city.getUUID()) - claim <= 0){
-            MascotsManager.freeClaim.remove(city.getUUID());
+        if (CityManager.freeClaim.get(city.getUUID()) - claim <= 0){
+            CityManager.freeClaim.remove(city.getUUID());
             return;
         }
-        MascotsManager.freeClaim.remove(city.getUUID(),claim);
+        CityManager.freeClaim.replace(city.getUUID(),CityManager.freeClaim.get(city.getUUID()) - claim);
     }
 
     @Subcommand("freeclaim delete")
@@ -189,7 +192,7 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        MascotsManager.freeClaim.remove(city.getUUID());
+        CityManager.freeClaim.remove(city.getUUID());
     }
 
     @Subcommand("mascots remove")
@@ -206,7 +209,7 @@ public class AdminCityCommands {
                 return;
             }
 
-            MessagesManager.sendMessage(sender, Component.text("§cVille innexistante"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 
@@ -239,5 +242,10 @@ public class AdminCityCommands {
             MascotUtils.changeMascotImmunity(city_uuid, false);
         }
         MascotUtils.setImmunityTime(city_uuid, 0);
+        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+        if (mascotUUID!=null){
+            Entity mob = Bukkit.getEntity(mascotUUID);
+            if (mob!=null) mob.setGlowing(false);
+        }
     }
 }

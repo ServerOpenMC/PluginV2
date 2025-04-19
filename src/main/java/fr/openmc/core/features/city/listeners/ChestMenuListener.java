@@ -3,6 +3,9 @@ package fr.openmc.core.features.city.listeners;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.ChestMenu;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -16,13 +19,18 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 
+import java.util.Objects;
+
+import static fr.openmc.core.features.city.menu.ChestMenu.UPGRADE_PER_AYWENITE;
+import static fr.openmc.core.features.city.menu.ChestMenu.UPGRADE_PER_MONEY;
+
 public class ChestMenuListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         HumanEntity humanEntity = event.getWhoClicked();
         if (!(humanEntity instanceof Player player)) { return; }
 
-        City city = CityManager.getPlayerCity(player.getUniqueId()); // Ca permets de charger les villes en background
+        City city = CityManager.getPlayerCity(player.getUniqueId()); // Permet de charger les villes en background
         if (city == null) { return; }
 
         Inventory inv = event.getInventory();
@@ -30,17 +38,24 @@ public class ChestMenuListener implements Listener {
         if (menu == null) { return; }
         if (inv != menu.getInventory()) { return; }
 
-        // L'inventaire est la banque de ville, on peut *enfin* faire qqchose
+        // L'inventaire est la banque de ville, on peut *enfin* faire quelque chose
 
-        if (event.getSlot() == 48 && event.getCurrentItem().getType() == Material.ENDER_CHEST) { // Upgrade Button
-            int price = city.getChestPages()*5000; // fonction linéaire f(x)=ax ; a=5000
+        if (event.getSlot() == 48 && Objects.requireNonNull(event.getCurrentItem()).getType() == Material.ENDER_CHEST) { // Upgrade Button
+            int price = city.getChestPages()*UPGRADE_PER_MONEY; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
             if (city.getBalance() < price) {
-                MessagesManager.sendMessage(player, Component.text("La ville n'as pas assez d'argent ("+price+" nécessaires)"), Prefix.CITY, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, Component.text("La ville n'as pas assez d'argent (" + price + EconomyManager.getEconomyIcon() +" nécessaires)"), Prefix.CITY, MessageType.ERROR, true);
                 player.closeInventory();
                 return;
             }
 
+            int aywenite = city.getChestPages()*UPGRADE_PER_AYWENITE; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
+            if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), aywenite )) {
+                MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite §f("+aywenite+ " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             city.updateBalance((double) -price);
+            ItemUtils.removeItemsFromInventory(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), aywenite);
 
             city.upgradeChest();
             MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
@@ -76,7 +91,7 @@ public class ChestMenuListener implements Listener {
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) { return; }
 
-        City city = CityManager.getPlayerCity(player.getUniqueId()); // Ca permets de charger les villes en background
+        City city = CityManager.getPlayerCity(player.getUniqueId()); // Permet de charger les villes en background
         if (city == null) { return; }
 
         Inventory inv = event.getInventory();

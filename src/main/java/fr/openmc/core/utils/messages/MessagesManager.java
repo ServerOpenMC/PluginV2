@@ -2,7 +2,6 @@ package fr.openmc.core.utils.messages;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import com.google.common.collect.ImmutableBiMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import lombok.Getter;
@@ -59,8 +58,8 @@ public class MessagesManager {
                 Map.entry('A', 'ᴀ'), Map.entry('B', 'ʙ'), Map.entry('C', 'ᴄ'), Map.entry('D', 'ᴅ'),
                 Map.entry('E', 'ᴇ'), Map.entry('F', 'ꜰ'), Map.entry('G', 'ɢ'), Map.entry('H', 'ʜ'),
                 Map.entry('I', 'ɪ'), Map.entry('J', 'ᴊ'), Map.entry('K', 'ᴋ'), Map.entry('L', 'ʟ'),
-                Map.entry('M', 'ᴍ'), Map.entry('N', 'ɴ'), Map.entry('O', 'ᴏ'), Map.entry('P', 'ǫ'),
-                Map.entry('Q', 'ʀ'), Map.entry('R', 'ʀ'), Map.entry('S', 'ѕ'), Map.entry('T', 'ᴛ'),
+                Map.entry('M', 'ᴍ'), Map.entry('N', 'ɴ'), Map.entry('O', 'ᴏ'), Map.entry('P', 'ᴘ'),
+                Map.entry('Q', 'ǫ'), Map.entry('R', 'ʀ'), Map.entry('S', 'ѕ'), Map.entry('T', 'ᴛ'),
                 Map.entry('U', 'ᴜ'), Map.entry('V', 'ᴠ'), Map.entry('W', 'ᴡ'), Map.entry('X', 'ʏ'),
                 Map.entry('Y', 'ʏ'), Map.entry('Z', 'ᴢ'), Map.entry('1', '₁'), Map.entry('2', '₂'),
                 Map.entry('3', '₃'), Map.entry('4', '₄'), Map.entry('5', '₅'), Map.entry('6', '₆'),
@@ -89,7 +88,7 @@ public class MessagesManager {
         CITYNOFREECLAIM(Component.text("Cette ville n'a pas de claims gratuits")),
 
 
-        PLAYERNOCLAIM(Component.text("Tu n'as pas la permission d'aggrandir ta ville")),
+        PLAYERNOCLAIM(Component.text("Tu n'as pas la permission d'agrandir ta ville")),
         PLAYERNOOWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire")),
         PLAYERNORENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
         PLAYERNOMONEYGIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),

@@ -6,12 +6,11 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
- * Le but cette classe est de regrouper toutes les conditions neccessaires
- * pour claim une zone (utile pour faire une modif sur menu et commandes)
+ * Le but de cette classe est de regrouper toutes les conditions necessaires
+ * pour claim une zone (utile pour faire une modif sur menu et commandes).
  */
 public class CityClaimCondition {
 

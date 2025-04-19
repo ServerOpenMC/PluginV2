@@ -3,11 +3,15 @@ version: '2.0.0'
 main: fr.openmc.core.OMCPlugin
 api-version: '1.21.4'
 
+depend:
+  - WorldEdit
+
 softdepend:
   - PlaceholderAPI
   - LuckPerms
   - ItemsAdder
   - WorldGuard
+  - ProtocolLib
 
 prefix: OMC
 authors: [ La communauté ]

@@ -3,33 +3,21 @@ package fr.openmc.core.features.city.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.utils.BlockVector2;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CityTypeMenu extends Menu {
     Player player;
@@ -74,14 +62,24 @@ public class CityTypeMenu extends Menu {
             itemMeta.displayName(Component.text("§aVille en paix"));
             itemMeta.lore(peaceInfo);
         }).setOnClick(inventoryClickEvent -> {
-            CityCommands.createCity(player, name,"peace");
+            MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "peace");
+
+            MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
+            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "§cCréation annulée");
+            MascotsManager.giveChest(player);
+            getOwner().closeInventory();
         }));
 
         map.put(15, new ItemBuilder(this, Material.DIAMOND_SWORD, itemMeta -> {
             itemMeta.displayName(Component.text("§cVille en guerre"));
             itemMeta.lore(warInfo);
         }).setOnClick(inventoryClickEvent -> {
-            CityCommands.createCity(player, name,"war");
+            MascotsListener.futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, "war");
+
+            MessagesManager.sendMessage(player, Component.text("Vous avez reçu un coffre pour poser votre mascotte"), Prefix.CITY, MessageType.SUCCESS, true);
+            Chronometer.startChronometer(player, "Mascot:chest", 300, ChronometerType.ACTION_BAR, null, ChronometerType.ACTION_BAR, "§cCréation annulée");
+            MascotsManager.giveChest(player);
+            getOwner().closeInventory();
         }));
 
         return map;
