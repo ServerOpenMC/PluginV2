@@ -8,7 +8,7 @@ public class DateUtilsTest {
     @DisplayName("Time to Ticks")
     public void testConvertTime() {
         Assertions.assertEquals(
-                "20m 0s",
+                "20m",
                 DateUtils.convertTime(24000)
         );
     }
