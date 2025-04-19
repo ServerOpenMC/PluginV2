@@ -24,6 +24,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class ProtectionListener implements Listener {
 
     private boolean isMemberOf(@Nullable City city, Player player) {
@@ -138,7 +140,10 @@ public class ProtectionListener implements Listener {
     public void onCreeperExplode(EntityExplodeEvent event) {
         Chunk chunk = event.getLocation().getChunk();
         City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
-        if (city != null && CityManager.getCityType(city.getUUID()) == "peace") {
+        System.out.println(CityManager.getCityType(city.getUUID()));
+        if (city == null) return;
+
+        if (Objects.equals(CityManager.getCityType(city.getUUID()), "peace")) {
             if (event.getEntityType() == EntityType.CREEPER) {
                 event.blockList().clear();
             }
