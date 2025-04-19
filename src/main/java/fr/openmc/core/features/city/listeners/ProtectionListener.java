@@ -8,23 +8,23 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class ProtectionListener implements Listener {
 
@@ -62,20 +62,34 @@ public class ProtectionListener implements Listener {
         }
         event.setCancelled(true);
 
-        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, true);
+        if (!isMemberOf(city, player)) player.playSound(player.getEyeLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, 1);
+
+        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, false);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onFoodConsume(PlayerItemConsumeEvent event) {
+        // on laisse les gens manger
     }
 
     @EventHandler
     void onBlockBreak(BlockBreakEvent event) { verify(event.getPlayer(), event, event.getBlock().getLocation()); }
 
-    @EventHandler
-    void onInteract(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND) return; // évite les doublons
-        if (event.getInteractionPoint() == null && event.getClickedBlock() == null) return;
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack inHand = event.getItem();
+            if (inHand != null && inHand.getType().isEdible()) {
+                return;
+            }
+        }
 
-        Location loc = event.getInteractionPoint() != null ?
-                event.getInteractionPoint() :
-                event.getClickedBlock().getLocation();
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
+        if (event.getInteractionPoint() == null && event.getClickedBlock() == null) return;
+        Location loc = event.getInteractionPoint() != null
+                ? event.getInteractionPoint()
+                : event.getClickedBlock().getLocation();
 
         verify(event.getPlayer(), event, loc);
     }
@@ -120,6 +134,20 @@ public class ProtectionListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
 
         verify(player, event, event.getEntity().getLocation());
+    }
+
+    @EventHandler
+    public void onCreeperExplode(EntityExplodeEvent event) {
+        Chunk chunk = event.getLocation().getChunk();
+        City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+        System.out.println(CityManager.getCityType(city.getUUID()));
+        if (city == null) return;
+
+        if (Objects.equals(CityManager.getCityType(city.getUUID()), "peace")) {
+            if (event.getEntityType() == EntityType.CREEPER) {
+                event.blockList().clear();
+            }
+        }
     }
 
     @EventHandler
