@@ -151,99 +151,41 @@ public class ItemInteraction implements Listener {
         stopInteraction(player, chronometerGroup);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler
     public void onBundling(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        ItemStack cursor = event.getCursor();
-        ItemStack currentItem = event.getCurrentItem();
 
-        if (cursor != null && cursor.getType() == Material.BUNDLE && cursor.hasItemMeta()) {
+        ItemStack cursor = event.getCursor();
+        ItemStack slot = event.getCurrentItem();
+
+        System.out.println("cursor " + cursor);
+        System.out.println("slot " + slot);
+
+        if (slot == null || cursor.isEmpty()) {
+            return;
+        }
+
+        if (ItemUtils.isBundle(cursor) && cursor.hasItemMeta()) {
             ItemMeta meta = cursor.getItemMeta();
             if (meta instanceof BundleMeta) {
                 BundleMeta bundleMeta = (BundleMeta) meta;
                 List<ItemStack> items = bundleMeta.getItems();
 
-                List<ItemStack> modifiableItems = new ArrayList<>(items);
-                boolean modified = false;
-
-
-                Iterator<ItemStack> iterator = modifiableItems.iterator();
-                while (iterator.hasNext()) {
-                    ItemStack item = iterator.next();
-                    if (isItemInteraction(item)) {
-                        iterator.remove();
-                        modified = true;
-
-                        String interactionId = item.getItemMeta().getPersistentDataContainer().get(NAMESPACE_KEY, PersistentDataType.STRING);
-                        if (interactionId != null) {
-                            stopInteraction(player, interactionId);
-                        }
-
-
+                for (ItemStack item : items) {
+                    if(isItemInteraction(item)) {
                         MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
+
+
+                        event.setCancelled(true);
+
+                        stopInteraction(player, item.getItemMeta().getPersistentDataContainer().get(NAMESPACE_KEY, PersistentDataType.STRING));
+                        return;
                     }
-                }
-
-                if (modified) {
-                    bundleMeta.setItems(modifiableItems);
-                    cursor.setItemMeta(bundleMeta);
-                    event.setCursor(cursor);
-                    event.setCancelled(true);
-                }
-            }
-        }
-
-        if (currentItem != null && currentItem.getType() == Material.BUNDLE && currentItem.hasItemMeta()) {
-            ItemMeta meta = currentItem.getItemMeta();
-            if (meta instanceof BundleMeta) {
-                ItemStack itemBeingAdded = cursor;
-                if (itemBeingAdded != null && isItemInteraction(itemBeingAdded)) {
-                    event.setCancelled(true);
-                    MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas ajouter cet objet au bundle"), Prefix.OPENMC, MessageType.ERROR, false);
                 }
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onInventoryDrag(InventoryDragEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        ItemStack draggedItem = event.getOldCursor();
-
-        // Vérifie si l'item glissé est un bundle
-        if (draggedItem != null && draggedItem.getType() == Material.BUNDLE && draggedItem.hasItemMeta()) {
-            ItemMeta meta = draggedItem.getItemMeta();
-            if (meta instanceof BundleMeta) {
-                BundleMeta bundleMeta = (BundleMeta) meta;
-                List<ItemStack> items = bundleMeta.getItems();
-
-                List<ItemStack> modifiableItems = new ArrayList<>(items);
-                boolean modified = false;
-
-                Iterator<ItemStack> iterator = modifiableItems.iterator();
-                while (iterator.hasNext()) {
-                    ItemStack item = iterator.next();
-                    if (isItemInteraction(item)) {
-                        iterator.remove();
-                        modified = true;
-
-                        String interactionId = item.getItemMeta().getPersistentDataContainer().get(NAMESPACE_KEY, PersistentDataType.STRING);
-                        if (interactionId != null) {
-                            stopInteraction(player, interactionId);
-                        }
-
-                        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
-                    }
-                }
-
-                if (modified) {
-                    bundleMeta.setItems(modifiableItems);
-                    draggedItem.setItemMeta(bundleMeta);
-                    event.setCancelled(true);
-                }
-            }
-        }
-    }
     /*
      * Empecher de déplacer l'Item d'intéraction
      */
