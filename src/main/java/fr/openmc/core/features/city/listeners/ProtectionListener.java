@@ -8,20 +8,14 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -123,6 +117,17 @@ public class ProtectionListener implements Listener {
         if (!(event.getEntity() instanceof Player player)) return;
 
         verify(player, event, event.getEntity().getLocation());
+    }
+
+    @EventHandler
+    public void onCreeperExplode(EntityExplodeEvent event) {
+        Chunk chunk = event.getLocation().getChunk();
+        City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+        if (city != null && CityManager.getCityType(city.getUUID()) == "peace") {
+            if (event.getEntityType() == EntityType.CREEPER) {
+                event.setCancelled(true);
+            }
+        }
     }
 
     @EventHandler
