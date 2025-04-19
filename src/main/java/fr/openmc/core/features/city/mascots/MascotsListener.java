@@ -4,10 +4,13 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerType;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -33,6 +36,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MascotsListener implements Listener {
 
@@ -46,11 +50,6 @@ public class MascotsListener implements Listener {
     public MascotsListener() {
         for (Mascot mascot : MascotsManager.mascots) {
             mascotsRegeneration(mascot.getMascotUuid());
-            String city_uuid = mascot.getCityUuid();
-            if (MascotUtils.getMascotImmunity(city_uuid) && MascotUtils.getMascotState(city_uuid)){
-                long duration = MascotUtils.getMascotImmunityTime(city_uuid);
-                startImmunityTimer(city_uuid, duration);
-            }
         }
     }
 
@@ -184,6 +183,10 @@ public class MascotsListener implements Listener {
         }
     }
 
+    private final Map<City, Long> perkIronBloodCooldown = new HashMap<>();
+    private static final long COOLDOWN_TIME = 3 * 60 * 1000L;  // 3 minutes
+
+
     @SneakyThrows
     @EventHandler
     void onMascotTakeDamage(EntityDamageByEntityEvent e) {
@@ -265,6 +268,53 @@ public class MascotsListener implements Listener {
                         double maxHealth = mob.getMaxHealth();
                         mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
 
+                        if (MayorManager.getInstance().phaseMayor==2) {
+                            if (PerkManager.hasPerk(MascotUtils.getCityFromMascot(mob.getUniqueId()).getMayor(), 6)) {
+                                long currentTime = System.currentTimeMillis();
+                                if (perkIronBloodCooldown.containsKey(city) && currentTime - perkIronBloodCooldown.get(city) < COOLDOWN_TIME) {
+                                    return;
+                                }
+                                perkIronBloodCooldown.put(city, currentTime);
+                                org.bukkit.Location location = mob.getLocation().clone();
+                                location.add(0, 3, 0);
+
+                                IronGolem golem = (IronGolem) location.getWorld().spawnEntity(location, EntityType.IRON_GOLEM);
+                                golem.setPlayerCreated(false);
+                                golem.setLootTable(null);
+                                golem.setGlowing(true);
+                                golem.setHealth(30);
+
+                                Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
+                                    if (!golem.isValid() || golem.isDead()) {
+                                        return;
+                                    }
+                                    List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
+                                            .filter(ent -> ent instanceof Player)
+                                            .map(ent -> (Player) ent)
+                                            .filter(nearbyPlayer -> {
+                                                City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
+                                                return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromMascot(mob.getUniqueId()).getUUID());
+                                            })
+                                            .collect(Collectors.toList());
+
+                                    if (!nearbyEnemies.isEmpty()) {
+                                        Player target = nearbyEnemies.get(0);
+                                        golem.setAI(true);
+                                        golem.setTarget(target);
+                                        org.bukkit.util.Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();
+                                        golem.setVelocity(direction.multiply(0.5));
+                                    } else {
+                                        golem.setAI(false);
+                                        golem.setTarget(null);
+                                    }
+                                }, 0L, 20L);
+
+                                scheduleGolemDespawn(golem, mob.getUniqueId());
+
+                                MessagesManager.sendMessage(player, Component.text("§8§o*terremblement* Quelque chose semble arriver..."), Prefix.MAYOR, MessageType.INFO, false);
+                            }
+                        }
+
                         if (regenTasks.containsKey(damageEntity.getUniqueId())) {
                             regenTasks.get(damageEntity.getUniqueId()).cancel();
                             regenTasks.remove(damageEntity.getUniqueId());
@@ -287,6 +337,30 @@ public class MascotsListener implements Listener {
             }
             e.setCancelled(true);
         }
+    }
+
+    private void scheduleGolemDespawn(IronGolem golem, UUID mascotUUID) {
+        long delayInitial = 3 * 60 * 20L;  // 3 minutes
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (!golem.isValid() || golem.isDead()) {
+                return;
+            }
+
+            List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
+                    .filter(ent -> ent instanceof Player)
+                    .map(ent -> (Player) ent)
+                    .filter(nearbyPlayer -> {
+                        City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
+                        return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromMascot(mascotUUID).getUUID());
+                    })
+                    .collect(Collectors.toList());
+
+            if (nearbyEnemies.isEmpty() && golem.getTarget() == null) {
+                golem.remove();
+            } else {
+                Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> scheduleGolemDespawn(golem, mascotUUID), 200L);
+            }
+        }, delayInitial);
     }
 
     @SneakyThrows
@@ -696,32 +770,5 @@ public class MascotsListener implements Listener {
 
         regenTasks.put(mascotsUUID, task);
         task.runTaskTimer(OMCPlugin.getInstance(), 0L, 60L);
-    }
-
-    public static void startImmunityTimer(String city_uuid, long duration) {
-        BukkitRunnable immunityTask = new BukkitRunnable() {
-            long endTime = duration;
-            @Override
-            public void run() {
-                if (!MascotUtils.mascotsContains(city_uuid)){
-                    this.cancel();
-                    return;
-                }
-                if (endTime - 1 == 0){
-                    if (MascotUtils.getMascotImmunity(city_uuid))MascotUtils.changeMascotImmunity(city_uuid, false);
-                    MascotUtils.setImmunityTime(city_uuid, 0);
-                    Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
-                    if (mascot!=null){
-                        Entity entity = MascotUtils.loadMascot(mascot);
-                        if (entity!=null)entity.setGlowing(false);
-                    }
-                    this.cancel();
-                    return;
-                }
-                endTime -= 1;
-                MascotUtils.setImmunityTime(city_uuid, endTime);
-            }
-        };
-        immunityTask.runTaskTimer(OMCPlugin.getInstance(), 1200L, 1200L); // Vérifie chaque minute
     }
 }

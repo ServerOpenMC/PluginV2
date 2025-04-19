@@ -1,6 +1,6 @@
 package fr.openmc.core.features.scoreboards;
 
-import fr.openmc.core.utils.LuckPermsAPI;
+import fr.openmc.core.utils.api.LuckPermsAPI;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.NodeType;

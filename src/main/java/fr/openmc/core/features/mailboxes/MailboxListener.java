@@ -10,6 +10,7 @@ import fr.openmc.core.features.mailboxes.menu.letter.Letter;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -116,7 +117,7 @@ public class MailboxListener implements Listener {
                             int itemsCount = result.getInt("items_count");
                             int letterId = result.getInt("id");
                             UUID senderUUID = UUID.fromString(result.getString("sender_id"));
-                            OfflinePlayer sender = Bukkit.getOfflinePlayer(senderUUID);
+                            OfflinePlayer sender = CacheOfflinePlayer.getOfflinePlayer(senderUUID);
                             String senderName = sender.getName();
                             message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
                                     .append(Component.text(itemsCount, NamedTextColor.GREEN))

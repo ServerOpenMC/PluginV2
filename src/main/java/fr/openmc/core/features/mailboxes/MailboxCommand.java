@@ -21,7 +21,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendFailureMe
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendWarningMessage;
 
 @Command({"mailbox", "mb", "letter", "mail", "lettre", "boite", "courrier"})
-@CommandPermission("ayw.command.mailbox")
+@CommandPermission("omc.commands.mailbox")
 public class MailboxCommand {
     
     private OMCPlugin plugin;

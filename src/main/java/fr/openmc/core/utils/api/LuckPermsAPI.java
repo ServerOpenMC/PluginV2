@@ -1,4 +1,4 @@
-package fr.openmc.core.utils;
+package fr.openmc.core.utils.api;
 
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
@@ -29,10 +29,16 @@ public class LuckPermsAPI {
         api = OMCPlugin.getInstance().getServer().getServicesManager().load(LuckPerms.class);
     }
 
+    /**
+     * Retourne si l'instance a LuckPerm
+     */
     public static boolean hasLuckPerms() {
         return hasLuckPerms;
     }
 
+    /**
+     * Retourne le garde d'une personne
+     */
     public static String getPrefix(Player player) {
         if (!hasLuckPerms) return "";
 

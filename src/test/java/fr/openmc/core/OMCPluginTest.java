@@ -10,16 +10,17 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 
 public class OMCPluginTest {
-    
-    private JavaPlugin plugin;
+
+    public static JavaPlugin plugin;
+    public static ServerMock server;
 
     @BeforeEach
     public void setUp() {
-        ServerMock server = MockBukkit.mock();
+        server = MockBukkit.mock();
 
         server.addSimpleWorld("world");
 
-        this.plugin = MockBukkit.load(OMCPlugin.class);
+        plugin = MockBukkit.load(OMCPlugin.class);
     }
 
     @AfterEach

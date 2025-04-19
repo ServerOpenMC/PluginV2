@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.analytics.AnalyticsManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyData;
@@ -12,6 +13,7 @@ import fr.openmc.core.features.friend.FriendSQLManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -29,13 +31,14 @@ public class DatabaseManager {
             TransactionsManager.init_db(connection);
             AnalyticsManager.init_db(connection);
             CityManager.init_db(connection);
-            ContestManager.initDb(connection);
+            MayorManager.init_db(connection);
+            ContestManager.init_db(connection);
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
             BankManager.init_db(connection);
             HomesManager.init_db(connection);
             MascotsManager.init_db(connection);
-            CityTypeCooldown.init_db(connection);
+            DynamicCooldownManager.init_db(connection);
             FriendSQLManager.init_db(connection);
 
         } catch (SQLException e) {

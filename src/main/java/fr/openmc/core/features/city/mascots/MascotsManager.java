@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -23,6 +24,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.eclipse.sisu.Dynamic;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +35,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class MascotsManager {
+
+    public static long IMMUNITY_COOLDOWN = 10080L * 60 * 1000; // 10080 minutes en ms
 
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
@@ -63,13 +67,13 @@ public class MascotsManager {
     }
 
     public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, immunity_time BIGINT NOT NULL, alive BOOLEAN NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, alive BOOLEAN NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();
     }
 
     public static List<Mascot> getAllMascots() {
         List<Mascot> mascots = new ArrayList<>();
 
-        String query = "SELECT city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z FROM mascots";
+        String query = "SELECT city_uuid, mascot_uuid, level, immunity, alive, x, z FROM mascots";
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
              ResultSet rs = statement.executeQuery()) {
 
@@ -80,15 +84,44 @@ public class MascotsManager {
                 String mascotUuid = rs.getString("mascot_uuid");
                 int level = rs.getInt("level");
                 boolean immunity = rs.getBoolean("immunity");
-                long immunity_time = rs.getLong("immunity_time");
                 boolean alive = rs.getBoolean("alive");
                 Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
-                mascots.add(new Mascot(cityUuid, UUID.fromString(mascotUuid), level, immunity, immunity_time, alive, chunk)); // Ajouter à la liste
+                mascots.add(new Mascot(cityUuid, UUID.fromString(mascotUuid), level, immunity, alive, chunk)); // Ajouter à la liste
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return mascots;
+    }
+
+    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
+        String query;
+
+        if (OMCPlugin.isUnitTestVersion()) {
+            query = "MERGE INTO free_claim KEY(city_uuid) VALUES (?, ?)";
+        } else {
+            query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
+        }
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
+            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
+                if (entry.getValue() > 0) {
+                    statement.setString(1, entry.getKey());
+                    statement.setInt(2, entry.getValue());
+                    statement.setInt(3, entry.getValue());
+                    statement.addBatch();
+                } else {
+                        try (PreparedStatement deleteStatement = DatabaseManager.getConnection().prepareStatement(
+                                "DELETE FROM free_claim WHERE city_uuid = ?")) {
+                            deleteStatement.setString(1, entry.getKey());
+                            deleteStatement.executeUpdate();
+                        }
+                    }
+
+                }
+            statement.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void saveMascots(List<Mascot> mascots) {
@@ -97,11 +130,11 @@ public class MascotsManager {
         if (OMCPlugin.isUnitTestVersion()) {
             query = "MERGE INTO mascots " +
                     "KEY(city_uuid) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
         } else {
-            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, immunity_time, alive, x, z) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ? )" +
-                    "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, immunity_time = ?, alive = ?, x = ?, z = ?";
+            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, alive, x, z) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ? )" +
+                    "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, alive = ?, x = ?, z = ?";
         }
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
@@ -111,19 +144,17 @@ public class MascotsManager {
                 statement.setString(2, mascot.getMascotUuid().toString());
                 statement.setInt(3, mascot.getLevel());
                 statement.setBoolean(4, mascot.isImmunity());
-                statement.setLong(5, mascot.getImmunity_time());
-                statement.setBoolean(6, mascot.isAlive());
-                statement.setInt(7, mascot.getChunk().getX());
-                statement.setInt(8, mascot.getChunk().getZ());
+                statement.setBoolean(5, mascot.isAlive());
+                statement.setInt(6, mascot.getChunk().getX());
+                statement.setInt(7, mascot.getChunk().getZ());
 
 
-                statement.setString(9, mascot.getMascotUuid().toString());
-                statement.setInt(10, mascot.getLevel());
-                statement.setBoolean(11, mascot.isImmunity());
-                statement.setLong(12, mascot.getImmunity_time());
-                statement.setBoolean(13, mascot.isAlive());
-                statement.setInt(14, mascot.getChunk().getX());
-                statement.setInt(15, mascot.getChunk().getZ());
+                statement.setString(8, mascot.getMascotUuid().toString());
+                statement.setInt(9, mascot.getLevel());
+                statement.setBoolean(10, mascot.isImmunity());
+                statement.setBoolean(11, mascot.isAlive());
+                statement.setInt(12, mascot.getChunk().getX());
+                statement.setInt(13, mascot.getChunk().getZ());
 
                 statement.addBatch();
             }
@@ -147,12 +178,11 @@ public class MascotsManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, ?, true, ?, ?)");
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, true, ?, ?)");
                 statement.setString(1, city_uuid);
                 statement.setString(2, String.valueOf(mob.getUniqueId()));
-                statement.setInt(3, 10080);
-                statement.setInt(4, chunk.getX());
-                statement.setInt(5, chunk.getZ());
+                statement.setInt(3, chunk.getX());
+                statement.setInt(4, chunk.getZ());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -161,7 +191,7 @@ public class MascotsManager {
 
         MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId(), chunk);
         // Immunité persistante de 7 jours pour la mascotte
-        MascotsListener.startImmunityTimer(city_uuid, 10080);
+        DynamicCooldownManager.use(city_uuid, "mascot:immunity", IMMUNITY_COOLDOWN);
     }
 
     public static void removeMascotsFromCity(String city_uuid) {
@@ -189,12 +219,16 @@ public class MascotsManager {
     public static void giveMascotsEffect(UUID playerUUID) {
         if (Bukkit.getPlayer(playerUUID) instanceof Player player) {
             City city = CityManager.getPlayerCity(playerUUID);
-            if (city!=null){
-                if (MascotUtils.mascotsContains(city.getUUID())){
-                    int level = MascotUtils.getMascotLevel(city.getUUID());
-                    if (!MascotUtils.getMascotState(city.getUUID())){
-                        for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getMalus()){
-                            player.addPotionEffect(potionEffect);
+            if (city!=null) {
+                if (MascotUtils.mascotsContains(city.getUUID())) {
+                    if (!MascotUtils.getMascotState(city.getUUID())) {
+                        if (MascotUtils.mascotsContains(city.getUUID())) {
+                            int level = MascotUtils.getMascotLevel(city.getUUID());
+                            if (!MascotUtils.getMascotState(city.getUUID())) {
+                                for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getMalus()) {
+                                    player.addPotionEffect(potionEffect);
+                                }
+                            }
                         }
                     }
                 }

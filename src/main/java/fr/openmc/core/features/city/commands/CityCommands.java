@@ -4,14 +4,26 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.mascots.*;
+import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.mascots.MascotsLevels;
+import fr.openmc.core.features.city.mascots.MascotsListener;
+import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.ElectionType;
+import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.Perks;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
+import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.WorldGuardApi;
+import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -36,10 +48,12 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
+import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -85,6 +99,19 @@ public class CityCommands {
         }
     }
 
+    @Subcommand({"mayor", "maire"})
+    @CommandPermission("omc.commands.city.mayor")
+    @Description("Ouvre le menu des maires")
+    public void mayor(Player sender) {
+        if (MayorManager.getInstance().phaseMayor==1) {
+            MayorElectionMenu menu = new MayorElectionMenu(sender);
+            menu.open();
+        } else {
+            MayorMandateMenu menu = new MayorMandateMenu(sender);
+            menu.open();
+        }
+    }
+
     @Subcommand("accept")
     @CommandPermission("omc.commands.city.accept")
     @Description("Accepter une invitation")
@@ -94,7 +121,7 @@ public class CityCommands {
             MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        
+
         City newCity = CityManager.getPlayerCity(inviter.getUniqueId());
 
         if (!CityInviteConditions.canCityInviteAccept(newCity, inviter, player)) return;
@@ -252,7 +279,7 @@ public class CityCommands {
         city.delete();
         MessagesManager.sendMessage(sender, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
 
-        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
     }
 
     @Subcommand("claim")
@@ -471,13 +498,14 @@ public class CityCommands {
                 return;
             }
         }
-
-        if (CityTypeCooldown.isOnCooldown(city.getUUID())) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + CityTypeCooldown.getRemainingCooldown(city.getUUID()) / 1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         CityManager.changeCityType(city.getUUID());
-        CityTypeCooldown.setCooldown(city.getUUID());
+        DynamicCooldownManager.use(city.getUUID(), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
+
+
         Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
 
         if (mascot != null) {
@@ -503,6 +531,16 @@ public class CityCommands {
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
+
+            String cityTypeActuel = getCityType(city.getUUID());
+            String cityTypeAfter = "";
+            if (cityTypeActuel != null) {
+                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+                cityTypeAfter = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+            }
+
+            MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
+
         }
     }
 
@@ -510,7 +548,7 @@ public class CityCommands {
     @Subcommand("bank view")
     @Description("Ouvre le menu de la banque de ville")
     public void bank(Player player) {
-        if (CityManager.getPlayerCity(player.getUniqueId()) == null) 
+        if (CityManager.getPlayerCity(player.getUniqueId()) == null)
             return;
 
         new CityBankMenu(player).open();
@@ -520,7 +558,7 @@ public class CityCommands {
     @Description("Met de votre argent dans la banque de ville")
     void deposit(Player player, String input) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        
+
         if (!CityBankConditions.canCityDeposit(city, player)) return;
 
         city.depositCityBank(player, input);
@@ -606,10 +644,24 @@ public class CityCommands {
 
         player.closeInventory();
 
+        // SETUP MAIRE
+        MayorManager mayorManager = MayorManager.getInstance();
+        if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
+            mayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+        } else { // si création pendant les réformes actives
+            NamedTextColor color = mayorManager.getRandomMayorColor();
+            List<Perks> perks = PerkManager.getRandomPerksAll();
+            mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
+            MessagesManager.sendMessage(player, Component.text("Vous avez été désigné comme §6Maire de la Ville.\n§8§oVous pourrez choisir vos Réformes dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)), Prefix.MAYOR, MessageType.SUCCESS, true);
+        }
+
+        // SETUP LAW
+        MayorManager.createCityLaws(city, false, null);
+
         MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
 
-        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
 
         return true;
     }

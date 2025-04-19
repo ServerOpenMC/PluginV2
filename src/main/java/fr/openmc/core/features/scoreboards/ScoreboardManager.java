@@ -8,8 +8,8 @@ import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.LuckPermsAPI;
-import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.api.LuckPermsAPI;
+import fr.openmc.core.utils.api.PapiAPI;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -32,6 +32,7 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -162,7 +163,7 @@ public class ScoreboardManager implements Listener {
             objective.getScore(" ").setScore(5);
             objective.getScore("§8• §6§lCONTEST!").setScore(4);
             objective.getScore(ChatColor.valueOf(data.getColor1()) + data.getCamp1() + " §8VS " + ChatColor.valueOf(data.getColor2()) + data.getCamp2()).setScore(3);
-            objective.getScore("§cFin dans " + DateUtils.getTimeUntilNextMonday()).setScore(2);
+            objective.getScore("§cFin dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY)).setScore(2);
         }
 
         objective.getScore("   ").setScore(1);
