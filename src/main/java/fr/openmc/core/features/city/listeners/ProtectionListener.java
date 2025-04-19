@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -62,7 +63,9 @@ public class ProtectionListener implements Listener {
         }
         event.setCancelled(true);
 
-        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, true);
+        if (!isMemberOf(city, player)) player.playSound(player.getEyeLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, 1);
+
+        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, false);
     }
 
     @EventHandler
