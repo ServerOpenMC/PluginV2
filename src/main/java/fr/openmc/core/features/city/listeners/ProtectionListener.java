@@ -12,13 +12,16 @@ import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class ProtectionListener implements Listener {
@@ -62,17 +65,29 @@ public class ProtectionListener implements Listener {
         MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, false);
     }
 
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onFoodConsume(PlayerItemConsumeEvent event) {
+        // on laisse les gens manger
+    }
+
     @EventHandler
     void onBlockBreak(BlockBreakEvent event) { verify(event.getPlayer(), event, event.getBlock().getLocation()); }
 
-    @EventHandler
-    void onInteract(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND) return; // évite les doublons
-        if (event.getInteractionPoint() == null && event.getClickedBlock() == null) return;
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack inHand = event.getItem();
+            if (inHand != null && inHand.getType().isEdible()) {
+                return;
+            }
+        }
 
-        Location loc = event.getInteractionPoint() != null ?
-                event.getInteractionPoint() :
-                event.getClickedBlock().getLocation();
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
+        if (event.getInteractionPoint() == null && event.getClickedBlock() == null) return;
+        Location loc = event.getInteractionPoint() != null
+                ? event.getInteractionPoint()
+                : event.getClickedBlock().getLocation();
 
         verify(event.getPlayer(), event, loc);
     }
@@ -125,7 +140,7 @@ public class ProtectionListener implements Listener {
         City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
         if (city != null && CityManager.getCityType(city.getUUID()) == "peace") {
             if (event.getEntityType() == EntityType.CREEPER) {
-                event.setCancelled(true);
+                event.blockList().clear();
             }
         }
     }
