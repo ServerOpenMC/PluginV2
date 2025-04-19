@@ -5,7 +5,7 @@ import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
-import fr.openmc.core.utils.LuckPermsAPI;
+import fr.openmc.core.utils.api.LuckPermsAPI;
 import fr.openmc.core.utils.api.LuckPermsAPI;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

@@ -86,7 +86,7 @@ public class MascotsManager {
                 boolean immunity = rs.getBoolean("immunity");
                 boolean alive = rs.getBoolean("alive");
                 Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
-                mascots.add(new Mascot(cityUuid, UUID.fromString(mascotUuid), level, immunity, immunity_time, alive, chunk)); // Ajouter à la liste
+                mascots.add(new Mascot(cityUuid, UUID.fromString(mascotUuid), level, immunity, alive, chunk)); // Ajouter à la liste
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -176,8 +176,6 @@ public class MascotsManager {
         // L'uuid de la ville lui est approprié pour l'identifié
         data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
-        // Immunité persistante de 7 jours pour la mascotte
-        DynamicCooldownManager.use(city_uuid, "mascot:immunity", IMMUNITY_COOLDOWN);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, true, ?, ?)");
@@ -193,7 +191,7 @@ public class MascotsManager {
 
         MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId(), chunk);
         // Immunité persistante de 7 jours pour la mascotte
-        MascotsListener.startImmunityTimer(city_uuid, 10080);
+        DynamicCooldownManager.use(city_uuid, "mascot:immunity", IMMUNITY_COOLDOWN);
     }
 
     public static void removeMascotsFromCity(String city_uuid) {
@@ -221,16 +219,16 @@ public class MascotsManager {
     public static void giveMascotsEffect(UUID playerUUID) {
         if (Bukkit.getPlayer(playerUUID) instanceof Player player) {
             City city = CityManager.getPlayerCity(playerUUID);
-            if (city!=null){
-                if (MascotUtils.mascotsContains(city.getUUID())){
-                    int level = MascotUtils.getMascotLevel(city.getUUID());
-                    if (!MascotUtils.getMascotState(city.getUUID())){
-            if (city_uuid!=null){
-                if (MascotUtils.mascotsContains(city_uuid)){
-                    int level = MascotUtils.getMascotLevel(city_uuid);
-                    if (!MascotUtils.getMascotState(city_uuid)){
-                        for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getMalus()){
-                            player.addPotionEffect(potionEffect);
+            if (city!=null) {
+                if (MascotUtils.mascotsContains(city.getUUID())) {
+                    if (!MascotUtils.getMascotState(city.getUUID())) {
+                        if (MascotUtils.mascotsContains(city.getUUID())) {
+                            int level = MascotUtils.getMascotLevel(city.getUUID());
+                            if (!MascotUtils.getMascotState(city.getUUID())) {
+                                for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getMalus()) {
+                                    player.addPotionEffect(potionEffect);
+                                }
+                            }
                         }
                     }
                 }

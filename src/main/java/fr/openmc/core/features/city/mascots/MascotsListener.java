@@ -771,31 +771,4 @@ public class MascotsListener implements Listener {
         regenTasks.put(mascotsUUID, task);
         task.runTaskTimer(OMCPlugin.getInstance(), 0L, 60L);
     }
-
-    public static void startImmunityTimer(String city_uuid, long duration) {
-        BukkitRunnable immunityTask = new BukkitRunnable() {
-            long endTime = duration;
-            @Override
-            public void run() {
-                if (!MascotUtils.mascotsContains(city_uuid)){
-                    this.cancel();
-                    return;
-                }
-                if (endTime - 1 == 0){
-                    if (MascotUtils.getMascotImmunity(city_uuid))MascotUtils.changeMascotImmunity(city_uuid, false);
-                    MascotUtils.setImmunityTime(city_uuid, 0);
-                    Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
-                    if (mascot!=null){
-                        Entity entity = MascotUtils.loadMascot(mascot);
-                        if (entity!=null)entity.setGlowing(false);
-                    }
-                    this.cancel();
-                    return;
-                }
-                endTime -= 1;
-                MascotUtils.setImmunityTime(city_uuid, endTime);
-            }
-        };
-        immunityTask.runTaskTimer(OMCPlugin.getInstance(), 1200L, 1200L); // Vérifie chaque minute
-    }
 }

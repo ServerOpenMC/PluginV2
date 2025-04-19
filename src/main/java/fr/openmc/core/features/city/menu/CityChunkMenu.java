@@ -12,7 +12,7 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
 import fr.openmc.core.utils.ChunkPos;
-import fr.openmc.core.utils.WorldGuardApi;
+import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

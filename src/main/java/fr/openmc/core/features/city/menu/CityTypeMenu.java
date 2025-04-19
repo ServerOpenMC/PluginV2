@@ -44,6 +44,7 @@ public class CityTypeMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> map = new HashMap<>();
+        Player player = getOwner();
         try {
         List<Component> peaceInfo = new ArrayList<>();
         peaceInfo.add(Component.text("§aLa sécurité est assurée"));

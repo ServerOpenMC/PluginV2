@@ -1,7 +1,7 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.LuckPermsAPI;
+import fr.openmc.core.utils.api.LuckPermsAPI;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
