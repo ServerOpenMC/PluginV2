@@ -4,7 +4,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.corporation.commands.CompanyCommand;
 import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.listener.ShopListener;
@@ -27,6 +26,7 @@ public class CompanyManager {
 
     // Liste de toutes les entreprises créées
     @Getter public static List<Company> companies = new ArrayList<>();
+    @Getter public static List<Shop> shops = new ArrayList<>();
 
     // File d'attente des candidatures en attente, avec une limite de 100
     private final Queue<UUID, Company> pendingApplications = new Queue<>(100);
@@ -44,7 +44,7 @@ public class CompanyManager {
         );
 
         companies = getAllCompany();
-        loadAllShops();
+        shops = loadAllShops();
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -138,9 +138,10 @@ public class CompanyManager {
         return companies;
     }
 
-    public static void loadAllShops() {
+    public static List<Shop> loadAllShops() {
         OMCPlugin.getInstance().getLogger().info("chargements des shops...");
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
+        List<Shop> allShop = new ArrayList<>();
 
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement statement = conn.prepareStatement("SELECT item, shop_uuid, price, amount FROM shops_item");
@@ -199,11 +200,14 @@ public class CompanyManager {
                     for (ShopItem shopItem : shopItems.get(shopUuid)) {
                         shop.addItem(shopItem.getItem(), shopItem.getPricePerItem(), shopItem.getAmount());
                     }
+
+                    allShop.add(shop);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return allShop;
     }
 
     @SneakyThrows

@@ -34,6 +34,7 @@ public class PlayerShopManager {
         }
 
         playerShops.put(playerUUID, newShop);
+        CompanyManager.shops.add(newShop);
         shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cashRegister.getLocation()));
         if (shop_uuid==null){
             shopBlocksManager.placeShop(newShop, Bukkit.getPlayer(playerUUID), false);
@@ -50,6 +51,7 @@ public class PlayerShopManager {
             return MethodState.ESCAPE;
         }
         playerShops.remove(player);
+        CompanyManager.shops.remove(shop);
         economyManager.addBalance(player, 400);
         return MethodState.SUCCESS;
     }

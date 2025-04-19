@@ -6,6 +6,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -175,7 +176,7 @@ public class ShopMenu extends Menu {
         if (getCurrentItem() != null)
 
             content.put(itemSlot, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
-                itemMeta.setDisplayName("§l§f" + ShopItem.getItemName(getCurrentItem().getItem()));
+                itemMeta.setDisplayName("§l§f" + ItemUtils.getItemTranslation(getCurrentItem().getItem()));
                 List<String> lore = new ArrayList<>();
                 lore.add("§7■ Prix: §c" + (getCurrentItem().getPricePerItem() * amountToBuy) + "€");
                 lore.add("§7■ En stock: " + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getAmount()));
