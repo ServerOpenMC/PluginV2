@@ -1,5 +1,11 @@
 package fr.openmc.core.utils.interactions;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.PacketType;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -18,27 +24,28 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
+
+import static fr.openmc.core.utils.ItemUtils.isBundle;
 
 public class ItemInteraction implements Listener {
 
@@ -80,7 +87,7 @@ public class ItemInteraction implements Listener {
 
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
-        if (item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(NAMESPACE_KEY, PersistentDataType.STRING)) {
+        if (isItemInteraction(item)) {
 
             event.setCancelled(true);
 
@@ -144,6 +151,99 @@ public class ItemInteraction implements Listener {
         stopInteraction(player, chronometerGroup);
     }
 
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBundling(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        ItemStack cursor = event.getCursor();
+        ItemStack currentItem = event.getCurrentItem();
+
+        if (cursor != null && cursor.getType() == Material.BUNDLE && cursor.hasItemMeta()) {
+            ItemMeta meta = cursor.getItemMeta();
+            if (meta instanceof BundleMeta) {
+                BundleMeta bundleMeta = (BundleMeta) meta;
+                List<ItemStack> items = bundleMeta.getItems();
+
+                List<ItemStack> modifiableItems = new ArrayList<>(items);
+                boolean modified = false;
+
+
+                Iterator<ItemStack> iterator = modifiableItems.iterator();
+                while (iterator.hasNext()) {
+                    ItemStack item = iterator.next();
+                    if (isItemInteraction(item)) {
+                        iterator.remove();
+                        modified = true;
+
+                        String interactionId = item.getItemMeta().getPersistentDataContainer().get(NAMESPACE_KEY, PersistentDataType.STRING);
+                        if (interactionId != null) {
+                            stopInteraction(player, interactionId);
+                        }
+
+
+                        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
+                    }
+                }
+
+                if (modified) {
+                    bundleMeta.setItems(modifiableItems);
+                    cursor.setItemMeta(bundleMeta);
+                    event.setCursor(cursor);
+                    event.setCancelled(true);
+                }
+            }
+        }
+
+        if (currentItem != null && currentItem.getType() == Material.BUNDLE && currentItem.hasItemMeta()) {
+            ItemMeta meta = currentItem.getItemMeta();
+            if (meta instanceof BundleMeta) {
+                ItemStack itemBeingAdded = cursor;
+                if (itemBeingAdded != null && isItemInteraction(itemBeingAdded)) {
+                    event.setCancelled(true);
+                    MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas ajouter cet objet au bundle"), Prefix.OPENMC, MessageType.ERROR, false);
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onInventoryDrag(InventoryDragEvent event) {
+        Player player = (Player) event.getWhoClicked();
+        ItemStack draggedItem = event.getOldCursor();
+
+        // Vérifie si l'item glissé est un bundle
+        if (draggedItem != null && draggedItem.getType() == Material.BUNDLE && draggedItem.hasItemMeta()) {
+            ItemMeta meta = draggedItem.getItemMeta();
+            if (meta instanceof BundleMeta) {
+                BundleMeta bundleMeta = (BundleMeta) meta;
+                List<ItemStack> items = bundleMeta.getItems();
+
+                List<ItemStack> modifiableItems = new ArrayList<>(items);
+                boolean modified = false;
+
+                Iterator<ItemStack> iterator = modifiableItems.iterator();
+                while (iterator.hasNext()) {
+                    ItemStack item = iterator.next();
+                    if (isItemInteraction(item)) {
+                        iterator.remove();
+                        modified = true;
+
+                        String interactionId = item.getItemMeta().getPersistentDataContainer().get(NAMESPACE_KEY, PersistentDataType.STRING);
+                        if (interactionId != null) {
+                            stopInteraction(player, interactionId);
+                        }
+
+                        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
+                    }
+                }
+
+                if (modified) {
+                    bundleMeta.setItems(modifiableItems);
+                    draggedItem.setItemMeta(bundleMeta);
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
     /*
      * Empecher de déplacer l'Item d'intéraction
      */
@@ -160,12 +260,7 @@ public class ItemInteraction implements Listener {
         if (protectedItem == null)
             return;
 
-        ItemMeta meta = protectedItem.getItemMeta();
-        if (meta == null)
-            return;
-
-        PersistentDataContainer data = meta.getPersistentDataContainer();
-        if (!data.has(NAMESPACE_KEY, PersistentDataType.STRING))
+        if (!isItemInteraction(protectedItem))
             return;
 
         if (event.getClickedInventory() != null) {
@@ -173,26 +268,26 @@ public class ItemInteraction implements Listener {
             if (invType != InventoryType.PLAYER &&
                     invType != InventoryType.CREATIVE &&
                     invType != InventoryType.CRAFTING) {
-                player.sendMessage("§cVous ne pouvez pas déplacer cet objet ici");
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
                 event.setCancelled(true);
                 return;
             }
         }
 
         if (event.getSlotType() == InventoryType.SlotType.CRAFTING) {
-            player.sendMessage("§cVous ne pouvez pas déplacer cet objet ici");
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
 
         if (event.getClick() == ClickType.DROP || event.getClick() == ClickType.CONTROL_DROP) {
-            player.sendMessage("§cVous ne pouvez pas jeter cet objet");
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas jeter cet objet"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
 
         if (event.isShiftClick()) {
-            player.sendMessage("§cVous ne pouvez pas déplacer cet objet par shift-click");
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet par shift-click"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
@@ -204,13 +299,10 @@ public class ItemInteraction implements Listener {
     @EventHandler
     void onItemDrop(PlayerDropItemEvent event) {
         ItemStack item = event.getItemDrop().getItemStack();
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            PersistentDataContainer itemData = meta.getPersistentDataContainer();
-            if (itemData.has(NAMESPACE_KEY, PersistentDataType.STRING)) {
-                event.setCancelled(true);
-                MessagesManager.sendMessage(event.getPlayer(), Component.text("§cVous ne pouvez pas jeter cet item"), Prefix.OPENMC, MessageType.ERROR, false);
-            }
+
+        if (isItemInteraction(item)) {
+            event.setCancelled(true);
+            MessagesManager.sendMessage(event.getPlayer(), Component.text("§cVous ne pouvez pas jeter cet item"), Prefix.OPENMC, MessageType.ERROR, false);
         }
     }
 
@@ -224,15 +316,8 @@ public class ItemInteraction implements Listener {
 
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
-        if (item == null || item.getType() == Material.AIR)
-            return;
 
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null)
-            return;
-
-        PersistentDataContainer data = meta.getPersistentDataContainer();
-        if (!data.has(NAMESPACE_KEY, PersistentDataType.STRING))
+        if (!isItemInteraction(item))
             return;
 
         event.setCancelled(true);
@@ -255,6 +340,24 @@ public class ItemInteraction implements Listener {
         }
 
         return itemInteraction;
+    }
+
+    /*
+     * Méthode qui permet de verifier si l'item est celui avec qui on intéragit
+     */
+    private static boolean isItemInteraction(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR)
+            return false;
+
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null)
+            return false;
+
+        if (item != null && item.hasItemMeta()) {
+            PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
+            return data.has(NAMESPACE_KEY, PersistentDataType.STRING);
+        }
+        return false;
     }
 
     /*
