@@ -220,7 +220,7 @@ public class CompanyCommand {
     @Description("Créer une entreprise")
     public void createCompany(Player player, @Named("name") String name) {
         if (!check(player, name, false)) return;
-        manager.createCompany(name, new CompanyOwner(player.getUniqueId()), false);
+        manager.createCompany(name, new CompanyOwner(player.getUniqueId()), false, null);
         player.sendMessage("§aL'entreprise " + name + " a été créée avec succès !");
     }
 
@@ -238,7 +238,7 @@ public class CompanyCommand {
             player.sendMessage("§cVous ne pouvez pas créer d'entreprise au nom de votre ville sans en être l'owner");
             return;
         }
-        manager.createCompany(name, new CompanyOwner(CityManager.getPlayerCity(player.getUniqueId())), true);
+        manager.createCompany(name, new CompanyOwner(CityManager.getPlayerCity(player.getUniqueId())), true, null);
         player.sendMessage("§aL'entreprise " + name + " a été créée avec succès !");
     }
 

@@ -34,6 +34,7 @@ public class Company {
     private final Queue<Long, TransactionData> transactions = new Queue<>(150);
     private final double turnover = 0;
     private CompanyOwner owner;
+    private final UUID company_uuid;
     @Setter
     private double balance = 0;
     @Setter
@@ -41,15 +42,18 @@ public class Company {
 
     private int shopCounter = 0;
 
-    public Company(String name, CompanyOwner owner) {
+    public Company(String name, CompanyOwner owner, UUID company_uuid) {
         this.name = name;
         this.owner = owner;
+        this.company_uuid = Objects.requireNonNullElseGet(company_uuid, UUID::randomUUID);
+
         addPermission(owner.getPlayer(), CorpPermission.OWNER);
     }
 
-    public Company(String name, CompanyOwner owner, boolean newMember) {
+    public Company(String name, CompanyOwner owner, UUID company_uuid, boolean newMember) {
         this.name = name;
         this.owner = owner;
+        this.company_uuid = Objects.requireNonNullElseGet(company_uuid, UUID::randomUUID);
 
         if (owner.isCity() && newMember){
             City city = owner.getCity();
@@ -125,7 +129,7 @@ public class Company {
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_permissions WHERE city_uuid = ? AND player = ? AND permission = ?");
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM company_perms WHERE company_uuid = ? AND player = ? AND permission = ?");
                     statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
                     statement.setString(2, uuid.toString());
                     statement.setString(3, permission.toString());
@@ -146,8 +150,8 @@ public class Company {
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_permissions (city_uuid, player, permission) VALUES (?, ?, ?)");
-                    statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_permissions (company_uuid, player, permission) VALUES (?, ?, ?)");
+                    statement.setString(1, company_uuid.toString());
                     statement.setString(2, uuid.toString());
                     statement.setString(3, permission.toString());
                     statement.executeUpdate();
@@ -193,6 +197,7 @@ public class Company {
 
     public boolean createShop(UUID playerUUID, Block barrel, Block cash, UUID shopUUID) {
         Player whoCreated = Bukkit.getPlayer(playerUUID);
+
         if (whoCreated==null && shopUUID != null){
             Shop newShop;
             newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
@@ -200,23 +205,30 @@ public class Company {
             shopCounter++;
             return true;
         }
+
         Company company = CompanyManager.getInstance().getCompany(playerUUID);
+
         if (whoCreated != null && withdraw(100, whoCreated, "Création de shop")) {
             if (company!=null && !company.hasPermission(playerUUID, CorpPermission.CREATESHOP)){
                 return false;
             }
+
             Shop newShop;
+
             if (shopUUID==null){
                 newShop = new Shop(new ShopOwner(this), shopCounter);
                 economyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
             } else {
                 newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
             }
+
             shops.add(newShop);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
+
             if (shopUUID==null){
                 shopBlocksManager.placeShop(newShop, whoCreated, true);
             }
+
             shopCounter++;
             return true;
         }

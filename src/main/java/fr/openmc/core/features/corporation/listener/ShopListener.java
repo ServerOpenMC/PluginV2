@@ -71,7 +71,11 @@ public class ShopListener implements Listener {
             if (isShop){
                 Company company = CompanyManager.getInstance().getCompany(e.getPlayer().getUniqueId());
                 if (company==null){
-                    if (shop.getOwner().getPlayer().equals(e.getPlayer().getUniqueId())){
+                    if (shop.getOwner().getPlayer()==null){
+                        e.setCancelled(true);
+                        return;
+                    }
+                    if (!shop.getOwner().getPlayer().equals(e.getPlayer().getUniqueId())){
                         e.setCancelled(true);
                         return;
                     }
@@ -98,11 +102,15 @@ public class ShopListener implements Listener {
         UUID playerUUID = e.getWhoClicked().getUniqueId();
         if (inShopBarrel.getOrDefault(playerUUID, false)) {
             Player player = (Player) e.getWhoClicked();
-            if (CompanyManager.getInstance().getCompany(playerUUID).hasPermission(playerUUID, CorpPermission.SUPPLY)){
-                player.sendMessage("Vous n'avez pas la permission de réapprovisionner les shops dans l'entreprise");
-                player.closeInventory();
-                return;
+            Company company = CompanyManager.getInstance().getCompany(playerUUID);
+            if (company!=null){
+                if (!company.hasPermission(playerUUID, CorpPermission.SUPPLY)){
+                    player.sendMessage("Vous n'avez pas la permission de réapprovisionner les shops dans l'entreprise");
+                    player.closeInventory();
+                    return;
+                }
             }
+
             Inventory clickedInventory = e.getClickedInventory();
 
             if (clickedInventory == null) return;

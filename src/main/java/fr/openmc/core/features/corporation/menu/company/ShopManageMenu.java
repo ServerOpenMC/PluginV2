@@ -24,8 +24,6 @@ import java.util.Map;
 public class ShopManageMenu extends PaginatedMenu {
 
     private final Company company;
-    private final CompanyManager companyManager = CompanyManager.getInstance();
-    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
 
     public ShopManageMenu(Player owner, Company company) {
         super(owner);

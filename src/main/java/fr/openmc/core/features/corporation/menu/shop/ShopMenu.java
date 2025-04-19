@@ -4,13 +4,9 @@ import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.corporation.CompanyManager;
-import fr.openmc.core.features.corporation.PlayerShopManager;
-import fr.openmc.core.features.corporation.Shop;
-import fr.openmc.core.features.corporation.ShopItem;
+import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
-import fr.openmc.core.features.corporation.MethodState;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -64,6 +60,8 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
+        Company company = null;
+
         int previousItemSlot;
         int nextItemSlot;
         int closeMenuSlot;
@@ -77,8 +75,13 @@ public class ShopMenu extends Menu {
         int purpleAddSixtyFour;
 
         int catalogue;
-        //TODO company a verif ici
-        if (shop.isOwner(getOwner().getUniqueId())) {
+
+        boolean ownerItem = false;
+
+        if (shop.getOwner().isCompany()){
+            company = shop.getOwner().getCompany();
+        }
+        if (company == null && shop.isOwner(getOwner().getUniqueId())) {
             previousItemSlot = 39;
             nextItemSlot = 41;
             closeMenuSlot = 40;
@@ -90,6 +93,20 @@ public class ShopMenu extends Menu {
             greenAddTen = 24;
             purpleAddSixtyFour = 25;
             catalogue = 44;
+            ownerItem = true;
+        } else if (company != null && company.getAllMembers().contains(getOwner().getUniqueId())) {
+            previousItemSlot = 39;
+            nextItemSlot = 41;
+            closeMenuSlot = 40;
+            purpleSetOne = 19;
+            redRemoveTen = 20;
+            redRemoveOne = 21;
+            itemSlot = 22;
+            greenAddOne = 23;
+            greenAddTen = 24;
+            purpleAddSixtyFour = 25;
+            catalogue = 44;
+            ownerItem = true;
         } else {
             previousItemSlot = 30;
             nextItemSlot = 32;
@@ -123,7 +140,7 @@ public class ShopMenu extends Menu {
             itemMeta.setDisplayName("§7Fermer");
         }).setCloseButton());
 
-        if (shop.isOwner(getOwner().getUniqueId()))
+        if (ownerItem)
             putOwnerItems(content);
         content.put(purpleSetOne, new ItemBuilder(this, Material.PURPLE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.setDisplayName("§5Définir à 1");
@@ -247,8 +264,11 @@ public class ShopMenu extends Menu {
                         "Comment utiliser les shops !\n\n" +
                                 "§l§6Stock§r :\n" +
                                 "1. Utilisez la commande §d§l/shop sell §r§7<prix> §r en tenant l'item en main\n" +
-                                "2. Ajoutez les items dans le barril §c§l* le raccourci avec les chiffres ne fonctionnera pas *\n" +
-                                "3. Ouvrez une fois le shop pour renouveler son stock"
+                                "2. Ajoutez les items dans le barril §c§l* le raccourci avec les chiffres ne fonctionnera pas *\n"
+                );
+                meta.addPage(
+                        "3. Ouvrez une fois le shop pour renouveler son stock\n\n" +
+                                "Et voilà comment utiliser votre shops"
                 );
 
                 book.setItemMeta(meta);

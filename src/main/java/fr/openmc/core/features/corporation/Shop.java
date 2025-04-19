@@ -170,6 +170,7 @@ public class Shop {
         if (isOwner(buyer.getUniqueId())) {
             return MethodState.FAILURE;
         }
+        if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
         item.setAmount(item.getAmount() - amount);
         turnover += item.getPrice(amount);
         if (owner.isCompany()) {
@@ -208,7 +209,6 @@ public class Shop {
             owner.getCompany().deposit(companyCut, buyer, "Vente", getName());
         }
         else {
-            if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
             economyManager.addBalance(owner.getPlayer(), item.getPrice(amount));
         }
         //TODO Give certain amount of that item to the buyer

@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -77,9 +78,7 @@ public class ShopBlocksManager {
         new BukkitRunnable() {
             @Override
             public void run() {
-                shopsByLocation.forEach((location, shop1) -> {
-                    if (shop1.getUuid().equals(shop.getUuid())) shopsByLocation.remove(location);
-                });
+                shopsByLocation.entrySet().removeIf(entry -> entry.getValue().getUuid().equals(shop.getUuid()));
             }
         }.runTaskAsynchronously(plugin);
         return true;

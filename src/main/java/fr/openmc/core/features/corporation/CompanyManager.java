@@ -35,7 +35,7 @@ public class CompanyManager {
         instance = this;
 
         CommandsManager.getHandler().register(
-                new CompanyCommand(),
+                //new CompanyCommand(),
                 new ShopCommand()
         );
 
@@ -67,14 +67,15 @@ public class CompanyManager {
                     "PRIMARY KEY (shop_uuid, item(255)))");
 
             stmt.addBatch("CREATE TABLE IF NOT EXISTS company (" +
-                    "city_uuid VARCHAR(36) PRIMARY KEY, " +
+                    "company_uuid VARCHAR(36) PRIMARY KEY, " +
                     "name VARCHAR(255) NOT NULL, " +
                     "owner VARCHAR(36), " +
                     "cut DOUBLE NOT NULL, " +
-                    "balance DOUBLE NOT NULL)");
+                    "balance DOUBLE NOT NULL, " +
+                    "city_uuid VARCHAR(36))");
 
             stmt.addBatch("CREATE TABLE IF NOT EXISTS company_merchants (" +
-                    "city_uuid VARCHAR(36) NOT NULL, " +
+                    "company_uuid VARCHAR(36), " +
                     "player VARCHAR(36) NOT NULL PRIMARY KEY, " +
                     "moneyWon DOUBLE NOT NULL)");
 
@@ -90,12 +91,13 @@ public class CompanyManager {
     public static List<Company> getAllCompany() {
         List<Company> companies = new ArrayList<>();
 
-        String query = "SELECT city_uuid, name, owner, cut, balance FROM company";
+        String query = "SELECT company_uuid, name, owner, cut, balance, city_uuid FROM company";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement statement = conn.prepareStatement(query);
              ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
+                String company_uuid = rs.getString("company_uuid");
                 String cityUuid = rs.getString("city_uuid");
                 UUID owner = UUID.fromString(rs.getString("owner"));
                 String name = rs.getString("name");
@@ -103,15 +105,15 @@ public class CompanyManager {
                 double balance = rs.getDouble("balance");
 
                 Company company = (cityUuid == null)
-                        ? new Company(name, new CompanyOwner(owner))
-                        : new Company(name, new CompanyOwner(CityManager.getCity(cityUuid)));
+                        ? new Company(name, new CompanyOwner(owner), UUID.fromString(company_uuid))
+                        : new Company(name, new CompanyOwner(CityManager.getCity(cityUuid)), UUID.fromString(company_uuid));
 
                 company.setCut(cut);
                 company.setBalance(balance);
 
-                String merchantQuery = "SELECT player, moneyWon FROM company_merchants WHERE city_uuid = ?";
+                String merchantQuery = "SELECT player, moneyWon FROM company_merchants WHERE company_uuid = ?";
                 try (PreparedStatement merchantStmt = conn.prepareStatement(merchantQuery)) {
-                    merchantStmt.setString(1, cityUuid);
+                    merchantStmt.setString(1, company_uuid);
                     try (ResultSet merchantRs = merchantStmt.executeQuery()) {
                         while (merchantRs.next()) {
                             UUID playerUuid = UUID.fromString(merchantRs.getString("player"));
@@ -218,8 +220,8 @@ public class CompanyManager {
             e.printStackTrace();
         }
 
-        String queryCompany = "INSERT INTO company (city_uuid, name, owner, cut, balance) VALUES (?, ?, ?, ?, ?)";
-        String queryMerchant = "INSERT INTO company_merchants (city_uuid, player, moneyWon) VALUES (?, ?, ?)";
+        String queryCompany = "INSERT INTO company (cpmpany_uuid, name, owner, cut, balance) VALUES (?, ?, ?, ?, ?)";
+        String queryMerchant = "INSERT INTO company_merchants (company_uuid, player, moneyWon) VALUES (?, ?, ?)";
         String queryMerchantData = "INSERT INTO merchants_data (uuid, content) VALUES (?, ?)";
 
         try (
@@ -228,22 +230,25 @@ public class CompanyManager {
                 PreparedStatement stmtMerchantData = DatabaseManager.getConnection().prepareStatement(queryMerchantData)
         ) {
             for (Company company : companies) {
-                String cityUuid = company.getOwner().getCity().getUUID();
+                City city = company.getOwner().getCity();
+                String cityUuid = city == null ? null : city.getUUID();
+                String company_uuid = company.getCompany_uuid().toString();
                 String name = company.getName();
                 UUID owner = company.getOwner().getPlayer();
                 double cut = company.getCut();
                 double balance = company.getBalance();
 
-                stmtCompany.setString(1, cityUuid);
+                stmtCompany.setString(1, company_uuid);
                 stmtCompany.setString(2, name);
                 stmtCompany.setString(3, owner.toString());
                 stmtCompany.setDouble(4, cut);
                 stmtCompany.setDouble(5, balance);
+                stmtCompany.setString(6, cityUuid);
                 stmtCompany.addBatch(); // Adding the company to batch
 
                 for (UUID merchantUUID : company.getMerchantsUUID()) {
                     double moneyWon = company.getMerchant(merchantUUID).getMoneyWon();
-                    stmtMerchant.setString(1, cityUuid);
+                    stmtMerchant.setString(1, company_uuid);
                     stmtMerchant.setString(2, merchantUUID.toString());
                     stmtMerchant.setDouble(3, moneyWon);
                     stmtMerchant.addBatch(); // Adding merchant info to batch
@@ -285,9 +290,9 @@ public class CompanyManager {
                 for (Shop shop : company.getShops()) {
                     UUID shopUuid = shop.getUuid();
                     UUID owner = shop.getOwner().getPlayer();
-                    String cityUuid = company.getOwner().getCity().getUUID();
-                    if (cityUuid == null) {
-                        continue;
+                    String cityUuid = null;
+                    if (company.getOwner().isCity()){
+                        cityUuid = company.getOwner().getCity().getUUID();
                     }
                     double x = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockX();
                     double y = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockY();
@@ -384,8 +389,8 @@ public class CompanyManager {
     }
 
     // Crée une nouvelle entreprise et l'ajoute à la liste des entreprises existantes
-    public void createCompany(String name, CompanyOwner owner, boolean newMember) {
-        companies.add(new Company(name, owner, newMember));
+    public void createCompany(String name, CompanyOwner owner, boolean newMember, UUID company_uuid) {
+        companies.add(new Company(name, owner, company_uuid, newMember));
     }
 
     // Un joueur postule pour rejoindre une entreprise
