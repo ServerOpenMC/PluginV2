@@ -61,7 +61,7 @@ public class Rtp {
                 if (tryRtp(player)) {
                     DynamicCooldownManager.use(player.getUniqueId(), "rpt", 1000L * rtpCooldown);
                 } else {
-                    if (tries < maxTries) {
+                    if ((tries+1) < maxTries) {
                         player.sendActionBar("RTP: Tentative " + (tries + 1) + "/" + maxTries + " §cÉchec§r...");
                         new BukkitRunnable() {
                             @Override
