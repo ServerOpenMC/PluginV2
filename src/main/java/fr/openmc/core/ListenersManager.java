@@ -1,7 +1,7 @@
-package fr.openmc.core.listeners;
+package fr.openmc.core;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxListener;
+import fr.openmc.core.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;

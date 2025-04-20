@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.customitems;
 
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
