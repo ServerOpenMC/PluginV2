@@ -33,6 +33,7 @@ public class CommandsManager {
         handler.register(
                 new Socials(),
                 new Spawn(),
+                new Rtp(),
                 new SetSpawn(),
                 new Playtime(),
                 new Diceroll(),
