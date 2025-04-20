@@ -69,24 +69,40 @@ public class ConfirmMenu extends Menu {
             meta.displayName(Component.text("§cAnnuler"));
         }).setNextMenu(previousMenu));
 
-        int[] quantitySteps = {-64, -10, -1, +1, +10, +64};
-        int[] slots = {10, 11, 12, 14, 15, 16};
+        content.put(10, createQuantityButton("-64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
+            if (quantity > 64) quantity -= 64;
+            else quantity = 1;
+            update();
+        }));
 
-        for (int i = 0; i < quantitySteps.length; i++) {
-            int step = quantitySteps[i];
-            int slot = slots[i];
-            content.put(slot, createQuantityButton(
-                    (step > 0 ? "+" : "") + step,
-                    CustomItemRegistry.getByName("omc_menus:" + Math.abs(step) + "_btn").getBest(),
-                    e -> {
-                        quantity = Math.max(1, Math.min(maxQuantity, quantity + step));
-                        update();
-                    }));
-        }
+        content.put(11, createQuantityButton("-10", CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), event -> {
+            if (quantity > 10) quantity -= 10;
+            update();
+        }));
+
+        content.put(12, createQuantityButton("-1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
+            if (quantity > 1) quantity--;
+            update();
+        }));
 
         content.put(13, new ItemBuilder(this, shopItem.getMaterial(), meta -> {
             meta.displayName(Component.text("§f" + shopItem.getName()));
             meta.lore(lore);
+        }));
+
+        content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
+            if (quantity < maxQuantity) quantity++;
+            update();
+        }));
+
+        content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> {
+            if (quantity < maxQuantity) quantity += 10;
+            update();
+        }));
+
+        content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
+            if (quantity < maxQuantity) quantity += 64;
+            update();
         }));
 
         content.put(17, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), meta -> {

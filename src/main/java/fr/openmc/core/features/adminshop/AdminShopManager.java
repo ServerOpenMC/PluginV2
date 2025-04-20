@@ -16,7 +16,9 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +27,8 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class AdminShopManager {
+
+    // TODO: On ne peut pas acheter les items colorés
 
     private final OMCPlugin plugin;
     private FileConfiguration config;
@@ -155,7 +159,7 @@ public class AdminShopManager {
         ShopItem item = getCurrentItem(player, itemId);
         if (item == null) return;
 
-        if (!hasEnoughPlace(player, amount)) {
+        if (!hasEnoughSpace(player, item.getMaterial(), amount)) {
             sendError(player, "Votre inventaire est plein !");
             return;
         }
@@ -211,10 +215,38 @@ public class AdminShopManager {
         saveConfig();
     }
 
-    private boolean hasEnoughPlace(Player player, int amount) {
-        return Arrays.stream(player.getInventory().getContents())
-                .filter(Objects::isNull)
-                .count() >= amount;
+    private int checkInventorySpace(Player player, Material itemToAdd, int amountToAdd) {
+        PlayerInventory inventory = player.getInventory();
+        int emptySlots = 0;
+        int availableAmount = 0;
+
+        for (int i = 0; i < 36; i++) {
+            ItemStack item = inventory.getItem(i);
+            ItemStack itemToAddStack = itemToAdd != null ? new ItemStack(itemToAdd) : null;
+
+            if (item == null || item.getType() == Material.AIR) {
+                emptySlots++;
+                if (itemToAddStack != null) availableAmount += itemToAddStack.getMaxStackSize();
+            }
+            else if (itemToAddStack != null && item.isSimilar(new ItemStack(itemToAddStack))) {
+                int remainingSpace = item.getMaxStackSize() - item.getAmount();
+                if (remainingSpace > 0) {
+                    availableAmount += remainingSpace;
+                }
+            }
+        }
+
+        if (itemToAdd != null) {
+            if (availableAmount >= amountToAdd) return -1;
+            else return emptySlots;
+        }
+
+        return emptySlots;
+    }
+
+    public boolean hasEnoughSpace(Player player, Material itemToAdd, int amountToAdd) {
+        int result = checkInventorySpace(player, itemToAdd, amountToAdd);
+        return result == -1 || result > 0;
     }
 
     private boolean playerHasItem(Player player, Material material, int amount) {
