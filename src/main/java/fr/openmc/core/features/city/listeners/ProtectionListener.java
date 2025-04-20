@@ -140,7 +140,6 @@ public class ProtectionListener implements Listener {
     public void onCreeperExplode(EntityExplodeEvent event) {
         Chunk chunk = event.getLocation().getChunk();
         City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
-        System.out.println(CityManager.getCityType(city.getUUID()));
         if (city == null) return;
 
         if (Objects.equals(CityManager.getCityType(city.getUUID()), "peace")) {
