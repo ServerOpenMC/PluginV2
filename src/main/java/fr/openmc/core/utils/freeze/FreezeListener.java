@@ -40,6 +40,11 @@ public class FreezeListener implements Listener {
 		}
 	}
 	
+	/**
+	 * When a player joins, if he is frozen, we set him invulnerable and send him a message
+	 *
+	 * @param event PlayerJoinEvent
+	 */
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
