@@ -293,7 +293,6 @@ public class MascotsListener implements Listener {
 
     @EventHandler
     public void onBlockPlace(CustomBlockPlaceEvent event) {
-        Player player = event.getPlayer();
         Block block = event.getBlock();
         Location loc = block.getLocation();
 
