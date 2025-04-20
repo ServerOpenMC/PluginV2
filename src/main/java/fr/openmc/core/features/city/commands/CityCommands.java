@@ -196,16 +196,17 @@ public class CityCommands {
 
         List<Player> playerInvitations = invitations.get(target);
         if (playerInvitations == null) {
-            invitations.put(target, List.of(sender));
+            List<Player> newInvitations = new ArrayList<>();
+            newInvitations.add(sender);
+            invitations.put(target, newInvitations);
         } else {
             playerInvitations.add(sender);
         }
         MessagesManager.sendMessage(sender, Component.text("Tu as invité "+target.getName()+" dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
         MessagesManager.sendMessage(target,
                 Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getCityName() + "\n")
-                        .append(Component.text("[ACCEPTER]").color(NamedTextColor.GREEN).clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
-                        .append(Component.text("   "))
-                                .append(Component.text("[REFUSER]").color(NamedTextColor.RED).clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
+                        .append(Component.text("§8Faite §a/city accept §8pour accepter\n").clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
+                        .append(Component.text("§8Faite §a/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
                 Prefix.CITY, MessageType.INFO, false);
     }
 
@@ -406,6 +407,13 @@ public class CityCommands {
             return;
         }
 
+        for (City city : CityManager.getCities()){
+            String cityName = city.getCityName();
+            if (cityName!=null && cityName.equalsIgnoreCase(name)){
+                MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
+                return;
+            }
+        }
 
         if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);

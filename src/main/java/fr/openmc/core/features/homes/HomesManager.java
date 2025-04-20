@@ -1,7 +1,7 @@
 package fr.openmc.core.features.homes;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
