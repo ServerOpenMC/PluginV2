@@ -196,7 +196,9 @@ public class CityCommands {
 
         List<Player> playerInvitations = invitations.get(target);
         if (playerInvitations == null) {
-            invitations.put(target, List.of(sender));
+            List<Player> newInvitations = new ArrayList<>();
+            newInvitations.add(sender);
+            invitations.put(target, newInvitations);
         } else {
             playerInvitations.add(sender);
         }
