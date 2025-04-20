@@ -115,8 +115,6 @@ public class FriendSQLManager {
         try {
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT friendDate FROM " + TABLE_NAME + " WHERE (firstPlayer_uuid = ? AND secondPlayer_uuid = ?) OR (firstPlayer_uuid = ? AND secondPlayer_uuid = ?)");
 
-            System.out.println("firstUUID: " + firstUUID.toString());
-            System.out.println("secondUUID: " + secondUUID.toString());
             statement.setString(1, firstUUID.toString());
             statement.setString(2, secondUUID.toString());
             statement.setString(3, secondUUID.toString());
