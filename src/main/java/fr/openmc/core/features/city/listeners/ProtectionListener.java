@@ -62,7 +62,7 @@ public class ProtectionListener implements Listener {
         }
         event.setCancelled(true);
 
-        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, true);
+        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, 0.6F, true);
     }
 
     @EventHandler
