@@ -2,7 +2,6 @@ package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
 import fr.openmc.core.commands.CommandsManager;
-import fr.openmc.core.commands.utils.rtpManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -62,7 +61,6 @@ public class OMCPlugin extends JavaPlugin {
         ContestManager contestManager = new ContestManager(this);
         ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
-        new rtpManager(this);
         new MascotsManager(this); // laisser avant CityManager
         new CityManager();
         new ListenersManager();
