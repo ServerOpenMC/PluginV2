@@ -52,6 +52,6 @@ public class SleepListener implements Listener {
 	}
 	
 	private int getPercentage(int players) {
-		return PLAYER_THRESHOLDS.ceilingKey(players);
+		return PLAYER_THRESHOLDS.ceilingEntry(players).getValue();
 	}
 }
