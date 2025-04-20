@@ -1,0 +1,165 @@
+category:
+  - BLOCKS:
+        name: "&a&lBlocks"
+        material: "GRASS_BLOCK"
+        position: 0
+  - ORES:
+      name: "&6&lOres"
+      material: "IRON_INGOT"
+      position: 1
+  - FOODS:
+      name: "&c&lNourritures"
+      material: "COOKED_BEEF"
+      position: 2
+  - MISC:
+      name: "&8&lMisc"
+      material: "BLAZE_ROD"
+      position: 3
+
+FOODS:
+  - COOKED_BEEF:
+      name: "&c&lCooked Beef"
+      slot: 10
+      price:
+        initial:
+          sell: 5
+          buy: 8
+        actual:
+          sell: 5
+          buy: 8
+  - GOLDEN_APPLE:
+      name: "&e&lGolden Apple"
+      slot: 11
+      price:
+        initial:
+          sell: 50
+          buy: 75
+        actual:
+          sell: 50
+          buy: 75
+  - CAKE:
+      name: "&d&lCake"
+      slot: 12
+      price:
+        initial:
+          sell: 15
+          buy: 25
+        actual:
+          sell: 15
+          buy: 25
+
+BLOCKS:
+  - STONE:
+      name: "&7&lStone"
+      slot: 10
+      price:
+        initial:
+          sell: 1
+          buy: 2
+        actual:
+          sell: 1
+          buy: 2
+  - DIAMOND_BLOCK:
+      name: "&b&lDiamond Block"
+      slot: 11
+      price:
+        initial:
+          sell: 900
+          buy: 1200
+        actual:
+          sell: 900
+          buy: 1200
+  - OBSIDIAN:
+      name: "&5&lObsidian"
+      slot: 12
+      price:
+        initial:
+          sell: 10
+          buy: 15
+        actual:
+          sell: 10
+          buy: 15
+
+ORES:
+  - COAL:
+      name: "&7&lCoal"
+      slot: 10
+      price:
+        initial:
+          sell: 3
+          buy: 5
+        actual:
+          sell: 3
+          buy: 5
+  - IRON_INGOT:
+      name: "&f&lIron Ingot"
+      slot: 11
+      price:
+        initial:
+          sell: 15
+          buy: 20
+        actual:
+          sell: 15
+          buy: 20
+  - GOLD_INGOT:
+      name: "&e&lGold Ingot"
+      slot: 12
+      price:
+        initial:
+          sell: 30
+          buy: 40
+        actual:
+          sell: 30
+          buy: 40
+  - DIAMOND:
+      name: "&b&lDiamond"
+      slot: 13
+      price:
+        initial:
+          sell: 100
+          buy: 150
+        actual:
+          sell: 100
+          buy: 150
+  - EMERALD:
+      name: "&a&lEmerald"
+      slot: 14
+      price:
+        initial:
+          sell: 120
+          buy: 180
+        actual:
+          sell: 120
+          buy: 180
+
+MISC:
+  - ENDER_PEARL:
+      name: "&5&lEnder Pearl"
+      slot: 10
+      price:
+        initial:
+          sell: 10
+          buy: 15
+        actual:
+          sell: 10
+          buy: 15
+  - EXPERIENCE_BOTTLE:
+      name: "&a&lExperience Bottle"
+      slot: 11
+      price:
+        initial:
+          sell: 20
+          buy: 30
+        actual:
+          sell: 20
+          buy: 30
+  - ENCHANTED_BOOK:
+      name: "&d&lEnchanted Book"
+      slot: 12
+      price:
+        initial:
+          sell: 100
+          buy: 150
+        actual:
+          sell: 100
+          buy: 150

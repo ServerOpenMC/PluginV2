@@ -1,6 +1,10 @@
 package fr.openmc.core.utils.customitems;
 
 import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.utils.customitems.buttons.MinusButton;
+import fr.openmc.core.utils.customitems.buttons.OneButton;
+import fr.openmc.core.utils.customitems.buttons.PlusButton;
+import fr.openmc.core.utils.customitems.buttons.StackButton;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -30,6 +34,10 @@ public class CustomItemRegistry {
         new AcceptButton();
         new RefuseButton();
         new SearchButton();
+        new StackButton();
+        new MinusButton();
+        new PlusButton();
+        new OneButton();
 
         new ContestShell();
         new Aywenite();
