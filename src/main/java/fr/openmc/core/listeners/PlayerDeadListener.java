@@ -21,7 +21,7 @@ public class PlayerDeadListener implements Listener {
         if (balance>0) {
             System.out.println(balance/2);
             economyManager.withdrawBalance(player.getUniqueId(), balance/2);
-            MessagesManager.sendMessage(player, Component.text("Vous venez de mourrir avec §6" + economyManager.getFormattedSimplifiedNumber(balance) + "§f, vous n'avez plus que §6" + economyManager.getFormattedSimplifiedNumber(balance/2)), Prefix.OPENMC, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("Vous venez de mourrir avec §6" + economyManager.getFormattedSimplifiedNumber(balance) + "§f, vous n'avez plus que §6" + economyManager.getFormattedSimplifiedNumber(balance/2) + "\n§8*pensez à mettre votre argent dans la banque*"), Prefix.OPENMC, MessageType.INFO, false);
         }
 
     }
