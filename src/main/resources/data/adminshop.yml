@@ -49,36 +49,206 @@ FOODS:
           buy: 25
 
 BLOCKS:
-  - STONE:
-      name: "&7&lStone"
-      slot: 10
-      price:
-        initial:
-          sell: 1
-          buy: 2
-        actual:
-          sell: 1
-          buy: 2
-  - DIAMOND_BLOCK:
-      name: "&b&lDiamond Block"
-      slot: 11
-      price:
-        initial:
-          sell: 900
-          buy: 1200
-        actual:
-          sell: 900
-          buy: 1200
-  - OBSIDIAN:
-      name: "&5&lObsidian"
+  - WHITE_CONCRETE_POWDER:
+      name: "§7Béton en poudre"
       slot: 12
       price:
         initial:
+          sell: 2
+          buy: 2
+        actual:
+          sell: 2
+          buy: 2
+  - WHITE_WOOL:
+      name: "§7Laine"
+      slot: 13
+      price:
+        initial:
+          sell: 2
+          buy: 2
+        actual:
+          sell: 2
+          buy: 2
+  - WHITE_CONCRETE:
+      name: "§7Béton"
+      slot: 14
+      price:
+        initial:
+          sell: 2
+          buy: 2
+        actual:
+          sell: 2
+          buy: 2
+  - GRASS_BLOCK:
+      name: "§7Bloc d'herbe"
+      slot: 19
+      price:
+        initial:
+          sell: 3
+          buy: 3
+        actual:
+          sell: 3
+          buy: 3
+  - STONE:
+      name: "§7Pierre"
+      slot: 20
+      price:
+        initial:
+          sell: 2
+          buy: 2
+        actual:
+          sell: 2
+          buy: 2
+  - DIORITE:
+      name: "§7Diorite"
+      slot: 21
+      price:
+        initial:
+          sell: 2
+          buy: 0
+        actual:
+          sell: 2
+          buy: 0
+  - DEEPSLATE:
+      name: "§7Ardoise des abîmes"
+      slot: 22
+      price:
+        initial:
+          sell: 0
+          buy: 3
+        actual:
+          sell: 0
+          buy: 3
+  - ICE:
+      name: "§7Glace"
+      slot: 23
+      price:
+        initial:
+          sell: 0
+          buy: 4
+        actual:
+          sell: 0
+          buy: 4
+  - AMETHYST_BLOCK:
+      name: "§7Bloc d'améthyste"
+      slot: 24
+      price:
+        initial:
+          sell: 0
+          buy: 20
+        actual:
+          sell: 0
+          buy: 20
+  - OAK_LEAVES:
+      name: "§7Feuilles de chêne"
+      slot: 25
+      price:
+        initial:
+          sell: 1
+          buy: 0
+        actual:
+          sell: 1
+          buy: 0
+  - DIRT:
+      name: "§7Terre"
+      slot: 28
+      price:
+        initial:
+          sell: 0
+          buy: 1
+        actual:
+          sell: 0
+          buy: 1
+  - GRAVEL:
+      name: "§7Gravier"
+      slot: 29
+      price:
+        initial:
+          sell: 2
+          buy: 0
+        actual:
+          sell: 2
+          buy: 0
+  - GRANITE:
+      name: "§7Granite"
+      slot: 30
+      price:
+        initial:
+          sell: 2
+          buy: 0
+        actual:
+          sell: 2
+          buy: 0
+  - OBSIDIAN:
+      name: "§7Obsidienne"
+      slot: 31
+      price:
+        initial:
           sell: 10
-          buy: 15
+          buy: 0
         actual:
           sell: 10
-          buy: 15
+          buy: 0
+  - PACKED_ICE:
+      name: "§7Glace compactée"
+      slot: 32
+      price:
+        initial:
+          sell: 2
+          buy: 0
+        actual:
+          sell: 2
+          buy: 0
+  - MOSS_BLOCK:
+      name: "§7Bloc de mousse"
+      slot: 33
+      price:
+        initial:
+          sell: 0.75
+          buy: 0
+        actual:
+          sell: 0.75
+          buy: 0
+  - FLOWERING_AZALEA_LEAVES:
+      name: "§7Feuilles d'azalée fleurie"
+      slot: 34
+      price:
+        initial:
+          sell: 3
+          buy: 0
+        actual:
+          sell: 3
+          buy: 0
+  - TERRACOTTA:
+      name: "§7Terre cuite"
+      slot: 39
+      price:
+        initial:
+          sell: 2
+          buy: 2
+        actual:
+          sell: 2
+          buy: 2
+  - GLASS:
+      name: "§7Verre"
+      slot: 40
+      price:
+        initial:
+          sell: 2
+          buy: 2
+        actual:
+          sell: 2
+          buy: 2
+  - GLASS_PANE:
+      name: "§7Vitre"
+      slot: 41
+      price:
+        initial:
+          sell: 2
+          buy: 2
+        actual:
+          sell: 2
+          buy: 2
 
 ORES:
   - COAL:
