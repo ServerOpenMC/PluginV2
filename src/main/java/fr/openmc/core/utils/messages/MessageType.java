@@ -5,10 +5,10 @@ import org.bukkit.Sound;
 
 @Getter
 public enum MessageType {
-    ERROR("§c❗", Sound.BLOCK_ANVIL_LAND),
-    WARNING("§6⚠", Sound.BLOCK_ANVIL_LAND),
+    ERROR("§c❗", Sound.BLOCK_NOTE_BLOCK_BASS),
+    WARNING("§6⚠", Sound.BLOCK_NOTE_BLOCK_HARP),
     SUCCESS("§a✔", Sound.BLOCK_NOTE_BLOCK_PLING),
-    INFO("§bℹ", Sound.BLOCK_NOTE_BLOCK_PLING),
+    INFO("§bℹ", Sound.BLOCK_NOTE_BLOCK_BIT),
     NONE("", null)
     ;
 
