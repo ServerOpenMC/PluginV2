@@ -201,7 +201,7 @@ public class AdminShopManager {
             return;
         }
 
-        if (hasEnoughPlace(player, amount)) {
+        if (!hasEnoughPlace(player, amount)) {
             MessagesManager.sendMessage(player, Component.text("Votre inventaire est plein !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
             return;
         }
