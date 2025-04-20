@@ -8,7 +8,28 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.NavigableMap;
+import java.util.TreeMap;
+
 public class SleepListener implements Listener {
+	
+	private static final NavigableMap<Integer, Integer> PLAYER_THRESHOLDS = new TreeMap<>();
+	static {
+		PLAYER_THRESHOLDS.put(4, 51);
+		PLAYER_THRESHOLDS.put(10, 43);
+		PLAYER_THRESHOLDS.put(20, 31);
+		PLAYER_THRESHOLDS.put(27, 26);
+		PLAYER_THRESHOLDS.put(35, 23);
+		PLAYER_THRESHOLDS.put(39, 21);
+		PLAYER_THRESHOLDS.put(45, 18);
+		PLAYER_THRESHOLDS.put(57, 16);
+		PLAYER_THRESHOLDS.put(61, 15);
+		PLAYER_THRESHOLDS.put(65, 14);
+		PLAYER_THRESHOLDS.put(70, 13);
+		PLAYER_THRESHOLDS.put(76, 12);
+		PLAYER_THRESHOLDS.put(91, 11);
+		PLAYER_THRESHOLDS.put(101, 10);
+	}
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
@@ -31,36 +52,6 @@ public class SleepListener implements Listener {
 	}
 	
 	private int getPercentage(int players) {
-		if (players < 4) {
-			return 51;
-		} else if (players < 10) {
-			return 43;
-		} else if (players < 20) {
-			return 31;
-		} else if (players < 27) {
-			return 26;
-		} else if (players < 35) {
-			return 23;
-		} else if (players < 39) {
-			return 21;
-		} else if (players < 45) {
-			return 18;
-		} else if (players < 57) {
-			return 16;
-		} else if (players < 61) {
-			return 15;
-		} else if (players < 65) {
-			return 14;
-		} else if (players < 70) {
-			return 13;
-		} else if (players < 76) {
-			return 12;
-		} else if (players < 91) {
-			return 11;
-		} else if (players < 101) {
-			return 10;
-		} else {
-			return 9;
-		}
+		return PLAYER_THRESHOLDS.ceilingKey(players);
 	}
 }
