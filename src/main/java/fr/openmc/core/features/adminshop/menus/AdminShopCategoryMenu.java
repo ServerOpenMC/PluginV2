@@ -89,7 +89,7 @@ public class AdminShopCategoryMenu extends Menu {
                     new AdminShopMenu(getOwner(), shopManager).open();
                 });
 
-        content.put(38, backButton);
+        content.put(49, backButton);
 
         return content;
     }
