@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.commands.ContestCommand;
