@@ -33,7 +33,7 @@ public class AdminShopCategoryMenu extends Menu {
     @Override
     public @NotNull String getName() {
         ShopCategory category = shopManager.getCategory(categoryId);
-        return "§f" + PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop_items%");
+        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop_items%");
     }
 
     @Override
@@ -57,11 +57,27 @@ public class AdminShopCategoryMenu extends Menu {
                 meta.displayName(Component.text(item.getName()));
 
                 List<Component> lore = new ArrayList<>();
-                lore.add(Component.text("§aAcheter: $" + String.format("%.2f", item.getActualBuyPrice())));
-                lore.add(Component.text("§cVendre: $" + String.format("%.2f", item.getActualSellPrice())));
-                lore.add(Component.text("§7"));
-                lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
-                lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
+                if (item.getInitialBuyPrice() > 0 && item.getInitialSellPrice() <= 0) {
+                    lore.add(Component.text("§aAcheter: $" + String.format("%.2f", item.getActualBuyPrice())));
+                    lore.add(Component.text("§7"));
+                    lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
+                } else if (item.getInitialSellPrice() > 0 && item.getInitialBuyPrice() <= 0) {
+                    lore.add(Component.text("§cVendre: $" + String.format("%.2f", item.getActualSellPrice())));
+                    lore.add(Component.text("§7"));
+                    lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
+                } else {
+                    lore.add(Component.text("§aAcheter: $" + String.format("%.2f", item.getActualBuyPrice())));
+                    lore.add(Component.text("§cVendre: $" + String.format("%.2f", item.getActualSellPrice())));
+                    lore.add(Component.text("§7"));
+                    lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
+                    lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
+                }
+
+                if (item.isHasColorVariant()) {
+                    lore.add(Component.text("§7"));
+                    lore.add(Component.text("§8■ §7Clique milieu pour choisir une couleur"));
+                }
+
                 meta.lore(lore);
 
                 itemStack.setItemMeta(meta);
@@ -69,11 +85,12 @@ public class AdminShopCategoryMenu extends Menu {
                 ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
                 itemBuilder.setItemId(item.getId())
                         .setOnClick(event -> {
-                            if (event.isLeftClick()) {
+                            if (item.isHasColorVariant())
+                                shopManager.openColorVariantsMenu(getOwner(), categoryId, item, this);
+                            else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
                                 shopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), this);
-                            } else if (event.isRightClick()) {
+                            else if (event.isRightClick() && item.getInitialSellPrice() > 0)
                                 shopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId(), this);
-                            }
                         });
 
                 content.put(item.getSlot(), itemBuilder);

@@ -3,6 +3,7 @@ package fr.openmc.core.features.adminshop;
 import dev.xernas.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
+import fr.openmc.core.features.adminshop.menus.ColorVariantsMenu;
 import fr.openmc.core.features.adminshop.menus.ConfirmMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -30,6 +31,7 @@ public class AdminShopManager {
     private final File configFile;
     public final Map<String, ShopCategory> categories = new HashMap<>();
     public final Map<String, Map<String, ShopItem>> items = new HashMap<>();
+    private final Map<String, Map<String, ShopItem>> temporaryItems = new HashMap<>();
     public final Map<UUID, String> currentCategory = new HashMap<>();
     public final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
     @Getter private static AdminShopManager instance;
@@ -207,6 +209,10 @@ public class AdminShopManager {
         }
 
         ShopItem item = categoryItems.get(itemId);
+        if (item.getInitialBuyPrice() <= 0) {
+            MessagesManager.sendMessage(player, Component.text("Cet item n'est pas à vendre !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
+            return;
+        }
         double price = item.getActualBuyPrice() * amount;
 
         if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), price)) {
@@ -234,15 +240,14 @@ public class AdminShopManager {
         }
 
         ShopItem item = categoryItems.get(itemId);
+        if (item.getInitialSellPrice() <= 0) {
+            MessagesManager.sendMessage(player, Component.text("Cet item n'est pas à l'achat !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
+            return;
+        }
         Material material = item.getMaterial();
 
         if (!playerHasItem(player, material, amount)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de " + item.getName() + " à vendre !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
-            return;
-        }
-
-        if (!hasEnoughPlace(player, amount)) {
-            MessagesManager.sendMessage(player, Component.text("Votre inventaire est plein !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
             return;
         }
 
@@ -346,5 +351,28 @@ public class AdminShopManager {
 
     public void openMainMenu(Player player) {
         new AdminShopMenu(player, this).open();
+    }
+
+    public void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
+        try {
+            ColorVariantsMenu colorMenu = new ColorVariantsMenu(player, this, categoryId, originalItem, previousMenu);
+            colorMenu.open();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addTemporaryItem(String categoryId, String itemId, ShopItem item) {
+        if (!temporaryItems.containsKey(categoryId)) {
+            temporaryItems.put(categoryId, new HashMap<>());
+        }
+        temporaryItems.get(categoryId).put(itemId, item);
+    }
+
+    public void clearTemporaryItems(Player player) {
+        String categoryId = currentCategory.get(player.getUniqueId());
+        if (categoryId != null && temporaryItems.containsKey(categoryId)) {
+            temporaryItems.remove(categoryId);
+        }
     }
 }
