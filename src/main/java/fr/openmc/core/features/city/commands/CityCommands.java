@@ -406,6 +406,13 @@ public class CityCommands {
             return;
         }
 
+        for (City city : CityManager.getCities()){
+            String cityName = city.getCityName();
+            if (cityName!=null && cityName.equalsIgnoreCase(name)){
+                MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
+                return;
+            }
+        }
 
         if (!InputUtils.isInputCityName(name)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);

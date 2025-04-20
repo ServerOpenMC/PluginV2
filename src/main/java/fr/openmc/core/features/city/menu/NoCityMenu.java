@@ -113,6 +113,14 @@ public class NoCityMenu extends Menu {
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
 
+                            for (City city : CityManager.getCities()){
+                                String cityName = city.getCityName();
+                                if (cityName!=null && cityName.equalsIgnoreCase(input)){
+                                    MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
+                                    return Collections.emptyList();
+                                }
+                            }
+
                             if (InputUtils.isInputCityName(input)) {
                                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                                     CityTypeMenu menu = new CityTypeMenu(player, input);
