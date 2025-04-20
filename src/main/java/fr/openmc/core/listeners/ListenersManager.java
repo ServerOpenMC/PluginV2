@@ -18,6 +18,7 @@ public class ListenersManager {
                 new ChronometerListener(),
                 new CubeListener(OMCPlugin.getInstance()),
                 new RespawnListener(),
+                new PlayerDeadListener(),
                 new AsyncChatListener(OMCPlugin.getInstance())
         );
     }
