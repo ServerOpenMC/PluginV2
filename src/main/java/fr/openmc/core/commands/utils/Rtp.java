@@ -47,11 +47,9 @@ public class Rtp {
     @Description("Permet de se téléporter à un endroit aléatoire")
     @CommandPermission("omc.commands.rtp")
     @DynamicCooldown(group="player:rtp", message = "§cTu dois attendre avant de pouvoir te rtp (%sec% secondes)")
-    public void rtp(CommandSender sender) {
-        if (sender instanceof Player player) {
-            DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", 1000 * 15); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
-            rtpPlayer(player, 0);
-        }
+    public void rtp(Player player) {
+        DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", 1000 * 15); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
+        rtpPlayer(player, 0);
     }
 
     private void rtpPlayer(Player player, int tries) {
