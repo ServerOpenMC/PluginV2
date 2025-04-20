@@ -140,7 +140,8 @@ public class ScoreboardManager implements Listener {
             scoreboard.resetScores(entry);
         }
 
-        objective.getScore(" §8------------- ").setScore(11);
+        objective.getScore("§7").setScore(11);
+        
         objective.getScore("§8• §fNom: §7"+player.getName()).setScore(10);
 
         City city = CityManager.getPlayerCity(player.getUniqueId());

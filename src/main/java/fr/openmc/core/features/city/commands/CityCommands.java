@@ -196,7 +196,9 @@ public class CityCommands {
 
         List<Player> playerInvitations = invitations.get(target);
         if (playerInvitations == null) {
-            invitations.put(target, List.of(sender));
+            List<Player> newInvitations = new ArrayList<>();
+            newInvitations.add(sender);
+            invitations.put(target, newInvitations);
         } else {
             playerInvitations.add(sender);
         }
@@ -473,7 +475,7 @@ public class CityCommands {
         }
 
         if (CityTypeCooldown.isOnCooldown(city.getUUID())) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + CityTypeCooldown.getRemainingCooldown(city.getUUID()) / 1000 + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + CityTypeCooldown.getRemainingCooldown(city.getUUID()) + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         CityManager.changeCityType(city.getUUID());
@@ -504,6 +506,8 @@ public class CityCommands {
                 exception.printStackTrace();
             }
         }
+
+        MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le type de votre ville en " + CityManager.getCityType(city.getUUID())), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
