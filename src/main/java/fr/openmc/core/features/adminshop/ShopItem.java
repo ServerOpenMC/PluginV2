@@ -53,5 +53,4 @@ public class ShopItem {
                 return baseType;
         return materialName;
     }
-
 }

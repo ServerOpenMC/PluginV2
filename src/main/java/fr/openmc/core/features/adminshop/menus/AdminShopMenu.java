@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,29 +43,24 @@ public class AdminShopMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> content = new HashMap<>();
 
-        Collection<ShopCategory> categories = shopManager.getCategories().stream()
-                .sorted((c1, c2) -> Integer.compare(c1.position(), c2.position()))
-                .toList();
         int slot = 10;
-
-        for (ShopCategory category : categories) {
+        for (ShopCategory category : shopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
             ItemStack itemStack = new ItemStack(category.material());
             ItemMeta meta = itemStack.getItemMeta();
             meta.displayName(Component.text(category.name()));
             itemStack.setItemMeta(meta);
 
-            ItemBuilder categoryButton = new ItemBuilder(this, itemStack);
-            categoryButton.setItemId(category.id())
-                    .setOnClick(event -> {
+            content.put(slot, new ItemBuilder(this, itemStack)
+                    .setItemId(category.id())
+                    .setOnClick(e -> {
                         shopManager.currentCategory.put(getOwner().getUniqueId(), category.id());
                         new AdminShopCategoryMenu(getOwner(), shopManager, category.id()).open();
-                    });
-
-            content.put(slot, categoryButton);
+                    }));
 
             slot += 2;
         }
 
         return content;
     }
+
 }

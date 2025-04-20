@@ -4,6 +4,7 @@ import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -61,8 +62,17 @@ public class ColorVariantsMenu extends Menu {
 
             if (!materials.isEmpty()) {
                 variants.put(type, materials);
+
+                if (type.equals("STAINED_GLASS")) {
+                    variants.put("GLASS", materials);
+                }
+
+                if (type.equals("STAINED_GLASS_PANE")) {
+                    variants.put("GLASS_PANE", materials);
+                }
             }
         }
+
 
         return variants;
     }
@@ -85,38 +95,44 @@ public class ColorVariantsMenu extends Menu {
         Map<Integer, ItemStack> content = new HashMap<>();
 
         String baseType = originalItem.getBaseType();
-        List<Material> variants = COLOR_VARIANTS.getOrDefault(baseType, Collections.emptyList());
+        List<Material> variants;
+        if (baseType.equals("GLASS")) {
+            variants = COLOR_VARIANTS.getOrDefault("STAINED_GLASS", Collections.emptyList());
+        } else if (baseType.equals("GLASS_PANE")) {
+            variants = COLOR_VARIANTS.getOrDefault("STAINED_GLASS_PANE", Collections.emptyList());
+        } else {
+            variants = COLOR_VARIANTS.getOrDefault(baseType, Collections.emptyList());
+        }
 
-        int slot = 10;
-        for (Material variant : variants) {
+        int[] organizedSlots = {
+                4,
+                11, 12, 13, 14, 15,
+                20, 21, 22, 23, 24,
+                29, 30, 31, 32, 33
+        };
+
+        int maxVariants = Math.min(variants.size(), organizedSlots.length);
+
+        ItemStack baseItemStack = new ItemStack(originalItem.getMaterial());
+        ItemMeta baseMeta = baseItemStack.getItemMeta();
+        baseMeta.displayName(Component.text("§7" + getFormattedTypeName(baseType)));
+        baseItemStack.setItemMeta(baseMeta);
+        content.put(4, baseItemStack);
+
+        for (int i = 0; i < maxVariants; i++) {
+            Material variant = variants.get(i);
+            int slot = organizedSlots[i];
+            if (slot == 4) continue;
+
             ItemStack itemStack = new ItemStack(variant);
             ItemMeta meta = itemStack.getItemMeta();
-            String materialName = variant.name();
-            String colorName = materialName.contains("_") ?
-                    materialName.substring(0, materialName.indexOf("_")).toLowerCase() :
-                    "normal";
+            String colorName = AdminShopUtils.getColorNameFromMaterial(variant);
 
             colorName = colorName.substring(0, 1).toUpperCase() + colorName.substring(1);
 
             meta.displayName(Component.text("§7" + colorName + " " + getFormattedTypeName(baseType)));
 
-            List<Component> lore = new ArrayList<>();
-            if (originalItem.getInitialBuyPrice() > 0 && originalItem.getInitialSellPrice() <= 0) {
-                lore.add(Component.text("§aAcheter: $" + String.format("%.2f", originalItem.getActualBuyPrice())));
-                lore.add(Component.text("§7"));
-                lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
-            } else if (originalItem.getInitialSellPrice() > 0 && originalItem.getInitialBuyPrice() <= 0) {
-                lore.add(Component.text("§cVendre: $" + String.format("%.2f", originalItem.getActualSellPrice())));
-                lore.add(Component.text("§7"));
-                lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
-            } else {
-                lore.add(Component.text("§aAcheter: $" + String.format("%.2f", originalItem.getActualBuyPrice())));
-                lore.add(Component.text("§cVendre: $" + String.format("%.2f", originalItem.getActualSellPrice())));
-                lore.add(Component.text("§7"));
-                lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
-                lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
-            }
-            meta.lore(lore);
+            meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
 
             itemStack.setItemMeta(meta);
 
@@ -144,11 +160,7 @@ public class ColorVariantsMenu extends Menu {
                         }
                     });
 
-            content.put(slot++, itemBuilder);
-
-            if ((slot - 9) % 9 == 0) {
-                slot += 2;
-            }
+            content.put(slot, itemBuilder);
         }
 
         ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {

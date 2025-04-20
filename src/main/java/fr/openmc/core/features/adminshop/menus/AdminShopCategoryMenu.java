@@ -4,6 +4,7 @@ import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopCategory;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -56,29 +57,7 @@ public class AdminShopCategoryMenu extends Menu {
                 ItemMeta meta = itemStack.getItemMeta();
                 meta.displayName(Component.text(item.getName()));
 
-                List<Component> lore = new ArrayList<>();
-                if (item.getInitialBuyPrice() > 0 && item.getInitialSellPrice() <= 0) {
-                    lore.add(Component.text("§aAcheter: $" + String.format("%.2f", item.getActualBuyPrice())));
-                    lore.add(Component.text("§7"));
-                    lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
-                } else if (item.getInitialSellPrice() > 0 && item.getInitialBuyPrice() <= 0) {
-                    lore.add(Component.text("§cVendre: $" + String.format("%.2f", item.getActualSellPrice())));
-                    lore.add(Component.text("§7"));
-                    lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
-                } else {
-                    lore.add(Component.text("§aAcheter: $" + String.format("%.2f", item.getActualBuyPrice())));
-                    lore.add(Component.text("§cVendre: $" + String.format("%.2f", item.getActualSellPrice())));
-                    lore.add(Component.text("§7"));
-                    lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
-                    lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
-                }
-
-                if (item.isHasColorVariant()) {
-                    lore.add(Component.text("§7"));
-                    lore.add(Component.text("§8■ §7Clique milieu pour choisir une couleur"));
-                }
-
-                meta.lore(lore);
+                meta.lore(AdminShopUtils.extractLoreForItem(item));
 
                 itemStack.setItemMeta(meta);
 
@@ -106,7 +85,7 @@ public class AdminShopCategoryMenu extends Menu {
                     new AdminShopMenu(getOwner(), shopManager).open();
                 });
 
-        content.put(49, backButton);
+        content.put(40, backButton);
 
         return content;
     }

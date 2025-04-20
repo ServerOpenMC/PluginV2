@@ -34,21 +34,18 @@ public class AdminShopManager {
     private final Map<String, Map<String, ShopItem>> temporaryItems = new HashMap<>();
     public final Map<UUID, String> currentCategory = new HashMap<>();
     public final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
+
     @Getter private static AdminShopManager instance;
 
     public AdminShopManager(OMCPlugin plugin) {
         instance = this;
         this.plugin = plugin;
         this.configFile = new File(plugin.getDataFolder() + "/data", "adminshop.yml");
-
         loadConfig();
     }
 
     private void loadConfig() {
-        if (!configFile.exists()) {
-            plugin.saveResource("data/adminshop.yml", false);
-        }
-
+        if (!configFile.exists()) plugin.saveResource("data/adminshop.yml", false);
         config = YamlConfiguration.loadConfiguration(configFile);
         loadCategories();
         loadItems();
@@ -58,22 +55,16 @@ public class AdminShopManager {
         categories.clear();
         List<Map<?, ?>> categoryList = config.getMapList("category");
 
-        if (categoryList.isEmpty()) {
-            plugin.getLogger().warning("No category section found in adminshop.yml");
-            return;
-        }
-
         for (Map<?, ?> categoryMap : categoryList) {
             for (Map.Entry<?, ?> entry : categoryMap.entrySet()) {
                 String key = entry.getKey().toString();
                 Map<?, ?> section = (Map<?, ?>) entry.getValue();
-
-                String name = ChatColor.translateAlternateColorCodes('&', section.get("name").toString());
-                Material material = Material.valueOf(section.get("material").toString());
-                int position = (int) section.get("position");
-
-                plugin.getLogger().info("Loading category: " + key + " with material: " + material);
-                categories.put(key, new ShopCategory(key, name, material, position));
+                categories.put(key, new ShopCategory(
+                        key,
+                        ChatColor.translateAlternateColorCodes('&', section.get("name").toString()),
+                        Material.valueOf(section.get("material").toString()),
+                        (int) section.get("position")
+                ));
             }
         }
     }
@@ -83,11 +74,6 @@ public class AdminShopManager {
 
         for (String categoryId : categories.keySet()) {
             List<Map<?, ?>> itemList = config.getMapList(categoryId);
-            if (itemList.isEmpty()) {
-                plugin.getLogger().warning("No items found for category: " + categoryId);
-                continue;
-            }
-
             Map<String, ShopItem> categoryItems = new HashMap<>();
 
             for (Map<?, ?> itemMap : itemList) {
@@ -99,55 +85,41 @@ public class AdminShopManager {
                     int slot = (int) itemSection.get("slot");
                     Material material = Material.valueOf(itemKey);
 
-                    Map<?, ?> priceSection = (Map<?, ?>) itemSection.get("price");
-                    Map<?, ?> initialSection = (Map<?, ?>) priceSection.get("initial");
-                    double initialSell = Double.parseDouble(initialSection.get("sell").toString());
-                    double initialBuy = Double.parseDouble(initialSection.get("buy").toString());
+                    Map<?, ?> prices = (Map<?, ?>) itemSection.get("price");
+                    Map<?, ?> initial = (Map<?, ?>) prices.get("initial");
+                    Map<?, ?> actual = (Map<?, ?>) prices.get("actual");
 
-                    Map<?, ?> actualSection = (Map<?, ?>) priceSection.get("actual");
-                    double actualSell = Double.parseDouble(actualSection.get("sell").toString());
-                    double actualBuy = Double.parseDouble(actualSection.get("buy").toString());
-
-                    ShopItem item = new ShopItem(itemKey, name, material, slot, initialSell, initialBuy, actualSell, actualBuy);
-                    categoryItems.put(itemKey, item);
+                    categoryItems.put(itemKey, new ShopItem(
+                            itemKey, name, material, slot,
+                            Double.parseDouble(initial.get("sell").toString()),
+                            Double.parseDouble(initial.get("buy").toString()),
+                            Double.parseDouble(actual.get("sell").toString()),
+                            Double.parseDouble(actual.get("buy").toString())
+                    ));
                 }
             }
 
-            items.put(categoryId, categoryItems);
-            plugin.getLogger().info("Loaded " + categoryItems.size() + " items for category: " + categoryId);
+            if (!categoryItems.isEmpty()) items.put(categoryId, categoryItems);
         }
     }
 
     public void saveConfig() {
-        for (String categoryId : items.keySet()) {
-            Map<String, ShopItem> categoryItems = items.get(categoryId);
-
+        for (var entry : items.entrySet()) {
+            String categoryId = entry.getKey();
             List<Map<String, Object>> itemList = new ArrayList<>();
 
-            for (String itemId : categoryItems.keySet()) {
-                ShopItem item = categoryItems.get(itemId);
+            for (var itemEntry : entry.getValue().entrySet()) {
+                ShopItem item = itemEntry.getValue();
+                Map<String, Object> itemData = Map.of(
+                        "name", item.getName(),
+                        "slot", item.getSlot(),
+                        "price", Map.of(
+                                "initial", Map.of("sell", item.getInitialSellPrice(), "buy", item.getInitialBuyPrice()),
+                                "actual", Map.of("sell", item.getActualSellPrice(), "buy", item.getActualBuyPrice())
+                        )
+                );
 
-                Map<String, Object> itemData = new HashMap<>();
-                itemData.put("name", item.getName());
-                itemData.put("slot", item.getSlot());
-
-                Map<String, Object> priceData = new HashMap<>();
-                Map<String, Object> initialPrice = new HashMap<>();
-                initialPrice.put("sell", item.getInitialSellPrice());
-                initialPrice.put("buy", item.getInitialBuyPrice());
-                priceData.put("initial", initialPrice);
-
-                Map<String, Object> actualPrice = new HashMap<>();
-                actualPrice.put("sell", item.getActualSellPrice());
-                actualPrice.put("buy", item.getActualBuyPrice());
-                priceData.put("actual", actualPrice);
-
-                itemData.put("price", priceData);
-
-                Map<String, Object> itemEntry = new HashMap<>();
-                itemEntry.put(itemId, itemData);
-
-                itemList.add(itemEntry);
+                itemList.add(Map.of(itemEntry.getKey(), itemData));
             }
 
             config.set(categoryId, itemList);
@@ -161,125 +133,94 @@ public class AdminShopManager {
     }
 
     public void openBuyConfirmMenu(Player player, String categoryId, String itemId, Menu previousMenu) {
-        Map<String, ShopItem> categoryItems = items.get(categoryId);
-        if (categoryItems == null || !categoryItems.containsKey(itemId)) {
-            MessagesManager.sendMessage(player, Component.text("Item introuvable !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
-            return;
-        }
+        ShopItem item = getItemSafe(player, categoryId, itemId);
+        if (item == null) return;
 
-        ShopItem item = categoryItems.get(itemId);
-        ConfirmMenu confirmMenu = new ConfirmMenu(player, this, item, true, previousMenu);
-        confirmMenu.open();
+        new ConfirmMenu(player, this, item, true, previousMenu).open();
     }
 
     public void openSellConfirmMenu(Player player, String categoryId, String itemId, Menu previousMenu) {
-        Map<String, ShopItem> categoryItems = items.get(categoryId);
-        if (categoryItems == null || !categoryItems.containsKey(itemId)) {
-            MessagesManager.sendMessage(player, Component.text("Item introuvable !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
-            return;
-        }
-
-        ShopItem item = categoryItems.get(itemId);
+        ShopItem item = getItemSafe(player, categoryId, itemId);
+        if (item == null) return;
 
         if (!playerHasItem(player, item.getMaterial(), 1)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas cet item dans votre inventaire !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
+            sendError(player, "Vous n'avez pas cet item dans votre inventaire !");
             return;
         }
 
-        ConfirmMenu confirmMenu = new ConfirmMenu(player, this, item, false, previousMenu);
-        confirmMenu.open();
+        new ConfirmMenu(player, this, item, false, previousMenu).open();
     }
 
     public void buyItem(Player player, String itemId, int amount) {
-        String categoryId = currentCategory.get(player.getUniqueId());
-        if (categoryId == null) {
-            MessagesManager.sendMessage(player, Component.text("Veuillez d'abord ouvrir une catégorie de boutique !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
-            return;
-        }
-
-        Map<String, ShopItem> categoryItems = items.get(categoryId);
-        if (categoryItems == null || !categoryItems.containsKey(itemId)) {
-            MessagesManager.sendMessage(player, Component.text("Item introuvable !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
-            return;
-        }
+        ShopItem item = getCurrentItem(player, itemId);
+        if (item == null) return;
 
         if (!hasEnoughPlace(player, amount)) {
-            MessagesManager.sendMessage(player, Component.text("Votre inventaire est plein !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
+            sendError(player, "Votre inventaire est plein !");
             return;
         }
 
-        ShopItem item = categoryItems.get(itemId);
         if (item.getInitialBuyPrice() <= 0) {
-            MessagesManager.sendMessage(player, Component.text("Cet item n'est pas à vendre !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
+            sendError(player, "Cet item n'est pas à vendre !");
             return;
         }
-        double price = item.getActualBuyPrice() * amount;
 
-        if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), price)) {
-            ItemStack itemStack = new ItemStack(item.getMaterial(), amount);
-            player.getInventory().addItem(itemStack);
-
-            MessagesManager.sendMessage(player, Component.text("Vous avez acheté " + amount + " " + item.getName() + " pour " + priceFormat.format(price) + EconomyManager.getEconomyIcon()), Prefix.ADMINSHOP, MessageType.INFO, true);
-            adjustPrice(categoryId, itemId, amount, true);
+        double totalPrice = item.getActualBuyPrice() * amount;
+        if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), totalPrice)) {
+            player.getInventory().addItem(new ItemStack(item.getMaterial(), amount));
+            sendInfo(player, "Vous avez acheté " + amount + " " + item.getName() + " pour " + formatPrice(totalPrice));
+            adjustPrice(getPlayerCategory(player), itemId, amount, true);
         } else {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'argent !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
+            sendError(player, "Vous n'avez pas assez d'argent !");
         }
     }
 
     public void sellItem(Player player, String itemId, int amount) {
-        String categoryId = currentCategory.get(player.getUniqueId());
-        if (categoryId == null) {
-            MessagesManager.sendMessage(player, Component.text("Veuillez d'abord ouvrir une catégorie de boutique !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
-            return;
-        }
+        ShopItem item = getCurrentItem(player, itemId);
+        if (item == null) return;
 
-        Map<String, ShopItem> categoryItems = items.get(categoryId);
-        if (categoryItems == null || !categoryItems.containsKey(itemId)) {
-            MessagesManager.sendMessage(player, Component.text("Item introuvable !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
-            return;
-        }
-
-        ShopItem item = categoryItems.get(itemId);
         if (item.getInitialSellPrice() <= 0) {
-            MessagesManager.sendMessage(player, Component.text("Cet item n'est pas à l'achat !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
-            return;
-        }
-        Material material = item.getMaterial();
-
-        if (!playerHasItem(player, material, amount)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de " + item.getName() + " à vendre !"), Prefix.ADMINSHOP, MessageType.ERROR, true);
+            sendError(player, "Cet item n'est pas à l'achat !");
             return;
         }
 
-        double price = item.getActualSellPrice() * amount;
+        if (!playerHasItem(player, item.getMaterial(), amount)) {
+            sendError(player, "Vous n'avez pas assez de " + item.getName() + " à vendre !");
+            return;
+        }
 
-        removeItems(player, material, amount);
+        double totalPrice = item.getActualSellPrice() * amount;
+        removeItems(player, item.getMaterial(), amount);
+        EconomyManager.getInstance().addBalance(player.getUniqueId(), totalPrice);
+        sendInfo(player, "Vous avez vendu " + amount + " " + item.getName() + " pour " + formatPrice(totalPrice));
+        adjustPrice(getPlayerCategory(player), itemId, amount, false);
+    }
 
-        EconomyManager.getInstance().addBalance(player.getUniqueId(), price);
+    private void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
+        ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
+        if (item == null) return;
 
-        MessagesManager.sendMessage(player, Component.text("Vous avez vendu " + amount + " " + item.getName() + " pour " + priceFormat.format(price) + EconomyManager.getEconomyIcon()), Prefix.ADMINSHOP, MessageType.INFO, true);
-        adjustPrice(categoryId, itemId, amount, false);
+        double factor = Math.log10(amount + 1) * 0.0001;
+
+        double newSell = item.getActualSellPrice() * (isBuying ? 1 - factor : 1 + factor);
+        double newBuy = item.getActualBuyPrice() * (isBuying ? 1 - factor : 1 + factor);
+
+        item.setActualSellPrice(Math.max(newSell, item.getInitialSellPrice() * 0.5));
+        item.setActualBuyPrice(Math.max(newBuy, item.getInitialBuyPrice() * 0.5));
+
+        saveConfig();
     }
 
     private boolean hasEnoughPlace(Player player, int amount) {
-        int freeSlots = 0;
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item == null || item.getType() == Material.AIR) {
-                freeSlots++;
-            }
-        }
-        return freeSlots >= amount;
+        return Arrays.stream(player.getInventory().getContents())
+                .filter(Objects::isNull)
+                .count() >= amount;
     }
 
     private boolean playerHasItem(Player player, Material material, int amount) {
         int count = 0;
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() == material) {
-                count += item.getAmount();
-                if (count >= amount) {
-                    return true;
-                }
-            }
+            if (item != null && item.getType() == material && (count += item.getAmount()) >= amount) return true;
         }
         return false;
     }
@@ -289,52 +230,67 @@ public class AdminShopManager {
 
         for (int i = 0; i < player.getInventory().getSize() && remaining > 0; i++) {
             ItemStack item = player.getInventory().getItem(i);
+            if (item == null || item.getType() != material) continue;
 
-            if (item != null && item.getType() == material) {
-                int itemAmount = item.getAmount();
-                item.setAmount(itemAmount - remaining);
-
-                if (itemAmount <= remaining) {
-                    player.getInventory().remove(item);
-                    remaining -= itemAmount;
-                } else {
-                    item.setAmount(itemAmount - remaining);
-                    remaining = 0;
-                }
+            int amt = item.getAmount();
+            if (amt <= remaining) {
+                player.getInventory().clear(i);
+                remaining -= amt;
+            } else {
+                item.setAmount(amt - remaining);
+                remaining = 0;
             }
         }
 
         player.updateInventory();
     }
 
-    private void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
-        Map<String, ShopItem> categoryItems = items.get(categoryId);
-        if (categoryItems == null || !categoryItems.containsKey(itemId)) {
-            return;
+    private ShopItem getItemSafe(Player player, String categoryId, String itemId) {
+        ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
+        if (item == null) sendError(player, "Item introuvable !");
+        return item;
+    }
+
+    private ShopItem getCurrentItem(Player player, String itemId) {
+        String categoryId = getPlayerCategory(player);
+        if (categoryId == null) {
+            sendError(player, "Veuillez d'abord ouvrir une catégorie de boutique !");
+            return null;
         }
+        return getItemSafe(player, categoryId, itemId);
+    }
 
-        ShopItem item = categoryItems.get(itemId);
+    private String getPlayerCategory(Player player) {
+        return currentCategory.get(player.getUniqueId());
+    }
 
-        double adjustmentFactor = Math.log10(amount + 1) * 0.0001;
+    private void sendError(Player player, String message) {
+        MessagesManager.sendMessage(player, Component.text(message), Prefix.ADMINSHOP, MessageType.ERROR, true);
+    }
 
-        double newSellPrice;
-        double newBuyPrice;
-        if (isBuying) {
-            newSellPrice = item.getActualSellPrice() * (1 - adjustmentFactor);
-            newBuyPrice = item.getActualBuyPrice() * (1 - adjustmentFactor);
+    private void sendInfo(Player player, String message) {
+        MessagesManager.sendMessage(player, Component.text(message + EconomyManager.getEconomyIcon()), Prefix.ADMINSHOP, MessageType.INFO, true);
+    }
 
-        } else {
-            newSellPrice = item.getActualSellPrice() * (1 + adjustmentFactor);
-            newBuyPrice = item.getActualBuyPrice() * (1 + adjustmentFactor);
+    public String formatPrice(double value) {
+        return "$" + priceFormat.format(value);
+    }
 
-            newSellPrice = Math.max(newSellPrice, item.getInitialSellPrice() * 0.5);
-            newBuyPrice = Math.max(newBuyPrice, item.getInitialBuyPrice() * 0.5);
+    public void openMainMenu(Player player) {
+        new AdminShopMenu(player, this).open();
+    }
 
-        }
-        item.setActualSellPrice(newSellPrice);
-        item.setActualBuyPrice(newBuyPrice);
+    public void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
+        new ColorVariantsMenu(player, this, categoryId, originalItem, previousMenu).open();
+    }
 
-        saveConfig();
+    public void addTemporaryItem(String categoryId, String itemId, ShopItem item) {
+        temporaryItems.computeIfAbsent(categoryId, k -> new HashMap<>()).put(itemId, item);
+    }
+
+    public void clearTemporaryItems(Player player) {
+        String categoryId = getPlayerCategory(player);
+        if (categoryId != null) temporaryItems.remove(categoryId);
     }
 
     public Collection<ShopCategory> getCategories() {
@@ -346,33 +302,6 @@ public class AdminShopManager {
     }
 
     public Map<String, ShopItem> getCategoryItems(String categoryId) {
-        return items.get(categoryId);
-    }
-
-    public void openMainMenu(Player player) {
-        new AdminShopMenu(player, this).open();
-    }
-
-    public void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
-        try {
-            ColorVariantsMenu colorMenu = new ColorVariantsMenu(player, this, categoryId, originalItem, previousMenu);
-            colorMenu.open();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addTemporaryItem(String categoryId, String itemId, ShopItem item) {
-        if (!temporaryItems.containsKey(categoryId)) {
-            temporaryItems.put(categoryId, new HashMap<>());
-        }
-        temporaryItems.get(categoryId).put(itemId, item);
-    }
-
-    public void clearTemporaryItems(Player player) {
-        String categoryId = currentCategory.get(player.getUniqueId());
-        if (categoryId != null && temporaryItems.containsKey(categoryId)) {
-            temporaryItems.remove(categoryId);
-        }
+        return items.getOrDefault(categoryId, Map.of());
     }
 }
