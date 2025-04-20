@@ -16,42 +16,10 @@ category:
       material: "BLAZE_ROD"
       position: 3
 
-FOODS:
-  - COOKED_BEEF:
-      name: "&c&lCooked Beef"
-      slot: 10
-      price:
-        initial:
-          sell: 5
-          buy: 8
-        actual:
-          sell: 5
-          buy: 8
-  - GOLDEN_APPLE:
-      name: "&e&lGolden Apple"
-      slot: 11
-      price:
-        initial:
-          sell: 50
-          buy: 75
-        actual:
-          sell: 50
-          buy: 75
-  - CAKE:
-      name: "&d&lCake"
-      slot: 12
-      price:
-        initial:
-          sell: 15
-          buy: 25
-        actual:
-          sell: 15
-          buy: 25
-
 BLOCKS:
   - WHITE_CONCRETE_POWDER:
       name: "§7Béton en poudre"
-      slot: 12
+      slot: 3
       price:
         initial:
           sell: 2
@@ -61,7 +29,7 @@ BLOCKS:
           buy: 2
   - WHITE_WOOL:
       name: "§7Laine"
-      slot: 13
+      slot: 4
       price:
         initial:
           sell: 2
@@ -71,7 +39,7 @@ BLOCKS:
           buy: 2
   - WHITE_CONCRETE:
       name: "§7Béton"
-      slot: 14
+      slot: 5
       price:
         initial:
           sell: 2
@@ -81,7 +49,7 @@ BLOCKS:
           buy: 2
   - GRASS_BLOCK:
       name: "§7Bloc d'herbe"
-      slot: 19
+      slot: 10
       price:
         initial:
           sell: 3
@@ -91,7 +59,7 @@ BLOCKS:
           buy: 3
   - STONE:
       name: "§7Pierre"
-      slot: 20
+      slot: 11
       price:
         initial:
           sell: 2
@@ -101,7 +69,7 @@ BLOCKS:
           buy: 2
   - DIORITE:
       name: "§7Diorite"
-      slot: 21
+      slot: 12
       price:
         initial:
           sell: 2
@@ -111,7 +79,7 @@ BLOCKS:
           buy: 0
   - DEEPSLATE:
       name: "§7Ardoise des abîmes"
-      slot: 22
+      slot: 13
       price:
         initial:
           sell: 0
@@ -121,7 +89,7 @@ BLOCKS:
           buy: 3
   - ICE:
       name: "§7Glace"
-      slot: 23
+      slot: 14
       price:
         initial:
           sell: 0
@@ -131,7 +99,7 @@ BLOCKS:
           buy: 4
   - AMETHYST_BLOCK:
       name: "§7Bloc d'améthyste"
-      slot: 24
+      slot: 15
       price:
         initial:
           sell: 0
@@ -141,7 +109,7 @@ BLOCKS:
           buy: 20
   - OAK_LEAVES:
       name: "§7Feuilles de chêne"
-      slot: 25
+      slot: 16
       price:
         initial:
           sell: 1
@@ -151,7 +119,7 @@ BLOCKS:
           buy: 0
   - DIRT:
       name: "§7Terre"
-      slot: 28
+      slot: 19
       price:
         initial:
           sell: 0
@@ -161,7 +129,7 @@ BLOCKS:
           buy: 1
   - GRAVEL:
       name: "§7Gravier"
-      slot: 29
+      slot: 20
       price:
         initial:
           sell: 2
@@ -171,7 +139,7 @@ BLOCKS:
           buy: 0
   - GRANITE:
       name: "§7Granite"
-      slot: 30
+      slot: 21
       price:
         initial:
           sell: 2
@@ -181,7 +149,7 @@ BLOCKS:
           buy: 0
   - OBSIDIAN:
       name: "§7Obsidienne"
-      slot: 31
+      slot: 22
       price:
         initial:
           sell: 10
@@ -191,7 +159,7 @@ BLOCKS:
           buy: 0
   - PACKED_ICE:
       name: "§7Glace compactée"
-      slot: 32
+      slot: 23
       price:
         initial:
           sell: 2
@@ -201,7 +169,7 @@ BLOCKS:
           buy: 0
   - MOSS_BLOCK:
       name: "§7Bloc de mousse"
-      slot: 33
+      slot: 24
       price:
         initial:
           sell: 0.75
@@ -211,7 +179,7 @@ BLOCKS:
           buy: 0
   - FLOWERING_AZALEA_LEAVES:
       name: "§7Feuilles d'azalée fleurie"
-      slot: 34
+      slot: 25
       price:
         initial:
           sell: 3
@@ -221,7 +189,7 @@ BLOCKS:
           buy: 0
   - TERRACOTTA:
       name: "§7Terre cuite"
-      slot: 39
+      slot: 30
       price:
         initial:
           sell: 2
@@ -231,7 +199,7 @@ BLOCKS:
           buy: 2
   - GLASS:
       name: "§7Verre"
-      slot: 40
+      slot: 31
       price:
         initial:
           sell: 2
@@ -241,7 +209,7 @@ BLOCKS:
           buy: 2
   - GLASS_PANE:
       name: "§7Vitre"
-      slot: 41
+      slot: 32
       price:
         initial:
           sell: 2
@@ -250,86 +218,338 @@ BLOCKS:
           sell: 2
           buy: 2
 
-ORES:
-  - COAL:
-      name: "&7&lCoal"
-      slot: 10
+FOODS:
+  - COOKED_BEEF:
+      name: "&7Steak"
+      slot: 4
       price:
         initial:
-          sell: 3
-          buy: 5
+          sell: 5
+          buy: 10
         actual:
-          sell: 3
-          buy: 5
-  - IRON_INGOT:
-      name: "&f&lIron Ingot"
+          sell: 5
+          buy: 10
+  - CARROT:
+      name: "&7Carotte"
       slot: 11
       price:
         initial:
-          sell: 15
-          buy: 20
+          sell: 1
+          buy: 3
         actual:
-          sell: 15
-          buy: 20
-  - GOLD_INGOT:
-      name: "&e&lGold Ingot"
+          sell: 1
+          buy: 3
+  - BREAD:
+      name: "&7Pain"
       slot: 12
       price:
         initial:
-          sell: 30
-          buy: 40
+          sell: 3
+          buy: 6
         actual:
-          sell: 30
-          buy: 40
-  - DIAMOND:
-      name: "&b&lDiamond"
+          sell: 3
+          buy: 6
+  - APPLE:
+      name: "&7Pomme"
       slot: 13
       price:
         initial:
-          sell: 100
-          buy: 150
+          sell: 6
+          buy: 12
         actual:
-          sell: 100
-          buy: 150
-  - EMERALD:
-      name: "&a&lEmerald"
+          sell: 6
+          buy: 12
+  - SWEET_BERRIES:
+      name: "&7Baies sauvages"
       slot: 14
       price:
         initial:
-          sell: 120
-          buy: 180
+          sell: 1
+          buy: 2
         actual:
-          sell: 120
-          buy: 180
-
-MISC:
-  - ENDER_PEARL:
-      name: "&5&lEnder Pearl"
-      slot: 10
+          sell: 1
+          buy: 2
+  - COOKED_CHICKEN:
+      name: "&7Poulet cuit"
+      slot: 15
       price:
         initial:
-          sell: 10
+          sell: 5
+          buy: 10
+        actual:
+          sell: 5
+          buy: 10
+  - GOLDEN_CARROT:
+      name: "&7Carotte dorée"
+      slot: 20
+      price:
+        initial:
+          sell: 8
           buy: 15
         actual:
-          sell: 10
+          sell: 8
           buy: 15
-  - EXPERIENCE_BOTTLE:
-      name: "&a&lExperience Bottle"
+  - BAKED_POTATO:
+      name: "&7Patate cuite"
+      slot: 21
+      price:
+        initial:
+          sell: 4
+          buy: 8
+        actual:
+          sell: 4
+          buy: 8
+  - COOKED_MUTTON:
+      name: "&7Moutons cuit"
+      slot: 22
+      price:
+        initial:
+          sell: 5
+          buy: 10
+        actual:
+          sell: 5
+          buy: 10
+  - GLOW_BERRIES:
+      name: "&7Baies lumineuses"
+      slot: 23
+      price:
+        initial:
+          sell: 1
+          buy: 3
+        actual:
+          sell: 1
+          buy: 3
+  - COOKED_RABBIT:
+      name: "&7Lapin cuit"
+      slot: 24
+      price:
+        initial:
+          sell: 5
+          buy: 10
+        actual:
+          sell: 5
+          buy: 10
+  - COOKIE:
+      name: "&7Cookie"
+      slot: 31
+      price:
+        initial:
+          sell: 3
+          buy: 5
+        actual:
+          sell: 3
+          buy: 5
+
+ORES:
+  - COAL:
+      name: "&7Charbon"
+      slot: 4
+      price:
+        initial:
+          sell: 2
+          buy: 3
+        actual:
+          sell: 2
+          buy: 3
+  - COPPER_INGOT:
+      name: "&7Lingot de cuivre"
       slot: 11
       price:
         initial:
-          sell: 20
-          buy: 30
+          sell: 2
+          buy: 4
         actual:
-          sell: 20
-          buy: 30
-  - ENCHANTED_BOOK:
-      name: "&d&lEnchanted Book"
+          sell: 2
+          buy: 4
+  - IRON_INGOT:
+      name: "&7Lingot de fer"
       slot: 12
       price:
         initial:
-          sell: 100
-          buy: 150
+          sell: 5
+          buy: 8
         actual:
-          sell: 100
-          buy: 150
+          sell: 5
+          buy: 8
+  - GOLD_INGOT:
+      name: "&7Lingot d'or"
+      slot: 13
+      price:
+        initial:
+          sell: 8
+          buy: 12
+        actual:
+          sell: 8
+          buy: 12
+  - LAPIS_LAZULI:
+      name: "&7Lapis lazuli"
+      slot: 14
+      price:
+        initial:
+          sell: 3
+          buy: 6
+        actual:
+          sell: 3
+          buy: 6
+  - DIAMOND:
+      name: "&7Diamant"
+      slot: 15
+      price:
+        initial:
+          sell: 20
+          buy: 0
+        actual:
+          sell: 20
+          buy: 0
+  - RAW_COPPER:
+      name: "&7Cuivre brut"
+      slot: 20
+      price:
+        initial:
+          sell: 0
+          buy: 3
+        actual:
+          sell: 0
+          buy: 3
+  - RAW_IRON:
+      name: "&7Fer brut"
+      slot: 21
+      price:
+        initial:
+          sell: 0
+          buy: 6
+        actual:
+          sell: 0
+          buy: 6
+  - RAW_GOLD:
+      name: "&7Or brut"
+      slot: 22
+      price:
+        initial:
+          sell: 0
+          buy: 10
+        actual:
+          sell: 0
+          buy: 10
+  - AMETHYST_SHARD:
+      name: "&7Éclat d'améthyste"
+      slot: 23
+      price:
+        initial:
+          sell: 5
+          buy: 0
+        actual:
+          sell: 5
+          buy: 0
+  - QUARTZ:
+      name: "&7Quartz"
+      slot: 24
+      price:
+        initial:
+          sell: 0
+          buy: 4
+        actual:
+          sell: 0
+          buy: 4
+  - NETHERITE_SCRAP:
+      name: "&7Fragment de netherite"
+      slot: 30
+      price:
+        initial:
+          sell: 0
+          buy: 500000
+        actual:
+          sell: 0
+          buy: 500000
+  - EMERALD:
+      name: "&7Émeraude"
+      slot: 31
+      price:
+        initial:
+          sell: 15
+          buy: 0
+        actual:
+          sell: 15
+          buy: 0
+  - NETHERITE_INGOT:
+      name: "&7Lingot de netherite"
+      slot: 32
+      price:
+        initial:
+          sell: 0
+          buy: 1000000
+        actual:
+          sell: 0
+          buy: 1000000
+
+MISC:
+  - GLOWSTONE_DUST:
+      name: "&7Poudre lumineuse"
+      slot: 4
+      price:
+        initial:
+          sell: 1
+          buy: 3
+        actual:
+          sell: 1
+          buy: 3
+  - BLAZE_ROD:
+      name: "&7Bâton de blaze"
+      slot: 12
+      price:
+        initial:
+          sell: 0
+          buy: 4
+        actual:
+          sell: 0
+          buy: 4
+  - ENDER_PEARL:
+      name: "&7Perle de l'Ender"
+      slot: 13
+      price:
+        initial:
+          sell: 0
+          buy: 8
+        actual:
+          sell: 0
+          buy: 8
+  - SLIME_BALL:
+      name: "&7Boule de slime"
+      slot: 14
+      price:
+        initial:
+          sell: 0
+          buy: 6
+        actual:
+          sell: 0
+          buy: 6
+  - STICK:
+      name: "&7Bâton"
+      slot: 21
+      price:
+        initial:
+          sell: 0
+          buy: 1
+        actual:
+          sell: 0
+          buy: 1
+  - NETHER_STAR:
+      name: "&7Étoile du Nether"
+      slot: 22
+      price:
+        initial:
+          sell: 0
+          buy: 20200
+        actual:
+          sell: 0
+          buy: 20200
+  - PAPER:
+      name: "&7Papier"
+      slot: 23
+      price:
+        initial:
+          sell: 0
+          buy: 3
+        actual:
+          sell: 0
+          buy: 3
