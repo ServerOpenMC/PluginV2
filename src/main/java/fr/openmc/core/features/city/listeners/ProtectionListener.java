@@ -62,9 +62,7 @@ public class ProtectionListener implements Listener {
         }
         event.setCancelled(true);
 
-        if (!isMemberOf(city, player)) player.playSound(player.getEyeLocation(), Sound.BLOCK_ANVIL_LAND, 0.3F, 1);
-
-        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, false);
+        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, 0.6F, true);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
