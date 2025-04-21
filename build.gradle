@@ -1,13 +1,20 @@
 plugins {
-    java
+    id("java")
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 // Versioning
-val pluginVersion = System.getProperty("PLUGIN_VERSION") ?: "2.0.0"
-val isSnapshot = System.getProperty("SNAPSHOT")?.toBoolean() ?: true
+val pluginVersion = "2.0.0"
 val gitHash = System.getenv("GITHUB_SHA") ?: "local"
-version = if (isSnapshot) "$pluginVersion-SNAPSHOT-${gitHash.take(7)}" else pluginVersion
+
+// Déclaration du snapshot conditionnel
+val isSnapshot = System.getenv("SNAPSHOT")?.toBoolean() ?: false
+
+version = if (isSnapshot) {
+    "$pluginVersion-SNAPSHOT-${gitHash.take(7)}"
+} else {
+    pluginVersion
+}
 
 group = "fr.openmc"
 
@@ -19,7 +26,7 @@ repositories {
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://repo.dmulloy2.net/repository/public/")
-    maven("https://jitpack.io")
+    maven("https://jitpack.io") // Toujours à la fin
 }
 
 dependencies {
@@ -87,11 +94,14 @@ tasks.clean {
 }
 
 tasks.shadowJar {
-    val fileName = "OpenMC-${project.version}.jar"
     destinationDirectory.set(file("./builds/"))
-    archiveFileName.set(fileName)
+    archiveFileName.set("OpenMC.jar")
 }
 
 tasks.test {
     useJUnitPlatform()
 }
+
+test { useJUnitPlatform() }
+
+apply plugin: "com.github.johnrengelman.shadow"
