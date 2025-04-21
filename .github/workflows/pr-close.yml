@@ -1,0 +1,65 @@
+name: Handle PR close
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+jobs:
+  merge-to-milestone-branch:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get milestone information
+        id: milestone
+        run: |
+          if [ -z "${{ github.event.pull_request.milestone.title }}" ]; then
+            echo "No milestone assigned to this PR, failing workflow."
+            exit 1
+          else
+            # Convert milestone title to the corresponding branch name (same logic as in milestone-close.yml)
+            MILESTONE_TITLE="${{ github.event.pull_request.milestone.title }}"
+            BRANCH_NAME=$(echo "$MILESTONE_TITLE" | tr ' ' '-' | tr -cd '[:alnum:]-')
+            echo "milestone_branch=milestone-${BRANCH_NAME}" >> $GITHUB_OUTPUT
+            echo "milestone_title=$MILESTONE_TITLE" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Check if milestone branch exists
+        id: check_branch
+        run: |
+          if git ls-remote --heads origin ${{ steps.milestone.outputs.milestone_branch }} | grep -q ${{ steps.milestone.outputs.milestone_branch }}; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create milestone branch if it doesn't exist
+        if: steps.check_branch.outputs.exists == 'false'
+        run: |
+          git checkout -b ${{ steps.milestone.outputs.milestone_branch }}
+          git push -u origin ${{ steps.milestone.outputs.milestone_branch }}
+          echo "Created new milestone branch: ${{ steps.milestone.outputs.milestone_branch }}"
+
+      - name: Merge PR changes to milestone branch
+        run: |
+          if [ "${{ steps.check_branch.outputs.exists }}" == "true" ]; then
+            git checkout ${{ steps.milestone.outputs.milestone_branch }}
+            git pull origin ${{ steps.milestone.outputs.milestone_branch }}
+          fi
+          
+          PR_COMMIT=${{ github.event.pull_request.merge_commit_sha }}
+          
+          git merge --no-ff $PR_COMMIT -m "Merge PR #${{ github.event.pull_request.number }} into ${{ steps.milestone.outputs.milestone_branch }}"
+          git push origin ${{ steps.milestone.outputs.milestone_branch }}
