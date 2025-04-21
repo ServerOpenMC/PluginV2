@@ -1,43 +1,46 @@
-name: Release Stable Version
+name: Release Stable Jar
 
 on:
   milestone:
     types: [closed]
 
 jobs:
-  release_stable:
-    name: Release Stable Jar
+  build:
+    if: startsWith(github.event.milestone.title, '2.0.0') || github.event.milestone.title =~ '^\\d+\\.\\d+\\.\\d+(-beta)?$'
     runs-on: ubuntu-latest
-    permissions: write-all
+    env:
+      plugin_version: ${{ github.event.milestone.title }}
+
     steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      - name: Setup JDK
-        uses: actions/setup-java@v2
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          distribution: 'adopt'
-          java-version: '21'
+          distribution: 'temurin'
+          java-version: 17
 
-      - name: Build stable JAR
+      - name: Make Gradle executable
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
         run: |
-          chmod +x ./gradlew
-          ./gradlew shadowJar -DPLUGIN_VERSION=${{ github.event.milestone.title }} -DSNAPSHOT=false
-        env:
-          GITHUB_SHA: ${{ github.sha }}
+          SNAPSHOT_BUILD=false ./gradlew shadowJar
 
-      - name: Rename Jar
+      - name: Prepare JAR
         run: |
           mkdir -p release
-          mv builds/OpenMC-${{ github.event.milestone.title }}.jar release/OpenMC-${{ github.event.milestone.title }}.jar
+          cp builds/OpenMC-${{ env.plugin_version }}.jar release/
 
-      - name: Create GitHub Release
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenMC-${{ env.plugin_version }}.jar
+          path: release/OpenMC-${{ env.plugin_version }}.jar
+
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          name: OpenMC ${{ github.event.milestone.title }}
-          tag_name: v${{ github.event.milestone.title }}
-          files: release/OpenMC-${{ github.event.milestone.title }}.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+          name: OpenMC ${{ env.plugin_version }}
+          tag_name: v${{ env.plugin_version }}
+          files: release/OpenMC-${{ env.plugin_version }}.jar
