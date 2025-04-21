@@ -27,9 +27,6 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class AdminShopManager {
-
-    // TODO: On ne peut pas acheter les items colorés
-
     private final OMCPlugin plugin;
     private FileConfiguration config;
     private final File configFile;
