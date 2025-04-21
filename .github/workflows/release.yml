@@ -4,6 +4,9 @@ on:
   milestone:
     types: [closed]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     if: startsWith(github.event.milestone.title, '2.') # Evite =~ qui n'existe pas ici
