@@ -310,7 +310,7 @@ public class AdminShopManager {
      * @param message The information message.
      */
     private void sendInfo(Player player, String message) {
-        MessagesManager.sendMessage(player, Component.text(message + EconomyManager.getEconomyIcon()), Prefix.ADMINSHOP, MessageType.INFO, true);
+        MessagesManager.sendMessage(player, Component.text(message), Prefix.ADMINSHOP, MessageType.INFO, true);
     }
 
     /**
