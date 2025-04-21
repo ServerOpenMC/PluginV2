@@ -222,9 +222,8 @@ public class CityMenu extends Menu {
             String cityTypeActuel = getCityType(city.getUUID());
             String cityTypeAfter = "";
             if (cityTypeActuel != null) {
-                boolean war = cityTypeActuel.equals("war");
-                cityTypeActuel = war ? "§cen guerre§7" : "§aen paix§7";
-                cityTypeAfter = war ? "§aen paix§7" : "§cen guerre§7";
+                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+                cityTypeAfter = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
             }
 
             ConfirmMenu menu = new ConfirmMenu(player,

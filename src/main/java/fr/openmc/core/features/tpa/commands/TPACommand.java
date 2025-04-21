@@ -6,8 +6,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
@@ -51,15 +49,10 @@ public class TPACommand {
 	private void sendTPARequest(Player player, Player target) {
 		TPAQueue.QUEUE.addRequest(player, target);
 		
-		MessagesManager.sendMessage(target,
-				Component.text("§3Le joueur §6" + player.getName() + " §3 veut se téléporter à vous\n")
-						.append(Component.text("§3Tapez §5/tpaccept §3pour accepter").clickEvent(ClickEvent.runCommand("/tpaccept")).hoverEvent(HoverEvent.showText(Component.text("Accepter la demande de TP")))
-						.append(Component.text("§3 et §5/tpdeny §3pour refuser").clickEvent(ClickEvent.runCommand("/tpdeny")).hoverEvent(HoverEvent.showText(Component.text("Refuser la demande de TP")))
-						)),
-				Prefix.OPENMC, MessageType.INFO, true);
-		MessagesManager.sendMessage(player, Component.text("§2Vous avez envoyé une demande de téléportation à §6" + target.getName() + " \n")
-				.append(Component.text("§3Tapez §5/tpcancel §3pour annuler votre demande de tp").clickEvent(ClickEvent.runCommand("/tpacancel")).hoverEvent(HoverEvent.showText(Component.text("Annuler la demande de TP")))
-				), Prefix.OPENMC, MessageType.SUCCESS, true);
+		MessagesManager.sendMessage(target, Component.text("§3Le joueur §6" + player.getName() + " §3 veut se téléporter à vous\n" +
+				"§3Tapez §5/tpaccept §3 pour accepter et §5/tpdeny §3 pour refuser"), Prefix.OPENMC, MessageType.INFO, true);
+		MessagesManager.sendMessage(player, Component.text("§2Vous avez envoyé une demande de téléportation à §6" + target.getName() + " \n" +
+				"§3Tapez §5/tpcancel §3 pour annuler votre demande de tp"), Prefix.OPENMC, MessageType.SUCCESS, true);
 		
 		new BukkitRunnable() {
 			@Override

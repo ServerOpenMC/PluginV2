@@ -191,6 +191,7 @@ public class CityChunkMenu extends Menu {
             }
         }
 
+        System.out.println("time taken: " + (System.currentTimeMillis() - startTime) + "ms");
         return inventory;
     }
 

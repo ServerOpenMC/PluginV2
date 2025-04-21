@@ -8,12 +8,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.cacheddata.CachedMetaData;
-import org.bukkit.Sound;
-import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,13 +62,5 @@ public class AsyncChatListener implements Listener {
 
         return matcher.appendTail(buffer).toString();
     }
-    
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-        OMCPlugin.getInstance().getServer().getOnlinePlayers().forEach(player -> {
-            if (event.getMessage().contains(player.getName())) {
-                player.playSound(player.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.PLAYERS, 1, 1);
-            }
-        });
-    }
+
 }

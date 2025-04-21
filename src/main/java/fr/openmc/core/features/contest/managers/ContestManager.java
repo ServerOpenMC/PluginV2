@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.CommandsManager;
+import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.commands.ContestCommand;
@@ -44,15 +44,11 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getRunCommand
 
 public class ContestManager {
 
-    public static final String TABLE_CONTEST = "contest";
-    public static final String TABLE_CONTEST_CAMPS = "contest_camps";
-
     @Getter static ContestManager instance;
 
     public final File contestFile;
     public YamlConfiguration contestConfig;
     private final OMCPlugin plugin;
-
 
     @Setter private ContestPlayerManager contestPlayerManager;
 
@@ -101,14 +97,14 @@ public class ContestManager {
 
     public static void initDb(Connection conn) throws SQLException {
         // Système de Contest
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONTEST + " (phase int, camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int, points2 int)").executeUpdate();
-        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_CONTEST);
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest (phase int, camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int, points2 int)").executeUpdate();
+        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM contest");
 
         ResultSet rs = state.executeQuery();
 
         // push first contest
         if (rs.next() && rs.getInt(1) == 0) {
-            PreparedStatement states = conn.prepareStatement("INSERT INTO " + TABLE_CONTEST + " (phase, camp1, color1, camp2, color2, startdate, points1, points2) VALUES (1, 'Mayonnaise', 'YELLOW', 'Ketchup', 'RED', ?, 0,0)");
+            PreparedStatement states = conn.prepareStatement("INSERT INTO contest (phase, camp1, color1, camp2, color2, startdate, points1, points2) VALUES (1, 'Mayonnaise', 'YELLOW', 'Ketchup', 'RED', ?, 0,0)");
             String dateContestStart = "ven.";
             states.setString(1, dateContestStart);
             states.executeUpdate();
@@ -116,7 +112,7 @@ public class ContestManager {
 
 
         // Table camps
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONTEST_CAMPS + " (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int, point_dep int)").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS contest_camps (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int, point_dep int)").executeUpdate();
     }
 
     private void loadContestConfig() {
@@ -180,7 +176,7 @@ public class ContestManager {
 
     // CONTEST PLAYER DATA
     public void loadContestPlayerData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT minecraft_uuid, name, point_dep, camps FROM " + TABLE_CONTEST_CAMPS)) {
+        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT minecraft_uuid, name, point_dep, camps FROM contest_camps")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
                 String uuid = result.getString("minecraft_uuid");
@@ -201,11 +197,11 @@ public class ContestManager {
         String sql;
         
         if (OMCPlugin.isUnitTestVersion()) {
-            sql = "MERGE INTO " + TABLE_CONTEST_CAMPS +
+            sql = "MERGE INTO contest_camps " +
                     "KEY(minecraft_uuid) " +
                     "VALUES (?, ?, ?, ?)";
         } else {
-            sql = "INSERT INTO " + TABLE_CONTEST_CAMPS + " (minecraft_uuid, name, camps, point_dep) " +
+            sql = "INSERT INTO contest_camps (minecraft_uuid, name, camps, point_dep) " +
                     "VALUES (?, ?, ?, ?) " +
                     "ON DUPLICATE KEY UPDATE " +
                     "name = VALUES(name), camps = VALUES(camps), point_dep = VALUES(point_dep)";
@@ -267,7 +263,7 @@ public class ContestManager {
             updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
         }
 
-        data.setPhase(1);
+        data.setPhase(3);
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
@@ -538,7 +534,7 @@ public class ContestManager {
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                     addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
-                    deleteTableContest(ContestManager.TABLE_CONTEST_CAMPS);
+                    deleteTableContest("contest_camps");
                     selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
                     dataPlayer=new HashMap<>(); // on supprime les données précédentes du joueurs
                     MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
@@ -690,6 +686,6 @@ public class ContestManager {
     }
 
     public void insertCustomContest(String camp1, String color1, String camp2, String color2) {
-        data = new ContestData(camp1, camp2, color1, color2, 1, "ven.", 0, 0);
+        data = new ContestData(camp1, color1, camp2, color2, 1, "ven.", 0, 0);
     }
 }

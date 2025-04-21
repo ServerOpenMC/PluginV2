@@ -1,7 +1,5 @@
 package fr.openmc.core.features.city.mascots;
 
-import dev.lone.itemsadder.api.CustomBlock;
-import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -288,21 +286,6 @@ public class MascotsListener implements Listener {
 
             }
             e.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onBlockPlace(CustomBlockPlaceEvent event) {
-        Block block = event.getBlock();
-        Location loc = block.getLocation();
-
-        Collection<Entity> nearbyEntities = loc.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5);
-
-        for (Entity entity : nearbyEntities) {
-            if (MascotUtils.isMascot(entity)) {
-                event.setCancelled(true);
-                return;
-            }
         }
     }
 
