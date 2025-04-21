@@ -1,4 +1,4 @@
-name: Check that milestone & target branch are correct
+name: Milestone Checks
 
 on:
   pull_request:
