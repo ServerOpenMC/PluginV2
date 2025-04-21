@@ -27,6 +27,8 @@ public class LeaderboardCommands {
         sender.sendMessage(createContributorsTextLeaderboard());
     }
 
+
+    //TODO: Utiliser ItemInteraction
     @Subcommand("setPos")
     @CommandPermission("op")
     void setPosCommand(Player player, String leaderboard) {

@@ -82,7 +82,7 @@ public class LeaderboardManager {
                 updateHolograms();
                 i++;
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 20 * 5);
+        }.runTaskTimerAsynchronously(plugin, 0, 20 * 5); //Toutes les 5 secondes en async sauf le updateGithubContributorsMap qui est toutes les minutes
     }
 
     public void setHologramLocation(String name, Location location) throws IOException {
