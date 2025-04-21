@@ -15,14 +15,29 @@ group = 'fr.openmc'
 
 repositories {
     mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://mvn.mathiasd.fr/releases")
-    maven("https://maven.enginehub.org/repo/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    maven("https://repo.dmulloy2.net/repository/public/")
-    maven("https://jitpack.io") // Toujours à la fin
+    maven {
+        url "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/groups/public/"
+    }
+    maven {
+        url "https://mvn.mathiasd.fr/releases"
+    }
+    maven {
+        url "https://maven.enginehub.org/repo/"
+    }
+    maven {
+        url "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+    }
+    maven {
+        url "https://repo.dmulloy2.net/repository/public/"
+    }
+    maven {
+        url "https://jitpack.io" // Toujours à la fin
+    }
 }
+
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT'
