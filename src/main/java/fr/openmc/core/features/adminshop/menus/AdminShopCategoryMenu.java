@@ -31,7 +31,6 @@ public class AdminShopCategoryMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        ShopCategory category = shopManager.getCategory(categoryId);
         return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop_items%");
     }
 

@@ -15,25 +15,40 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+/**
+ * Handles loading and saving the admin shop data from a YAML file.
+ */
 public class AdminShopYAML {
     private final OMCPlugin plugin;
     private FileConfiguration config;
     private final File configFile;
     private final AdminShopManager shopManager;
 
+    /**
+     * Constructs the AdminShopYAML manager.
+     *
+     * @param plugin       The plugin instance.
+     * @param shopManager  The admin shop manager instance to populate with data.
+     */
     public AdminShopYAML(OMCPlugin plugin, AdminShopManager shopManager) {
         this.plugin = plugin;
         this.configFile = new File(plugin.getDataFolder() + "/data", "adminshop.yml");
         this.shopManager = shopManager;
     }
 
+    /**
+     * Loads the configuration file and populates categories and items.
+     */
     public void loadConfig() {
         if (!configFile.exists()) plugin.saveResource("data/adminshop.yml", false);
         config = YamlConfiguration.loadConfiguration(configFile);
-        loadCategories();
-        loadItems();
+        loadCategories(); // Load categories first
+        loadItems(); // Load items after categories
     }
 
+    /**
+     * Loads the shop categories from the YAML configuration and adds them to the manager.
+     */
     private void loadCategories() {
         shopManager.categories.clear();
         List<Map<?, ?>> categoryList = config.getMapList("category");
@@ -52,6 +67,9 @@ public class AdminShopYAML {
         }
     }
 
+    /**
+     * Loads all shop items from the YAML configuration and maps them by category.
+     */
     private void loadItems() {
         shopManager.items.clear();
 
@@ -86,6 +104,9 @@ public class AdminShopYAML {
         }
     }
 
+    /**
+     * Saves all shop item data back to the YAML configuration file.
+     */
     public void saveConfig() {
         for (var entry : shopManager.items.entrySet()) {
             String categoryId = entry.getKey();
@@ -107,6 +128,12 @@ public class AdminShopYAML {
         }
     }
 
+    /**
+     * Converts a {@link ShopItem} to a map suitable for YAML saving.
+     *
+     * @param itemEntry The map entry of the shop item.
+     * @return A map representing the shop item.
+     */
     private static @NotNull Map<String, Object> convertShopItemToMap(Map.Entry<String, ShopItem> itemEntry) {
         ShopItem item = itemEntry.getValue();
         return Map.of(

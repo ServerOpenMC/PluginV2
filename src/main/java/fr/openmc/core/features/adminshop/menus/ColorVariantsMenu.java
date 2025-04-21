@@ -170,6 +170,13 @@ public class ColorVariantsMenu extends Menu {
         return content;
     }
 
+    /**
+     * Returns a formatted type name based on the base type.
+     * This is used to display the item type in a user-friendly way.
+     *
+     * @param baseType The base type of the item (e.g., WOOL, CONCRETE).
+     * @return A formatted string representing the type name.
+     */
     private String getFormattedTypeName(String baseType) {
         return switch (baseType) {
             case "WOOL" -> "Laine";

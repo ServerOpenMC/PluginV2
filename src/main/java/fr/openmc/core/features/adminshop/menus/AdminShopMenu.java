@@ -61,5 +61,4 @@ public class AdminShopMenu extends Menu {
 
         return content;
     }
-
 }

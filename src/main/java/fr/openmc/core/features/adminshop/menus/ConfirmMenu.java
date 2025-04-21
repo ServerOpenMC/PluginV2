@@ -120,6 +120,14 @@ public class ConfirmMenu extends Menu {
         this.open();
     }
 
+    /**
+     * Creates a quantity button with the specified text and item stack.
+     *
+     * @param text      The text to display on the button.
+     * @param itemStack The item stack to use for the button.
+     * @param action    The action to perform when the button is clicked.
+     * @return The created item stack.
+     */
     private ItemStack createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
         return new ItemBuilder(this, itemStack, meta ->
             meta.displayName(Component.text((text.contains("+") ? "§aAjouter " : "§cRetirer ") + text.replace("+", "").replace("-", ""))))
@@ -127,6 +135,13 @@ public class ConfirmMenu extends Menu {
             .setOnClick(action);
     }
 
+    /**
+     * Counts the number of items of a specific material in a player's inventory.
+     *
+     * @param player   The player whose inventory to check.
+     * @param material The material to count.
+     * @return The count of items of the specified material in the player's inventory.
+     */
     private int countPlayerItems(Player player, Material material) {
         int count = 0;
         for (ItemStack item : player.getInventory().getContents())

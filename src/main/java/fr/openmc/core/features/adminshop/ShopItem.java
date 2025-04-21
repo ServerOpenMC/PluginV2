@@ -19,10 +19,25 @@ public class ShopItem {
     @Setter private double actualBuyPrice;
     private final boolean hasColorVariant;
 
+    /**
+     * List of materials that have color variants.
+     */
     private static final List<String> COLOR_VARIANTS_MATERIALS = Arrays.asList(
             "WOOL", "CONCRETE", "CONCRETE_POWDER", "TERRACOTTA", "GLASS"
     );
 
+    /**
+     * Constructor for ShopItem.
+     *
+     * @param id                The ID of the item.
+     * @param name              The name of the item.
+     * @param material          The material of the item.
+     * @param slot              The slot of the item in the shop menu.
+     * @param initialSellPrice  The initial sell price of the item.
+     * @param initialBuyPrice   The initial buy price of the item.
+     * @param actualSellPrice   The actual sell price of the item.
+     * @param actualBuyPrice    The actual buy price of the item.
+     */
     public ShopItem(String id, String name, Material material, int slot,
                     double initialSellPrice, double initialBuyPrice,
                     double actualSellPrice, double actualBuyPrice) {
@@ -37,6 +52,12 @@ public class ShopItem {
         this.hasColorVariant = hasColorVariants(material);
     }
 
+    /**
+     * Checks if the material has color variants.
+     *
+     * @param material The material to check.
+     * @return true if the material has color variants, false otherwise.
+     */
     private boolean hasColorVariants(Material material) {
         String materialName = material.name();
         for (String colorVariant : COLOR_VARIANTS_MATERIALS)
@@ -45,25 +66,16 @@ public class ShopItem {
         return false;
     }
 
+    /**
+     * Gets the base type of the material, ignoring color variants.
+     *
+     * @return The base type of the material.
+     */
     public String getBaseType() {
         String materialName = material.name();
         for (String baseType : COLOR_VARIANTS_MATERIALS)
             if (materialName.equals(baseType) || materialName.endsWith("_" + baseType))
                 return baseType;
         return materialName;
-    }
-
-    public String toString() {
-        return "ShopItem{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", material=" + material +
-                ", slot=" + slot +
-                ", initialSellPrice=" + initialSellPrice +
-                ", initialBuyPrice=" + initialBuyPrice +
-                ", actualSellPrice=" + actualSellPrice +
-                ", actualBuyPrice=" + actualBuyPrice +
-                ", hasColorVariant=" + hasColorVariant +
-                '}';
     }
 }
