@@ -144,9 +144,11 @@ public class ScoreboardManager implements Listener {
         
         objective.getScore("§8• §fNom: §7"+player.getName()).setScore(10);
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        String cityName = city != null ? city.getName() : "Aucune";
-        objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
+        if (player.getWorld().getName().equalsIgnoreCase("world")) {
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            String cityName = city != null ? city.getName() : "Aucune";
+            objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
+        }
 
         String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
