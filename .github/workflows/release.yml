@@ -1,0 +1,44 @@
+name: Release Stable Version
+
+on:
+  milestone:
+    types: [closed]
+
+jobs:
+  release_stable:
+    if: github.event.milestone.title =~ '^\d+\.\d+\.\d+$'
+    name: Release Stable Jar
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '21'
+
+      - name: Build stable JAR
+        run: |
+          chmod +x ./gradlew
+          ./gradlew shadowJar -DPLUGIN_VERSION=${{ github.event.milestone.title }} -DSNAPSHOT=false
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+
+      - name: Rename Jar
+        run: |
+          mkdir -p release
+          mv builds/OpenMC-${{ github.event.milestone.title }}.jar release/OpenMC-${{ github.event.milestone.title }}.jar
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: OpenMC ${{ github.event.milestone.title }}
+          tag_name: v${{ github.event.milestone.title }}
+          files: release/OpenMC-${{ github.event.milestone.title }}.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
