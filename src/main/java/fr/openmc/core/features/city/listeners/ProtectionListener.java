@@ -16,9 +16,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
@@ -218,4 +216,14 @@ public class ProtectionListener implements Listener {
 
     @EventHandler
     void onPlaceBlock(BlockPlaceEvent event) { verify(event.getPlayer(), event, event.getBlockPlaced().getLocation()); }
+
+    @EventHandler
+    public void onFireIgnite(BlockIgniteEvent event) {
+        Location loc = event.getBlock().getLocation();
+        Player player = event.getPlayer();
+
+        if (player==null) return;
+
+        verify(event.getPlayer(), event, loc);
+    }
 }
