@@ -12,11 +12,14 @@ import fr.openmc.core.features.leaderboards.Utils.PacketUtils;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.features.leaderboards.listeners.PlayerListener;
 import lombok.Getter;
-import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.ComponentSerializer;
+import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -41,13 +44,13 @@ public class LeaderboardManager {
     @Getter
     private static LeaderboardManager instance;
     @Getter
-    private final Map<Integer, Map.Entry<String, Integer>> GithubContributorsMap = new TreeMap<>();
+    private final Map<Integer, Map.Entry<String, Integer>> githubContributorsMap = new TreeMap<>();
     @Getter
-    private final Map<Integer, Map.Entry<String, String>> PlayerMoneyMap = new TreeMap<>();
+    private final Map<Integer, Map.Entry<String, String>> playerMoneyMap = new TreeMap<>();
     @Getter
-    private final Map<Integer, Map.Entry<String, String>> VilleMoneyMap = new TreeMap<>();
+    private final Map<Integer, Map.Entry<String, String>> villeMoneyMap = new TreeMap<>();
     @Getter
-    private final Map<Integer, Map.Entry<String, String>> PlayTimeMap = new TreeMap<>();
+    private final Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
     private final OMCPlugin plugin;
     private final String repoOwner = "ServerOpenMC";
     private final String repoName = "PluginV2";
@@ -74,24 +77,18 @@ public class LeaderboardManager {
 
             @Override
             public void run() {
-                if (i % 12 == 0)
-                    updateGithubContributorsMap(); // toutes les minutes pour ne pas être rate limitée par github
+                if (i % 60 == 0)
+                    updateGithubContributorsMap(); // toutes les 5 minutes pour ne pas être rate limitée par github et parce que Margouta le demande
                 updatePlayerMoneyMap();
                 updateVilleMoneyMap();
                 updatePlayTimeMap();
                 updateHolograms();
                 i++;
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 20 * 5); //Toutes les 5 secondes en async sauf le updateGithubContributorsMap qui est toutes les minutes
+        }.runTaskTimerAsynchronously(plugin, 0, 100); // Toutes les 5 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 5 minutes
     }
 
-    public void setHologramLocation(String name, Location location) throws IOException {
-        FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
-        leaderBoardConfig.set(name+"-location", location);
-        leaderBoardConfig.save(leaderBoardFile);
-        loadLeaderBoardConfig();
-    }
-
+    // Formate le temps de jeu (1j 1h 1m)
     private static String formatTicks(int ticks) {
         int seconds = ticks / 20;
         int days = seconds / 86400;
@@ -107,111 +104,132 @@ public class LeaderboardManager {
         return result.toString().trim();
     }
 
+    // Crée le texte du leaderboard des contributeurs GitHub pour qu'il soit envoyé dans le chat ou mis un hologramme
     public static Component createContributorsTextLeaderboard() {
         var contributorsMap = LeaderboardManager.getInstance().getGithubContributorsMap();
         if (contributorsMap.isEmpty()) {
             return Component.text("Aucun contributeur trouvé pour le moment.").color(NamedTextColor.RED);
         }
         Component text = Component.text("--- Leaderboard des Contributeurs GitHub ---")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : contributorsMap.entrySet()) {
             int rank = entry.getKey();
             String contributorName = entry.getValue().getKey();
             int contributions = entry.getValue().getValue();
             Component line = Component.text("\n#")
-                    .color(NamedTextColor.YELLOW)
-                    .append(Component.text(rank).color(NamedTextColor.YELLOW))
-                    .append(Component.text(" ").append(Component.text(contributorName).color(NamedTextColor.GREEN)))
+                    .color(getRankColor(rank))
+                    .append(Component.text(rank).color(getRankColor(rank)))
+                    .append(Component.text(" ").append(Component.text(contributorName).color(NamedTextColor.LIGHT_PURPLE)))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(contributions + " contributions").color(NamedTextColor.AQUA));
+                    .append(Component.text(contributions).color(NamedTextColor.WHITE));
             text = text.append(line);
         }
         text = text.append(Component.text("\n-----------------------------------------")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD));
         return text;
     }
 
+    // Crée le texte du leaderboard de l'argent des joueurs pour qu'il soit envoyé dans le chat ou mis un hologramme
     public static Component createMoneyTextLeaderboard() {
         var moneyMap = LeaderboardManager.getInstance().getPlayerMoneyMap();
         if (moneyMap.isEmpty()) {
             return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
         }
         Component text = Component.text("--- Leaderboard de l'argent des joueurs ----")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : moneyMap.entrySet()) {
             int rank = entry.getKey();
             String playerName = entry.getValue().getKey();
             String money = entry.getValue().getValue();
             Component line = Component.text("\n#")
-                    .color(NamedTextColor.YELLOW)
-                    .append(Component.text(rank).color(NamedTextColor.YELLOW))
-                    .append(Component.text(" ").append(Component.text(playerName).color(NamedTextColor.GREEN)))
+                    .color(getRankColor(rank))
+                    .append(Component.text(rank).color(getRankColor(rank)))
+                    .append(Component.text(" ").append(Component.text(playerName).color(NamedTextColor.LIGHT_PURPLE)))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(money + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.AQUA));
+                    .append(Component.text(money + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.WHITE));
             text = text.append(line);
         }
         text = text.append(Component.text("\n-----------------------------------------")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD));
         return text;
     }
 
+    // Crée le texte du leaderboard de l'argent des villes pour qu'il soit envoyé dans le chat ou mis un hologramme
     public static Component createCityMoneyTextLeaderboard() {
         var moneyMap = LeaderboardManager.getInstance().getVilleMoneyMap();
         if (moneyMap.isEmpty()) {
             return Component.text("Aucune ville trouvée pour le moment.").color(NamedTextColor.RED);
         }
         Component text = Component.text("--- Leaderboard de l'argent des villes ----")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : moneyMap.entrySet()) {
             int rank = entry.getKey();
             String cityName = entry.getValue().getKey();
             String money = entry.getValue().getValue();
             Component line = Component.text("\n#")
-                    .color(NamedTextColor.YELLOW)
-                    .append(Component.text(rank).color(NamedTextColor.YELLOW))
-                    .append(Component.text(" ").append(Component.text(cityName).color(NamedTextColor.GREEN)))
+                    .color(getRankColor(rank))
+                    .append(Component.text(rank).color(getRankColor(rank)))
+                    .append(Component.text(" ").append(Component.text(cityName).color(NamedTextColor.LIGHT_PURPLE)))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(money + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.AQUA));
+                    .append(Component.text(money + " " + EconomyManager.getEconomyIcon()).color(NamedTextColor.WHITE));
             text = text.append(line);
         }
         text = text.append(Component.text("\n-----------------------------------------")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD));
         return text;
     }
 
+    // Crée le texte du leaderboard du temps de jeu pour qu'il soit envoyé dans le chat ou mis un hologramme
     public static Component createPlayTimeTextLeaderboard() {
         var playtimeMap = LeaderboardManager.getInstance().getPlayTimeMap();
         if (playtimeMap.isEmpty()) {
             return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
         }
         Component text = Component.text("--- Leaderboard du temps de jeu -----------")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : playtimeMap.entrySet()) {
             int rank = entry.getKey();
             String playerName = entry.getValue().getKey();
             String time = entry.getValue().getValue();
             Component line = Component.text("\n#")
-                    .color(NamedTextColor.YELLOW)
-                    .append(Component.text(rank).color(NamedTextColor.YELLOW))
-                    .append(Component.text(" ").append(Component.text(playerName).color(NamedTextColor.GREEN)))
+                    .color(getRankColor(rank))
+                    .append(Component.text(rank).color(getRankColor(rank)))
+                    .append(Component.text(" ").append(Component.text(playerName).color(NamedTextColor.LIGHT_PURPLE)))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(time).color(NamedTextColor.AQUA));
+                    .append(Component.text(time).color(NamedTextColor.WHITE));
             text = text.append(line);
         }
         text = text.append(Component.text("\n-----------------------------------------")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD));
         return text;
     }
 
-    @SneakyThrows
+    public static TextColor getRankColor(int rank) {
+        return switch (rank) {
+            case 1 -> TextColor.color(0xFFD700);
+            case 2 -> TextColor.color(0xC0C0C0);
+            case 3 -> TextColor.color(0x614E1A);
+            default -> TextColor.color(0x4B4B4B);
+        };
+    }
+
+    // fonction utilisée par la commande /leaderboard setPos pour mettre à jour la position des hologrammes
+    public void setHologramLocation(String name, Location location) throws IOException {
+        FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
+        leaderBoardConfig.set(name + "-location", location);
+        leaderBoardConfig.save(leaderBoardFile);
+        loadLeaderBoardConfig();
+    }
+
+    // Charge la configuration des hologrammes
     private void loadLeaderBoardConfig() {
         if (!leaderBoardFile.exists()) {
             leaderBoardFile.getParentFile().mkdirs();
@@ -224,19 +242,20 @@ public class LeaderboardManager {
         playTimeHologramLocation = leaderBoardConfig.getLocation("playtime-location");
     }
 
+    // Met à jour la Map des contributeurs GitHub
     private void updateGithubContributorsMap() {
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors", repoOwner, repoName);
         try {
             HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
             con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", "OpenMC-Agent");
+            con.setRequestProperty("User-Agent", "OpenMC-BOT");
 
             if (con.getResponseCode() != 200) return;
 
             JSONArray array = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
             con.disconnect();
 
-            GithubContributorsMap.clear();
+            githubContributorsMap.clear();
 
             int count = 1;
             for (Object obj : array) {
@@ -245,17 +264,19 @@ public class LeaderboardManager {
                 String login = (String) contributor.get("login");
                 int contributions = ((Long) contributor.get("contributions")).intValue();
                 var contributorStats = new AbstractMap.SimpleEntry<>(login, contributions);
-                GithubContributorsMap.put(count, contributorStats);
+                githubContributorsMap.put(count, contributorStats);
                 count++;
             }
+            // Code un peu compliqué à comprendre, mais il va juste faire une requête à l'api de github et mettre les infos dans la map
 
         } catch (Exception e) {
-            plugin.getLogger().warning("Erreur lors de la récupération des contributeurs GitHub: " + e.getMessage()); // ne mérite pas severe je pense
+            plugin.getLogger().warning("Erreur lors de la récupération des contributeurs GitHub: " + e.getMessage());
         }
     }
 
+    // Met à jour la Map du leaderboard de l'argent des joueurs
     private void updatePlayerMoneyMap() {
-        PlayerMoneyMap.clear();
+        playerMoneyMap.clear();
         int rank = 1;
         for (var entry : EconomyManager.getBalances().entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
@@ -263,12 +284,13 @@ public class LeaderboardManager {
                 .toList()) {
             String playerName = Bukkit.getOfflinePlayer(entry.getKey()).getName();
             String formattedBalance = EconomyManager.getFormattedSimplifiedNumber(entry.getValue());
-            PlayerMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedBalance));
+            playerMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedBalance));
         }
     }
 
+    // Met à jour la Map du leaderboard de l'argent des villes
     private void updateVilleMoneyMap() {
-        VilleMoneyMap.clear();
+        villeMoneyMap.clear();
         int rank = 1;
         for (City city : CityManager.getCities().stream()
                 .sorted((city1, city2) -> Double.compare(city2.getBalance(), city1.getBalance()))
@@ -276,12 +298,13 @@ public class LeaderboardManager {
                 .toList()) {
             String cityName = city.getName();
             String cityBalance = EconomyManager.getFormattedSimplifiedNumber(city.getBalance());
-            VilleMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(cityName, cityBalance));
+            villeMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(cityName, cityBalance));
         }
     }
 
+    // Met à jour la Map du leaderboard du temps de jeu
     private void updatePlayTimeMap() {
-        PlayTimeMap.clear();
+        playTimeMap.clear();
         int rank = 1;
         for (OfflinePlayer player : Arrays.stream(Bukkit.getOfflinePlayers())
                 .sorted((entry1, entry2) -> Long.compare(entry2.getStatistic(Statistic.PLAY_ONE_MINUTE), entry1.getStatistic(Statistic.PLAY_ONE_MINUTE)))
@@ -289,30 +312,32 @@ public class LeaderboardManager {
                 .toList()) {
             String playerName = player.getName();
             String playTime = formatTicks(player.getStatistic(Statistic.PLAY_ONE_MINUTE));
-            PlayTimeMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
+            playTimeMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
         }
     }
 
+    // Il va envoyer des packets d'ENTITY_METADATA pour mettre à jour le texte des hologrammes aux joueurs qui ont le chunk chargé et ne fait rien s'il n'y en a pas.
     public void updateHolograms() {
         if (contributorsHologramLocation != null) {
-            String text = LegacyComponentSerializer.legacySection().serialize(createContributorsTextLeaderboard());
-            updateHologram(contributorsHologramLocation.getWorld().getPlayers(), text,100000); // On met 100000 à l'id de l'entité pour pouvoir la modifier facilement
+            String text = JSONComponentSerializer.json().serialize(createContributorsTextLeaderboard());
+            updateHologram(contributorsHologramLocation.getWorld().getPlayersSeeingChunk(contributorsHologramLocation.getChunk()), text, 100000); // On met 100000 à l'id de l'entité pour pouvoir la modifier facilement
         }
         if (moneyHologramLocation != null) {
-            String text = LegacyComponentSerializer.legacySection().serialize(createMoneyTextLeaderboard());
-            updateHologram(moneyHologramLocation.getWorld().getPlayers(), text, 100001);
+            String text = JSONComponentSerializer.json().serialize(createMoneyTextLeaderboard());
+            updateHologram(moneyHologramLocation.getWorld().getPlayersSeeingChunk(moneyHologramLocation.getChunk()), text, 100001);
         }
         if (villeMoneyHologramLocation != null) {
-            String text = LegacyComponentSerializer.legacySection().serialize(createCityMoneyTextLeaderboard());
-            updateHologram(villeMoneyHologramLocation.getWorld().getPlayers(), text, 100002);
+            String text = JSONComponentSerializer.json().serialize(createCityMoneyTextLeaderboard());
+            updateHologram(villeMoneyHologramLocation.getWorld().getPlayersSeeingChunk(villeMoneyHologramLocation.getChunk()), text, 100002);
         }
         if (playTimeHologramLocation != null) {
-            String text = LegacyComponentSerializer.legacySection().serialize(createPlayTimeTextLeaderboard());
-            updateHologram(playTimeHologramLocation.getWorld().getPlayers(), text, 100003);
+            String text = JSONComponentSerializer.json().serialize(createPlayTimeTextLeaderboard());
+            updateHologram(playTimeHologramLocation.getWorld().getPlayersSeeingChunk(playTimeHologramLocation.getChunk()), text, 100003);
         }
     }
 
     private void updateHologram(Collection<Player> players, String text, int id) {
+        if (players.isEmpty()) return;
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
         PacketContainer metadataPacket = PacketUtils.getTextDisplayMetadataPacket(
                 id,
@@ -321,7 +346,7 @@ public class LeaderboardManager {
                 0x40000000, // Arrière-plan (valeur par défaut)
                 10, // Durée d'interpolation (10 ticks)
                 (byte) 1, // L'orientation 0 = FIXED, 1 = VERTICAL, 2 = HORIZONTAL, 3 = CENTER
-                new Display.Brightness(15,15),
+                new Display.Brightness(15, 15),
                 0.5f, // Entre 16 et 160 blocs de distance max (ça dépend des paramètres du client). 32 blocs par défaut
                 1, // L'alignement 0 = CENTER, 1 = LEFT, 2 = RIGHT
                 false // Si le texte est visible à travers les blocs

@@ -19,13 +19,16 @@ public class PacketUtils {
     public static PacketContainer getTextDisplaySpawnPacket(Location location, int entityId) {
 
         // Spawn packet
+
+        // voir https://minecraft.wiki/w/Java_Edition_protocol#Spawn_Entity
+
         PacketContainer spawn = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
         spawn.getIntegers().write(0, entityId); // Entity ID
         spawn.getUUIDs().write(0, UUID.randomUUID()); // Entity UUID
         spawn.getEntityTypeModifier().write(0, EntityType.TEXT_DISPLAY); // Entity type
-        spawn.getDoubles().write(0, location.getX());
-        spawn.getDoubles().write(1, location.getY());
-        spawn.getDoubles().write(2, location.getZ());
+        spawn.getDoubles().write(0, location.getX()); // X
+        spawn.getDoubles().write(1, location.getY()); // Y
+        spawn.getDoubles().write(2, location.getZ()); // Z
         spawn.getIntegers().write(1, 0); // Pitch (0)
         spawn.getIntegers().write(2, 0); // Yaw (0)
 
@@ -43,6 +46,9 @@ public class PacketUtils {
             float viewRange,
             int alignment,
             boolean isSeeThrough) {
+
+        // Le packet: https://minecraft.wiki/w/Java_Edition_protocol#Set_Entity_Metadata
+        // Les index: https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Entity_metadata#Text_Display
         PacketContainer metadata = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         metadata.getIntegers().write(0, entityId);
 
@@ -62,7 +68,7 @@ public class PacketUtils {
         metadataList.add(new WrappedDataValue(17, WrappedDataWatcher.Registry.get((Type) Float.class), viewRange)); // 1.0f par défaut
 
         // Index 23: Text
-        metadataList.add(new WrappedDataValue(23, WrappedDataWatcher.Registry.getChatComponentSerializer(false), WrappedChatComponent.fromText(text).getHandle()));
+        metadataList.add(new WrappedDataValue(23, WrappedDataWatcher.Registry.getChatComponentSerializer(false), WrappedChatComponent.fromJson(text).getHandle()));
 
         // Index 24: Line width
         metadataList.add(new WrappedDataValue(24, WrappedDataWatcher.Registry.get((Type) Integer.class), lineWidth));

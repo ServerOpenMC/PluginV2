@@ -20,50 +20,48 @@ public class LeaderboardCommands {
         sender.sendMessage("§cVeuillez spécifier un leaderboard valide. (Ex: /leaderboard contributeurs)");
     }
 
-    @Subcommand({"contributeurs", "contributors"})
+    @Subcommand({"contributeurs"})
     @CommandPermission("omc.commands.leaderboard.contributors")
     @Description("Affiche le leaderboard des contributeurs GitHub")
     void contributorsCommand(CommandSender sender) {
         sender.sendMessage(createContributorsTextLeaderboard());
     }
 
-
-    //TODO: Utiliser ItemInteraction
-    @Subcommand("setPos")
-    @CommandPermission("op")
-    void setPosCommand(Player player, String leaderboard) {
-        if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
-            try {
-                LeaderboardManager.getInstance().setHologramLocation(leaderboard, player.getLocation());
-            } catch (IOException e) {
-                player.sendMessage("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage());
-                return;
-            }
-            player.sendMessage("§aPosition du leaderboard " + leaderboard + " mise à jour.");
-        } else {
-            player.sendMessage("§cVeuillez spécifier un leaderboard valide: contributors, money, ville-money, playtime");
-
-        }
-    }
-
-    @Subcommand({"argent", "money"})
+    @Subcommand({"argent"})
     @CommandPermission("omc.commands.leaderboard.money.player")
     @Description("Affiche le leaderboard de l'argent des joueurs")
     void moneyCommand(CommandSender sender) {
         sender.sendMessage(createMoneyTextLeaderboard());
     }
 
-    @Subcommand({"argent_ville", "city_money"})
+    @Subcommand({"cityMoney"})
     @CommandPermission("omc.commands.leaderboard.money.city")
     @Description("Affiche le leaderboard de l'argent des villes")
     void cityMoneyCommand(CommandSender sender) {
         sender.sendMessage(createCityMoneyTextLeaderboard());
     }
 
-    @Subcommand({"temps_de_jeu", "playtime"})
-    @CommandPermission("omc.commands.leaderboard.money.city")
-    @Description("Affiche le leaderboard de l'argent des villes")
+    @Subcommand({"playtime"})
+    @CommandPermission("omc.commands.leaderboard.money.playtime")
+    @Description("Affiche le leaderboard du temps de jeu des joueurs")
     void playtimeCommand(CommandSender sender) {
         sender.sendMessage(createPlayTimeTextLeaderboard());
+    }
+
+
+    //TODO: Utiliser ItemInteraction (Iambibi)
+    @Subcommand("setPos")
+    @CommandPermission("op")
+    void setPosCommand(Player player, String leaderboard) {
+        if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
+            try {
+                LeaderboardManager.getInstance().setHologramLocation(leaderboard, player.getLocation());
+                player.sendMessage("§aPosition du leaderboard " + leaderboard + " mise à jour.");
+            } catch (IOException e) {
+                player.sendMessage("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage());
+            }
+        } else {
+            player.sendMessage("§cVeuillez spécifier un leaderboard valide: contributors, money, ville-money, playtime");
+        }
     }
 }
