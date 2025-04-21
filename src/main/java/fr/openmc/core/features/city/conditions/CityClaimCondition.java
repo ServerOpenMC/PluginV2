@@ -23,7 +23,7 @@ public class CityClaimCondition {
      * @return booleen
      */
     public static boolean canCityClaim(City city, Player player) {
-        if (player.getWorld() != Bukkit.getWorld("world")) return false;
+        if (player.getWorld() != Bukkit.getWorld("world")) return false ;
         
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
