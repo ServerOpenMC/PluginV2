@@ -29,6 +29,8 @@ dependencies {
     implementation("com.github.Revxrsal.Lamp:common:3.2.1")
     implementation("com.github.Revxrsal.Lamp:bukkit:3.2.1")
     implementation("net.raidstone:wgevents:1.18.1") // Version custom de Webbeh/WorldGuard-Events
+    implementation("com.microsoft.onnxruntime:onnxruntime:1.16.3") // Pour le /ia
+    implementation("org.json:json:20210307")  // Pour le parsing de JSON
 
     // lombok
     compileOnly("org.projectlombok:lombok:1.18.34")

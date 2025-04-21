@@ -3,6 +3,7 @@ package fr.openmc.core.commands;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CooldownCommand;
+import fr.openmc.core.commands.fun.IACommand;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.utils.*;
@@ -31,16 +32,17 @@ public class CommandsManager {
 
     private void registerCommands() {
         handler.register(
-                new Socials(),
-                new Spawn(),
-                new SetSpawn(),
-                new Playtime(),
-                new Diceroll(),
-                new CooldownCommand(),
-                new FreezeCommand(),
-                new MailboxCommand(OMCPlugin.getInstance()),
-                new ChronometerCommand(),
-                new FriendCommand()
+            new Socials(),
+            new Spawn(),
+            new SetSpawn(),
+            new Playtime(),
+            new Diceroll(),
+            new CooldownCommand(),
+            new FreezeCommand(),
+            new MailboxCommand(OMCPlugin.getInstance()),
+            new ChronometerCommand(),
+            new FriendCommand(),
+            new IACommand()
         );
     }
 
