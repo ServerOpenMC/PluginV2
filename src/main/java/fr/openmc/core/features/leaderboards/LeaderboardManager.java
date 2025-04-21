@@ -16,10 +16,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.serializer.ComponentSerializer;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -80,7 +77,7 @@ public class LeaderboardManager {
                 if (i % 60 == 0)
                     updateGithubContributorsMap(); // toutes les 5 minutes pour ne pas être rate limitée par github et parce que Margouta le demande
                 updatePlayerMoneyMap();
-                updateVilleMoneyMap();
+                updateCityMoneyMap();
                 updatePlayTimeMap();
                 updateHolograms();
                 i++;
@@ -88,7 +85,13 @@ public class LeaderboardManager {
         }.runTaskTimerAsynchronously(plugin, 0, 100); // Toutes les 5 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 5 minutes
     }
 
-    // Formate le temps de jeu (1j 1h 1m)
+    /**
+     * Converts a number of Minecraft ticks into a human-readable duration format.
+     * The format includes days, hours, and minutes (e.g., "1j 2h 3m").
+     *
+     * @param ticks The number of ticks in Minecraft (20 ticks = 1 second).
+     * @return A formatted string representing the duration in days, hours, and minutes.
+     */
     private static String formatTicks(int ticks) {
         int seconds = ticks / 20;
         int days = seconds / 86400;
@@ -104,7 +107,11 @@ public class LeaderboardManager {
         return result.toString().trim();
     }
 
-    // Crée le texte du leaderboard des contributeurs GitHub pour qu'il soit envoyé dans le chat ou mis un hologramme
+    /**
+     * Creates the leaderboard text for GitHub contributors to be sent in chat or displayed as a hologram.
+     *
+     * @return A Component representing the GitHub contributors leaderboard.
+     */
     public static Component createContributorsTextLeaderboard() {
         var contributorsMap = LeaderboardManager.getInstance().getGithubContributorsMap();
         if (contributorsMap.isEmpty()) {
@@ -131,7 +138,12 @@ public class LeaderboardManager {
         return text;
     }
 
-    // Crée le texte du leaderboard de l'argent des joueurs pour qu'il soit envoyé dans le chat ou mis un hologramme
+
+    /**
+     * Creates the leaderboard text for player money to be sent in chat or displayed as a hologram.
+     *
+     * @return A Component representing the player money leaderboard.
+     */
     public static Component createMoneyTextLeaderboard() {
         var moneyMap = LeaderboardManager.getInstance().getPlayerMoneyMap();
         if (moneyMap.isEmpty()) {
@@ -158,7 +170,11 @@ public class LeaderboardManager {
         return text;
     }
 
-    // Crée le texte du leaderboard de l'argent des villes pour qu'il soit envoyé dans le chat ou mis un hologramme
+    /**
+     * Creates the leaderboard text for playtime to be sent in chat or displayed as a hologram.
+     *
+     * @return A Component representing the playtime leaderboard.
+     */
     public static Component createCityMoneyTextLeaderboard() {
         var moneyMap = LeaderboardManager.getInstance().getVilleMoneyMap();
         if (moneyMap.isEmpty()) {
@@ -185,7 +201,11 @@ public class LeaderboardManager {
         return text;
     }
 
-    // Crée le texte du leaderboard du temps de jeu pour qu'il soit envoyé dans le chat ou mis un hologramme
+    /**
+     * Creates the leaderboard text for playtime to be sent in chat or displayed as a hologram.
+     *
+     * @return A Component representing the playtime leaderboard.
+     */
     public static Component createPlayTimeTextLeaderboard() {
         var playtimeMap = LeaderboardManager.getInstance().getPlayTimeMap();
         if (playtimeMap.isEmpty()) {
@@ -212,6 +232,12 @@ public class LeaderboardManager {
         return text;
     }
 
+    /**
+     * Retrieves the color associated with a specific rank.
+     *
+     * @param rank The rank for which the color is retrieved.
+     * @return The TextColor associated with the rank.
+     */
     public static TextColor getRankColor(int rank) {
         return switch (rank) {
             case 1 -> TextColor.color(0xFFD700);
@@ -221,7 +247,13 @@ public class LeaderboardManager {
         };
     }
 
-    // fonction utilisée par la commande /leaderboard setPos pour mettre à jour la position des hologrammes
+    /**
+     * Sets the location of a hologram in the leaderboard configuration.
+     *
+     * @param name     The name of the hologram.
+     * @param location The new location of the hologram.
+     * @throws IOException If an error occurs while saving the configuration.
+     */
     public void setHologramLocation(String name, Location location) throws IOException {
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         leaderBoardConfig.set(name + "-location", location);
@@ -229,7 +261,9 @@ public class LeaderboardManager {
         loadLeaderBoardConfig();
     }
 
-    // Charge la configuration des hologrammes
+    /**
+     * Loads the leaderboard configuration, including hologram locations.
+     */
     private void loadLeaderBoardConfig() {
         if (!leaderBoardFile.exists()) {
             leaderBoardFile.getParentFile().mkdirs();
@@ -242,7 +276,9 @@ public class LeaderboardManager {
         playTimeHologramLocation = leaderBoardConfig.getLocation("playtime-location");
     }
 
-    // Met à jour la Map des contributeurs GitHub
+    /**
+     * Updates the GitHub contributors leaderboard map by fetching data from the GitHub API.
+     */
     private void updateGithubContributorsMap() {
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors", repoOwner, repoName);
         try {
@@ -274,7 +310,9 @@ public class LeaderboardManager {
         }
     }
 
-    // Met à jour la Map du leaderboard de l'argent des joueurs
+    /**
+     * Updates the player money leaderboard map by sorting and formatting player balances.
+     */
     private void updatePlayerMoneyMap() {
         playerMoneyMap.clear();
         int rank = 1;
@@ -288,8 +326,10 @@ public class LeaderboardManager {
         }
     }
 
-    // Met à jour la Map du leaderboard de l'argent des villes
-    private void updateVilleMoneyMap() {
+    /**
+     * Updates the city money leaderboard map by sorting and formatting city balances.
+     */
+    private void updateCityMoneyMap() {
         villeMoneyMap.clear();
         int rank = 1;
         for (City city : CityManager.getCities().stream()
@@ -302,7 +342,9 @@ public class LeaderboardManager {
         }
     }
 
-    // Met à jour la Map du leaderboard du temps de jeu
+    /**
+     * Updates the playtime leaderboard map by sorting and formatting player playtime.
+     */
     private void updatePlayTimeMap() {
         playTimeMap.clear();
         int rank = 1;
@@ -316,7 +358,9 @@ public class LeaderboardManager {
         }
     }
 
-    // Il va envoyer des packets d'ENTITY_METADATA pour mettre à jour le texte des hologrammes aux joueurs qui ont le chunk chargé et ne fait rien s'il n'y en a pas.
+    /**
+     * Updates the holograms for all leaderboards by sending ENTITY_METADATA packets to players.
+     */
     public void updateHolograms() {
         if (contributorsHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createContributorsTextLeaderboard());
@@ -336,6 +380,13 @@ public class LeaderboardManager {
         }
     }
 
+    /**
+     * Sends an ENTITY_METADATA packet to update the text of a hologram for a specific set of players.
+     *
+     * @param players The players who will receive the packet.
+     * @param text    The text to display on the hologram.
+     * @param id      The entity ID of the hologram.
+     */
     private void updateHologram(Collection<Player> players, String text, int id) {
         if (players.isEmpty()) return;
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
