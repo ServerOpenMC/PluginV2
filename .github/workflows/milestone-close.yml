@@ -20,7 +20,7 @@ jobs:
       - name: Get milestone information
         id: milestone
         run: |
-          # Convert milestone title to the corresponding branch name (same logic as in pr-closed.yml)
+          # Convert milestone title to the corresponding branch name (same logic as in pr-close.yml)
           MILESTONE_TITLE="${{ github.event.milestone.title }}"
           BRANCH_NAME=$(echo "$MILESTONE_TITLE" | tr ' ' '-' | tr -cd '[:alnum:]-')
           echo "milestone_branch=milestone-${BRANCH_NAME}" >> $GITHUB_OUTPUT
