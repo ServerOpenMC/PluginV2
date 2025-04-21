@@ -1,6 +1,6 @@
 package fr.openmc.core.features.leaderboards.commands;
 
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
+import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
@@ -11,7 +11,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
 
-import static fr.openmc.core.features.leaderboards.LeaderBoardManager.*;
+import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
 
 @Command({"leaderboard", "lb"})
 public class LeaderboardCommands {
@@ -32,7 +32,7 @@ public class LeaderboardCommands {
     void setPosCommand(Player player, String leaderboard) {
         if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
             try {
-                LeaderBoardManager.getInstance().setHologramLocation(leaderboard, player.getLocation());
+                LeaderboardManager.getInstance().setHologramLocation(leaderboard, player.getLocation());
             } catch (IOException e) {
                 player.sendMessage("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage());
                 return;

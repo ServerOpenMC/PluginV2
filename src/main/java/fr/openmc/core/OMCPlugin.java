@@ -1,7 +1,7 @@
 package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
+import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -73,7 +73,7 @@ public class OMCPlugin extends JavaPlugin {
         new FriendManager();
         new QuestsManager();
         new TabList();
-        new LeaderBoardManager(this);
+        new LeaderboardManager(this);
 
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);

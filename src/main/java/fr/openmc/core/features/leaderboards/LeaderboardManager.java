@@ -37,9 +37,9 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.*;
 
-public class LeaderBoardManager {
+public class LeaderboardManager {
     @Getter
-    private static LeaderBoardManager instance;
+    private static LeaderboardManager instance;
     @Getter
     private final Map<Integer, Map.Entry<String, Integer>> GithubContributorsMap = new TreeMap<>();
     @Getter
@@ -62,7 +62,7 @@ public class LeaderBoardManager {
     private Location playTimeHologramLocation;
 
 
-    public LeaderBoardManager(OMCPlugin plugin) {
+    public LeaderboardManager(OMCPlugin plugin) {
         instance = this;
         this.plugin = plugin;
         this.leaderBoardFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "leaderboards.yml");
@@ -108,7 +108,7 @@ public class LeaderBoardManager {
     }
 
     public static Component createContributorsTextLeaderboard() {
-        var contributorsMap = LeaderBoardManager.getInstance().getGithubContributorsMap();
+        var contributorsMap = LeaderboardManager.getInstance().getGithubContributorsMap();
         if (contributorsMap.isEmpty()) {
             return Component.text("Aucun contributeur trouvé pour le moment.").color(NamedTextColor.RED);
         }
@@ -134,7 +134,7 @@ public class LeaderBoardManager {
     }
 
     public static Component createMoneyTextLeaderboard() {
-        var moneyMap = LeaderBoardManager.getInstance().getPlayerMoneyMap();
+        var moneyMap = LeaderboardManager.getInstance().getPlayerMoneyMap();
         if (moneyMap.isEmpty()) {
             return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
         }
@@ -160,7 +160,7 @@ public class LeaderBoardManager {
     }
 
     public static Component createCityMoneyTextLeaderboard() {
-        var moneyMap = LeaderBoardManager.getInstance().getVilleMoneyMap();
+        var moneyMap = LeaderboardManager.getInstance().getVilleMoneyMap();
         if (moneyMap.isEmpty()) {
             return Component.text("Aucune ville trouvée pour le moment.").color(NamedTextColor.RED);
         }
@@ -186,7 +186,7 @@ public class LeaderBoardManager {
     }
 
     public static Component createPlayTimeTextLeaderboard() {
-        var playtimeMap = LeaderBoardManager.getInstance().getPlayTimeMap();
+        var playtimeMap = LeaderboardManager.getInstance().getPlayTimeMap();
         if (playtimeMap.isEmpty()) {
             return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
         }

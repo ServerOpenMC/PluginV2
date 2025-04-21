@@ -3,7 +3,7 @@ package fr.openmc.core.features.leaderboards.listeners;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.leaderboards.LeaderBoardManager;
+import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.leaderboards.Utils.PacketUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,9 +14,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerListener implements Listener {
 
-    private final LeaderBoardManager manager;
+    private final LeaderboardManager manager;
 
-    public PlayerListener(LeaderBoardManager manager) {
+    public PlayerListener(LeaderboardManager manager) {
         this.manager = manager;
     }
 
