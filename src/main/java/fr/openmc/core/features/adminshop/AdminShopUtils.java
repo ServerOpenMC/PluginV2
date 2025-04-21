@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdminShopUtils {
-
-    private final AdminShopManager shopManager = AdminShopManager.getInstance();
-
     public static List<Component> extractLoreForItem(ShopItem item) {
         List<Component> lore = new ArrayList<>();
         boolean buy = item.getInitialBuyPrice() > 0;
