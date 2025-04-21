@@ -42,9 +42,7 @@ public class ColorVariantsMenu extends Menu {
         );
 
         List<String> types = Arrays.asList(
-                "WOOL", "CONCRETE", "CONCRETE_POWDER", "TERRACOTTA", "GLASS", "GLASS_PANE",
-                "CARPET", "BED", "SHULKER_BOX", "GLAZED_TERRACOTTA", "BANNER", "STAINED_GLASS",
-                "STAINED_GLASS_PANE", "CANDLE"
+                "WOOL", "CONCRETE", "CONCRETE_POWDER", "TERRACOTTA", "GLASS", "GLASS_PANE", "STAINED_GLASS", "STAINED_GLASS_PANE"
         );
 
         for (String type : types) {
@@ -63,16 +61,10 @@ public class ColorVariantsMenu extends Menu {
             if (!materials.isEmpty()) {
                 variants.put(type, materials);
 
-                if (type.equals("STAINED_GLASS")) {
-                    variants.put("GLASS", materials);
-                }
-
-                if (type.equals("STAINED_GLASS_PANE")) {
-                    variants.put("GLASS_PANE", materials);
-                }
+                if (type.equals("STAINED_GLASS")) variants.put("GLASS", materials);
+                if (type.equals("STAINED_GLASS_PANE")) variants.put("GLASS_PANE", materials);
             }
         }
-
 
         return variants;
     }
@@ -151,13 +143,14 @@ public class ColorVariantsMenu extends Menu {
                                 originalItem.getActualBuyPrice()
                         );
 
-                        if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                            shopManager.openBuyConfirmMenu(getOwner(), categoryId, variant.name(), this);
-                            shopManager.addTemporaryItem(categoryId, variant.name(), colorVariant);
-                        } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                            shopManager.openSellConfirmMenu(getOwner(), categoryId, variant.name(), this);
-                            shopManager.addTemporaryItem(categoryId, variant.name(), colorVariant);
-                        }
+
+                       if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
+                           shopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                           shopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
+                       } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
+                           shopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                           shopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
+                       }
                     });
 
             content.put(slot, itemBuilder);

@@ -53,4 +53,18 @@ public class ShopItem {
                 return baseType;
         return materialName;
     }
+
+    public String toString() {
+        return "ShopItem{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", material=" + material +
+                ", slot=" + slot +
+                ", initialSellPrice=" + initialSellPrice +
+                ", initialBuyPrice=" + initialBuyPrice +
+                ", actualSellPrice=" + actualSellPrice +
+                ", actualBuyPrice=" + actualBuyPrice +
+                ", hasColorVariant=" + hasColorVariant +
+                '}';
+    }
 }

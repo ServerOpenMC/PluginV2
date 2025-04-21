@@ -35,7 +35,6 @@ public class AdminShopManager {
     private final File configFile;
     public final Map<String, ShopCategory> categories = new HashMap<>();
     public final Map<String, Map<String, ShopItem>> items = new HashMap<>();
-    private final Map<String, Map<String, ShopItem>> temporaryItems = new HashMap<>();
     public final Map<UUID, String> currentCategory = new HashMap<>();
     public final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
 
@@ -316,13 +315,8 @@ public class AdminShopManager {
         new ColorVariantsMenu(player, this, categoryId, originalItem, previousMenu).open();
     }
 
-    public void addTemporaryItem(String categoryId, String itemId, ShopItem item) {
-        temporaryItems.computeIfAbsent(categoryId, k -> new HashMap<>()).put(itemId, item);
-    }
-
-    public void clearTemporaryItems(Player player) {
-        String categoryId = getPlayerCategory(player);
-        if (categoryId != null) temporaryItems.remove(categoryId);
+    public void registerNewItem(String categoryId, String itemId, ShopItem item) {
+        items.computeIfAbsent(categoryId, k -> new HashMap<>()).put(itemId, item);
     }
 
     public Collection<ShopCategory> getCategories() {
