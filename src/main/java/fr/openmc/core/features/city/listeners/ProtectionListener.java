@@ -47,6 +47,8 @@ public class ProtectionListener implements Listener {
     }
 
     private void verify(Player player, Cancellable event, Location loc) {
+        if (player.getWorld() != Bukkit.getWorld("world")) return;
+        
         City city = getCityByChunk(loc.getChunk()); // on regarde le claim ou l'action a été fait
         City cityz = CityManager.getPlayerCity(player.getUniqueId()); // on regarde la city du membre
 
