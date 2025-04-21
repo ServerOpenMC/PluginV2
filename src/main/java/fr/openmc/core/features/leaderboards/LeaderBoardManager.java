@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
@@ -227,7 +228,7 @@ public class LeaderBoardManager {
     private void updateGithubContributorsMap() {
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors", repoOwner, repoName);
         try {
-            HttpURLConnection con = (HttpURLConnection) new URL(apiUrl).openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", "OpenMC-Agent");
 
