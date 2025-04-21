@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.customitems;
 
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.utils.customitems.buttons.MinusButton;
 import fr.openmc.core.utils.customitems.buttons.OneButton;
 import fr.openmc.core.utils.customitems.buttons.PlusButton;

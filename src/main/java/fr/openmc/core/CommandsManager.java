@@ -1,6 +1,5 @@
-package fr.openmc.core.commands;
+package fr.openmc.core;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CooldownCommand;
 import fr.openmc.core.commands.fun.Playtime;
@@ -35,6 +34,7 @@ public class CommandsManager {
         handler.register(
                 new Socials(),
                 new Spawn(),
+                new Rtp(),
                 new SetSpawn(),
                 new Playtime(),
                 new Diceroll(),

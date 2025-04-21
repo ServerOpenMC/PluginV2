@@ -1,7 +1,6 @@
 package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
-import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
@@ -18,7 +17,6 @@ import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.CubeListener;
-import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
 import fr.openmc.core.utils.WorldGuardApi;
