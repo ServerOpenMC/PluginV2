@@ -24,7 +24,7 @@ public class MessagesManager {
      * @param sound   Indicates whether a sound should be played (true) or not (false)
      */
 
-    public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, boolean sound) {
+    public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
         MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
@@ -34,12 +34,15 @@ public class MessagesManager {
                 );
 
         if(sender instanceof Player player && sound) {
-            player.playSound(player.getLocation(), type.getSound(), 1, 1);
+            player.playSound(player.getLocation(), type.getSound(), soundVolume, 1.0F);
         }
 
         sender.sendMessage(messageComponent);
     }
 
+    public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, boolean sound) {
+        sendMessage(sender, message, prefix, type, 1.0F, sound);
+    }
 
     /**
      *
