@@ -45,6 +45,7 @@ public class CommandsManager {
                 new FriendCommand(),
                 new QuestCommand(),
                 new AdminShopCommand()
+                new QuestCommand()
         );
     }
 
