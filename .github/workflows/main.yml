@@ -3,19 +3,15 @@ name: Build DEV Jars
 on:
   pull_request:
     paths-ignore:
-      - '.github/PULL_REQUEST_TEMPLATE.md'
+      - '.github/**'
       - '.gitignore'
       - 'LICENSE'
-      - 'CODE_OF_CONDUCT.md'
-      - 'CONTRIBUTING.md'
       - 'README.md'
   push:
     paths-ignore:
-      - '.github/PULL_REQUEST_TEMPLATE.md'
+      - '.github/**'
       - '.gitignore'
       - 'LICENSE'
-      - 'CODE_OF_CONDUCT.md'
-      - 'CONTRIBUTING.md'
       - 'README.md'
 
 jobs:
@@ -27,22 +23,23 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
       - name: Setup JDK
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: '21'
+
       - name: Build with Gradle
         run: |
-          chmod 777 gradlew
-          ./gradlew shadowJar
-          git_hash=$(git rev-parse --short "$GITHUB_SHA")
-          echo "git_hash=$git_hash" >> $GITHUB_ENV
-          echo "snapshotVersion=5.5-SNAPSHOT" >> $GITHUB_ENV
-          echo "artifactPath=$(pwd)/builds" >> $GITHUB_ENV
+          chmod +x ./gradlew
+          ./gradlew shadowJar -DPLUGIN_VERSION=2.0.0 -DSNAPSHOT=true
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+
       - name: Upload Plugin jar
-        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: OpenMC-${{ env.git_hash }}.jar
-          path: ${{ env.artifactPath }}/OpenMC.jar
+          name: OpenMC-${{ github.sha }}
+          path: builds/OpenMC-*.jar
+          

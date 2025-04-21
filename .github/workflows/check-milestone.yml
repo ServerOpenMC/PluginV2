@@ -1,0 +1,19 @@
+name: Vérification du milestone
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  check-milestone:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Vérifier la présence d'un milestone
+        run: |
+          if [ "${{ github.event.pull_request.milestone }}" == "" ]; then
+            echo "❌ La PR n'est pas associée à un milestone."
+            exit 1
+          else
+            echo "✅ Milestone détecté : ${{ github.event.pull_request.milestone.title }}"
+          fi
+
