@@ -8,12 +8,12 @@ jobs:
   check-milestone:
     runs-on: ubuntu-latest
     steps:
-      - name: Vérifier la présence d'un milestone
+      - name: Verify that PR has been assigned a milestone
         run: |
           if [ "${{ github.event.pull_request.milestone }}" == "" ]; then
-            echo "❌ La PR n'est pas associée à un milestone."
+            echo "❌ PR has not been assigned a milestone."
             exit 1
           else
-            echo "✅ Milestone détecté : ${{ github.event.pull_request.milestone.title }}"
+            echo "✅ Milestone detected: ${{ github.event.pull_request.milestone.title }}"
           fi
 
