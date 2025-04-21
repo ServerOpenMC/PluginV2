@@ -79,9 +79,19 @@ public class ProtectionListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND) return;
-
         Player player = event.getPlayer();
+        EquipmentSlot hand = event.getHand();
+
+        if (hand == EquipmentSlot.OFF_HAND) {
+            if (event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) {
+                Location loc = event.getClickedBlock() != null
+                        ? event.getClickedBlock().getLocation()
+                        : player.getLocation();
+                verify(player, event, loc);
+            }
+            return;
+        }
+
         ItemStack inHand = event.getItem();
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand != null && inHand.getType().isEdible()) {
@@ -103,6 +113,25 @@ public class ProtectionListener implements Listener {
             verify(player, event, loc);
         }
     }
+
+    @EventHandler
+    public void onEntityInteract(EntityInteractEvent event) {
+        Block block = event.getBlock();
+        if (block.getType() == Material.FARMLAND) {
+            verify((Player) event.getEntity(), event, block.getLocation());
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.getAction() == Action.PHYSICAL) {
+            if (event.getClickedBlock() == null) return;
+            if (event.getClickedBlock().getType() == Material.FARMLAND) {
+                verify(event.getPlayer(), event, event.getClickedBlock().getLocation());
+            }
+        }
+    }
+
     @EventHandler
     public void onDamageEntity(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player damager)) return;
