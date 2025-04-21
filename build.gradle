@@ -6,11 +6,9 @@ plugins {
 // Versioning
 def pluginVersion = '2.0.0'
 def gitHash = System.getenv('GITHUB_SHA') ?: 'local'
-
 def isSnapshot = System.getenv('SNAPSHOT')?.toBoolean() ?: false
 
 version = isSnapshot ? "$pluginVersion-SNAPSHOT-${gitHash.take(7)}" : pluginVersion
-
 group = 'fr.openmc'
 
 repositories {
@@ -37,7 +35,6 @@ repositories {
         url "https://jitpack.io" // Toujours à la fin
     }
 }
-
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT'
@@ -105,3 +102,4 @@ tasks.shadowJar {
 tasks.test {
     useJUnitPlatform()
 }
+
