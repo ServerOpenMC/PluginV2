@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -106,16 +107,27 @@ public class ProtectionListener implements Listener {
     public void onDamageEntity(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player damager)) return;
 
+        if (MascotUtils.isMascot(event.getEntity())) return;
         Location loc = event.getEntity().getLocation();
         verify(damager, event, loc);
     }
 
     @EventHandler
-    void onInteractAtEntity(PlayerInteractAtEntityEvent event) { verify(event.getPlayer(), event, event.getRightClicked().getLocation()); }
+    void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
+        if (event instanceof PlayerInteractAtEntityEvent) return;
+        if (event instanceof PlayerInteractEntityEvent) return;
+
+        verify(event.getPlayer(), event, event.getRightClicked().getLocation());
+    }
 
     @EventHandler
     void onInteractEntity(PlayerInteractEntityEvent event) {
         if (event instanceof PlayerInteractAtEntityEvent) return;
+        if (event instanceof PlayerInteractEntityEvent) return;
+
+        if (event.getHand() != EquipmentSlot.HAND) return;
+
+        if (MascotUtils.isMascot(event.getRightClicked())) return;
 
         verify(event.getPlayer(), event, event.getRightClicked().getLocation());
     }

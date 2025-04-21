@@ -26,6 +26,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -309,6 +310,8 @@ public class MascotsListener implements Listener {
     @SneakyThrows
     @EventHandler
     void onInteractWithMascots(PlayerInteractEntityEvent e) {
+        if (e.getHand() != EquipmentSlot.HAND) return;
+
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
 
