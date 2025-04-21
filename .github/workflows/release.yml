@@ -10,8 +10,63 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Auth token needed to create branches & merge PRs
+          token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Merge milestone branch into master
+
+      - name: Get milestone information
+        id: milestone
+        run: |
+          # Convert milestone title to the corresponding branch name (same logic as in pr-closed.yml)
+          MILESTONE_TITLE="${{ github.event.milestone.title }}"
+          BRANCH_NAME=$(echo "$MILESTONE_TITLE" | tr ' ' '-' | tr -cd '[:alnum:]-')
+          echo "milestone_branch=milestone-${BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "milestone_title=$MILESTONE_TITLE" >> $GITHUB_OUTPUT
+          echo "milestone_description=${{ github.event.milestone.description }}" >> $GITHUB_OUTPUT
+
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Check if milestone branch exists
+        id: check_branch
+        run: |
+          if git ls-remote --heads origin ${{ steps.milestone.outputs.milestone_branch }} | grep -q ${{ steps.milestone.outputs.milestone_branch }}; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "No corresponding milestone branch found for ${{ steps.milestone.outputs.milestone_title }}, exiting."
+            exit 1
+          fi
+
+      - name: Merge milestone into master
+        if: steps.check_branch.outputs.exists == 'true'
+        run: |
+          git checkout master
+          git pull origin master
+          
+          # Merge milestone branch into master
+          git merge --no-ff origin/${{ steps.milestone.outputs.milestone_branch }} -m "Merge milestone branch ${{ steps.milestone.outputs.milestone_branch }} into master upon milestone closure"
+          
+          git push origin master
+          echo "Merged milestone branch ${{ steps.milestone.outputs.milestone_branch }} into master"
+
+      # Build the plugin and release it
+
+      - name: Create release tag
+        id: tag
+        run: |
+          TAG_NAME="${{ steps.milestone.outputs.milestone_title }}"
+          git tag -a $TAG_NAME -m "Release ${{ steps.milestone.outputs.milestone_title }}"
+          git push origin $TAG_NAME
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -20,10 +75,8 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-
       - name: Build with Gradle
         run: ./gradlew shadowJar
-
       - name: Create release folder
         run: mkdir -p release && mv builds/OpenMC.jar release/OpenMC-${GITHUB_REF#refs/tags/}.jar
 
@@ -36,6 +89,14 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: Release ${{ steps.milestone.outputs.milestone_title }}
+          body: |
+            # Release ${{ steps.milestone.outputs.milestone_title }}
+            
+            ${{ steps.milestone.outputs.milestone_description }}
+            
+            This release was automatically created when milestone "${{ steps.milestone.outputs.milestone_title }}" was closed.
           files: release/OpenMC-${{ github.ref_name }}.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
