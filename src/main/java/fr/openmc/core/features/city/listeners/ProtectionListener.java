@@ -73,6 +73,27 @@ public class ProtectionListener implements Listener {
     }
 
     @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        if (event.getEntity() instanceof TNTPrimed tnt) {
+            if (tnt.getSource() instanceof Player player) {
+                City cityz = CityManager.getPlayerCity(player.getUniqueId());
+
+                event.blockList().removeIf(block -> {
+                    City blockCity = getCityByChunk(block.getChunk());
+
+                    return !isMemberOf(blockCity, player) &&
+                            !(
+                                    blockCity != null &&
+                                            cityz != null &&
+                                            CityManager.getCityType(blockCity.getUUID()).equals("war") &&
+                                            CityManager.getCityType(cityz.getUUID()).equals("war")
+                            );
+                });
+            }
+        }
+    }
+
+    @EventHandler
     void onBlockBreak(BlockBreakEvent event) { verify(event.getPlayer(), event, event.getBlock().getLocation()); }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
