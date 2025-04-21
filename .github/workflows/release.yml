@@ -6,7 +6,6 @@ on:
 
 jobs:
   release_stable:
-    if: github.event.milestone.title =~ '^\d+\.\d+\.\d+$'
     name: Release Stable Jar
     runs-on: ubuntu-latest
     permissions: write-all
