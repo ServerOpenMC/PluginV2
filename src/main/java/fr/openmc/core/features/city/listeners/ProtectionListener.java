@@ -9,6 +9,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -77,23 +78,30 @@ public class ProtectionListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            ItemStack inHand = event.getItem();
-            if (inHand != null && inHand.getType().isEdible()) {
-                return;
-            }
-        }
-
         if (event.getHand() != EquipmentSlot.HAND) return;
 
-        if (event.getInteractionPoint() == null && event.getClickedBlock() == null) return;
-        Location loc = event.getInteractionPoint() != null
-                ? event.getInteractionPoint()
-                : event.getClickedBlock().getLocation();
+        Player player = event.getPlayer();
+        ItemStack inHand = event.getItem();
 
-        verify(event.getPlayer(), event, loc);
+        if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand != null && inHand.getType().isEdible()) {
+            return;
+        }
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (inHand != null && inHand.getType().isEdible()) {
+                Block clicked = event.getClickedBlock();
+                Material type = clicked.getType();
+
+                if (!type.isInteractable()) return;
+            }
+
+            Location loc = event.getInteractionPoint() != null
+                    ? event.getInteractionPoint()
+                    : event.getClickedBlock().getLocation();
+
+            verify(player, event, loc);
+        }
     }
-
     @EventHandler
     public void onDamageEntity(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player damager)) return;
