@@ -12,11 +12,11 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class PlayerListener implements Listener {
+public class LeaderboardListener implements Listener {
 
     private final LeaderboardManager manager;
 
-    public PlayerListener(LeaderboardManager manager) {
+    public LeaderboardListener(LeaderboardManager manager) {
         this.manager = manager;
     }
 

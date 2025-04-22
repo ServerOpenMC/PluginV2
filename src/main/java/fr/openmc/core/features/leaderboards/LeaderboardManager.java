@@ -10,7 +10,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.Utils.PacketUtils;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
-import fr.openmc.core.features.leaderboards.listeners.PlayerListener;
+import fr.openmc.core.features.leaderboards.listeners.LeaderboardListener;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -68,7 +68,7 @@ public class LeaderboardManager {
         this.leaderBoardFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "leaderboards.yml");
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());
-        plugin.getServer().getPluginManager().registerEvents(new PlayerListener(this), plugin);
+        plugin.getServer().getPluginManager().registerEvents(new LeaderboardListener(this), plugin);
         new BukkitRunnable() {
             private int i = 0;
 
