@@ -24,12 +24,10 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -507,7 +505,7 @@ public class CityCommands {
                     mob.setHealth(maxHealth);
                 }
                 double currentHealth = mob.getHealth();
-                mob.setCustomName("§lMascotte §c" + currentHealth + "/" + maxHealth + "❤");
+                mob.setCustomName("§l" + city.getName() + " §c" + currentHealth + "/" + maxHealth + "❤");
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
