@@ -87,9 +87,9 @@ public class ProtectionListener implements Listener {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         if (event.getInteractionPoint() == null && event.getClickedBlock() == null) return;
-        Location loc = event.getInteractionPoint() != null
-                ? event.getInteractionPoint()
-                : event.getClickedBlock().getLocation();
+        Location loc = event.getClickedBlock() != null ?
+                event.getClickedBlock().getLocation() :
+                event.getInteractionPoint().toLocation(event.getPlayer().getWorld());
 
         verify(event.getPlayer(), event, loc);
     }
