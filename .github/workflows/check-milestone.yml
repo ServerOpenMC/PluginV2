@@ -24,17 +24,6 @@ jobs:
           MILESTONE_TITLE="${{ github.event.pull_request.milestone.title }}"
           BRANCH_NAME=milestone-$(echo "$MILESTONE_TITLE" | tr ' ' '-' | tr -cd '[:alnum:]-')
           if [ "${{ github.event.pull_request.base.ref }}" != "$BRANCH_NAME" ]; then
-            echo "❌ Target branch is not Milestone branch. It should be $BRANCH_NAME" exit 1
-            exit 1
-          fi
-      - name: Verify target branch is correct milestone
-        run: |
-          MILESTONE_TITLE="${{ github.event.pull_request.milestone.title }}"
-          BRANCH_NAME=milestone-$(echo "$MILESTONE_TITLE" | tr ' ' '-' | tr -cd '[:alnum:]-')
-          if [ "${{ github.event.pull_request.base.ref }}" == "$BRANCH_NAME" ]; then
-            echo "✅ Target branch is correct milestone branch"
-          else
             echo "❌ Target branch is not Milestone branch. It should be $BRANCH_NAME"
             exit 1
           fi
-
