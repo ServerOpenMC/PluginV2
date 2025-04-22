@@ -203,7 +203,7 @@ public class CityMenu extends Menu {
 
         List<Component> loreType;
 
-        if (CityTypeConditions.canCityChangeType(city, player)) {
+        if (CityTypeConditions.canCityChangeType(city, player, false)) {
             loreType = List.of(
                     Component.text("§7Votre ville est en " + finalType),
                     Component.text(""),
