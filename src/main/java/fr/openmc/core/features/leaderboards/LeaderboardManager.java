@@ -74,15 +74,15 @@ public class LeaderboardManager {
 
             @Override
             public void run() {
-                if (i % 60 == 0)
-                    updateGithubContributorsMap(); // toutes les 5 minutes pour ne pas être rate limitée par github et parce que Margouta le demande
+                if (i % 360 == 0)
+                    updateGithubContributorsMap(0); // toutes les 30 minutes pour ne pas être rate limitée par github
                 updatePlayerMoneyMap();
                 updateCityMoneyMap();
                 updatePlayTimeMap();
                 updateHolograms();
                 i++;
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 100); // Toutes les 5 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 5 minutes
+        }.runTaskTimerAsynchronously(plugin, 0, 100); // Toutes les 5 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
     }
 
     /**
@@ -123,13 +123,13 @@ public class LeaderboardManager {
         for (var entry : contributorsMap.entrySet()) {
             int rank = entry.getKey();
             String contributorName = entry.getValue().getKey();
-            int contributions = entry.getValue().getValue();
+            int lines = entry.getValue().getValue();
             Component line = Component.text("\n#")
                     .color(getRankColor(rank))
                     .append(Component.text(rank).color(getRankColor(rank)))
                     .append(Component.text(" ").append(Component.text(contributorName).color(NamedTextColor.LIGHT_PURPLE)))
                     .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(contributions).color(NamedTextColor.WHITE));
+                    .append(Component.text(lines + " lignes crées").color(NamedTextColor.WHITE));
             text = text.append(line);
         }
         text = text.append(Component.text("\n-----------------------------------------")
@@ -278,32 +278,57 @@ public class LeaderboardManager {
 
     /**
      * Updates the GitHub contributors leaderboard map by fetching data from the GitHub API.
+     * @param attempts The number of attempts made to fetch the data.
      */
-    private void updateGithubContributorsMap() {
-        String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors", repoOwner, repoName);
+    private void updateGithubContributorsMap(int attempts) {
+        // doc l'api ici: https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity
+        String apiUrl = String.format("https://api.github.com/repos/%s/%s/stats/contributors", repoOwner, repoName);
         try {
             HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", "OpenMC-BOT");
 
-            if (con.getResponseCode() != 200) return;
+            if (con.getResponseCode() == 202) { // Ce code indique que la requête est en cours de traitement par GitHub
+                if (attempts < 3) {
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> updateGithubContributorsMap(attempts + 1), 3000L); // Attend 15 secondes que github traite la requête et retente avec un essai en plus
+                } else {
+                    plugin.getLogger().warning("Impossible de récupérer les statistiques Github."); // Ce message n'est jamais censé s'afficher, mais on sait jamais
+                }
+                return;
+            }
+            else if (con.getResponseCode() != 200) {
+                plugin.getLogger().warning("Erreur lors de la récupération des contributeurs GitHub: " + con.getResponseCode());
+                return;
+            }
 
             JSONArray array = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
             con.disconnect();
 
+            List<Map.Entry<String, Integer>> statsList = new ArrayList<>();
+
+            for (Object obj : array) {
+                JSONObject contributor = (JSONObject) obj;
+                JSONObject author = (JSONObject) contributor.get("author");
+                if (author == null) continue;
+                String login = (String) author.get("login");
+                JSONArray weeks = (JSONArray) contributor.get("weeks");
+
+                int totalNetLines = 0;
+                for (Object wObj : weeks) {
+                    JSONObject week = (JSONObject) wObj;
+                    int added   = ((Long) week.get("a")).intValue();
+                    int deleted = ((Long) week.get("d")).intValue();
+                    totalNetLines += added - deleted;
+                }
+                statsList.add(new AbstractMap.SimpleEntry<>(login, totalNetLines));
+            }
+
             githubContributorsMap.clear();
 
-            int count = 1;
-            for (Object obj : array) {
-                if (count > 10) return;
-                JSONObject contributor = (JSONObject) obj;
-                String login = (String) contributor.get("login");
-                int contributions = ((Long) contributor.get("contributions")).intValue();
-                var contributorStats = new AbstractMap.SimpleEntry<>(login, contributions);
-                githubContributorsMap.put(count, contributorStats);
-                count++;
+            statsList.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
+            for (int i = 0; i < Math.min(10, statsList.size()); i++) {
+                githubContributorsMap.put(i + 1, statsList.get(i));
             }
-            // Code un peu compliqué à comprendre, mais il va juste faire une requête à l'api de github et mettre les infos dans la map
 
         } catch (Exception e) {
             plugin.getLogger().warning("Erreur lors de la récupération des contributeurs GitHub: " + e.getMessage());
