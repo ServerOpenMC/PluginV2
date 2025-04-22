@@ -6,7 +6,7 @@ on:
 
 jobs:
   create-branch:
-    name: created associated branch
+    name: Create associated branch
     runs-on: ubuntu-latest
     steps:
       # Just so that git is setup for us
