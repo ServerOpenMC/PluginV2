@@ -180,7 +180,7 @@ public class MascotsListener implements Listener {
                 if (!MascotUtils.getMascotState(city.getUUID())){
                     mob.setCustomName("§lMascotte en attente de §csoins");
                 } else {
-                    mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
+                    mob.setCustomName("§l" + city.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
                 }
             }
         }
@@ -265,7 +265,7 @@ public class MascotsListener implements Listener {
                         double newHealth = Math.floor(mob.getHealth());
                         mob.setHealth(newHealth);
                         double maxHealth = mob.getMaxHealth();
-                        mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
+                        mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
 
                         if (regenTasks.containsKey(damageEntity.getUniqueId())) {
                             regenTasks.get(damageEntity.getUniqueId()).cancel();
@@ -699,7 +699,7 @@ public class MascotsListener implements Listener {
                 }
 
                 if (mascots.getHealth() >= mascots.getMaxHealth()) {
-                    mascots.setCustomName("§lMascotte §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
+                    mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
                     regenTasks.remove(mascotsUUID);
                     this.cancel();
                     return;
@@ -707,7 +707,7 @@ public class MascotsListener implements Listener {
 
                 double newHealth = Math.min(mascots.getHealth() + 1, mascots.getMaxHealth());
                 mascots.setHealth(newHealth);
-                mascots.setCustomName("§lMascotte §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
+                mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
             }
         };
 

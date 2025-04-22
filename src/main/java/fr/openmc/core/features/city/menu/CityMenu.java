@@ -111,6 +111,7 @@ public class CityMenu extends Menu {
                 loreMascots = List.of(
                         Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
                         Component.text("§7Status : §cEn Attente de Soins"),
+                        Component.text("§7Niveau : §c" + mascot.getLevel()),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
                 );
@@ -118,6 +119,7 @@ public class CityMenu extends Menu {
                 loreMascots = List.of(
                         Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
                         Component.text("§7Status : §aEn Vie"),
+                        Component.text("§7Niveau : §c" + mascot.getLevel()),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
                 );
@@ -203,7 +205,7 @@ public class CityMenu extends Menu {
 
         List<Component> loreType;
 
-        if (CityTypeConditions.canCityChangeType(city, player)) {
+        if (CityTypeConditions.canCityChangeType(city, player, false)) {
             loreType = List.of(
                     Component.text("§7Votre ville est en " + finalType),
                     Component.text(""),
