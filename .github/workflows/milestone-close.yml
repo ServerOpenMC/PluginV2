@@ -6,9 +6,8 @@ on:
 
 jobs:
   build-release:
-    name: Release & Deletee branch
+    name: Release
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -16,44 +15,11 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Merge milestone branch into master
-
-      - name: Get milestone information
-        id: milestone
-        run: |
-          # Convert milestone title to the corresponding branch name (same logic as in pr-close.yml)
-          MILESTONE_TITLE="${{ github.event.milestone.title }}"
-          BRANCH_NAME=$(echo "$MILESTONE_TITLE" | tr ' ' '-' | tr -cd '[:alnum:]-')
-          echo "milestone_branch=milestone-${BRANCH_NAME}" >> $GITHUB_OUTPUT
-          echo "milestone_title=$MILESTONE_TITLE" >> $GITHUB_OUTPUT
-          echo "milestone_description=${{ github.event.milestone.description }}" >> $GITHUB_OUTPUT
-
-      - name: Configure Git
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-
-      - name: Merge milestone into master
-        if: steps.check_branch.outputs.exists == 'true'
-        run: |
-          git checkout master
-          git pull origin master
-          
-          # Merge milestone branch into master
-          git merge --no-ff origin/${{ steps.milestone.outputs.milestone_branch }} -m "Merge milestone branch ${{ steps.milestone.outputs.milestone_branch }} into master upon milestone closure"
-          
-          git push origin master
-          echo "Merged milestone branch ${{ steps.milestone.outputs.milestone_branch }} into master"
-
-      # Build the plugin and release it
-
       - name: Create release tag
-        id: tag
         run: |
-          TAG_NAME="${{ steps.milestone.outputs.milestone_title }}"
-          git tag -a $TAG_NAME -m "Release ${{ steps.milestone.outputs.milestone_title }}"
+          TAG_NAME="${{ github.event.milestone.title }}"
+          git tag -a $TAG_NAME -m "Release ${{ github.event.milestone.title }}"
           git push origin $TAG_NAME
-          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
           
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -66,28 +32,25 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew shadowJar
       - name: Create release folder
-        run: mkdir -p release && mv builds/OpenMC.jar release/OpenMC-${{ steps.milestone.outputs.milestone_title }}.jar
+        run: mkdir -p release && mv builds/OpenMC.jar release/OpenMC-${{ github.event.milestone.title }}.jar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OpenMC-${{ steps.milestone.outputs.milestone_title }}
+          name: OpenMC-${{ github.event.milestone.title }}
           path: release/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag_name }}
-          name: Release ${{ steps.milestone.outputs.milestone_title }}
+          tag_name: ${{ github.event.milestone.title }} 
+          name: Release ${{ github.event.milestone.title }} 
           body: |
-            # Release ${{ steps.milestone.outputs.milestone_title }}
+            # Release ${{ github.event.milestone.title }} 
             
-            ${{ steps.milestone.outputs.milestone_description }}
+            ${{ github.event.milestone.description }}
             
-            This release was automatically created when milestone "${{ steps.milestone.outputs.milestone_title }}" was closed.
-          files: release/OpenMC-${{ steps.milestone.outputs.milestone_title }}.jar
+            This release was automatically created when milestone "${{ github.event.milestone.title }}" was closed.
+          files: release/OpenMC-${{ github.event.milestone.title }}.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete branch
-        run: git push origin --delete ${{ steps.milestone.outputs.milestone_branch }}
