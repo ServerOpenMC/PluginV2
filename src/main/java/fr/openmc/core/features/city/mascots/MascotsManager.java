@@ -217,7 +217,7 @@ public class MascotsManager {
                 if (entity!=null){
 
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
-                    entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
+                    entity.setCustomName("§l" + MascotUtils.getCityFromMascot(mascot.getMascotUuid()).getName() + " §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
                     entity.setGlowing(false);
                     MascotsListener.mascotsRegeneration(mascot.getMascotUuid());
                     City city = CityManager.getCity(city_uuid);
@@ -307,7 +307,7 @@ public class MascotsManager {
                         mob.setHealth(maxHealth);
                     }
                     double currentHealth = mob.getHealth();
-                    mob.setCustomName("§lMascotte §c" + currentHealth + "/" + maxHealth + "❤");
+                    mob.setCustomName("§l" + MascotUtils.getCityFromMascot(mascot.getMascotUuid()).getName() + " §c" + currentHealth + "/" + maxHealth + "❤");
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
