@@ -6,6 +6,7 @@ on:
 
 jobs:
   build-release:
+    name: Release & Deletee branch
     runs-on: ubuntu-latest
 
     steps:
@@ -31,17 +32,6 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-
-      - name: Check if milestone branch exists
-        id: check_branch
-        run: |
-          if git ls-remote --heads origin ${{ steps.milestone.outputs.milestone_branch }} | grep -q ${{ steps.milestone.outputs.milestone_branch }}; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-            echo "No corresponding milestone branch found for ${{ steps.milestone.outputs.milestone_title }}, exiting."
-            exit 1
-          fi
 
       - name: Merge milestone into master
         if: steps.check_branch.outputs.exists == 'true'
@@ -98,3 +88,6 @@ jobs:
           files: release/OpenMC-${{ github.ref_name }}.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete branch
+        run: git push origin --delete ${{ steps.milestone.outputs.milestone_branch }}

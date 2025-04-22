@@ -1,0 +1,25 @@
+name: Handle creating a milestone
+
+on:
+  milestone:
+    types: [created]
+
+jobs:
+  create-branch:
+    name: Create associated branch
+    runs-on: ubuntu-latest
+    steps:
+      # Just so that git is setup for us
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create branch
+        run: |
+            # Convert milestone title to the corresponding branch name (same logic as in milestone-close.yml)
+            MILESTONE_TITLE="${{ github.event.milestone.title }}"
+            BRANCH_NAME=$(echo "$MILESTONE_TITLE" | tr ' ' '-' | tr -cd '[:alnum:]-')
+
+            git checkout -b $BRANCH_NAME
+            git push -u origin $BRANCH_NAME
