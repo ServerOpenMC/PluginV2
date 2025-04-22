@@ -98,3 +98,6 @@ jobs:
           files: release/OpenMC-${{ github.ref_name }}.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Delete branch
+        run: git push origin --delete ${{ steps.milestone.outputs.milestone_branch }}
