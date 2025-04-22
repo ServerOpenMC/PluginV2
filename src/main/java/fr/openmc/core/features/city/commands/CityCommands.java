@@ -430,7 +430,7 @@ public class CityCommands {
     public void change(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, sender)){
+        if (!CityTypeConditions.canCityChangeType(city, sender, true)){
             MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -466,7 +466,7 @@ public class CityCommands {
     public static void changeConfirm(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, sender)){
+        if (!CityTypeConditions.canCityChangeType(city, sender, true)){
             MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
