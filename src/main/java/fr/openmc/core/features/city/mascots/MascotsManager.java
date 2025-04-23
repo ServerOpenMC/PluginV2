@@ -238,6 +238,7 @@ public class MascotsManager {
 
     public static void giveChest(Player player) {
         if (!ItemUtils.hasAvailableSlot(player)){
+            Chronometer.stopChronometer(player, "Mascot:chest", null, "%null%");
             MessagesManager.sendMessage(player, Component.text("§cLibérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
