@@ -21,7 +21,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
-        run: ./gradlew jar
+        run: |
+          ./gradlew shadowJar
+          cp ./builds/OpenMC.jar ./builds/OpenMC-$TAG.jar
         env:
           TAG: ${{ github.event.milestone.title }}
 
