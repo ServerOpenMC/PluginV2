@@ -4,12 +4,11 @@ plugins {
 }
 
 // Versioning
-def gitRef = System.getenv("GITHUB_REF") ?: ""
-def tagVersion = gitRef.replace("refs/tags/", "")
+def tag = System.getenv("TAG") ?: ""
 def isSnapshot = System.getenv('SNAPSHOT')?.toBoolean() ?: false
 def gitHash = System.getenv('GITHUB_SHA') ?: 'local'
 
-def pluginVersion = tagVersion ? tagVersion : "dev"
+def pluginVersion = tag ? tag : "dev"
 
 version = isSnapshot ? "$pluginVersion-SNAPSHOT-${gitHash.take(7)}" : pluginVersion
 group = 'fr.openmc'
