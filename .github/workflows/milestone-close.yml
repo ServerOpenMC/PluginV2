@@ -30,15 +30,13 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
-        run: ./gradlew shadowJar
-      - name: Create release folder
-        run: mkdir -p release && mv builds/OpenMC.jar release/OpenMC-${{ steps.milestone.outputs.milestone_title }}.jar
+        run: ./gradlew jar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: OpenMC-${{ steps.milestone.outputs.milestone_title }}
-          path: release/
+          path: builds/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -52,6 +50,6 @@ jobs:
             ${{ github.event.milestone.description }}
             
             This release was automatically created when milestone "${{ steps.milestone.outputs.milestone_title }}" was closed.
-          files: release/OpenMC-${{ steps.milestone.outputs.milestone_title }}.jar
+          files: builds/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,3 +1,4 @@
+name: Release to Discord
 on:
   release:
     types: [published]
@@ -5,6 +6,7 @@ on:
 jobs:
   github-releases-to-discord:
     runs-on: ubuntu-latest
+    name: Release to Discord
     steps:
       - name: Checkout
         uses: actions/checkout@v4
