@@ -96,21 +96,23 @@ public class EconomyManager {
     }
 
     public static String getFormattedSimplifiedNumber(double balance) {
-        if (balance == 0) {
-            return "0";
-        }
-
-        // Trouver l'entrée la plus proche dans la map des suffixes pour le solde donné
-        Map.Entry<Long, String> entry = instance.suffixes.floorEntry((long) balance);
-        long divideBy = entry.getKey();
-        String suffix = entry.getValue();
-
-        // Diviser le solde par la valeur trouvée pour obtenir un nombre simplifié
-        double truncated = balance / divideBy;
-        String formatted = instance.decimalFormat.format(truncated);
-
-        return formatted + suffix;
+    if (balance == 0) {
+        return "0";
     }
+
+    Map.Entry<Long, String> entry = instance.suffixes.floorEntry((long) balance);
+    if (entry == null) {
+        return instance.decimalFormat.format(balance);
+    }
+
+    long divideBy = entry.getKey();
+    String suffix = entry.getValue();
+
+    double truncated = balance / divideBy;
+    String formatted = instance.decimalFormat.format(truncated);
+
+    return formatted + suffix;
+}
 
     public static String getEconomyIcon() {
         if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
