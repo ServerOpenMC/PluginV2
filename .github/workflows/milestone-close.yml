@@ -1,0 +1,55 @@
+name: Handle closing a milestone
+
+on:
+  milestone:
+    types: [closed]
+
+jobs:
+  build-release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release tag
+        run: |
+          TAG_NAME="${{ github.event.milestone.title }}"
+          git tag -a $TAG_NAME -m "Release ${{ github.event.milestone.title }}"
+          git push origin $TAG_NAME
+          
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      - name: Build with Gradle
+        run: ./gradlew jar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenMC-${{ steps.milestone.outputs.milestone_title }}
+          path: builds/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          name: Release ${{ steps.milestone.outputs.milestone_title }}
+          generate_release_notes: true
+          body: |
+            # Release milestone ${{ steps.milestone.outputs.milestone_title }}
+            
+            ${{ github.event.milestone.description }}
+            
+            This release was automatically created when milestone "${{ steps.milestone.outputs.milestone_title }}" was closed.
+          files: builds/
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
