@@ -513,7 +513,7 @@ public class CityCommands {
             }
         }
 
-        MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le type de votre ville en " + CityManager.getCityType(city.getUUID())), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le §5type §fde votre §dville"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
