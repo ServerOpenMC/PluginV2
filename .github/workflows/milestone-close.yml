@@ -79,8 +79,9 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.tag_name }}
           name: Release ${{ steps.milestone.outputs.milestone_title }}
+          generate_release_notes: true
           body: |
-            # Release ${{ steps.milestone.outputs.milestone_title }}
+            # Release milestone ${{ steps.milestone.outputs.milestone_title }}
             
             ${{ steps.milestone.outputs.milestone_description }}
             
