@@ -260,6 +260,7 @@ public class LeaderboardManager {
         leaderBoardConfig.set(name + "-location", location);
         leaderBoardConfig.save(leaderBoardFile);
         loadLeaderBoardConfig();
+        LeaderboardListener.getInstance().reload();
     }
 
     /**

@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.leaderboards.Utils.PacketUtils;
+import lombok.Getter;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -24,14 +25,24 @@ import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
 public class LeaderboardListener extends PacketAdapter implements Listener {
 
     private final LeaderboardManager manager;
-    private final Chunk contributorsHologramChunk;
-    private final Chunk moneyHologramChunk;
-    private final Chunk villeMoneyHologramChunk;
-    private final Chunk playTimeHologramChunk;
+    @Getter
+    public static LeaderboardListener instance;
+    private Chunk contributorsHologramChunk;
+    private Chunk moneyHologramChunk;
+    private Chunk villeMoneyHologramChunk;
+    private Chunk playTimeHologramChunk;
 
     public LeaderboardListener(LeaderboardManager manager) {
         super(OMCPlugin.getInstance(), PacketType.Play.Server.MAP_CHUNK);
+        instance = this;
         this.manager = manager;
+        contributorsHologramChunk = manager.getContributorsHologramLocation().getChunk();
+        moneyHologramChunk = manager.getMoneyHologramLocation().getChunk();
+        villeMoneyHologramChunk = manager.getVilleMoneyHologramLocation().getChunk();
+        playTimeHologramChunk = manager.getPlayTimeHologramLocation().getChunk();
+    }
+
+    public void reload() {
         contributorsHologramChunk = manager.getContributorsHologramLocation().getChunk();
         moneyHologramChunk = manager.getMoneyHologramLocation().getChunk();
         villeMoneyHologramChunk = manager.getVilleMoneyHologramLocation().getChunk();
