@@ -9,7 +9,6 @@
 - [ ] Bien documenter la feature
 - [ ] Fournir un profileur (si besoin/demandé par un admin)
 - [ ] Avoir une milestone associée à la PR
-- [ ] Avoir pour branche cible, la branche de la milestone associée a la PR
 - [ ] Valider tout les checks
 
 * Les Issues corrigée(s) en commun : 
