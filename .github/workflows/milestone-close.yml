@@ -49,12 +49,14 @@ jobs:
           tag_name: ${{ github.event.milestone.title }} 
           name: Release milestone ${{ github.event.milestone.title }} 
           generate_release_notes: true
+          fail_on_unmatched_files: true
+          make_latest: true
           body: |
             # Release milestone ${{ github.event.milestone.title }}
             
             ${{ github.event.milestone.description }}
             
             This release was automatically created when milestone "${{ github.event.milestone.title }}" was closed.
-          files: builds/
+          files: builds/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
