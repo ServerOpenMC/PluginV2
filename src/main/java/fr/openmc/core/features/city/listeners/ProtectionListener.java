@@ -93,9 +93,16 @@ public class ProtectionListener implements Listener {
 
         ItemStack inHand = event.getItem();
 
+
         if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand != null && inHand.getType().isEdible()) {
             return;
         }
+
+        if (event.getInteractionPoint() == null && event.getClickedBlock() == null) return;
+      
+        Location loc = event.getClickedBlock() != null ?
+                event.getClickedBlock().getLocation() :
+                event.getInteractionPoint().toLocation(event.getPlayer().getWorld());
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (inHand != null && inHand.getType().isEdible()) {
@@ -104,10 +111,6 @@ public class ProtectionListener implements Listener {
 
                 if (!type.isInteractable()) return;
             }
-
-            Location loc = event.getInteractionPoint() != null
-                    ? event.getInteractionPoint()
-                    : event.getClickedBlock().getLocation();
 
             verify(player, event, loc);
         }
