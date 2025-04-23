@@ -272,8 +272,10 @@ public class ProtectionListener implements Listener {
         }
     }
 
-    @EventHandler
-    void onPlaceBlock(BlockPlaceEvent event) { verify(event.getPlayer(), event, event.getBlockPlaced().getLocation()); }
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlaceBlock(BlockPlaceEvent event) {
+        verify(event.getPlayer(), event, event.getBlock().getLocation());
+    }
 
     @EventHandler
     public void onFireIgnite(BlockIgniteEvent event) {
@@ -283,5 +285,25 @@ public class ProtectionListener implements Listener {
         if (player==null) return;
 
         verify(event.getPlayer(), event, loc);
+    }
+
+    @EventHandler
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            Location loc = player.getLocation();
+            City city = getCityByChunk(loc.getChunk());
+
+            //si ville en paix alors on annule
+            if (city != null && "peace".equals(CityManager.getCityType(city.getUUID()))) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+        if (event.getDamager() instanceof Player damager) {
+            if (MascotUtils.isMascot(event.getEntity())) return;
+            verify(damager, event, event.getEntity().getLocation());
+            return;
+        }
     }
 }
