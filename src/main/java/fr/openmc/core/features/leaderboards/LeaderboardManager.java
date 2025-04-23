@@ -260,6 +260,7 @@ public class LeaderboardManager {
         leaderBoardConfig.set(name + "-location", location);
         leaderBoardConfig.save(leaderBoardFile);
         loadLeaderBoardConfig();
+        LeaderboardListener.getInstance().reload();
     }
 
     /**
@@ -368,6 +369,8 @@ public class LeaderboardManager {
         }
     }
 
+
+    //TODO: Utiliser DateUtils quand ça sera plus de la merde
     /**
      * Updates the playtime leaderboard map by sorting and formatting player playtime.
      */
