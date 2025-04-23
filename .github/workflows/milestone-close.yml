@@ -40,21 +40,21 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OpenMC-${{ steps.milestone.outputs.milestone_title }}
+          name: OpenMC-${{ github.event.milestone.title }}
           path: builds/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag_name }}
-          name: Release ${{ steps.milestone.outputs.milestone_title }}
+          tag_name: ${{ github.event.milestone.title }} 
+          name: Release milestone ${{ github.event.milestone.title }} 
           generate_release_notes: true
           body: |
-            # Release milestone ${{ steps.milestone.outputs.milestone_title }}
+            # Release milestone ${{ github.event.milestone.title }}
             
             ${{ github.event.milestone.description }}
             
-            This release was automatically created when milestone "${{ steps.milestone.outputs.milestone_title }}" was closed.
+            This release was automatically created when milestone "${{ github.event.milestone.title }}" was closed.
           files: builds/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
