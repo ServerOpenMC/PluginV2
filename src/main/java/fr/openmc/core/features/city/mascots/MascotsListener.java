@@ -26,6 +26,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.LightningStrikeEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -180,7 +181,7 @@ public class MascotsListener implements Listener {
                 if (!MascotUtils.getMascotState(city.getUUID())){
                     mob.setCustomName("§lMascotte en attente de §csoins");
                 } else {
-                    mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
+                    mob.setCustomName("§l" + city.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
                 }
             }
         }
@@ -265,7 +266,7 @@ public class MascotsListener implements Listener {
                         double newHealth = Math.floor(mob.getHealth());
                         mob.setHealth(newHealth);
                         double maxHealth = mob.getMaxHealth();
-                        mob.setCustomName("§lMascotte §c" + newHealth + "/" + maxHealth + "❤");
+                        mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
 
                         if (regenTasks.containsKey(damageEntity.getUniqueId())) {
                             regenTasks.get(damageEntity.getUniqueId()).cancel();
@@ -309,6 +310,8 @@ public class MascotsListener implements Listener {
     @SneakyThrows
     @EventHandler
     void onInteractWithMascots(PlayerInteractEntityEvent e) {
+        if (e.getHand() != EquipmentSlot.HAND) return;
+
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
 
@@ -699,7 +702,7 @@ public class MascotsListener implements Listener {
                 }
 
                 if (mascots.getHealth() >= mascots.getMaxHealth()) {
-                    mascots.setCustomName("§lMascotte §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
+                    mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
                     regenTasks.remove(mascotsUUID);
                     this.cancel();
                     return;
@@ -707,7 +710,7 @@ public class MascotsListener implements Listener {
 
                 double newHealth = Math.min(mascots.getHealth() + 1, mascots.getMaxHealth());
                 mascots.setHealth(newHealth);
-                mascots.setCustomName("§lMascotte §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
+                mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
             }
         };
 

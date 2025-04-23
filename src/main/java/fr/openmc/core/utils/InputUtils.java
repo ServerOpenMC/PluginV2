@@ -85,7 +85,7 @@ public class InputUtils {
             return false;
         }
 
-        return input.matches("[a-zA-Z0-9\\s]+");
+        return input.matches("[a-zA-Z0-9]+");
     }
 
     /**

@@ -3,10 +3,7 @@ package fr.openmc.core.features.economy;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Currency;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.economy.commands.Baltop;
@@ -21,9 +18,21 @@ public class EconomyManager {
     @Getter private static Map<UUID, Double> balances;
     @Getter static EconomyManager instance;
 
+    private final DecimalFormat decimalFormat;
+    private final NavigableMap<Long, String> suffixes;
+
     public EconomyManager() {
         balances = EconomyData.loadBalances();
         instance = this;
+
+        decimalFormat = new DecimalFormat("#.##");
+        suffixes = new TreeMap<>();
+        suffixes.put(1_000L, "k");
+        suffixes.put(1_000_000L, "M");
+        suffixes.put(1_000_000_000L, "B");
+        suffixes.put(1_000_000_000_000L, "T");
+        suffixes.put(1_000_000_000_000_000L, "Q");
+
         CommandsManager.getHandler().register(
                 new Pay(),
                 new Baltop(),
@@ -87,11 +96,20 @@ public class EconomyManager {
     }
 
     public static String getFormattedSimplifiedNumber(double balance) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        return balance >= 1000000000 ? df.format(balance / 1000000000) + "B" :
-                balance >= 1000000 ? df.format(balance / 1000000) + "M" :
-                        balance >= 1000 ? df.format(balance / 1000) + "k" :
-                                df.format(balance);
+        if (balance == 0) {
+            return "0";
+        }
+
+        // Trouver l'entrée la plus proche dans la map des suffixes pour le solde donné
+        Map.Entry<Long, String> entry = instance.suffixes.floorEntry((long) balance);
+        long divideBy = entry.getKey();
+        String suffix = entry.getValue();
+
+        // Diviser le solde par la valeur trouvée pour obtenir un nombre simplifié
+        double truncated = balance / divideBy;
+        String formatted = instance.decimalFormat.format(truncated);
+
+        return formatted + suffix;
     }
 
     public static String getEconomyIcon() {
