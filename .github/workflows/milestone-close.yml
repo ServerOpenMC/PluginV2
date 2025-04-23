@@ -57,6 +57,6 @@ jobs:
             ${{ github.event.milestone.description }}
             
             This release was automatically created when milestone "${{ github.event.milestone.title }}" was closed.
-          files: builds/OpenMC-${{ github.event.milestone.title }}.jar
+          files: builds/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
