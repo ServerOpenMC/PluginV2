@@ -68,13 +68,14 @@ public class LeaderboardManager {
         this.leaderBoardFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "leaderboards.yml");
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());
+        ProtocolLibrary.getProtocolManager().addPacketListener(new LeaderboardListener(this));
         plugin.getServer().getPluginManager().registerEvents(new LeaderboardListener(this), plugin);
         new BukkitRunnable() {
             private int i = 0;
 
             @Override
             public void run() {
-                if (i % 360 == 0)
+                if (i % 120 == 0)
                     updateGithubContributorsMap(0); // toutes les 30 minutes pour ne pas être rate limitée par github
                 updatePlayerMoneyMap();
                 updateCityMoneyMap();
@@ -82,7 +83,7 @@ public class LeaderboardManager {
                 updateHolograms();
                 i++;
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 100); // Toutes les 5 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
+        }.runTaskTimerAsynchronously(plugin, 0, 300); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
     }
 
     /**
@@ -281,7 +282,7 @@ public class LeaderboardManager {
      * @param attempts The number of attempts made to fetch the data.
      */
     private void updateGithubContributorsMap(int attempts) {
-        // doc l'api ici: https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity
+        // doc de l'api ici: https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/stats/contributors", repoOwner, repoName);
         try {
             HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
@@ -412,7 +413,7 @@ public class LeaderboardManager {
      * @param text    The text to display on the hologram.
      * @param id      The entity ID of the hologram.
      */
-    private void updateHologram(Collection<Player> players, String text, int id) {
+    public void updateHologram(Collection<Player> players, String text, int id) {
         if (players.isEmpty()) return;
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
         PacketContainer metadataPacket = PacketUtils.getTextDisplayMetadataPacket(
