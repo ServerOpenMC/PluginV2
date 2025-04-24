@@ -90,7 +90,7 @@ public class MayorMandateMenu extends Menu {
 
             if (player.getUniqueId().equals(mayor.getUUID())) {
                 List<Component> loreLaw = List.of(
-                        Component.text("§7Vous êtes le ").append(Component.text("Maire").color(mayor.getMayorColor()).append(Component.text("§7!"))),
+                        Component.text("§7Vous êtes le ").append(Component.text("Maire").color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false).append(Component.text("§7!"))),
                         Component.text(""),
                         Component.text("§7Vous pouvez changer les §1Lois §7et lancer des §6Evenements §7!"),
                         Component.text(""),
