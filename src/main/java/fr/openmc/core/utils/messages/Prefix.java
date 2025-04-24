@@ -22,7 +22,7 @@ public enum Prefix {
     QUEST("<gradient:#4E76E3:#1A51E7>ǫᴜᴇѕᴛ</gradient>"),
     BANK("<gradient:#084CFB:#ADB6FD>ʙᴀɴᴋ</gradient>"),
     ENTREPRISE("<gradient:#E2244F:#FE7474>ᴇɴᴛʀᴇᴘʀɪѕᴇ</gradient>"), // a changer si ça ne correspond pas
-    SHOP("<gradient:#084CFB:#5AAFC4>ѕʜᴏᴘ</gradient>")
+    SHOP("<gradient:#084CFB:#5AAFC4>ѕʜᴏᴘ</gradient>"),
     ADMINSHOP("<gradient:#EE2222:#F04949>ᴀᴅᴍɪɴꜱʜᴏᴘ</gradient>"),
     ;
 
