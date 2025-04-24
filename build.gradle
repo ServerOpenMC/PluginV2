@@ -5,6 +5,7 @@ plugins {
 
 // Versioning
 def tag = System.getenv("TAG") ?: ""
+def milestoneUrl = System.getenv("MILESTONE_URL") ?: ""
 def isSnapshot = System.getenv('SNAPSHOT')?.toBoolean() ?: false
 def gitHash = System.getenv('GITHUB_SHA') ?: 'local'
 
@@ -77,10 +78,10 @@ tasks.withType(JavaCompile) {
 }
 
 processResources {
-    def props = ["version": version]
+    def props = ["version": version, "milestoneUrl": milestoneUrl]
     inputs.properties(props)
     filteringCharset = 'UTF-8'
-    filesMatching('plugin.yml') {
+    filesMatching('plugin.yml', 'JoinMessageListener.java') {
         expand(props)
     }
 }
