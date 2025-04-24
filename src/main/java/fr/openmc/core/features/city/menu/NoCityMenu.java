@@ -114,11 +114,19 @@ public class NoCityMenu extends Menu {
                             .setHandler((p, result) -> {
                                 String input = result.getLine(0);
 
-                                if (InputUtils.isInputCityName(input)) {
-                                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                        CityTypeMenu menu = new CityTypeMenu(player, input);
-                                        menu.open();
-                                    });
+                            for (City city : CityManager.getCities()){
+                                String cityName = city.getCityName();
+                                if (cityName!=null && cityName.equalsIgnoreCase(input)){
+                                    MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
+                                    return Collections.emptyList();
+                                }
+                            }
+
+                            if (InputUtils.isInputCityName(input)) {
+                                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                    CityTypeMenu menu = new CityTypeMenu(player, input);
+                                    menu.open();
+                                });
 
                                 } else {
                                     MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);

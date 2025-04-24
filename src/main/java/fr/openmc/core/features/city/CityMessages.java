@@ -54,11 +54,12 @@ public class CityMessages {
         sendLine(sender, "Vie de la Mascotte", mascotLife);
         sendLine(sender, "Type", type);
 
+        String money = EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon();
         if (sender instanceof Player player) {
             if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE))) return;
-            sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
+            sendLine(sender, "Banque", money);
         } else {
-            sendLine(sender, "Banque", city.getBalance()+ EconomyManager.getEconomyIcon());
+            sendLine(sender, "Banque", money);
         }
         if (CityManager.freeClaim.containsKey(city.getUUID())){
             sendLine(sender, "Claim gratuit", String.valueOf(CityManager.freeClaim.get(city.getUUID())));

@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -53,7 +54,7 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menus des Mascottes";
+        return "§cMascotte (niv. " + MascotUtils.getMascotOfCity(city.getUUID()).getLevel() + ")";
     }
 
     @Override

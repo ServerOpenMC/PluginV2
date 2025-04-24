@@ -1,7 +1,7 @@
-package fr.openmc.core.listeners;
+package fr.openmc.core;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxListener;
+import fr.openmc.core.listeners.*;
 import fr.openmc.core.utils.interactions.ItemInteraction;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -21,6 +21,8 @@ public class ListenersManager {
                 new ItemInteraction(),
                 new CubeListener(OMCPlugin.getInstance()),
                 new RespawnListener(),
+                new SleepListener(),
+                new PlayerDeadListener(),
                 new AsyncChatListener(OMCPlugin.getInstance())
         );
     }

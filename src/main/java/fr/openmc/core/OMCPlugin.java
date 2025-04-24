@@ -1,7 +1,8 @@
 package fr.openmc.core;
 
 import dev.xernas.menulib.MenuLib;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -18,7 +19,6 @@ import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.listeners.CubeListener;
-import fr.openmc.core.listeners.ListenersManager;
 import fr.openmc.core.utils.api.LuckPermsAPI;
 import fr.openmc.core.utils.api.PapiAPI;
 import fr.openmc.core.utils.api.WorldGuardApi;
@@ -78,6 +78,8 @@ public class OMCPlugin extends JavaPlugin {
         new FriendManager();
         new QuestsManager();
         new TabList();
+        new LeaderboardManager(this);
+        new AdminShopManager(this);
 
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
@@ -116,12 +118,12 @@ public class OMCPlugin extends JavaPlugin {
         MascotsManager.saveMascots(MascotsManager.mascots);
         CityManager.saveFreeClaims(CityManager.freeClaim);
 
-
         // - Cube
         CubeListener.clearCube(CubeListener.currentLocation);
 
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();
+
         if (dbManager != null) {
             try {
                 dbManager.close();

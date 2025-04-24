@@ -80,8 +80,8 @@ public class ContestCommand {
         int phase = contestManager.data.getPhase();
         if (phase == 1) {
             if (contestManager.getColorContestList().containsAll(Arrays.asList(color1, color2))) {
-                contestManager.deleteTableContest("contest");
-                contestManager.deleteTableContest("camps");
+                contestManager.deleteTableContest(ContestManager.TABLE_CONTEST);
+                contestManager.deleteTableContest(ContestManager.TABLE_CONTEST_CAMPS);
                 contestManager.insertCustomContest(camp1, color1, camp2, color2);
 
                 MessagesManager.sendMessage(player, Component.text("§aLe Contest : " + camp1 + " VS " + camp2 + " a bien été sauvegardé\nMerci d'attendre que les données en cache s'actualise."), Prefix.STAFF, MessageType.SUCCESS, true);
@@ -124,15 +124,22 @@ public class ContestCommand {
     @Description("Permet d'ajouter des points a un membre")
     @CommandPermission("ayw.command.contest.addpoints")
     public void addPoints(Player player, Player target, Integer points) {
-        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target).getPoints());
-        MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté " + points + " §apoint(s) à " + target.getName()), Prefix.STAFF, MessageType.SUCCESS, true);
-    }
+        if (contestManager.data.getPhase()!=3) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le Contests n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
+            return;
+        }
 
-    @Subcommand("color")
-    @Description("test pour transition ChatColor => Color")
-    @CommandPermission("ayw.command.contest.color")
-    public void color(Player player) {
-       MessagesManager.sendMessage(player,
-               Component.text(NamedTextColor.AQUA + "Color.AQUA"), Prefix.OPENMC);
+        if (contestManager.dataPlayer.get(target.getUniqueId().toString()) == null) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points à ce joueur car il ne s'est pas inscrit"), Prefix.STAFF, MessageType.ERROR, true);
+            return;
+        }
+
+        if (points<=0) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points négatifs ou égal à 0"), Prefix.STAFF, MessageType.ERROR, true);
+            return;
+        }
+
+        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target.getUniqueId().toString()).getPoints());
+        MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté " + points + " §apoint(s) à " + target.getName()), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 }

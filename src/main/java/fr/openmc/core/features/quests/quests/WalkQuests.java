@@ -4,6 +4,7 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -22,13 +23,15 @@ public class WalkQuests extends Quest implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
         if (
             (event.getFrom().getBlockX() != event.getTo().getBlockX()
             || event.getFrom().getBlockZ() != event.getTo().getBlockZ())
-            && !event.getPlayer().isFlying()
-            && !event.getPlayer().isGliding()
+            && !player.isFlying()
+            && !player.isGliding()
+            && !player.isInsideVehicle()
         ) {
-            this.incrementProgress(event.getPlayer().getUniqueId());
+            this.incrementProgress(player.getUniqueId());
         }
     }
 }

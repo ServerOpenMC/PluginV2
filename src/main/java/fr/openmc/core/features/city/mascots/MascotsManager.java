@@ -251,7 +251,7 @@ public class MascotsManager {
                 if (entity!=null){
 
                     entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
-                    entity.setCustomName("§lMascotte §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
+                    entity.setCustomName("§l" + MascotUtils.getCityFromMascot(mascot.getMascotUuid()).getName() + " §c" + entity.getHealth() + "/" + entity.getMaxHealth() + "❤");
                     entity.setGlowing(false);
                     MascotsListener.mascotsRegeneration(mascot.getMascotUuid());
                     City city = CityManager.getCity(city_uuid);
@@ -272,6 +272,7 @@ public class MascotsManager {
 
     public static void giveChest(Player player) {
         if (!ItemUtils.hasAvailableSlot(player)){
+            Chronometer.stopChronometer(player, "Mascot:chest", null, "%null%");
             MessagesManager.sendMessage(player, Component.text("§cLibérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -340,7 +341,7 @@ public class MascotsManager {
                         mob.setHealth(maxHealth);
                     }
                     double currentHealth = mob.getHealth();
-                    mob.setCustomName("§lMascotte §c" + currentHealth + "/" + maxHealth + "❤");
+                    mob.setCustomName("§l" + MascotUtils.getCityFromMascot(mascot.getMascotUuid()).getName() + " §c" + currentHealth + "/" + maxHealth + "❤");
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

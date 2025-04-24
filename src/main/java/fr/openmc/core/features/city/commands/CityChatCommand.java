@@ -9,11 +9,10 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import fr.openmc.core.features.city.CityChatManager;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
-import fr.openmc.core.features.city.CityManager;
 import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Named;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.UUID;
@@ -21,25 +20,12 @@ import java.util.UUID;
 public class CityChatCommand {
     @Command({"cc", "city chat", "ville chat"})
     @CommandPermission("omc.commands.city.chat")
-    @Description("Envoyer un message dans le chat de votre ville")
-    public void onCityChat(Player sender, @Named("message") String message) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'habites dans aucune ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        Component msg_component = Component.text("#ville ").color(NamedTextColor.GOLD).append(sender.displayName().color(NamedTextColor.WHITE)).append(
-                Component.text(" » ").color(NamedTextColor.GRAY).append(
-                        Component.text(message).color(NamedTextColor.WHITE)
-                )
-        );
-
-        for (UUID uuid : city.getMembers()) {
-            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
-            if (player.isOnline()) {
-                ((Player) player).sendMessage(msg_component);
-            }
+    @Description("Activer ou désactiver le chat de ville")
+    public void onCityChat(Player sender) {
+        if (!CityChatManager.isCityChatMember(sender)) {
+            CityChatManager.addCityChatMember(sender);
+        } else {
+            CityChatManager.removeCityChatMember(sender);
         }
     }
 }
