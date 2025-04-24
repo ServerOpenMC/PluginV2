@@ -117,9 +117,9 @@ public class MascotMenu extends Menu {
                     itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")){
-                        if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)){
-                            if (ItemUtils.hasAvailableSlot(getOwner())){
+                    if (!Chronometer.containsChronometer(mascots.getUniqueId(), "mascotsCooldown")) {
+                        if (city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)) {
+                            if (ItemUtils.hasAvailableSlot(getOwner())) {
                                 city = CityManager.getPlayerCity(getOwner().getUniqueId());
                                 if (city == null) {
                                     MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -138,11 +138,12 @@ public class MascotMenu extends Menu {
                         } else {
                             MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                         }
-                    };
+                    }
+                    ;
                     player.closeInventory();
-            });
-        };
-        List<Component> requiredAmount = new ArrayList<>();
+                });
+            };
+            List<Component> requiredAmount = new ArrayList<>();
         MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
 
         if (mascotsLevels.equals(MascotsLevels.level10)){
