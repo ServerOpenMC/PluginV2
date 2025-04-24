@@ -78,11 +78,18 @@ tasks.withType(JavaCompile) {
 }
 
 processResources {
-    def props = ["version": version, "milestoneUrl": milestoneUrl]
-    inputs.properties(props)
     filteringCharset = 'UTF-8'
-    filesMatching('plugin.yml', 'JoinMessageListener.java') {
-        expand(props)
+
+    def pluginProps = ["version": version]
+    inputs.properties(pluginProps)
+    filesMatching('plugin.yml') {
+        expand(pluginProps)
+    }
+
+    def joinListenerProps = ["version": version, "milestoneUrl": milestoneUrl]
+    inputs.properties(joinListenerProps)
+    filesMatching('JoinMessageListener.java') {
+        expand(joinListenerProps)
     }
 }
 
