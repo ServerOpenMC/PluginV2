@@ -64,7 +64,7 @@ jobs:
 
       - name: Build with snapshot version
         env:
-          TAG: actions
+          TAG: github
           SNAPSHOT: true
           GITHUB_SHA: ${{ github.sha }}
         run: ./gradlew jar

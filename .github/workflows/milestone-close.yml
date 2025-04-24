@@ -50,3 +50,13 @@ jobs:
           files: builds/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to server
+        uses: rexlmanu/pterodactyl-upload-action@v2.4
+        with:
+          panel-host: ${{ secrets.PANEL_HOST }}
+          api-key: ${{ secrets.API_KEY }}
+          server-id: ${{ secrets.SERVER_ID }}
+          source: builds/OpenMC.jar
+          target: "./plugins/OpenMC.jar"
+          restart: true
