@@ -6,6 +6,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,6 +23,8 @@ public class CityClaimCondition {
      * @return booleen
      */
     public static boolean canCityClaim(City city, Player player) {
+        if (player.getWorld() != Bukkit.getWorld("world")) return false ;
+        
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;

@@ -23,6 +23,7 @@ public enum Prefix {
     BANK("<gradient:#084CFB:#ADB6FD>ʙᴀɴᴋ</gradient>"),
     ENTREPRISE("<gradient:#E2244F:#FE7474>ᴇɴᴛʀᴇᴘʀɪѕᴇ</gradient>"), // a changer si ça ne correspond pas
     SHOP("<gradient:#084CFB:#5AAFC4>ѕʜᴏᴘ</gradient>")
+    ADMINSHOP("<gradient:#EE2222:#F04949>ᴀᴅᴍɪɴꜱʜᴏᴘ</gradient>"),
     ;
 
     @Getter private final String prefix;

@@ -6,7 +6,7 @@ import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -45,7 +45,7 @@ public class CityManager implements Listener {
                     ResultSet rs = statement.executeQuery();
 
                     while (rs.next()) {
-                        claimedChunks.put(BlockVector2.at(rs.getInt(1), rs.getInt(2)), getCity(rs.getString("city_uuid")));
+                        claimedChunks.put(BlockVector2.at(rs.getInt("x"), rs.getInt("z")), getCity(rs.getString("city_uuid")));
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -69,7 +69,8 @@ public class CityManager implements Listener {
         OMCPlugin.registerEvents(
                 new ProtectionListener(),
                 new ChestMenuListener(),
-                new MascotsListener()
+                new MascotsListener(),
+                new CityChatListener()
         );
 
         freeClaim = getAllFreeClaims();
@@ -225,26 +226,32 @@ public class CityManager implements Listener {
     public static void forgetCity(String city) {
         try {
             City cityz = cities.remove(city);
+            if (cityz == null) return;
 
-            for (UUID members : cityz.getMembers()){
+            List<UUID> membersCopy = new ArrayList<>(cityz.getMembers());
+            for (UUID members : membersCopy) {
                 Player member = Bukkit.getPlayer(members);
-                if (member==null){
+                if (member == null) {
                     member = Bukkit.getOfflinePlayer(members).getPlayer();
-                    if (member==null){
+                    if (member == null) {
                         continue;
                     }
                 }
+
                 MascotsManager.removeChest(member);
-                if (Chronometer.containsChronometer(members, "Mascot:chest")){
-                    if (Bukkit.getEntity(members) != null){
+
+                if (Chronometer.containsChronometer(members, "Mascot:chest")) {
+                    if (Bukkit.getEntity(members) != null) {
                         Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
                     }
                 }
-                if (Chronometer.containsChronometer(members, "mascotsMove")){
-                    if (Bukkit.getEntity(members) != null){
+
+                if (Chronometer.containsChronometer(members, "mascotsMove")) {
+                    if (Bukkit.getEntity(members) != null) {
                         Chronometer.stopChronometer(member, "mascotsMove", null, "%null%");
                     }
                 }
+
                 cityz.removePlayer(members);
             }
 
@@ -252,7 +259,6 @@ public class CityManager implements Listener {
             while (iterator.hasNext()) {
                 BlockVector2 vector = iterator.next();
                 City claimedCity = claimedChunks.get(vector);
-
                 if (claimedCity != null && claimedCity.equals(cityz)) {
                     iterator.remove();
                 }
@@ -262,19 +268,21 @@ public class CityManager implements Listener {
             while (playerIterator.hasNext()) {
                 UUID uuid = playerIterator.next();
                 City playerCity = playerCities.get(uuid);
-
                 if (playerCity != null && playerCity.getUUID().equals(city)) {
                     playerIterator.remove();
                 }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         freeClaim.remove(city);
+
         if (CityTypeCooldown.isOnCooldown(city)) {
             CityTypeCooldown.removeCityCooldown(city);
         }
+
         MascotsManager.removeMascotsFromCity(city);
     }
 

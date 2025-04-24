@@ -1,11 +1,11 @@
-package fr.openmc.core.commands;
+package fr.openmc.core;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.debug.ChronometerCommand;
 import fr.openmc.core.commands.debug.CooldownCommand;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.utils.*;
+import fr.openmc.core.features.adminshop.AdminShopCommand;
 import fr.openmc.core.features.friend.FriendCommand;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
@@ -34,6 +34,7 @@ public class CommandsManager {
         handler.register(
                 new Socials(),
                 new Spawn(),
+                new Rtp(),
                 new SetSpawn(),
                 new Playtime(),
                 new Diceroll(),
@@ -42,7 +43,8 @@ public class CommandsManager {
                 new FreezeCommand(),
                 new MailboxCommand(OMCPlugin.getInstance()),
                 new FriendCommand(),
-                new QuestCommand()
+                new QuestCommand(),
+                new AdminShopCommand()
         );
     }
 

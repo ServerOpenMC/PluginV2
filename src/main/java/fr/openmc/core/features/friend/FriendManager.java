@@ -1,7 +1,7 @@
 package fr.openmc.core.features.friend;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
