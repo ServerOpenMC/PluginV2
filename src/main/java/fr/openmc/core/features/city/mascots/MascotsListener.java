@@ -13,6 +13,8 @@ import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import io.papermc.paper.event.entity.EntityDamageItemEvent;
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -65,11 +67,11 @@ public class MascotsListener implements Listener {
         ItemStack item = e.getItemInHand();
         boolean ignore = false;
 
-        if (item.getType() != Material.CHEST) {return;}
+        if (item.getType() != Material.CHEST) return;
 
         ItemMeta meta = item.getItemMeta();
 
-        if (meta == null) {return;}
+        if (meta == null) return;
 
         PersistentDataContainer itemData = meta.getPersistentDataContainer();
 
@@ -91,7 +93,7 @@ public class MascotsListener implements Listener {
 
             City city = CityManager.getPlayerCity(player.getUniqueId());
 
-            if (city==null){
+            if (city==null) {
 
                 if (!futurCreateCity.containsKey(player.getUniqueId())){
                     MessagesManager.sendMessage(player,MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -111,7 +113,7 @@ public class MascotsListener implements Listener {
                 city = CityManager.getPlayerCity(player.getUniqueId());
 
                 if (city==null){
-                    MessagesManager.sendMessage(player, Component.text("§cErreur : la ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+                    MessagesManager.sendMessage(player, Component.text("§cErreur : la ville n'a pas été reconnue"), Prefix.CITY, MessageType.ERROR, false);
                     e.setCancelled(true);
                     return;
                 }
@@ -121,7 +123,7 @@ public class MascotsListener implements Listener {
 
             String city_uuid = city.getUUID();
 
-            if (MascotUtils.mascotsContains(city_uuid) && !movingMascots.contains(city_uuid)){
+            if (MascotUtils.mascotsContains(city_uuid) && !movingMascots.contains(city_uuid)) {
                 MessagesManager.sendMessage(player, Component.text("§cVous possédez déjà une mascotte"), Prefix.CITY, MessageType.INFO, false);
                 player.getInventory().remove(item);
                 e.setCancelled(true);
@@ -132,7 +134,7 @@ public class MascotsListener implements Listener {
             int chunkX = chunk.getX();
             int chunkZ = chunk.getZ();
 
-            if (!ignore && !city.hasChunk(chunkX,chunkZ)){
+            if (!ignore && !city.hasChunk(chunkX,chunkZ)) {
                 MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre car ce chunk ne vous appartient pas ou est adjacent à une autre ville"), Prefix.CITY, MessageType.INFO, false);
                 e.setCancelled(true);
                 return;
@@ -140,16 +142,17 @@ public class MascotsListener implements Listener {
 
             player_world.getBlockAt(mascot_spawn).setType(Material.AIR);
 
-            if (movingMascots.contains(city_uuid)){
+            if (movingMascots.contains(city_uuid)) {
                 Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
-                if (mascot!=null){
+                if (mascot!=null) {
                     Entity mob = MascotUtils.loadMascot(mascot);
-                    if (mob!=null){
+                    if (mob!=null) {
                         mob.teleport(mascot_spawn);
                         movingMascots.remove(city_uuid);
                         mascot.setChunk(mascot_spawn.getChunk());
                         Chronometer.stopChronometer(player, "mascotsMove", ChronometerType.ACTION_BAR, "Mascotte déplacée");
-                        //Cooldown de 5h pour déplacer la mascotte ( se reset au relancement du serveur )
+                        player.getInventory().remove(item);
+                        // Cooldown de 5h pour déplacer la mascotte (se reset au redémarrage du serveur)
                         Chronometer.startChronometer(mob,"mascotsCooldown", 3600*5, null, "%null%", null, "%null%");
                         return;
                     }
@@ -401,6 +404,22 @@ public class MascotsListener implements Listener {
 
     @EventHandler
     void onFire(EntityCombustEvent e) {
+        Entity entity = e.getEntity();
+        if (MascotUtils.isMascot(entity)){
+            e.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    void onPigMount(EntityMountEvent e) {
+        Entity entity = e.getMount();
+        if (MascotUtils.isMascot(entity)){
+            e.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    void onMove(EntityMoveEvent e) {
         Entity entity = e.getEntity();
         if (MascotUtils.isMascot(entity)){
             e.setCancelled(true);
