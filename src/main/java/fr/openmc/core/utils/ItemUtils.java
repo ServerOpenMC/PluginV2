@@ -2,16 +2,21 @@ package fr.openmc.core.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 
 public class ItemUtils {
     /**
@@ -94,6 +99,20 @@ public class ItemUtils {
         }
 
         return freePlace;
+    }
+
+    // IMPORT FROM MAILBOX
+    public static ItemStack getPlayerHead(Player player) {
+        return ItemUtils.getPlayerHead(player, Component.text(player.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
+    }
+
+    public static ItemStack getPlayerHead(Player player, Component name) {
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta meta = (SkullMeta) item.getItemMeta();
+        meta.setOwningPlayer(player);
+        meta.displayName(nonItalic(name));
+        item.setItemMeta(meta);
+        return item;
     }
 
     // IMPORT FROM AXENO
