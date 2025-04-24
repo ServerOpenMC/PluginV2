@@ -47,4 +47,4 @@ jobs:
             This release was automatically created when milestone "${{ github.event.milestone.title }}" was closed.
           files: builds/**
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
