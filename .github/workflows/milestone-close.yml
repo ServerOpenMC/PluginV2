@@ -21,9 +21,12 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Build with Gradle
-        run: ./gradlew jar
+        run: |
+          ./gradlew shadowJar
+          cp ./builds/OpenMC.jar ./builds/OpenMC-$TAG.jar
         env:
           TAG: ${{ github.event.milestone.title }}
+          MILESTONE_URL: ${{ github.event.milestone.url }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -48,3 +51,13 @@ jobs:
           files: builds/**
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+      - name: Deploy to server
+        uses: rexlmanu/pterodactyl-upload-action@v2.4
+        with:
+          panel-host: ${{ secrets.PANEL_HOST }}
+          api-key: ${{ secrets.API_KEY }}
+          server-id: ${{ secrets.SERVER_ID }}
+          source: builds/OpenMC.jar
+          target: "./plugins/OpenMC.jar"
+          restart: true

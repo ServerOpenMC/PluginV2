@@ -10,6 +10,8 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,6 +26,13 @@ public class JoinMessageListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
+
+        MessagesManager.sendMessage(player, Component.text("Bienvenu sur OpenMC !"), Prefix.OPENMC, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("Vous jouez actuellement sur la version ")
+                .append(Component.text("${version}").clickEvent(ClickEvent.openUrl("${milestoneUrl}")))
+                .append(Component.text(" du plugin §aOpenMC§. Cliquez ici pour voir les changements."))
+                .append(Component.text(" Cliquez ici pour voir les changements.").clickEvent(ClickEvent.openUrl("${milestone_url}")))
+                    , Prefix.OPENMC, MessageType.INFO, false);
 
         TabList.getInstance().updateTabList(player);
 
