@@ -153,35 +153,20 @@ public class ItemInteraction implements Listener {
 
     @EventHandler
     public void onBundling(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
+        ItemStack clickedItem = event.getCurrentItem();
+        ItemStack cursorItem = event.getCursor();
 
-        ItemStack cursor = event.getCursor();
-        ItemStack slot = event.getCurrentItem();
+        if (clickedItem != null && isBundle(clickedItem)) {
+            if (isItemInteraction(cursorItem)) {
+                event.setCancelled(true);
 
-        System.out.println("cursor " + cursor);
-        System.out.println("slot " + slot);
+                MessagesManager.sendMessage(event.getWhoClicked(), Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
+            }
+        } else if (cursorItem != null && isBundle(clickedItem)) {
+            if (isItemInteraction(clickedItem)) {
+                event.setCancelled(true);
 
-        if (slot == null || cursor.isEmpty()) {
-            return;
-        }
-
-        if (ItemUtils.isBundle(cursor) && cursor.hasItemMeta()) {
-            ItemMeta meta = cursor.getItemMeta();
-            if (meta instanceof BundleMeta) {
-                BundleMeta bundleMeta = (BundleMeta) meta;
-                List<ItemStack> items = bundleMeta.getItems();
-
-                for (ItemStack item : items) {
-                    if(isItemInteraction(item)) {
-                        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet ici"), Prefix.OPENMC, MessageType.ERROR, false);
-
-
-                        event.setCancelled(true);
-
-                        stopInteraction(player, item.getItemMeta().getPersistentDataContainer().get(NAMESPACE_KEY, PersistentDataType.STRING));
-                        return;
-                    }
-                }
+                MessagesManager.sendMessage(event.getWhoClicked(), Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
             }
         }
     }
