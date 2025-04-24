@@ -212,7 +212,7 @@ public class ShopMenu extends Menu {
 
         content.put(catalogue, new ItemBuilder(this, Material.CHEST, itemMeta -> {
             itemMeta.setDisplayName("§7Catalogue");
-        }).setNextMenu(new ShopCatalogueMenu(getOwner(), shop)));
+        }).setNextMenu(new ShopCatalogueMenu(getOwner(), shop, itemIndex)));
 
         return content;
     }

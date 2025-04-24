@@ -21,7 +21,8 @@ public enum Prefix {
     FRIEND("<gradient:#68E98B:#0EFF6D>ꜰʀɪᴇɴᴅ</gradient>"),
     QUEST("<gradient:#4E76E3:#1A51E7>ǫᴜᴇѕᴛ</gradient>"),
     BANK("<gradient:#084CFB:#ADB6FD>ʙᴀɴᴋ</gradient>"),
-    ENTREPRISE("<gradient:#E2244F:#FE7474>ᴇɴᴛʀᴇᴘʀɪѕᴇ</gradient>") // a changer si ça ne correspond pas
+    ENTREPRISE("<gradient:#E2244F:#FE7474>ᴇɴᴛʀᴇᴘʀɪѕᴇ</gradient>"), // a changer si ça ne correspond pas
+    SHOP("<gradient:#084CFB:#5AAFC4>ѕʜᴏᴘ</gradient>")
     ;
 
     @Getter private final String prefix;

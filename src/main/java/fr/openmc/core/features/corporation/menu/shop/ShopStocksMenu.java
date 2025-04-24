@@ -27,8 +27,6 @@ import java.util.Map;
 
 public class ShopStocksMenu extends PaginatedMenu {
 
-    private final CompanyManager companyManager = CompanyManager.getInstance();
-    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
     private final Shop shop;
     private final int itemIndex;
     private ShopItem stock;
@@ -59,7 +57,6 @@ public class ShopStocksMenu extends PaginatedMenu {
         denyMsg.add(Component.text("annuler"));
 
         for (ShopItem stock : shop.getItems()) {
-            this.stock = stock;
             items.add(new ItemBuilder(this, stock.getItem().getType(), itemMeta -> {
                 itemMeta.setDisplayName(ChatColor.YELLOW + ShopItem.getItemName(stock.getItem()));
                 itemMeta.setLore(List.of(
@@ -68,6 +65,7 @@ public class ShopStocksMenu extends PaginatedMenu {
                         "§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
                 ));
             }).setOnClick(inventoryClickEvent -> {
+                this.stock = stock;
                 new ConfirmMenu(getOwner(),this::accept, this::refuse,accetpMsg, denyMsg).open();
             }));
         }

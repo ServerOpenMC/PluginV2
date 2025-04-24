@@ -150,7 +150,7 @@ public class Company {
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_permissions (company_uuid, player, permission) VALUES (?, ?, ?)");
+                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO company_perms (company_uuid, player, permission) VALUES (?, ?, ?)");
                     statement.setString(1, company_uuid.toString());
                     statement.setString(2, uuid.toString());
                     statement.setString(3, permission.toString());
@@ -223,6 +223,7 @@ public class Company {
             }
 
             shops.add(newShop);
+            CompanyManager.shops.add(newShop);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
 
             if (shopUUID==null){
@@ -248,6 +249,7 @@ public class Company {
                     return MethodState.ESCAPE;
                 }
                 shops.remove(shop);
+                CompanyManager.shops.remove(shop);
                 economyManager.addBalance(player.getUniqueId(), 75);
                 return MethodState.SUCCESS;
             }

@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.CommandsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.corporation.commands.CompanyCommand;
 import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.listener.ShopListener;
@@ -35,7 +36,7 @@ public class CompanyManager {
         instance = this;
 
         CommandsManager.getHandler().register(
-                //new CompanyCommand(),
+                new CompanyCommand(),
                 new ShopCommand()
         );
 
@@ -55,6 +56,7 @@ public class CompanyManager {
                     "shop_uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
                     "owner VARCHAR(36), " +
                     "city_uuid VARCHAR(36), " +
+                    "company_uuid VARCHAR(36), " +
                     "x MEDIUMINT NOT NULL, " +
                     "y MEDIUMINT NOT NULL, " +
                     "z MEDIUMINT NOT NULL)");
@@ -166,13 +168,18 @@ public class CompanyManager {
         }
 
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement("SELECT shop_uuid, owner, city_uuid, x, y, z FROM shops");
+             PreparedStatement statement = conn.prepareStatement("SELECT shop_uuid, owner, city_uuid, company_uuid, x, y, z FROM shops");
              ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
                 UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
                 UUID owner = UUID.fromString(rs.getString("owner"));
                 String cityUuid = rs.getString("city_uuid");
+                String uuid = rs.getString("company_uuid");
+                UUID company_uuid = null;
+                if (uuid!=null){
+                    company_uuid = UUID.fromString(uuid);
+                }
                 double x = rs.getDouble("x");
                 double y = rs.getDouble("y");
                 double z = rs.getDouble("z");
@@ -182,17 +189,23 @@ public class CompanyManager {
                 Block cashRegister = new Location(Bukkit.getWorld("world"), x, y + 1, z).getBlock();
 
                 if (barrel.getType() == Material.BARREL && cashRegister.getType().toString().contains("SIGN")) {
-                    Shop shop = null;
-                    if (cityUuid == null) {
+                    Shop shop;
+                    if (company_uuid == null) {
                         PlayerShopManager.getInstance().createShop(owner, barrel, cashRegister, shopUuid);
                         shop = PlayerShopManager.getInstance().getShopByUUID(shopUuid);
                     } else {
-                        City city = CityManager.getCity(cityUuid);
-                        if (city != null) {
-                            Company company = CompanyManager.getInstance().getCompany(city);
+                        Company company = null;
+                        if (cityUuid==null){
+                            company = CompanyManager.getInstance().getCompany(owner);
                             company.createShop(owner, barrel, cashRegister, shopUuid);
-                            shop = company.getShop(shopUuid);
+                        } else {
+                            City city = CityManager.getCity(cityUuid);
+                            if (city != null) {
+                                company = CompanyManager.getInstance().getCompany(city);
+                                company.createShop(owner, barrel, cashRegister, shopUuid);
+                            }
                         }
+                        shop = company.getShop(shopUuid);
                     }
                     if (shop == null || shopItems.get(shopUuid)==null) {
                         continue;
@@ -224,7 +237,7 @@ public class CompanyManager {
             e.printStackTrace();
         }
 
-        String queryCompany = "INSERT INTO company (cpmpany_uuid, name, owner, cut, balance) VALUES (?, ?, ?, ?, ?)";
+        String queryCompany = "INSERT INTO company (company_uuid, name, owner, cut, balance, city_uuid) VALUES (?, ?, ?, ?, ?, ?)";
         String queryMerchant = "INSERT INTO company_merchants (company_uuid, player, moneyWon) VALUES (?, ?, ?)";
         String queryMerchantData = "INSERT INTO merchants_data (uuid, content) VALUES (?, ?)";
 
@@ -286,15 +299,17 @@ public class CompanyManager {
             e.printStackTrace();
         }
 
-        String queryShop = "INSERT INTO shops (shop_uuid, owner, city_uuid, x, y, z) VALUES (?, ?, ?, ?, ?, ?)";
+        String queryShop = "INSERT INTO shops (shop_uuid, owner, city_uuid, company_uuid, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String queryShopItem = "INSERT INTO shops_item (item, shop_uuid, price, amount) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmtShop = DatabaseManager.getConnection().prepareStatement(queryShop)) {
             for (Company company : companies) {
                 for (Shop shop : company.getShops()) {
                     UUID shopUuid = shop.getUuid();
-                    UUID owner = shop.getOwner().getPlayer();
+                    UUID owner = shop.getSupremeOwner();
+
                     String cityUuid = null;
+                    UUID company_uuid = company.getCompany_uuid();
                     if (company.getOwner().isCity()){
                         cityUuid = company.getOwner().getCity().getUUID();
                     }
@@ -321,9 +336,10 @@ public class CompanyManager {
                     stmtShop.setString(1, shopUuid.toString());
                     stmtShop.setString(2, owner.toString());
                     stmtShop.setString(3, cityUuid);
-                    stmtShop.setDouble(4, x);
-                    stmtShop.setDouble(5, y);
-                    stmtShop.setDouble(6, z);
+                    stmtShop.setString(4, company_uuid.toString());
+                    stmtShop.setDouble(5, x);
+                    stmtShop.setDouble(6, y);
+                    stmtShop.setDouble(7, z);
                     stmtShop.addBatch(); // Adding shop to batch
                 }
             }
@@ -362,9 +378,10 @@ public class CompanyManager {
                 stmtShop.setString(1, shopUuid.toString());
                 stmtShop.setString(2, owner.toString());
                 stmtShop.setString(3, null);
-                stmtShop.setDouble(4, x);
-                stmtShop.setDouble(5, y);
-                stmtShop.setDouble(6, z);
+                stmtShop.setString(4, null);
+                stmtShop.setDouble(5, x);
+                stmtShop.setDouble(6, y);
+                stmtShop.setDouble(7, z);
                 stmtShop.addBatch();  // Adding shop to batch
                 stmtShop.executeBatch(); // Execute batch for shops
             } catch (SQLException e) {

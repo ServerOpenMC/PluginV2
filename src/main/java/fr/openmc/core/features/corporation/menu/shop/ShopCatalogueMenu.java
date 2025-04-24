@@ -12,15 +12,16 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ShopCatalogueMenu extends PaginatedMenu {
     private final Shop shop;
+    private final int itemIndex;
 
-    public ShopCatalogueMenu(Player owner, Shop shop) {
+    public ShopCatalogueMenu(Player owner, Shop shop, int itemIndex) {
         super(owner);
         this.shop = shop;
+        this.itemIndex = itemIndex;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class ShopCatalogueMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<ItemStack> getItems() {
-        List<ItemStack> items = new java.util.ArrayList<>();
+        List<ItemStack> items = new ArrayList<>();
 
         for (ShopItem shopItem : shop.getItems()){
             items.add(new ItemBuilder(this, shopItem.getItem().getType(), itemMeta -> {
@@ -50,7 +51,20 @@ public class ShopCatalogueMenu extends PaginatedMenu {
 
     @Override
     public Map<Integer, ItemStack> getButtons() {
-        return Map.of();
+        Map<Integer, ItemStack> buttons = new HashMap<>();
+        buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+                .setCloseButton());
+        ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
+        if ((getPage() == 0 && isLastPage()) || shop.getItems().isEmpty()) {
+            buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName("§cRetour"))
+                    .setNextMenu(new ShopMenu(getOwner(), shop, itemIndex)));
+            buttons.put(50, nextPageButton);
+        } else {
+            buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+                    .setPreviousPageButton());
+            buttons.put(50, nextPageButton.setNextPageButton());
+        }
+        return buttons;
     }
 
     @Override

@@ -75,6 +75,7 @@ public class ShopBlocksManager {
             return false;
         }
         multiblocks.remove(shop.getUuid());
+        cashBlock.setType(Material.AIR);
         new BukkitRunnable() {
             @Override
             public void run() {

@@ -6,6 +6,7 @@ import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.menu.company.ShopManageMenu;
 import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
 import fr.openmc.core.features.corporation.MethodState;
+import fr.openmc.core.features.corporation.menu.shop.ShopSearchMenu;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -258,4 +259,9 @@ public class ShopCommand {
         shopMenu.open();
     }
 
+    @Subcommand("search")
+    @Description("Recherche un shop")
+    public void searchShop(Player player){
+        new ShopSearchMenu(player).open();
+    }
 }
