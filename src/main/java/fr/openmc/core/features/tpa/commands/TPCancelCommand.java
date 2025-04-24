@@ -16,7 +16,7 @@ public class TPCancelCommand {
 	 * @param player The player who wants to cancel the request.
 	 */
 	@Command("tpacancel")
-	@CommandPermission("ayw.command.tpa")
+	@CommandPermission("omc.commands.tpa")
 	public void tpCancel(Player player) {
 		Player target = TPAQueue.QUEUE.getRequester(player);
 		if (target == null) {
