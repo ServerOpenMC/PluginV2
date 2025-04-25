@@ -66,4 +66,3 @@ jobs:
           server-id: ${{ secrets.SERVER_ID }}
           source: builds/OpenMC.jar
           target: "./plugins/OpenMC.jar"
-          restart: true
