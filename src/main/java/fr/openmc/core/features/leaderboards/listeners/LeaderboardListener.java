@@ -2,15 +2,15 @@ package fr.openmc.core.features.leaderboards.listeners;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
-import fr.openmc.core.features.leaderboards.Utils.PacketUtils;
+import fr.openmc.core.features.leaderboards.utils.PacketUtils;
 import lombok.Getter;
-import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,38 +20,47 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Collections;
 
-import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
-
 public class LeaderboardListener extends PacketAdapter implements Listener {
 
-    private final LeaderboardManager manager;
     @Getter
     public static LeaderboardListener instance;
-    private Chunk contributorsHologramChunk;
-    private Chunk moneyHologramChunk;
-    private Chunk villeMoneyHologramChunk;
-    private Chunk playTimeHologramChunk;
+    private final LeaderboardManager manager;
+    private LightChunk contributorsHologramChunk;
+    private LightChunk moneyHologramChunk;
+    private LightChunk villeMoneyHologramChunk;
+    private LightChunk playTimeHologramChunk;
+    private boolean enabled = false;
 
     public LeaderboardListener(LeaderboardManager manager) {
         super(OMCPlugin.getInstance(), PacketType.Play.Server.MAP_CHUNK);
         instance = this;
         this.manager = manager;
-        contributorsHologramChunk = manager.getContributorsHologramLocation().getChunk();
-        moneyHologramChunk = manager.getMoneyHologramLocation().getChunk();
-        villeMoneyHologramChunk = manager.getVilleMoneyHologramLocation().getChunk();
-        playTimeHologramChunk = manager.getPlayTimeHologramLocation().getChunk();
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        reload();
     }
 
     public void reload() {
-        contributorsHologramChunk = manager.getContributorsHologramLocation().getChunk();
-        moneyHologramChunk = manager.getMoneyHologramLocation().getChunk();
-        villeMoneyHologramChunk = manager.getVilleMoneyHologramLocation().getChunk();
-        playTimeHologramChunk = manager.getPlayTimeHologramLocation().getChunk();
+        contributorsHologramChunk = LightChunk.fromBukkitChunk(manager.getContributorsHologramLocation().getChunk());
+        moneyHologramChunk = LightChunk.fromBukkitChunk(manager.getMoneyHologramLocation().getChunk());
+        villeMoneyHologramChunk = LightChunk.fromBukkitChunk(manager.getVilleMoneyHologramLocation().getChunk());
+        playTimeHologramChunk = LightChunk.fromBukkitChunk(manager.getPlayTimeHologramLocation().getChunk());
     }
 
-    // Quand un joueur rejoint le serveur, on lui envoie le leaderboard seulement s'il est dans le monde du leaderboard.
+    public void enable() {
+        ProtocolLibrary.getProtocolManager().addPacketListener(this);
+        enabled = true;
+    }
+
+    public void disable() {
+        ProtocolLibrary.getProtocolManager().removePacketListener(this);
+        enabled = false;
+    }
+
+    /** Quand un joueur rejoint le serveur, on lui envoie le leaderboard seulement s'il est dans le monde du leaderboard.
+     */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if (!enabled) return;
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -60,10 +69,12 @@ public class LeaderboardListener extends PacketAdapter implements Listener {
         }.runTaskAsynchronously(OMCPlugin.getInstance());
     }
 
-    // Quand un joueur change de monde, on lui envoie le leaderboard seulement s'il est dans le monde du leaderboard.
-    // Important, car minecraft ne gère pas les différents mondes, si on lui envoie un packet d'entité, il l'affichera dans son monde actuel.
+    /** Quand un joueur change de monde, on lui envoie le leaderboard seulement s'il est dans le monde du leaderboard.
+    * Important, car minecraft ne gère pas les différents mondes, si on lui envoie un packet d'entité, il l'affichera dans son monde actuel.
+     */
     @EventHandler
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
+        if (!enabled) return;
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -73,53 +84,49 @@ public class LeaderboardListener extends PacketAdapter implements Listener {
     }
 
     public void sendLeaderboard(Player player) {
-        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        if (player.getWorld().equals(manager.getContributorsHologramLocation().getWorld())) { //Vérifie si le joueur est dans le monde du leaderboard
-            protocolManager.sendServerPacket(
-                    player,
-                    PacketUtils.getTextDisplaySpawnPacket(manager.getContributorsHologramLocation(), 100000)
-            );
+        if (player.getWorld().equals(contributorsHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(100000, manager.getContributorsHologramLocation()));
         }
-        if (player.getWorld().equals(manager.getMoneyHologramLocation().getWorld())) { //Vérifie si le joueur est dans le monde du leaderboard
-            protocolManager.sendServerPacket(
-                    player,
-                    PacketUtils.getTextDisplaySpawnPacket(manager.getMoneyHologramLocation(), 100001)
-            );
+        if (player.getWorld().equals(moneyHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(100001, manager.getMoneyHologramLocation()));
         }
-        if (player.getWorld().equals(manager.getVilleMoneyHologramLocation().getWorld())) { //Vérifie si le joueur est dans le monde du leaderboard
-            protocolManager.sendServerPacket(
-                    player,
-                    PacketUtils.getTextDisplaySpawnPacket(manager.getVilleMoneyHologramLocation(), 100002)
-            );
+        if (player.getWorld().equals(villeMoneyHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(100002, manager.getVilleMoneyHologramLocation()));
         }
-        if (player.getWorld().equals(manager.getPlayTimeHologramLocation().getWorld())) { //Vérifie si le joueur est dans le monde du leaderboard
-            protocolManager.sendServerPacket(
-                    player,
-                    PacketUtils.getTextDisplaySpawnPacket(manager.getPlayTimeHologramLocation(), 100003)
-            );
+        if (player.getWorld().equals(playTimeHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(100003, manager.getPlayTimeHologramLocation()));
         }
     }
 
     @Override
     public void onPacketSending(PacketEvent event) {
-        var player = event.getPlayer();
+        Player player = event.getPlayer();
         int x = event.getPacket().getIntegers().read(0);
         int z = event.getPacket().getIntegers().read(1);
-        if (player.getWorld() == manager.getContributorsHologramLocation().getChunk().getWorld() && x == contributorsHologramChunk.getX() && z == contributorsHologramChunk.getZ()) {
-            String text = JSONComponentSerializer.json().serialize(createContributorsTextLeaderboard());
-            manager.updateHologram(Collections.singleton(player), text, 100000);
+        if (player.getWorld() == contributorsHologramChunk.world && x == contributorsHologramChunk.x && z == contributorsHologramChunk.z) {
+            manager.updateHologram(Collections.singleton(player), manager.getContributorsHologramMetadataPacket());
         }
-        if (player.getWorld() == manager.getMoneyHologramLocation().getChunk().getWorld() && x == moneyHologramChunk.getX() && z == moneyHologramChunk.getZ()) {
-            String text = JSONComponentSerializer.json().serialize(createMoneyTextLeaderboard());
-            manager.updateHologram(Collections.singleton(player), text, 100001);
+        if (player.getWorld() == moneyHologramChunk.world && x == moneyHologramChunk.x && z == moneyHologramChunk.z) {
+            manager.updateHologram(Collections.singleton(player), manager.getMoneyHologramMetadataPacket());
         }
-        if (player.getWorld() == manager.getVilleMoneyHologramLocation().getChunk().getWorld() && x == villeMoneyHologramChunk.getX() && z == villeMoneyHologramChunk.getZ()) {
-            String text = JSONComponentSerializer.json().serialize(createCityMoneyTextLeaderboard());
-            manager.updateHologram(Collections.singleton(player), text, 100002);
+        if (player.getWorld() == villeMoneyHologramChunk.world && x == villeMoneyHologramChunk.x && z == villeMoneyHologramChunk.z) {
+            manager.updateHologram(Collections.singleton(player), manager.getVilleMoneyHologramMetadataPacket());
         }
-        if (player.getWorld() == manager.getPlayTimeHologramLocation().getChunk().getWorld() && x == playTimeHologramChunk.getX() && z == playTimeHologramChunk.getZ()) {
-            String text = JSONComponentSerializer.json().serialize(createPlayTimeTextLeaderboard());
-            manager.updateHologram(Collections.singleton(player), text, 100003);
+        if (player.getWorld() == playTimeHologramChunk.world && x == playTimeHologramChunk.x && z == playTimeHologramChunk.z) {
+            manager.updateHologram(Collections.singleton(player), manager.getPlaytimeHologramMetadataPacket());
+        }
+    }
+
+    public record LightChunk(World world, int x, int z) {
+
+        /**
+         * Creates a new LightChunk instance from a Bukkit Chunk.
+         *
+         * @param chunk The Bukkit Chunk to convert.
+         * @return A new LightChunk instance containing the world, X, and Z coordinates of the given chunk.
+         */
+        public static LightChunk fromBukkitChunk(Chunk chunk) {
+            return new LightChunk(chunk.getWorld(), chunk.getX(), chunk.getZ());
         }
     }
 }
