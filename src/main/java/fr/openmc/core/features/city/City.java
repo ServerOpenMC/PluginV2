@@ -54,9 +54,27 @@ public class City {
                     UUID player = UUID.fromString(rs.getString("player"));
                     CPermission permission = CPermission.valueOf(rs.getString("permission"));
 
+                    balance = rs.getDouble("balance");
+
                     Set<CPermission> playerPerms = permsCache.getOrDefault(player, new HashSet<>());
                     playerPerms.add(permission);
                     permsCache.put(player, playerPerms);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid permission: " + rs.getString("permission"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT balance FROM city WHERE uuid = ?");
+            statement.setString(1, cityUUID);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                try {
+                    balance = rs.getDouble("balance");
                 } catch (IllegalArgumentException e) {
                     System.out.println("Invalid permission: " + rs.getString("permission"));
                 }
