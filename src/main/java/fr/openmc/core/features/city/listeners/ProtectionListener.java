@@ -22,6 +22,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -307,6 +308,34 @@ public class ProtectionListener implements Listener {
             if (MascotUtils.isMascot(event.getEntity())) return;
             verify(damager, event, event.getEntity().getLocation());
             return;
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPotionSplash(PotionSplashEvent event) {
+        ThrownPotion potion = event.getPotion();
+        ProjectileSource shooter = potion.getShooter();
+
+        if (!(shooter instanceof Witch witch))
+            return;
+
+        Location witchLocation = witch.getLocation();
+        City city = getCityByChunk(witchLocation.getChunk());
+        if (city == null)
+            return;
+
+        String cityType = CityManager.getCityType(city.getUUID());
+        boolean isCityInWar = "war".equals(cityType);
+
+        for (LivingEntity affectedEntity : event.getAffectedEntities()) {
+            if (!(affectedEntity instanceof Player player))
+                continue;
+
+            boolean isNotMember = !isMemberOf(city, player);
+            if (!isNotMember || isCityInWar)
+                continue;
+
+            event.setCancelled(true);
         }
     }
 }
