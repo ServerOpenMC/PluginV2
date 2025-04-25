@@ -1,96 +1,67 @@
-package fr.openmc.core.features.leaderboards.Utils;
+package fr.openmc.core.features.leaderboards.utils;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.comphenix.protocol.wrappers.WrappedDataValue;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.mojang.math.Transformation;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Brightness;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Location;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.EntityType;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class PacketUtils {
 
-    public static PacketContainer getTextDisplaySpawnPacket(Location location, int entityId) {
-
-        // Spawn packet
-
-        // voir https://minecraft.wiki/w/Java_Edition_protocol#Spawn_Entity
-
-        PacketContainer spawn = new PacketContainer(PacketType.Play.Server.SPAWN_ENTITY);
-        spawn.getIntegers().write(0, entityId); // Entity ID
-        spawn.getUUIDs().write(0, UUID.randomUUID()); // Entity UUID
-        spawn.getEntityTypeModifier().write(0, EntityType.TEXT_DISPLAY); // Entity type
-        spawn.getDoubles().write(0, location.getX()); // X
-        spawn.getDoubles().write(1, location.getY()); // Y
-        spawn.getDoubles().write(2, location.getZ()); // Z
-        spawn.getIntegers().write(1, 0); // Pitch (0)
-        spawn.getIntegers().write(2, 0); // Yaw (0)
-
-        return spawn;
+    public static ClientboundAddEntityPacket getAddEntityPacket(int entityId, Location location) {
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+        return new ClientboundAddEntityPacket(entityId, UUID.randomUUID(), x, y, z, 0, 0, net.minecraft.world.entity.EntityType.TEXT_DISPLAY, 0, Vec3.ZERO, 0);
     }
 
-    public static PacketContainer getTextDisplayMetadataPacket(
-            int entityId,
-            String text,
-            int lineWidth,
-            int backgroundColor,
-            int InterpolationDuration,
-            byte billboardConstraints,
-            Display.Brightness brightness,
-            float viewRange,
-            int alignment,
-            boolean isSeeThrough) {
-
-        // Le packet: https://minecraft.wiki/w/Java_Edition_protocol#Set_Entity_Metadata
-        // Les index: https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Entity_metadata#Text_Display
-        PacketContainer metadata = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
-        metadata.getIntegers().write(0, entityId);
-
-        List<WrappedDataValue> metadataList = new ArrayList<>();
-
-        // Index 9: Interpolation duration
-        metadataList.add(new WrappedDataValue(9, WrappedDataWatcher.Registry.get((Type) Integer.class), InterpolationDuration));
-
-        // Index 15: Billboard constraints
-        metadataList.add(new WrappedDataValue(15, WrappedDataWatcher.Registry.get((Type) Byte.class), billboardConstraints)); // 0 = FIXED, 1 = VERTICAL, 2 = HORIZONTAL, 3 = CENTER
-
-        // Index 16: Brightness override
-        int brightnessValue = (brightness.getBlockLight() << 4) | (brightness.getSkyLight() << 20);
-        metadataList.add(new WrappedDataValue(16, WrappedDataWatcher.Registry.get((Type) Integer.class), brightnessValue));
-
-        // Index 17: View range
-        metadataList.add(new WrappedDataValue(17, WrappedDataWatcher.Registry.get((Type) Float.class), viewRange)); // 1.0f par défaut
-
-        // Index 23: Text
-        metadataList.add(new WrappedDataValue(23, WrappedDataWatcher.Registry.getChatComponentSerializer(false), WrappedChatComponent.fromJson(text).getHandle()));
-
-        // Index 24: Line width
-        metadataList.add(new WrappedDataValue(24, WrappedDataWatcher.Registry.get((Type) Integer.class), lineWidth));
-
-        // Index 25: Background color
-        metadataList.add(new WrappedDataValue(25, WrappedDataWatcher.Registry.get((Type) Integer.class), backgroundColor)); // 0x40000000 par défaut
-
-        // Index 27: Bitmask
+    public static ClientboundSetEntityDataPacket getSetEntityDataPacket(int entityId,
+                                                                        String text,
+                                                                        ServerLevel level,
+                                                                        Vector3f scale,
+                                                                        net.minecraft.world.entity.Display.BillboardConstraints billboardConstraints,
+                                                                        int alignment,
+                                                                        boolean isSeeThrough,
+                                                                        boolean UseDefaultBackgroundColor,
+                                                                        float viewRange) {
+        net.minecraft.world.entity.Display.TextDisplay td = new net.minecraft.world.entity.Display.TextDisplay(net.minecraft.world.entity.EntityType.TEXT_DISPLAY, level);
+        td.setId(entityId);
+        HolderLookup.Provider provider = HolderLookup.Provider.create(Stream.empty());
+        td.setText(Component.Serializer.fromJson(text, provider));
+        td.setBrightnessOverride(Brightness.FULL_BRIGHT);
+        td.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), scale, new Quaternionf()));
+        td.setBillboardConstraints(billboardConstraints);
         byte bitmask = 0;
         if (isSeeThrough) {
             bitmask |= 0x02;
+        }
+        if (UseDefaultBackgroundColor) {
+            bitmask |= 0x04;
         }
         if (alignment == 1 || alignment == 3) {
             bitmask |= 0x08;  // Aligné à gauche
         } else if (alignment == 2) {
             bitmask |= 0x10;  // Aligné à droite
         } // Sinon c'est le milieu et il n'y a rien à faire de plus
-        metadataList.add(new WrappedDataValue(27, WrappedDataWatcher.Registry.get((Type) Byte.class), bitmask));
+        td.setFlags(bitmask);
+        td.setViewRange(viewRange);
+        td.getEntityData().set(new EntityDataAccessor<>(24, EntityDataSerializers.INT),Integer.MAX_VALUE);
 
-        metadata.getDataValueCollectionModifier().write(0, metadataList);
-
-        return metadata;
+        return new ClientboundSetEntityDataPacket(
+                td.getId(), td.getEntityData().packAll()
+        );
     }
+
 
 }

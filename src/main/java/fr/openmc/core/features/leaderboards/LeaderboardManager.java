@@ -1,31 +1,35 @@
 package fr.openmc.core.features.leaderboards;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketContainer;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.leaderboards.Utils.PacketUtils;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.features.leaderboards.listeners.LeaderboardListener;
+import fr.openmc.core.features.leaderboards.utils.PacketUtils;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
+import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Display;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+import org.joml.Vector3f;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -53,6 +57,14 @@ public class LeaderboardManager {
     private final String repoName = "PluginV2";
     private final File leaderBoardFile;
     @Getter
+    ClientboundSetEntityDataPacket contributorsHologramMetadataPacket;
+    @Getter
+    ClientboundSetEntityDataPacket moneyHologramMetadataPacket;
+    @Getter
+    ClientboundSetEntityDataPacket villeMoneyHologramMetadataPacket;
+    @Getter
+    ClientboundSetEntityDataPacket playtimeHologramMetadataPacket;
+    @Getter
     private Location contributorsHologramLocation;
     @Getter
     private Location moneyHologramLocation;
@@ -60,6 +72,8 @@ public class LeaderboardManager {
     private Location villeMoneyHologramLocation;
     @Getter
     private Location playTimeHologramLocation;
+    private BukkitTask taskTimer;
+    private float scale;
 
 
     public LeaderboardManager(OMCPlugin plugin) {
@@ -68,22 +82,8 @@ public class LeaderboardManager {
         this.leaderBoardFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "leaderboards.yml");
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());
-        ProtocolLibrary.getProtocolManager().addPacketListener(new LeaderboardListener(this));
-        plugin.getServer().getPluginManager().registerEvents(new LeaderboardListener(this), plugin);
-        new BukkitRunnable() {
-            private int i = 0;
-
-            @Override
-            public void run() {
-                if (i % 120 == 0)
-                    updateGithubContributorsMap(0); // toutes les 30 minutes pour ne pas être rate limitée par github
-                updatePlayerMoneyMap();
-                updateCityMoneyMap();
-                updatePlayTimeMap();
-                updateHolograms();
-                i++;
-            }
-        }.runTaskTimerAsynchronously(plugin, 0, 300); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
+        new LeaderboardListener(this);
+        enable();
     }
 
     /**
@@ -138,7 +138,6 @@ public class LeaderboardManager {
                 .decorate(TextDecoration.BOLD));
         return text;
     }
-
 
     /**
      * Creates the leaderboard text for player money to be sent in chat or displayed as a hologram.
@@ -248,6 +247,29 @@ public class LeaderboardManager {
         };
     }
 
+    public void enable() {
+        taskTimer = new BukkitRunnable() {
+            private int i = 0;
+
+            @Override
+            public void run() {
+                if (i % 120 == 0)
+                    updateGithubContributorsMap(0); // toutes les 30 minutes pour ne pas être rate limitée par github
+                updatePlayerMoneyMap();
+                updateCityMoneyMap();
+                updatePlayTimeMap();
+                updateHolograms();
+                i++;
+            }
+        }.runTaskTimerAsynchronously(plugin, 0, 300); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
+        LeaderboardListener.getInstance().enable();
+    }
+
+    public void disable() {
+        taskTimer.cancel();
+        LeaderboardListener.getInstance().disable();
+    }
+
     /**
      * Sets the location of a hologram in the leaderboard configuration.
      *
@@ -258,6 +280,20 @@ public class LeaderboardManager {
     public void setHologramLocation(String name, Location location) throws IOException {
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         leaderBoardConfig.set(name + "-location", location);
+        leaderBoardConfig.save(leaderBoardFile);
+        loadLeaderBoardConfig();
+        LeaderboardListener.getInstance().reload();
+    }
+
+    /**
+     * Sets the scale of the holograms in the leaderboard configuration.
+     *
+     * @param scale The new scale of the holograms.
+     * @throws IOException If an error occurs while saving the configuration.
+     */
+    public void setScale(float scale) throws IOException {
+        FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
+        leaderBoardConfig.set("scale", scale);
         leaderBoardConfig.save(leaderBoardFile);
         loadLeaderBoardConfig();
         LeaderboardListener.getInstance().reload();
@@ -276,6 +312,7 @@ public class LeaderboardManager {
         moneyHologramLocation = leaderBoardConfig.getLocation("money-location");
         villeMoneyHologramLocation = leaderBoardConfig.getLocation("ville-money-location");
         playTimeHologramLocation = leaderBoardConfig.getLocation("playtime-location");
+        scale = (float) leaderBoardConfig.getDouble("scale");
     }
 
     /**
@@ -297,8 +334,7 @@ public class LeaderboardManager {
                     plugin.getLogger().warning("Impossible de récupérer les statistiques Github."); // Ce message n'est jamais censé s'afficher, mais on sait jamais
                 }
                 return;
-            }
-            else if (con.getResponseCode() != 200) {
+            } else if (con.getResponseCode() != 200) {
                 plugin.getLogger().warning("Erreur lors de la récupération des contributeurs GitHub: " + con.getResponseCode());
                 return;
             }
@@ -318,7 +354,7 @@ public class LeaderboardManager {
                 int totalNetLines = 0;
                 for (Object wObj : weeks) {
                     JSONObject week = (JSONObject) wObj;
-                    int added   = ((Long) week.get("a")).intValue();
+                    int added = ((Long) week.get("a")).intValue();
                     int deleted = ((Long) week.get("d")).intValue();
                     totalNetLines += added - deleted;
                 }
@@ -343,7 +379,12 @@ public class LeaderboardManager {
     private void updatePlayerMoneyMap() {
         playerMoneyMap.clear();
         int rank = 1;
-        for (var entry : EconomyManager.getBalances().entrySet().stream()
+        Map<UUID, Double> combinedBalances = new HashMap<>(EconomyManager.getBalances());
+
+        BankManager.getBanks().forEach((uuid, money) -> {
+            combinedBalances.merge(uuid, money, Double::sum);
+        });
+        for (var entry : combinedBalances.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
                 .limit(10)
                 .toList()) {
@@ -393,48 +434,58 @@ public class LeaderboardManager {
     public void updateHolograms() {
         if (contributorsHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createContributorsTextLeaderboard());
-            updateHologram(contributorsHologramLocation.getWorld().getPlayersSeeingChunk(contributorsHologramLocation.getChunk()), text, 100000); // On met 100000 à l'id de l'entité pour pouvoir la modifier facilement
+            contributorsHologramMetadataPacket = createMetadataPacket(text, 100000);
+            updateHologram(contributorsHologramLocation.getWorld().getPlayersSeeingChunk(contributorsHologramLocation.getChunk()), contributorsHologramMetadataPacket); // On met 100000 à l'id de l'entité pour pouvoir la modifier facilement
         }
         if (moneyHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createMoneyTextLeaderboard());
-            updateHologram(moneyHologramLocation.getWorld().getPlayersSeeingChunk(moneyHologramLocation.getChunk()), text, 100001);
+            moneyHologramMetadataPacket = createMetadataPacket(text, 100001);
+            updateHologram(moneyHologramLocation.getWorld().getPlayersSeeingChunk(moneyHologramLocation.getChunk()), moneyHologramMetadataPacket);
         }
         if (villeMoneyHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createCityMoneyTextLeaderboard());
-            updateHologram(villeMoneyHologramLocation.getWorld().getPlayersSeeingChunk(villeMoneyHologramLocation.getChunk()), text, 100002);
+            villeMoneyHologramMetadataPacket = createMetadataPacket(text, 100002);
+            updateHologram(villeMoneyHologramLocation.getWorld().getPlayersSeeingChunk(villeMoneyHologramLocation.getChunk()), villeMoneyHologramMetadataPacket);
         }
         if (playTimeHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createPlayTimeTextLeaderboard());
-            updateHologram(playTimeHologramLocation.getWorld().getPlayersSeeingChunk(playTimeHologramLocation.getChunk()), text, 100003);
+            playtimeHologramMetadataPacket = createMetadataPacket(text, 100003);
+            updateHologram(playTimeHologramLocation.getWorld().getPlayersSeeingChunk(playTimeHologramLocation.getChunk()), playtimeHologramMetadataPacket);
         }
+    }
+
+    /**
+     * Creates a metadata packet for a text display hologram.
+     *
+     * @param text The text to display on the hologram.
+     * @param id   The entity ID of the hologram.
+     * @return A PacketContainer containing the metadata for the hologram.
+     */
+    private ClientboundSetEntityDataPacket createMetadataPacket(String text, int id) {
+        return PacketUtils.getSetEntityDataPacket(
+                id,
+                text,
+                MinecraftServer.getServer().overworld(),
+                new Vector3f(scale),
+                net.minecraft.world.entity.Display.BillboardConstraints.VERTICAL,
+                1,
+                false,
+                true,
+                0.5f
+        );
     }
 
     /**
      * Sends an ENTITY_METADATA packet to update the text of a hologram for a specific set of players.
      *
      * @param players The players who will receive the packet.
-     * @param text    The text to display on the hologram.
-     * @param id      The entity ID of the hologram.
      */
-    public void updateHologram(Collection<Player> players, String text, int id) {
+    public void updateHologram(Collection<Player> players, ClientboundSetEntityDataPacket metadataPacket) {
         if (players.isEmpty()) return;
-        ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-        PacketContainer metadataPacket = PacketUtils.getTextDisplayMetadataPacket(
-                id,
-                text,
-                Integer.MAX_VALUE, // Taille maximale du texte avant le retour à la ligne
-                0x40000000, // Arrière-plan (valeur par défaut)
-                10, // Durée d'interpolation (10 ticks)
-                (byte) 1, // L'orientation 0 = FIXED, 1 = VERTICAL, 2 = HORIZONTAL, 3 = CENTER
-                new Display.Brightness(15, 15),
-                0.5f, // Entre 16 et 160 blocs de distance max (ça dépend des paramètres du client). 32 blocs par défaut
-                1, // L'alignement 0 = CENTER, 1 = LEFT, 2 = RIGHT
-                false // Si le texte est visible à travers les blocs
-        );
-        manager.broadcastServerPacket(
-                metadataPacket,
-                players
-        );
+        players.forEach(player -> {
+            ServerPlayer serverPlayer = ((CraftPlayer) player).getHandle();
+            serverPlayer.connection.send(metadataPacket);
+        });
     }
 
 }
