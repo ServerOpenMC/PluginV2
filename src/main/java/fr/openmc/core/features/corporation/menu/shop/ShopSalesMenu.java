@@ -3,11 +3,8 @@ package fr.openmc.core.features.corporation.menu.shop;
 import dev.xernas.menulib.PaginatedMenu;
 import dev.xernas.menulib.utils.ItemBuilder;
 import dev.xernas.menulib.utils.StaticSlots;
-import fr.openmc.core.features.corporation.CompanyManager;
-import fr.openmc.core.features.corporation.PlayerShopManager;
 import fr.openmc.core.features.corporation.Shop;
 import fr.openmc.core.features.corporation.ShopItem;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,8 +18,6 @@ import java.util.Map;
 
     public class ShopSalesMenu extends PaginatedMenu {
 
-        private final CompanyManager companyManager = CompanyManager.getInstance();
-        private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
         private final Shop shop;
         private final int itemIndex;
 

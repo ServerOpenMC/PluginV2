@@ -1,15 +1,12 @@
 package fr.openmc.core.features.corporation.menu.company;
 
-
 import dev.xernas.menulib.PaginatedMenu;
 import dev.xernas.menulib.utils.ItemBuilder;
 import dev.xernas.menulib.utils.ItemUtils;
 import dev.xernas.menulib.utils.StaticSlots;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;

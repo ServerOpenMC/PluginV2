@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.corporation.Company;
 import fr.openmc.core.features.corporation.CompanyManager;
 import fr.openmc.core.features.corporation.data.MerchantData;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,18 +48,18 @@ public class CompanyBaltopMenu extends Menu {
         Map<Integer, ItemStack> content = fill(Material.GRAY_STAINED_GLASS_PANE);
         content.put(46, new ItemBuilder(this, Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§6§l" + "Baltop des entreprises");
-            itemMeta.setLore(List.of(
-                    "§7■ Voici les 3 entreprises les plus riches du serveur",
-                    "§7■ Les entreprises sont classées en fonction de leur chiffre d'affaires"
+            itemMeta.lore(List.of(
+                    Component.text("§7■ Voici les 3 entreprises les plus riches du serveur"),
+                    Component.text("§7■ Les entreprises sont classées en fonction de leur chiffre d'affaires")
             ));
         }));
         content.put(50, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§cFermer")).setCloseButton());
         if (companies.isEmpty()) return content;
         content.put(10, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§61. §e" + companies.getFirst().getName());
-            itemMeta.setLore(List.of(
-                    "§7■ Chiffre d'affaires : §a" + companies.getFirst().getTurnover() + "€",
-                    "§7■ Marchants : §a" + companies.getFirst().getMerchants().size()
+            itemMeta.lore(List.of(
+                    Component.text("§7■ Chiffre d'affaires : §a" + companies.getFirst().getTurnover() + "€"),
+                            Component.text("§7■ Marchants : §a" + companies.getFirst().getMerchants().size())
             ));
         }));
         UUID ownerUUIDFirst;
@@ -66,8 +67,8 @@ public class CompanyBaltopMenu extends Menu {
         else ownerUUIDFirst = companies.getFirst().getOwner().getPlayer();
         content.put(12, new ItemBuilder(this, companies.getFirst().getHead(), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.getFirst().getOwner().isCity() ? companies.getFirst().getOwner().getCity().getName() : Bukkit.getOfflinePlayer(ownerUUIDFirst).getName()));
-            itemMeta.setLore(List.of(
-                    "§4■ Propriétaire"
+            itemMeta.lore(List.of(
+                    Component.text("§4■ Propriétaire")
             ));
         }));
         for (int i = 13; i <= 16; i++) {
@@ -85,18 +86,18 @@ public class CompanyBaltopMenu extends Menu {
                 if (merchantUUID == null) return;
                 itemMeta.setDisplayName("§8" + Bukkit.getOfflinePlayer(merchantUUID).getName());
                 MerchantData merchantData = companies.getFirst().getMerchants().get(merchantUUID);
-                itemMeta.setLore(List.of(
-                        "§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items",
-                        "§7■ A gagné §a" + merchantData.getMoneyWon() + "€"
+                itemMeta.lore(List.of(
+                        Component.text("§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items"),
+                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + "€")
                 ));
             }));
         }
         if (companies.size() == 1) return content;
         content.put(19, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§62. §e" + companies.get(1).getName());
-            itemMeta.setLore(List.of(
-                    "§7■ Chiffre d'affaires : §a" + companies.get(1).getTurnover() + "€",
-                    "§7■ Marchants : §a" + companies.get(1).getMerchants().size()
+            itemMeta.lore(List.of(
+                    Component.text("§7■ Chiffre d'affaires : §a" + companies.get(1).getTurnover() + "€"),
+                    Component.text("§7■ Marchants : §a" + companies.get(1).getMerchants().size())
             ));
         }));
         UUID ownerUUIDSecond;
@@ -104,8 +105,8 @@ public class CompanyBaltopMenu extends Menu {
         else ownerUUIDSecond = companies.get(1).getOwner().getPlayer();
         content.put(21, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDSecond), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(1).getOwner().isCity() ? companies.get(1).getName() : Bukkit.getOfflinePlayer(ownerUUIDSecond).getName()));
-            itemMeta.setLore(List.of(
-                    "§4■ Propriétaire"
+            itemMeta.lore(List.of(
+                    Component.text("§4■ Propriétaire")
             ));
         }));
         for (int i = 22; i <= 25; i++) {
@@ -124,18 +125,18 @@ public class CompanyBaltopMenu extends Menu {
                 if (merchantUUID == null) return;
                 itemMeta.setDisplayName("§8" + Bukkit.getOfflinePlayer(merchantUUID).getName());
                 MerchantData merchantData = companies.get(1).getMerchants().get(merchantUUID);
-                itemMeta.setLore(List.of(
-                        "§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items",
-                        "§7■ A gagné §a" + merchantData.getMoneyWon() + "€"
+                itemMeta.lore(List.of(
+                        Component.text("§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items"),
+                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + "€")
                 ));
             }));
         }
         if (companies.size() == 2) return content;
         content.put(28, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§63. §e"+ companies.get(2).getName());
-            itemMeta.setLore(List.of(
-                    "§7■ Chiffre d'affaires : §a" + companies.get(2).getTurnover() + "€",
-                    "§7■ Marchants : §a" + companies.get(2).getMerchants().size()
+            itemMeta.lore(List.of(
+                    Component.text("§7■ Chiffre d'affaires : §a" + companies.get(2).getTurnover() + "€"),
+                    Component.text("§7■ Marchants : §a" + companies.get(2).getMerchants().size())
             ));
         }));
         UUID ownerUUIDThird;
@@ -143,8 +144,8 @@ public class CompanyBaltopMenu extends Menu {
         else ownerUUIDThird = companies.get(2).getOwner().getPlayer();
         content.put(30, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDThird), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(2).getOwner().isCity() ? companies.get(2).getName() : Bukkit.getOfflinePlayer(ownerUUIDThird).getName()));
-            itemMeta.setLore(List.of(
-                    "§4■ Propriétaire"
+            itemMeta.lore(List.of(
+                    Component.text("§4■ Propriétaire")
             ));
         }));
         for (int i = 31; i <= 34; i++) {
@@ -163,9 +164,9 @@ public class CompanyBaltopMenu extends Menu {
                 if (merchantUUID == null) return;
                 itemMeta.setDisplayName("§8" + Bukkit.getOfflinePlayer(merchantUUID).getName());
                 MerchantData merchantData = companies.get(2).getMerchants().get(merchantUUID);
-                itemMeta.setLore(List.of(
-                        "§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items",
-                        "§7■ A gagné §a" + merchantData.getMoneyWon() + "€"
+                itemMeta.lore(List.of(
+                        Component.text("§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items"),
+                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + "€")
                 ));
             }));
         }

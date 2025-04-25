@@ -10,8 +10,12 @@ import fr.openmc.core.features.corporation.data.TransactionData;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -285,7 +289,7 @@ public class Company {
         removeMerchant(uuid);
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) {
-            player.sendMessage("§cVous avez été renvoyé de l'entreprise' " + name);
+            MessagesManager.sendMessage(player, Component.text("§cVous avez été renvoyé de l'entreprise' " + name), Prefix.ENTREPRISE, MessageType.INFO, false);
         }
     }
 

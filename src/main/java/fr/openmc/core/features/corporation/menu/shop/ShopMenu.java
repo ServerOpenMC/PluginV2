@@ -8,6 +8,9 @@ import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -299,31 +302,31 @@ public class ShopMenu extends Menu {
     private void buyAccept() {
         MethodState buyState = shop.buy(getCurrentItem(), amountToBuy, getOwner());
         if (buyState == MethodState.ERROR) {
-            getOwner().sendMessage("§cVous n'avez pas assez d'argent pour acheter cet item");
+            MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez d'argent pour acheter cet item"), Prefix.SHOP, MessageType.INFO, false);
             getOwner().closeInventory();
             return;
         }
         if (buyState == MethodState.FAILURE) {
-            getOwner().sendMessage("§cVous ne pouvez pas acheter vos propres items");
+            MessagesManager.sendMessage(getOwner(), Component.text("§cVous ne pouvez pas acheter vos propres items"), Prefix.SHOP, MessageType.INFO, false);
             getOwner().closeInventory();
             return;
         }
         if (buyState == MethodState.WARNING) {
-            getOwner().sendMessage("§cIl n'y a pas assez de stock pour acheter cet item");
+            MessagesManager.sendMessage(getOwner(), Component.text("§cIl n'y a pas assez de stock pour acheter cet item"), Prefix.SHOP, MessageType.INFO, false);
             getOwner().closeInventory();
             return;
         }
         if (buyState == MethodState.SPECIAL) {
-            getOwner().sendMessage("§cVous n'avez pas assez de place dans votre inventaire");
+            MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez de place dans votre inventaire"), Prefix.SHOP, MessageType.INFO, false);
             getOwner().closeInventory();
             return;
         }
         if (buyState == MethodState.ESCAPE) {
-            getOwner().sendMessage("§cErreur lors de l'achat");
+            MessagesManager.sendMessage(getOwner(), Component.text("§cErreur lors de l'achat"), Prefix.SHOP, MessageType.INFO, false);
             getOwner().closeInventory();
             return;
         }
-        getOwner().sendMessage("§aVous avez bien acheté " + amountToBuy + " " + ShopItem.getItemName(getCurrentItem().getItem()) + " pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + "€");
+        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez bien acheté " + amountToBuy + " " + ShopItem.getItemName(getCurrentItem().getItem()) + " pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + "€"), Prefix.SHOP, MessageType.INFO, false);
         getOwner().closeInventory();
     }
 
@@ -332,35 +335,35 @@ public class ShopMenu extends Menu {
         if (isInCompany) {
             MethodState deleteState = companyManager.getCompany(getOwner().getUniqueId()).deleteShop(getOwner(), shop.getUuid());
             if (deleteState == MethodState.ERROR) {
-                getOwner().sendMessage("§cCe shop n'existe pas dans votre entreprise");
+                MessagesManager.sendMessage(getOwner(), Component.text("§cCe shop n'existe pas dans votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
             if (deleteState == MethodState.WARNING) {
-                getOwner().sendMessage("§cCe shop n'est pas vide");
+                MessagesManager.sendMessage(getOwner(), Component.text("§cCe shop n'est pas vide"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
             if (deleteState == MethodState.SPECIAL) {
-                getOwner().sendMessage("§cIl vous faut au minimum le nombre d'argent remboursable pour supprimer un shop et obtenir un remboursement dans la banque de votre entreprise");
+                MessagesManager.sendMessage(getOwner(), Component.text("§cIl vous faut au minimum le nombre d'argent remboursable pour supprimer un shop et obtenir un remboursement dans la banque de votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
             if (deleteState == MethodState.ESCAPE) {
-                getOwner().sendMessage("§cCaisse introuvable (appelez un admin)");
+                MessagesManager.sendMessage(getOwner(), Component.text("§cCaisse introuvable (appelez un admin)"), Prefix.SHOP, MessageType.INFO, false);
             }
-            getOwner().sendMessage("§a" + shop.getName() + " a été supprimé !");
-            getOwner().sendMessage("§6[Shop]§a +75€ de remboursés sur la banque de l'entreprise");
+            MessagesManager.sendMessage(getOwner(), Component.text("§a" + shop.getName() + " a été supprimé !"), Prefix.SHOP, MessageType.INFO, false);
+            MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +75€ de remboursés sur la banque de l'entreprise"), Prefix.SHOP, MessageType.INFO, false);
         }
         else {
             MethodState methodState = playerShopManager.deleteShop(getOwner().getUniqueId());
             if (methodState == MethodState.WARNING) {
-                getOwner().sendMessage("§cVotre shop n'est pas vide");
+                MessagesManager.sendMessage(getOwner(), Component.text("§cVotre shop n'est pas vide"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
             if (methodState == MethodState.ESCAPE) {
-                getOwner().sendMessage("§cCaisse introuvable (appelez un admin)");
+                MessagesManager.sendMessage(getOwner(), Component.text("§cCaisse introuvable (appelez un admin)"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            getOwner().sendMessage("§aVotre shop a bien été supprimé !");
-            getOwner().sendMessage("§6[Shop]§a +400€ de remboursés sur votre compte personnel");
+            MessagesManager.sendMessage(getOwner(), Component.text("§aVotre shop a bien été supprimé !"), Prefix.SHOP, MessageType.INFO, false);
+            MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +400€ de remboursés sur votre compte personnel"), Prefix.SHOP, MessageType.INFO, false);
         }
         getOwner().closeInventory();
     }

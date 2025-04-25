@@ -52,7 +52,6 @@ public class ShopBlocksManager {
             return;
         }
         Block cashBlock = multiblock.getCashBlock().getBlock();
-        Block stockBlock = multiblock.getStockBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
         //TODO ItemsAdder cash register
         cashBlock.setType(Material.OAK_SIGN);

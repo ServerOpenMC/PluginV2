@@ -11,6 +11,7 @@ import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -39,7 +40,7 @@ public class CompanyCommand {
     @Subcommand("usage")
     @Description("Afficher l'utilisation des commandes d'une entreprise")
     public void usage(Player player) {
-        player.sendMessage("Usage : /company <help | baltop | balance | create | teamCreate | menu | search | apply | deny | accept | withdraw | deposit | setcut | leave | fire | owner | liquidate | perms>");
+        MessagesManager.sendMessage(player, Component.text("Usage : /company <help | baltop | balance | create | teamCreate | menu | search | apply | deny | accept | withdraw | deposit | setcut | leave | fire | owner | liquidate | perms>"), Prefix.ENTREPRISE, MessageType.INFO, false);
     }
 
     @Subcommand("help")
@@ -52,20 +53,20 @@ public class CompanyCommand {
     @Description("Postuler dans une entreprise")
     public void apply(Player player, @Named("name") String name) {
         if (!manager.companyExists(name)) {
-            player.sendMessage("§cL'entreprise n'existe pas !");
+            MessagesManager.sendMessage(player, Component.text("§cL'entreprise n'existe pas !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous êtes déjà dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous êtes déjà dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (playerShopManager.hasShop(player.getUniqueId())) {
-            player.sendMessage("§cVous ne pouvez pas postuler pour une entreprise si vous possédez un shop !");
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas postuler pour une entreprise si vous possédez un shop !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         Company company = manager.getCompany(name);
         manager.applyToCompany(player.getUniqueId(), company);
-        player.sendMessage("§aVous avez postulé pour l'entreprise " + name + " !");
+        MessagesManager.sendMessage(player, Component.text("§aVous avez postulé pour l'entreprise " + name + " !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
         company.broadCastOwner("§a" + player.getName() + " a postulé pour rejoindre l'entreprise !");
     }
 
@@ -73,42 +74,42 @@ public class CompanyCommand {
     @Description("Accepter une candidature")
     public void accept(Player player, @Named("target") Player target) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.HIRINGER)) {
-            player.sendMessage("§cVous n'avez pas la permission d'embaucher dans l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission d'embaucher dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.hasPendingApplicationFor(target.getUniqueId(), manager.getCompany(player.getUniqueId()))) {
-            player.sendMessage("§cLe joueur n'a pas postulé pour votre entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cLe joueur n'a pas postulé pour votre entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         Company company = manager.getCompany(player.getUniqueId());
         manager.acceptApplication(target.getUniqueId(), company);
-        player.sendMessage("§aVous avez accepté la candidature de " + target.getName() + " !");
-        target.sendMessage("§aVotre candidature pour l'entreprise <<" + company.getName() + ">> a été acceptée !");
+        MessagesManager.sendMessage(player, Component.text("§aVous avez accepté la candidature de " + target.getName() + " !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("§aVotre candidature pour l'entreprise <<" + company.getName() + ">> a été acceptée !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("deny")
     @Description("Refuser une candidature")
     public void deny(Player player, @Named("target") Player target) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.HIRINGER)) {
-            player.sendMessage("§cVous n'avez pas la permission d'embaucher dans l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission d'embaucher dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.hasPendingApplicationFor(target.getUniqueId(), manager.getCompany(player.getUniqueId()))) {
-            player.sendMessage("§cLe joueur n'a pas postulé pour votre entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cLe joueur n'a pas postulé pour votre entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         Company company = manager.getCompany(player.getUniqueId());
         manager.denyApplication(target.getUniqueId());
-        player.sendMessage("§aVous avez refusé la candidature de " + target.getName() + " !");
-        target.sendMessage("§cVotre candidature pour la entreprise <<" + company.getName() + ">> a été refusée !");
+        MessagesManager.sendMessage(player, Component.text("§aVous avez refusé la candidature de " + target.getName() + " !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("§cVotre candidature pour la entreprise <<" + company.getName() + ">> a été refusée !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("search")
@@ -122,61 +123,61 @@ public class CompanyCommand {
     @Description("Liquider une entreprise")
     public void liquidate(Player player) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes dans aucune entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes dans aucune entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         Company company = manager.getCompany(player.getUniqueId());
         if (!company.hasPermission(player.getUniqueId(), CorpPermission.LIQUIDATESHOP)) {
-            player.sendMessage("§cVous n'avez pas l'autorisation de liquider dans l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas l'autorisation de liquider dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.liquidateCompany(company)) {
-            player.sendMessage("§cL'entreprise ne peut pas être liquidée car elle possède encore de l'argent ou des shops (merci de withdraw ou de supprimer vos shops)!");
+            MessagesManager.sendMessage(player, Component.text("§cL'entreprise ne peut pas être liquidée car elle possède encore de l'argent ou des shops (merci de withdraw ou de supprimer vos shops)!"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        player.sendMessage("§aL'entreprise a été liquidée avec succès !");
+        MessagesManager.sendMessage(player, Component.text("§aL'entreprise a été liquidée avec succès !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("leave")
     @Description("Quitter une entreprise")
     public void leave(Player player) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         MethodState leaveResult = manager.leaveCompany(player.getUniqueId());
         if (leaveResult == MethodState.FAILURE) {
-            player.sendMessage("§cMerci de transférer l'ownership avant de quitter la team !");
+            MessagesManager.sendMessage(player, Component.text("§cMerci de transférer l'ownership avant de quitter la team !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (leaveResult == MethodState.WARNING) {
-            player.sendMessage("§cVous êtes le dernier a quitter et l'entreprise ne peut pas être liquidée car elle possède encore de l'argent ou des shops (merci de retirer l'argent ou de supprimer vos shops)!");
+            MessagesManager.sendMessage(player, Component.text("§cVous êtes le dernier a quitter et l'entreprise ne peut pas être liquidée car elle possède encore de l'argent ou des shops (merci de retirer l'argent ou de supprimer vos shops)!"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (leaveResult == MethodState.SPECIAL) {
-            player.sendMessage("§cLe propriétaire de la ville doit liquider ou quitter l'entreprise pour que vous puissiez ne plus en faire partie ! Ou vous pouvez quitter votre ville pour quitter l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cLe propriétaire de la ville doit liquider ou quitter l'entreprise pour que vous puissiez ne plus en faire partie ! Ou vous pouvez quitter votre ville pour quitter l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        player.sendMessage("§aVous avez quitté l'entreprise !");
+        MessagesManager.sendMessage(player, Component.text("§aVous avez quitté l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("fire")
     @Description("Renvoyer un membre de l'entreprise")
     public void fire(Player player, @Named("target") Player target) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.FIRE)) {
-            player.sendMessage("§cVous n'avez l'autorisation de virer dans l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez l'autorisation de virer dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.isMerchantOfCompany(target.getUniqueId(), manager.getCompany(player.getUniqueId()))) {
-            player.sendMessage("§cCe marchand n'est pas trouvable dans l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cCe marchand n'est pas trouvable dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         manager.getCompany(player.getUniqueId()).fireMerchant(target.getUniqueId());
-        player.sendMessage("§aVous avez renvoyé " + target.getName() + " de l'entreprise !");
+        MessagesManager.sendMessage(player, Component.text("§aVous avez renvoyé " + target.getName() + " de l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("baltop")
@@ -190,29 +191,29 @@ public class CompanyCommand {
     @Description("Afficher le solde de l'entreprise")
     public void balance(Player player) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        player.sendMessage("§aSolde de l'entreprise : " + manager.getCompany(player.getUniqueId()).getBalance() + "€");
+        MessagesManager.sendMessage(player, Component.text("§aSolde de l'entreprise : " + manager.getCompany(player.getUniqueId()).getBalance() + "€"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("setcut")
     @Description("Définir la part de l'entreprise lors d'une vente")
     public void setCut(Player player, @Named("cut") double cut) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SETCUT)) {
-            player.sendMessage("§cVous n'êtes pas le propriétaire haut-gradé de l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas le propriétaire haut-gradé de l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (cut < 0 || cut > 100) {
-            player.sendMessage("§cLa part doit être comprise entre 0 et 100 !");
+            MessagesManager.sendMessage(player, Component.text("§cLa part doit être comprise entre 0 et 100 !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         manager.getCompany(player.getUniqueId()).setCut(cut / 100);
-        player.sendMessage("§aVous avez défini la part de l'entreprise à " + cut + "% !");
+        MessagesManager.sendMessage(player, Component.text("§aVous avez défini la part de l'entreprise à " + cut + "% !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     // seul le joueur est propriétaire
@@ -221,7 +222,7 @@ public class CompanyCommand {
     public void createCompany(Player player, @Named("name") String name) {
         if (!check(player, name, false)) return;
         manager.createCompany(name, new CompanyOwner(player.getUniqueId()), false, null);
-        player.sendMessage("§aL'entreprise " + name + " a été créée avec succès !");
+        MessagesManager.sendMessage(player, Component.text("§aL'entreprise " + name + " a été créée avec succès !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     // les membres de la ville sont propriétaires
@@ -235,18 +236,18 @@ public class CompanyCommand {
             return;
         }
         if (player.getUniqueId() != city.getPlayerWith(CPermission.OWNER)) {
-            player.sendMessage("§cVous ne pouvez pas créer d'entreprise au nom de votre ville sans en être l'owner");
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise au nom de votre ville sans en être l'owner"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         manager.createCompany(name, new CompanyOwner(CityManager.getPlayerCity(player.getUniqueId())), true, null);
-        player.sendMessage("§aL'entreprise " + name + " a été créée avec succès !");
+        MessagesManager.sendMessage(player, Component.text("§aL'entreprise " + name + " a été créée avec succès !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("menu")
     @Description("Ouvrir le menu de l'entreprise")
     public void openMenu(Player player) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         CompanyMenu menu = new CompanyMenu(player, manager.getCompany(player.getUniqueId()), false);
@@ -257,56 +258,56 @@ public class CompanyCommand {
     @Description("Retirer de l'argent de l'entreprise")
     public void withdraw(Player player, @Named("amount") double amount) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.WITHDRAW)) {
-            player.sendMessage("§cVous n'avez pas la permission de retirer de l'argent dans l'entreprise");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission de retirer de l'argent dans l'entreprise"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.getCompany(player.getUniqueId()).withdraw(amount, player, "Retrait")) {
-            player.sendMessage("§cVous n'avez pas assez d'argent dans la banque d'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent dans la banque d'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        player.sendMessage("§aVous avez retiré " + amount + "€ de l'entreprise !");
+        MessagesManager.sendMessage(player, Component.text("§aVous avez retiré " + amount + "€ de l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("deposit")
     @Description("Déposer de l'argent dans l'entreprise")
     public void deposit(Player player, @Named("amount") double amount) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.DEPOSIT)){
-            player.sendMessage("§cVous n'avez pas la permission d'ajouter de l'argent dans l'entreprise");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission d'ajouter de l'argent dans l'entreprise"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
 
         if (!manager.getCompany(player.getUniqueId()).deposit(amount, player, "Dépôt")) {
-            player.sendMessage("§cVous n'avez pas assez d'argent sur vous !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent sur vous !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        player.sendMessage("§aVous avez déposé " + amount + "€ dans l'entreprise !");
+        MessagesManager.sendMessage(player, Component.text("§aVous avez déposé " + amount + "€ dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("owner")
     @Description("Transférer la propriété de l'entreprise")
     public void transferOwner(Player player, @Named("target") Player target) {
         if (!manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous n'êtes pas dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.getCompany(player.getUniqueId()).isUniqueOwner(player.getUniqueId())) {
-            player.sendMessage("§cVous n'etes pas le propriétaire haut gradé de l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous n'etes pas le propriétaire haut gradé de l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!manager.isMerchantOfCompany(target.getUniqueId(), manager.getCompany(player.getUniqueId()))) {
-            player.sendMessage("§cLe joueur ne fait pas partie de l'entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cLe joueur ne fait pas partie de l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         manager.getCompany(player.getUniqueId()).setOwner(target.getUniqueId());
-        player.sendMessage("§aVous avez transféré la propriété de l'entreprise à " + target.getName());
+        MessagesManager.sendMessage(player, Component.text("§aVous avez transféré la propriété de l'entreprise à " + target.getName()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     // add permissions
@@ -315,20 +316,20 @@ public class CompanyCommand {
     void giveSuperior(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.SUPERIOR)){
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.SUPERIOR);
-        sender.sendMessage("Permission " + CorpPermission.SUPERIOR.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.SUPERIOR.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.SUPERIOR.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.SUPERIOR.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission SETCUT give", "perms SETCUT give"})
@@ -336,20 +337,20 @@ public class CompanyCommand {
     void giveSetCut(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.SETCUT)){
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.SETCUT);
-        sender.sendMessage("Permission " + CorpPermission.SETCUT.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.SETCUT.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.SETCUT.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.SETCUT.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission INVITE give", "perms INVITE give"})
@@ -357,20 +358,20 @@ public class CompanyCommand {
     void giveInvite(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.INVITE)){
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.INVITE);
-        sender.sendMessage("Permission " + CorpPermission.INVITE.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.INVITE.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.INVITE.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.INVITE.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission FIRE give", "perms FIRE give"})
@@ -378,20 +379,20 @@ public class CompanyCommand {
     void giveFire(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.FIRE)){
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.FIRE);
-        sender.sendMessage("Permission " + CorpPermission.FIRE.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.FIRE.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.FIRE.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.FIRE.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission SUPPLY give", "perms SUPPLY give"})
@@ -399,20 +400,20 @@ public class CompanyCommand {
     void giveSupply(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.SUPPLY)){
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.SUPPLY);
-        sender.sendMessage("Permission " + CorpPermission.SUPPLY.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.SUPPLY.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.SUPPLY.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.SUPPLY.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission LIQUIDATESHOP give", "perms LIQUIDATESHOP give"})
@@ -420,20 +421,20 @@ public class CompanyCommand {
     void giveLiquidateShop(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.LIQUIDATESHOP)){
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.LIQUIDATESHOP);
-        sender.sendMessage("Permission " + CorpPermission.LIQUIDATESHOP.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.LIQUIDATESHOP.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.LIQUIDATESHOP.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.LIQUIDATESHOP.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission CREATESHOP give", "perms CREATESHOP give"})
@@ -441,20 +442,20 @@ public class CompanyCommand {
     void giveCreateShop(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.CREATESHOP)){
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.CREATESHOP);
-        sender.sendMessage("Permission " + CorpPermission.CREATESHOP.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.CREATESHOP.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.CREATESHOP.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.CREATESHOP.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission DELETESHOP give", "perms DELETESHOP give"})
@@ -462,20 +463,20 @@ public class CompanyCommand {
     void giveDeleteShop(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.DELETESHOP)){
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.DELETESHOP);
-        sender.sendMessage("Permission " + CorpPermission.DELETESHOP.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.DELETESHOP.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.DELETESHOP.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.DELETESHOP.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission HIRINGER give", "perms HIRINGER give"})
@@ -483,20 +484,20 @@ public class CompanyCommand {
     void giveHiringer(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.HIRINGER)) {
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.HIRINGER);
-        sender.sendMessage("Permission " + CorpPermission.HIRINGER.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.HIRINGER.name() + ".");
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.HIRINGER.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.HIRINGER.name() + "."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission DEPOSIT give", "perms DEPOSIT give"})
@@ -504,20 +505,20 @@ public class CompanyCommand {
     void giveDeposit(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.DEPOSIT)) {
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.DEPOSIT);
-        sender.sendMessage("Permission " + CorpPermission.DEPOSIT.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.DEPOSIT.name() + ".");
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.DEPOSIT.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.DEPOSIT.name() + "."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission WITHDRAW give", "perms WITHDRAW give"})
@@ -525,20 +526,20 @@ public class CompanyCommand {
     void giveWithdraw(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.WITHDRAW)) {
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.WITHDRAW);
-        sender.sendMessage("Permission " + CorpPermission.WITHDRAW.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.WITHDRAW.name() + ".");
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.WITHDRAW.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.WITHDRAW.name() + "."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission SELLER give", "perms SELLER give"})
@@ -546,20 +547,20 @@ public class CompanyCommand {
     void giveSeller(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission d'ajouter des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (company.hasPermission(target.getUniqueId(), CorpPermission.SELLER)) {
-            sender.sendMessage("Ce joueur a déjà cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur a déjà cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.SELLER);
-        sender.sendMessage("Permission " + CorpPermission.SELLER.name() + " ajoutée au joueur.");
-        target.sendMessage("Vous avez reçu la permission " + CorpPermission.SELLER.name() + ".");
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.SELLER.name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.SELLER.name() + "."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
 
@@ -570,20 +571,20 @@ public class CompanyCommand {
     void removeSuperior(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())){
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.OWNER)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.SUPERIOR)){
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.SUPERIOR);
-        sender.sendMessage("Permission " + CorpPermission.SUPERIOR.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.SUPERIOR.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.SUPERIOR.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.SUPERIOR.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission SETCUT remove", "perms SETCUT remove"})
@@ -591,20 +592,20 @@ public class CompanyCommand {
     void removeSetCut(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.SETCUT)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.SETCUT);
-        sender.sendMessage("Permission " + CorpPermission.SETCUT.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.SETCUT.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.SETCUT.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.SETCUT.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission INVITE remove", "perms INVITE remove"})
@@ -612,20 +613,20 @@ public class CompanyCommand {
     void removeInvite(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.INVITE)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.INVITE);
-        sender.sendMessage("Permission " + CorpPermission.INVITE.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.INVITE.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.INVITE.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.INVITE.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission FIRE remove", "perms FIRE remove"})
@@ -633,20 +634,20 @@ public class CompanyCommand {
     void removeFire(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.FIRE)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.FIRE);
-        sender.sendMessage("Permission " + CorpPermission.FIRE.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.FIRE.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.FIRE.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.FIRE.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission SUPPLY remove", "perms SUPPLY remove"})
@@ -654,20 +655,20 @@ public class CompanyCommand {
     void removeSupply(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.SUPPLY)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.SUPPLY);
-        sender.sendMessage("Permission " + CorpPermission.SUPPLY.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.SUPPLY.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.SUPPLY.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.SUPPLY.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission LIQUIDATESHOP remove", "perms LIQUIDATESHOP remove"})
@@ -675,20 +676,20 @@ public class CompanyCommand {
     void removeLiquidateShop(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.LIQUIDATESHOP)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.LIQUIDATESHOP);
-        sender.sendMessage("Permission " + CorpPermission.LIQUIDATESHOP.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.LIQUIDATESHOP.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.LIQUIDATESHOP.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.LIQUIDATESHOP.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission CREATESHOP remove", "perms CREATESHOP remove"})
@@ -696,20 +697,20 @@ public class CompanyCommand {
     void removeCreateShop(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.CREATESHOP)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.CREATESHOP);
-        sender.sendMessage("Permission " + CorpPermission.CREATESHOP.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.CREATESHOP.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.CREATESHOP.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.CREATESHOP.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission DELETESHOP remove", "perms DELETESHOP remove"})
@@ -717,20 +718,20 @@ public class CompanyCommand {
     void removeDeleteShop(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.DELETESHOP)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.DELETESHOP);
-        sender.sendMessage("Permission " + CorpPermission.DELETESHOP.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.DELETESHOP.name());
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.DELETESHOP.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.DELETESHOP.name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission HIRINGER remove", "perms HIRINGER remove"})
@@ -738,20 +739,20 @@ public class CompanyCommand {
     void removeHiringer(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.HIRINGER)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.HIRINGER);
-        sender.sendMessage("Permission " + CorpPermission.HIRINGER.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.HIRINGER.name() + ".");
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.HIRINGER.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.HIRINGER.name() + "."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission DEPOSIT remove", "perms DEPOSIT remove"})
@@ -759,20 +760,20 @@ public class CompanyCommand {
     void removeDeposit(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.DEPOSIT)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.DEPOSIT);
-        sender.sendMessage("Permission " + CorpPermission.DEPOSIT.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.DEPOSIT.name() + ".");
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.DEPOSIT.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.DEPOSIT.name() + "."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission WITHDRAW remove", "perms WITHDRAW remove"})
@@ -780,20 +781,20 @@ public class CompanyCommand {
     void removeWithdraw(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.WITHDRAW)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.WITHDRAW);
-        sender.sendMessage("Permission " + CorpPermission.WITHDRAW.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.WITHDRAW.name() + ".");
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.WITHDRAW.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.WITHDRAW.name() + "."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand({"permission SELLER remove", "perms SELLER remove"})
@@ -801,37 +802,37 @@ public class CompanyCommand {
     void removeSeller(@Named("target") Player target, Player sender) {
         Company company = manager.getCompany(target.getUniqueId());
         if (company != manager.getCompany(sender.getUniqueId())) {
-            sender.sendMessage("Ce joueur n'est pas dans votre entreprise.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(sender.getUniqueId(), CorpPermission.SUPERIOR)) {
-            sender.sendMessage("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !");
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas la permission de retirer des permissions dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         if (!company.hasPermission(target.getUniqueId(), CorpPermission.SELLER)) {
-            sender.sendMessage("Ce joueur n'a pas cette permission.");
+            MessagesManager.sendMessage(sender, Component.text("Ce joueur n'a pas cette permission."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
         company.removePermission(target.getUniqueId(), CorpPermission.SELLER);
-        sender.sendMessage("Permission " + CorpPermission.SELLER.name() + " retirée au joueur.");
-        target.sendMessage("Vous avez perdu la permission " + CorpPermission.SELLER.name() + ".");
+        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.SELLER.name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.SELLER.name() + "."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     private boolean check(Player player, String name, boolean teamCreate) {
         if (manager.isInCompany(player.getUniqueId())) {
-            player.sendMessage("§cVous êtes déjà dans une entreprise !");
+            MessagesManager.sendMessage(player, Component.text("§cVous êtes déjà dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return false;
         }
         if (name.length() < 3 || name.length() > 16){
-            player.sendMessage("§cLe nom de l'entreprise doit faire entre 3 et 16 caractères !");
+            MessagesManager.sendMessage(player, Component.text("§cLe nom de l'entreprise doit faire entre 3 et 16 caractères !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return false;
         }
         if (manager.companyExists(name)) {
-            player.sendMessage("§cUne entreprise avec ce nom existe déjà !");
+            MessagesManager.sendMessage(player, Component.text("§cUne entreprise avec ce nom existe déjà !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return false;
         }
         if (playerShopManager.hasShop(player.getUniqueId())) {
-            player.sendMessage("§cVous ne pouvez pas créer d'entreprise si vous possédez un shop !");
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise si vous possédez un shop !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return false;
         }
         if (teamCreate) {
@@ -839,20 +840,20 @@ public class CompanyCommand {
             if (city!=null) {
                 for (UUID cityMember : city.getMembers()) {
                     if (playerShopManager.hasShop(cityMember)) {
-                        player.sendMessage("§cVous ne pouvez pas créer d'entreprise si un membre de votre ville possède un shop !");
+                        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise si un membre de votre ville possède un shop !"), Prefix.ENTREPRISE, MessageType.INFO, false);
                         return false;
                     }
                     if (manager.isInCompany(cityMember)) {
                         if (Bukkit.getPlayer(cityMember)==null){
-                            player.sendMessage("§cUn membre de la ville est déjà dans une entreprise ! Ce membre est déconnecté");
+                            MessagesManager.sendMessage(player, Component.text("§cUn membre de la ville est déjà dans une entreprise ! Ce membre est déconnecté"), Prefix.ENTREPRISE, MessageType.INFO, false);
                         } else {
-                            player.sendMessage("§cUn membre de la ville est déjà dans une entreprise ! Ce membre est : " + Bukkit.getPlayer(cityMember).getName());
+                            MessagesManager.sendMessage(player, Component.text("§cUn membre de la ville est déjà dans une entreprise ! Ce membre est : " + Bukkit.getPlayer(cityMember).getName()), Prefix.ENTREPRISE, MessageType.INFO, false);
                         }
                         return false;
                     }
                 }
             } else {
-                player.sendMessage("§cVous ne pouvez pas créer d'entreprise car vous n'avez pas de ville !");
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise car vous n'avez pas de ville !"), Prefix.ENTREPRISE, MessageType.INFO, false);
                 return false;
             }
         }
