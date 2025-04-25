@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Verify Milestone Name
         run: |
-          if ![[ "${{ github.event.milestone.title }}" =~ ^\d+\.\d+\.\d+$ ]]; then
+          if [[ ! "${{ github.event.milestone.title }}" =~ ^\d+\.\d+\.\d+$ ]]; then
             echo "Name ${{ github.event.milestone.title }} is not valid"
             exit 1
           fi
