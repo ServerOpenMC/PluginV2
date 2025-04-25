@@ -69,6 +69,16 @@ public class ProtectionListener implements Listener {
         MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, 0.6F, true);
     }
 
+    private void verify(Entity entity, Cancellable event, Location loc) {
+        if (entity.getWorld() != Bukkit.getWorld("world")) return;
+
+        City city = getCityByChunk(loc.getChunk()); // on regarde le claim ou l'action a été fait
+        if (city == null || !"war".equals(CityManager.getCityType(city.getUUID())))
+            return;
+
+        event.setCancelled(true);
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onFoodConsume(PlayerItemConsumeEvent event) {
         // on laisse les gens manger
