@@ -1,6 +1,7 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "io.papermc.paperweight.userdev" version "2.0.0-beta.16"
 }
 
 def getLatestGitTag() {
@@ -27,9 +28,6 @@ group = 'fr.openmc'
 repositories {
     mavenCentral()
     maven {
-        url "https://repo.papermc.io/repository/maven-public/"
-    }
-    maven {
         url "https://oss.sonatype.org/content/groups/public/"
     }
     maven {
@@ -50,7 +48,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT'
+    paperweight.paperDevBundle '1.21.4-R0.1-SNAPSHOT'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'me.clip:placeholderapi:2.11.6'
