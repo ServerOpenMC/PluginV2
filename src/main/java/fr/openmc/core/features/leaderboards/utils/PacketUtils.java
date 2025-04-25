@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -38,7 +39,7 @@ public class PacketUtils {
         net.minecraft.world.entity.Display.TextDisplay td = new net.minecraft.world.entity.Display.TextDisplay(net.minecraft.world.entity.EntityType.TEXT_DISPLAY, level);
         td.setId(entityId);
         HolderLookup.Provider provider = HolderLookup.Provider.create(Stream.empty());
-        td.setText(Component.Serializer.fromJson(text, provider));
+        td.setText(Objects.requireNonNull(Component.Serializer.fromJson(text, provider)));
         td.setBrightnessOverride(Brightness.FULL_BRIGHT);
         td.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), scale, new Quaternionf()));
         td.setBillboardConstraints(billboardConstraints);
