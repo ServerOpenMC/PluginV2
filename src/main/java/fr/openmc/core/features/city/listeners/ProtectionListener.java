@@ -158,13 +158,6 @@ public class ProtectionListener implements Listener {
 
     @EventHandler
     void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        verify(event.getPlayer(), event, event.getRightClicked().getLocation());
-    }
-
-    @EventHandler
-    void onInteractEntity(PlayerInteractEntityEvent event) {
-        if (event instanceof PlayerInteractAtEntityEvent) return;
-
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         if (MascotUtils.isMascot(event.getRightClicked())) return;
