@@ -111,7 +111,7 @@ public class ItemInteraction implements Listener {
                     Consumer<Location> callback = playerCallbacksMap.remove(interactionId);
                     ChronometerInfo chronoInfo = playerChronometerMap.remove(interactionId).getChronometerInfo();
 
-                    if (callback != null) callback.accept(targetBlock.getLocation());
+                    if (callback != null) callback.accept(targetBlock.getLocation().add(0.5, 0, 0.5));
                     if (chronoInfo != null) Chronometer.stopChronometer(player, chronoInfo.getChronometerGroup(), null, "%null%");
 
                     player.getInventory().remove(item);
@@ -153,20 +153,20 @@ public class ItemInteraction implements Listener {
 
     @EventHandler
     public void onBundling(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();
+
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
 
         if (clickedItem != null && isBundle(clickedItem)) {
             if (isItemInteraction(cursorItem)) {
                 event.setCancelled(true);
-
-                MessagesManager.sendMessage(event.getWhoClicked(), Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
             }
-        } else if (cursorItem != null && isBundle(clickedItem)) {
+        } else if (cursorItem != null && isBundle(cursorItem)) {
             if (isItemInteraction(clickedItem)) {
                 event.setCancelled(true);
-
-                MessagesManager.sendMessage(event.getWhoClicked(), Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
             }
         }
     }
@@ -290,7 +290,7 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet d'arreter une interaction
      */
-    private void stopInteraction(Player player, String chronometerGroup) {
+    public static void stopInteraction(Player player, String chronometerGroup) {
         HashMap<String, Consumer<Location>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
         HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
@@ -305,6 +305,14 @@ public class ItemInteraction implements Listener {
 
             player.getInventory().remove(item);
 
+            if (player.getInventory().getItemInOffHand().isSimilar(item)) {
+                player.getInventory().setItemInOffHand(null);
+            }
+
+            if (player.getItemOnCursor().isSimilar(item)) {
+                player.setItemOnCursor(null);
+            }
+
             playerCallbacksMap.remove(chronometerGroup);
             playerChronometerMap.remove(chronometerGroup);
 
@@ -315,7 +323,7 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet toutes les intéractions d'un joueur
      */
-    private void stopAllInteractions(Player player) {
+    public static void stopAllInteractions(Player player) {
         if (player == null) return;
 
         HashMap<String, Consumer<Location>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());

@@ -214,14 +214,6 @@ public class AdminCityCommands {
         }
     }
 
-    @Subcommand("mascots chest")
-    @CommandPermission("omc.admins.commands.admcity.mascots.chest")
-    public void giveMascotsChest(@Named("player") Player target){
-        if (target.isOnline()){
-            MascotsManager.giveChest(target);
-        }
-    }
-
     @Subcommand("mascots immunityoff")
     @CommandPermission("omc.admins.commands.admcity.mascots.immunityoff")
     public void removeMascotImmunity(Player sender, @Named("player") Player target){

@@ -2,6 +2,8 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
+import fr.openmc.core.features.city.mascots.Mascot;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
@@ -14,6 +16,7 @@ import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.interactions.ItemInteraction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -245,22 +248,23 @@ public class CityManager implements Listener {
                     if (member == null) {
                         continue;
                     }
-                }
 
-                MascotsManager.removeChest(member);
+                    if (Chronometer.containsChronometer(members, "Mascot:chest")) {
+                        if (Bukkit.getEntity(members) != null) {
+                            Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
+                        }
+                    }
 
-                if (Chronometer.containsChronometer(members, "Mascot:chest")) {
-                    if (Bukkit.getEntity(members) != null) {
-                        Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
+                    Mascot mascot = MascotUtils.getMascotOfCity(cityz.getUUID());
+                    if (mascot != null) {
+
+                        if (!DynamicCooldownManager.isReady(mascot.getMascotUuid().toString(), "mascots:move")) {
+                            if (Bukkit.getEntity(members) != null) {
+                                DynamicCooldownManager.clear(mascot.getMascotUuid().toString(), "mascots:move");
+                            }
+                        }
                     }
                 }
-
-                if (Chronometer.containsChronometer(members, "mascotsMove")) {
-                    if (Bukkit.getEntity(members) != null) {
-                        Chronometer.stopChronometer(member, "mascotsMove", null, "%null%");
-                    }
-                }
-
                 cityz.removePlayer(members);
             }
 

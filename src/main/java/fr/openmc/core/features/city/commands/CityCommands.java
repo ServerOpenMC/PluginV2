@@ -37,6 +37,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -52,6 +53,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
+import static fr.openmc.core.features.city.conditions.CityCreateConditions.AYWENITE_CREATE;
+import static fr.openmc.core.features.city.conditions.CityCreateConditions.MONEY_CREATE;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
 
 @Command({"ville", "city"})
@@ -542,7 +545,7 @@ public class CityCommands {
 
     // ACTIONS
 
-    public static boolean createCity(Player player, String name, String type) {
+    public static boolean createCity(Player player, String name, String type, Chunk origin) {
 
         if (!CityCreateConditions.canCityCreate(player)){
             MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -555,7 +558,6 @@ public class CityCommands {
 
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
-        Chunk origin = player.getChunk();
         AtomicBoolean isClaimed = new AtomicBoolean(false);
 
         if (WorldGuardApi.doesChunkContainWGRegion(origin)) {
@@ -594,9 +596,16 @@ public class CityCommands {
             }
         });
 
-        // innutile de recheck si le joueur a assez de ressource vu qu'on check dans CityCreateConditions
-        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE);
-        ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), CityCreateConditions.AYWENITE_CREATE);
+        if (EconomyManager.getInstance().getBalance(player.getUniqueId()) < MONEY_CREATE) {
+            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() +" §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
+        }
+
+        if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), AYWENITE_CREATE)) {
+            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE +" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+        }
+
+        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), MONEY_CREATE);
+        ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), AYWENITE_CREATE);
 
         City city = CityManager.createCity(player, cityUUID, name, type);
         city.addPlayer(uuid);

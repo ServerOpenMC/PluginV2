@@ -5,6 +5,8 @@ import dev.lone.itemsadder.api.ItemsAdder;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -74,9 +76,13 @@ public class MenuUtils {
 		return new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (!player.getOpenInventory().title().equals(Component.text(menu.getName()))) {
-					cancel();
-					return;
+				Component component = player.getOpenInventory().title();
+				if (component instanceof TextComponent textComponent) {
+					String content = textComponent.content();
+					if (!content.equals(ChatColor.stripColor(menu.getName()))) {
+						cancel();
+						return;
+					}
 				}
 
 				player.getOpenInventory().getTopInventory().setItem(slot, itemSupplier.get());

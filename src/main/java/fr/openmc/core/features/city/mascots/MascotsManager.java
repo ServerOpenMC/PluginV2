@@ -270,52 +270,6 @@ public class MascotsManager {
         }
     }
 
-    public static void giveChest(Player player) {
-        if (!ItemUtils.hasAvailableSlot(player)){
-            Chronometer.stopChronometer(player, "Mascot:chest", null, "%null%");
-            MessagesManager.sendMessage(player, Component.text("§cLibérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        ItemStack specialChest = new ItemStack(Material.CHEST);
-        ItemMeta meta = specialChest.getItemMeta();
-
-        if (meta != null) {
-
-            List<Component> info = new ArrayList<>();
-            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre et créera votre ville"));
-            info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la création sera annuler"));
-
-            meta.displayName(Component.text("§lMascotte"));
-            meta.lore(info);
-            PersistentDataContainer data = meta.getPersistentDataContainer();
-            data.set(chestKey,PersistentDataType.STRING, "id");
-            specialChest.setItemMeta(meta);
-
-        } else {
-            MessagesManager.sendMessage(player, Component.text("§cErreur : le coffre n'a pas pu être chargé"), Prefix.CITY, MessageType.ERROR, false);
-            OMCPlugin.getInstance().getLogger().severe("Erreur lors de l'initialisation de l'ItemMeta du coffre des mascottes");
-            return;
-        }
-
-        player.getInventory().addItem(specialChest);
-    }
-
-    public static void removeChest(Player player){
-        for (ItemStack itemStack : player.getInventory().getContents()){
-            if (itemStack!=null){
-                ItemMeta meta = itemStack.getItemMeta();
-                PersistentDataContainer data = meta.getPersistentDataContainer();
-                if (data.has(MascotsManager.chestKey, PersistentDataType.STRING)){
-                    player.getInventory().remove(itemStack);
-                    MascotsListener.futurCreateCity.remove(player.getUniqueId());
-                    break;
-                }
-            }
-        }
-    }
-
     public static void upgradeMascots(String city_uuid) {
         Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
         if (mascot==null){
@@ -358,7 +312,7 @@ public class MascotsManager {
         }
         LivingEntity mob = MascotUtils.loadMascot(mascot);
         boolean glowing = mascots.isGlowing();
-        int cooldown = 0;
+        long cooldown = 0;
         boolean hasCooldown = false;
 
         // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
@@ -384,10 +338,10 @@ public class MascotsManager {
         String name = mob.getCustomName();
         String mascotsCustomUUID = mob.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
 
-        if (Chronometer.containsChronometer(mob.getUniqueId(), "mascotsCooldown")) {
-            cooldown = Chronometer.getRemainingTime(mob.getUniqueId(), "mascotsCooldown");
+        if (!DynamicCooldownManager.isReady(mascots.getUniqueId().toString(), "mascots:move")) {
+            cooldown = DynamicCooldownManager.getRemaining(mascots.getUniqueId().toString(), "mascots:move");
             hasCooldown = true;
-            Chronometer.stopChronometer(mob, "mascotsCooldown", null, "%null%");
+            DynamicCooldownManager.clear(mob.getUniqueId().toString(), "mascots:move");
         }
 
         mob.remove();
@@ -397,7 +351,7 @@ public class MascotsManager {
             newMascots.setGlowing(glowing);
 
             if (hasCooldown){
-                Chronometer.startChronometer(newMascots, "mascotsCooldown" , cooldown, null, "%null", null, "%null%");
+                DynamicCooldownManager.use(newMascots.getUniqueId().toString(), "mascots:move" , cooldown);
             }
 
             setMascotsData(newMascots, name, maxHealth, baseHealth);
