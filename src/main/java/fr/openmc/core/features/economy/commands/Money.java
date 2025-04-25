@@ -50,7 +50,7 @@ public class Money {
     @Subcommand("add")
     @Description("Permet d'ajouter de l'argent à un joueur")
     @CommandPermission("omc.admin.commands.money.add")
-    public void addMoney(CommandSender player, OfflinePlayer target, @Range(min = 1) double amount) {
+    public void addMoney(CommandSender player, OfflinePlayer target, @Range(min = 1E-10) double amount) {
         EconomyManager.getInstance().addBalance(target.getUniqueId(), amount);
         MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté §e" + EconomyManager.getInstance().getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
         if(target.isOnline()) {
