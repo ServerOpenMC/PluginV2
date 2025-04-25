@@ -9,7 +9,10 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
@@ -26,7 +29,6 @@ import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class ProtectionListener implements Listener {
 
@@ -131,7 +133,7 @@ public class ProtectionListener implements Listener {
     public void onEntityInteract(EntityInteractEvent event) {
         Block block = event.getBlock();
         if (block.getType() == Material.FARMLAND) {
-            verify((Player) event.getEntity(), event, block.getLocation());
+            verify(event.getEntity(), event, block.getLocation());
         }
     }
 
@@ -156,16 +158,12 @@ public class ProtectionListener implements Listener {
 
     @EventHandler
     void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (event instanceof PlayerInteractAtEntityEvent) return;
-        if (event instanceof PlayerInteractEntityEvent) return;
-
         verify(event.getPlayer(), event, event.getRightClicked().getLocation());
     }
 
     @EventHandler
     void onInteractEntity(PlayerInteractEntityEvent event) {
         if (event instanceof PlayerInteractAtEntityEvent) return;
-        if (event instanceof PlayerInteractEntityEvent) return;
 
         if (event.getHand() != EquipmentSlot.HAND) return;
 
@@ -220,7 +218,7 @@ public class ProtectionListener implements Listener {
                 City blockCity = getCityByChunk(block.getChunk());
 
                 if (isMemberOf(blockCity, player)) return false;
-                if (blockCity != null && cityz != null) {
+                if (cityz != null) {
                     String type1 = CityManager.getCityType(blockCity.getUUID());
                     String type2 = CityManager.getCityType(cityz.getUUID());
 
@@ -239,7 +237,7 @@ public class ProtectionListener implements Listener {
             return;
         }
 
-        if (entity != null && NATURAL_EXPLOSIVE_ENTITIES.contains(entity.getType())) {
+        if (NATURAL_EXPLOSIVE_ENTITIES.contains(entity.getType())) {
             event.blockList().removeIf(block -> {
                 City city = getCityByChunk(block.getChunk());
                 return city != null && "peace".equals(CityManager.getCityType(city.getUUID()));
@@ -279,8 +277,7 @@ public class ProtectionListener implements Listener {
     @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
         if (event.getEntity() instanceof ItemFrame || event.getEntity() instanceof Painting) {
-            if (event.getRemover() instanceof Player) {
-                Player player = (Player) event.getRemover();
+            if (event.getRemover() instanceof Player player) {
                 verify(player, event, event.getEntity().getLocation());
             }
         }
@@ -317,7 +314,6 @@ public class ProtectionListener implements Listener {
         if (event.getDamager() instanceof Player damager) {
             if (MascotUtils.isMascot(event.getEntity())) return;
             verify(damager, event, event.getEntity().getLocation());
-            return;
         }
     }
 
