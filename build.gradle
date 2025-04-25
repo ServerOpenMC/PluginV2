@@ -3,15 +3,26 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
+def getLatestGitTag() {
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags', '--abbrev=0'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim()
+    } catch (Exception e) {
+        return "unknwon" // Default value if no tags exist
+    }
+}
+
 // Versioning
-def tag = System.getenv("TAG") ?: ""
+def tag = System.getenv("TAG") ?: getLatestGitTag()
 def milestoneUrl = System.getenv("MILESTONE_URL") ?: ""
 def isSnapshot = System.getenv('SNAPSHOT')?.toBoolean() ?: false
 def gitHash = System.getenv('GITHUB_SHA') ?: 'local'
 
-def pluginVersion = tag ? tag : "dev"
-
-version = isSnapshot ? "$pluginVersion-SNAPSHOT-${gitHash.take(7)}" : pluginVersion
+version = isSnapshot ? "$tag-SNAPSHOT-${gitHash.take(7)}" : tag
 group = 'fr.openmc'
 
 repositories {
