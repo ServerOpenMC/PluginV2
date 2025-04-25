@@ -10,7 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Verify Milestone Name
-        run: if [[ ${{ github.event.milestone.title }} =~ ^\d+\.\d+\.\d+$ ]] || echo "Name ${{ github.event.milestone.title }} is not valid" & exit 1
+        run: |
+          if ![[ "${{ github.event.milestone.title }}" =~ ^\d+\.\d+\.\d+$ ]]; then
+            echo "Name ${{ github.event.milestone.title }} is not valid"
+            exit 1
+          fi
       - name: Checkout repository
         uses: actions/checkout@v4
 
