@@ -267,7 +267,7 @@ public class ContestManager {
             updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
         }
 
-        data.setPhase(1);
+        data.setPhase(3);
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r

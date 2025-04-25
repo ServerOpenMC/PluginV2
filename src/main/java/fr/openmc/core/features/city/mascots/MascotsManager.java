@@ -142,7 +142,7 @@ public class MascotsManager {
         mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
-        // L'uuid de la ville lui est approprié pour l'identifié
+        // L'uuid de la ville lui est approprié pour l'identifier
         data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -238,6 +238,7 @@ public class MascotsManager {
 
     public static void giveChest(Player player) {
         if (!ItemUtils.hasAvailableSlot(player)){
+            Chronometer.stopChronometer(player, "Mascot:chest", null, "%null%");
             MessagesManager.sendMessage(player, Component.text("§cLibérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -250,7 +251,7 @@ public class MascotsManager {
             List<Component> info = new ArrayList<>();
             info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre et créera votre ville"));
             info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la création sera annuler"));
+            info.add(Component.text("§cLors de votre déconnexion la création sera annulée"));
 
             meta.displayName(Component.text("§lMascotte"));
             meta.lore(info);
