@@ -22,7 +22,7 @@ def milestoneUrl = System.getenv("MILESTONE_URL") ?: ""
 def isSnapshot = System.getenv('SNAPSHOT')?.toBoolean() ?: false
 def gitHash = System.getenv('GITHUB_SHA') ?: 'local'
 
-version = isSnapshot ? "$tag-SNAPSHOT-${gitHash.take(7)}" : tag
+version = isSnapshot ? "$tag-SNAPSHOT-${gitHash.take(7)}" : (System.getenv("TAG") ? tag : "dev-$tag")
 group = 'fr.openmc'
 
 repositories {
