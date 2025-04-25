@@ -12,6 +12,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -39,16 +40,21 @@ public class Restart {
                     return;
                 }
 
-                Component message = Component.text("Redémarrage du serveur dans " + remainingTime + " seconde" + (remainingTime == 1 ? "" : "s"));
+                Component broadcast = Component.text("§7(" + MessageType.WARNING.getPrefix() + "§7) ")
+                        .append(MiniMessage.miniMessage().deserialize(Prefix.OPENMC.getPrefix()))
+                        .append(Component.text(" §7» ")
+                        .append(Component.text("Redémarrage du serveur dans " + remainingTime + " seconde" + (remainingTime == 1 ? "" : "s"))));
+
+                Bukkit.broadcast(broadcast);
+
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    MessagesManager.sendMessage(player, message, Prefix.OPENMC, MessageType.WARNING, true);
                     Title title = Title.title(Component.text("Redémarrage"), Component.text(remainingTime + " seconde" + (remainingTime == 1 ? "" : "s")));
                     player.showTitle(title);
                 }
                 remainingTime -= 1;
             }
         };
-    
+
         update.runTaskTimer(plugin, 20, 20);
     }
 }
