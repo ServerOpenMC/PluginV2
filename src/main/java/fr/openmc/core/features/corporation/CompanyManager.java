@@ -1,7 +1,7 @@
 package fr.openmc.core.features.corporation;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corporation.commands.CompanyCommand;
