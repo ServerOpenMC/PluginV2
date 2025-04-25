@@ -335,52 +335,6 @@ public class CityCommands {
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
-    @Subcommand("money give")
-    @CommandPermission("omc.commands.city.give")
-    @Description("Transferer de l'argent vers la ville")
-    void give(Player player, @Named("montant") @Range(min=1) double amount) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (!CityBankConditions.canCityDeposit(city, player)) return;
-
-        if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), amount)) {
-            city.updateBalance(amount);
-            MessagesManager.sendMessage(player, Component.text("Tu as transféré "+amount+EconomyManager.getEconomyIcon()+" à la ville"), Prefix.CITY, MessageType.ERROR, false);
-        } else {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas assez d'argent"), Prefix.CITY, MessageType.ERROR, false);
-        }
-    }
-
-    @Subcommand("money balance")
-    @CommandPermission("omc.commands.city.balance")
-    @Description("Afficher l'argent de votre ville")
-    void balance(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (!CityBankConditions.canCityBalance(city, player)) return;
-
-        double balance = city.getBalance();
-        MessagesManager.sendMessage(player, Component.text(city.getCityName()+ " possède "+balance+EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.INFO, false);
-    }
-
-    @Subcommand("money take")
-    @CommandPermission("omc.commands.city.take")
-    @Description("Prendre de l'argent depuis votre ville")
-    void take(Player player, @Named("montant") @Range(min=1) double amount) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (!CityBankConditions.canCityWithdraw(city, player)) return;
-
-        if (city.getBalance() < amount) {
-            MessagesManager.sendMessage(player, Component.text("Ta ville n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        city.updateBalance(amount*-1);
-        EconomyManager.getInstance().addBalance(player.getUniqueId(), amount);
-        MessagesManager.sendMessage(player, Component.text(amount+EconomyManager.getEconomyIcon()+" ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
-    }
-
     @Subcommand("info")
     @CommandPermission("omc.commands.city.info")
     @Description("Avoir des informations sur votre ville")
@@ -511,11 +465,11 @@ public class CityCommands {
             }
         }
 
-        MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le type de votre ville en " + CityManager.getCityType(city.getUUID())), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le §5type §fde votre §dville"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
-    @Subcommand("bank view")
+    @Subcommand({"bank view"})
     @Description("Ouvre le menu de la banque de ville")
     public void bank(Player player) {
         if (CityManager.getPlayerCity(player.getUniqueId()) == null) 
@@ -526,7 +480,7 @@ public class CityCommands {
 
     @Subcommand("bank deposit")
     @Description("Met de votre argent dans la banque de ville")
-    void deposit(Player player, String input) {
+    void deposit(Player player, @Range(min=1) String input) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         
         if (!CityBankConditions.canCityDeposit(city, player)) return;
@@ -536,7 +490,7 @@ public class CityCommands {
 
     @Subcommand("bank withdraw")
     @Description("Prend de l'argent de la banque de ville")
-    void withdraw(Player player, String input) {
+    void withdraw(Player player, @Range(min=1) String input) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         if (!city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE)) {

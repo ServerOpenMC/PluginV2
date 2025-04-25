@@ -9,6 +9,8 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
+      - name: Verify Milestone Name
+        run: if [[ ${{ github.event.milestone.title }} =~ ^\d+\.\d+\.\d+$ ]] || echo "Name ${{ github.event.milestone.title }} is not valid" & exit 1
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -22,8 +24,9 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build with Gradle
         run: |
+          VERSION=$(echo ${{ github.event.milestone.title }} | tr "." "_")
           ./gradlew shadowJar
-          cp ./builds/OpenMC.jar ./builds/OpenMC-$TAG.jar
+          cp ./builds/OpenMC.jar ./builds/OpenMC-$VERSION.jar
         env:
           TAG: ${{ github.event.milestone.title }}
           MILESTONE_URL: ${{ github.event.milestone.url }}
