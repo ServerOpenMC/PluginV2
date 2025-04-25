@@ -5,6 +5,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,10 +20,10 @@ public class EnchantFirstItemQuest extends Quest implements Listener {
         );
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEnchantItem(EnchantItemEvent event) {
         ItemStack item = event.getItem();
-        if (item != null && item.getType() != Material.AIR) {
+        if (item.getType() != Material.AIR) {
             this.incrementProgress(event.getEnchanter().getUniqueId());
         }
     }

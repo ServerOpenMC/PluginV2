@@ -7,8 +7,8 @@ import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -24,7 +24,7 @@ public class MineAyweniteQuest extends Quest implements Listener {
         );
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreakBlock(BlockBreakEvent event) {
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
         if (customBlock != null && customBlock.getNamespacedID() != null &&
