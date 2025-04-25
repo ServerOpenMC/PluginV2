@@ -33,7 +33,6 @@ jobs:
           cp ./builds/OpenMC.jar ./builds/OpenMC-$VERSION.jar
         env:
           TAG: ${{ github.event.milestone.title }}
-          MILESTONE_URL: ${{ github.event.milestone.url }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

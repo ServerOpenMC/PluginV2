@@ -18,7 +18,6 @@ def getLatestGitTag() {
 
 // Versioning
 def tag = System.getenv("TAG") ?: getLatestGitTag()
-def milestoneUrl = System.getenv("MILESTONE_URL") ?: ""
 def isSnapshot = System.getenv('SNAPSHOT')?.toBoolean() ?: false
 def gitHash = System.getenv('GITHUB_SHA') ?: 'local'
 
@@ -95,12 +94,6 @@ processResources {
     inputs.properties(pluginProps)
     filesMatching('plugin.yml') {
         expand(pluginProps)
-    }
-
-    def joinListenerProps = ["version": version, "milestoneUrl": milestoneUrl]
-    inputs.properties(joinListenerProps)
-    filesMatching('JoinMessageListener.java') {
-        expand(joinListenerProps)
     }
 }
 
