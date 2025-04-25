@@ -7,7 +7,6 @@ import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
