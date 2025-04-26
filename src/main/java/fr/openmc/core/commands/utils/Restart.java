@@ -3,6 +3,7 @@ package fr.openmc.core.commands.utils;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -25,7 +26,12 @@ public class Restart {
     @Command("omcrestart")
     @Description("Redémarre le serveur après 1min")
     @CommandPermission("omc.admin.commands.restart")
-    public void restart() {
+    public void restart(CommandSender sender) {
+        if (sender instanceof Player) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, false);
+            return;
+        }
+
         OMCPlugin plugin = OMCPlugin.getInstance();
         BukkitRunnable update = new BukkitRunnable() {
             public int remainingTime = 60;
