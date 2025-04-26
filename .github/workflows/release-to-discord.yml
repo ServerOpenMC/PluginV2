@@ -15,10 +15,10 @@ jobs:
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
           color: "16021398" # decimal of #f47796
-          username: "OpenMC Plugin Update"
+          username: "Mise à jour de OpenMC"
           avatar_url: "https://raw.githubusercontent.com/ServerOpenMC/.github/refs/heads/master/brandkit/logo.png"
-          content: "||@• Notifs OpenMC||"
-          footer_title: "Changelog"
+          #content: "||<@&1258420105209974804>||"
+          footer_title: "Changements"
           footer_icon_url: "https://raw.githubusercontent.com/ServerOpenMC/.github/refs/heads/master/brandkit/logo.png"
           footer_timestamp: true
           max_description: '16384'
