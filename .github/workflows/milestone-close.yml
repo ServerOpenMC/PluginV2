@@ -50,11 +50,11 @@ jobs:
           fail_on_unmatched_files: true
           make_latest: true
           body: |
-            # Release milestone ${{ github.event.milestone.title }}
+            # Mise à jour ${{ github.event.milestone.title }}
             
             ${{ github.event.milestone.description }}
             
-            This release was automatically created when milestone "${{ github.event.milestone.title }}" was closed.
+            Cette mise à jour à été créée automatiquement a la fermeture de la milsetone "${{ github.event.milestone.title }}".
           files: builds/**
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
