@@ -69,13 +69,15 @@ public class ChestMenuListener implements Listener {
             return;
         }
 
-        if (event.getSlot() == 45 && menu.hasPreviousPage()) { // Previous Button
+        if (event.getSlot() == 45 && menu.hasPreviousPage()) {
+            city.saveChestContent(menu.getPage(), inv.getContents());// Previous Button
             city.setChestMenu(new ChestMenu(city, menu.getPage() - 1));
             city.getChestMenu().open(player);
             return;
         }
 
-        if (event.getSlot() == 53 && menu.hasNextPage()) { // Next Button
+        if (event.getSlot() == 53 && menu.hasNextPage()) {
+            city.saveChestContent(menu.getPage(), inv.getContents());// Next Button
             city.setChestMenu(new ChestMenu(city, menu.getPage() + 1));
             city.getChestMenu().open(player);
             return;
