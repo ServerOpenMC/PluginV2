@@ -54,8 +54,6 @@ public class City {
                     UUID player = UUID.fromString(rs.getString("player"));
                     CPermission permission = CPermission.valueOf(rs.getString("permission"));
 
-                    balance = rs.getDouble("balance");
-
                     Set<CPermission> playerPerms = permsCache.getOrDefault(player, new HashSet<>());
                     playerPerms.add(permission);
                     permsCache.put(player, playerPerms);
