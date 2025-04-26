@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Verify Milestone Name
         run: |
-          if [[ ! "${{ github.event.milestone.title }}" =~ ^[a-zA-Z-\._0-9]+$ ]]; then
+          if [[ ! "${{ github.event.milestone.title }}" =~ ^[a-zA-Z-\\._0-9]+$ ]]; then
             echo "Name ${{ github.event.milestone.title }} is not valid"
             echo "It should only contain letters (a-z & A-Z), periods (.), dashes (-) and underscores (_)"
             exit 1
