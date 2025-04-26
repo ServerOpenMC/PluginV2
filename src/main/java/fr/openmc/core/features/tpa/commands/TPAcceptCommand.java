@@ -27,8 +27,8 @@ public class TPAcceptCommand {
 	@Command("tpaccept")
 	@CommandPermission("omc.commands.tpa")
 	public void tpAccept(Player target, @Optional @Named("player") Player player) {
-		if (! TPAQueue.QUEUE.hasPendingRequest(player)) {
-			MessagesManager.sendMessage(player, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
+		if (!TPAQueue.QUEUE.hasPendingRequest(target)) {
+			MessagesManager.sendMessage(target, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		

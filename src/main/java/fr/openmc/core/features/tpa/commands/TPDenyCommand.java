@@ -21,8 +21,8 @@ public class TPDenyCommand {
 	@Command("tpdeny")
 	@CommandPermission("omc.commands.tpa")
 	public void tpDeny(Player target, @Optional @Named("player") Player player) {
-		if (! TPAQueue.QUEUE.hasPendingRequest(player)) {
-			MessagesManager.sendMessage(player, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
+		if (!TPAQueue.QUEUE.hasPendingRequest(target)) {
+			MessagesManager.sendMessage(target, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
