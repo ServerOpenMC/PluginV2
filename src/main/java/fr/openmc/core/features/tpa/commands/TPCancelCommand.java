@@ -17,7 +17,7 @@ public class TPCancelCommand {
 	 * Command to cancel a teleport request.
 	 * @param player The player who wants to cancel the request.
 	 */
-	@Command("tpacancel")
+	@Command("tpcancel")
 	@CommandPermission("omc.commands.tpa")
 	public void tpCancel(Player player) {
 		if (!TPAQueue.QUEUE.requesterHasPendingRequest(player)) {
