@@ -60,7 +60,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Deploy to server
-        uses: PiquelChips/pterodactyl-upload-action@v2.5
+        uses: ServerOpenMC/pterodactyl-upload-action@v2.5
         with:
           panel-host: ${{ secrets.PANEL_HOST }}
           api-key: ${{ secrets.API_KEY }}
