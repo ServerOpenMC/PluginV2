@@ -76,6 +76,7 @@ public class MenuUtils {
 		return new BukkitRunnable() {
 			@Override
 			public void run() {
+				boolean isSameName = false;
 				Component component = player.getOpenInventory().title();
 				if (component instanceof TextComponent textComponent) {
 					String content = textComponent.content();
@@ -83,8 +84,10 @@ public class MenuUtils {
 						cancel();
 						return;
 					}
+					isSameName = true;
 				}
 
+				if (!isSameName) return;
 				player.getOpenInventory().getTopInventory().setItem(slot, itemSupplier.get());
 			}
 		};
