@@ -298,7 +298,7 @@ public class ProtectionListener implements Listener {
             City city = getCityByChunk(loc.getChunk());
 
             //si ville en paix alors on annule
-            if (city != null && "peace".equals(CityManager.getCityType(city.getUUID()))) {
+            if (city != null && "peace".equals(CityManager.getCityType(city.getUUID())) && !isMemberOf(city, player)) {
                 event.setCancelled(true);
                 return;
             }
