@@ -28,9 +28,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class ProtectionListener implements Listener {
+
+    public static HashMap<UUID, Boolean> playerCanBypass = new HashMap<>();
 
     private boolean isMemberOf(@Nullable City city, Player player) {
         if (city == null) {
@@ -56,6 +61,8 @@ public class ProtectionListener implements Listener {
         City city = getCityByChunk(loc.getChunk()); // on regarde le claim ou l'action a été fait
         City cityz = CityManager.getPlayerCity(player.getUniqueId()); // on regarde la city du membre
 
+        Boolean canBypass = playerCanBypass.get(player.getUniqueId());
+        if (canBypass != null && canBypass) return;
         if (isMemberOf(city, player)) return;
         if (cityz!=null){
             String city_type = CityManager.getCityType(city.getUUID());
