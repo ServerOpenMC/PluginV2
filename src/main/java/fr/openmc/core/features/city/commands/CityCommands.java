@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.Perks;
@@ -29,6 +30,7 @@ import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.interactions.ItemInteraction;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -42,6 +44,7 @@ import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -56,6 +59,7 @@ import static fr.openmc.core.features.city.CityManager.getCityType;
 import static fr.openmc.core.features.city.conditions.CityCreateConditions.AYWENITE_CREATE;
 import static fr.openmc.core.features.city.conditions.CityCreateConditions.MONEY_CREATE;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
+import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -510,6 +514,34 @@ public class CityCommands {
         MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le §5type §fde votre §dville"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
+    @Subcommand({"setwarp"})
+    @Description("Teleporte au warp commun de la ville")
+    public void setWarpCommand(Player player) {
+        setWarp(player);
+    }
+
+    @Subcommand({"warp"})
+    @Description("Teleporte au warp commun de la ville")
+    public void warp(Player player) {
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (playerCity == null) return;
+
+        CityLaw law = playerCity.getLaw();
+        Location warp = law.getWarp();
+
+        if (warp == null) {
+            if (MayorManager.getInstance().phaseMayor == 2) {
+                MessagesManager.sendMessage(player, Component.text("Le Warp de la Ville n'est pas encore défini ! Demandez au §6Maire §fActuel d'en mettre un ! §8§o*via /city setwarp ou avec le Menu des Lois*"), Prefix.CITY, MessageType.INFO, true);
+                return;
+            }
+            MessagesManager.sendMessage(player, Component.text("Le Warp de la Ville n'est pas encore défini ! Vous devez attendre que un Maire soit élu pour mettre un Warp"), Prefix.CITY, MessageType.INFO, true);
+            return;
+        }
+
+        new CityBankMenu(player).open();
+    }
+
     // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
     @Subcommand({"bank view"})
     @Description("Ouvre le menu de la banque de ville")
@@ -634,6 +666,43 @@ public class CityCommands {
         DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
 
         return true;
+    }
+
+    public static void setWarp(Player player) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        Mayor mayor = city.getMayor();
+        CityLaw law = city.getLaw();
+        if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+            DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
+        }
+        List<Component> loreItemInterraction = List.of(
+                Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
+        );
+        ItemStack itemToGive = new ItemStack(Material.STICK);
+        ItemMeta itemMeta = itemToGive.getItemMeta();
+        itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
+        itemMeta.lore(loreItemInterraction);
+        itemToGive.setItemMeta(itemMeta);
+        ItemInteraction.runLocationInteraction(
+                player,
+                itemToGive,
+                "mayor:wait-set-warp",
+                20,
+                "§7Vous avez 300s pour séléctionner votre point de spawn",
+                "§7Vous n'avez pas eu le temps de poser votre Warp",
+                locationClick -> {
+                    Chunk chunk = locationClick.getChunk();
+
+                    if (!city.hasChunk(chunk.getX(), chunk.getZ())) {
+                        MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le Warp ici car ce n'est pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                        return false;
+                    }
+
+                    law.setWarp(locationClick);
+                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen x=" + locationClick.x() + "y=" + locationClick.y() + "z=" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
+                    return true;
+                }
+        );
     }
 
     public static void leaveCity(Player player) {

@@ -7,6 +7,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.Perks;
@@ -20,6 +21,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,7 +37,7 @@ import java.util.function.Supplier;
 public class MayorLawMenu extends Menu {
 
     private static final long COOLDOWN_TIME_ANNOUNCE = 3 * 60 * 60 * 1000L; // 3 heures en ms
-    private static final long COOLDOWN_TIME_WARP = 60 * 60 * 1000L; // 1 heure en ms
+    public static final long COOLDOWN_TIME_WARP = 60 * 60 * 1000L; // 1 heure en ms
     private static final long COOLDOWN_TIME_PVP = 4 * 60 * 60 * 1000L; // 4 heures en ms
 
     public MayorLawMenu(Player owner) {
@@ -130,13 +132,14 @@ public class MayorLawMenu extends Menu {
                     ));
                 } else {
                     loreLawWarp = new ArrayList<>(List.of(
-                            Component.text("§7Les membres peuvent se téléporter à votre warp!"),
-                            Component.text("§7Voici la position du warp : "),
+                            Component.text("§7Les membres peuvent se téléporter à votre §9warp§7!"),
+                            Component.text("§7Voici la position du §9warp §7: "),
                             Component.text("§8- §7x=§6" + warpLoc.getX()),
                             Component.text("§8- §7y=§6" + warpLoc.getY()),
                             Component.text("§8- §7z=§6" + warpLoc.getZ())
                     ));
                 }
+
                 if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
                     loreLawWarp.addAll(
                             List.of(
@@ -155,34 +158,10 @@ public class MayorLawMenu extends Menu {
 
 
                 return new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
-                    itemMeta.itemName(Component.text("§7Changer son warp"));
+                    itemMeta.itemName(Component.text("§7Changer son §9warp"));
                     itemMeta.lore(loreLawWarp);
                 }).setOnClick(inventoryClickEvent -> {
-//                    if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
-//                        System.out.println("input from user");
-//                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
-//                    }
-                    List<Component> loreItemInterraction = List.of(
-                            Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §1Warp")
-                    );
-                    ItemStack itemToGive = new ItemStack(Material.STICK);
-                    ItemMeta itemMeta = itemToGive.getItemMeta();
-                    itemMeta.displayName(Component.text("§7Séléction du §1Warp"));
-                    itemMeta.lore(loreItemInterraction);
-                    itemToGive.setItemMeta(itemMeta);
-                    ItemInteraction.runLocationInteraction(
-                            player,
-                            itemToGive,
-                            "mayor:wait-set-warp",
-                            20,
-                            "§7Vous avez 300s pour séléctionner votre point de spawn",
-                            "§7Vous n'avez pas eu le temps de poser votre Warp",
-                            location -> {
-                                // check si coord est dans ville CityManager.getCityFromChunk? get Chunk from 3 coord
-                                System.out.println(location.getX() + " " + location.getY() + " " + location.getZ());
-                                return true;
-                            }
-                    );
+                    CityCommands.setWarp(player);
                 });
             };
 
@@ -192,6 +171,7 @@ public class MayorLawMenu extends Menu {
                 MenuUtils.runDynamicItem(player, this, 12, warpItemSupplier)
                         .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             }
+
             Supplier<ItemStack> announceItemSupplier = () -> {
                 List<Component> loreLawAnnounce = new ArrayList<>(List.of(
                         Component.text("§7Cette §1loi §7permet d'émettre un message dans toute la ville!")
