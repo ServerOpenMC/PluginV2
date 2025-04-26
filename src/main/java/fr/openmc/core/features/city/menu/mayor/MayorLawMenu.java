@@ -180,6 +180,7 @@ public class MayorLawMenu extends Menu {
                             location -> {
                                 // check si coord est dans ville CityManager.getCityFromChunk? get Chunk from 3 coord
                                 System.out.println(location.getX() + " " + location.getY() + " " + location.getZ());
+                                return true;
                             }
                     );
                 });

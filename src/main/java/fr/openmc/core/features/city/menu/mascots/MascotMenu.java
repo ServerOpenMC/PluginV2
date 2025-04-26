@@ -126,7 +126,6 @@ public class MascotMenu extends Menu {
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 }).setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(mascots.getUniqueId().toString(), "mascots:move")) {
-                        MessagesManager.sendMessage(getOwner(), Component.text("eded"), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
                     if (!city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)) {
@@ -170,30 +169,30 @@ public class MascotMenu extends Menu {
                             120,
                             "Temps Restant : %sec%s",
                             "§cDéplacement de la Mascotte annulée",
-                            mascotMove -> {;
-                                if (!movingMascots.contains(city_uuid)) return;
+                            mascotMove -> {
+                                if (!movingMascots.contains(city_uuid)) return false;
 
                                 Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
-                                if (mascot==null) return;
+                                if (mascot==null) return false;
 
                                 Entity mob = MascotUtils.loadMascot(mascot);
-                                if (mob==null) return;
+                                if (mob==null) return false;
 
                                 Chunk chunk = mascotMove.getChunk();
                                 int chunkX = chunk.getX();
                                 int chunkZ = chunk.getZ();
 
-                                if (!city.hasChunk(chunkX,chunkZ)){
-                                    MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre car ce chunk ne vous appartient pas ou est adjacent à une autre ville"), Prefix.CITY, MessageType.INFO, false);
-                                    return;
+                                if (!city.hasChunk(chunkX, chunkZ)) {
+                                    MessagesManager.sendMessage(player, Component.text("§cImpossible de déplacer la mascotte ici car ce chunk ne vous appartient pas ou est adjacent à une autre ville"), Prefix.CITY, MessageType.INFO, false);
+                                    return false;
                                 }
 
                                 mob.teleport(mascotMove);
                                 movingMascots.remove(city_uuid);
                                 mascot.setChunk(mascotMove.getChunk());
 
-                                //Cooldown de 5h pour déplacer la mascotte
                                 DynamicCooldownManager.use(mascot.getMascotUuid().toString(), "mascots:move", 5*3600*1000L);
+                                return true;
                             }
                             );
                     ;

@@ -1,11 +1,5 @@
 package fr.openmc.core.utils.interactions;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.PacketType;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -24,7 +18,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.*;
@@ -33,23 +26,20 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BundleMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static fr.openmc.core.utils.ItemUtils.isBundle;
 
 public class ItemInteraction implements Listener {
 
-    private static final Map<UUID, HashMap<String, Consumer<Location>>> playerCallbacks = new HashMap<>();
+    private static final Map<UUID, HashMap<String, Function<Location, Boolean>>> playerCallbacks = new HashMap<>();
     private static final Map<UUID, HashMap<String, InteractionInfo>> playerChronometerData = new HashMap<>();
 
     private static final NamespacedKey NAMESPACE_KEY = new NamespacedKey(OMCPlugin.getInstance(), "interaction_item");
@@ -57,7 +47,7 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet de donner un objet à une personne et de quand elle clique avec l'Item, la méthode renverra la positon ou il a cliqué
      */
-    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, String startMessage, String endMessage, Consumer<Location> result) {
+    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, String startMessage, String endMessage, Function<Location, Boolean> result) {
         if (!ItemUtils.hasAvailableSlot(player)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire ! L'action a été annulée"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
@@ -104,17 +94,27 @@ public class ItemInteraction implements Listener {
             }
 
             if (targetBlock != null) {
-                HashMap<String, Consumer<Location>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
+                HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
                 HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
                 if (playerCallbacksMap != null && playerChronometerMap != null) {
-                    Consumer<Location> callback = playerCallbacksMap.remove(interactionId);
-                    ChronometerInfo chronoInfo = playerChronometerMap.remove(interactionId).getChronometerInfo();
+                    Function<Location, Boolean> callback = playerCallbacksMap.get(interactionId);
+                    InteractionInfo interactionInfo = playerChronometerMap.get(interactionId);
 
-                    if (callback != null) callback.accept(targetBlock.getLocation().add(0.5, 0, 0.5));
-                    if (chronoInfo != null) Chronometer.stopChronometer(player, chronoInfo.getChronometerGroup(), null, "%null%");
+                    if (callback != null && interactionInfo != null) {
+                        boolean success = callback.apply(targetBlock.getLocation().add(0.5, 0, 0.5));
 
-                    player.getInventory().remove(item);
+                        if (success) {
+                            playerCallbacksMap.remove(interactionId);
+                            playerChronometerMap.remove(interactionId);
+
+                            ChronometerInfo chronoInfo = interactionInfo.getChronometerInfo();
+                            if (chronoInfo != null) {
+                                Chronometer.stopChronometer(player, chronoInfo.getChronometerGroup(), null, "%null%");
+                            }
+                            player.getInventory().remove(item);
+                        }
+                    }
                 }
             }
         }
@@ -291,11 +291,11 @@ public class ItemInteraction implements Listener {
      * Méthode qui permet d'arreter une interaction
      */
     public static void stopInteraction(Player player, String chronometerGroup) {
-        HashMap<String, Consumer<Location>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
+        HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
         HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
         if (playerCallbacksMap != null && playerChronometerMap != null) {
-            Consumer<Location> callback = playerCallbacksMap.get(chronometerGroup);
+            Function<Location, Boolean> callback = playerCallbacksMap.get(chronometerGroup);
             ItemStack item = playerChronometerMap.get(chronometerGroup).getItem();
             ChronometerInfo chronoInfo = playerChronometerMap.get(chronometerGroup).getChronometerInfo();
 
@@ -316,7 +316,7 @@ public class ItemInteraction implements Listener {
             playerCallbacksMap.remove(chronometerGroup);
             playerChronometerMap.remove(chronometerGroup);
 
-            callback.accept(null);
+            callback.apply(null);
         }
     }
 
@@ -326,7 +326,7 @@ public class ItemInteraction implements Listener {
     public static void stopAllInteractions(Player player) {
         if (player == null) return;
 
-        HashMap<String, Consumer<Location>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
+        HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
         HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
         if (playerCallbacksMap != null) {
@@ -347,7 +347,7 @@ public class ItemInteraction implements Listener {
             public void run() {
                 Bukkit.getLogger().info("Débogage des playerCallbacks:");
                 for (UUID playerId : playerCallbacks.keySet()) {
-                    HashMap<String, Consumer<Location>> callbacks = playerCallbacks.get(playerId);
+                    HashMap<String, Function<Location, Boolean>> callbacks = playerCallbacks.get(playerId);
                     Bukkit.getLogger().info("Joueur UUID: " + playerId);
                     for (String key : callbacks.keySet()) {
                         Bukkit.getLogger().info("  Interaction ID: " + key);

@@ -554,8 +554,6 @@ public class CityCommands {
 
         UUID uuid = player.getUniqueId();
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
-
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
         AtomicBoolean isClaimed = new AtomicBoolean(false);

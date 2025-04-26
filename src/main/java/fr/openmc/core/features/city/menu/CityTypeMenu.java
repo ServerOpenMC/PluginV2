@@ -123,17 +123,17 @@ public class CityTypeMenu extends Menu {
 
                     if (player_world!=world){
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre dans ce monde"), Prefix.CITY, MessageType.INFO, false);
-                        return;
+                        return false;
                     }
 
                     if (mascotSpawn.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
                         MessagesManager.sendMessage(player, Component.text("§cIl ne doit pas y avoir de block au dessus du coffre"), Prefix.CITY, MessageType.INFO, false);
-                        return;
+                        return false;
                     }
 
                     if (!futurCreateCity.containsKey(player.getUniqueId())){
                         MessagesManager.sendMessage(player,MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                        return;
+                        return false;
                     }
 
                     Chunk chunk = mascotSpawn.getChunk();
@@ -141,8 +141,9 @@ public class CityTypeMenu extends Menu {
                     String cityName = futurCreateCity.get(player.getUniqueId()).keySet().iterator().next();
                     boolean cityAdd = CityCommands.createCity(player, cityName, futurCreateCity.get(player.getUniqueId()).get(cityName), chunk);
 
+                    // on return true maintenant pour eviter que createCity s'execute plusieurs fois
                     if (!cityAdd){
-                        return;
+                        return true;
                     }
 
                     futurCreateCity.remove(player.getUniqueId());
@@ -150,19 +151,20 @@ public class CityTypeMenu extends Menu {
 
                     if (city==null){
                         MessagesManager.sendMessage(player, Component.text("§cErreur : la ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
-                        return;
+                        return true;
                     }
 
                     String city_uuid = city.getUUID();
 
                     if (MascotUtils.mascotsContains(city_uuid) && !movingMascots.contains(city_uuid)){
                         MessagesManager.sendMessage(player, Component.text("§cVous possédez déjà une mascotte"), Prefix.CITY, MessageType.INFO, false);
-                        return;
+                        return true;
                     }
 
                     player_world.getBlockAt(mascotSpawn).setType(Material.AIR);
 
                     MascotsManager.createMascot(city_uuid, player_world, mascotSpawn);
+                    return true;
                 }
         );
         getOwner().closeInventory();
