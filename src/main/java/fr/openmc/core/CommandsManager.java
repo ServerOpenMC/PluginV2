@@ -44,6 +44,7 @@ public class CommandsManager {
                 new MailboxCommand(OMCPlugin.getInstance()),
                 new FriendCommand(),
                 new QuestCommand(),
+                new Restart(),
                 new AdminShopCommand()
         );
     }
