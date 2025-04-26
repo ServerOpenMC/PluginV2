@@ -512,8 +512,6 @@ public class CityCommands {
 
         UUID uuid = player.getUniqueId();
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
-
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
         Chunk origin = player.getChunk();
@@ -534,7 +532,7 @@ public class CityCommands {
         }
 
         if (isClaimed.get()) {
-            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Une des parcelles autour de ce chunk est claim! "), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
