@@ -30,3 +30,4 @@ playtime-location:
     z: 0.0
     pitch: 0.0
     yaw: 0.0
+scale: 0.75

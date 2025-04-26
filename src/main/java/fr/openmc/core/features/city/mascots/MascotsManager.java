@@ -173,7 +173,7 @@ public class MascotsManager {
         mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
-        // L'uuid de la ville lui est approprié pour l'identifié
+        // L'uuid de la ville lui est approprié pour l'identifier
         data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
