@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class CityCreateQuest extends Quest implements Listener {
@@ -26,13 +27,13 @@ public class CityCreateQuest extends Quest implements Listener {
         ));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onCityCreate(CityCreationEvent event) {
         Player player = event.getOwner();
         if (player != null) this.incrementProgress(player.getUniqueId());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoin(MemberJoinEvent event) {
         OfflinePlayer player = event.getPlayer();
         if (player.isOnline()) this.incrementProgress(player.getUniqueId());

@@ -16,6 +16,8 @@ import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import io.papermc.paper.event.entity.EntityDamageItemEvent;
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -373,6 +375,22 @@ public class MascotsListener implements Listener {
 
     @EventHandler
     void onFire(EntityCombustEvent e) {
+        Entity entity = e.getEntity();
+        if (MascotUtils.isMascot(entity)){
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    void onPigMount(EntityMountEvent e) {
+        Entity entity = e.getMount();
+        if (MascotUtils.isMascot(entity)){
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    void onMove(EntityMoveEvent e) {
         Entity entity = e.getEntity();
         if (MascotUtils.isMascot(entity)){
             e.setCancelled(true);
