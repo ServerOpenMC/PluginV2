@@ -16,7 +16,6 @@ import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.interactions.ItemInteraction;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

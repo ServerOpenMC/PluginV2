@@ -7,28 +7,22 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
-import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.chronometer.Chronometer;
-import fr.openmc.core.utils.chronometer.ChronometerType;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.interactions.ItemInteraction;
+import fr.openmc.core.utils.interactions.items.ItemInteraction;
 import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -46,7 +40,6 @@ import java.util.function.Supplier;
 
 import static fr.openmc.core.features.city.mascots.MascotsListener.*;
 import static fr.openmc.core.features.city.mascots.MascotsManager.*;
-import static fr.openmc.core.utils.chronometer.Chronometer.startChronometer;
 
 public class MascotMenu extends Menu {
 

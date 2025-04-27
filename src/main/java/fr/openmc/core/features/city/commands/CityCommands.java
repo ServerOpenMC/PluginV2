@@ -2,12 +2,10 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.conditions.*;
-import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.mascots.*;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsListener;
-import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
@@ -30,7 +28,7 @@ import fr.openmc.core.utils.cooldown.DynamicCooldown;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.interactions.ItemInteraction;
+import fr.openmc.core.utils.interactions.items.ItemInteraction;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -51,7 +49,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.DayOfWeek;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 

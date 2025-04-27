@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.interactions;
+package fr.openmc.core.utils.interactions.items;
 
 import fr.openmc.core.utils.chronometer.ChronometerInfo;
 import lombok.Getter;

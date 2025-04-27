@@ -27,7 +27,7 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.freeze.FreezeManager;
-import fr.openmc.core.utils.interactions.ItemInteraction;
+import fr.openmc.core.utils.interactions.items.ItemInteraction;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;

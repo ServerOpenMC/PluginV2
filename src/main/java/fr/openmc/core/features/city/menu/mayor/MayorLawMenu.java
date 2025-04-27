@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.menu.mayor;
 
-import dev.lone.itemsadder.api.CustomPlayer;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
@@ -14,21 +13,19 @@ import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
-import fr.openmc.core.utils.interactions.ItemInteraction;
+import fr.openmc.core.utils.interactions.text.LongTextInput;
 import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -198,9 +195,17 @@ public class MayorLawMenu extends Menu {
                     itemMeta.lore(loreLawAnnounce);
                 }).setOnClick(inventoryClickEvent -> {
                     if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-announce")) {
-                        System.out.println("input from user");
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);
+
+                        LongTextInput.sendInput(
+                                player,
+                                "§eVous pouvez entrer votre message que vous voulez diffuser dans toute la ville !",
+                                input -> {
+                                    System.out.println("eeed" + input);
+                                }
+                        );
+                        //DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);
                     }
+
                 });
             };
 

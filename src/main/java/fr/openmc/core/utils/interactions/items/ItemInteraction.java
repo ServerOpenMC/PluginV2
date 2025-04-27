@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.interactions;
+package fr.openmc.core.utils.interactions.items;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.ItemUtils;
