@@ -3,6 +3,7 @@ package fr.openmc.core.commands.utils;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,6 +22,8 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Restart {
 
+    public static boolean isRestarting = false;
+    public static int remainingTime = -1;
     private static List<Integer> annouce = List.of(60, 30, 15, 10, 5, 4, 3, 2, 1);
 
     @Command("omcrestart")
@@ -32,10 +35,11 @@ public class Restart {
             return;
         }
 
-        OMCPlugin plugin = OMCPlugin.getInstance();
-        BukkitRunnable update = new BukkitRunnable() {
-            public int remainingTime = 60;
+        isRestarting = true;
+        remainingTime = 60;
 
+        OMCPlugin plugin = OMCPlugin.getInstance();
+        BukkitRunnable update = new BukkitRunnable() {;
             @Override
             public void run() {
                 if (remainingTime == 0)
@@ -49,13 +53,15 @@ public class Restart {
                 Component broadcast = Component.text("§7(" + MessageType.WARNING.getPrefix() + "§7) ")
                         .append(MiniMessage.miniMessage().deserialize(Prefix.OPENMC.getPrefix()))
                         .append(Component.text(" §7» ")
-                        .append(Component.text("Redémarrage du serveur dans " + remainingTime + " seconde" + (remainingTime == 1 ? "" : "s"))));
+                        .append(Component.text("Redémarrage du serveur dans §d" + remainingTime + " §fseconde(s)" + (remainingTime == 1 ? "" : "s"))));
 
                 Bukkit.broadcast(broadcast);
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    Title title = Title.title(Component.text("Redémarrage"), Component.text(remainingTime + " seconde" + (remainingTime == 1 ? "" : "s")));
+                    Title title = Title.title(Component.text("Redémarrage"), Component.text("§d" + remainingTime + " §fseconde(s)" + (remainingTime == 1 ? "" : "s")));
                     player.showTitle(title);
+
+                    player.playSound(player.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 0.4F);
                 }
                 remainingTime -= 1;
             }
