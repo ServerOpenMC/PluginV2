@@ -60,11 +60,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
       - name: Deploy to server
-        uses: ServerOpenMC/pterodactyl-upload-action@v2.5.1
+        uses: rexlmanu/pterodactyl-upload-action@v2.4
         with:
           panel-host: ${{ secrets.PANEL_HOST }}
           api-key: ${{ secrets.API_KEY }}
           server-id: ${{ secrets.SERVER_ID }}
           source: builds/OpenMC.jar
           target: "./plugins/OpenMC.jar"
-          command: omcrestart
