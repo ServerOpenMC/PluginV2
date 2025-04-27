@@ -16,7 +16,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
@@ -28,7 +27,7 @@ public class Restart {
 
     public static boolean isRestarting = false;
     public static int remainingTime = -1;
-    private static List<Integer> annouce = List.of(60, 30, 15, 10, 5, 4, 3, 2, 1);
+    private static final List<Integer> announce = List.of(60, 30, 15, 10, 5, 4, 3, 2, 1);
 
     @Command("omcrestart")
     @Description("Redémarre le serveur après 1min")
@@ -43,10 +42,10 @@ public class Restart {
         remainingTime = 60;
 
         OMCPlugin plugin = OMCPlugin.getInstance();
-        BukkitRunnable update = new BukkitRunnable() {;
+        BukkitRunnable update = new BukkitRunnable() {
             @Override
             public void run() {
-                if (remainingTime == 0)
+                if (remainingTime == 0) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
                         player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                         Component kickMessage = Component.text()
@@ -58,8 +57,9 @@ public class Restart {
                         player.kick(kickMessage, PlayerKickEvent.Cause.RESTART_COMMAND);
                     }
                     Bukkit.getServer().restart();
+                }
 
-                if (!annouce.contains(remainingTime)) {
+                if (!announce.contains(remainingTime)) {
                     remainingTime -= 1;
                     return;
                 }
