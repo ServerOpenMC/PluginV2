@@ -420,7 +420,6 @@ public class ContestManager {
                         entry2.getValue().getPoints(),
                         entry1.getValue().getPoints()
                 ))
-                .limit(10)
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
