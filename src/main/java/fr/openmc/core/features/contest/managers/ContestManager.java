@@ -420,6 +420,7 @@ public class ContestManager {
                         entry2.getValue().getPoints(),
                         entry1.getValue().getPoints()
                 ))
+                .limit(10)
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -429,7 +430,7 @@ public class ContestManager {
 
         final int[] rankInt = {0};
 
-        orderedMap.forEach((uuid, dataOrdered) -> {
+        dataPlayer.forEach((uuid, dataOrdered) -> {
             NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(dataOrdered.getColor());
 
             Component rankComponent = Component.text("\n§0#" + (rankInt[0] + 1) + " ")
