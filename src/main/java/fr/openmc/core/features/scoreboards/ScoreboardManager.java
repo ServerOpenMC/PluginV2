@@ -148,6 +148,7 @@ public class ScoreboardManager implements Listener {
             objective.getScore("§cRedémarrage dans " + DateUtils.convertSecondToTime(Restart.remainingTime)).setScore(2);
             objective.getScore("   ").setScore(1);
             objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
+            return;
         }
 
         objective.getScore("§7").setScore(11);

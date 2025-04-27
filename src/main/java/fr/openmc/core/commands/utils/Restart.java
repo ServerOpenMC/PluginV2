@@ -2,10 +2,14 @@ package fr.openmc.core.commands.utils;
 
 import java.util.List;
 
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.openmc.core.OMCPlugin;
@@ -43,6 +47,16 @@ public class Restart {
             @Override
             public void run() {
                 if (remainingTime == 0)
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
+                        Component kickMessage = Component.text()
+                                .append(Component.text("🔄 Redémarrage du serveur 🔄\n", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
+                                .append(Component.text("\n"))
+                                .append(Component.text("Le serveur est en train de redémarrer.\n", NamedTextColor.WHITE))
+                                .append(Component.text("Merci de votre patience !", NamedTextColor.GRAY))
+                                .build();
+                        player.kick(kickMessage, PlayerKickEvent.Cause.RESTART_COMMAND);
+                    }
                     Bukkit.getServer().restart();
 
                 if (!annouce.contains(remainingTime)) {
@@ -53,12 +67,12 @@ public class Restart {
                 Component broadcast = Component.text("§7(" + MessageType.WARNING.getPrefix() + "§7) ")
                         .append(MiniMessage.miniMessage().deserialize(Prefix.OPENMC.getPrefix()))
                         .append(Component.text(" §7» ")
-                        .append(Component.text("Redémarrage du serveur dans §d" + remainingTime + " §fseconde(s)" + (remainingTime == 1 ? "" : "s"))));
+                        .append(Component.text("Redémarrage du serveur dans §d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s"))));
 
                 Bukkit.broadcast(broadcast);
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
-                    Title title = Title.title(Component.text("Redémarrage"), Component.text("§d" + remainingTime + " §fseconde(s)" + (remainingTime == 1 ? "" : "s")));
+                    Title title = Title.title(Component.text("Redémarrage"), Component.text("§d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s")));
                     player.showTitle(title);
 
                     player.playSound(player.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 0.4F);
