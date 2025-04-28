@@ -64,6 +64,22 @@ public class City {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT balance FROM city WHERE uuid = ?");
+            statement.setString(1, cityUUID);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                try {
+                    balance = rs.getDouble("balance");
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid permission: " + rs.getString("permission"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public ItemStack[] getChestContent(int page) {
@@ -657,9 +673,9 @@ public class City {
         });
     }
 
-    // Interests calculated as proportion not percentage (eg: 0.03 = 3%)
+    // Interests calculated as proportion not percentage (eg: 0.01 = 1%)
     public double calculateCityInterest() {
-        double interest = .03; // base interest is 3%
+        double interest = .01; // base interest is 1%
 
         // TODO: link to other systems here by simply adding to the interest variable here
         

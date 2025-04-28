@@ -5,11 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -18,7 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.utils.InputUtils;
@@ -169,9 +167,9 @@ public class BankManager {
         });
     }
 
-    // Interests calculated as proportion not percentage (eg: 0.03 = 3%)
+    // Interests calculated as proportion not percentage (eg: 0.01 = 1%)
     public double calculatePlayerInterest(UUID player) {
-        double interest = .03; // base interest is 3%
+        double interest = .01; // base interest is 1%
 
         // TODO: link to other systems here by simply adding to the interest variable here
         

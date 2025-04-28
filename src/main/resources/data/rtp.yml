@@ -1,0 +1,5 @@
+max-radius: 10000
+min-radius: 2000
+# Par rapport au spawn
+max-tries: 3
+rtp-cooldown: 3600 # 1h

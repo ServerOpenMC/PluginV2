@@ -19,20 +19,20 @@ import java.util.UUID;
 
 @Command({"ville perms", "city perms"})
 public class CityPermsCommands {
-    private static boolean verification(Player sender, UUID player) {
-        City city = CityManager.getPlayerCity(player);
+    private static boolean verification(Player sender, UUID playerUUID) {
+        City city = CityManager.getPlayerCity(playerUUID);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!city.getMembers().contains(player)) {
+        if (!city.getMembers().contains(playerUUID)) {
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (city.hasPermission(player, CPermission.OWNER)) {
+        if (city.hasPermission(playerUUID, CPermission.OWNER)) {
             MessagesManager.sendMessage(sender, Component.text("Le maire a déjà les pleins pouvoirs"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -48,7 +48,7 @@ public class CityPermsCommands {
             return false;
         }
 
-        if (!(city.hasPermission(sender.getUniqueId(), CPermission.OWNER))) {
+        if (!(city.hasPermission(sender.getUniqueId(), CPermission.PERMS))) {
             MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission de gérer les permissions"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -62,7 +62,7 @@ public class CityPermsCommands {
     }
 
     @DefaultFor("~")
-    @CommandPermission("omc.commands.city.perm_get")
+    @CommandPermission("omc.commands.city.perm")
     @AutoComplete("@city_members")
     void getGUI(Player sender, @Optional OfflinePlayer member) {
         if (member == null) {
@@ -74,7 +74,7 @@ public class CityPermsCommands {
     }
 
     @Subcommand("switch")
-    @CommandPermission("omc.commands.city.perm_switch")
+    @CommandPermission("omc.commands.city.perm.switch")
     @Description("Inverse la permission d'un joueur")
     @AutoComplete("@city_members")
     public static void swap(Player sender, OfflinePlayer player, CPermission permission) {
@@ -102,7 +102,7 @@ public class CityPermsCommands {
     }
     
     @Subcommand("add")
-    @CommandPermission("omc.commands.city.perm_add")
+    @CommandPermission("omc.commands.city.perm.add")
     @Description("Ajouter des permissions à un membre")
     @AutoComplete("@city_members")
     void add(Player sender, OfflinePlayer player, CPermission permission) {
@@ -115,7 +115,7 @@ public class CityPermsCommands {
             return;
         }
 
-        if (!city.getMembers().contains(player)) {
+        if (!city.getMembers().contains(player.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -130,7 +130,7 @@ public class CityPermsCommands {
     }
 
     @Subcommand("remove")
-    @CommandPermission("omc.commands.city.perm_remove")
+    @CommandPermission("omc.commands.city.perm.remove")
     @Description("Retirer des permissions à un membre")
     @AutoComplete("@city_members")
     void remove(Player sender, OfflinePlayer player, CPermission permission) {
@@ -143,7 +143,7 @@ public class CityPermsCommands {
             return;
         }
 
-        if (!city.getMembers().contains(player)) {
+        if (!city.getMembers().contains(player.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -159,7 +159,7 @@ public class CityPermsCommands {
 
 
     @Subcommand("get")
-    @CommandPermission("omc.commands.city.perm_remove")
+    @CommandPermission("omc.commands.city.perm.get")
     @Description("Obtenir les permissions d'un membre")
     @AutoComplete("@city_members")
     void get(Player sender, OfflinePlayer player) {
@@ -171,7 +171,7 @@ public class CityPermsCommands {
             return;
         }
 
-        if (!city.getMembers().contains(player)) {
+        if (!city.getMembers().contains(player.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

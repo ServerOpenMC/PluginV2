@@ -6,7 +6,7 @@ import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -69,7 +69,8 @@ public class CityManager implements Listener {
         OMCPlugin.registerEvents(
                 new ProtectionListener(),
                 new ChestMenuListener(),
-                new MascotsListener()
+                new MascotsListener(),
+                new CityChatListener()
         );
 
         freeClaim = getAllFreeClaims();

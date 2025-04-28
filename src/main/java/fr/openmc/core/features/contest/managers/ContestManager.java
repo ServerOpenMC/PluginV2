@@ -10,13 +10,14 @@ import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
 import fr.openmc.core.features.contest.listeners.ContestListener;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -267,7 +268,7 @@ public class ContestManager {
             updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
         }
 
-        data.setPhase(1);
+        data.setPhase(3);
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
@@ -430,10 +431,10 @@ public class ContestManager {
 
         final int[] rankInt = {0};
 
-        orderedMap.forEach((uuid, dataOrdered) -> {
+        dataPlayer.forEach((uuid, dataOrdered) -> {
             NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(dataOrdered.getColor());
 
-            Component rankComponent = Component.text("\n§0#" + (rankInt[0] + 1) + " ")
+            Component rankComponent = Component.text("\n#" + (rankInt[0] + 1) + " ").color(LeaderboardManager.getRankColor(rankInt[0] + 1))
                     .append(Component.text(dataOrdered.getName()).decoration(TextDecoration.ITALIC, false).color(playerCampColor2))
                     .append(Component.text(" §8- §b" + dataOrdered.getPoints()));
             rankInt[0]++;
