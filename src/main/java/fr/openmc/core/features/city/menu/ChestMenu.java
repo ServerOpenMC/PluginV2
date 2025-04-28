@@ -1,9 +1,13 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -61,6 +65,11 @@ public class ChestMenu {
     }
 
     public void open(Player player) {
+        if (Restart.isRestarting) {
+            MessagesManager.sendMessage(player, Component.text("§7Le coffre est inaccessible durant un rédémarrage programmé"), Prefix.OPENMC, MessageType.INFO, false);
+            return;
+        }
+
         Inventory inventoryChest = Bukkit.createInventory(null, 54, Component.text("Coffre de " + this.city.getName() + " - Page " + this.page));
 
         inventoryChest.setContents(this.city.getChestContent(this.page));

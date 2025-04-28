@@ -2,6 +2,7 @@ package fr.openmc.core.features.scoreboards;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.contest.ContestData;
@@ -138,6 +139,16 @@ public class ScoreboardManager implements Listener {
 
         for (String entry : scoreboard.getEntries()) {
             scoreboard.resetScores(entry);
+        }
+
+
+        if (Restart.isRestarting) {
+            objective.getScore("§7").setScore(3);
+            objective.getScore("   ").setScore(2);
+            objective.getScore("§cRedémarrage dans " + DateUtils.convertSecondToTime(Restart.remainingTime)).setScore(2);
+            objective.getScore("   ").setScore(1);
+            objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
+            return;
         }
 
         objective.getScore("§7").setScore(11);
