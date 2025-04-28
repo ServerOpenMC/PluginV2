@@ -1,7 +1,10 @@
 package fr.openmc.core.commands.utils;
 
 import java.util.List;
+import java.util.UUID;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -41,13 +44,21 @@ public class Restart {
         isRestarting = true;
         remainingTime = 60;
 
+        // protection pour le bug de duplication
+        for (City city : CityManager.getCities()) {
+            UUID watcherUUID = city.getChestWatcher();
+            if (watcherUUID == null) return;
+
+            MessagesManager.sendMessage(sender, Component.text("§7Le coffre est inaccessible durant un rédémarrage programmé"), Prefix.OPENMC, MessageType.INFO, false);
+            Bukkit.getPlayer(watcherUUID).closeInventory();
+        }
+
         OMCPlugin plugin = OMCPlugin.getInstance();
         BukkitRunnable update = new BukkitRunnable() {
             @Override
             public void run() {
                 if (remainingTime == 0) {
                     for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.closeInventory(InventoryCloseEvent.Reason.PLUGIN);
                         Component kickMessage = Component.text()
                                 .append(Component.text("🔄 Redémarrage du serveur 🔄\n", NamedTextColor.LIGHT_PURPLE, TextDecoration.BOLD))
                                 .append(Component.text("\n"))

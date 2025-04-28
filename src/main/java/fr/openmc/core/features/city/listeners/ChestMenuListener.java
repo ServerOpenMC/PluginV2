@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.listeners;
 
+import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.ChestMenu;
@@ -27,6 +28,8 @@ import static fr.openmc.core.features.city.menu.ChestMenu.UPGRADE_PER_MONEY;
 public class ChestMenuListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+        if (Restart.isRestarting) return;
+
         HumanEntity humanEntity = event.getWhoClicked();
         if (!(humanEntity instanceof Player player)) { return; }
 
