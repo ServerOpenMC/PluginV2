@@ -23,7 +23,9 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
@@ -159,7 +161,8 @@ public class ProtectionListener implements Listener {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Entity rightClicked = event.getRightClicked();
-        if ((rightClicked instanceof Player)) return;
+
+        if (rightClicked instanceof Player) return;
         if (MascotUtils.isMascot(rightClicked)) return;
 
         verify(event.getPlayer(), event, rightClicked.getLocation());
@@ -336,5 +339,30 @@ public class ProtectionListener implements Listener {
 
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onEntityInventoryOpen(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        Entity entity = event.getRightClicked();
+
+        if (entity instanceof Merchant || entity instanceof InventoryHolder) {
+            verify(player, event, entity.getLocation());
+        }
+    }
+
+    @EventHandler
+    public void onEntityMount(EntityMountEvent event) {
+        if (event.isCancelled()) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+
+        Entity mount = event.getMount();
+
+        if (!(mount instanceof Tameable tameable)) return;
+
+
+        if (!tameable.isTamed()) return;
+
+        if (!tameable.getOwnerUniqueId().equals(player.getUniqueId())) verify(player, event, mount.getLocation());
     }
 }
