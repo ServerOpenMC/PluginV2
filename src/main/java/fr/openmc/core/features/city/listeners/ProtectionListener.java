@@ -23,13 +23,13 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ProtectionListener implements Listener {
 
@@ -154,13 +154,30 @@ public class ProtectionListener implements Listener {
         verify(damager, event, loc);
     }
 
+    Set<EntityType> MOUNTABLE_ENTITIES = EnumSet.of(
+            EntityType.HORSE,
+            EntityType.DONKEY,
+            EntityType.MULE,
+            EntityType.CAMEL,
+            EntityType.PIG,
+            EntityType.STRIDER,
+            EntityType.SKELETON_HORSE,
+            EntityType.LLAMA,
+            EntityType.TRADER_LLAMA,
+            EntityType.RAVAGER
+    );
+
     @EventHandler
     void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Entity rightClicked = event.getRightClicked();
-        if ((rightClicked instanceof Player)) return;
+
+        if (rightClicked instanceof Player) return;
         if (MascotUtils.isMascot(rightClicked)) return;
+        if (!(rightClicked instanceof Boat)) return;
+        if (!(rightClicked instanceof Minecart)) return;
+        if (!MOUNTABLE_ENTITIES.contains(event.getRightClicked().getType())) return;
 
         verify(event.getPlayer(), event, rightClicked.getLocation());
     }
@@ -335,6 +352,16 @@ public class ProtectionListener implements Listener {
                 continue;
 
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntityInventoryOpen(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        Entity entity = event.getRightClicked();
+
+        if (entity instanceof Merchant || entity instanceof InventoryHolder) {
+            verify(player, event, entity.getLocation());
         }
     }
 }
