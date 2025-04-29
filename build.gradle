@@ -13,7 +13,7 @@ def getLatestGitTag() {
         }
         return stdout.toString().trim()
     } catch (Exception e) {
-        return "unknwon" // Default value if no tags exist
+        return "unknown" // Default value if no tags exist
     }
 }
 
@@ -48,7 +48,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle '1.21.4-R0.1-SNAPSHOT'
+    paperweight.paperDevBundle '1.21.5-R0.1-SNAPSHOT'
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'me.clip:placeholderapi:2.11.6'
@@ -70,7 +70,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.45.0'
+    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.46.0'
     testImplementation 'com.h2database:h2:2.3.232'
 }
 
