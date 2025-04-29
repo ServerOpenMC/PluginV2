@@ -29,7 +29,9 @@ import org.bukkit.inventory.Merchant;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 public class ProtectionListener implements Listener {
 
@@ -154,19 +156,6 @@ public class ProtectionListener implements Listener {
         verify(damager, event, loc);
     }
 
-    Set<EntityType> MOUNTABLE_ENTITIES = EnumSet.of(
-            EntityType.HORSE,
-            EntityType.DONKEY,
-            EntityType.MULE,
-            EntityType.CAMEL,
-            EntityType.PIG,
-            EntityType.STRIDER,
-            EntityType.SKELETON_HORSE,
-            EntityType.LLAMA,
-            EntityType.TRADER_LLAMA,
-            EntityType.RAVAGER
-    );
-
     @EventHandler
     void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
@@ -175,9 +164,6 @@ public class ProtectionListener implements Listener {
 
         if (rightClicked instanceof Player) return;
         if (MascotUtils.isMascot(rightClicked)) return;
-        if (!(rightClicked instanceof Boat)) return;
-        if (!(rightClicked instanceof Minecart)) return;
-        if (!MOUNTABLE_ENTITIES.contains(event.getRightClicked().getType())) return;
 
         verify(event.getPlayer(), event, rightClicked.getLocation());
     }
@@ -363,5 +349,20 @@ public class ProtectionListener implements Listener {
         if (entity instanceof Merchant || entity instanceof InventoryHolder) {
             verify(player, event, entity.getLocation());
         }
+    }
+
+    @EventHandler
+    public void onEntityMount(EntityMountEvent event) {
+        if (event.isCancelled()) return;
+        if (!(event.getEntity() instanceof Player player)) return;
+
+        Entity mount = event.getMount();
+
+        if (!(mount instanceof Tameable tameable)) return;
+
+
+        if (!tameable.isTamed()) return;
+
+        if (!tameable.getOwnerUniqueId().equals(player.getUniqueId())) verify(player, event, mount.getLocation());
     }
 }
