@@ -153,8 +153,8 @@ public class AdminShopManager {
         // Calculate the adjustment factor based on the amount
         double factor = Math.log10(amount + 1) * 0.0001; // Logarithmic scale for adjustment
 
-        double newSell = item.getActualSellPrice() * (isBuying ? 1 - factor : 1 + factor); // Calculate new sell price
-        double newBuy = item.getActualBuyPrice() * (isBuying ? 1 - factor : 1 + factor); // Calculate new buy price
+        double newSell = item.getActualSellPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new sell price
+        double newBuy = item.getActualBuyPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new buy price
 
         item.setActualSellPrice(Math.max(newSell, item.getInitialSellPrice() * 0.5)); // Set new sell price
         item.setActualBuyPrice(Math.max(newBuy, item.getInitialBuyPrice() * 0.5)); // Set new buy price
