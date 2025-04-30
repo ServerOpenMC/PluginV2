@@ -91,17 +91,29 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
-            if (quantity < maxQuantity) quantity++;
+            if (!isBuying && shopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 1)) {
+                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
+            } else if (quantity < maxQuantity) {
+                quantity++;
+            }
             update();
         }));
 
         content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> {
-            if (quantity < maxQuantity) quantity += 10;
+            if (!isBuying && shopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 10)) {
+                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
+            } else if (quantity < maxQuantity) {
+                quantity += 10;
+            }
             update();
         }));
 
         content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
-            if (quantity < maxQuantity) quantity += 64;
+            if (!isBuying && shopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 64)) {
+                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
+            } else if (quantity < maxQuantity) {
+                quantity += 64;
+            }
             update();
         }));
 

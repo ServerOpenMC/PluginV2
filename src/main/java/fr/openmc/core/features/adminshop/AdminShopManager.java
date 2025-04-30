@@ -211,6 +211,27 @@ public class AdminShopManager {
     }
 
     /**
+     * Determines whether a player has enough item in their inventory for remove this.
+     *
+     * @param player      The player.
+     * @param material   The material.
+     * @param amount The amount.
+     * @return True if there's enough space, false otherwise.
+     */
+    public boolean hasEnoughItems(Player player, Material material, int amount) {
+        int count = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getType() == material) {
+                count += item.getAmount();
+                if (count >= amount) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Checks if the player has fewer than the specified amount of a material.
      *
      * @param player   The player.
