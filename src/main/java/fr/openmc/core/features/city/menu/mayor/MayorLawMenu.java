@@ -198,9 +198,22 @@ public class MayorLawMenu extends Menu {
 
                         LongTextInput.sendInput(
                                 player,
-                                "§eVous pouvez entrer votre message que vous voulez diffuser dans toute la ville !",
+                                "§eVous pouvez entrer votre message que vous voulez diffuser dans toute la ville ! Tapez cancel pour annuler l'action",
                                 input -> {
-                                    System.out.println("eeed" + input);
+                                    for (UUID uuidMember : city.getMembers()) {
+                                        if (uuidMember == player.getUniqueId()) continue;
+
+                                        Player playerMember = Bukkit.getPlayer(uuidMember);
+                                        if (playerMember == null) continue;
+
+                                        if (playerMember.isOnline()) {
+                                            MessagesManager.sendMessage(playerMember, Component.text("§8-- §6Annonce du Maire §8--"), Prefix.MAYOR, MessageType.INFO, false);
+                                            MessagesManager.sendMessage(playerMember, Component.text(input), Prefix.MAYOR, MessageType.INFO, false);
+                                        }
+                                    }
+
+                                    MessagesManager.sendMessage(player, Component.text("Vous avez bien envoyé le message a tous les membres de la villes"), Prefix.MAYOR, MessageType.SUCCESS, false);
+
                                 }
                         );
                         //DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);

@@ -32,7 +32,7 @@ public class LongTextInput implements Listener {
             if (event.message() instanceof TextComponent textComponent) {
                 String string = textComponent.content();
                 if (string.contains("cancel")) {
-
+                    player.sendMessage("§eVous avez annuler l'action !");
                     callback.accept(null);
                 }
                 callback.accept(string);
