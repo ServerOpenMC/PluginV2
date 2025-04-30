@@ -117,16 +117,16 @@ BLOCKS:
         buy: 0.0
         sell: 2.0
     name: §7Gravier
-- MOSS_BLOCK:
+- PRISMARINE:
     slot: 24
     price:
       initial:
-        buy: 0.0
-        sell: 0.75
+        buy: 1.5
+        sell: 0.0
       actual:
-        buy: 0.0
-        sell: 0.75
-    name: §7Bloc de mousse
+        buy: 1.5
+        sell: 0.0
+    name: §7Bloc de prismarine
 - OAK_LEAVES:
     slot: 16
     price:
