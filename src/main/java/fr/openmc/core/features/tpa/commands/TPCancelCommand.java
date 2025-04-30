@@ -18,7 +18,7 @@ public class TPCancelCommand {
 	 * @param player The player who wants to cancel the request.
 	 */
 	@Command("tpcancel")
-	@CommandPermission("ayw.command.tpa")
+	@CommandPermission("omc.commands.tpa")
 	public void tpCancel(Player player) {
 		if (!TPAQueue.QUEUE.requesterHasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);

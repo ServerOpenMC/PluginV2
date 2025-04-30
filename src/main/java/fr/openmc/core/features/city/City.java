@@ -70,6 +70,22 @@ public class City {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT balance FROM city WHERE uuid = ?");
+            statement.setString(1, cityUUID);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                try {
+                    balance = rs.getDouble("balance");
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid permission: " + rs.getString("permission"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public ItemStack[] getChestContent(int page) {

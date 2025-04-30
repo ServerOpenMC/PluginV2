@@ -54,7 +54,7 @@ public class ContestCommand {
 
     @Subcommand("setphase")
     @Description("Permet de lancer une procédure de phase")
-    @CommandPermission("ayw.command.contest.setphase")
+    @CommandPermission("omc.commands.contest.setphase")
     public void setPhase(Integer phase) {
         switch(phase) {
             case 1:
@@ -74,7 +74,7 @@ public class ContestCommand {
 
     @Subcommand("setcontest")
     @Description("Permet de définir un Contest")
-    @CommandPermission("ayw.command.contest.setcontest")
+    @CommandPermission("omc.commands.contest.setcontest")
     @AutoComplete("@colorContest")
     public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
         int phase = contestManager.data.getPhase();
@@ -95,7 +95,7 @@ public class ContestCommand {
 
     @Subcommand("settrade")
     @Description("Permet de définir un Trade")
-    @CommandPermission("ayw.command.contest.settrade")
+    @CommandPermission("omc.commands.contest.settrade")
     @AutoComplete("@trade")
     public void setTrade(Player player, @Named("trade") String trade, int amount, int amountShell) {
         YamlConfiguration config = ContestManager.getInstance().contestConfig;
@@ -122,7 +122,7 @@ public class ContestCommand {
 
     @Subcommand("addpoints")
     @Description("Permet d'ajouter des points a un membre")
-    @CommandPermission("ayw.command.contest.addpoints")
+    @CommandPermission("omc.commands.contest.addpoints")
     public void addPoints(Player player, Player target, Integer points) {
         if (contestManager.data.getPhase()!=3) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le Contests n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);

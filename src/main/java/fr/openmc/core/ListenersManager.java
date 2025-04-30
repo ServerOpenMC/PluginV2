@@ -16,7 +16,6 @@ public class ListenersManager {
                 new JoinMessageListener(),
                 new ClockInfos(),
                 new MailboxListener(),
-                new DisableCreakings(),
                 new ChronometerListener(),
                 new CubeListener(OMCPlugin.getInstance()),
                 new ItemInteraction(),

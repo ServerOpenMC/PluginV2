@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -153,6 +154,28 @@ public class AdminCityCommands {
         }
 
         MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
+    }
+
+    @Subcommand("claim bypass")
+    @CommandPermission("omc.admins.commands.admincity.claim.bypass")
+    public void bypass(Player player) {
+        UUID uuid = player.getUniqueId();
+        Boolean canBypass = ProtectionListener.playerCanBypass.get(uuid);
+
+        if (canBypass == null) {
+            ProtectionListener.playerCanBypass.put(uuid, true);
+            MessagesManager.sendMessage(player, Component.text("Vous pouvez bypass les claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+            return;
+        }
+
+        if (canBypass == true) {
+            ProtectionListener.playerCanBypass.replace(uuid, false);
+            MessagesManager.sendMessage(player, Component.text("Vous avez désactivé le bypass des claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+        } else {
+            ProtectionListener.playerCanBypass.replace(uuid, true);
+            MessagesManager.sendMessage(player, Component.text("Vous avez activé le bypass des claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+
+        }
     }
 
     @Subcommand("freeclaim add")

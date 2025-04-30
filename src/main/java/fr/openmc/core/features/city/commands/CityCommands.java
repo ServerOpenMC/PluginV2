@@ -602,7 +602,7 @@ public class CityCommands {
         }
 
         if (isClaimed.get()) {
-            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Une des parcelles autour de ce chunk est claim! "), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

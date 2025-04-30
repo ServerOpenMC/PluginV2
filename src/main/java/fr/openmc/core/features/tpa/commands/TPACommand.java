@@ -27,7 +27,7 @@ public class TPACommand {
 	 * @param target The target player to whom the request is sent.
 	 */
 	@Command({"tpa", "tpask"})
-	@CommandPermission("ayw.command.tpa")
+	@CommandPermission("omc.commands.tpa")
 	@AutoComplete("@players")
 	public void tpAsk(Player player, @Named("player") Player target) {
 		if (TPAQueue.QUEUE.requesterHasPendingRequest(player)) {
