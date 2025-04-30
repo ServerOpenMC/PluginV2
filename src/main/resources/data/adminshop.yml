@@ -217,16 +217,16 @@ BLOCKS:
         buy: 2.0
         sell: 2.0
     name: §7Laine
-- STONE:
+- COBBLESTONE:
     slot: 11
     price:
       initial:
-        buy: 2.0
-        sell: 2.0
+        buy: 0.0
+        sell: 0.2
       actual:
-        buy: 2.0
-        sell: 2.0
-    name: §7Pierre
+        buy: 0.0
+        sell: 0.2
+    name: §7Pierre taillée
 - AMETHYST_BLOCK:
     slot: 15
     price:
