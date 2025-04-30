@@ -39,7 +39,7 @@ public class Money {
     @Subcommand("set")
     @Description("Permet de définir l'argent d'un joueur")
     @CommandPermission("omc.admin.commands.money.set")
-    public void setMoney(CommandSender player, OfflinePlayer target, @Range(min = 1) double amount) {
+    public void setMoney(CommandSender player, OfflinePlayer target, @Range(min = 1E-10) double amount) {
         EconomyManager.getInstance().setBalance(target.getUniqueId(), amount);
         MessagesManager.sendMessage(player, Component.text("§aVous avez défini l'argent de §e" + target.getName() + "§a à §e" + EconomyManager.getInstance().getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
         if(target.isOnline()) {
@@ -50,7 +50,7 @@ public class Money {
     @Subcommand("add")
     @Description("Permet d'ajouter de l'argent à un joueur")
     @CommandPermission("omc.admin.commands.money.add")
-    public void addMoney(CommandSender player, OfflinePlayer target, @Range(min = 1) double amount) {
+    public void addMoney(CommandSender player, OfflinePlayer target, @Range(min = 1E-10) double amount) {
         EconomyManager.getInstance().addBalance(target.getUniqueId(), amount);
         MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté §e" + EconomyManager.getInstance().getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
         if(target.isOnline()) {
@@ -70,7 +70,7 @@ public class Money {
     @Subcommand("remove")
     @Description("Permet de retirer de l'argent à un joueur")
     @CommandPermission("omc.admin.commands.money.remove")
-    public void removeMoney(CommandSender player, OfflinePlayer target, @Range(min = 1) double amount) {
+    public void removeMoney(CommandSender player, OfflinePlayer target, @Range(min = 1E-10) double amount) {
         if(EconomyManager.getInstance().withdrawBalance(target.getUniqueId(), amount)) {
             MessagesManager.sendMessage(player, Component.text("§aVous avez retiré §e" + EconomyManager.getInstance().getFormattedNumber(amount) + "§a à §e" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
             if(target.isOnline()) {

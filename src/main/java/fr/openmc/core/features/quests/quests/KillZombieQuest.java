@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
@@ -22,7 +23,7 @@ public class KillZombieQuest extends Quest implements Listener {
         );
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onZombieKill(EntityDeathEvent event) {
         if (event.getEntity().getKiller() instanceof Player player && event.getEntity() instanceof Zombie) {
             this.incrementProgress(player.getUniqueId());

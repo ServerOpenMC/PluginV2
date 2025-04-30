@@ -77,7 +77,7 @@ public class InputUtils {
      * @return Boolean
      */
     public static boolean isInputCityName(String input) {
-        if (input == null || input.isEmpty()) {
+        if (input == null || input.isBlank()) {
             return false;
         }
 

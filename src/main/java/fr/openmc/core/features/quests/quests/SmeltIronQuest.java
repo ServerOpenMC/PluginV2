@@ -5,6 +5,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 
@@ -20,7 +21,7 @@ public class SmeltIronQuest extends Quest implements Listener {
         );
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerSmelt(FurnaceExtractEvent event) {
         if (event.getItemType().equals(Material.IRON_INGOT)) {
             int amount = event.getItemAmount();

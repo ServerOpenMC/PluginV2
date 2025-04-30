@@ -14,12 +14,12 @@ public class ListenersManager {
                 new JoinMessageListener(),
                 new ClockInfos(),
                 new MailboxListener(),
-                new DisableCreakings(),
                 new ChronometerListener(),
                 new CubeListener(OMCPlugin.getInstance()),
                 new RespawnListener(),
-                new AsyncChatListener(OMCPlugin.getInstance()),
-                new SleepListener()
+                new SleepListener(),
+                new PlayerDeadListener(),
+                new AsyncChatListener(OMCPlugin.getInstance())
         );
     }
 

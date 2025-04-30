@@ -69,7 +69,8 @@ public class CityManager implements Listener {
         OMCPlugin.registerEvents(
                 new ProtectionListener(),
                 new ChestMenuListener(),
-                new MascotsListener()
+                new MascotsListener(),
+                new CityChatListener()
         );
 
         freeClaim = getAllFreeClaims();

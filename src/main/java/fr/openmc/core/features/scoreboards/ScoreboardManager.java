@@ -2,6 +2,7 @@ package fr.openmc.core.features.scoreboards;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.contest.ContestData;
@@ -140,13 +141,25 @@ public class ScoreboardManager implements Listener {
             scoreboard.resetScores(entry);
         }
 
+
+        if (Restart.isRestarting) {
+            objective.getScore("§7").setScore(3);
+            objective.getScore("   ").setScore(2);
+            objective.getScore("§cRedémarrage dans " + DateUtils.convertSecondToTime(Restart.remainingTime)).setScore(2);
+            objective.getScore("   ").setScore(1);
+            objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
+            return;
+        }
+
         objective.getScore("§7").setScore(11);
         
         objective.getScore("§8• §fNom: §7"+player.getName()).setScore(10);
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        String cityName = city != null ? city.getName() : "Aucune";
-        objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
+        if (player.getWorld().getName().equalsIgnoreCase("world")) {
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            String cityName = city != null ? city.getName() : "Aucune";
+            objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
+        }
 
         String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
