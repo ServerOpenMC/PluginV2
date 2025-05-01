@@ -27,7 +27,7 @@ public class JoinMessageListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        MessagesManager.sendMessage(player, Component.text("Bienvenu sur OpenMC !"), Prefix.OPENMC, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("Bienvenue sur OpenMC !"), Prefix.OPENMC, MessageType.INFO, false);
 
         TabList.getInstance().updateTabList(player);
 
