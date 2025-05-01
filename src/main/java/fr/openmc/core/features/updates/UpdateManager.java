@@ -1,5 +1,6 @@
 package fr.openmc.core.features.updates;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -23,10 +24,10 @@ public class UpdateManager {
         String version = OMCPlugin.getInstance().getDescription().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 
-        message = Component.text("\n§8§m                                                     §r\n\n§7 Vous jouez actuellement sur la version")
-            .append(Component.text("§a§l " + version).clickEvent(ClickEvent.openUrl(milestoneUrl)))
-            .append(Component.text("§7 du plugin §a§lOpenMC.\n"))
-            .append(Component.text("§6§l Cliquez ici pour voir les changements.").clickEvent(ClickEvent.openUrl(milestoneUrl)))
+        message = Component.text("§8§m                                                     §r\n\n§7 Vous jouez actuellement sur la version")
+            .append(Component.text("§d§l " + version).clickEvent(ClickEvent.openUrl(milestoneUrl)))
+            .append(Component.text("§7 du plugin §d§lOpenMC.\n"))
+            .append(Component.text("§f§l Cliquez ici pour voir les changements.").clickEvent(ClickEvent.openUrl(milestoneUrl)))
             .append(Component.text("\n\n§8§m                                                     §r"));
 
         long period = 4500 * 20; // 1h15
@@ -40,10 +41,10 @@ public class UpdateManager {
     }
 
     public void sendUpdateMessage(Player player) {
-        MessagesManager.sendMessage(player, message, Prefix.OPENMC, MessageType.INFO, false);
+        player.sendMessage(message);
     }
 
     public void sendUpdateBroadcast() {
-        MessagesManager.broadcastMessage(message, Prefix.OPENMC, MessageType.INFO);
+        Bukkit.broadcast(message);
     }
 }
