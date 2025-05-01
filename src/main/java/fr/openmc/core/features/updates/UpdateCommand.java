@@ -7,6 +7,7 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class UpdateCommand {
+
     @Command("omc version")
     @CommandPermission("omc.commands.version")
     @Description("Vous donne de l'information sur le version du plugin")
