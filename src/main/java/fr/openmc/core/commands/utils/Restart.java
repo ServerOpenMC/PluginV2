@@ -54,7 +54,7 @@ public class Restart {
         }
 
         OMCPlugin plugin = OMCPlugin.getInstance();
-        BukkitRunnable update = new BukkitRunnable() {
+        new BukkitRunnable() {
             @Override
             public void run() {
                 if (remainingTime == 0) {
@@ -75,12 +75,9 @@ public class Restart {
                     return;
                 }
 
-                Component broadcast = Component.text("§7(" + MessageType.WARNING.getPrefix() + "§7) ")
-                        .append(MiniMessage.miniMessage().deserialize(Prefix.OPENMC.getPrefix()))
-                        .append(Component.text(" §7» ")
-                        .append(Component.text("Redémarrage du serveur dans §d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s"))));
-
-                Bukkit.broadcast(broadcast);
+                MessagesManager.broadcastMessage(
+                        Component.text("Redémarrage du serveur dans §d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s")),
+                        Prefix.OPENMC, MessageType.WARNING);
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Title title = Title.title(Component.text("Redémarrage"), Component.text("§d" + remainingTime + " §fseconde" + (remainingTime == 1 ? "" : "s")));
@@ -90,8 +87,6 @@ public class Restart {
                 }
                 remainingTime -= 1;
             }
-        };
-
-        update.runTaskTimer(plugin, 20, 20);
+        }.runTaskTimer(plugin, 20, 20);
     }
 }
