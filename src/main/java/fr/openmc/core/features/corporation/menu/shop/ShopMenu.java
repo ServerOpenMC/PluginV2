@@ -43,6 +43,11 @@ public class ShopMenu extends Menu {
         this.itemIndex = itemIndex;
         items.addAll(shop.getItems());
         Shop.checkStock(shop);
+
+        accetpBuyMsg.add(Component.text("§aAcheter"));
+        denyBuyMsg.add(Component.text("§cAnnuler l'achat"));
+        accetpMsg.add(Component.text("§aSupprimer"));
+        denyMsg.add(Component.text("§cAnnuler la suppression"));
     }
 
     @Override
@@ -52,6 +57,12 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull InventorySize getInventorySize() {
+        if (shop.getOwner().isCompany()){
+            Company company = shop.getOwner().getCompany();
+            if (company.getAllMembers().contains(getOwner().getUniqueId())){
+                return InventorySize.LARGER;
+            }
+        }
         if (!shop.isOwner(getOwner().getUniqueId()))
             return InventorySize.LARGE;
         return InventorySize.LARGER;
@@ -124,11 +135,6 @@ public class ShopMenu extends Menu {
             purpleAddSixtyFour = 16;
             catalogue = 35;
         }
-
-        accetpBuyMsg.add(Component.text("§aAcheter"));
-        denyBuyMsg.add(Component.text("§cAnnuler l'achat"));
-        accetpMsg.add(Component.text("§aSupprimer"));
-        denyMsg.add(Component.text("§cAnnuler la suppression"));
 
         Map<Integer, ItemStack> content = fill(Material.GRAY_STAINED_GLASS_PANE);
 

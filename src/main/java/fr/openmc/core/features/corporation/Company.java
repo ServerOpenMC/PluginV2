@@ -52,6 +52,7 @@ public class Company {
         this.company_uuid = Objects.requireNonNullElseGet(company_uuid, UUID::randomUUID);
 
         addPermission(owner.getPlayer(), CorpPermission.OWNER);
+        addMerchant(owner.getPlayer(), new MerchantData());
     }
 
     public Company(String name, CompanyOwner owner, UUID company_uuid, boolean newMember) {
@@ -210,7 +211,7 @@ public class Company {
             return true;
         }
 
-        Company company = CompanyManager.getInstance().getCompany(playerUUID);
+        Company company = CompanyManager.getCompany(playerUUID);
 
         if (whoCreated != null && withdraw(100, whoCreated, "Création de shop")) {
             if (company!=null && !company.hasPermission(playerUUID, CorpPermission.CREATESHOP)){
