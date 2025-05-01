@@ -1,6 +1,7 @@
 package fr.openmc.core.features.updates;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.messages.MessageType;
@@ -27,9 +28,22 @@ public class UpdateManager {
                 .append(Component.text(" du plugin §aOpenMC§r."))
                 .append(Component.text(" Cliquez ici pour voir les changements.")
                         .clickEvent(ClickEvent.openUrl(milestoneUrl)));
+
+        long period = 4500 * 20; // 1h15
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                sendUpdateBroadcast();
+            };
+        }.runTaskTimer(OMCPlugin.getInstance(), 0, period);
     }
 
     public void sendUpdateMessage(Player player) {
         MessagesManager.sendMessage(player, message, Prefix.OPENMC, MessageType.INFO, false);
+    }
+
+    public void sendUpdateBroadcast() {
+        MessagesManager.broadcastMessage(message, Prefix.OPENMC, MessageType.INFO);
     }
 }
