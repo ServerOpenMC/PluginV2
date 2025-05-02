@@ -25,7 +25,7 @@ public enum Perks {
             "§e§lPrévélement d'Impot",
             List.of(
                     Component.text("§7Possibilité de lancer un §3événement §7pour préléver les Impots"),
-                    Component.text("§7Limite de perte d'argent : §35k")
+                    Component.text("§7Limite de perte d'argent :§3 5k")
             ),
             ItemStack.of(Material.GOLD_BLOCK),
             PerkType.EVENT

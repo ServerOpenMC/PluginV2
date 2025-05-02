@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.interactions.text.LongTextInput;
@@ -235,6 +236,19 @@ public class MayorLawMenu extends Menu {
                     itemMeta.lore(lorePerkEvent);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                }).setOnClick(inventoryClickEvent -> {
+                    // prélévement d'impot
+                    if (PerkManager.hasPerk(city.getMayor(), 2)) {
+                        for (UUID uuid : city.getMembers()) {
+                            if (uuid == city.getMayor().getUUID()) return;
+
+                            Player member = Bukkit.getPlayer(uuid);
+
+                            if (member == null || !member.isOnline()) return;
+
+                            ImpotCollection.spawnZombies(member, city);
+                        }
+                    }
                 }));
             }
 
