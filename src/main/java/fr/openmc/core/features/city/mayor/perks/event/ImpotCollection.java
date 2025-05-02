@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -43,10 +44,10 @@ public class ImpotCollection {
 
             EntityEquipment equipment = zombie.getEquipment();
             if (equipment != null) {
-                equipment.setHelmet(new ItemStack(Material.IRON_HELMET));
-                equipment.setChestplate(new ItemStack(Material.IRON_CHESTPLATE));
-                equipment.setLeggings(new ItemStack(Material.IRON_LEGGINGS));
-                equipment.setBoots(new ItemStack(Material.IRON_BOOTS));
+                equipment.setHelmet(CustomItemRegistry.getByName("omc_items:suit_helmet").getBest());
+                equipment.setChestplate(CustomItemRegistry.getByName("omc_items:suit_chestplate").getBest());
+                equipment.setLeggings(CustomItemRegistry.getByName("omc_items:suit_leggings").getBest());
+                equipment.setBoots(CustomItemRegistry.getByName("omc_items:suit_boots").getBest());
             }
 
             zombie.setShouldBurnInDay(false);
