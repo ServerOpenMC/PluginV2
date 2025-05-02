@@ -78,7 +78,8 @@ public class OMCPlugin extends JavaPlugin {
         new FriendManager();
         new QuestsManager();
         new TabList();
-        new LeaderboardManager(this);
+        if (!OMCPlugin.isUnitTestVersion())
+            new LeaderboardManager(this);
         new AdminShopManager(this);
 
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
