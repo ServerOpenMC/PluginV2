@@ -675,7 +675,7 @@ public class CityCommands {
         List<Component> loreItemInterraction = List.of(
                 Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
         );
-        ItemStack itemToGive = new ItemStack(Material.STICK);
+        ItemStack itemToGive = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
         ItemMeta itemMeta = itemToGive.getItemMeta();
         itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
         itemMeta.lore(loreItemInterraction);

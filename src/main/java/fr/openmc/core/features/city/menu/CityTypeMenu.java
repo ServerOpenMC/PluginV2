@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.interactions.items.ItemInteraction;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -89,7 +90,7 @@ public class CityTypeMenu extends Menu {
     private void runChoiceType(Player player, String type) {
         futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, type);
 
-        ItemStack mascotsItem = new ItemStack(Material.STICK);
+        ItemStack mascotsItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();;
         ItemMeta meta = mascotsItem.getItemMeta();
 
         if (meta != null) {
