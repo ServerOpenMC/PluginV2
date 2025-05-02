@@ -37,7 +37,6 @@ public class MascotFriendlyPerk implements Listener {
             }
         } else {
             for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
-                System.out.println("ded");
                 player.removePotionEffect(potionEffect.getType());
             }
         }

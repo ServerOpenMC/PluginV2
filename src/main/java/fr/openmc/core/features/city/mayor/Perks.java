@@ -49,6 +49,16 @@ public enum Perks {
             ItemStack.of(Material.CHORUS_FRUIT),
             PerkType.BASIC
     ),
+    BUISNESS_MAN(
+            5,
+            "§e§lBuisness Man",
+            List.of(
+                    Component.text("§7Mets l'intérêt de votre ville à §33%"),
+                    Component.text("§7pour la ville et les membres de la ville")
+            ),
+            ItemStack.of(Material.CHORUS_FRUIT),
+            PerkType.BASIC
+    ),
     IRON_BLOOD(
             6,
             "§e§lFer dans le Sang",

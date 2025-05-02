@@ -216,7 +216,7 @@ public class MayorLawMenu extends Menu {
 
                                 }
                         );
-                        //DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);
+                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);
                     }
 
                 });
