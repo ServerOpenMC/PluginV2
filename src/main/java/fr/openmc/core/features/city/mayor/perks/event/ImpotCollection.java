@@ -9,21 +9,22 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 
-public class ImpotCollection {
+public class ImpotCollection implements Listener {
 
     public static void spawnZombies(Player player, City city) {
         World world = player.getWorld();
@@ -38,7 +39,7 @@ public class ImpotCollection {
             spawnLoc.setY(world.getHighestBlockYAt(spawnLoc));
 
             Zombie zombie = (Zombie) world.spawnEntity(spawnLoc, EntityType.ZOMBIE);
-            zombie.customName(Component.text("Serviteur de " + city.getMayor()));
+            zombie.customName(Component.text("Serviteur de " + city.getMayor().getName()));
             zombie.setCustomNameVisible(true);
             zombie.setTarget(player);
 
@@ -52,9 +53,11 @@ public class ImpotCollection {
 
             zombie.setShouldBurnInDay(false);
 
-            zombie.setMetadata("mayor:zombie", new FixedMetadataValue(OMCPlugin.getInstance(), player.getUniqueId().toString()));
+            zombie.setMetadata("mayor:zombie", new FixedMetadataValue(OMCPlugin.getInstance(), city.getMayor().getUUID()));
         }
     }
+
+    private final HashMap<UUID, Double> playerPreveledAmount = new HashMap<>();
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
@@ -67,35 +70,45 @@ public class ImpotCollection {
         if (!zombie.hasMetadata("mayor:zombie")) return;
 
         String ownerUuid = zombie.getMetadata("mayor:zombie").get(0).asString();
-        OfflinePlayer owner = Bukkit.getOfflinePlayer(UUID.fromString(ownerUuid));
-        if (!(owner instanceof Player) || !((Player) owner).isOnline()) return;
-
-        Player mayorPlayer = (Player) owner;
+        UUID uuid = UUID.fromString(ownerUuid);
+        Player mayorPlayer = Bukkit.getPlayer(uuid);
+        if (mayorPlayer == null) return;
 
         double amount = 1000;
-        // si il a pas assez d'argent dans son compte courant
+
         if (EconomyManager.getInstance().getBalance(victim.getUniqueId()) < amount) {
-            // si il a pas assez d'argent dans sa banque
             if (BankManager.getInstance().getBankBalance(victim.getUniqueId()) < amount) {
                 MessagesManager.sendMessage(victim, Component.text("§8§o*grr vous avez de la chance !*"), Prefix.MAYOR, MessageType.INFO, false);
                 return;
             }
 
-            // si il a assez d'argent dans sa banque
             BankManager.getInstance().withdrawBankBalance(victim.getUniqueId(), amount);
-            EconomyManager.getInstance().withdrawBalance(owner.getUniqueId(), amount);
-
-            MessagesManager.sendMessage(victim, Component.text("Tu as perdu §6" + amount + EconomyManager.getEconomyIcon() + "§f à cause du Maire " + mayorPlayer.getName()), Prefix.MAYOR, MessageType.WARNING, false);
-            MessagesManager.sendMessage(mayorPlayer, Component.text("Vous venez de prélévez §6" + amount + EconomyManager.getEconomyIcon() + "§f à " + victim.getName()), Prefix.MAYOR, MessageType.INFO, false);
-
         } else {
-            // si il a assez d'argent dans son compte courant
             EconomyManager.getInstance().withdrawBalance(victim.getUniqueId(), amount);
-            EconomyManager.getInstance().withdrawBalance(owner.getUniqueId(), amount);
+        }
+        EconomyManager.getInstance().addBalance(mayorPlayer.getUniqueId(), amount);
 
-            MessagesManager.sendMessage(victim, Component.text("Tu as perdu §6" + amount + EconomyManager.getEconomyIcon() + "§f à cause du Maire " + mayorPlayer.getName()), Prefix.MAYOR, MessageType.WARNING, false);
-            MessagesManager.sendMessage(mayorPlayer, Component.text("Vous venez de prélévez §6" + amount + EconomyManager.getEconomyIcon() + "§f à " + victim.getName()), Prefix.MAYOR, MessageType.INFO, false);
+        double newTotal = playerPreveledAmount.getOrDefault(victim.getUniqueId(), 0.0) + amount;
+        playerPreveledAmount.put(victim.getUniqueId(), newTotal);
 
+        MessagesManager.sendMessage(victim, Component.text("Tu as perdu §6" + amount + EconomyManager.getEconomyIcon() + "§f à cause du Maire " + mayorPlayer.getName()), Prefix.MAYOR, MessageType.WARNING, false);
+        MessagesManager.sendMessage(mayorPlayer, Component.text("Vous venez de prélever §6" + amount + EconomyManager.getEconomyIcon() + "§f à " + victim.getName()), Prefix.MAYOR, MessageType.INFO, false);
+
+        if (newTotal >= 5000) {
+            for (Entity entity : victim.getWorld().getEntities()) {
+                if (entity instanceof Zombie) {
+                    Zombie z = (Zombie) entity;
+
+                    if (!z.hasMetadata("mayor:zombie")) continue;
+                    String zOwnerUuid = z.getMetadata("mayor:zombie").get(0).asString();
+                    if (!zOwnerUuid.equals(ownerUuid)) continue;
+                    if (z.getTarget() != null && z.getTarget().getUniqueId().equals(victim.getUniqueId())) {
+                        z.remove();
+                    }
+                }
+            }
+
+            MessagesManager.sendMessage(victim, Component.text("§8§o*les zombies ont eu tout ce qu'il voulait*"), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 }

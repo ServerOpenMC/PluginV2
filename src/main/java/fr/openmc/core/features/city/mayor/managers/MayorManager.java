@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
 import fr.openmc.core.features.city.mayor.perks.*;
+import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -90,7 +91,8 @@ public class MayorManager {
                 new CityHunterPerk(),
                 new AyweniterPerk(),
                 new GPSTrackerPerk(),
-                new SymbiosisPerk()
+                new SymbiosisPerk(),
+                new ImpotCollection()
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
