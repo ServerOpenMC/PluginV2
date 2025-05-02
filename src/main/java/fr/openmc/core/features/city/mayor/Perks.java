@@ -18,17 +18,19 @@ public enum Perks {
                     Component.text("§7Et donne §3un effet de protection I§7 dans sa ville")
             ),
             ItemStack.of(Material.BLAZE_POWDER),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     IMPOT(
             2,
             "§e§lPrévélement d'Impot",
             List.of(
                     Component.text("§7Possibilité de lancer un §3événement §7pour préléver les Impots"),
-                    Component.text("§7Limite de perte d'argent :§3 5k")
+                    Component.text("§7Limite de perte d'argent :§3 5k §8(Cooldown : 3j)")
             ),
             ItemStack.of(Material.GOLD_BLOCK),
-            PerkType.EVENT
+            PerkType.EVENT,
+            3 * 24 * 60 * 60 * 1000L // 3 jours
     ),
     MINER(
             3,
@@ -37,7 +39,8 @@ public enum Perks {
                     Component.text("§7Donne §3Haste I §7aux membres de la ville")
             ),
             ItemStack.of(Material.GOLDEN_PICKAXE),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     FRUIT_DEMON(
             4,
@@ -47,7 +50,8 @@ public enum Perks {
                     Component.text("§7de §31 §7bloc")
             ),
             ItemStack.of(Material.CHORUS_FRUIT),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     BUISNESS_MAN(
             5,
@@ -57,7 +61,8 @@ public enum Perks {
                     Component.text("§7pour la ville et les membres de la ville !")
             ),
             ItemStack.of(Material.DIAMOND),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     IRON_BLOOD(
             6,
@@ -67,7 +72,8 @@ public enum Perks {
                     Component.text("§7se fait taper par l'ennemi §8(Cooldown : 3 min)")
             ),
             ItemStack.of(Material.IRON_BLOCK),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     CITY_HUNTER(
             7,
@@ -77,7 +83,8 @@ public enum Perks {
                     Component.text("§3monstres §7et §3joueurs §7dans sa propre ville.")
             ),
             ItemStack.of(Material.BOW),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     AYWENITER(
             8,
@@ -86,7 +93,8 @@ public enum Perks {
                     Component.text("§7Casser une pierre donne 1% de chance d'avoir 2 d'Aywenite")
             ),
             CustomItemRegistry.getByName("omc_items:aywenite").getBest(),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     GPS_TRACKER(
             9,
@@ -96,7 +104,8 @@ public enum Perks {
                     Component.text("§7un §3effet de glowing §7lui est donné.")
             ),
             ItemStack.of(Material.COMPASS),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     SYMBIOSIS(
             10,
@@ -106,7 +115,8 @@ public enum Perks {
                     Component.text("§7lorsque vous êtes autour de votre §3Mascotte")
             ),
             ItemStack.of(Material.SCULK_CATALYST),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     ),
     AGRICULTURAL_ESSOR(
             11,
@@ -115,7 +125,8 @@ public enum Perks {
                     Component.text("§7La récolte est doublée pendant§3 30 min §7! §8(Cooldown : 1j)")
             ),
             ItemStack.of(Material.NETHERITE_HOE),
-            PerkType.EVENT
+            PerkType.EVENT,
+            0
     ),
     MINERAL_RUSH(
             12,
@@ -125,7 +136,8 @@ public enum Perks {
                     Component.text("§7donnent le double de ressources. §8(Cooldown : 1j)")
             ),
             ItemStack.of(Material.DIAMOND_PICKAXE),
-            PerkType.EVENT
+            PerkType.EVENT,
+            0
     ),
     MILITARY_DISSUASION(
             13,
@@ -135,7 +147,8 @@ public enum Perks {
                     Component.text("§7dans votre ville qui disparaissent dans §35 min")
             ),
             ItemStack.of(Material.IRON_GOLEM_SPAWN_EGG),
-            PerkType.EVENT
+            PerkType.EVENT,
+            0
     ),
     IDYLLIC_RAIN(
             14,
@@ -144,7 +157,8 @@ public enum Perks {
                     Component.text("§7Fait apparaître de l'§3Aywenite §7dans votre ville pendant§3 2 §7 min.")
             ),
             ItemStack.of(Material.GHAST_TEAR),
-            PerkType.EVENT
+            PerkType.EVENT,
+            0
     ),
     MASCOTS_FRIENDLY(
             15,
@@ -154,7 +168,8 @@ public enum Perks {
                     Component.text("§7aurez des §3effets bonus §7si la mascotte est en vie !")
             ),
             ItemStack.of(Material.SADDLE),
-            PerkType.BASIC
+            PerkType.BASIC,
+            0
     )
     ;
 
@@ -163,13 +178,15 @@ public enum Perks {
     private final List<Component> lore;
     private final ItemStack itemStack;
     private final PerkType type;
+    private final long cooldown;
 
-    Perks(int id, String name, List<Component> lore, ItemStack itemStack, PerkType type) {
+    Perks(int id, String name, List<Component> lore, ItemStack itemStack, PerkType type, long cooldown) {
         this.id = id;
         this.name = name;
         this.lore = lore;
         this.itemStack = itemStack;
         this.type = type;
+        this.cooldown = cooldown;
     }
 
 

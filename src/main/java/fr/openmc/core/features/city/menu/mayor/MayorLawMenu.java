@@ -231,7 +231,22 @@ public class MayorLawMenu extends Menu {
             if (PerkManager.getPerkEvent(mayor) != null) {
                 ItemStack iaPerkEvent = perkEvent.getItemStack();
                 String namePerkEvent = perkEvent.getName();
-                List<Component> lorePerkEvent = perkEvent.getLore();
+                List<Component> lorePerkEvent = new ArrayList<>(perkEvent.getLore());
+                if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
+                    lorePerkEvent.addAll(
+                            List.of(
+                                    Component.text(""),
+                                    Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-perk-event")))
+                            )
+                    );
+                } else {
+                    lorePerkEvent.addAll(
+                            List.of(
+                                    Component.text(""),
+                                    Component.text("§e§lCLIQUEZ ICI POUR UTILISER LA REFORME")
+                            )
+                    );
+                }
                 inventory.put(16, new ItemBuilder(this, iaPerkEvent, itemMeta -> {
                     itemMeta.itemName(Component.text(namePerkEvent));
                     itemMeta.lore(lorePerkEvent);
@@ -250,6 +265,7 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché le §ePrélévement d'Impot §f!"), Prefix.MAYOR, MessageType.INFO, false);
 
                         }
+                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     }
                 }));
             }
