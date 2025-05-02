@@ -30,7 +30,7 @@ public class UpdateManager {
             .append(Component.text("§f§l Cliquez ici pour voir les changements.").clickEvent(ClickEvent.openUrl(milestoneUrl)))
             .append(Component.text("\n\n§8§m                                                     §r"));
 
-        long period = 4500 * 20; // 1h15
+        long period = 14400 * 20; // 4h
 
         new BukkitRunnable() {
             @Override
