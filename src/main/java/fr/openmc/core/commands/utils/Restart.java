@@ -32,7 +32,7 @@ public class Restart {
     public static int remainingTime = -1;
     private static final List<Integer> announce = List.of(60, 30, 15, 10, 5, 4, 3, 2, 1);
 
-    @Command("omc restart")
+    @Command("omcrestart")
     @Description("Redémarre le serveur après 1min")
     @CommandPermission("omc.admin.commands.restart")
     public void restart(CommandSender sender) {
