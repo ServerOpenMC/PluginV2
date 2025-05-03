@@ -63,6 +63,12 @@ public class MascotUtils {
         return null;
     }
 
+    /**
+     * Get the mascot of a city by its entity.
+     *
+     * @param entity The entity to check.
+     * @return The mascot if found, null otherwise.
+     */
     public static Mascot getMascotByEntity(Entity entity) {
         if (entity != null) {
             for (Mascot mascot : MascotsManager.mascots) {

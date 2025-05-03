@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CityListMenu extends PaginatedMenu {
 	
+	// Constants for the menu
 	private static final String SORT_HEADER = "§7Cliquez pour trier par";
 	private static final String SELECTED_PREFIX = "§6➢ ";
 	private static final String UNSELECTED_PREFIX = "§b  ";
@@ -29,6 +30,9 @@ public class CityListMenu extends PaginatedMenu {
 	private final List<City> cities;
 	private SortType sortType;
 	
+	/**
+	 * Enum representing the sorting types for the city list.
+	 */
 	private enum SortType {
 		NAME,
 		WEALTH,
@@ -36,10 +40,23 @@ public class CityListMenu extends PaginatedMenu {
 		MASCOT_LEVEL
 	}
 	
+	/**
+	 * Constructor for CityListMenu.
+	 *
+	 * @param owner  The player who opens the menu.
+	 * @param cities The list of cities to display.
+	 */
 	public CityListMenu(Player owner, List<City> cities) {
 		this(owner, cities, SortType.NAME);
 	}
 
+	/**
+	 * Constructor for CityListMenu with a specified sort type.
+	 *
+	 * @param owner    The player who opens the menu.
+	 * @param cities   The list of cities to display.
+	 * @param sortType The initial sort type.
+	 */
 	public CityListMenu(Player owner, List<City> cities, SortType sortType) {
 		super(owner);
 		this.cities = cities;
@@ -98,6 +115,11 @@ public class CityListMenu extends PaginatedMenu {
 	
 	}
 	
+	/**
+	 * Generates the lore text for the sorting options.
+	 *
+	 * @return A list of strings representing the lore text.
+	 */
 	private List<String> generateSortLoreText() {
 		return List.of(
 				SORT_HEADER,
@@ -108,11 +130,23 @@ public class CityListMenu extends PaginatedMenu {
 		);
 	}
 	
+	/**
+	 * Formats the sorting option string.
+	 *
+	 * @param type  The sorting type.
+	 * @param label The label for the sorting option.
+	 * @return A formatted string representing the sorting option.
+	 */
 	private String formatSortOption(SortType type, String label) {
 		return (sortType == type ? SELECTED_PREFIX : UNSELECTED_PREFIX) + label;
 	}
 	
 	
+	/**
+	 * Sets the sorting type and sorts the cities accordingly.
+	 *
+	 * @param sortType The sorting type to set.
+	 */
 	private void setSortType(SortType sortType) {
 		this.sortType = sortType;
 		switch (this.sortType) {
@@ -123,6 +157,9 @@ public class CityListMenu extends PaginatedMenu {
 		}
 	}
 	
+	/**
+	 * Changes the sorting type to the next one in the enum and sorts the cities accordingly.
+	 */
 	private void changeSortType() {
 		sortType = SortType.values()[(sortType.ordinal() + 1) % SortType.values().length];
 		
@@ -134,18 +171,38 @@ public class CityListMenu extends PaginatedMenu {
 		}
 	}
 	
+	/**
+	 * Sorts the cities by their names.
+	 *
+	 * @param cities The list of cities to sort.
+	 */
 	private void sortByName(List<City> cities) {
 		cities.sort((o1, o2) -> o1.getCityName().compareToIgnoreCase(o2.getCityName()));
 	}
 	
+	/**
+	 * Sorts the cities by their wealth.
+	 *
+	 * @param cities The list of cities to sort.
+	 */
 	private void sortByWealth(List<City> cities) {
 		cities.sort((o1, o2) -> Double.compare(o2.getBalance(), o1.getBalance()));
 	}
 	
+	/**
+	 * Sorts the cities by their population.
+	 *
+	 * @param cities The list of cities to sort.
+	 */
 	private void sortByPopulation(List<City> cities) {
 		cities.sort((o1, o2) -> Integer.compare(o2.getMembers().size(), o1.getMembers().size()));
 	}
 	
+	/**
+	 * Sorts the cities by their mascot level.
+	 *
+	 * @param cities The list of cities to sort.
+	 */
 	private void sortByMascotLevel(List<City> cities) {
 		cities.sort((o1, o2) -> Integer.compare(MascotUtils.getMascotOfCity(o2.getUUID()).getLevel(), MascotUtils.getMascotOfCity(o1.getUUID()).getLevel()));
 	}

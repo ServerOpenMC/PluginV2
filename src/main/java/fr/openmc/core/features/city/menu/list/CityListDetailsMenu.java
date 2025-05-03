@@ -24,6 +24,12 @@ public class CityListDetailsMenu extends Menu {
 	
 	private final City city;
 	
+	/**
+	 * Constructor for CityListDetailsMenu.
+	 *
+	 * @param owner The player who opens the menu.
+	 * @param city  The city to display details for.
+	 */
 	public CityListDetailsMenu(Player owner, City city) {
 		super(owner);
 		this.city = city;
