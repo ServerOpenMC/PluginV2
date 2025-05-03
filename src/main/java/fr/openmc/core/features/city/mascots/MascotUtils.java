@@ -73,6 +73,17 @@ public class MascotUtils {
         }
         return null;
     }
+    
+    public static Entity getEntityByMascotUUID(UUID mascotUUID) {
+        if (mascotUUID != null) {
+            for (Mascot mascot : MascotsManager.mascots) {
+                if (mascot.getMascotUuid().equals(mascotUUID)) {
+                    return Bukkit.getEntity(mascotUUID);
+                }
+            }
+        }
+        return null;
+    }
 
     public static LivingEntity loadMascot(Mascot mascot){
         boolean toUnload = false;
