@@ -153,8 +153,8 @@ public class AdminShopManager {
         // Calculate the adjustment factor based on the amount
         double factor = Math.log10(amount + 1) * 0.0001; // Logarithmic scale for adjustment
 
-        double newSell = item.getActualSellPrice() * (isBuying ? 1 - factor : 1 + factor); // Calculate new sell price
-        double newBuy = item.getActualBuyPrice() * (isBuying ? 1 - factor : 1 + factor); // Calculate new buy price
+        double newSell = item.getActualSellPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new sell price
+        double newBuy = item.getActualBuyPrice() * (isBuying ? 1 + factor : 1 - factor); // Calculate new buy price
 
         item.setActualSellPrice(Math.max(newSell, item.getInitialSellPrice() * 0.5)); // Set new sell price
         item.setActualBuyPrice(Math.max(newBuy, item.getInitialBuyPrice() * 0.5)); // Set new buy price
@@ -208,6 +208,27 @@ public class AdminShopManager {
     public boolean hasEnoughSpace(Player player, Material itemToAdd, int amountToAdd) {
         int result = checkInventorySpace(player, itemToAdd, amountToAdd);
         return result == -1 || result > 0;
+    }
+
+    /**
+     * Determines whether a player has enough item in their inventory for remove this.
+     *
+     * @param player      The player.
+     * @param material   The material.
+     * @param amount The amount.
+     * @return True if there's enough space, false otherwise.
+     */
+    public boolean hasEnoughItems(Player player, Material material, int amount) {
+        int count = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getType() == material) {
+                count += item.getAmount();
+                if (count >= amount) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
