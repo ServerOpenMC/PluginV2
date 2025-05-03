@@ -122,11 +122,11 @@ public enum Perks {
             11,
             "§e§lEssor Agricole",
             List.of(
-                    Component.text("§7La récolte est doublée pendant§3 30 min §7! §8(Cooldown : 1j)")
+                    Component.text("§7La récolte est doublée pendant§3 30 min §7dans la ville! §8(Cooldown : 1j)")
             ),
             ItemStack.of(Material.NETHERITE_HOE),
             PerkType.EVENT,
-            0
+            24 * 60 * 60 * 1000L // 1 jour
     ),
     MINERAL_RUSH(
             12,
@@ -137,28 +137,28 @@ public enum Perks {
             ),
             ItemStack.of(Material.DIAMOND_PICKAXE),
             PerkType.EVENT,
-            0
+            24 * 60 * 60 * 1000L // 1 jour
     ),
     MILITARY_DISSUASION(
             13,
             "§e§lDissuasion Militaire",
             List.of(
                     Component.text("§7Fait apparaître §310 Golem de Fer §7partout"),
-                    Component.text("§7dans votre ville qui disparaissent dans §35 min")
+                    Component.text("§7dans votre ville qui disparaissent dans §310 min §8(Cooldown : 20 min)")
             ),
             ItemStack.of(Material.IRON_GOLEM_SPAWN_EGG),
             PerkType.EVENT,
-            0
+            20 * 60 * 1000L // 20 minutes
     ),
     IDYLLIC_RAIN(
             14,
             "§e§lPluie idyllique",
             List.of(
-                    Component.text("§7Fait apparaître de l'§3Aywenite §7dans votre ville pendant§3 2 §7 min.")
+                    Component.text("§7Fait apparaître de l'§3Aywenite §7dans votre ville pendant§3 2 §7min. §8(Cooldown : 1j)")
             ),
             ItemStack.of(Material.GHAST_TEAR),
             PerkType.EVENT,
-            0
+            24 * 60 * 60 * 1000L // 1 jour
     ),
     MASCOTS_FRIENDLY(
             15,
