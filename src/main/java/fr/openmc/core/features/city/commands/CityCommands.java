@@ -386,7 +386,7 @@ public class CityCommands {
     public void list(Player player) {
         List<City> cities = new ArrayList<>(CityManager.getCities());
         if (cities.isEmpty()) {
-            MessagesManager.sendMessage(player, Component.text("Aucune ville n'existe"), Prefix.CITY, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("Aucune ville n'existe"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

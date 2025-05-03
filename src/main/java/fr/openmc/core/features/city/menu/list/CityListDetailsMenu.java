@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import static fr.openmc.core.features.city.mascots.MascotUtils.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CityListDetailsMenu extends Menu {
