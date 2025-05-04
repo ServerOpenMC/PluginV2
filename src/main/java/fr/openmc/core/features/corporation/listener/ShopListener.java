@@ -1,21 +1,27 @@
 package fr.openmc.core.features.corporation.listener;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.*;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -40,6 +46,16 @@ public class ShopListener implements Listener {
         if (shopBlocksManager.getShop(event.getBlock().getLocation()) != null) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void onShopExplode(BlockExplodeEvent event){
+        event.blockList().removeIf(block -> shopBlocksManager.getShop(block.getLocation()) != null);
+    }
+
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        event.blockList().removeIf(block -> shopBlocksManager.getShop(block.getLocation()) != null);
     }
 
     @EventHandler
