@@ -226,22 +226,22 @@ public class CompanyCommand {
     }
 
     // les membres de la ville sont propriétaires
-    @Subcommand("cityCreate")
-    @Description("Créer une entreprise de ville")
-    public void createTeamCompany(Player player, @Named("name") String name) {
-        if (!check(player, name, true)) return;
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city==null){
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.INFO, false);
-            return;
-        }
-        if (player.getUniqueId() != city.getPlayerWith(CPermission.OWNER)) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise au nom de votre ville sans en être l'owner"), Prefix.ENTREPRISE, MessageType.INFO, false);
-            return;
-        }
-        manager.createCompany(name, new CompanyOwner(CityManager.getPlayerCity(player.getUniqueId())), true, null);
-        MessagesManager.sendMessage(player, Component.text("§aL'entreprise " + name + " a été créée avec succès !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
-    }
+//    @Subcommand("cityCreate")
+//    @Description("Créer une entreprise de ville")
+//    public void createTeamCompany(Player player, @Named("name") String name) {
+//        if (!check(player, name, true)) return;
+//        City city = CityManager.getPlayerCity(player.getUniqueId());
+//        if (city==null){
+//            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.INFO, false);
+//            return;
+//        }
+//        if (player.getUniqueId() != city.getPlayerWith(CPermission.OWNER)) {
+//            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise au nom de votre ville sans en être l'owner"), Prefix.ENTREPRISE, MessageType.INFO, false);
+//            return;
+//        }
+//        manager.createCompany(name, new CompanyOwner(CityManager.getPlayerCity(player.getUniqueId())), true, null);
+//        MessagesManager.sendMessage(player, Component.text("§aL'entreprise " + name + " a été créée avec succès !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+//    }
 
     @Subcommand("menu")
     @Description("Ouvrir le menu de l'entreprise")

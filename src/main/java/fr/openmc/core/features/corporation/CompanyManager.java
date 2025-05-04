@@ -88,15 +88,16 @@ public class CompanyManager {
 
             stmt.addBatch("CREATE TABLE IF NOT EXISTS shop_supplier (" +
                     "time LONG DEFAULT 0, " +
-                    "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
-                    "item_uuid VARCHAR(36) NOT NULL, " +
+                    "uuid VARCHAR(36) NOT NULL , " + // uuid du joueur
+                    "item_uuid VARCHAR(36) NOT NULL, " + // uuid de l'item qu'il a mis en stock
+                    "shop_uuid VARCHAR(36) NOT NULL, " + // uuid du shop pour retrouver son shop
+                    "supplier_uuid VARCHAR(36) NOT NULL PRIMARY KEY, " + // uuid pour différencier tous les supply ( car il peut avoir plusieurs fois l'uuid d'un joueur )
                     "amount INT DEFAULT 0)");
 
             stmt.executeBatch();
         }
     }
 
-    // Optimisation : Utilisation de try-with-resources et évite les connexions multiples
     public static List<Company> getAllCompany() {
         OMCPlugin.getInstance().getLogger().info("chargements des companies...");
         List<Company> companies = new ArrayList<>();
@@ -227,6 +228,31 @@ public class CompanyManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement statement = conn.prepareStatement("SELECT time, uuid, item_uuid, shop_uuid, supplier_uuid, amount FROM shop_supplier");
+             ResultSet rs = statement.executeQuery()) {
+
+            while (rs.next()) {
+                long time = rs.getLong("time");
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                UUID item_uuid = UUID.fromString(rs.getString("item_uuid"));
+                UUID shop_uuid = UUID.fromString(rs.getString("shop_uuid"));
+                UUID supplier_uuid = UUID.fromString(rs.getString("supplier_uuid"));
+                int amount = rs.getInt("amount");
+
+                for (Shop shop : allShop){
+                    if (shop.getUuid().equals(shop_uuid)){
+                        shop.getSuppliers().put(time, new Supply(uuid, item_uuid, amount, supplier_uuid));
+                        break;
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         return allShop;
     }
 
@@ -296,7 +322,6 @@ public class CompanyManager {
 
     public static void saveAllShop() {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des shops...");
-        Connection conn = DatabaseManager.getConnection();
 
         try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
 
@@ -308,9 +333,11 @@ public class CompanyManager {
             e.printStackTrace();
         }
 
+        Connection conn = DatabaseManager.getConnection();
+
         String queryShop = "INSERT INTO shops (shop_uuid, owner, city_uuid, company_uuid, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String queryShopItem = "INSERT INTO shops_item (item, shop_uuid, price, amount) VALUES (?, ?, ?, ?)";
-        String queryShopSupplier = "INSERT INTO shop_supplier (time, uuid, item_uuid, amount) VALUES (?, ?, ?, ?)";
+        String queryShopSupplier = "INSERT INTO shop_supplier (time, uuid, item_uuid, shop_uuid, supplier_uuid, amount) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (
                 PreparedStatement stmtShop = conn.prepareStatement(queryShop);
@@ -354,25 +381,28 @@ public class CompanyManager {
                     stmtShop.setDouble(7, z);
                     stmtShop.addBatch(); // Adding shop to batch
 
-//                    for (Map.Entry<Long, Supply> entry : shop.getSuppliers().entrySet()) {
-//                        Supply supply = entry.getValue();
-//                        Long time = entry.getKey();
-//                        UUID uuid = supply.getSupplier();
-//                        UUID item_uuid = supply.getItemId();
-//                        int amount = supply.getAmount();
-//
-//                        stmtShopSupplier.setLong(1, time);
-//                        stmtShopSupplier.setString(2, uuid.toString());
-//                        stmtShopSupplier.setString(3, item_uuid.toString());
-//                        stmtShopSupplier.setInt(4, amount);
-//                        stmtShopSupplier.addBatch();
-//                    }
+                    for (Map.Entry<Long, Supply> entry : shop.getSuppliers().entrySet()) {
+                        Supply supply = entry.getValue();
+                        Long time = entry.getKey();
+                        UUID uuid = supply.getSupplier();
+                        UUID item_uuid = supply.getItemId();
+                        UUID supplier_uuid = supply.getSupplierUUID();
+                        int amount = supply.getAmount();
+
+                        stmtShopSupplier.setLong(1, time);
+                        stmtShopSupplier.setString(2, uuid.toString());
+                        stmtShopSupplier.setString(3, item_uuid.toString());
+                        stmtShopSupplier.setString(4, shopUuid.toString());
+                        stmtShopSupplier.setString(5, supplier_uuid.toString());
+                        stmtShopSupplier.setInt(6, amount);
+                        stmtShopSupplier.addBatch();
+                    }
                 }
             }
 
             stmtShop.executeBatch();
             stmtShopItem.executeBatch();
-//            stmtShopSupplier.executeBatch();
+            stmtShopSupplier.executeBatch();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -446,7 +476,13 @@ public class CompanyManager {
 
     // Un joueur postule pour rejoindre une entreprise
     public void applyToCompany(UUID player, Company company) {
-        pendingApplications.add(player, company);
+        Company playerCompany = getCompany(player);
+
+        if (playerCompany!=null) return;
+
+        if (!pendingApplications.getQueue().containsKey(player)){
+            pendingApplications.add(player, company);
+        }
     }
 
     // Accepte une candidature et ajoute le joueur en tant que marchand
@@ -462,7 +498,9 @@ public class CompanyManager {
 
     // Refuse une candidature en attente
     public void denyApplication(UUID player) {
-        pendingApplications.remove(player);
+        if (pendingApplications.getQueue().containsKey(player)) {
+            pendingApplications.remove(player);
+        }
     }
 
     // Retourne la liste des joueurs ayant une candidature en attente pour une entreprise donnée

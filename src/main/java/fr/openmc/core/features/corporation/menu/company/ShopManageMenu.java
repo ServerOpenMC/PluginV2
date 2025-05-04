@@ -5,7 +5,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import dev.xernas.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.Company;
 import fr.openmc.core.features.corporation.Shop;
-import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -41,7 +41,18 @@ public class ShopManageMenu extends PaginatedMenu {
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         for (Shop shop : company.getShops()) {
-            items.add(shop.getIcon(this, false).setNextMenu(new ShopMenu(getOwner(), shop, 0)));
+
+            List<Component> loc = new ArrayList<>();
+            double x = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
+            double y = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
+            double z = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+
+            loc.add(Component.text("§lLocation : §r x : " + x + " y : " + y + " z : " + z));
+
+            items.add(new ItemBuilder(this, Material.BARREL , itemMeta -> {
+                itemMeta.setDisplayName("§lshop :§r" + shop.getName());
+                itemMeta.lore(loc);
+            }));
         }
         return items;
     }

@@ -5,7 +5,11 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -170,6 +174,7 @@ public class Shop {
             return MethodState.FAILURE;
         }
         if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
+        double basePrice = item.getPrice(amount);
         item.setAmount(item.getAmount() - amount);
         turnover += item.getPrice(amount);
         if (owner.isCompany()) {
@@ -193,11 +198,19 @@ public class Shop {
                         removeLatestSupply();
                         double supplierCut = suppliersCut * ((double) supply.getAmount() / amount);
                         economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        Player supplier = Bukkit.getPlayer(supply.getSupplier());
+                        if (supplier!=null){
+                            MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
+                        }
                     }
                     else {
                         supply.setAmount(supply.getAmount() - amountToBuy);
                         double supplierCut = suppliersCut * ((double) amountToBuy / amount);
                         economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        Player supplier = Bukkit.getPlayer(supply.getSupplier());
+                        if (supplier!=null){
+                            MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
+                        }
                         break;
                     }
                 }
@@ -209,6 +222,10 @@ public class Shop {
         }
         else {
             economyManager.addBalance(owner.getPlayer(), item.getPrice(amount));
+            Player player = Bukkit.getPlayer(owner.getPlayer());
+            if (player!=null){
+                MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + item.getPrice(amount) + EconomyManager.getEconomyIcon() + ", l'argent vous a été transféré !"), Prefix.SHOP, MessageType.SUCCESS, false);
+            }
         }
         //TODO Give certain amount of that item to the buyer
         ItemStack toGive = item.getItem().clone();

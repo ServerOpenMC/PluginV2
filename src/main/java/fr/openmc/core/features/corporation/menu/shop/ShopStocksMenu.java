@@ -34,6 +34,9 @@ public class ShopStocksMenu extends PaginatedMenu {
         super(owner);
         this.shop = shop;
         this.itemIndex = itemIndex;
+
+        accetpMsg.add(Component.text("§arécupérer"));
+        denyMsg.add(Component.text("§cannuler"));
     }
 
     @Override
@@ -49,9 +52,6 @@ public class ShopStocksMenu extends PaginatedMenu {
     @Override
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new java.util.ArrayList<>();
-
-        accetpMsg.add(Component.text("récupérer"));
-        denyMsg.add(Component.text("annuler"));
 
         for (ShopItem stock : shop.getItems()) {
             items.add(new ItemBuilder(this, stock.getItem().getType(), itemMeta -> {

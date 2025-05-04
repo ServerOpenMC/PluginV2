@@ -30,10 +30,6 @@ public class ShopMenu extends Menu {
     private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
     private final Shop shop;
     private final int itemIndex;
-    private final List<Component> accetpBuyMsg = new ArrayList<>();
-    private final List<Component> denyBuyMsg = new ArrayList<>();
-    private final List<Component> accetpMsg = new ArrayList<>();
-    private final List<Component> denyMsg = new ArrayList<>();
 
     private int amountToBuy = 1;
 
@@ -43,11 +39,6 @@ public class ShopMenu extends Menu {
         this.itemIndex = itemIndex;
         items.addAll(shop.getItems());
         Shop.checkStock(shop);
-
-        accetpBuyMsg.add(Component.text("§aAcheter"));
-        denyBuyMsg.add(Component.text("§cAnnuler l'achat"));
-        accetpMsg.add(Component.text("§aSupprimer"));
-        denyMsg.add(Component.text("§cAnnuler la suppression"));
     }
 
     @Override
@@ -187,18 +178,17 @@ public class ShopMenu extends Menu {
             content.put(itemSlot, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
                 itemMeta.setDisplayName("§l§f" + ItemUtils.getItemTranslation(getCurrentItem().getItem()));
                 List<String> lore = new ArrayList<>();
-                lore.add("§7■ Prix: §c" + (getCurrentItem().getPricePerItem() * amountToBuy) + "€");
+                lore.add("§7■ Prix: §c" + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon());
                 lore.add("§7■ En stock: " + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getAmount()));
-                OMCPlugin.getInstance().getLogger().info("" + getCurrentItem().getAmount());
                 lore.add("§7■ Cliquez pour en acheter §f" + amountToBuy);
                 itemMeta.setLore(lore);
-            }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, accetpBuyMsg, denyBuyMsg)));
+            }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat")))));
 
         content.put(greenAddOne, new ItemBuilder(this, Material.LIME_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
-            amountToBuy++;
+            amountToBuy = getCurrentItem().getAmount()<=amountToBuy ? getCurrentItem().getAmount() : amountToBuy + 1;
             open();
         }));
 
@@ -206,7 +196,7 @@ public class ShopMenu extends Menu {
             itemMeta.setDisplayName("§aAjouter 10");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
-            amountToBuy += 10;
+            amountToBuy = getCurrentItem().getAmount()<=amountToBuy ? getCurrentItem().getAmount() : amountToBuy + 10;
             open();
         }));
 
@@ -215,7 +205,7 @@ public class ShopMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             if (amountToBuy == 1) amountToBuy = 64;
-            else amountToBuy += 64;
+            else amountToBuy = getCurrentItem().getAmount()<=amountToBuy ? getCurrentItem().getAmount() : amountToBuy + 64;
             open();
         }));
 
@@ -230,7 +220,7 @@ public class ShopMenu extends Menu {
 
         content.put(0, new ItemBuilder(this, Material.RED_DYE, itemMeta -> {
             itemMeta.setDisplayName("§c§lSupprimer le shop");
-        }).setNextMenu(new ConfirmMenu(getOwner(), this::accept, this::refuse, accetpMsg, denyMsg)));
+        }).setNextMenu(new ConfirmMenu(getOwner(), this::accept, this::refuse, List.of(Component.text("§aSupprimer")), List.of(Component.text("§cAnnuler la suppression")))));
 
         content.put(3, new ItemBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.setDisplayName("§a§lVos ventes");

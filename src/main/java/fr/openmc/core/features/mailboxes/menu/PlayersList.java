@@ -12,7 +12,7 @@ public class PlayersList extends PaginatedMailbox<ItemStack> {
         super(player);
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer == player) continue;
-            pageItems.add(ItemUtils.getPlayerHead(onlinePlayer));
+            pageItems.add(ItemUtils.getPlayerHead(onlinePlayer.getUniqueId()));
         }
         initInventory();
     }

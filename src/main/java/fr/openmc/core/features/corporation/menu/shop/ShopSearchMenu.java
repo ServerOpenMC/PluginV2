@@ -56,7 +56,7 @@ public class ShopSearchMenu extends PaginatedMenu {
 
             loc.add(Component.text("§lLocation : §r x : " + x + " y : " + y + " z : " + z));
 
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerHead(getOwner()) ,itemMeta -> {
+            items.add(new ItemBuilder(this, ItemUtils.getPlayerHead(getOwner().getUniqueId()) ,itemMeta -> {
                 itemMeta.setDisplayName("§lshop :§r" + shops.getName());
                 itemMeta.lore(loc);
             }));
