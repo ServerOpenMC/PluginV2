@@ -28,7 +28,6 @@ public class TPAQueue {
 	/**
 	 * Check if the player is the requester of a teleport request
 	 * @param player The player to check
-	 * @return true if the player is the requester, false otherwise
 	 */
 	public void addRequest(Player player, Player target) {
 		tpaRequests.put(target.getUniqueId(), player.getUniqueId());
@@ -38,7 +37,6 @@ public class TPAQueue {
 	/**
 	 * Check if the player is the target of a teleport request
 	 * @param player The player to check
-	 * @return true if the player is the target, false otherwise
 	 */
 	public void expireRequest(Player player, Player target) {
 		if (tpaRequests.containsKey(target.getUniqueId())) {
