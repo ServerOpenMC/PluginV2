@@ -6,6 +6,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.corporation.Company;
+import fr.openmc.core.features.corporation.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.LuckPermsAPI;
@@ -140,14 +142,20 @@ public class ScoreboardManager implements Listener {
             scoreboard.resetScores(entry);
         }
 
-        objective.getScore("§7").setScore(11);
-        
-        objective.getScore("§8• §fNom: §7"+player.getName()).setScore(10);
+        objective.getScore("§7").setScore(12);
+
+        objective.getScore("§8• §fNom: §7"+player.getName()).setScore(11);
 
         if (player.getWorld().getName().equalsIgnoreCase("world")) {
             City city = CityManager.getPlayerCity(player.getUniqueId());
             String cityName = city != null ? city.getName() : "Aucune";
-            objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
+            objective.getScore("§8• §fVille§7: "+cityName).setScore(10);
+        }
+
+        if (CompanyManager.getInstance().isInCompany(player.getUniqueId())){
+            Company company = CompanyManager.getCompany(player.getUniqueId());
+            String compName = company != null ? company.getName() : "Introuvable";
+            objective.getScore("§8• §fEntreprise§7: "+compName).setScore(9);
         }
 
         String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
