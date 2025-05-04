@@ -28,21 +28,7 @@ public class JoinMessageListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        String version = OMCPlugin.getInstance().getDescription().getVersion();
-        String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
-
-        if (version.matches("^\\d+\\.\\d+\\.\\d+$")) {
-            milestoneUrl += "tag/" + version;
-        } else {
-            milestoneUrl += "latest";
-        }
-
-        MessagesManager.sendMessage(player, Component.text("Bienvenu sur OpenMC !"), Prefix.OPENMC, MessageType.INFO, false);
-        MessagesManager.sendMessage(player, Component.text("Vous jouez actuellement sur la version ")
-                .append(Component.text(version).clickEvent(ClickEvent.openUrl(milestoneUrl)))
-                .append(Component.text(" du plugin §aOpenMC§r."))
-                .append(Component.text(" Cliquez ici pour voir les changements.").clickEvent(ClickEvent.openUrl(milestoneUrl)))
-                    , Prefix.OPENMC, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("Bienvenue sur OpenMC !"), Prefix.OPENMC, MessageType.INFO, false);
 
         TabList.getInstance().updateTabList(player);
 
