@@ -3,12 +3,12 @@ package fr.openmc.core.features.city.menu.list;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.xernas.menulib.PaginatedMenu;
 import dev.xernas.menulib.utils.ItemBuilder;
-import dev.xernas.menulib.utils.ItemUtils;
 import dev.xernas.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,7 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CityListMenu extends PaginatedMenu {
 	
@@ -30,16 +33,6 @@ public class CityListMenu extends PaginatedMenu {
 	private SortType sortType;
 	
 	/**
-	 * Enum representing the sorting types for the city list.
-	 */
-	private enum SortType {
-		NAME,
-		WEALTH,
-		POPULATION,
-		MASCOT_LEVEL
-	}
-	
-	/**
 	 * Constructor for CityListMenu.
 	 *
 	 * @param owner  The player who opens the menu.
@@ -48,7 +41,7 @@ public class CityListMenu extends PaginatedMenu {
 	public CityListMenu(Player owner, List<City> cities) {
 		this(owner, cities, SortType.NAME);
 	}
-
+	
 	/**
 	 * Constructor for CityListMenu with a specified sort type.
 	 *
@@ -75,7 +68,7 @@ public class CityListMenu extends PaginatedMenu {
 	@Override
 	public @NotNull List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
-		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
+		cities.forEach(city -> items.add(new ItemBuilder(this, PlayerUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
 			itemMeta.setDisplayName("§a" + city.getCityName());
 			itemMeta.setLore(List.of(
 					"§7Maire : " + Bukkit.getServer().getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName(),
@@ -140,7 +133,6 @@ public class CityListMenu extends PaginatedMenu {
 		return (sortType == type ? SELECTED_PREFIX : UNSELECTED_PREFIX) + label;
 	}
 	
-	
 	/**
 	 * Sets the sorting type and sorts the cities accordingly.
 	 *
@@ -204,5 +196,15 @@ public class CityListMenu extends PaginatedMenu {
 	 */
 	private void sortByMascotLevel(List<City> cities) {
 		cities.sort((o1, o2) -> Integer.compare(MascotUtils.getMascotOfCity(o2.getUUID()).getLevel(), MascotUtils.getMascotOfCity(o1.getUUID()).getLevel()));
+	}
+	
+	/**
+	 * Enum representing the sorting types for the city list.
+	 */
+	private enum SortType {
+		NAME,
+		WEALTH,
+		POPULATION,
+		MASCOT_LEVEL
 	}
 }
