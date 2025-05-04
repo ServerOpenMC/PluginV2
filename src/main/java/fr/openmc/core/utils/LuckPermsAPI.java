@@ -1,6 +1,7 @@
 package fr.openmc.core.utils;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.listeners.UserUnloadListener;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -27,6 +28,10 @@ public class LuckPermsAPI {
         }
 
         api = OMCPlugin.getInstance().getServer().getServicesManager().load(LuckPerms.class);
+
+        if (api != null) {
+            UserUnloadListener.register(OMCPlugin.getInstance(), api);
+        }
     }
 
     public static boolean hasLuckPerms() {

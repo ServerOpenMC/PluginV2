@@ -117,16 +117,16 @@ BLOCKS:
         buy: 0.0
         sell: 2.0
     name: §7Gravier
-- MOSS_BLOCK:
+- PRISMARINE:
     slot: 24
     price:
       initial:
-        buy: 0.0
-        sell: 0.75
+        buy: 1.5
+        sell: 0.0
       actual:
-        buy: 0.0
-        sell: 0.75
-    name: §7Bloc de mousse
+        buy: 1.5
+        sell: 0.0
+    name: §7Bloc de prismarine
 - OAK_LEAVES:
     slot: 16
     price:
@@ -217,16 +217,16 @@ BLOCKS:
         buy: 2.0
         sell: 2.0
     name: §7Laine
-- STONE:
+- COBBLESTONE:
     slot: 11
     price:
       initial:
-        buy: 2.0
-        sell: 2.0
+        buy: 0.0
+        sell: 0.2
       actual:
-        buy: 2.0
-        sell: 2.0
-    name: §7Pierre
+        buy: 0.0
+        sell: 0.2
+    name: §7Pierre taillée
 - AMETHYST_BLOCK:
     slot: 15
     price:
