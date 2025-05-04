@@ -72,9 +72,9 @@ public class CityListMenu extends PaginatedMenu {
 			itemMeta.setDisplayName("§a" + city.getCityName());
 			itemMeta.setLore(List.of(
 					"§7Maire : " + Bukkit.getServer().getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName(),
-					"§7Population : " + city.getMembers().size(),
-					"§7Niveau de la mascotte : " + MascotUtils.getMascotOfCity(city.getUUID()).getLevel(),
-					"§7Richesse : " + city.getBalance() + EconomyManager.getEconomyIcon()
+					"§bPopulation : " + city.getMembers().size(),
+					"§dNiveau de la mascotte : " + MascotUtils.getMascotOfCity(city.getUUID()).getLevel(),
+					"§6Richesse : " + city.getBalance() + EconomyManager.getEconomyIcon()
 			));
 		}).setNextMenu(new CityListDetailsMenu(getOwner(), city))));
 		return items;

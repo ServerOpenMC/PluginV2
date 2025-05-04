@@ -14,10 +14,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import static fr.openmc.core.features.city.mascots.MascotUtils.*;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static fr.openmc.core.features.city.mascots.MascotUtils.getEntityByMascotUUID;
+import static fr.openmc.core.features.city.mascots.MascotUtils.getMascotOfCity;
 
 public class CityListDetailsMenu extends Menu {
 	
