@@ -77,7 +77,7 @@ public class InputUtils {
      * @return Boolean
      */
     public static boolean isInputCityName(String input) {
-        if (input == null || input.isEmpty()) {
+        if (input == null || input.isBlank()) {
             return false;
         }
 
@@ -85,7 +85,7 @@ public class InputUtils {
             return false;
         }
 
-        return input.matches("[a-zA-Z0-9]+");
+        return input.matches("[a-zA-Z0-9\\s]+");
     }
 
     /**

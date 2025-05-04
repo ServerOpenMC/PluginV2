@@ -7,6 +7,7 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +29,7 @@ public class CraftKebabQuest extends Quest implements Listener {
         );
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
         if (item != null && item.isSimilar(CustomItemRegistry.getByName("omc_foods:kebab").getBest())) {

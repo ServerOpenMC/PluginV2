@@ -2,6 +2,8 @@ package fr.openmc.core.utils.messages;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import lombok.Getter;
@@ -54,6 +56,26 @@ public class MessagesManager {
      */
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix) {
         sendMessage(sender, message, prefix, MessageType.NONE, false);
+    }
+
+    /**
+     *
+     * Broadcasts a formatted message to the entire server
+     *
+     * @param message The content of the message
+     * @param prefix  The prefix for the message
+     * @param type    The type of message (information, error, success, warning)
+     */
+    public static void broadcastMessage(Component message, Prefix prefix, MessageType type) {
+        MiniMessage.miniMessage().deserialize("e");
+        Component messageComponent =
+                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
+                        .append(MiniMessage.miniMessage().deserialize(prefix.getPrefix()))
+                        .append(Component.text(" §7» ")
+                        .append(message)
+                );
+
+        Bukkit.broadcast(messageComponent);
     }
         
     public static String textToSmall(String text) {

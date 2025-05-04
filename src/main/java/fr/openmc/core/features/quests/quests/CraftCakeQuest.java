@@ -5,6 +5,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 
@@ -19,7 +20,7 @@ public class CraftCakeQuest extends Quest implements Listener {
         );
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCraft(CraftItemEvent event) {
         if (event.getRecipe().getResult().getType().equals(Material.CAKE)) {
             this.incrementProgress(event.getWhoClicked().getUniqueId());
