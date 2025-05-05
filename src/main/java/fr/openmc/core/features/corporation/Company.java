@@ -72,15 +72,15 @@ public class Company {
         addPermission(owner.getPlayer(), CorpPermission.OWNER);
     }
 
-    private void loadPermission(UUID player) {
-        if (!permsCache.containsKey(player)) {
+    private void loadPermission(UUID playerUUID) {
+        if (!permsCache.containsKey(playerUUID)) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM company_perms WHERE company_uuid = ? AND player = ?");
                 statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
-                statement.setString(2, player.toString());
+                statement.setString(2, playerUUID.toString());
                 ResultSet rs = statement.executeQuery();
 
-                Set<CorpPermission> plrPerms = permsCache.getOrDefault(player, new HashSet<>());
+                Set<CorpPermission> plrPerms = permsCache.getOrDefault(playerUUID, new HashSet<>());
 
                 while (rs.next()) {
                     try {
@@ -90,21 +90,21 @@ public class Company {
                     }
                 }
 
-                permsCache.put(player, plrPerms);
+                permsCache.put(playerUUID, plrPerms);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public Set<CorpPermission> getPermissions(UUID player) {
-        loadPermission(player);
-        return permsCache.get(player);
+    public Set<CorpPermission> getPermissions(UUID playerUUID) {
+        loadPermission(playerUUID);
+        return permsCache.get(playerUUID);
     }
 
-    public boolean hasPermission(UUID uuid, CorpPermission permission) {
-        loadPermission(uuid);
-        Set<CorpPermission> playerPerms = permsCache.get(uuid);
+    public boolean hasPermission(UUID playerUUID, CorpPermission permission) {
+        loadPermission(playerUUID);
+        Set<CorpPermission> playerPerms = permsCache.get(playerUUID);
 
         if (playerPerms.contains(CorpPermission.OWNER) || playerPerms.contains(CorpPermission.CITYMEMBER)) return true;
 
@@ -173,6 +173,12 @@ public class Company {
         return turnover;
     }
 
+    /**
+     * get a shop in the company by its uuid
+     *
+     * @param uuid the uuid of the shop we check
+     * @return A shop if found
+     */
     public Shop getShop(UUID uuid) {
         for (Shop shop : shops) {
             if (shop.getUuid().equals(uuid)) {
@@ -182,6 +188,12 @@ public class Company {
         return null;
     }
 
+    /**
+     * know if the company has a shop by its uuid
+     *
+     * @param uuid the uuid of the shop we check
+     * @return true or false
+     */
     public boolean hasShop(UUID uuid){
         for (Shop shop : shops) {
             if (shop.getUuid().equals(uuid)) {
@@ -191,6 +203,12 @@ public class Company {
         return false;
     }
 
+    /**
+     * get a shop by its index
+     *
+     * @param shop the index use to find a shop
+     * @return A shop if found
+     */
     public Shop getShop(int shop) {
         for (Shop shopToGet : shops) {
             if (shopToGet.getIndex() == shop) {
@@ -200,6 +218,15 @@ public class Company {
         return null;
     }
 
+    /**
+     * create a shop in the company
+     *
+     * @param playerUUID the uuid of the player who create the shop
+     * @param barrel the stockage of the shop
+     * @param cash the "cash register" use to open the shop menu
+     * @param shopUUID the uuid of a shop use at the start of the server
+     * @return true or false
+     */
     public boolean createShop(UUID playerUUID, Block barrel, Block cash, UUID shopUUID) {
         Player whoCreated = Bukkit.getPlayer(playerUUID);
 
@@ -241,6 +268,13 @@ public class Company {
         return false;
     }
 
+    /**
+     * delete a shop in the company
+     *
+     * @param player the player who earn the money
+     * @param uuid the shop uuid
+     * @return true or false
+     */
     public MethodState deleteShop(Player player, UUID uuid) {
         for (Shop shop : shops) {
             if (shop.getUuid().equals(uuid)) {
@@ -262,6 +296,11 @@ public class Company {
         return MethodState.ERROR;
     }
 
+    /**
+     * get all members of the company
+     *
+     * @return A list of all the members uuid
+     */
     public List<UUID> getAllMembers() {
         List<UUID> members = new ArrayList<>();
         if (owner.isPlayer()) {
@@ -274,18 +313,40 @@ public class Company {
         return members;
     }
 
+    /**
+     * get all merchants of teh company
+     *
+     * @return A list of all the merchants uuid
+     */
     public List<UUID> getMerchantsUUID() {
         return new ArrayList<>(merchants.keySet());
     }
 
+    /**
+     * get the merchant by an uuid
+     *
+     * @param uuid the uuid of the merchant we check
+     * @return A MerchantData if found
+     */
     public MerchantData getMerchant(UUID uuid) {
         return merchants.get(uuid);
     }
 
+    /**
+     * add a merchant in the company
+     *
+     * @param uuid the uuid of the merchant
+     * @param data the data of the merchant
+     */
     public void addMerchant(UUID uuid, MerchantData data) {
         merchants.put(uuid, data);
     }
 
+    /**
+     * fire a merchant of the coppany
+     *
+     * @param uuid the merchant uuid
+     */
     public void fireMerchant(UUID uuid) {
         removeMerchant(uuid);
         Player player = Bukkit.getPlayer(uuid);
@@ -298,6 +359,11 @@ public class Company {
         merchants.remove(uuid);
     }
 
+    /**
+     * send a message at the company owner
+     *
+     * @param message the message
+     */
     public void broadCastOwner(String message) {
         if (owner.isPlayer()) {
             Player player = Bukkit.getPlayer(owner.getPlayer());
@@ -314,6 +380,12 @@ public class Company {
         }
     }
 
+    /**
+     * know if an uuid is the owner of the company
+     *
+     * @param uuid the uuid we check
+     * @return true or false
+     */
     public boolean isOwner(UUID uuid) {
         if (owner.isPlayer()) {
             return owner.getPlayer().equals(uuid);
@@ -323,6 +395,12 @@ public class Company {
         }
     }
 
+    /**
+     * know if an uuid is the unique owner of the company
+     *
+     * @param uuid the uuid we check
+     * @return true or false
+     */
     public boolean isUniqueOwner(UUID uuid) {
         if (owner.isPlayer()) {
             return owner.getPlayer().equals(uuid);
@@ -332,6 +410,12 @@ public class Company {
         }
     }
 
+    /**
+     * konw if the uuid is in the company
+     *
+     * @param uuid the uuid we check
+     * @return true or false
+     */
     public boolean isIn(UUID uuid) {
         if (merchants.containsKey(uuid)) {
             return true;
@@ -339,6 +423,11 @@ public class Company {
         return isOwner(uuid);
     }
 
+    /**
+     * set a new owner
+     *
+     * @param uuid the uuid of the new owner
+     */
     public void setOwner(UUID uuid) {
         removePermission(owner.getPlayer(), CorpPermission.OWNER);
         owner = new CompanyOwner(uuid);

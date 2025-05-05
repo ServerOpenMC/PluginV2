@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.sql.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class CompanyManager {
@@ -35,6 +36,12 @@ public class CompanyManager {
 
     public CompanyManager () {
         instance = this;
+
+        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms", ((args, sender, command) -> {
+            return Arrays.stream(CorpPermission.values())
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
+        }));
 
         CommandsManager.getHandler().register(
                 new CompanyCommand(),
@@ -379,7 +386,7 @@ public class CompanyManager {
                     stmtShop.setDouble(5, x);
                     stmtShop.setDouble(6, y);
                     stmtShop.setDouble(7, z);
-                    stmtShop.addBatch(); // Adding shop to batch
+                    stmtShop.addBatch();
 
                     for (Map.Entry<Long, Supply> entry : shop.getSuppliers().entrySet()) {
                         Supply supply = entry.getValue();
@@ -450,6 +457,13 @@ public class CompanyManager {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des shops fini.");
     }
 
+    /**
+     * get the items of a marchant from the database
+     *
+     * @param playerUUID the uuid of the player we check
+     * @param conn use to have the same connection
+     * @return A ItemStack[] from bytes stock in the database
+     */
     public static ItemStack[] getMerchantItem(UUID playerUUID, Connection conn) {
         String query = "SELECT content FROM merchants_data WHERE uuid = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -469,41 +483,66 @@ public class CompanyManager {
         return new ItemStack[54];
     }
 
-    // Crée une nouvelle entreprise et l'ajoute à la liste des entreprises existantes
+    /**
+     * create a new company
+     *
+     * @param name the name of the company
+     * @param owner the owner of the company
+     * @param newMember use for the city company ( not working for now )
+     * @param company_uuid use to set the company uuid if it's create at the load of the server
+     */
     public void createCompany(String name, CompanyOwner owner, boolean newMember, UUID company_uuid) {
         companies.add(new Company(name, owner, company_uuid, newMember));
     }
 
-    // Un joueur postule pour rejoindre une entreprise
-    public void applyToCompany(UUID player, Company company) {
-        Company playerCompany = getCompany(player);
+    /**
+     * appling for a company
+     *
+     * @param playerUUID the uuid of the applier
+     * @param company the company where he wants to apply
+     */
+    public void applyToCompany(UUID playerUUID, Company company) {
+        Company playerCompany = getCompany(playerUUID);
 
         if (playerCompany!=null) return;
 
-        if (!pendingApplications.getQueue().containsKey(player)){
-            pendingApplications.add(player, company);
+        if (!pendingApplications.getQueue().containsKey(playerUUID)){
+            pendingApplications.add(playerUUID, company);
         }
     }
 
-    // Accepte une candidature et ajoute le joueur en tant que marchand
-    public void acceptApplication(UUID player, Company company) {
-        company.addMerchant(player, new MerchantData());
-        pendingApplications.remove(player);
+    /**
+     * accept the application of a player
+     *
+     * @param playerUUID the uuid of the applier
+     * @param company the company which accept the player
+     */
+    public void acceptApplication(UUID playerUUID, Company company) {
+        company.addMerchant(playerUUID, new MerchantData());
+        pendingApplications.remove(playerUUID);
     }
 
-    // Vérifie si un joueur a une candidature en attente pour une entreprise donnée
-    public boolean hasPendingApplicationFor(UUID player, Company company) {
-        return pendingApplications.get(player) == company;
+    public boolean hasPendingApplicationFor(UUID playerUUID, Company company) {
+        return pendingApplications.get(playerUUID) == company;
     }
 
-    // Refuse une candidature en attente
-    public void denyApplication(UUID player) {
-        if (pendingApplications.getQueue().containsKey(player)) {
-            pendingApplications.remove(player);
+    /**
+     * deny the application of a player
+     *
+     * @param playerUUID the uuid of the applier
+     */
+    public void denyApplication(UUID playerUUID) {
+        if (pendingApplications.getQueue().containsKey(playerUUID)) {
+            pendingApplications.remove(playerUUID);
         }
     }
 
-    // Retourne la liste des joueurs ayant une candidature en attente pour une entreprise donnée
+    /**
+     * get the application list of a company
+     *
+     * @param company the company we check
+     * @return A list of all the application
+     */
     public List<UUID> getPendingApplications(Company company) {
         List<UUID> players = new ArrayList<>();
         for (UUID player : pendingApplications.getQueue().keySet()) {
@@ -514,7 +553,12 @@ public class CompanyManager {
         return players;
     }
 
-    // Liquidation d'une entreprise (suppression si conditions remplies)
+    /**
+     * liquidate / remove a company
+     *
+     * @param company the company we check
+     * @return true or false
+     */
     public boolean liquidateCompany(Company company) {
         // L'entreprise ne peut pas être liquidée si elle a encore des marchands
         if (!company.getMerchants().isEmpty()) {
@@ -534,21 +578,30 @@ public class CompanyManager {
         return true;
     }
 
-    // Renvoyer tous les marchands d'une entreprise
+    /**
+     * remove a player for the company
+     *
+     * @param company the company we check
+     */
     public void fireAllMerchants(Company company) {
         for (UUID uuid : company.getMerchants().keySet()) {
             company.fireMerchant(uuid);
         }
     }
 
-    // Permet à un joueur de quitter une entreprise (différents cas gérés)
-    public MethodState leaveCompany(UUID player) {
-        Company company = getCompany(player);
+    /**
+     * get the application list of a company
+     *
+     * @param playerUUID the uuid of the player who want to leave the company
+     * @return A different MethodeState
+     */
+    public MethodState leaveCompany(UUID playerUUID) {
+        Company company = getCompany(playerUUID);
 
-        if (company.isOwner(player)) {
+        if (company.isOwner(playerUUID)) {
             // Si le joueur est propriétaire et qu'il n'y a pas d'autres marchands
             if (company.getMerchants().isEmpty()) {
-                if (company.isUniqueOwner(player)) {
+                if (company.isUniqueOwner(playerUUID)) {
                     if (!liquidateCompany(company)) {
                         return MethodState.WARNING;
                     }
@@ -560,20 +613,25 @@ public class CompanyManager {
         }
 
         // Si ce n'est pas le propriétaire qui quitte, on supprime le marchand
-        MerchantData data = company.getMerchant(player);
-        company.removeMerchant(player);
+        MerchantData data = company.getMerchant(playerUUID);
+        company.removeMerchant(playerUUID);
 
         // Si plus aucun membre n'est présent après le départ, l'entreprise est liquidée
         if (company.getAllMembers().isEmpty()) {
             if (!liquidateCompany(company)) {
-                company.addMerchant(player, data); // Annulation si liquidation impossible
+                company.addMerchant(playerUUID, data); // Annulation si liquidation impossible
                 return MethodState.WARNING;
             }
         }
         return MethodState.SUCCESS;
     }
 
-    // Trouve une entreprise par son nom
+    /**
+     * get the company by its name
+     *
+     * @param name the name we check
+     * @return A company if found
+     */
     public Company getCompany(String name) {
         for (Company company : companies) {
             if (company.getName().equals(name)) {
@@ -583,7 +641,12 @@ public class CompanyManager {
         return null;
     }
 
-    // Trouve un magasin par son UUID, quel que soit son propriétaire
+    /**
+     * get a shop by its uuid
+     *
+     * @param shopUUID the shop uuid use for the check
+     * @return A shop if found
+     */
     public Shop getAnyShop(UUID shopUUID) {
         for (Company company : companies) {
             Shop shop = company.getShop(shopUUID);
@@ -594,7 +657,12 @@ public class CompanyManager {
         return null;
     }
 
-    // Trouve l'entreprise d'un joueur (en tant que marchand ou propriétaire ou companyUUID)
+    /**
+     * get a company by an uuid
+     *
+     * @param uuid the company uuid use for the check
+     * @return A shop if found
+     */
     public static Company getCompany(UUID uuid) {
         for (Company company : companies) {
             if (company.getMerchants().containsKey(uuid)) {
@@ -611,7 +679,12 @@ public class CompanyManager {
         return null;
     }
 
-    // Trouve l'entreprise associée à une ville donnée
+    /**
+     * get a company by a city ( not use now )
+     *
+     * @param city the city us for the check
+     * @return A company if found
+     */
     public static Company getCompany(City city) {
         for (Company company : companies) {
             if (company.getOwner().getCity() != null && company.getOwner().getCity().equals(city)) {
@@ -621,17 +694,33 @@ public class CompanyManager {
         return null;
     }
 
-    // Vérifie si un joueur est dans une entreprise
-    public boolean isInCompany(UUID player) {
-        return getCompany(player) != null;
+    /**
+     * know if a player has a company
+     *
+     * @param playerUUID the uuid of the player we check
+     * @return true or false
+     */
+    public boolean isInCompany(UUID playerUUID) {
+        return getCompany(playerUUID) != null;
     }
 
-    // Vérifie si un joueur est un marchand dans une entreprise donnée
-    public boolean isMerchantOfCompany(UUID player, Company company) {
-        return company.getMerchants().containsKey(player);
+    /**
+     * know if a player is a merchant in a company
+     *
+     * @param playerUUID the uuid of the player we check
+     * @param company the company we check
+     * @return true or false
+     */
+    public boolean isMerchantOfCompany(UUID playerUUID, Company company) {
+        return company.getMerchants().containsKey(playerUUID);
     }
 
-    // Vérifie si une entreprise existe par son nom
+    /**
+     * know if a company exist by its name
+     *
+     * @param name the name use for the check
+     * @return true or false
+     */
     public boolean companyExists(String name) {
         return getCompany(name) != null;
     }
