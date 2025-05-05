@@ -276,19 +276,26 @@ public class MayorLawMenu extends Menu {
                         } else if (PerkManager.hasPerk(city.getMayor(), 11)) {
                             // Essor agricole (id : 11) - Perk Event
                             for (UUID uuid : city.getMembers()) {
-                                try {
-                                    Player member = Bukkit.getPlayer(uuid);
+                                Player member = Bukkit.getPlayer(uuid);
 
-                                    if (member == null || !member.isOnline()) continue;
+                                if (member == null || !member.isOnline()) continue;
 
-                                    MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché l'§eEssor Agricole §f!"), Prefix.MAYOR, MessageType.INFO, false);
-                                } catch (Exception e) {
-                                    System.out.println("Erreur lors de l'envoie du message au membre de la ville");
-                                    e.printStackTrace();
-                                }
+                                MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché l'§eEssor Agricole §f!"), Prefix.MAYOR, MessageType.INFO, false);
                             }
 
                             DynamicCooldownManager.use(city.getUUID(), "city:agricultural_essor", 30 * 60 * 1000L); // 30 minutes
+                            DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        } else if (PerkManager.hasPerk(city.getMayor(), 12)) {
+                            // Ruée Miniere (id : 12) - Perk Event
+                            for (UUID uuid : city.getMembers()) {
+                                Player member = Bukkit.getPlayer(uuid);
+
+                                if (member == null || !member.isOnline()) continue;
+
+                                MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eRuée Minière §f!"), Prefix.MAYOR, MessageType.INFO, false);
+                            }
+
+                            DynamicCooldownManager.use(city.getUUID(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
                             DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                         }
                     });

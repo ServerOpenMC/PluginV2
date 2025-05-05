@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.perks.basic.*;
 import fr.openmc.core.features.city.mayor.perks.event.AgriculturalEssorPerk;
 import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
+import fr.openmc.core.features.city.mayor.perks.event.MineralRushPerk;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -94,7 +95,8 @@ public class MayorManager {
                 new GPSTrackerPerk(),
                 new SymbiosisPerk(),
                 new ImpotCollection(),
-                new AgriculturalEssorPerk()
+                new AgriculturalEssorPerk(),
+                new MineralRushPerk()
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(

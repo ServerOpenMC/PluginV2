@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collection;
 import java.util.UUID;
 
-public class AgriculturalEssorPerk implements Listener {
+public class MineralRushPerk implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (MayorManager.getInstance().phaseMayor !=2) return;
@@ -35,10 +35,10 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), 11)) return;
+        if (!PerkManager.hasPerk(city.getMayor(), 12)) return;
 
-        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:agricultural_essor")) {
-            MessagesManager.sendMessage(player, Component.text("La réforme d'événement l'§eEssor Agricole §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:agricultural_essor"))), Prefix.MAYOR, MessageType.INFO, false);
+        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:mineral_rush")) {
+            MessagesManager.sendMessage(player, Component.text("La réforme d'événement la §eRuée Minière §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:mineral_rush"))), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 
@@ -47,25 +47,25 @@ public class AgriculturalEssorPerk implements Listener {
         if (MayorManager.getInstance().phaseMayor !=2) return;
 
         String chronometerGroup = e.getGroup();
-        if (!chronometerGroup.equals("city:agricultural_essor")) return;
+        if (!chronometerGroup.equals("city:mineral_rush")) return;
 
         City city = CityManager.getCity(e.getEntity().getUniqueId().toString());
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), 11)) return;
+        if (!PerkManager.hasPerk(city.getMayor(), 12)) return;
 
         for (UUID memberUUID : city.getMembers()) {
             Player player = Bukkit.getPlayer(memberUUID);
 
             if (player == null || !player.isOnline()) continue;
 
-            MessagesManager.sendMessage(player, Component.text("La réforme d'événement l'§eEssor Agricole §fest terminée !"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("La réforme d'événement la §eRuée Minière §fest terminée !"), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 
     @EventHandler
-    public void onCropBreak(BlockBreakEvent event) {
+    public void onMineralBreak(BlockBreakEvent event) {
         if (MayorManager.getInstance().phaseMayor !=2) return;
 
         Player player = event.getPlayer();
@@ -73,13 +73,14 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), 11)) return;
+        if (!PerkManager.hasPerk(city.getMayor(), 12)) return;
 
-        if (DynamicCooldownManager.isReady(city.getUUID(), "city:agricultural_essor")) return;
+        if (DynamicCooldownManager.isReady(city.getUUID(), "city:mineral_rush")) return;
 
         Block block = event.getBlock();
 
-        if (!MaterialUtils.isCrop(block.getType())) return;
+        System.out.println(block.getType());
+        if (!MaterialUtils.isOre(block.getType())) return;
 
         event.setDropItems(false);
 
