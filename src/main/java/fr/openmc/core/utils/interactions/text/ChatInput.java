@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class LongTextInput implements Listener {
+public class ChatInput implements Listener {
 
     private static final Map<UUID, Consumer<String>> playerInputs = new HashMap<>();
 
