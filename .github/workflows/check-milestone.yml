@@ -1,0 +1,17 @@
+name: Milestone Check
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  check-milestone:
+    name: Milestone check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify that PR has been assigned a milestone
+        run: |
+          if [ "${{ github.event.pull_request.milestone }}" == "" ]; then
+            echo "❌ PR has not been assigned a milestone."
+            exit 1
+          fi

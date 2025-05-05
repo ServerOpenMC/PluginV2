@@ -1,0 +1,75 @@
+name: Build & Test
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README.md'
+  push:
+    paths-ignore:
+      - '.github/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - 'README.md'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run Tests with Gradle
+        run: ./gradlew test
+
+      - name: Report test results
+        uses: dorny/test-reporter@v2
+        if: always()
+        with:
+          name: Gradle Tests
+          path: build/test-results/test/*.xml
+          reporter: java-junit
+          fail-on-error: true
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build with snapshot version
+        env:
+          SNAPSHOT: true
+          GITHUB_SHA: ${{ github.sha }}
+        run: ./gradlew jar
+
+      - name: Upload Plugin jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenMC-${{ github.sha }}
+          path: builds/

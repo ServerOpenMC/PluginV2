@@ -204,7 +204,7 @@ public class CityCommands {
         MessagesManager.sendMessage(target,
                 Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getCityName() + "\n")
                         .append(Component.text("§8Faite §a/city accept §8pour accepter\n").clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
-                        .append(Component.text("§8Faite §a/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
+                        .append(Component.text("§8Faite §c/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
                 Prefix.CITY, MessageType.INFO, false);
     }
 
@@ -512,8 +512,6 @@ public class CityCommands {
 
         UUID uuid = player.getUniqueId();
 
-        MessagesManager.sendMessage(player, Component.text("Votre ville est en cours de création..."), Prefix.CITY, MessageType.INFO, false);
-
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
         Chunk origin = player.getChunk();
@@ -534,7 +532,7 @@ public class CityCommands {
         }
 
         if (isClaimed.get()) {
-            MessagesManager.sendMessage(player, Component.text("Cette parcelle est déjà claim"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Une des parcelles autour de ce chunk est claim! "), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

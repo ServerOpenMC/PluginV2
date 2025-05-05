@@ -192,7 +192,7 @@ public class MailboxListener implements Listener {
         if (cancelBtn(item) && holder instanceof MailboxInv) {
             runTask(player::closeInventory);
             return;
-        } else if (item != null && item.getType() == Material.CHEST && slot == 45) {
+        } else if (item != null && item.getType() == Material.CHEST && slot == 45 && holder instanceof PlayerMailbox) {
             runTask(() -> HomeMailbox.openHomeMailbox(player, plugin));
             return;
         } else if (holder instanceof PaginatedMailbox<? extends ItemStack> menu) {

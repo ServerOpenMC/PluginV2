@@ -20,6 +20,7 @@ import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.PapiAPI;
@@ -71,6 +72,7 @@ public class OMCPlugin extends JavaPlugin {
         ContestManager contestManager = new ContestManager(this);
         ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
+        new UpdateManager();
         new MascotsManager(this); // laisser avant CityManager
         new CityManager();
         new ListenersManager();
@@ -84,7 +86,8 @@ public class OMCPlugin extends JavaPlugin {
         new FriendManager();
         new QuestsManager();
         new TabList();
-        new LeaderboardManager(this);
+        if (!OMCPlugin.isUnitTestVersion())
+            new LeaderboardManager(this);
         new AdminShopManager(this);
 
         new ShopBlocksManager(this);
