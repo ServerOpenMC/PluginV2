@@ -93,7 +93,6 @@ public class OMCPlugin extends JavaPlugin {
         /* LOAD */
         DynamicCooldownManager.loadCooldowns();
 
-        ItemInteraction.startDebugTask();
         getLogger().info("Plugin activé");
     }
 
