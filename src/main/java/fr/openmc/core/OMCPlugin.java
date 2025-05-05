@@ -9,6 +9,9 @@ import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.BankManager;
+import fr.openmc.core.features.corporation.CompanyManager;
+import fr.openmc.core.features.corporation.PlayerShopManager;
+import fr.openmc.core.features.corporation.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.friend.FriendManager;
@@ -28,6 +31,8 @@ import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.freeze.FreezeManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,9 +46,14 @@ public class OMCPlugin extends JavaPlugin {
     @Getter static TranslationManager translationManager;
     private DatabaseManager dbManager;
 
+    public static NamespacedKey SUPPLIER_KEY;
+
     @Override
     public void onEnable() {
         instance = this;
+
+        /* KEY */
+        SUPPLIER_KEY = new NamespacedKey(this, "supplier");
 
         /* CONFIG */
         saveDefaultConfig();
@@ -80,11 +90,15 @@ public class OMCPlugin extends JavaPlugin {
             new LeaderboardManager(this);
         new AdminShopManager(this);
 
+        new ShopBlocksManager(this);
+        new PlayerShopManager();
+        new CompanyManager();// laisser apres Economy Manager
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
         translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
         translationManager.loadAllLanguages();
+
         getLogger().info("Plugin activé");
     }
 
@@ -98,6 +112,9 @@ public class OMCPlugin extends JavaPlugin {
         MascotsManager.saveMascots(MascotsManager.mascots);
         CityManager.saveFreeClaims(CityManager.freeClaim);
 
+
+        CompanyManager.saveAllCompanies();
+        CompanyManager.saveAllShop();
 
         CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {

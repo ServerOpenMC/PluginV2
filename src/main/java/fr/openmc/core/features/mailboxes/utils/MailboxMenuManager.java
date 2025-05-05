@@ -1,5 +1,6 @@
 package fr.openmc.core.features.mailboxes.utils;
 
+import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -90,19 +91,6 @@ public class MailboxMenuManager {
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text("⬅ Home", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
         meta.setMaxStackSize(1);
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    public static ItemStack getPlayerHead(Player player) {
-        return getPlayerHead(player, Component.text(player.getName(), NamedTextColor.GOLD, TextDecoration.BOLD));
-    }
-
-    public static ItemStack getPlayerHead(Player player, Component name) {
-        ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
-        SkullMeta meta = (SkullMeta) item.getItemMeta();
-        meta.setOwningPlayer(player);
-        meta.displayName(nonItalic(name));
         item.setItemMeta(meta);
         return item;
     }
