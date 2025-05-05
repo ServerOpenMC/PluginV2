@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.mayor.perks.event;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.MaterialUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
@@ -11,9 +12,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.block.impl.CraftCrop;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +26,8 @@ import java.util.UUID;
 public class AgriculturalEssorPerk implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if (MayorManager.getInstance().phaseMayor !=2) return;
+
         Player player = event.getPlayer();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -40,6 +41,8 @@ public class AgriculturalEssorPerk implements Listener {
 
     @EventHandler
     void onTimeEnd(Chronometer.ChronometerEndEvent e) {
+        if (MayorManager.getInstance().phaseMayor !=2) return;
+
         String chronometerGroup = e.getGroup();
         if (!chronometerGroup.equals("city:agricultural_essor")) return;
 
@@ -56,6 +59,7 @@ public class AgriculturalEssorPerk implements Listener {
 
     @EventHandler
     public void onCropBreak(BlockBreakEvent event) {
+        if (MayorManager.getInstance().phaseMayor !=2) return;
 
         Player player = event.getPlayer();
         City city = CityManager.getPlayerCity(player.getUniqueId());

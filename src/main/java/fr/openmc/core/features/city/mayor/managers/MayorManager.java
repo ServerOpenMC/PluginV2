@@ -494,6 +494,8 @@ public class MayorManager {
                 }
             }
 
+            //TODO: Nettoyer tous les cooldown en lien avec les perks (event)
+
             if (city.getMembers().size()>=MEMBER_REQ_ELECTION) {
                 createMayor(null,null, city, null, null, null, null, ElectionType.ELECTION);
             }
