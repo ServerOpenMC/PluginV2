@@ -2,6 +2,7 @@ package fr.openmc.core.utils.interactions.items;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.MaterialUtils;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.chronometer.ChronometerInfo;
 import fr.openmc.core.utils.chronometer.ChronometerType;
@@ -35,7 +36,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 import java.util.function.Function;
 
-import static fr.openmc.core.utils.ItemUtils.isBundle;
 
 public class ItemInteraction implements Listener {
 
@@ -158,12 +158,12 @@ public class ItemInteraction implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
         ItemStack cursorItem = event.getCursor();
 
-        if (clickedItem != null && isBundle(clickedItem)) {
+        if (clickedItem != null && MaterialUtils.isBundle(clickedItem)) {
             if (isItemInteraction(cursorItem)) {
                 event.setCancelled(true);
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
             }
-        } else if (cursorItem != null && isBundle(cursorItem)) {
+        } else if (cursorItem != null && MaterialUtils.isBundle(cursorItem)) {
             if (isItemInteraction(clickedItem)) {
                 event.setCancelled(true);
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
@@ -341,29 +341,4 @@ public class ItemInteraction implements Listener {
         }
     }
 
-    public static void startDebugTask() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getLogger().info("Débogage des playerCallbacks:");
-                for (UUID playerId : playerCallbacks.keySet()) {
-                    HashMap<String, Function<Location, Boolean>> callbacks = playerCallbacks.get(playerId);
-                    Bukkit.getLogger().info("Joueur UUID: " + playerId);
-                    for (String key : callbacks.keySet()) {
-                        Bukkit.getLogger().info("  Interaction ID: " + key);
-                    }
-                }
-
-                Bukkit.getLogger().info("Débogage des playerChronometerData:");
-                for (UUID playerId : playerChronometerData.keySet()) {
-                    HashMap<String, InteractionInfo> chronometerData = playerChronometerData.get(playerId);
-                    Bukkit.getLogger().info("Joueur UUID: " + playerId);
-                    for (String key : chronometerData.keySet()) {
-                        InteractionInfo info = chronometerData.get(key);
-                        Bukkit.getLogger().info("  Interaction ID: " + key + " | Chrono: " + info.getChronometerInfo().getChronometerGroup());
-                    }
-                }
-            }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 300L);
-    }
 }

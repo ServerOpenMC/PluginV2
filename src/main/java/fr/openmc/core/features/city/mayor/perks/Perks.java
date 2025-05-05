@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.mayor;
+package fr.openmc.core.features.city.mayor.perks;
 
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import lombok.Getter;

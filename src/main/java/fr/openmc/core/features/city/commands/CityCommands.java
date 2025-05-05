@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
-import fr.openmc.core.features.city.mayor.Perks;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;

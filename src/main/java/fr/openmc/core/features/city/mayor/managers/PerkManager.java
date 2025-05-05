@@ -1,14 +1,12 @@
 package fr.openmc.core.features.city.mayor.managers;
 
-import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.mayor.Mayor;
-import fr.openmc.core.features.city.mayor.PerkType;
-import fr.openmc.core.features.city.mayor.Perks;
+import fr.openmc.core.features.city.mayor.perks.PerkType;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 public class PerkManager {
     private static final Random RANDOM = new Random();

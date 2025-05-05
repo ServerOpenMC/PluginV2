@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.mayor.perks;
+package fr.openmc.core.features.city.mayor.perks.basic;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
