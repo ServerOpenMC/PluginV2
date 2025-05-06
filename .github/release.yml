@@ -1,0 +1,14 @@
+changelog:
+  categories:
+    - title: Nouvelles Fonctionnalités
+      labels:
+        - "🆙 Amélioration"
+        - ":arrows_counterclockwise: Changement"
+        - ":package:  Features"
+    - title: Bugs et Optimisations
+      labels:
+        - "⚡Optimisation"
+        - ":sparkles: Fixes"
+    - title: Autre
+      labels:
+        - "*"

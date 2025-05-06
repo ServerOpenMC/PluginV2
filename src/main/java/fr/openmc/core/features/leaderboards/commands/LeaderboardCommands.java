@@ -52,6 +52,7 @@ public class LeaderboardCommands {
     //TODO: Utiliser ItemInteraction (Iambibi)
     @Subcommand("setPos")
     @CommandPermission("op")
+    @Description("Défini la position d'un Hologram.")
     void setPosCommand(Player player, String leaderboard) {
         if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
             try {
@@ -62,6 +63,33 @@ public class LeaderboardCommands {
             }
         } else {
             player.sendMessage("§cVeuillez spécifier un leaderboard valide: contributors, money, ville-money, playtime");
+        }
+    }
+
+    @Subcommand("disable")
+    @CommandPermission("op")
+    @Description("Désactive tout sauf les commandes")
+    void disableCommand(CommandSender sender) {
+        LeaderboardManager.getInstance().disable();
+    }
+
+    @Subcommand("enable")
+    @CommandPermission("op")
+    @Description("Active tout")
+    void enableCommand(CommandSender sender) {
+        LeaderboardManager.getInstance().enable();
+    }
+
+    @Subcommand("setScale")
+    @CommandPermission("op")
+    @Description("Défini la taille des Holograms.")
+    void setScaleCommand(Player player, float scale) {
+        player.sendMessage("§aTaille des Holograms modifiée à " + scale);
+        try {
+            LeaderboardManager.getInstance().setScale(scale);
+            player.sendMessage("§aTaille des Holograms modifiée à " + scale);
+        } catch (IOException e) {
+            player.sendMessage("§cErreur lors de la mise à jour de la taille des holograms: " + e.getMessage());
         }
     }
 }
