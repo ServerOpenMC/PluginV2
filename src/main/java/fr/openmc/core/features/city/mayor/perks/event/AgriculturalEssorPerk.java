@@ -92,4 +92,6 @@ public class AgriculturalEssorPerk implements Listener {
             }
         }
     }
+
+    //TODO : verif pour crop item adder
 }

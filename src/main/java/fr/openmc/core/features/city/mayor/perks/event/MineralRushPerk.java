@@ -1,7 +1,10 @@
 package fr.openmc.core.features.city.mayor.perks.event;
 
+import dev.lone.itemsadder.api.Events.CustomBlockBreakEvent;
+import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.utils.DateUtils;
@@ -13,7 +16,9 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -79,7 +84,6 @@ public class MineralRushPerk implements Listener {
 
         Block block = event.getBlock();
 
-        System.out.println(block.getType());
         if (!MaterialUtils.isOre(block.getType())) return;
 
         event.setDropItems(false);
@@ -90,6 +94,35 @@ public class MineralRushPerk implements Listener {
             for (ItemStack drop : drops) {
                 block.getWorld().dropItemNaturally(block.getLocation(), drop);
                 block.getWorld().dropItemNaturally(block.getLocation(), drop.clone());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onAyweniteBreak(CustomBlockBreakEvent event) {
+        if (MayorManager.getInstance().phaseMayor !=2) return;
+
+        Player player = event.getPlayer();
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (city == null) return;
+
+        if (!PerkManager.hasPerk(city.getMayor(), 12)) return;
+
+        if (DynamicCooldownManager.isReady(city.getUUID(), "city:mineral_rush")) return;
+
+        Block block = event.getBlock();
+
+        String namespace = event.getNamespacedID();
+
+        if (!namespace.equals("omc_blocks:aywenite_ore") && !namespace.equals("omc_blocks:deepslate_aywenite_ore")) return;
+
+        // TODO : verif aywenite drops
+        Collection<ItemStack> drops = block.getDrops(player.getInventory().getItemInMainHand());
+
+        if (!drops.isEmpty()) {
+            for (ItemStack drop : drops) {
+                block.getWorld().dropItemNaturally(block.getLocation(), drop);
             }
         }
     }
