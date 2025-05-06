@@ -3,12 +3,12 @@ package fr.openmc.core.features.city.menu.list;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.xernas.menulib.PaginatedMenu;
 import dev.xernas.menulib.utils.ItemBuilder;
+import dev.xernas.menulib.utils.ItemUtils;
 import dev.xernas.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,6 +31,7 @@ public class CityListMenu extends PaginatedMenu {
 	
 	private final List<City> cities;
 	private SortType sortType;
+	private int page;
 	
 	/**
 	 * Constructor for CityListMenu.
@@ -68,7 +69,7 @@ public class CityListMenu extends PaginatedMenu {
 	@Override
 	public @NotNull List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
-		cities.forEach(city -> items.add(new ItemBuilder(this, PlayerUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
+		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
 			itemMeta.setDisplayName("§a" + city.getCityName());
 			itemMeta.setLore(List.of(
 					"§7Maire : " + Bukkit.getServer().getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName(),
@@ -76,7 +77,7 @@ public class CityListMenu extends PaginatedMenu {
 					"§dNiveau de la mascotte : " + MascotUtils.getMascotOfCity(city.getUUID()).getLevel(),
 					"§6Richesse : " + city.getBalance() + EconomyManager.getEconomyIcon()
 			));
-		}).setNextMenu(new CityListDetailsMenu(getOwner(), city))));
+		})));
 		return items;
 	}
 	
@@ -103,8 +104,12 @@ public class CityListMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
-	
+	public void onInventoryClick(InventoryClickEvent e) {
+		page = getPage();
+		City city = cities.get(e.getSlot() + (45 * page));
+		if (city != null) {
+			new CityListDetailsMenu(getOwner(), city).open();
+		}
 	}
 	
 	/**

@@ -55,7 +55,7 @@ public class CityListDetailsMenu extends Menu {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
 		map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
-				itemMeta -> itemMeta.setDisplayName("§7Maire : " + Bukkit.getServer().getPlayer(this.city.getPlayerWith(CPermission.OWNER)).getName())));
+				itemMeta -> itemMeta.setDisplayName("§7Maire : " + Bukkit.getServer().getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName())));
 		
 		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(getMascotOfCity(city.getUUID()).getMascotUuid()).getType())),
 				itemMeta -> itemMeta.setDisplayName("§dNiveau de la Mascotte : " + getMascotOfCity(city.getUUID()).getLevel())));
@@ -68,9 +68,6 @@ public class CityListDetailsMenu extends Menu {
 		
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
 				itemMeta -> itemMeta.setDisplayName("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur"))));
-		
-		map.put(18, new ItemBuilder(this, new ItemStack(Material.ARROW),
-				itemMeta -> itemMeta.setDisplayName("§4Retour")).setBackButton());
 		
 		return map;
 	}

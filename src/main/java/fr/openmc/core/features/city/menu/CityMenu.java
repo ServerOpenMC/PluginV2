@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
+import dev.xernas.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -15,7 +16,6 @@ import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
-import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -179,7 +179,7 @@ public class CityMenu extends Menu {
 			menu.open();
 		}));
 		
-		ItemStack playerHead = PlayerUtils.getPlayerSkull(player.getUniqueId());
+		ItemStack playerHead = ItemUtils.getPlayerSkull(player.getUniqueId());
 		
 		inventory.put(22, new ItemBuilder(this, playerHead, itemMeta -> {
 			itemMeta.displayName(Component.text("§dListe des Membres"));

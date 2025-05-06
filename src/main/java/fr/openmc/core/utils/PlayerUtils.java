@@ -13,24 +13,6 @@ import java.util.UUID;
 public class PlayerUtils {
 	
 	/**
-	 * Return a skull of a player.
-	 *
-	 * @param playerUUID UUID of the player
-	 * @return an ItemStack
-	 */
-	public static @Nullable ItemStack getPlayerSkull(UUID playerUUID) {
-		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
-		if (skullMeta != null) {
-			PlayerProfile profile = Bukkit.createProfile(playerUUID);
-			skullMeta.setPlayerProfile(profile);
-			skull.setItemMeta(skullMeta);
-			return skull;
-		}
-		return null;
-	}
-	
-	/**
 	 * @param player Player to be tested
 	 * @return If the player is safe
 	 */
