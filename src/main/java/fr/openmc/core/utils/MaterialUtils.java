@@ -3,7 +3,6 @@ package fr.openmc.core.utils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.Set;
 
 public class MaterialUtils {
@@ -73,5 +72,16 @@ public class MaterialUtils {
 
     public static boolean isOre(Material type) {
         return ORES.contains(type);
+    }
+
+    private static final Set<String> CUSTOM_CROPS = Set.of(
+            "omc_foods:tomato_seeds",
+            "omc_foods:onion_seeds",
+            "omc_foods:salad_seed",
+            "omc_foods:courgette_seed"
+    );
+
+    public static boolean isCustomCrop(String namespace) {
+        return CUSTOM_CROPS.contains(namespace);
     }
 }

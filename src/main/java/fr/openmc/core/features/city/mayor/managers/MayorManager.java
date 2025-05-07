@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.mayor.perks.event.AgriculturalEssorPerk;
 import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.mayor.perks.event.MineralRushPerk;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -25,7 +26,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -444,6 +444,9 @@ public class MayorManager {
         // ---OUVERTURE DES ELECTIONS---
         phaseMayor = 1;
 
+        DynamicCooldownManager.clear("city:agricultural_essor");
+        DynamicCooldownManager.clear("city:mineral_rush");
+
         // On vide toutes les tables
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             String deleteSql1 = "DELETE FROM " + TABLE_MAYOR;
@@ -495,8 +498,6 @@ public class MayorManager {
                     }
                 }
             }
-
-            //TODO: Nettoyer tous les cooldown en lien avec les perks (event)
 
             if (city.getMembers().size()>=MEMBER_REQ_ELECTION) {
                 createMayor(null,null, city, null, null, null, null, ElectionType.ELECTION);

@@ -93,5 +93,39 @@ public class AgriculturalEssorPerk implements Listener {
         }
     }
 
-    //TODO : verif pour crop item adder
+    // probleme avec item adder, il ne detecte pas quand on casse une CustomCrop
+//    @EventHandler
+//    public void onCustomCropBreak(CustomBlockBreakEvent event) {
+//        if (MayorManager.getInstance().phaseMayor != 2) return;
+//
+//        Player player = event.getPlayer();
+//        City city = CityManager.getPlayerCity(player.getUniqueId());
+//
+//        if (city == null) return;
+//        if (!PerkManager.hasPerk(city.getMayor(), 11)) return;
+//        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:agricultural_essor")) return;
+//
+//        String namespace = event.getNamespacedID();
+//        System.out.println(namespace);
+//        if (!MaterialUtils.isCustomCrop(namespace)) return;
+//
+//        Block block = event.getBlock();
+//        System.out.println("1");
+//        CustomBlock customBlock = CustomBlock.getInstance(namespace);
+//        if (customBlock == null) {
+//            System.out.println("CustomBlock non trouvé pour : " + namespace);
+//            return;
+//        }
+//        System.out.println(customBlock);
+//        List<ItemStack> drops = customBlock.getLoot(true);
+//        System.out.println(drops);
+//        if (drops == null || drops.isEmpty()) {
+//            System.out.println("Aucun drop défini pour " + namespace);
+//            return;
+//        }
+//
+//        for (ItemStack drop : drops) {
+//            block.getWorld().dropItemNaturally(block.getLocation(), drop.clone());
+//        }
+//    }
 }
