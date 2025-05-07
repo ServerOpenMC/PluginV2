@@ -6,6 +6,7 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import dev.xernas.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -64,11 +65,13 @@ public class CityListDetailsMenu extends Menu {
 				itemMeta -> itemMeta.setDisplayName("§bTaille : " + city.getChunks().size() + " chunks")));
 		
 		map.put(22, new ItemBuilder(this, new ItemStack(Material.DIAMOND),
-				itemMeta -> itemMeta.setDisplayName("§6Richesse : " + city.getBalance() + " " + EconomyManager.getEconomyIcon())));
+				itemMeta -> itemMeta.setDisplayName("§6Richesses : " + city.getBalance() + " " + EconomyManager.getEconomyIcon())));
 		
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
 				itemMeta -> itemMeta.setDisplayName("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur"))));
 		
+		map.put(26, new ItemBuilder(this, new ItemStack(Material.BOOK),
+				itemMeta -> itemMeta.setDisplayName("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix"))));
 		return map;
 	}
 }

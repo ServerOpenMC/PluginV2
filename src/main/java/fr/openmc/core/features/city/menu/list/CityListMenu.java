@@ -7,6 +7,7 @@ import dev.xernas.menulib.utils.ItemUtils;
 import dev.xernas.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.economy.EconomyManager;
 import org.bukkit.Bukkit;
@@ -74,8 +75,8 @@ public class CityListMenu extends PaginatedMenu {
 			itemMeta.setLore(List.of(
 					"§7Maire : " + Bukkit.getServer().getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName(),
 					"§bPopulation : " + city.getMembers().size(),
-					"§dNiveau de la mascotte : " + MascotUtils.getMascotOfCity(city.getUUID()).getLevel(),
-					"§6Richesse : " + city.getBalance() + EconomyManager.getEconomyIcon()
+					"§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix"),
+					"§6Richesses : " + city.getBalance() + EconomyManager.getEconomyIcon()
 			));
 		})));
 		return items;
