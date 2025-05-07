@@ -122,7 +122,7 @@ public class CityListMenu extends PaginatedMenu {
 		return List.of(
 				SORT_HEADER,
 				formatSortOption(SortType.NAME, "Nom"),
-				formatSortOption(SortType.WEALTH, "Richesse"),
+				formatSortOption(SortType.WEALTH, "Richesses"),
 				formatSortOption(SortType.POPULATION, "Population"),
 				formatSortOption(SortType.MASCOT_LEVEL, "Niveau de la mascotte")
 		);
