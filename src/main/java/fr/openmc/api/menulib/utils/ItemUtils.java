@@ -62,7 +62,7 @@ public class ItemUtils {
 		ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
 		SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
 		if (skullMeta != null) {
-			if (Bukkit.getServer().getPlayer(playerUUID).isOnline()) {
+			if (Bukkit.getServer().getPlayer(playerUUID).isOnline() || Bukkit.getServer().getPlayer(playerUUID) != null) {
 				skullMeta.setOwningPlayer(Bukkit.getServer().getPlayer(playerUUID));
 			} else {
 				PlayerProfile profile = Bukkit.createProfile(playerUUID);
