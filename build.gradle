@@ -56,7 +56,6 @@ dependencies {
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
 
     implementation 'de.rapha149.signgui:signgui:2.5.0'
-    implementation 'dev.xernas:menulib:1.1.0'
     implementation 'org.jetbrains:annotations:24.1.0'
     implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
@@ -111,7 +110,7 @@ tasks.clean {
 }
 
 tasks.shadowJar {
-    destinationDirectory.set(file('./builds/'))
+    destinationDirectory.set(file('C:/Users/User/Desktop/DevMC/Paper-1.21.5_OMC/plugins'))
     archiveFileName.set('OpenMC.jar')
 }
 
