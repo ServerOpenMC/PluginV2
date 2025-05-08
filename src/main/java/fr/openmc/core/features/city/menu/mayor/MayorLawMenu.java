@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
+import fr.openmc.core.features.city.mayor.perks.event.IdyllicRain;
 import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.utils.DateUtils;
@@ -322,6 +323,20 @@ public class MayorLawMenu extends Menu {
                                     }
                                 }
                             }.runTaskTimer(OMCPlugin.getInstance(), 20L, 100L);
+                        } else if (PerkManager.hasPerk(city.getMayor(), 14)) {
+                            // Pluie idyllique (id : 14) - Perk Event
+                            for (UUID uuid : city.getMembers()) {
+                                Player member = Bukkit.getPlayer(uuid);
+
+                                if (member == null || !member.isOnline()) continue;
+
+                                MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §ePluie idyllique §f!"), Prefix.MAYOR, MessageType.INFO, false);
+                            }
+
+                            // spawn d'un total de 100 aywenite progressivement sur une minute
+                            IdyllicRain.spawnAywenite(city, 100);
+
+                            //DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                         }
                     });
                 };

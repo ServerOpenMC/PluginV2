@@ -9,10 +9,7 @@ import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.perks.basic.*;
-import fr.openmc.core.features.city.mayor.perks.event.AgriculturalEssorPerk;
-import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
-import fr.openmc.core.features.city.mayor.perks.event.MilitaryDissuasion;
-import fr.openmc.core.features.city.mayor.perks.event.MineralRushPerk;
+import fr.openmc.core.features.city.mayor.perks.event.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -98,7 +95,8 @@ public class MayorManager {
                 new ImpotCollection(),
                 new AgriculturalEssorPerk(),
                 new MineralRushPerk(),
-                new MilitaryDissuasion()
+                new MilitaryDissuasion(),
+                new IdyllicRain()
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
