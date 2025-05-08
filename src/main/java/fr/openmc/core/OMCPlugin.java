@@ -1,6 +1,6 @@
 package fr.openmc.core;
 
-import dev.xernas.menulib.MenuLib;
+import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.adminshop;
 
-import dev.xernas.menulib.Menu;
+import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
 import fr.openmc.core.features.adminshop.menus.ColorVariantsMenu;

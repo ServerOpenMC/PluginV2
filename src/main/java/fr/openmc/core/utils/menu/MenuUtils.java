@@ -2,8 +2,8 @@ package fr.openmc.core.utils.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.ItemsAdder;
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.inventory.meta.ItemMeta;
 
