@@ -8,7 +8,6 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.economy.EconomyManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -125,7 +124,7 @@ public class CityListMenu extends PaginatedMenu {
 				formatSortOption(SortType.NAME, "Nom"),
 				formatSortOption(SortType.WEALTH, "Richesses"),
 				formatSortOption(SortType.POPULATION, "Population"),
-				formatSortOption(SortType.MASCOT_LEVEL, "Niveau de la mascotte")
+				formatSortOption(SortType.PEACE_WAR, "Paix/Guerre")
 		);
 	}
 	
@@ -151,7 +150,7 @@ public class CityListMenu extends PaginatedMenu {
 			case NAME -> sortByName(cities);
 			case WEALTH -> sortByWealth(cities);
 			case POPULATION -> sortByPopulation(cities);
-			case MASCOT_LEVEL -> sortByMascotLevel(cities);
+			case PEACE_WAR -> sortByPeaceWar(cities);
 		}
 	}
 	
@@ -164,7 +163,7 @@ public class CityListMenu extends PaginatedMenu {
 		switch (sortType) {
 			case WEALTH -> sortByWealth(cities);
 			case POPULATION -> sortByPopulation(cities);
-			case MASCOT_LEVEL -> sortByMascotLevel(cities);
+			case PEACE_WAR -> sortByPeaceWar(cities);
 			default -> sortByName(cities);
 		}
 	}
@@ -197,12 +196,16 @@ public class CityListMenu extends PaginatedMenu {
 	}
 	
 	/**
-	 * Sorts the cities by their mascot level.
+	 * Sorts the cities by their type (peace or war).
 	 *
 	 * @param cities The list of cities to sort.
 	 */
-	private void sortByMascotLevel(List<City> cities) {
-		cities.sort((o1, o2) -> Integer.compare(MascotUtils.getMascotOfCity(o2.getUUID()).getLevel(), MascotUtils.getMascotOfCity(o1.getUUID()).getLevel()));
+	private void sortByPeaceWar(List<City> cities) {
+		cities.sort((o1, o2) -> {
+			String type1 = CityManager.getCityType(o1.getUUID());
+			String type2 = CityManager.getCityType(o2.getUUID());
+			return type1.equals(type2) ? 0 : type1.equals("war") ? - 1 : 1;
+		});
 	}
 	
 	/**
@@ -212,6 +215,6 @@ public class CityListMenu extends PaginatedMenu {
 		NAME,
 		WEALTH,
 		POPULATION,
-		MASCOT_LEVEL
+		PEACE_WAR
 	}
 }
