@@ -110,7 +110,7 @@ tasks.clean {
 }
 
 tasks.shadowJar {
-    destinationDirectory.set(file('C:/Users/User/Desktop/DevMC/Paper-1.21.5_OMC/plugins'))
+    destinationDirectory.set(file('./builds/'))
     archiveFileName.set('OpenMC.jar')
 }
 
