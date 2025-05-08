@@ -9,9 +9,10 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.Mayor;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
+import fr.openmc.core.features.city.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.interactions.text.ChatInput;
@@ -27,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -297,6 +299,29 @@ public class MayorLawMenu extends Menu {
 
                             DynamicCooldownManager.use(city.getUUID(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
                             DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        } else if (PerkManager.hasPerk(city.getMayor(), 13)) {
+                            // Dissuasion Militaire (id : 13) - Perk Event
+                            for (UUID uuid : city.getMembers()) {
+                                Player member = Bukkit.getPlayer(uuid);
+
+                                if (member == null || !member.isOnline()) continue;
+
+                                MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eDissuasion Militaire §f!"), Prefix.MAYOR, MessageType.INFO, false);
+                            }
+
+                            MilitaryDissuasion.spawnIronMan(city, 10);
+                            DynamicCooldownManager.use(city.getUUID(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes
+                            DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    if (DynamicCooldownManager.isReady(city.getUUID(), "city:military_dissuasion")) {
+                                        MilitaryDissuasion.clearCityGolems(city);
+                                        this.cancel();
+                                    }
+                                }
+                            }.runTaskTimer(OMCPlugin.getInstance(), 20L, 100L);
                         }
                     });
                 };

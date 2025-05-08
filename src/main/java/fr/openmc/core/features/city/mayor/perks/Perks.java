@@ -144,11 +144,11 @@ public enum Perks {
             "§e§lDissuasion Militaire",
             List.of(
                     Component.text("§7Fait apparaître §310 Golem de Fer §7partout"),
-                    Component.text("§7dans votre ville qui disparaissent dans §310 min §8(Cooldown : 20 min)")
+                    Component.text("§7dans votre ville qui disparaissent dans §310 min §8(Cooldown : 25 min)")
             ),
             ItemStack.of(Material.IRON_GOLEM_SPAWN_EGG),
             PerkType.EVENT,
-            20 * 60 * 1000L // 20 minutes
+            25 * 60 * 1000L // 25 minutes
     ),
     IDYLLIC_RAIN(
             14,
