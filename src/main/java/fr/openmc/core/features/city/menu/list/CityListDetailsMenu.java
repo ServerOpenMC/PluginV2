@@ -70,7 +70,7 @@ public class CityListDetailsMenu extends Menu {
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
 				itemMeta -> itemMeta.setDisplayName("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur"))));
 		
-		map.put(26, new ItemBuilder(this, new ItemStack(Material.BOOK),
+		map.put(26, new ItemBuilder(this, new ItemStack(CityManager.getCityType(city.getUUID()).equals("war") ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.setDisplayName("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix"))));
 		return map;
 	}

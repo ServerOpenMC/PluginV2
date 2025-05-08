@@ -32,7 +32,6 @@ public class CityListMenu extends PaginatedMenu {
 	
 	private final List<City> cities;
 	private SortType sortType;
-	private int page;
 	
 	/**
 	 * Constructor for CityListMenu.
@@ -106,7 +105,9 @@ public class CityListMenu extends PaginatedMenu {
 	
 	@Override
 	public void onInventoryClick(InventoryClickEvent e) {
-		page = getPage();
+		if (e.getSlot() > 44) return;
+		if (e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
+		int page = getPage();
 		City city = cities.get(e.getSlot() + (45 * page));
 		if (city != null) {
 			new CityListDetailsMenu(getOwner(), city).open();
