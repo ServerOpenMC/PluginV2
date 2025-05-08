@@ -11,6 +11,7 @@ import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.perks.basic.*;
 import fr.openmc.core.features.city.mayor.perks.event.AgriculturalEssorPerk;
 import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
+import fr.openmc.core.features.city.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.features.city.mayor.perks.event.MineralRushPerk;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -96,7 +97,8 @@ public class MayorManager {
                 new SymbiosisPerk(),
                 new ImpotCollection(),
                 new AgriculturalEssorPerk(),
-                new MineralRushPerk()
+                new MineralRushPerk(),
+                new MilitaryDissuasion()
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(

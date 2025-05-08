@@ -154,7 +154,7 @@ public enum Perks {
             14,
             "§e§lPluie idyllique",
             List.of(
-                    Component.text("§7Fait apparaître de l'§3Aywenite §7dans votre ville pendant§3 2 §7min. §8(Cooldown : 1j)")
+                    Component.text("§7Fait apparaître de l'§3Aywenite §7dans votre ville pendant§3 1 §7min. §8(Cooldown : 1j)")
             ),
             ItemStack.of(Material.GHAST_TEAR),
             PerkType.EVENT,

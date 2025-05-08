@@ -6,7 +6,6 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.BankManager;
@@ -107,8 +106,6 @@ public class OMCPlugin extends JavaPlugin {
         mayorManager.saveMayorCandidates();
         mayorManager.saveCityMayors();
         mayorManager.saveCityLaws();
-
-        MilitaryDissuasion.clearAllGolems();
 
         // - Home
         HomesManager.getInstance().saveHomesData();

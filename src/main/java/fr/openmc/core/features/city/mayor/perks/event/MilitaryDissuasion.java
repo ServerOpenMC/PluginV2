@@ -10,13 +10,16 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MilitaryDissuasion {
+public class MilitaryDissuasion implements Listener {
 
     public static void spawnIronMan(City city, int golemsToSpawn) {
         Set<BlockVector2> chunks = city.getChunks();
@@ -113,7 +116,17 @@ public class MilitaryDissuasion {
         }
     }
 
-    public static void clearAllGolems() {
+    private static boolean cleared = false;
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        if (cleared) return;
+        cleared = true;
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::clearAllGolems, 20L * 5);
+    }
+
+    private void clearAllGolems() {
         NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_golem");
 
         for (Entity entity : Bukkit.getWorld("world").getEntitiesByClass(IronGolem.class)) {
