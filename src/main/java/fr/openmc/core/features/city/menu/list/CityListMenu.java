@@ -75,7 +75,7 @@ public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les 
 					Component.text("§7Maire : " + Bukkit.getServer().getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
 					Component.text("§bPopulation : " + city.getMembers().size()),
 					Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")),
-					Component.text("§6Richesses : " + city.getBalance() + EconomyManager.getEconomyIcon())
+					Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
 			));
 		})));
 		return items;

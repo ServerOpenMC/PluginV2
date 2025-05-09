@@ -66,7 +66,7 @@ public class CityListDetailsMenu extends Menu { // TODO : Adaptation pour les ma
 				itemMeta -> itemMeta.displayName(Component.text("§bTaille : " + city.getChunks().size() + " chunks"))));
 		
 		map.put(22, new ItemBuilder(this, new ItemStack(Material.DIAMOND),
-				itemMeta -> itemMeta.displayName(Component.text("§6Richesses : " + city.getBalance() + " " + EconomyManager.getEconomyIcon()))));
+				itemMeta -> itemMeta.displayName(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon()))));
 		
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
 				itemMeta -> itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")))));
