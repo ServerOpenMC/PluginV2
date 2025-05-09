@@ -202,7 +202,7 @@ public class BankManager {
             OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
             updateInterestTimer();
 
-        }, getSecondsUntilUpdate() * 20); // 20 ticks per second (ideally)
+        }, getSecondsUntilInterest() * 20); // 20 ticks per second (ideally)
     }
 
     public long getSecondsUntilInterest() {
