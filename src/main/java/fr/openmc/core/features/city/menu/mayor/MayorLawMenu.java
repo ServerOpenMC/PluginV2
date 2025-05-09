@@ -127,9 +127,7 @@ public class MayorLawMenu extends Menu {
                     loreLawWarp = new ArrayList<>(List.of(
                             Component.text("§7Cette §1loi §7n'est pas effective!"),
                             Component.text("§7Vous devez choisir un endroit où les membres pourront"),
-                            Component.text("§7arriver"),
-                            Component.text(""),
-                            Component.text("§e§lCLIQUEZ ICI POUR CHOISIR UN ENDROIT")
+                            Component.text("§7arriver")
                     ));
                 } else {
                     loreLawWarp = new ArrayList<>(List.of(
