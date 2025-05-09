@@ -717,7 +717,7 @@ public class CityCommands {
 
                     DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
                     law.setWarp(locationClick);
-                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- x=§6" + locationClick.x() + "\n §8- y=§6" + locationClick.y() + "\n §8- z=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
+                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- §fx=§6" + locationClick.x() + "\n §8- §fy=§6" + locationClick.y() + "\n §8- §fz=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
                     return true;
                 }
         );
