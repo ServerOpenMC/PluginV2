@@ -18,6 +18,11 @@ public class ContestEvent extends Event {
 	@Getter
 	private final List<Player> losers;
 	
+	/**
+	 * @param contestData The contest data
+	 * @param winners The list of winners
+	 * @param losers The list of losers
+	 */
 	public ContestEvent(ContestData contestData, List<Player> winners, List<Player> losers) {
 		this.contestData = contestData;
 		this.winners = winners;
