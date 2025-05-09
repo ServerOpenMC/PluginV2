@@ -2,6 +2,7 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
@@ -12,6 +13,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +21,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class JoinMessageListener implements Listener {
@@ -41,6 +45,23 @@ public class JoinMessageListener implements Listener {
         }).exceptionally(throwable -> {
             OMCPlugin.getInstance().getLogger().severe("An error occurred while loading friends of " + player.getName() + " : " + throwable.getMessage());
             return null;
+        });
+
+        // Quest pending reward notification
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            for (Quest quest : QuestsManager.getInstance().getAllQuests()) {
+                Set<Integer> pendingTiers = quest.getPendingRewardTiers(player.getUniqueId());
+                if (!pendingTiers.isEmpty()) {
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                        MessagesManager.sendMessage(player,
+                                Component.text("§eVous avez des récompenses de quêtes en attente ! Faites §6/quest§e pour les récupérer."),
+                                Prefix.QUEST,
+                                MessageType.INFO,
+                                true);
+                    });
+                    break;
+                }
+            }
         });
 
         event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
