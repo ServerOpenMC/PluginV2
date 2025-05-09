@@ -6,6 +6,7 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.BankManager;
@@ -19,6 +20,7 @@ import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
+import fr.openmc.core.listeners.CitizensHookListener;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.api.CitizensApi;
@@ -31,8 +33,11 @@ import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.freeze.FreezeManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
+import net.citizensnpcs.api.CitizensAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -56,6 +61,14 @@ public class OMCPlugin extends JavaPlugin {
         MenuLib.init(this);
         // TODO: faire des messages a envoyer dans la console disant, la version du plugin, version de minecraft, si chaque api sont bien connecté ou manquant, et les versions des plugins lié a OpenMC ?
         new CitizensApi();
+
+        registerEvents(new CitizensHookListener());
+
+        Plugin citizensPlugin = Bukkit.getPluginManager().getPlugin("Citizens");
+        if (citizensPlugin != null && citizensPlugin.isEnabled()) {
+            getLogger().info("[OpenMC] Citizens est déjà activé. Initialisation directe de l'API.");
+            CitizensApi.setHasCitizens(true, getServer().getServicesManager().load(CitizensAPI.class));
+        }
         new LuckPermsApi();
         new PapiApi();
         new WorldGuardApi();
@@ -95,6 +108,7 @@ public class OMCPlugin extends JavaPlugin {
         /* LOAD */
         DynamicCooldownManager.loadCooldowns();
 
+        NPCManager.debug();
         getLogger().info("Plugin activé");
     }
 

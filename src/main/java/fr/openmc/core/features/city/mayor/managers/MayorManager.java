@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.*;
 import fr.openmc.core.features.city.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
+import fr.openmc.core.features.city.mayor.listeners.UrneListener;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.perks.basic.*;
 import fr.openmc.core.features.city.mayor.perks.event.*;
@@ -100,7 +101,7 @@ public class MayorManager {
         );
         if (CustomItemRegistry.hasItemsAdder()) {
             OMCPlugin.registerEvents(
-                    //make listener for urne
+                    new UrneListener()
             );
         }
 
@@ -109,6 +110,8 @@ public class MayorManager {
         loadMayorCandidates();
         loadPlayersVote();
         loadCityLaws();
+
+
 
         new BukkitRunnable() {
             @Override

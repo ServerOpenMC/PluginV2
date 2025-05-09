@@ -7,10 +7,10 @@ depend:
   - WorldEdit
 
 softdepend:
+  - Citizens
   - PlaceholderAPI
   - LuckPerms
   - ItemsAdder
-  - Citizens
   - WorldGuard
   - ProtocolLib
 

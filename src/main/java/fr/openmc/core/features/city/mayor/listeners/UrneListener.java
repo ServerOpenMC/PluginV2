@@ -1,16 +1,22 @@
 package fr.openmc.core.features.city.mayor.listeners;
 
+import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
+import dev.lone.itemsadder.api.Events.FurniturePlaceEvent;
+import dev.lone.itemsadder.api.Events.FurniturePlaceSuccessEvent;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.menu.mayor.MayorVoteMenu;
+import fr.openmc.core.utils.api.CitizensApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,8 +25,9 @@ import org.bukkit.event.Listener;
 import java.util.Objects;
 
 public class UrneListener implements Listener {
+
     @EventHandler
-    private void onFurnitureInteractEvent(FurnitureInteractEvent furniture) {
+    private void onUrneInteractEvent(FurnitureInteractEvent furniture) {
         if (!Objects.equals(furniture.getNamespacedID(), "omc_blocks:urne")) return;
 
         Player player = furniture.getPlayer();
@@ -60,5 +67,66 @@ public class UrneListener implements Listener {
 
         player.playSound(player.getLocation(), Sound.BLOCK_LANTERN_PLACE, 1.0F, 1.7F);
 
+    }
+
+    @EventHandler
+    private void onUrnePlaceEvent(FurniturePlaceEvent event) {
+        if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
+
+        Player player = event.getPlayer();
+
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null) {
+            MessagesManager.sendMessage(player, Component.text("Vous devez avoir une ville pour poser ceci!"), Prefix.MAYOR, MessageType.WARNING, false);
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!playerCity.getMayor().getUUID().equals(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le maire"), Prefix.MAYOR, MessageType.ERROR, false);
+            event.setCancelled(true);
+            return;
+        }
+
+        if (NPCManager.hasNPCS(playerCity.getUUID())) {
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous avez déjà des NPC"), Prefix.MAYOR, MessageType.ERROR, false);
+            event.setCancelled(true);
+            return;
+        }
+    }
+
+    @EventHandler
+    private void onUrnePlaceSuccessEvent(FurniturePlaceSuccessEvent event) {
+        if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
+
+        Location urneLocation = event.getFurniture().getEntity().getLocation();
+        Player player = event.getPlayer();
+
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null) return;
+
+        if (!CitizensApi.hasCitizens()) return;
+
+        NPCManager.createNPCS(playerCity.getUUID(), urneLocation);
+    }
+
+    @EventHandler
+    private void onUrneBreakEvent(FurnitureBreakEvent event) {
+        if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
+
+        Player player = event.getPlayer();
+
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null) return;
+
+        if (!playerCity.getMayor().getUUID().equals(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le maire"), Prefix.MAYOR, MessageType.ERROR, false);
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!CitizensApi.hasCitizens()) return;
+
+        NPCManager.removeNPCS(playerCity.getUUID());
     }
 }

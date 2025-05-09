@@ -1,30 +1,29 @@
 package fr.openmc.core.utils.api;
 
-import fr.openmc.core.OMCPlugin;
-import lombok.Getter;
 import net.citizensnpcs.api.CitizensAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 
 public class CitizensApi {
-    @Getter
-    private static CitizensAPI api;
-    private static boolean hasCitizens;
+    private static boolean hasCitizens = false;
+    private static CitizensAPI api = null;
 
     public CitizensApi() {
-        if (Bukkit.getPluginManager().getPlugin("Citizens") == null) {
-            hasCitizens = false;
-            return;
-        } else {
-            hasCitizens = true;
-        }
+        Plugin citizensPlugin = Bukkit.getPluginManager().getPlugin("Citizens");
 
-        api = OMCPlugin.getInstance().getServer().getServicesManager().load(CitizensAPI.class);
+        if (citizensPlugin != null && citizensPlugin.isEnabled()) {
+            hasCitizens = true;
+        } else {
+            hasCitizens = false;
+        }
     }
 
-    /**
-     * Retourne si l'instance a Citizens
-     */
     public static boolean hasCitizens() {
         return hasCitizens;
+    }
+
+    public static void setHasCitizens(boolean value, CitizensAPI api1) {
+        api = api1;
+        hasCitizens = value;
     }
 }
