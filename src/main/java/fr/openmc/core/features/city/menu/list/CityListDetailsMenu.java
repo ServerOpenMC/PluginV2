@@ -21,7 +21,7 @@ import java.util.Map;
 import static fr.openmc.core.features.city.mascots.MascotUtils.getEntityByMascotUUID;
 import static fr.openmc.core.features.city.mascots.MascotUtils.getMascotOfCity;
 
-public class CityListDetailsMenu extends Menu {
+public class CityListDetailsMenu extends Menu { // TODO : Adaptation pour les maires
 	
 	private final City city;
 	

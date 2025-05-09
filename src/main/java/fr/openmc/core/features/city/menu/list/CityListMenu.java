@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CityListMenu extends PaginatedMenu {
+public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les maires
 	
 	// Constants for the menu
 	private static final String SORT_HEADER = "§7Cliquez pour trier par";
