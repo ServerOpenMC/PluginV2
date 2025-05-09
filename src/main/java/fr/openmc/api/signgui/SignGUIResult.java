@@ -2,6 +2,8 @@ package fr.openmc.api.signgui;
 
 import org.bukkit.ChatColor;
 
+// Ce code est basé sur le fichier SignGUIResult.java du dépôt SignGUI
+// (https://github.com/Rapha149/SignGUI). Licence originale : MIT.
 /**
  * The result of the sign editing.
  */

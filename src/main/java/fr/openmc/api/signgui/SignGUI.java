@@ -13,6 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
+// Ce code est basé sur le fichier SignGUI.java du dépôt SignGUI
+// (https://github.com/Rapha149/SignGUI). Licence originale : MIT.
 /**
  * The base class of this api. Use {@link SignGUI#builder()} to get a new instance.
  */

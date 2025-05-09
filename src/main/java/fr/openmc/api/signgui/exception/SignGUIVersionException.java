@@ -1,5 +1,7 @@
 package fr.openmc.api.signgui.exception;
 
+// Ce code est basé sur le fichier SignGUIVersionException.java du dépôt SignGUI
+// (https://github.com/Rapha149/SignGUI). Licence originale : MIT.
 /**
  * An exception thrown when the server version is not supported by this api or an error occured during initialization.
  */

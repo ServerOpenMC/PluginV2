@@ -4,6 +4,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+// Ce code est basé sur le fichier SignGUIFinishHandler.java du dépôt SignGUI
+// (https://github.com/Rapha149/SignGUI). Licence originale : MIT.
 /**
  * A functional interface used for handling the result of the sign editing.
  */

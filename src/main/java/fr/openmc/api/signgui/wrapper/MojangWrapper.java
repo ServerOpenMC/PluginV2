@@ -30,6 +30,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
+// Ce code provient de la Pull Request #30 du dépôt SignGUI
+// (https://github.com/Rapha149/SignGUI/pull/30), qui ajoute
+// une compatibilité avec Minecraft 1.21.5. Code original écrit par Leon-JavaScript.
 public class MojangWrapper {
     private static final MojangWrapper INSTANCE = new MojangWrapper();
     private static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(0);

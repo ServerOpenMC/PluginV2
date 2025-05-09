@@ -12,6 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+// Ce code est basé sur le fichier SignGUIBuilder.java du dépôt SignGUI
+// (https://github.com/Rapha149/SignGUI). Licence originale : MIT.
 /**
  * Builder for {@link SignGUI}.
  */

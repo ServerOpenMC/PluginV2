@@ -1,5 +1,7 @@
 package fr.openmc.api.signgui.exception;
 
+// Ce code est basé sur le fichier SignGUIException.java du dépôt SignGUI
+// (https://github.com/Rapha149/SignGUI). Licence originale : MIT.
 /**
  * An exception thrown when an error occurs while using this api.
  */

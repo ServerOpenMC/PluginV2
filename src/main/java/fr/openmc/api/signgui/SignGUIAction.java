@@ -8,6 +8,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 
+// Ce code est basé sur le fichier SignGUIAuction.java du dépôt SignGUI
+// (https://github.com/Rapha149/SignGUI). Licence originale : MIT.
 /**
  * An interface used for handling the action after the player finished editing the sign.
  */
