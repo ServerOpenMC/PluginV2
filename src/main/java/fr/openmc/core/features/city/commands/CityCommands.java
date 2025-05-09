@@ -1,23 +1,28 @@
 package fr.openmc.core.features.city.commands;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.conditions.*;
-import fr.openmc.core.features.city.mascots.*;
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
+import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.menu.CityTypeMenu;
+import fr.openmc.core.features.city.menu.NoCityMenu;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
-import com.sk89q.worldedit.math.BlockVector2;
-import fr.openmc.core.features.city.*;
-import fr.openmc.core.features.city.menu.*;
-import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
@@ -677,6 +682,8 @@ public class CityCommands {
         );
         ItemStack itemToGive = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
         ItemMeta itemMeta = itemToGive.getItemMeta();
+        System.out.println(itemMeta);
+
         itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
         itemMeta.lore(loreItemInterraction);
         itemToGive.setItemMeta(itemMeta);
@@ -688,6 +695,7 @@ public class CityCommands {
                 "§7Vous avez 300s pour séléctionner votre point de spawn",
                 "§7Vous n'avez pas eu le temps de poser votre Warp",
                 locationClick -> {
+                    if (locationClick == null) return true;
                     Chunk chunk = locationClick.getChunk();
 
                     if (!city.hasChunk(chunk.getX(), chunk.getZ())) {

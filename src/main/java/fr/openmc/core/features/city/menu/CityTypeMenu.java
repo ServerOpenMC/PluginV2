@@ -118,7 +118,9 @@ public class CityTypeMenu extends Menu {
                 300,
                 "Vous avez reçu un coffre pour poser votre mascotte",
                 "§cCréation annulée",
-                mascotSpawn -> {;
+                mascotSpawn -> {
+                    if (mascotSpawn == null) return true;
+
                     World world = Bukkit.getWorld("world");
                     World player_world = player.getWorld();
 
