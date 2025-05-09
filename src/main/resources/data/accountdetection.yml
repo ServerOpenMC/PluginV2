@@ -1,0 +1,6 @@
+anti-vpn: true
+anti-double-account: true
+discord-webhook: https://discord.com/api/webhooks/ID/TOKEN
+exempted-players:
+  - dfa5846a-6f55-4407-9eb7-d06aafdbc804 # Moi
+  - d2ca5e0f-2d36-4ba1-8d0f-0c277a1da6ef # Mon double compte ;)
