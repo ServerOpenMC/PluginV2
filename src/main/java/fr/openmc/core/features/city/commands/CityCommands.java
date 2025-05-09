@@ -673,10 +673,17 @@ public class CityCommands {
     public static void setWarp(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         Mayor mayor = city.getMayor();
-        CityLaw law = city.getLaw();
-        if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
-            DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
+
+        if (player.getUniqueId() != mayor.getUUID()) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
+            return;
         }
+
+        if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+            return;
+        }
+        CityLaw law = city.getLaw();
+
         List<Component> loreItemInterraction = List.of(
                 Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
         );
@@ -691,7 +698,7 @@ public class CityCommands {
                 player,
                 itemToGive,
                 "mayor:wait-set-warp",
-                20,
+                300,
                 "§7Vous avez 300s pour séléctionner votre point de spawn",
                 "§7Vous n'avez pas eu le temps de poser votre Warp",
                 locationClick -> {
@@ -703,8 +710,9 @@ public class CityCommands {
                         return false;
                     }
 
+                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
                     law.setWarp(locationClick);
-                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen x=" + locationClick.x() + "y=" + locationClick.y() + "z=" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
+                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- x=§6" + locationClick.x() + "\n §8- y=§6" + locationClick.y() + "\n §8- z=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
                     return true;
                 }
         );

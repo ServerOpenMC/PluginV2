@@ -7,8 +7,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.MayorCandidate;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
@@ -127,7 +127,7 @@ public class MayorColorMenu extends Menu {
                                         }
                                     }
                                 } else { // donc si c MenuType.OWNER
-                                    mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
+                                    mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
                                 }
                                 MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
                                 player.closeInventory();
@@ -145,7 +145,7 @@ public class MayorColorMenu extends Menu {
                         );
                         menu.open();
                     } else if (type == "change") {
-                        if (mayorManager.getElectionType(city) == ElectionType.OWNER_CHOOSE) {
+                        if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
                             if (city.getMayor() == null) {
                                 MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.MAYOR, MessageType.ERROR, false);
                                 return;
