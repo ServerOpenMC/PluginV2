@@ -7,13 +7,13 @@ Nouveau plugin collaboratif pour un serveur : VOTRE serveur !
 
 ## 🤝 Rejoindre le développement.
 1. Commencez par forker le dépôt et rejoindre le [Discord](https://discord.gg/aywen)
-3. Assurez-vous de bien suivre [CONTRIBUTING.md](https://github.com/ServerOpenMC/PluginV2/blob/master/CONTRIBUTING.md)
-5. Une fois qu'une fonctionnalité est implémentée et fonctionnelle, créez une pull request.
-6. Après approbation, elle sera disponible sur le serveur de développement pour les tests.
+2. Assurez-vous de bien suivre [CONTRIBUTING.md](https://github.com/ServerOpenMC/PluginV2/blob/master/CONTRIBUTING.md)
+3. Une fois qu'une fonctionnalité est implémentée et fonctionnelle, créez une pull request.
+4. Après approbation, elle sera disponible sur le serveur de développement pour les tests.
 
-Serveur de test : `dev.openmc.fr` (1.21.4 Java Edition)
+Serveur de test : `dev.openmc.fr` (1.21.5 Java Edition)
 
-Serveur de jeu : `play.openmc.fr` (1.21.4 Java Edition)
+Serveur de jeu : `play.openmc.fr` (1.21.5 Java Edition)
 
 ## 📘 En apprendre plus.
 Vous voulez en savoir plus ? Vous voulez avoir des tutoriels à propos d'OpenMC ?
