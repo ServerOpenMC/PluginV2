@@ -672,10 +672,15 @@ public class CityCommands {
 
     public static void setWarp(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (city == null) return;
+
         Mayor mayor = city.getMayor();
 
-        if (player.getUniqueId() != mayor.getUUID()) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
+        if (mayor == null) return;
+
+        if (!player.getUniqueId().equals(mayor.getUUID())) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le Maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
