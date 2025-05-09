@@ -337,20 +337,19 @@ public class Quest {
             this.progressLock.put(playerUUID, true);
 
             try {
-                Player player = Bukkit.getPlayer(playerUUID);
-                if (player != null && player.getGameMode() != GameMode.SURVIVAL) return;
+                Player onlinePlayer = Bukkit.getPlayer(playerUUID);
+                if (onlinePlayer != null && onlinePlayer.isOnline() && onlinePlayer.getGameMode().equals(GameMode.CREATIVE)) return;
                 int currentProgress = this.progress.getOrDefault(playerUUID, 0);
                 int newProgress = currentProgress + amount;
                 int currentTarget = this.getCurrentTarget(playerUUID);
-                if (newProgress >= currentTarget) {
-                    newProgress = currentTarget;
-                }
+
+                if (newProgress >= currentTarget) newProgress = currentTarget;
 
                 if (currentProgress < currentTarget) {
                     this.progress.put(playerUUID, newProgress);
                     this.checkTierCompletion(playerUUID);
 
-                    if (player != null && player.isOnline()) {
+                    if (onlinePlayer != null && onlinePlayer.isOnline()) {
                         if (this.isLargeActionBar && newProgress % 50 != 0) return;
                         Component actionBar = Component.text()
                                 .append(MiniMessage.miniMessage().deserialize(Prefix.QUEST.getPrefix()))
@@ -361,7 +360,7 @@ public class Quest {
                                 .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
                                 .build();
 
-                        player.sendActionBar(actionBar);
+                        onlinePlayer.sendActionBar(actionBar);
                     }
                 }
             } finally {
