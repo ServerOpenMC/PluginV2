@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -56,22 +57,22 @@ public class CityListDetailsMenu extends Menu { // TODO : Adaptation pour les ma
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
 		map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
-				itemMeta -> itemMeta.setDisplayName("§7Maire : " + Bukkit.getServer().getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName())));
+				itemMeta -> itemMeta.displayName(Component.text("§7Maire : " + Bukkit.getServer().getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()))));
 		
 		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(getMascotOfCity(city.getUUID()).getMascotUuid()).getType())),
-				itemMeta -> itemMeta.setDisplayName("§dNiveau de la Mascotte : " + getMascotOfCity(city.getUUID()).getLevel())));
+				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + getMascotOfCity(city.getUUID()).getLevel()))));
 		
 		map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
-				itemMeta -> itemMeta.setDisplayName("§bTaille : " + city.getChunks().size() + " chunks")));
+				itemMeta -> itemMeta.displayName(Component.text("§bTaille : " + city.getChunks().size() + " chunks"))));
 		
 		map.put(22, new ItemBuilder(this, new ItemStack(Material.DIAMOND),
-				itemMeta -> itemMeta.setDisplayName("§6Richesses : " + city.getBalance() + " " + EconomyManager.getEconomyIcon())));
+				itemMeta -> itemMeta.displayName(Component.text("§6Richesses : " + city.getBalance() + " " + EconomyManager.getEconomyIcon()))));
 		
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
-				itemMeta -> itemMeta.setDisplayName("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur"))));
+				itemMeta -> itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")))));
 		
 		map.put(26, new ItemBuilder(this, new ItemStack(CityManager.getCityType(city.getUUID()).equals("war") ? Material.RED_BANNER : Material.GREEN_BANNER),
-				itemMeta -> itemMeta.setDisplayName("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix"))));
+				itemMeta -> itemMeta.displayName(Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")))));
 		return map;
 	}
 }

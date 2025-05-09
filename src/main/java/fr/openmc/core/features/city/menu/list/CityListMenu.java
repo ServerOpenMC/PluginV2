@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les maires
 	
 	// Constants for the menu
-	private static final String SORT_HEADER = "§7Cliquez pour trier par";
+	private static final Component SORT_HEADER = Component.text("§7Cliquez pour trier par");
 	private static final String SELECTED_PREFIX = "§6➢ ";
 	private static final String UNSELECTED_PREFIX = "§b  ";
 	
@@ -69,12 +70,12 @@ public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les 
 	public @NotNull List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
-			itemMeta.setDisplayName("§a" + city.getCityName());
-			itemMeta.setLore(List.of(
-					"§7Maire : " + Bukkit.getServer().getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName(),
-					"§bPopulation : " + city.getMembers().size(),
-					"§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix"),
-					"§6Richesses : " + city.getBalance() + EconomyManager.getEconomyIcon()
+			itemMeta.displayName(Component.text("§a" + city.getCityName()));
+			itemMeta.lore(List.of(
+					Component.text("§7Maire : " + Bukkit.getServer().getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+					Component.text("§bPopulation : " + city.getMembers().size()),
+					Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")),
+					Component.text("§6Richesses : " + city.getBalance() + EconomyManager.getEconomyIcon())
 			));
 		})));
 		return items;
@@ -84,16 +85,16 @@ public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les 
 	public Map<Integer, ItemStack> getButtons() {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		map.put(49, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
-			itemMeta.setDisplayName("Trier");
-			itemMeta.setLore(generateSortLoreText());
+			itemMeta.displayName(Component.text("Trier"));
+			itemMeta.lore(generateSortLoreText());
 		}).setOnClick(inventoryClickEvent -> {
 			changeSortType();
 			new CityListMenu(getOwner(), cities, sortType).open();
 		}));
 		map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
-				.getItemStack(), itemMeta -> itemMeta.setDisplayName("§cPage précédente")).setPreviousPageButton());
+				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
 		map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
-				.getItemStack(), itemMeta -> itemMeta.setDisplayName("§aPage suivante")).setNextPageButton());
+				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
 		return map;
 	}
 	
@@ -118,7 +119,7 @@ public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les 
 	 *
 	 * @return A list of strings representing the lore text.
 	 */
-	private List<String> generateSortLoreText() {
+	private List<Component> generateSortLoreText() {
 		return List.of(
 				SORT_HEADER,
 				formatSortOption(SortType.NAME, "Nom"),
@@ -135,8 +136,8 @@ public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les 
 	 * @param label The label for the sorting option.
 	 * @return A formatted string representing the sorting option.
 	 */
-	private String formatSortOption(SortType type, String label) {
-		return (sortType == type ? SELECTED_PREFIX : UNSELECTED_PREFIX) + label;
+	private Component formatSortOption(SortType type, String label) {
+		return Component.text((sortType == type ? SELECTED_PREFIX : UNSELECTED_PREFIX) + label);
 	}
 	
 	/**
