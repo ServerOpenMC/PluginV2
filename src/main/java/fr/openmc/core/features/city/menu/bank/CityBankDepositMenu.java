@@ -150,7 +150,7 @@ public class CityBankDepositMenu extends Menu {
             lines[2] = "Entrez votre";
             lines[3] = "montant ci dessus";
 
-            SignGUI gui = null;
+            SignGUI gui;
             try {
                 gui = SignGUI.builder()
                         .setLines(null, lines[1] , lines[2], lines[3])
