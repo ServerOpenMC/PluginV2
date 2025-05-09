@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class LuckPermsAPI {
+public class LuckPermsApi {
     @Getter private static LuckPerms api;
     private static boolean hasLuckPerms;
 
-    public LuckPermsAPI() {
+    public LuckPermsApi() {
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null) {
             hasLuckPerms = false;
             return;

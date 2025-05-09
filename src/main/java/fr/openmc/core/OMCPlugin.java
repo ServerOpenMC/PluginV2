@@ -21,8 +21,9 @@ import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.utils.MotdUtils;
-import fr.openmc.core.utils.api.LuckPermsAPI;
-import fr.openmc.core.utils.api.PapiAPI;
+import fr.openmc.core.utils.api.CitizensApi;
+import fr.openmc.core.utils.api.LuckPermsApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -53,8 +54,10 @@ public class OMCPlugin extends JavaPlugin {
 
         /* EXTERNALS */
         MenuLib.init(this);
-        new LuckPermsAPI();
-        new PapiAPI();
+        // TODO: faire des messages a envoyer dans la console disant, la version du plugin, version de minecraft, si chaque api sont bien connecté ou manquant, et les versions des plugins lié a OpenMC ?
+        new CitizensApi();
+        new LuckPermsApi();
+        new PapiApi();
         new WorldGuardApi();
 
         /* MANAGERS */

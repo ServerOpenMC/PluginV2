@@ -10,6 +10,7 @@ softdepend:
   - PlaceholderAPI
   - LuckPerms
   - ItemsAdder
+  - Citizens
   - WorldGuard
   - ProtocolLib
 
