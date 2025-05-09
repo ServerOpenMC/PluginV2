@@ -562,7 +562,7 @@ public class MayorManager {
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getName();
         Mayor mayor = city.getMayor();
 
-        if (getElectionType(city) == ElectionType.OWNER_CHOOSE) {
+        if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
             // si maire a pas choisis les perks
             if ((mayor.getIdPerk1() == 0) && (mayor.getIdPerk2() == 0) && (mayor.getIdPerk3() == 0)) {
                 NamedTextColor color = getRandomMayorColor();
@@ -698,19 +698,12 @@ public class MayorManager {
         return mayor.getIdPerk1() != 0;
     }
 
-    public boolean hasMayor(City city) {
-        Mayor mayor = cityMayor.get(city);
-        if (mayor == null) return false;
-
-        return mayor.getUUID() != null;
-    }
-
     public void put1Perk(City city, Perks perk1) {
         Mayor mayor = cityMayor.get(city);
         if (mayor != null) {
             mayor.setIdPerk1(perk1.getId());
         } else { //au cas ou meme si théoriquement c impossible
-            cityMayor.put(city, new Mayor(city, null, null, null, perk1.getId(), 0, 0, getElectionType(city)));
+            cityMayor.put(city, new Mayor(city, null, null, null, perk1.getId(), 0, 0, city.getElectionType()));
         }
     }
 
@@ -726,17 +719,10 @@ public class MayorManager {
             mayor.setIdPerk1(idPerk1);
             mayor.setIdPerk2(idPerk2);
             mayor.setIdPerk3(idPerk3);
-            mayor.setElectionType(getElectionType(city));
+            mayor.setElectionType(city.getElectionType());
         } else { // au cas ou meme si c théoriquement impossible (on défini tous les maires a la phase 1 et on le crée quand on crée la ville)
             cityMayor.put(city, new Mayor(city, playerName, playerUUID, color, idPerk1, idPerk2, idPerk3, type));
         }
-    }
-
-    public ElectionType getElectionType(City city) {
-        Mayor mayor = cityMayor.get(city);
-        if (mayor == null) return null;
-
-        return mayor.getElectionType();
     }
 
     public NamedTextColor getRandomMayorColor() {

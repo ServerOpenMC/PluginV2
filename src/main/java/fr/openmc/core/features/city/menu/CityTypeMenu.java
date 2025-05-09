@@ -14,14 +14,20 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fr.openmc.core.features.city.mascots.MascotsListener.futurCreateCity;
 import static fr.openmc.core.features.city.mascots.MascotsListener.movingMascots;
@@ -90,7 +96,7 @@ public class CityTypeMenu extends Menu {
     private void runChoiceType(Player player, String type) {
         futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, type);
 
-        ItemStack mascotsItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();;
+        ItemStack mascotsItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
         ItemMeta meta = mascotsItem.getItemMeta();
 
         if (meta != null) {

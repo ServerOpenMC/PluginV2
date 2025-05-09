@@ -4,6 +4,7 @@ import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.features.city.mayor.CityLaw;
+import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
@@ -44,6 +45,7 @@ public class City {
     private Integer chestPages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
     private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
+    private MayorManager mayorManager;
 
     @Getter @Setter private UUID chestWatcher;
     @Getter @Setter private ChestMenu chestMenu;
@@ -89,6 +91,8 @@ public class City {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        this.mayorManager = MayorManager.getInstance();
     }
 
     public ItemStack[] getChestContent(int page) {
@@ -237,10 +241,24 @@ public class City {
         return "inconnu";
     }
 
+    public ElectionType getElectionType() {
+        Mayor mayor = mayorManager.cityMayor.get(this);
+        if (mayor == null) return null;
+
+        return mayor.getElectionType();
+    }
+
     public Mayor getMayor() {
         MayorManager mayorManager = MayorManager.getInstance();
 
         return mayorManager.cityMayor.get(CityManager.getCity(cityUUID));
+    }
+
+    public boolean hasMayor() {
+        Mayor mayor = mayorManager.cityMayor.get(this);
+        if (mayor == null) return false;
+
+        return mayor.getUUID() != null;
     }
 
     public CityLaw getLaw() {

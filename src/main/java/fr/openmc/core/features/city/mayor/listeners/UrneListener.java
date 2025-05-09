@@ -1,0 +1,64 @@
+package fr.openmc.core.features.city.mayor.listeners;
+
+import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.ElectionType;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.menu.mayor.MayorVoteMenu;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Chunk;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
+import java.util.Objects;
+
+public class UrneListener implements Listener {
+    @EventHandler
+    private void onFurnitureInteractEvent(FurnitureInteractEvent furniture) {
+        if (!Objects.equals(furniture.getNamespacedID(), "omc_blocks:urne")) return;
+
+        Player player = furniture.getPlayer();
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        Chunk chunk = furniture.getFurniture().getEntity().getChunk();
+        City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+
+        if (playerCity == null) {
+            MessagesManager.sendMessage(player, Component.text("§8§o*Mystérieux objet... Cela doit surement servir pour des éléctions...*"), Prefix.MAYOR, MessageType.INFO, false);
+            return;
+        }
+
+        if (playerCity != city) {
+            MessagesManager.sendMessage(player, Component.text("§8§o*Mhh... Ce n'est pas votre urne*"), Prefix.MAYOR, MessageType.INFO, false);
+            return;
+        }
+
+        MayorManager mayorManager = MayorManager.getInstance();
+
+        if (playerCity.getElectionType() == ElectionType.OWNER_CHOOSE) {
+            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
+            return;
+        }
+
+        if (mayorManager.phaseMayor != 1) {
+            MessagesManager.sendMessage(player, Component.text("§8§o*Les éléctions ont déjà eu lieu !*"), Prefix.MAYOR, MessageType.INFO, false);
+            return;
+        }
+
+        if (mayorManager.cityElections.get(playerCity) == null) {
+            MessagesManager.sendMessage(player, Component.text("§8§o*personne ne s'est présenté ! Présenter vous ! /city*"), Prefix.MAYOR, MessageType.INFO, true);
+            return;
+        }
+
+        new MayorVoteMenu(player).open();
+
+        player.playSound(player.getLocation(), Sound.BLOCK_LANTERN_PLACE, 1.0F, 1.7F);
+
+    }
+}
