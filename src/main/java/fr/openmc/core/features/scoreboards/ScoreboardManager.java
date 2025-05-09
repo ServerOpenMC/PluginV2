@@ -1,7 +1,7 @@
 package fr.openmc.core.features.scoreboards;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -20,7 +20,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -175,7 +174,7 @@ public class ScoreboardManager implements Listener {
         if(phase != 1) {
             objective.getScore(" ").setScore(5);
             objective.getScore("§8• §6§lCONTEST!").setScore(4);
-            objective.getScore(ChatColor.valueOf(data.getColor1()) + data.getCamp1() + " §8VS " + ChatColor.valueOf(data.getColor2()) + data.getCamp2()).setScore(3);
+            objective.getScore(data.getCamp1() + " §8VS " + data.getCamp2()).setScore(3);
             objective.getScore("§cFin dans " + DateUtils.getTimeUntilNextMonday()).setScore(2);
         }
 

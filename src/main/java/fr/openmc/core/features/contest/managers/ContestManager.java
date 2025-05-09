@@ -446,8 +446,8 @@ public class ContestManager {
 
         baseBookMeta.addPages(leaderboard[0]);
         
-        List<Player> winners = new ArrayList<>();
-        List<Player> losers = new ArrayList<>();
+        List<OfflinePlayer> winners = new ArrayList<>();
+        List<OfflinePlayer> losers = new ArrayList<>();
 
         // STATS PERSO + REWARDS
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
@@ -502,7 +502,7 @@ public class ContestManager {
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Gagnant - EVENT
-                winners.add(player.getPlayer());
+                winners.add(player);
             } else {
                 // Perdant - ARGENT
                 int moneyMin = 2000;
@@ -523,7 +523,7 @@ public class ContestManager {
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Perdant - EVENT
-                losers.add(player.getPlayer());
+                losers.add(player);
             }
             // PRINT REWARDS
 
@@ -547,7 +547,11 @@ public class ContestManager {
             rank.getAndIncrement();
         });
         
-        Bukkit.getServer().getPluginManager().callEvent(new ContestEndEvent(data, winners, losers));
+        try {
+            Bukkit.getServer().getPluginManager().callEvent(new ContestEndEvent(data, winners, losers));
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {

@@ -2,16 +2,14 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.SpawnManager;
-import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -47,8 +45,8 @@ public class JoinMessageListener implements Listener {
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getInstance().getSpawnLocation());
-
-
+        
+        
         new BukkitRunnable() {
             @Override
             public void run() {
