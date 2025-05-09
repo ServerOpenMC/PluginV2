@@ -22,5 +22,9 @@ Cliquez [ici](https://github.com/ServerOpenMC/PluginV2/wiki) afin d'accéder au 
 ## 📃 License
 Projet sous [GPL-3.0 license](https://choosealicense.com/licenses/gpl-3.0/).
 
+## Crédits
+Ce projet intègre du code provenant de la repo [SignGUI](https://github.com/Rapha149/SignGUI), spécifiquement de la [Pull Request #30](https://github.com/Rapha149/SignGUI/pull/30) pour la mise à jour de compatibilité avec Minecraft 1.21.5.  
+La repo originale est sous licence [MIT](https://github.com/Rapha149/SignGUI/blob/main/LICENSE).
+
 ---
 Merci à @MathiasDPX pour la nouvelle configuration du repo.
