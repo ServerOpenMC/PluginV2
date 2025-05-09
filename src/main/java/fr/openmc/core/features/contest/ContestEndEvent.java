@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ContestEvent extends Event {
+public class ContestEndEvent extends Event {
 	
 	private static final HandlerList HANDLERS = new HandlerList();
 	@Getter
@@ -23,7 +23,7 @@ public class ContestEvent extends Event {
 	 * @param winners The list of winners
 	 * @param losers The list of losers
 	 */
-	public ContestEvent(ContestData contestData, List<Player> winners, List<Player> losers) {
+	public ContestEndEvent(ContestData contestData, List<Player> winners, List<Player> losers) {
 		this.contestData = contestData;
 		this.winners = winners;
 		this.losers = losers;

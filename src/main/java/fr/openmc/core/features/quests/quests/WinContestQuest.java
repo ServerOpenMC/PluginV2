@@ -1,6 +1,6 @@
 package fr.openmc.core.features.quests.quests;
 
-import fr.openmc.core.features.contest.ContestEvent;
+import fr.openmc.core.features.contest.ContestEndEvent;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
@@ -23,7 +23,7 @@ public class WinContestQuest extends Quest {
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onEndContest(ContestEvent event) {
+    public void onEndContest(ContestEndEvent event) {
         for (Player player : event.getWinners()) {
             this.incrementProgress(player.getUniqueId());
         }

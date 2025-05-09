@@ -3,7 +3,7 @@ package fr.openmc.core.features.contest.managers;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.ContestData;
-import fr.openmc.core.features.contest.ContestEvent;
+import fr.openmc.core.features.contest.ContestEndEvent;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
@@ -547,7 +547,7 @@ public class ContestManager {
             rank.getAndIncrement();
         });
         
-        Bukkit.getServer().getPluginManager().callEvent(new ContestEvent(data, winners, losers));
+        Bukkit.getServer().getPluginManager().callEvent(new ContestEndEvent(data, winners, losers));
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
