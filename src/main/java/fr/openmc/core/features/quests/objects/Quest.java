@@ -328,29 +328,30 @@ public class Quest {
     /**
      * Increment the progress of the quest for a player by a specified amount.
      * <p>
-     * This method will check if the quest is fully completed and if not, it will increment the progress.
+     * This method will check if the quest is fully completed, and if not, it will increase the progress.
      * @param playerUUID The UUID of the player
      * @param amount The amount to increment the progress by
      */
     public void incrementProgress(UUID playerUUID, int amount) {
         if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
             this.progressLock.put(playerUUID, true);
-
+            
             try {
-                Player player = Bukkit.getPlayer(playerUUID);
-                if (player != null && player.getGameMode() != GameMode.SURVIVAL) return;
+                Player onlinePlayer = Bukkit.getPlayer(playerUUID);
+                if (onlinePlayer != null && onlinePlayer.isOnline() && onlinePlayer.getGameMode().equals(GameMode.CREATIVE)) {
+                    return;
+                }
                 int currentProgress = this.progress.getOrDefault(playerUUID, 0);
                 int newProgress = currentProgress + amount;
                 int currentTarget = this.getCurrentTarget(playerUUID);
-                if (newProgress >= currentTarget) {
-                    newProgress = currentTarget;
-                }
-
+                
+                if (newProgress >= currentTarget) newProgress = currentTarget;
+                
                 if (currentProgress < currentTarget) {
                     this.progress.put(playerUUID, newProgress);
                     this.checkTierCompletion(playerUUID);
-
-                    if (player != null && player.isOnline()) {
+                    
+                    if (onlinePlayer != null && onlinePlayer.isOnline()) {
                         if (this.isLargeActionBar && newProgress % 50 != 0) return;
                         Component actionBar = Component.text()
                                 .append(MiniMessage.miniMessage().deserialize(Prefix.QUEST.getPrefix()))
@@ -360,8 +361,8 @@ public class Quest {
                                 .append(Component.text(" : ", NamedTextColor.GRAY))
                                 .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
                                 .build();
-
-                        player.sendActionBar(actionBar);
+                        
+                        onlinePlayer.sendActionBar(actionBar);
                     }
                 }
             } finally {
