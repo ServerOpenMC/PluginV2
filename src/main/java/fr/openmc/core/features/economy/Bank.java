@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @DatabaseTable(tableName = "bank")
-class Bank {
+public class Bank {
 
     @DatabaseField(id = true)
     private String uuid;
