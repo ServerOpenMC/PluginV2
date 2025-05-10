@@ -75,6 +75,11 @@ public class UrneListener implements Listener {
 
         Player player = event.getPlayer();
 
+        if (!player.getWorld().getName().equals("world")) {
+            event.setCancelled(true);
+            return;
+        }
+
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
             MessagesManager.sendMessage(player, Component.text("Vous devez avoir une ville pour poser ceci!"), Prefix.MAYOR, MessageType.WARNING, false);

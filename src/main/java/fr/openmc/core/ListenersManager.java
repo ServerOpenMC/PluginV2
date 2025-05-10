@@ -26,10 +26,9 @@ public class ListenersManager {
                 new CubeListener(OMCPlugin.getInstance()),
                 new RespawnListener(),
                 new SleepListener(),
-                new PlayerDeadListener(),
+                new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
                 new NPCManager(),
-                new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance())
         );
     }

@@ -6,8 +6,6 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
@@ -29,15 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 public class MayorNpcMenu extends Menu {
-    private final boolean isMayor;
-    private final ElectionType electionType;
     private final City city;
 
-    public MayorNpcMenu(Player owner, City city, ElectionType electionType, boolean isMayor) {
+    public MayorNpcMenu(Player owner, City city) {
         super(owner);
         this.city = city;
-        this.electionType = electionType;
-        this.isMayor = isMayor;
     }
 
     @Override
@@ -60,7 +54,6 @@ public class MayorNpcMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
         try {
-            City city = CityManager.getPlayerCity(player.getUniqueId());
             Mayor mayor = city.getMayor();
 
             Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
@@ -76,18 +69,16 @@ public class MayorNpcMenu extends Menu {
             loreMayor.add(Component.text(perk3.getName()));
             loreMayor.addAll(perk3.getLore());
 
-            if (isMayor) {
-                inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
-                    itemMeta.displayName(Component.text("§eMaire " + city.getMayor().getName()));
-                    itemMeta.lore(loreMayor);
-                }));
-            }
+            inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
+                itemMeta.displayName(Component.text("§eMaire " + city.getMayor().getName()));
+                itemMeta.lore(loreMayor);
+            }));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
-            inventory.put(12, new ItemBuilder(this, iaPerk2, itemMeta -> {
-                itemMeta.itemName(Component.text(namePerk2));
+            inventory.put(11, new ItemBuilder(this, iaPerk2, itemMeta -> {
+                itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -96,8 +87,8 @@ public class MayorNpcMenu extends Menu {
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
-            inventory.put(14, new ItemBuilder(this, iaPerk3, itemMeta -> {
-                itemMeta.itemName(Component.text(namePerk3));
+            inventory.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
+                itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

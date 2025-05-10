@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.npcs.MayorNPC;
 import fr.openmc.core.features.city.mayor.npcs.OwnerNPC;
 import fr.openmc.core.features.city.menu.mayor.npc.MayorNpcMenu;
+import fr.openmc.core.features.city.menu.mayor.npc.OwnerNpcMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.api.FancyNpcApi;
 import fr.openmc.core.utils.messages.MessageType;
@@ -74,7 +75,7 @@ public class NPCManager implements Listener {
         NpcData dataOwner = new NpcData("owner-" + cityUUID, player.getUniqueId(), locationOwner);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
         dataOwner.setSkin(ownerName);
-        dataOwner.setDisplayName("<yellow>Propriétaire" + ownerName + "</yellow>");
+        dataOwner.setDisplayName("<yellow>Propriétaire " + ownerName + "</yellow>");
 
         Npc npcOwner = FancyNpcsPlugin.get().getNpcAdapter().apply(dataOwner);
 
@@ -114,6 +115,12 @@ public class NPCManager implements Listener {
         if (!FancyNpcApi.hasFancyNpc()) return;
 
         Player player = event.getPlayer();
+
+        if (MayorManager.getInstance().phaseMayor == 1) {
+            MessagesManager.sendMessage(player, Component.text("§8§o*les elections sont en cours... on ne sait pas ce qu'il décide de prendre*"), Prefix.MAYOR, MessageType.INFO, true);
+            return;
+        }
+
         Npc npc = event.getNpc();
 
         if (npc.getData().getName().startsWith("mayor-")) {
@@ -126,7 +133,30 @@ public class NPCManager implements Listener {
                 return;
             }
 
-            new MayorNpcMenu(player, city, ElectionType.ELECTION, true).open();
+            new MayorNpcMenu(player, city).open();
+        }
+
+    }
+
+    @EventHandler
+    public void onInteractWithOwnerNPC(NpcInteractEvent event) {
+        if (!FancyNpcApi.hasFancyNpc()) return;
+
+        Player player = event.getPlayer();
+
+        if (MayorManager.getInstance().phaseMayor == 1) {
+            MessagesManager.sendMessage(player, Component.text("§8§o*les elections sont en cours... on ne sait pas ce qu'il décide de prendre*"), Prefix.MAYOR, MessageType.INFO, true);
+            return;
+        }
+
+        Npc npc = event.getNpc();
+
+        if (npc.getData().getName().startsWith("owner-")) {
+            String cityUUID = npc.getData().getName().replace("owner-", "");
+            City city = CityManager.getCity(cityUUID);
+            if (city == null) return;
+
+            new OwnerNpcMenu(player, city, city.getElectionType()).open();
         }
 
     }

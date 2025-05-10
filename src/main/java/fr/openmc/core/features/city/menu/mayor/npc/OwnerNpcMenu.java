@@ -6,7 +6,6 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
@@ -28,15 +27,13 @@ import java.util.*;
 
 public class OwnerNpcMenu extends Menu {
 
-    private final boolean isMayor;
     private final ElectionType electionType;
     private final City city;
 
-    public OwnerNpcMenu(Player owner, City city, ElectionType electionType, boolean isMayor) {
+    public OwnerNpcMenu(Player owner, City city, ElectionType electionType) {
         super(owner);
         this.city = city;
         this.electionType = electionType;
-        this.isMayor = isMayor;
     }
 
     @Override
@@ -59,7 +56,6 @@ public class OwnerNpcMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
         try {
-            City city = CityManager.getPlayerCity(player.getUniqueId());
             Mayor mayor = city.getMayor();
             UUID uuidOwner = city.getPlayerWith(CPermission.OWNER);
 
@@ -114,14 +110,33 @@ public class OwnerNpcMenu extends Menu {
                 ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
                 String namePerk1 = (perk1 != null) ? perk1.getName() : "§8Réforme Vide";
                 List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(perk1.getLore()) : null;
-                inventory.put(13, new ItemBuilder(this, iaPerk1, itemMeta -> {
+                inventory.put(12, new ItemBuilder(this, iaPerk1, itemMeta -> {
                     itemMeta.itemName(Component.text(namePerk1));
                     itemMeta.lore(lorePerk1);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 }));
-            }
 
+                ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
+                String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
+                List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
+                inventory.put(14, new ItemBuilder(this, iaPerk2, itemMeta -> {
+                    itemMeta.itemName(Component.text(namePerk2));
+                    itemMeta.lore(lorePerk2);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                }));
+
+                ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
+                String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
+                List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
+                inventory.put(16, new ItemBuilder(this, iaPerk3, itemMeta -> {
+                    itemMeta.customName(Component.text(namePerk3));
+                    itemMeta.lore(lorePerk3);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+                    itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+                }));
+            }
 
             if (mayor.getUUID().equals(player.getUniqueId())) {
                 inventory.put(18, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {

@@ -2,19 +2,16 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.SpawnManager;
-import fr.openmc.core.features.quests.objects.Quest;
-import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.utils.api.LuckPermsApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-
 import net.kyori.adventure.text.event.ClickEvent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,8 +20,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class JoinMessageListener implements Listener {
@@ -68,7 +63,7 @@ public class JoinMessageListener implements Listener {
             }
         });
 
-        event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsAPI.getFormattedPAPIPrefix(player) + player.getName()));
+        event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName()));
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getInstance().getSpawnLocation());
