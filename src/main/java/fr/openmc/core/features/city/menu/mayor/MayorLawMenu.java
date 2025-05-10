@@ -334,7 +334,7 @@ public class MayorLawMenu extends Menu {
                             // spawn d'un total de 100 aywenite progressivement sur une minute
                             IdyllicRain.spawnAywenite(city, 100);
 
-                            //DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                            DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                         }
                     });
                 };
