@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les maires
+public class CityListMenu extends PaginatedMenu {
 	
 	// Constants for the menu
 	private static final Component SORT_HEADER = Component.text("§7Cliquez pour trier par");
