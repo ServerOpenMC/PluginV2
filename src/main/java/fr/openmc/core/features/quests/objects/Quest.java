@@ -452,7 +452,7 @@ public class Quest {
 
             try {
                 Player onlinePlayer = Bukkit.getPlayer(playerUUID);
-                if (onlinePlayer != null && onlinePlayer.isOnline() && onlinePlayer.getGameMode().equals(GameMode.CREATIVE)) return;
+                if (onlinePlayer != null && onlinePlayer.isOnline() && !onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)) return;
                 int currentProgress = this.progress.getOrDefault(playerUUID, 0);
                 int newProgress = currentProgress + amount;
                 int currentTarget = this.getCurrentTarget(playerUUID);
