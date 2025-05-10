@@ -6,12 +6,7 @@ public class ItemAdderApi {
     private static boolean hasItemAdder;
 
     public ItemAdderApi() {
-        if (Bukkit.getPluginManager().getPlugin("ItemAdder") == null) {
-            hasItemAdder = false;
-            return;
-        } else {
-            hasItemAdder = true;
-        }
+        hasItemAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");;
     }
 
     /**
