@@ -361,7 +361,7 @@ public class Quest {
             if (playerPendingRewards != null && !remainingRewards.isEmpty()) {
                 playerPendingRewards.put(tierIndex, remainingRewards);
             }
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire pour récupérer toutes les récompenses. Libérez de l'espace et réessayez."), Prefix.QUEST, MessageType.WARNING, true);
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de place dans votre inventaire pour récupérer toutes les récompenses. Libérez de l'espace et réessayez."), Prefix.QUEST, MessageType.WARNING, true);
         }
 
         player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
