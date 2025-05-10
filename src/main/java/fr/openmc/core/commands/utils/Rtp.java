@@ -1,12 +1,11 @@
 package fr.openmc.core.commands.utils;
 
+import fr.openmc.api.cooldown.DynamicCooldown;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.cooldown.DynamicCooldown;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;

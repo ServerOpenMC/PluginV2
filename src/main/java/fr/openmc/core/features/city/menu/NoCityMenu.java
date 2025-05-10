@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.signgui.SignGUI;
-import fr.openmc.api.signgui.exception.SignGUIVersionException;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;

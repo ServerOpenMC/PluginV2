@@ -1,7 +1,8 @@
 package fr.openmc.core;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.city.CityManager;
@@ -24,13 +25,12 @@ import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.listeners.CitizensHookListener;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.utils.MotdUtils;
+import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.LuckPermsApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.api.WorldGuardApi;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.freeze.FreezeManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -61,6 +61,7 @@ public class OMCPlugin extends JavaPlugin {
         new LuckPermsApi();
         new PapiApi();
         new WorldGuardApi();
+        new ItemAdderApi();
 
         /* MANAGERS */
         dbManager = new DatabaseManager();

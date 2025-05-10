@@ -1,6 +1,8 @@
 package fr.openmc.core.features.city;
 
 import com.sk89q.worldedit.math.BlockVector2;
+import fr.openmc.api.chronometer.Chronometer;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
@@ -15,8 +17,6 @@ import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.chronometer.Chronometer;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

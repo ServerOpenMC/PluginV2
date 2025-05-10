@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.mayor.managers;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
@@ -12,7 +13,6 @@ import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.perks.basic.*;
 import fr.openmc.core.features.city.mayor.perks.event.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;

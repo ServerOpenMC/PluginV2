@@ -91,17 +91,15 @@ public class CityListDetailsMenu extends Menu {
 				})
 		);
 
-		List<Component> loreMayor =  new ArrayList<>();
-		if (electionType == ElectionType.ELECTION) {
-			loreOwner.add(Component.text(""));
-			loreOwner.add(Component.text(perk2.getName()));
-			loreOwner.addAll(perk2.getLore());
-			loreOwner.add(Component.text(""));
-			loreOwner.add(Component.text(perk3.getName()));
-			loreOwner.addAll(perk3.getLore());
-		}
-
 		if (MayorManager.getInstance().phaseMayor == 2 && electionType == ElectionType.ELECTION) {
+			List<Component> loreMayor =  new ArrayList<>();
+			loreMayor.add(Component.text(""));
+			loreMayor.add(Component.text(perk2.getName()));
+			loreMayor.addAll(perk2.getLore());
+			loreMayor.add(Component.text(""));
+			loreMayor.add(Component.text(perk3.getName()));
+			loreMayor.addAll(perk3.getLore());
+
 			map.put(14, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
 							itemMeta -> {
 								itemMeta.displayName(

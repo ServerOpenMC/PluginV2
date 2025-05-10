@@ -1,8 +1,11 @@
 package fr.openmc.core.features.city.menu.mayor;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -15,9 +18,6 @@ import fr.openmc.core.features.city.mayor.perks.event.IdyllicRain;
 import fr.openmc.core.features.city.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
-import fr.openmc.core.utils.interactions.text.ChatInput;
-import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

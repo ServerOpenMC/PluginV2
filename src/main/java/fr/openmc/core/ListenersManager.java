@@ -1,10 +1,10 @@
 package fr.openmc.core;
 
+import fr.openmc.api.input.ChatInput;
+import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.mailboxes.MailboxListener;
 import fr.openmc.core.features.updates.UpdateListener;
 import fr.openmc.core.listeners.*;
-import fr.openmc.core.utils.interactions.items.ItemInteraction;
-import fr.openmc.core.utils.interactions.text.ChatInput;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;

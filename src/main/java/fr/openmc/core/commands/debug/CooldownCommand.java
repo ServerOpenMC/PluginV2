@@ -1,7 +1,7 @@
 package fr.openmc.core.commands.debug;
 
-import fr.openmc.core.utils.cooldown.DynamicCooldown;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
+import fr.openmc.api.cooldown.DynamicCooldown;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
