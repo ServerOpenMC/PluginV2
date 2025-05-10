@@ -1,7 +1,11 @@
 package fr.openmc.core.features.quests.rewards;
 
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 /**
@@ -30,5 +34,12 @@ public class QuestMoneyReward implements QuestReward {
     @Override
     public void giveReward(Player player) {
         EconomyManager.getInstance().addBalance(player.getUniqueId(), amount);
+        MessagesManager.sendMessage(
+                player,
+                Component.text("§aVous avez reçu §e" + amount + EconomyManager.getEconomyIcon()),
+                Prefix.QUEST,
+                MessageType.SUCCESS,
+                false
+        );
     }
 }
