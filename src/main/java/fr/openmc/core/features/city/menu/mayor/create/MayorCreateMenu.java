@@ -81,7 +81,7 @@ public class MayorCreateMenu extends Menu {
                     lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
                 }
                 inventory.put(13, new ItemBuilder(this, iaPerk1, itemMeta -> {
-                    itemMeta.itemName(Component.text(namePerk1));
+                    itemMeta.customName(Component.text(namePerk1));
                     itemMeta.lore(lorePerk1);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -117,7 +117,7 @@ public class MayorCreateMenu extends Menu {
                     lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
                 }
                 inventory.put(11, new ItemBuilder(this, iaPerk2, itemMeta -> {
-                    itemMeta.itemName(Component.text(namePerk2));
+                    itemMeta.customName(Component.text(namePerk2));
                     itemMeta.lore(lorePerk2);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -140,7 +140,7 @@ public class MayorCreateMenu extends Menu {
                     lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
                 }
                 inventory.put(15, new ItemBuilder(this, iaPerk3,itemMeta -> {
-                    itemMeta.itemName(Component.text(namePerk3));
+                    itemMeta.customName(Component.text(namePerk3));
                     itemMeta.lore(lorePerk3);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                     itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

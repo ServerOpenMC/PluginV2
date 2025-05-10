@@ -118,7 +118,7 @@ public class MayorMandateMenu extends Menu {
             String namePerk1 = (perk1 != null) ? perk1.getName() : "§8Réforme Vide";
             List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(perk1.getLore()) : null;
             inventory.put(10, new ItemBuilder(this, iaPerk1, itemMeta -> {
-                itemMeta.itemName(Component.text(namePerk1));
+                itemMeta.customName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -128,7 +128,7 @@ public class MayorMandateMenu extends Menu {
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
             inventory.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
-                itemMeta.itemName(Component.text(namePerk2));
+                itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -138,7 +138,7 @@ public class MayorMandateMenu extends Menu {
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
             inventory.put(16, new ItemBuilder(this, iaPerk3, itemMeta -> {
-                itemMeta.itemName(Component.text(namePerk3));
+                itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);

@@ -1,26 +1,30 @@
 package fr.openmc.core.features.city.menu.mayor.npc;
 
+import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
-import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -142,12 +146,53 @@ public class OwnerNpcMenu extends Menu {
                 inventory.put(18, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                     itemMeta.itemName(Component.text("§aDéplacer ce NPC"));
                     itemMeta.lore(List.of(
-                            Component.text("§7Vous allez retourner au Menu des Elections"),
-                            Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                            Component.text("§7Vous allez pouvoir déplacer ce NPC"),
+                            Component.text("§e§lCLIQUEZ ICI POUR CONTINUER")
                     ));
                 }).setOnClick(inventoryClickEvent -> {
-                    MayorElectionMenu menu = new MayorElectionMenu(player);
-                    menu.open();
+                    List<Component> loreItemNPC = List.of(
+                            Component.text("§7Cliquez sur l'endroit où vous voulez déplacer le §9NPC")
+                    );
+                    ItemStack itemToGive = new ItemStack(Material.STICK);
+                    ItemMeta itemMeta = itemToGive.getItemMeta();
+
+                    itemMeta.displayName(Component.text("§7Emplacement du §9NPC"));
+                    itemMeta.lore(loreItemNPC);
+                    itemToGive.setItemMeta(itemMeta);
+                    ItemInteraction.runLocationInteraction(
+                            player,
+                            itemToGive,
+                            "mayor:owner-npc-move",
+                            300,
+                            "§7Vous avez 300s pour séléctionner votre emplacement",
+                            "§7Vous n'avez pas eu le temps de déplacer votre NPC",
+                            locationClick -> {
+                                if (locationClick == null) return true;
+
+                                Chunk chunk = locationClick.getChunk();
+
+                                City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+                                if (cityByChunk == null) {
+                                    MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                    return false;
+                                }
+
+                                City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+                                if (playerCity == null) {
+                                    return false;
+                                }
+
+                                if (!cityByChunk.getUUID().equals(playerCity.getUUID())) {
+                                    MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                    return false;
+                                }
+
+                                NPCManager.moveNPC("owner", locationClick, city.getUUID());
+                                NPCManager.updateNPCS(city.getUUID());
+                                return true;
+                            }
+                    );
                 }));
             }
             return inventory;

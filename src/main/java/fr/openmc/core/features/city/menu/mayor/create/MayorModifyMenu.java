@@ -55,13 +55,13 @@ public class MayorModifyMenu extends Menu {
 
             assert perk2 != null;
             inventory.put(11, new ItemBuilder(this, perk2.getItemStack(), itemMeta -> {
-                itemMeta.itemName(Component.text(perk2.getName()));
+                itemMeta.customName(Component.text(perk2.getName()));
                 itemMeta.lore(perk2.getLore());
             }));
 
             assert perk3 != null;
             inventory.put(13, new ItemBuilder(this, perk3.getItemStack(), itemMeta -> {
-                itemMeta.itemName(Component.text(perk3.getName()));
+                itemMeta.customName(Component.text(perk3.getName()));
                 itemMeta.lore(perk3.getLore());
             }));
 

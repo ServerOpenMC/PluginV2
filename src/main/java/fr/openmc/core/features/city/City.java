@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.menu.ChestMenu;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -675,6 +676,8 @@ public class City {
      */
     public void delete() {
         CityManager.forgetCity(cityUUID);
+
+        NPCManager.removeNPCS(cityUUID);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {

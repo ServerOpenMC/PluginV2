@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.perks.basic.*;
 import fr.openmc.core.features.city.mayor.perks.event.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.api.FancyNpcApi;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -101,6 +102,11 @@ public class MayorManager {
         if (ItemAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new UrneListener()
+            );
+        }
+        if (FancyNpcApi.hasFancyNpc()) {
+            OMCPlugin.registerEvents(
+                    new NPCManager()
             );
         }
 
@@ -508,6 +514,7 @@ public class MayorManager {
 
         }
 
+        NPCManager.updateAllNPCS();
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
@@ -548,6 +555,8 @@ public class MayorManager {
                 }
             }
         }
+
+        NPCManager.updateAllNPCS();
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r

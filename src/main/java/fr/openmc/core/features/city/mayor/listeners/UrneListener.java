@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.mayor.listeners;
 
 import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
-import dev.lone.itemsadder.api.Events.FurniturePlaceEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlaceSuccessEvent;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -70,49 +69,61 @@ public class UrneListener implements Listener {
     }
 
     @EventHandler
-    private void onUrnePlaceEvent(FurniturePlaceEvent event) {
+    private void onUrnePlaceSuccessEvent(FurniturePlaceSuccessEvent event) {
         if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
 
         Player player = event.getPlayer();
 
         if (!player.getWorld().getName().equals("world")) {
-            event.setCancelled(true);
+            // Supprime directement le furniture car c’est trop tard pour cancel
+            Objects.requireNonNull(event.getFurniture()).remove(true);
             return;
         }
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        if (playerCity == null) {
+        if (playerCity == null || playerCity.getMayor().getUUID() == null) {
+            Objects.requireNonNull(event.getFurniture()).remove(true);
             MessagesManager.sendMessage(player, Component.text("Vous devez avoir une ville pour poser ceci!"), Prefix.MAYOR, MessageType.WARNING, false);
-            event.setCancelled(true);
+            return;
+        }
+
+        City chunkCity = CityManager.getCityFromChunk(event.getFurniture().getEntity().getChunk().getX(), event.getFurniture().getEntity().getChunk().getZ());
+
+        if (chunkCity == null) {
+            Objects.requireNonNull(event.getFurniture()).remove(true);
+            MessagesManager.sendMessage(player, Component.text("Vous devez poser ceci dans votre ville!"), Prefix.MAYOR, MessageType.WARNING, false);
+            return;
+        }
+
+        if (!chunkCity.getUUID().equals(playerCity.getUUID())) {
+            Objects.requireNonNull(event.getFurniture()).remove(true);
+            MessagesManager.sendMessage(player, Component.text("Vous devez la poser dans votre ville"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
         if (!playerCity.getMayor().getUUID().equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le maire"), Prefix.MAYOR, MessageType.ERROR, false);
-            event.setCancelled(true);
+            Objects.requireNonNull(event.getFurniture()).remove(true);
+            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le maire !"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
         if (NPCManager.hasNPCS(playerCity.getUUID())) {
+            Objects.requireNonNull(event.getFurniture()).remove(true);
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous avez déjà des NPC"), Prefix.MAYOR, MessageType.ERROR, false);
-            event.setCancelled(true);
             return;
         }
-    }
-
-    @EventHandler
-    private void onUrnePlaceSuccessEvent(FurniturePlaceSuccessEvent event) {
-        if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
 
         Location urneLocation = event.getFurniture().getEntity().getLocation();
-        Player player = event.getPlayer();
-
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        if (playerCity == null) return;
 
         if (!FancyNpcApi.hasFancyNpc()) return;
 
-        NPCManager.createNPCS(playerCity.getUUID(), urneLocation, player);
+        Location locationMayor = urneLocation.clone().add(3, 0, 0);
+        locationMayor = urneLocation.getWorld().getHighestBlockAt(locationMayor).getLocation().add(0, 1, 0);
+
+        Location locationOwner = urneLocation.clone().add(-3, 0, 0);
+        locationOwner = urneLocation.getWorld().getHighestBlockAt(locationOwner).getLocation().add(0, 1, 0);
+
+        NPCManager.createNPCS(playerCity.getUUID(), locationMayor, locationOwner, player.getUniqueId());
     }
 
     @EventHandler
@@ -123,6 +134,8 @@ public class UrneListener implements Listener {
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) return;
+
+        if (playerCity.getMayor().getUUID() == null) return;
 
         if (!playerCity.getMayor().getUUID().equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le maire"), Prefix.MAYOR, MessageType.ERROR, false);
