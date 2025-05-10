@@ -79,18 +79,16 @@ public class MilitaryDissuasion implements Listener {
                             .filter(ent -> ent instanceof Player)
                             .map(ent -> (Player) ent)
                             .filter(nearbyPlayer -> {
-                                System.out.println(nearbyPlayer);
                                 if (nearbyPlayer.getGameMode() != GameMode.SURVIVAL && nearbyPlayer.getGameMode() != GameMode.ADVENTURE) {
                                     return false;
                                 }
-                                System.out.println("good " + nearbyPlayer);
+
                                 City playerCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
                                 return playerCity == null || !playerCity.getUUID().equals(city.getUUID());
                             })
                             .collect(Collectors.toList());
-                    System.out.println(nearbyEnemies.isEmpty());
+
                     if (!nearbyEnemies.isEmpty()) {
-                        System.out.println(nearbyEnemies);
                         Collections.shuffle(nearbyEnemies);
                         Player target = nearbyEnemies.get(0);
                         golem.setAI(true);

@@ -694,7 +694,6 @@ public class CityCommands {
         );
         ItemStack itemToGive = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
         ItemMeta itemMeta = itemToGive.getItemMeta();
-        System.out.println(itemMeta);
 
         itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
         itemMeta.lore(loreItemInterraction);

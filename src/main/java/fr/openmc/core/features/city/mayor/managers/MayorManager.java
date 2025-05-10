@@ -24,7 +24,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -113,36 +112,36 @@ public class MayorManager {
 
 
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getLogger().info("===== MayorManager Debug =====");
-
-                Bukkit.getLogger().info("City Mayors:");
-                System.out.println(cityMayor);
-                for (Map.Entry<City, Mayor> entry : cityMayor.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName() + " " + entry.getValue().getUUID() + " " + entry.getValue().getIdPerk1()+ " " + entry.getValue().getIdPerk2()+ " " + entry.getValue().getIdPerk3());
-                }
-
-                Bukkit.getLogger().info("City Law:");
-                System.out.println(cityLaws);
-                for (Map.Entry<City, CityLaw> entry : cityLaws.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> war^" + entry.getValue().getWarp() + " PVP " + entry.getValue().isPvp());
-                }
-
-                Bukkit.getLogger().info("City Elections:");
-                for (Map.Entry<City, List<MayorCandidate>> entry : cityElections.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
-                }
-
-                Bukkit.getLogger().info("Player Votes:");
-                for (Map.Entry<City, List<MayorVote>> entry : playerVote.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
-                }
-
-                Bukkit.getLogger().info("================================");
-            }
-        }.runTaskTimer(plugin, 0, 600L); // 600 ticks = 30 secondes
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
+//                Bukkit.getLogger().info("===== MayorManager Debug =====");
+//
+//                Bukkit.getLogger().info("City Mayors:");
+//                System.out.println(cityMayor);
+//                for (Map.Entry<City, Mayor> entry : cityMayor.entrySet()) {
+//                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue().getName() + " " + entry.getValue().getUUID() + " " + entry.getValue().getIdPerk1()+ " " + entry.getValue().getIdPerk2()+ " " + entry.getValue().getIdPerk3());
+//                }
+//
+//                Bukkit.getLogger().info("City Law:");
+//                System.out.println(cityLaws);
+//                for (Map.Entry<City, CityLaw> entry : cityLaws.entrySet()) {
+//                    Bukkit.getLogger().info(entry.getKey() + " -> war^" + entry.getValue().getWarp() + " PVP " + entry.getValue().isPvp());
+//                }
+//
+//                Bukkit.getLogger().info("City Elections:");
+//                for (Map.Entry<City, List<MayorCandidate>> entry : cityElections.entrySet()) {
+//                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
+//                }
+//
+//                Bukkit.getLogger().info("Player Votes:");
+//                for (Map.Entry<City, List<MayorVote>> entry : playerVote.entrySet()) {
+//                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
+//                }
+//
+//                Bukkit.getLogger().info("================================");
+//            }
+//        }.runTaskTimer(plugin, 0, 600L); // 600 ticks = 30 secondes
     }
 
     public static void init_db(Connection conn) throws SQLException {
