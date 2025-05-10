@@ -129,9 +129,9 @@ public class ContributionMenu extends Menu {
                     contestPlayerManager.setPointsPlayer(player, newPlayerPoints);
                     String pointCamp = "points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
                     if (Objects.equals(pointCamp, "points1")) {
-                        contestManager.data.setPointsCamp1(updatedCampPoints);
+                        contestManager.data.setPoint1(updatedCampPoints);
                     } else if (Objects.equals(pointCamp, "points2")) {
-                        contestManager.data.setPointsCamp2(updatedCampPoints);
+                        contestManager.data.setPoint2(updatedCampPoints);
                     }
 
                     MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
