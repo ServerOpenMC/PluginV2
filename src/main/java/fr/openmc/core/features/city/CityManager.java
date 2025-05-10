@@ -6,20 +6,14 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
-import fr.openmc.core.features.city.mascots.Mascot;
-import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.listeners.ChestMenuListener;
 import fr.openmc.core.features.city.listeners.CityChatListener;
-import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
+import fr.openmc.core.features.city.mascots.Mascot;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import com.sk89q.worldedit.math.BlockVector2;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.CommandsManager;
-import fr.openmc.core.features.city.commands.*;
-import fr.openmc.core.features.city.listeners.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.chronometer.Chronometer;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
@@ -251,7 +245,7 @@ public class CityManager implements Listener {
             for (UUID members : membersCopy) {
                 Player member = Bukkit.getPlayer(members);
                 if (member == null) {
-                    member = Bukkit.getOfflinePlayer(members).getPlayer();
+                    member = CacheOfflinePlayer.getOfflinePlayer(members).getPlayer();
                     if (member == null) {
                         continue;
                     }

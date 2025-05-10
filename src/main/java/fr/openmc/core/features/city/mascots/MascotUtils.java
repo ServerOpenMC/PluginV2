@@ -2,9 +2,6 @@ package fr.openmc.core.features.city.mascots;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
@@ -21,7 +18,7 @@ public class MascotUtils {
 			return false;
 		}
 
-		Mascot newMascot = new Mascot(city_uuid, mascotUUID, 1, true, 10080, true, chunk);
+		Mascot newMascot = new Mascot(city_uuid, mascotUUID, 1, true, true, chunk);
 		return MascotsManager.mascots.add(newMascot);
 	}
 

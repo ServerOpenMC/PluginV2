@@ -101,7 +101,12 @@ public class DateUtils {
         }
     }
 
-    public static String getTimeUntilNextMonday() {
+    /**
+     * Calcule le temps entre maintenant et lundi par exemple
+     * @param day DayOfWeek
+     * @return format 4h 2m 38s
+     */
+    public static String getTimeUntilNextDay(DayOfWeek day) {
         LocalDateTime now = LocalDateTime.now();
 
         LocalDateTime nextDay = now.with(TemporalAdjusters.next(day)).toLocalDate().atStartOfDay();

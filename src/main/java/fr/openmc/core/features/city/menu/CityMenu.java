@@ -25,7 +25,6 @@ import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.menu.MenuUtils;
@@ -206,7 +205,7 @@ public class CityMenu extends Menu {
                 menu.open();
             }));
 
-            ItemStack playerHead = PlayerUtils.getPlayerSkull(player);
+            ItemStack playerHead = ItemUtils.getPlayerSkull(player.getUniqueId());
 
             inventory.put(22, new ItemBuilder(this, playerHead, itemMeta -> {
                 itemMeta.displayName(Component.text("§dListe des Membres"));

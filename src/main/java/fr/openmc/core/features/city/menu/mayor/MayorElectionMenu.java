@@ -1,21 +1,21 @@
 package fr.openmc.core.features.city.menu.mayor;
 
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MayorModifyMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -29,7 +29,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
@@ -139,7 +142,7 @@ public class MayorElectionMenu extends Menu {
                     );
                 }
 
-                inventory.put(13, new ItemBuilder(this, PlayerUtils.getPlayerSkull(player), itemMeta -> {
+                inventory.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(player.getUniqueId()), itemMeta -> {
                     itemMeta.displayName(Component.text("§7Choix d'une §3Réforme"));
                     itemMeta.lore(lorePerkOwner);
                 }).setOnClick(inventoryClickEvent -> {

@@ -4,8 +4,6 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.managers.ColorUtils;
-import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.utils.ColorUtils;

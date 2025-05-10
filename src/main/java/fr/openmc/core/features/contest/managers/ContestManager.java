@@ -1,24 +1,7 @@
 package fr.openmc.core.features.contest.managers;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.time.DayOfWeek;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.DecimalFormat;
-
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.commands.ContestCommand;
@@ -27,6 +10,7 @@ import fr.openmc.core.features.contest.listeners.ContestListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -35,7 +19,10 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -43,8 +30,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -492,7 +484,7 @@ public class ContestManager {
 
             plugin.getLogger().info(uuid + " " + dataPlayer1.getCamp() + " " + dataPlayer1.getColor() + " " + dataPlayer1.getPoints() + " " + dataPlayer1.getName());
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(dataPlayer1.getName());
+            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(uuid));
             int points = dataPlayer1.getPoints();
 
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());

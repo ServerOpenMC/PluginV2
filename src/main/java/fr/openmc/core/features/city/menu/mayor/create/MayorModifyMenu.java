@@ -1,12 +1,12 @@
 package fr.openmc.core.features.city.menu.mayor.create;
 
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.mayor.MayorCandidate;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.messages.MessageType;
