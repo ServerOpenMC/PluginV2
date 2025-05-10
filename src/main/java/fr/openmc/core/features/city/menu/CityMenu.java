@@ -10,13 +10,11 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
-import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
@@ -43,11 +41,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.DayOfWeek;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
@@ -223,7 +222,7 @@ public class CityMenu extends Menu {
 
             Supplier<ItemStack> electionItemSupplier = () -> {
                 List<Component> loreElections = List.of();
-                if (mayorManager.getElectionType(city) == ElectionType.ELECTION) {
+                if (city.getElectionType() == ElectionType.ELECTION) {
                     if (mayorManager.phaseMayor == 2) {
                         loreElections = List.of(
                                 Component.text("§7Votre ville a un §6Maire !"),
@@ -256,7 +255,7 @@ public class CityMenu extends Menu {
                         );
                     } else if (mayorManager.phaseMayor == 1) {
                         if (hasPermissionOwner) {
-                            if (mayorManager.hasMayor(city)) {
+                            if (city.hasMayor()) {
                                 loreElections = List.of(
                                         Component.text("§7Les Elections sont §6désactivées"),
                                         Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
@@ -296,7 +295,7 @@ public class CityMenu extends Menu {
                     itemMeta.displayName(Component.text("§6Les Elections"));
                     itemMeta.lore(finalLoreElections);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (mayorManager.getElectionType(city) == ElectionType.ELECTION) {
+                    if (city.getElectionType() == ElectionType.ELECTION) {
                         if (mayorManager.phaseMayor == 1) {
                             MayorElectionMenu menu = new MayorElectionMenu(player);
                             menu.open();
@@ -310,7 +309,7 @@ public class CityMenu extends Menu {
                             menu.open();
                         } else if (mayorManager.phaseMayor == 1) {
                             if (hasPermissionOwner) {
-                                if (!mayorManager.hasMayor(city)) {
+                                if (!city.hasMayor()) {
                                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                                         new MayorCreateMenu(player, null, null, null, MenuType.OWNER).open();
                                     });

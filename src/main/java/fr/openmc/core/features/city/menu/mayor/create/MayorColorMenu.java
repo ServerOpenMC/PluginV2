@@ -7,8 +7,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.MayorCandidate;
-import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.menu.ConfirmMenu;
@@ -18,7 +18,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -128,7 +127,7 @@ public class MayorColorMenu extends Menu {
                                         }
                                     }
                                 } else { // donc si c MenuType.OWNER
-                                    mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, mayorManager.getElectionType(city));
+                                    mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
                                 }
                                 MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
                                 player.closeInventory();
@@ -146,7 +145,7 @@ public class MayorColorMenu extends Menu {
                         );
                         menu.open();
                     } else if (type == "change") {
-                        if (mayorManager.getElectionType(city) == ElectionType.OWNER_CHOOSE) {
+                        if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
                             if (city.getMayor() == null) {
                                 MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.MAYOR, MessageType.ERROR, false);
                                 return;

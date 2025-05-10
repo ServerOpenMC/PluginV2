@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static fr.openmc.core.features.city.mascots.MascotsListener.*;
-import static fr.openmc.core.features.city.mascots.MascotsManager.*;
+import static fr.openmc.core.features.city.mascots.MascotsListener.movingMascots;
+import static fr.openmc.core.features.city.mascots.MascotsManager.upgradeMascots;
 
 public class MascotMenu extends Menu {
 
@@ -142,7 +142,7 @@ public class MascotMenu extends Menu {
 
                     movingMascots.add(city_uuid);
 
-                    ItemStack mascotsMoveItem = new ItemStack(Material.STICK);
+                    ItemStack mascotsMoveItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
                     ItemMeta meta = mascotsMoveItem.getItemMeta();
 
                     if (meta != null) {
@@ -162,6 +162,7 @@ public class MascotMenu extends Menu {
                             "Temps Restant : %sec%s",
                             "§cDéplacement de la Mascotte annulée",
                             mascotMove -> {
+                                if (mascotMove == null) return true;
                                 if (!movingMascots.contains(city_uuid)) return false;
 
                                 Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);

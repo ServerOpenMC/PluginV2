@@ -1,10 +1,8 @@
-package fr.openmc.core.features.city.mayor.perks;
+package fr.openmc.core.features.city.mayor.perks.basic;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import org.bukkit.Bukkit;
@@ -17,29 +15,28 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-public class MascotFriendlyPerk implements Listener {
+public class MinerPerk implements Listener {
 
+    /**
+     * Update the player's effects based on the current phase and their city perks.
+     *
+     * @param player The player to update.
+     */
     public static void updatePlayerEffects(Player player) {
         int phase = MayorManager.getInstance().phaseMayor;
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        if (playerCity == null) return;
 
-        int level = MascotUtils.getMascotLevel(playerCity.getUUID());
         if (phase == 2) {
+            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            if (playerCity == null) return;
 
-            // si ville a pas le perk 14 soit MASCOTS_FRIENDLY
-            if (!PerkManager.hasPerk(playerCity.getMayor(), 15)) return;
+            // si ville a pas le perk 3 soit MINER
+            if (!PerkManager.hasPerk(playerCity.getMayor(), 3)) return;
 
-
-            for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
-                player.addPotionEffect(potionEffect);
-            }
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, PotionEffect.INFINITE_DURATION, 1, false, false));
         } else {
-            for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
-                System.out.println("ded");
-                player.removePotionEffect(potionEffect.getType());
-            }
+            player.removePotionEffect(PotionEffectType.HASTE);
         }
     }
 
@@ -60,20 +57,15 @@ public class MascotFriendlyPerk implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        if (playerCity == null) return;
-
-        int level = MascotUtils.getMascotLevel(playerCity.getUUID());
-        for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
-            player.removePotionEffect(potionEffect.getType());
-        }
+        player.removePotionEffect(PotionEffectType.HASTE);
     }
 
     @EventHandler
     public void onMilkEat(PlayerItemConsumeEvent event) {
         Player player = event.getPlayer();
-        if (event.getItem().getType() == Material.MILK_BUCKET) {
+        if (event.getItem().getType() == Material.MILK_BUCKET)  {
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> updatePlayerEffects(player), 1L);
+            };
+
         }
-    }
 }

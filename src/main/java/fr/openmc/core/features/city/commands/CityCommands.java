@@ -1,17 +1,26 @@
 package fr.openmc.core.features.city.commands;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.conditions.*;
-import fr.openmc.core.features.city.mascots.*;
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
-import fr.openmc.core.features.city.mayor.Perks;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
+import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.menu.CityTypeMenu;
+import fr.openmc.core.features.city.menu.NoCityMenu;
+import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
 import com.sk89q.worldedit.math.BlockVector2;
@@ -412,7 +421,7 @@ public class CityCommands {
 
         new CityTypeMenu(player, name).open();
     }
-    
+
     @Subcommand("list")
     @CommandPermission("omc.commands.city.list")
     public void list(Player player) {
@@ -425,7 +434,7 @@ public class CityCommands {
         CityListMenu menu = new CityListMenu(player, cities);
         menu.open();
     }
-    
+
     @Subcommand("change")
     @CommandPermission("omc.commands.city.change")
     public void change(Player sender) {
@@ -682,16 +691,29 @@ public class CityCommands {
 
     public static void setWarp(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (city == null) return;
+
         Mayor mayor = city.getMayor();
-        CityLaw law = city.getLaw();
-        if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
-            DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
+
+        if (mayor == null) return;
+
+        if (!player.getUniqueId().equals(mayor.getUUID())) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le Maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
+            return;
         }
+
+        if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+            return;
+        }
+        CityLaw law = city.getLaw();
+
         List<Component> loreItemInterraction = List.of(
                 Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
         );
-        ItemStack itemToGive = new ItemStack(Material.STICK);
+        ItemStack itemToGive = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
         ItemMeta itemMeta = itemToGive.getItemMeta();
+
         itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
         itemMeta.lore(loreItemInterraction);
         itemToGive.setItemMeta(itemMeta);
@@ -699,10 +721,11 @@ public class CityCommands {
                 player,
                 itemToGive,
                 "mayor:wait-set-warp",
-                20,
+                300,
                 "§7Vous avez 300s pour séléctionner votre point de spawn",
                 "§7Vous n'avez pas eu le temps de poser votre Warp",
                 locationClick -> {
+                    if (locationClick == null) return true;
                     Chunk chunk = locationClick.getChunk();
 
                     if (!city.hasChunk(chunk.getX(), chunk.getZ())) {
@@ -710,8 +733,9 @@ public class CityCommands {
                         return false;
                     }
 
+                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
                     law.setWarp(locationClick);
-                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen x=" + locationClick.x() + "y=" + locationClick.y() + "z=" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
+                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- §fx=§6" + locationClick.x() + "\n §8- §fy=§6" + locationClick.y() + "\n §8- §fz=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
                     return true;
                 }
         );

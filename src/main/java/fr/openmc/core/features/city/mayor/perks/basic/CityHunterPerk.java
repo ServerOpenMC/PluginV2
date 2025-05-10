@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.mayor.perks;
+package fr.openmc.core.features.city.mayor.perks.basic;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -38,10 +38,9 @@ public class CityHunterPerk implements Listener {
             return;
         }
 
-        System.out.println(event.getDamage());
         double baseDamage = event.getDamage();
         double newDamage = baseDamage * 1.20;
-        System.out.println(newDamage);
+
         event.setDamage(newDamage);
     }
 }

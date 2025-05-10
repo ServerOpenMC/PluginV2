@@ -2,35 +2,38 @@ package fr.openmc.core;
 
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
+import fr.openmc.core.listeners.CitizensHookListener;
 import fr.openmc.core.listeners.CubeListener;
-import fr.openmc.core.utils.api.LuckPermsAPI;
-import fr.openmc.core.utils.api.PapiAPI;
+import fr.openmc.core.utils.MotdUtils;
+import fr.openmc.core.utils.api.LuckPermsApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.freeze.FreezeManager;
-import fr.openmc.core.utils.interactions.items.ItemInteraction;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -54,8 +57,9 @@ public class OMCPlugin extends JavaPlugin {
 
         /* EXTERNALS */
         MenuLib.init(this);
-        new LuckPermsAPI();
-        new PapiAPI();
+        // TODO: faire des messages a envoyer dans la console disant, la version du plugin, version de minecraft, si chaque api sont bien connecté ou manquant, et les versions des plugins lié a OpenMC ?
+        new LuckPermsApi();
+        new PapiApi();
         new WorldGuardApi();
 
         /* MANAGERS */
@@ -93,7 +97,9 @@ public class OMCPlugin extends JavaPlugin {
         /* LOAD */
         DynamicCooldownManager.loadCooldowns();
 
-        ItemInteraction.startDebugTask();
+        Bukkit.getPluginManager().registerEvents(new CitizensHookListener(), OMCPlugin.getInstance());
+
+        NPCManager.debug();
         getLogger().info("Plugin activé");
     }
 

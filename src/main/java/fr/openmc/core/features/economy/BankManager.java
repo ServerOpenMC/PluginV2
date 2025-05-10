@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -171,7 +173,11 @@ public class BankManager {
     public double calculatePlayerInterest(UUID player) {
         double interest = .01; // base interest is 1%
 
-        // TODO: link to other systems here by simply adding to the interest variable here
+        if (MayorManager.getInstance().phaseMayor == 2) {
+            if (PerkManager.hasPerk(CityManager.getPlayerCity(player).getMayor(), 5)) {
+                interest = .03; // interest is 3% when perk Buisness Man actived
+            }
+        }
         
         return interest;
     }

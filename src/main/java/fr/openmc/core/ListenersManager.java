@@ -4,7 +4,7 @@ import fr.openmc.core.features.mailboxes.MailboxListener;
 import fr.openmc.core.features.updates.UpdateListener;
 import fr.openmc.core.listeners.*;
 import fr.openmc.core.utils.interactions.items.ItemInteraction;
-import fr.openmc.core.utils.interactions.text.LongTextInput;
+import fr.openmc.core.utils.interactions.text.ChatInput;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ public class ListenersManager {
                 new ChronometerListener(),
                 new CubeListener(OMCPlugin.getInstance()),
                 new ItemInteraction(),
-                new LongTextInput(),
+                new ChatInput(),
                 new CubeListener(OMCPlugin.getInstance()),
                 new RespawnListener(),
                 new SleepListener(),

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.scoreboards;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -9,8 +9,8 @@ import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.api.LuckPermsAPI;
-import fr.openmc.core.utils.api.PapiAPI;
+import fr.openmc.core.utils.api.LuckPermsApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -42,7 +42,7 @@ import java.util.UUID;
 public class ScoreboardManager implements Listener {
     public Set<UUID> disabledPlayers = new HashSet<>();
     public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder();
+    private final boolean canShowLogo = PapiApi.hasPAPI() && CustomItemRegistry.hasItemsAdder();
     OMCPlugin plugin = OMCPlugin.getInstance();
     private GlobalTeamManager globalTeamManager = null;
 
@@ -50,7 +50,7 @@ public class ScoreboardManager implements Listener {
         OMCPlugin.registerEvents(this);
         CommandsManager.getHandler().register(this);
         Bukkit.getScheduler().runTaskTimer(plugin, this::updateAllScoreboards, 0L, 20L * 5); //20x5 = 5s
-        if (LuckPermsAPI.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
+        if (LuckPermsApi.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
     }
 
     @EventHandler
@@ -183,6 +183,6 @@ public class ScoreboardManager implements Listener {
         objective.getScore("   ").setScore(1);
         objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
 
-        if (LuckPermsAPI.hasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
+        if (LuckPermsApi.hasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
     }
 }

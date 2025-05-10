@@ -1,6 +1,10 @@
 package fr.openmc.core.utils.customitems;
 
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.utils.customitems.armors.SuitBoots;
+import fr.openmc.core.utils.customitems.armors.SuitChestplate;
+import fr.openmc.core.utils.customitems.armors.SuitHelmet;
+import fr.openmc.core.utils.customitems.armors.SuitLeggings;
 import fr.openmc.core.utils.customitems.buttons.MinusButton;
 import fr.openmc.core.utils.customitems.buttons.OneButton;
 import fr.openmc.core.utils.customitems.buttons.PlusButton;
@@ -42,6 +46,13 @@ public class CustomItemRegistry {
         new ContestShell();
         new Aywenite();
         new KebabItem();
+        new MascotWand();
+        new WarpWand();
+
+        new SuitHelmet();
+        new SuitChestplate();
+        new SuitLeggings();
+        new SuitBoots();
     }
 
     public static void register(String name, CustomItem item) {

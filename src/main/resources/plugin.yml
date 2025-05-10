@@ -12,6 +12,7 @@ softdepend:
   - ItemsAdder
   - WorldGuard
   - ProtocolLib
+  - Citizens
 
 prefix: OMC
 authors: [ La communauté ]
