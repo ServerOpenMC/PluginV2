@@ -162,7 +162,7 @@ public class QuestsMenu extends Menu {
         boolean isCompleted = quest.isFullyCompleted(playerUUID);
 
         Set<Integer> pendingQuestIndexes = quest.getPendingRewardTiers(playerUUID);
-        boolean hasPendingRewards = !pendingQuestIndexes.isEmpty();
+        boolean hasPendingRewards = quest.hasPendingRewards(playerUUID);
 
         if (isCompleted) {
             meta.addEnchant(Enchantment.SHARPNESS, 1, true);

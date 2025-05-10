@@ -291,7 +291,7 @@ public class Quest {
      * @param uuid The UUID of the player
      * @return true if the player has pending rewards, false otherwise
      */
-    private boolean hasPendingRewards(UUID uuid) {
+    public boolean hasPendingRewards(UUID uuid) {
         Map<Integer, List<QuestReward>> playerPendingRewards = this.pendingRewards.get(uuid);
         return playerPendingRewards != null && !playerPendingRewards.isEmpty();
     }
