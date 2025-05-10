@@ -380,8 +380,8 @@ public class LeaderboardManager {
         int rank = 1;
         Map<UUID, Double> combinedBalances = new HashMap<>(EconomyManager.getBalances());
 
-        BankManager.getBanks().forEach((uuid, money) -> {
-            combinedBalances.merge(uuid, money, Double::sum);
+        BankManager.getBanks().forEach((uuid, bank) -> {
+            combinedBalances.merge(uuid, bank.getBalance(), Double::sum);
         });
         for (var entry : combinedBalances.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))

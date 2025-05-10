@@ -1,34 +1,41 @@
 package fr.openmc.core.features.economy;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.analytics.Stats;
-import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@DatabaseTable(tableName = "transactions")
 public class Transaction {
+    @DatabaseField(id = true, unique = false, canBeNull = false)
     public String recipient;
+    @DatabaseField(canBeNull = false)
     public double amount;
+    @DatabaseField(canBeNull = false)
     public String reason;
+    @DatabaseField(canBeNull = false)
     public String sender;
+
+    Transaction() {
+        // required for ORMLite
+    }
 
     public Transaction(String recipient, String sender, double amount, String reason) {
         /*
-        Recipient : Qui a reçu le paiement
-            - CONSOLE pour le serveur (ex : adminshop)
-        Sender: Qui as envoyé le paiement
-            - CONSOLE pour le serveur (ex: quêtes)
-
-        Amount: Montant envoyé/reçu
-        Reason: Raison du paiement (transaction, achat, claim...)
+         * Recipient : Qui a reçu le paiement
+         * - CONSOLE pour le serveur (ex : adminshop)
+         * Sender: Qui as envoyé le paiement
+         * - CONSOLE pour le serveur (ex: quêtes)
+         * 
+         * Amount: Montant envoyé/reçu
+         * Reason: Raison du paiement (transaction, achat, claim...)
          */
 
         this.recipient = recipient;
@@ -46,59 +53,31 @@ public class Transaction {
             itemmeta.setDisplayName("Transaction sortante");
 
             String recipient = "CONSOLE";
-            if (!this.recipient.equals("CONSOLE")){
+            if (!this.recipient.equals("CONSOLE")) {
                 recipient = Bukkit.getServer().getOfflinePlayer(UUID.fromString(this.recipient)).getName();
             }
 
             itemmeta.setLore(List.of(
-                    "§r§6Destination:§f "+recipient,
-                    "§r§6Montant:§f "+this.amount,
-                    "§r§6Raison:§f "+reason
-            ));
+                    "§r§6Destination:§f " + recipient,
+                    "§r§6Montant:§f " + this.amount,
+                    "§r§6Raison:§f " + reason));
         } else {
             itemstack = new ItemStack(Material.LIME_CONCRETE, 1);
             itemmeta = itemstack.getItemMeta();
             itemmeta.setDisplayName("Transaction entrante");
 
             String senderName = "CONSOLE";
-            if (!this.sender.equals("CONSOLE")){
+            if (!this.sender.equals("CONSOLE")) {
                 senderName = Bukkit.getServer().getOfflinePlayer(UUID.fromString(this.sender)).getName();
             }
 
             itemmeta.setLore(List.of(
-                    "§r§6Envoyeur:§f "+senderName,
-                    "§r§6Montant:§f "+this.amount,
-                    "§r§6Raison:§f "+reason
-            ));
+                    "§r§6Envoyeur:§f " + senderName,
+                    "§r§6Montant:§f " + this.amount,
+                    "§r§6Raison:§f " + reason));
         }
 
         itemstack.setItemMeta(itemmeta);
         return itemstack;
-    }
-
-    public boolean register() {
-        if (!OMCPlugin.getConfigs().getBoolean("features.transactions", false)) {
-            return true;
-        }
-
-        if (!Objects.equals(sender, "CONSOLE")) {
-            Stats.TOTAL_TRANSACTIONS.increment(UUID.fromString(sender));
-        }
-
-        if (!Objects.equals(recipient, "CONSOLE")) {
-            Stats.TOTAL_TRANSACTIONS.increment(UUID.fromString(recipient));
-        }
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO transactions VALUES (?, ?, ?, ?, DEFAULT)");
-            statement.setString(1, this.recipient);
-            statement.setString(2, this.sender);
-            statement.setDouble(3, this.amount);
-            statement.setString(4, this.reason);
-            return statement.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 }
