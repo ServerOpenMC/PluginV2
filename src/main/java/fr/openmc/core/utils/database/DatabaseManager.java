@@ -36,7 +36,6 @@ public class DatabaseManager {
             ContestManager.initDb(connection);
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
-            BankManager.init_db(connection);
             HomesManager.init_db(connection);
             MascotsManager.init_db(connection);
             CityTypeCooldown.init_db(connection);
@@ -60,6 +59,8 @@ public class DatabaseManager {
             String username = config.getString("database.username");
             String password = config.getString("database.password");
             ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl, username, password);
+
+            BankManager.init_db(connectionSource);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");

@@ -9,11 +9,18 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.table.TableUtils;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
@@ -28,11 +35,14 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 
 public class BankManager {
-    @Getter private static Map<UUID, Double> banks;
+    @Getter private static Map<UUID, Bank> banks;
     @Getter static BankManager instance;
 
-    public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS banks (player VARCHAR(36) NOT NULL PRIMARY KEY , balance DOUBLE DEFAULT 0);").executeUpdate();
+    private static Dao<Bank, String> bankDao;
+
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, Bank.class);
+        bankDao = DaoManager.createDao(connectionSource, Bank.class);
     }
 
     public BankManager() {
@@ -45,31 +55,22 @@ public class BankManager {
     }
 
     public double getBankBalance(UUID player) {
-        if (!banks.containsKey(player)) {
-            loadPlayerBank(player);
-        }
-
-        return banks.get(player);
+        Bank bank = getPlayerBank(player);
+        return bank.getBalance();
     }
 
     public void addBankBalance(UUID player, double amount) {
-        if (!banks.containsKey(player)) {
-            loadPlayerBank(player);
-        }
-
-        banks.put(player, banks.get(player) + amount);
-        savePlayerBank(player);
+        Bank bank = getPlayerBank(player);
+        
+        bank.deposit(amount);
+        saveBank(bank);
     }
 
     public void withdrawBankBalance(UUID player, double amount) {
-        if (!banks.containsKey(player)) {
-            loadPlayerBank(player);
-        }
+        Bank bank = getPlayerBank(player);
         
-        assert banks.get(player) > amount;
-
-        banks.put(player, banks.get(player) - amount);
-        savePlayerBank(player);
+        bank.withdraw(amount);
+        saveBank(bank);
     }
 
     public void addBankBalance(Player player, String input) {
@@ -103,68 +104,44 @@ public class BankManager {
         }
     }
 
-    private Map<UUID, Double> loadAllBanks() {
-        try {
-            Map<UUID, Double> banks = new HashMap<>();
+    private Bank getPlayerBank(UUID player) {
+        Bank bank = banks.get(player);
+        if (bank != null) return bank;
 
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT player, balance FROM banks");
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                UUID player = UUID.fromString(resultSet.getString("player"));
-                double balance = resultSet.getDouble("balance");
-                banks.put(player, balance);
+        try {
+            bank = bankDao.queryForId(player.toString());
+
+            if (bank == null) {
+                bank = new Bank(player.toString());
+                bankDao.create(bank);
             }
 
-            statement.close();
-            return banks;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void loadPlayerBank(UUID player) {
-        try {
-            final Connection connection = DatabaseManager.getConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT balance FROM banks WHERE player = ?");
-            statement.setString(1, player.toString());
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                banks.put(player, resultSet.getDouble("balance"));
-                return;
-            }
-
-            banks.put(player, Double.parseDouble("0"));
-            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                try {
-                    PreparedStatement newStatement = connection.prepareStatement("INSERT INTO banks (player) VALUES (?)");
-                    newStatement.setString(1, player.toString());
-
-                    newStatement.executeUpdate();
-                    newStatement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            return bank;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void savePlayerBank(UUID player) {
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                Connection connection = DatabaseManager.getConnection();
-                PreparedStatement statement = connection.prepareStatement("UPDATE banks SET balance = ? WHERE player = ?");
-                statement.setDouble(1, banks.get(player));
-                statement.setString(2, player.toString());
+    private void saveBank(Bank bank) {
+        try {
+            bankDao.update(bank);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-                statement.executeUpdate();
-                statement.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+    private Map<UUID, Bank> loadAllBanks() {
+        Map<UUID, Bank> newBanks = new HashMap<>();
+        try {
+            List<Bank> dbBanks = bankDao.queryForAll();
+            for (Bank bank : dbBanks) {
+                newBanks.put(UUID.fromString(bank.getUuid()), bank);
             }
-        });
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newBanks;
     }
 
     // Interests calculated as proportion not percentage (eg: 0.01 = 1%)
