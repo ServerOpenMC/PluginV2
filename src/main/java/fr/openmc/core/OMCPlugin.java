@@ -1,6 +1,6 @@
 package fr.openmc.core;
 
-import dev.xernas.menulib.MenuLib;
+import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
@@ -18,6 +18,7 @@ import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.utils.api.LuckPermsAPI;
 import fr.openmc.core.utils.api.PapiAPI;
@@ -64,6 +65,7 @@ public class OMCPlugin extends JavaPlugin {
         ContestManager contestManager = new ContestManager(this);
         ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
+        new UpdateManager();
         new MascotsManager(this); // laisser avant CityManager
         new CityManager();
         new ListenersManager();
@@ -78,7 +80,8 @@ public class OMCPlugin extends JavaPlugin {
         new FriendManager();
         new QuestsManager();
         new TabList();
-        new LeaderboardManager(this);
+        if (!OMCPlugin.isUnitTestVersion())
+            new LeaderboardManager(this);
         new AdminShopManager(this);
 
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null

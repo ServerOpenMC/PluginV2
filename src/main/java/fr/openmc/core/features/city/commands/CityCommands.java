@@ -18,6 +18,7 @@ import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
+import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
@@ -236,7 +237,7 @@ public class CityCommands {
         MessagesManager.sendMessage(target,
                 Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getCityName() + "\n")
                         .append(Component.text("§8Faite §a/city accept §8pour accepter\n").clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
-                        .append(Component.text("§8Faite §a/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
+                        .append(Component.text("§8Faite §c/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
                 Prefix.CITY, MessageType.INFO, false);
     }
 
@@ -411,6 +412,20 @@ public class CityCommands {
 
         new CityTypeMenu(player, name).open();
     }
+    
+    @Subcommand("list")
+    @CommandPermission("omc.commands.city.list")
+    public void list(Player player) {
+        List<City> cities = new ArrayList<>(CityManager.getCities());
+        if (cities.isEmpty()) {
+            MessagesManager.sendMessage(player, Component.text("Aucune ville n'existe"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        CityListMenu menu = new CityListMenu(player, cities);
+        menu.open();
+    }
+    
     @Subcommand("change")
     @CommandPermission("omc.commands.city.change")
     public void change(Player sender) {

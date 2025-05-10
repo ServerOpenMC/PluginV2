@@ -1,9 +1,17 @@
 package fr.openmc.core.features.city;
 
+import com.sk89q.worldedit.math.BlockVector2;
+import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.listeners.ChestMenuListener;
+import fr.openmc.core.features.city.listeners.CityChatListener;
+import fr.openmc.core.features.city.listeners.CityTypeCooldown;
+import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
@@ -350,7 +358,7 @@ public class CityManager implements Listener {
     public static String getCityType(String city_uuid) {
         String type = null;
 
-        if (city_uuid!=null){
+        if (city_uuid != null) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
                 statement.setString(1, city_uuid);
@@ -358,7 +366,7 @@ public class CityManager implements Listener {
                 if (rs.next()) {
                     type = rs.getString("type");
                 }
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -370,7 +378,7 @@ public class CityManager implements Listener {
     public static int getCityPowerPoints(String city_uuid){
        int power_point = 0;
 
-        if (city_uuid!=null){
+        if (city_uuid != null) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT power_point FROM city_power WHERE city_uuid = ?");
                 statement.setString(1, city_uuid);
@@ -398,7 +406,7 @@ public class CityManager implements Listener {
                 String uuid = resultSet.getString("uuid");
                 uuidList.add(uuid);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }

@@ -1,10 +1,11 @@
 package fr.openmc.core.features.adminshop.menus;
 
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -58,11 +59,12 @@ public class ConfirmMenu extends Menu {
         Map<Integer, ItemStack> content = new HashMap<>();
         double pricePerUnit = isBuying ? shopItem.getActualBuyPrice() : shopItem.getActualSellPrice();
         double totalPrice = pricePerUnit * quantity;
+        int quantityToStack = Math.max(0, quantity / 64);
 
         List<Component> lore = List.of(
-                Component.text("§eQuantité: §f" + quantity),
-                Component.text("§ePrix unitaire: §e" + shopManager.priceFormat.format(pricePerUnit)),
-                Component.text("§ePrix total: §e" + shopManager.priceFormat.format(totalPrice))
+                Component.text("§8■ §eQuantité: §f" + quantity + " §7(§f" + quantityToStack + "§7 stack" + (quantityToStack > 1 ? "s" : "") + ")"),
+                Component.text("§8■ §ePrix unitaire: §a" + shopManager.priceFormat.format(pricePerUnit) + EconomyManager.getEconomyIcon()),
+                Component.text("§8■ §ePrix total: §a" + shopManager.priceFormat.format(totalPrice) + EconomyManager.getEconomyIcon())
         );
 
         content.put(9, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
@@ -91,17 +93,29 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
-            if (quantity < maxQuantity) quantity++;
+            if (!isBuying && shopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 1)) {
+                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
+            } else if (quantity < maxQuantity) {
+                quantity++;
+            }
             update();
         }));
 
         content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> {
-            if (quantity < maxQuantity) quantity += 10;
+            if (!isBuying && shopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 10)) {
+                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
+            } else if (quantity < maxQuantity) {
+                quantity += 10;
+            }
             update();
         }));
 
         content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
-            if (quantity < maxQuantity) quantity += 64;
+            if (!isBuying && shopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 64)) {
+                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
+            } else if (quantity < maxQuantity) {
+                quantity += 64;
+            }
             update();
         }));
 

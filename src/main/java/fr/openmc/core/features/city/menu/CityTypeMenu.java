@@ -1,8 +1,9 @@
 package fr.openmc.core.features.city.menu;
 
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
@@ -52,10 +53,10 @@ public class CityTypeMenu extends Menu {
         Map<Integer, ItemStack> map = new HashMap<>();
         Player player = getOwner();
         try {
-        List<Component> peaceInfo = new ArrayList<>();
-        peaceInfo.add(Component.text("§aLa sécurité est assurée"));
-        peaceInfo.add(Component.text("§fObjectif : relaxez vous et construisez la"));
-        peaceInfo.add(Component.text("§fville de vos rêves"));
+            List<Component> peaceInfo = new ArrayList<>();
+            peaceInfo.add(Component.text("§aLa sécurité est assurée"));
+            peaceInfo.add(Component.text("§fObjectif : relaxez vous et construisez la"));
+            peaceInfo.add(Component.text("§fville de vos rêves"));
 
             List<Component> warInfo = new ArrayList<>();
             warInfo.add(Component.text("§cLa guerre vous attend"));

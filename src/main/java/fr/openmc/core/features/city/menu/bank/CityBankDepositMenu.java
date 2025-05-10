@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.menu.bank;
 
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.signgui.SignGUI;
+import fr.openmc.api.signgui.exception.SignGUIVersionException;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -151,7 +151,7 @@ public class CityBankDepositMenu extends Menu {
                 lines[2] = "Entrez votre";
                 lines[3] = "montant ci dessus";
 
-                SignGUI gui = null;
+                SignGUI gui;
                 try {
                     gui = SignGUI.builder()
                             .setLines(null, lines[1] , lines[2], lines[3])

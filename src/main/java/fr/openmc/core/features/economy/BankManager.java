@@ -195,8 +195,18 @@ public class BankManager {
     }
 
     private void updateInterestTimer() {
-        LocalDateTime now = LocalDateTime.now();
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
+            applyAllPlayerInterests();
+            CityManager.applyAllCityInterests();
+            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
+            updateInterestTimer();
 
+        }, getSecondsUntilInterest() * 20); // 20 ticks per second (ideally)
+    }
+
+    public long getSecondsUntilInterest() {
+        LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextMonday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY)).withHour(2).withMinute(0).withSecond(0);
         // if it is after 2 AM, get the monday after
         if (nextMonday.isBefore(now))
@@ -209,16 +219,6 @@ public class BankManager {
 
         LocalDateTime nextInterestUpdate = nextMonday.isBefore(nextThursday) ? nextMonday : nextThursday;
         
-        long secondsUntilUpdate = ChronoUnit.SECONDS.between(now, nextInterestUpdate);
-        long ticksUntilUpdate = secondsUntilUpdate * 20; // there are 20 ticks in a second
-
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
-            applyAllPlayerInterests();
-            CityManager.applyAllCityInterests();
-            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
-            updateInterestTimer();
-
-        }, ticksUntilUpdate);
+        return ChronoUnit.SECONDS.between(now, nextInterestUpdate);
     }
 }

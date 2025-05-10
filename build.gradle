@@ -55,8 +55,6 @@ dependencies {
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
 
-    implementation 'de.rapha149.signgui:signgui:2.5.0'
-    implementation 'dev.xernas:menulib:1.1.0'
     implementation 'org.jetbrains:annotations:24.1.0'
     implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
@@ -70,7 +68,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.46.0'
+    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.46.4'
     testImplementation 'com.h2database:h2:2.3.232'
 }
 
@@ -78,6 +76,10 @@ def targetJavaVersion = 21
 java {
     sourceCompatibility = targetJavaVersion
     targetCompatibility = targetJavaVersion
+}
+
+paperweight {
+  addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { [it] as Set }
 }
 
 tasks.withType(JavaCompile) {
