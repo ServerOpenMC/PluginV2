@@ -40,7 +40,7 @@ public class NPCManager {
 
 
     public static void createNPCS(String cityUUID, Location urnLocation) {
-        if (!CitizensApi.hasCitizens()) return;
+        if (!CitizensApi.isHasCitizens()) return;
 
         Location locationMayor = urnLocation.add(3, 0, 0);
         locationMayor = urnLocation.getWorld().getHighestBlockAt(locationMayor).getLocation().add(0, 1, 0);
@@ -84,7 +84,7 @@ public class NPCManager {
     }
 
     public static void removeNPCS(String cityUUID) {
-        if (!CitizensApi.hasCitizens()) return;
+        if (!CitizensApi.isHasCitizens()) return;
 
         NPC ownerNpc = ownerNpcMap.get(cityUUID).getNpc();
         NPC mayorNpc = mayorNpcMap.get(cityUUID).getNpc();
@@ -101,7 +101,7 @@ public class NPCManager {
     }
 
     public static boolean hasNPCS(String cityUUID) {
-        if (!CitizensApi.hasCitizens()) return false;
+        if (!CitizensApi.isHasCitizens()) return false;
 
         return ownerNpcMap.containsKey(cityUUID) && mayorNpcMap.containsKey(cityUUID);
     }

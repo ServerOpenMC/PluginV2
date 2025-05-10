@@ -105,7 +105,7 @@ public class UrneListener implements Listener {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) return;
 
-        if (!CitizensApi.hasCitizens()) return;
+        if (!CitizensApi.isHasCitizens()) return;
 
         NPCManager.createNPCS(playerCity.getUUID(), urneLocation);
     }
@@ -125,7 +125,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!CitizensApi.hasCitizens()) return;
+        if (!CitizensApi.isHasCitizens()) return;
 
         NPCManager.removeNPCS(playerCity.getUUID());
     }
