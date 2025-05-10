@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 
 @Getter
-@DatabaseTable(tableName = "bank")
+@DatabaseTable(tableName = "banks")
 public class Bank {
 
     @DatabaseField(id = true)

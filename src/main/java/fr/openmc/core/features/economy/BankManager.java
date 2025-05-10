@@ -38,11 +38,11 @@ public class BankManager {
     @Getter private static Map<UUID, Bank> banks;
     @Getter static BankManager instance;
 
-    private static Dao<Bank, String> bankDao;
+    private static Dao<Bank, String> banksDao;
 
     public static void init_db(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Bank.class);
-        bankDao = DaoManager.createDao(connectionSource, Bank.class);
+        banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
 
     public BankManager() {
@@ -109,11 +109,11 @@ public class BankManager {
         if (bank != null) return bank;
 
         try {
-            bank = bankDao.queryForId(player.toString());
+            bank = banksDao.queryForId(player.toString());
 
             if (bank == null) {
                 bank = new Bank(player.toString());
-                bankDao.create(bank);
+                banksDao.create(bank);
             }
 
             return bank;
@@ -124,7 +124,7 @@ public class BankManager {
 
     private void saveBank(Bank bank) {
         try {
-            bankDao.update(bank);
+            banksDao.update(bank);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -133,7 +133,7 @@ public class BankManager {
     private Map<UUID, Bank> loadAllBanks() {
         Map<UUID, Bank> newBanks = new HashMap<>();
         try {
-            List<Bank> dbBanks = bankDao.queryForAll();
+            List<Bank> dbBanks = banksDao.queryForAll();
             for (Bank bank : dbBanks) {
                 newBanks.put(UUID.fromString(bank.getUuid()), bank);
             }
