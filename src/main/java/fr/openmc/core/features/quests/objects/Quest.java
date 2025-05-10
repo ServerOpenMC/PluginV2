@@ -241,7 +241,6 @@ public class Quest {
                     }
 
                     if (hasEnoughSpace) {
-                        System.out.println("Giving reward " + reward.getClass().getSimpleName() + " to player " + player.getName());
                         reward.giveReward(player);
                     } else {
                         addPendingRewards(uuid, tierIndex, tier.getRewards());
