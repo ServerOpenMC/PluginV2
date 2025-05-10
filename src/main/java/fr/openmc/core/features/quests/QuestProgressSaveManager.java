@@ -62,6 +62,14 @@ public class QuestProgressSaveManager {
                 playerProgress.put(questName + ".currentTier", currentTier);
                 playerProgress.put(questName + ".completedTiers", completedTiers);
 
+                List<Integer> pendingRewardTiers = config.getIntegerList(questName + ".pendingRewards");
+                for (int tierIndex : pendingRewardTiers) {
+                    QuestTier tier = quest.getTiers().get(tierIndex);
+                    quest.getPendingRewards()
+                            .computeIfAbsent(playerUUID, k -> new HashMap<>())
+                            .put(tierIndex, new ArrayList<>(tier.getRewards()));
+                }
+
                 for (int tierIndex = 0; tierIndex < quest.getTiers().size(); tierIndex++) {
                     QuestTier tier = quest.getTiers().get(tierIndex);
 
@@ -97,6 +105,9 @@ public class QuestProgressSaveManager {
             config.set(questName + ".progress", progress);
             config.set(questName + ".currentTier", currentTier);
             config.set(questName + ".completedTiers", new ArrayList<>(completedTiers));
+
+            Set<Integer> pendingRewardTier = quest.getPendingRewardTiers(playerUUID);
+            config.set(questName + ".pendingRewards", new ArrayList<>(pendingRewardTier));
 
             for (int tierIndex = 0; tierIndex < quest.getTiers().size(); tierIndex++) {
                 QuestTier tier = quest.getTiers().get(tierIndex);

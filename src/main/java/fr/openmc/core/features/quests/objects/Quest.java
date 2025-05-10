@@ -1,5 +1,7 @@
 package fr.openmc.core.features.quests.objects;
 
+import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -10,10 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,6 +33,7 @@ public class Quest {
     private final Map<UUID, Boolean> progressLock = new ConcurrentHashMap<>();
     private final Map<UUID, Integer> currentTier = new ConcurrentHashMap<>();
     private final Map<UUID, Set<Integer>> completedTiers = new ConcurrentHashMap<>();
+    private final Map<UUID, Map<Integer, List<QuestReward>>> pendingRewards = new ConcurrentHashMap<>();
 
     /**
      * Constructor for Quest.
@@ -226,12 +226,28 @@ public class Quest {
             playerCompletedTiers.add(tierIndex);
             this.currentTier.put(uuid, Math.min(tierIndex + 1, this.tiers.size()));
             Player player = Bukkit.getPlayer(uuid);
+            QuestTier tier = this.tiers.get(tierIndex);
+            boolean isLastTier = tierIndex == this.tiers.size() - 1;
+
             if (player != null && player.isOnline()) {
-                QuestTier tier = this.tiers.get(tierIndex);
+
+                boolean hasEnoughSpace = true;
+
                 for (QuestReward reward : tier.getRewards()) {
-                    reward.giveReward(player);
+                    if (reward instanceof QuestItemReward itemReward) {
+                        if (!AdminShopManager.hasEnoughSpace(player, itemReward.getItemStack())) {
+                            hasEnoughSpace = false;
+                        }
+                    }
+
+                    if (hasEnoughSpace) {
+                        reward.giveReward(player);
+                    } else {
+                        addPendingRewards(uuid, tierIndex, tier.getRewards());
+                        MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de place dans votre inventaire pour recevoir la récompense !"), Prefix.QUEST, MessageType.WARNING, false);
+                    }
                 }
-                boolean isLastTier = tierIndex == this.tiers.size() - 1;
+
                 Component titleMain = Component.text(
                                 "✦ ", TextColor.color(15770808))
                         .append(Component.text(isLastTier
@@ -251,8 +267,105 @@ public class Quest {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.2F);
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 0.7F, 1.1F);
                 MessagesManager.sendMessage(player, Component.text(message), Prefix.QUEST, MessageType.SUCCESS, true);
+            } else {
+                addPendingRewards(uuid, tierIndex, tier.getRewards());
             }
         }
+    }
+
+    /**
+     * Add pending rewards for a player.
+     *
+     * @param uuid The UUID of the player
+     * @param tierIndex The index of the tier
+     * @param rewards The list of rewards to add
+     */
+    private void addPendingRewards(UUID uuid, int tierIndex, List<QuestReward> rewards) {
+        Map<Integer, List<QuestReward>> playerPendingRewards = this.pendingRewards.computeIfAbsent(uuid, k -> new HashMap<>());
+        playerPendingRewards.put(tierIndex, rewards);
+    }
+
+    /**
+     * Check if a player has pending rewards.
+     *
+     * @param uuid The UUID of the player
+     * @return true if the player has pending rewards, false otherwise
+     */
+    public boolean hasPendingRewards(UUID uuid) {
+        Map<Integer, List<QuestReward>> playerPendingRewards = this.pendingRewards.get(uuid);
+        return playerPendingRewards != null && !playerPendingRewards.isEmpty();
+    }
+
+    /**
+     * Get pending rewards for a specific tier for a player.
+     *
+     * @param uuid The UUID of the player
+     * @param tierIndex The index of the tier
+     * @return a list of pending rewards for the specified tier, or null if not found
+     */
+    private List<QuestReward> getPendingRewardsForTier(UUID uuid, int tierIndex) {
+        Map<Integer, List<QuestReward>> playerPendingRewards = this.pendingRewards.get(uuid);
+        return playerPendingRewards != null ? playerPendingRewards.remove(tierIndex) : null;
+    }
+
+    /**
+     * Get all pending rewards for a player.
+     *
+     * @param playerUUID The UUID of the player
+     * @return a set of pending reward tiers for the player
+     */
+    public Set<Integer> getPendingRewardTiers(UUID playerUUID) {
+        Map<Integer, List<QuestReward>> playerPendingRewards = pendingRewards.get(playerUUID);
+        return playerPendingRewards != null ? playerPendingRewards.keySet() : Collections.emptySet();
+    }
+
+    /**
+     * Claim pending rewards for a player.
+     *
+     * @param player The player who is claiming the rewards
+     * @param tierIndex The index of the tier for which to claim rewards
+     * @return true if all rewards were claimed, false otherwise
+     */
+    public boolean claimPendingRewards(Player player, int tierIndex) {
+        UUID playerUUID = player.getUniqueId();
+        List<QuestReward> rewards = getPendingRewardsForTier(playerUUID, tierIndex);
+        if (rewards == null || rewards.isEmpty()) {
+            return false;
+        }
+
+        boolean allClaimed = true;
+        List<QuestReward> remainingRewards = new ArrayList<>();
+
+        for (QuestReward reward : rewards) {
+            if (reward instanceof QuestItemReward itemReward) {
+                if (!AdminShopManager.hasEnoughSpace(player, itemReward.getItemStack())) {
+                    remainingRewards.add(reward);
+                    allClaimed = false;
+                    continue;
+                }
+            }
+
+            reward.giveReward(player);
+        }
+
+        Map<Integer, List<QuestReward>> playerPendingRewards = pendingRewards.get(playerUUID);
+        if (allClaimed) {
+            if (playerPendingRewards != null) {
+                playerPendingRewards.remove(tierIndex);
+                if (playerPendingRewards.isEmpty()) {
+                    pendingRewards.remove(playerUUID);
+                }
+            }
+            MessagesManager.sendMessage(player, Component.text("Vous avez récupéré toutes les récompenses du palier " + (tierIndex + 1) + " de la quête " + this.name + " !"), Prefix.QUEST, MessageType.SUCCESS, true);
+        } else {
+            if (playerPendingRewards != null && !remainingRewards.isEmpty()) {
+                playerPendingRewards.put(tierIndex, remainingRewards);
+            }
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de place dans votre inventaire pour récupérer toutes les récompenses. Libérez de l'espace et réessayez."), Prefix.QUEST, MessageType.WARNING, true);
+        }
+
+        player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0F, 1.0F);
+        return allClaimed;
     }
 
     /**
@@ -337,20 +450,19 @@ public class Quest {
             this.progressLock.put(playerUUID, true);
 
             try {
-                Player player = Bukkit.getPlayer(playerUUID);
-                if (player != null && player.getGameMode() != GameMode.SURVIVAL) return;
+                Player onlinePlayer = Bukkit.getPlayer(playerUUID);
+                if (onlinePlayer != null && onlinePlayer.isOnline() && !onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)) return;
                 int currentProgress = this.progress.getOrDefault(playerUUID, 0);
                 int newProgress = currentProgress + amount;
                 int currentTarget = this.getCurrentTarget(playerUUID);
-                if (newProgress >= currentTarget) {
-                    newProgress = currentTarget;
-                }
+
+                if (newProgress >= currentTarget) newProgress = currentTarget;
 
                 if (currentProgress < currentTarget) {
                     this.progress.put(playerUUID, newProgress);
                     this.checkTierCompletion(playerUUID);
 
-                    if (player != null && player.isOnline()) {
+                    if (onlinePlayer != null && onlinePlayer.isOnline()) {
                         if (this.isLargeActionBar && newProgress % 50 != 0) return;
                         Component actionBar = Component.text()
                                 .append(MiniMessage.miniMessage().deserialize(Prefix.QUEST.getPrefix()))
@@ -361,7 +473,7 @@ public class Quest {
                                 .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
                                 .build();
 
-                        player.sendActionBar(actionBar);
+                        onlinePlayer.sendActionBar(actionBar);
                     }
                 }
             } finally {
