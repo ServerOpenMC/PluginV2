@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -57,7 +58,7 @@ public class CityListDetailsMenu extends Menu { // TODO : Adaptation pour les ma
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
 		map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
-				itemMeta -> itemMeta.displayName(Component.text("§7Maire : " + Bukkit.getServer().getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()))));
+				itemMeta -> itemMeta.displayName(Component.text("§7Maire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()))));
 		
 		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(getMascotOfCity(city.getUUID()).getMascotUuid()).getType())),
 				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + getMascotOfCity(city.getUUID()).getLevel()))));

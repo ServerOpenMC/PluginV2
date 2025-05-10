@@ -9,8 +9,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -72,7 +72,7 @@ public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les 
 		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
 			itemMeta.displayName(Component.text("§a" + city.getCityName()));
 			itemMeta.lore(List.of(
-					Component.text("§7Maire : " + Bukkit.getServer().getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+					Component.text("§7Maire : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
 					Component.text("§bPopulation : " + city.getMembers().size()),
 					Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")),
 					Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
