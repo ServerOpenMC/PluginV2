@@ -1,16 +1,11 @@
 package fr.openmc.core.features.economy;
 
-import java.util.UUID;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.sk89q.worldedit.entity.Player;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @DatabaseTable(tableName = "bank")
 class Bank {
 
@@ -24,8 +19,17 @@ class Bank {
         // necessary for OrmLite
     }
 
-    Bank(String uuid, double balance) {
+    Bank(String uuid) {
         this.uuid = uuid;
-        this.balance = balance;
+        this.balance = 0;
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+    }
+
+    public void withdraw(double amount) {
+        balance -= amount;
+        assert balance >= 0;
     }
 }
