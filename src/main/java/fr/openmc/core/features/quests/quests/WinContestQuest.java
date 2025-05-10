@@ -1,12 +1,16 @@
 package fr.openmc.core.features.quests.quests;
 
+import fr.openmc.core.features.contest.ContestEndEvent;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
-public class WinContestQuest extends Quest {
+public class WinContestQuest extends Quest implements Listener {
 
     public WinContestQuest() {
         super(
@@ -17,5 +21,11 @@ public class WinContestQuest extends Quest {
 
         this.addTiers(new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(), 5)));
     }
-
+    
+    @EventHandler
+    public void onEndContest(ContestEndEvent event) {
+        for (OfflinePlayer player : event.getWinners()) {
+            this.incrementProgress(player.getUniqueId());
+        }
+    }
 }
