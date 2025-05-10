@@ -12,6 +12,7 @@ import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -78,7 +79,7 @@ public class ContestManager {
         OMCPlugin.registerEvents(
                 new ContestListener(this.plugin)
         );
-        if (CustomItemRegistry.hasItemsAdder()) {
+        if (ItemAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );
