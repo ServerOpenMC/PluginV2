@@ -33,7 +33,7 @@ public class Pay {
             MessagesManager.sendMessage(target, Component.text("§aVous avez reçu §e" + economyManager.getFormattedNumber(amount) + "§a de §e" + player.getName()), Prefix.OPENMC, MessageType.INFO, true);
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                TransactionsManager.register(new Transaction(
+                TransactionsManager.registerTransaction(new Transaction(
                         target.getUniqueId().toString(),
                         player.getUniqueId().toString(),
                         amount,

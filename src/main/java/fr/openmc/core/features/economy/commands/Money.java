@@ -60,7 +60,7 @@ public class Money {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            TransactionsManager.register(new Transaction(
+            TransactionsManager.registerTransaction(new Transaction(
                     target.getUniqueId().toString(),
                     "CONSOLE",
                     amount,
@@ -80,7 +80,7 @@ public class Money {
             }
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            TransactionsManager.register(new Transaction(
+            TransactionsManager.registerTransaction(new Transaction(
                         "CONSOLE",
                         target.getUniqueId().toString(),
                         amount,

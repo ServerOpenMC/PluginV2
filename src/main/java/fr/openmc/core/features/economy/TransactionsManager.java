@@ -39,7 +39,7 @@ public class TransactionsManager {
         }
     }
 
-    public static boolean register(Transaction transaction) {
+    public static boolean registerTransaction(Transaction transaction) {
         if (!OMCPlugin.getConfigs().getBoolean("features.transactions", false)) {
             return true;
         }
