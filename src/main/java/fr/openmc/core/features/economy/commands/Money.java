@@ -3,6 +3,7 @@ package fr.openmc.core.features.economy.commands;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.Transaction;
+import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -11,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -58,12 +60,12 @@ public class Money {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            new Transaction(
+            TransactionsManager.register(new Transaction(
                     target.getUniqueId().toString(),
                     "CONSOLE",
                     amount,
                     "Admin"
-            ).register();
+            ));
         });
     }
 
@@ -78,12 +80,12 @@ public class Money {
             }
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                new Transaction(
+            TransactionsManager.register(new Transaction(
                         "CONSOLE",
                         target.getUniqueId().toString(),
                         amount,
                         "Admin"
-                ).register();
+                ));
             });
         } else {
             MessagesManager.sendMessage(player, Component.text("§cLe joueur n'a pas assez d'argent"), Prefix.OPENMC, MessageType.ERROR, true);

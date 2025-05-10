@@ -3,12 +3,14 @@ package fr.openmc.core.features.economy.commands;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.Transaction;
+import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Range;
@@ -31,12 +33,12 @@ public class Pay {
             MessagesManager.sendMessage(target, Component.text("§aVous avez reçu §e" + economyManager.getFormattedNumber(amount) + "§a de §e" + player.getName()), Prefix.OPENMC, MessageType.INFO, true);
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                new Transaction(
+                TransactionsManager.register(new Transaction(
                         target.getUniqueId().toString(),
                         player.getUniqueId().toString(),
                         amount,
                         "Paiement"
-                ).register();
+                ));
             });
         } else {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent"), Prefix.OPENMC, MessageType.ERROR, true);
