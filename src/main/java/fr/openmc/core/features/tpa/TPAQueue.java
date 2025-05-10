@@ -113,8 +113,6 @@ public class TPAQueue {
 			}
 			return requesters;
 		});
-		
-		System.out.println(tpaRequests);
 	}
 	
 	/**

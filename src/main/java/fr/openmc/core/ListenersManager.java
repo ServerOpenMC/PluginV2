@@ -1,5 +1,8 @@
 package fr.openmc.core;
 
+import fr.openmc.api.input.ChatInput;
+import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.mailboxes.MailboxListener;
 import fr.openmc.core.features.updates.UpdateListener;
 import fr.openmc.core.listeners.*;
@@ -18,9 +21,14 @@ public class ListenersManager {
                 new MailboxListener(),
                 new ChronometerListener(),
                 new CubeListener(OMCPlugin.getInstance()),
+                new ItemInteraction(),
+                new ChatInput(),
+                new CubeListener(OMCPlugin.getInstance()),
                 new RespawnListener(),
                 new SleepListener(),
                 new PlayerDeathListener(),
+                new AsyncChatListener(OMCPlugin.getInstance()),
+                new NPCManager(),
                 new AsyncChatListener(OMCPlugin.getInstance())
         );
     }

@@ -4,6 +4,7 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.contest.menu.ContributionMenu;
 import fr.openmc.core.features.contest.menu.VoteMenu;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -45,7 +46,7 @@ public class ContestCommand {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.FRENCH);
             DayOfWeek dayStartContestOfWeek = DayOfWeek.from(formatter.parse(contestManager.data.getStartdate()));
 
-            int days = (dayStartContestOfWeek.getValue() - contestManager.getCurrentDayOfWeek().getValue() + 7) % 7;
+            int days = (dayStartContestOfWeek.getValue() - DateUtils.getCurrentDayOfWeek().getValue() + 7) % 7;
 
             MessagesManager.sendMessage(player, Component.text("§cIl n'y a aucun Contest ! Revenez dans " + days + " jour(s)."), Prefix.CONTEST, MessageType.ERROR, true);
         }

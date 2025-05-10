@@ -1,6 +1,7 @@
 package fr.openmc.core.features.friend;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -64,6 +65,6 @@ public class FriendRequest extends BukkitRunnable {
     }
 
     private boolean isPlayerOnline(UUID playerUUID) {
-        return Bukkit.getOfflinePlayer(playerUUID).isOnline();
+        return CacheOfflinePlayer.getOfflinePlayer(playerUUID).isOnline();
     }
 }

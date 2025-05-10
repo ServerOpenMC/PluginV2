@@ -1,6 +1,6 @@
 package fr.openmc.core.features.scoreboards;
 
-import fr.openmc.core.utils.LuckPermsAPI;
+import fr.openmc.core.utils.api.LuckPermsApi;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.node.NodeType;
@@ -20,8 +20,8 @@ public class GlobalTeamManager {
     public GlobalTeamManager(Map<UUID, Scoreboard> playerScoreboards) {
         this.playerScoreboards = playerScoreboards;
 
-        if (LuckPermsAPI.hasLuckPerms()) {
-            this.luckPerms = LuckPermsAPI.getApi();
+        if (LuckPermsApi.hasLuckPerms()) {
+            this.luckPerms = LuckPermsApi.getApi();
             initSortedGroups();
             createTeams();
         }
@@ -52,12 +52,12 @@ public class GlobalTeamManager {
     public void createTeam(Scoreboard scoreboard, String teamName, Group group) {
         Team team = scoreboard.getTeam(teamName);
         if (team == null) team = scoreboard.registerNewTeam(teamName);
-        team.prefix(LuckPermsAPI.getFormattedPAPIPrefix(group));
+        team.prefix(LuckPermsApi.getFormattedPAPIPrefix(group));
     }
 
     public void updateTeam(Scoreboard scoreboard, String teamName, Group group) {
         Team team = scoreboard.getTeam(teamName);
-        if (team != null) team.prefix(LuckPermsAPI.getFormattedPAPIPrefix(group));
+        if (team != null) team.prefix(LuckPermsApi.getFormattedPAPIPrefix(group));
     }
 
     public void updatePlayerTeam(Player player) {

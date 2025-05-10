@@ -9,6 +9,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.features.leaderboards.listeners.LeaderboardListener;
 import fr.openmc.core.features.leaderboards.utils.PacketUtils;
+import fr.openmc.core.utils.DateUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -83,28 +84,6 @@ public class LeaderboardManager {
         CommandsManager.getHandler().register(new LeaderboardCommands());
         new LeaderboardListener(this);
         enable();
-    }
-
-    /**
-     * Converts a number of Minecraft ticks into a human-readable duration format.
-     * The format includes days, hours, and minutes (e.g., "1j 2h 3m").
-     *
-     * @param ticks The number of ticks in Minecraft (20 ticks = 1 second).
-     * @return A formatted string representing the duration in days, hours, and minutes.
-     */
-    private static String formatTicks(int ticks) {
-        int seconds = ticks / 20;
-        int days = seconds / 86400;
-        int hours = (seconds % 86400) / 3600;
-        int minutes = (seconds % 3600) / 60;
-
-        StringBuilder result = new StringBuilder();
-
-        if (days > 0) result.append(days).append("j ");
-        if (hours > 0) result.append(hours).append("h ");
-        if (minutes > 0) result.append(minutes).append("m");
-
-        return result.toString().trim();
     }
 
     /**
@@ -409,8 +388,6 @@ public class LeaderboardManager {
         }
     }
 
-
-    //TODO: Utiliser DateUtils quand ça sera plus de la merde
     /**
      * Updates the playtime leaderboard map by sorting and formatting player playtime.
      */
@@ -422,7 +399,7 @@ public class LeaderboardManager {
                 .limit(10)
                 .toList()) {
             String playerName = player.getName();
-            String playTime = formatTicks(player.getStatistic(Statistic.PLAY_ONE_MINUTE));
+            String playTime = DateUtils.convertTime(player.getStatistic(Statistic.PLAY_ONE_MINUTE));
             playTimeMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, playTime));
         }
     }

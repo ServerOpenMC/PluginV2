@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -30,8 +30,8 @@ public class CityCreateConditions {
      * @return booleen
      */
     public static boolean canCityCreate(Player player) {
-        if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir créer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+        if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir créer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
             return false;
         }
 

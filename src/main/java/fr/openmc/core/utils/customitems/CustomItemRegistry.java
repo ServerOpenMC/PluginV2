@@ -1,12 +1,13 @@
 package fr.openmc.core.utils.customitems;
 
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.utils.customitems.buttons.MinusButton;
-import fr.openmc.core.utils.customitems.buttons.OneButton;
-import fr.openmc.core.utils.customitems.buttons.PlusButton;
-import fr.openmc.core.utils.customitems.buttons.StackButton;
+import fr.openmc.core.utils.customitems.armors.SuitBoots;
+import fr.openmc.core.utils.customitems.armors.SuitChestplate;
+import fr.openmc.core.utils.customitems.armors.SuitHelmet;
+import fr.openmc.core.utils.customitems.armors.SuitLeggings;
+import fr.openmc.core.utils.customitems.buttons.*;
+import fr.openmc.core.utils.customitems.items.*;
 import io.papermc.paper.persistence.PersistentDataContainerView;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -18,11 +19,6 @@ import java.util.HashSet;
 public class CustomItemRegistry {
     static HashMap<String, CustomItem> items = new HashMap<>();
     static NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
-    private static final boolean hasItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
-
-    public static boolean hasItemsAdder() {
-        return hasItemsAdder;
-    }
 
     static public void init() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
@@ -42,6 +38,13 @@ public class CustomItemRegistry {
         new ContestShell();
         new Aywenite();
         new KebabItem();
+        new MascotWand();
+        new WarpWand();
+
+        new SuitHelmet();
+        new SuitChestplate();
+        new SuitLeggings();
+        new SuitBoots();
     }
 
     public static void register(String name, CustomItem item) {

@@ -6,8 +6,6 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.util.UUID;
-
 public class CityChatCommand {
     @Command({"cc", "city chat", "ville chat"})
     @CommandPermission("omc.commands.city.chat")

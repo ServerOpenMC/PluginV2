@@ -4,6 +4,7 @@ package fr.openmc.core.features.mailboxes.menu;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
@@ -38,7 +39,7 @@ public class PendingMailbox extends PaginatedMailbox<SenderLetter> {
                 if (result.next()) {
                     int itemsCount = result.getInt("items_count");
                     ItemStack[] items = BukkitSerializer.deserializeItemStacks(result.getBytes("items"));
-                    Player receiver = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("receiver_id"))).getPlayer();
+                    Player receiver = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(result.getString("receiver_id"))).getPlayer();
                     if (deleteLetter(id)) {
                         if (receiver != null) MailboxManager.cancelLetter(receiver, id);
                         MailboxManager.givePlayerItems(player, items);
@@ -77,7 +78,7 @@ public class PendingMailbox extends PaginatedMailbox<SenderLetter> {
                     int itemsCount = result.getInt("items_count");
                     LocalDateTime sentAt = result.getTimestamp("sent_at").toLocalDateTime();
                     boolean refused = result.getBoolean("refused");
-                    pageItems.add(new SenderLetter(Bukkit.getOfflinePlayer(senderUUID), id, itemsCount, sentAt, refused));
+                    pageItems.add(new SenderLetter(CacheOfflinePlayer.getOfflinePlayer(senderUUID), id, itemsCount, sentAt, refused));
                 }
                 return true;
             }

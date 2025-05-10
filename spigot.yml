@@ -1,0 +1,4 @@
+settings:
+  attribute:
+    maxHealth:
+      max: 6000.0

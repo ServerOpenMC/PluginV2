@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -74,8 +74,8 @@ public class CityManageConditions {
             return false;
         }
 
-        if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+        if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
             return false;
         }
 
