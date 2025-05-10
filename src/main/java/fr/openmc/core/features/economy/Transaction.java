@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @DatabaseTable(tableName = "transactions")
 public class Transaction {
-    @DatabaseField(id = true, unique = false, canBeNull = false)
+    @DatabaseField(canBeNull = false)
     public String recipient;
     @DatabaseField(canBeNull = false)
     public double amount;
