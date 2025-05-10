@@ -22,6 +22,7 @@ public enum Prefix {
     QUEST("<gradient:#4E76E3:#1A51E7>ǫᴜᴇѕᴛ</gradient>"),
     BANK("<gradient:#084CFB:#ADB6FD>ʙᴀɴᴋ</gradient>"),
     ADMINSHOP("<gradient:#EE2222:#F04949>ᴀᴅᴍɪɴꜱʜᴏᴘ</gradient>"),
+    DEATH("<gradient:#FF0000:#FF7F7F>☠</gradient>"),
     ;
 
     @Getter private final String prefix;
