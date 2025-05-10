@@ -6,12 +6,18 @@ import fr.openmc.core.utils.DateUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
-import java.time.DayOfWeek;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
 
 public class PhaseListener {
+
+    /**
+     * Constructor for the PhaseListener class.
+     * This class is responsible for managing the phases of the mayor election process.
+     *
+     * @param plugin The OMCPlugin instance.
+     */
     public PhaseListener(OMCPlugin plugin) {
         MayorManager mayorManager = MayorManager.getInstance();
         BukkitRunnable eventRunnable = new BukkitRunnable() {

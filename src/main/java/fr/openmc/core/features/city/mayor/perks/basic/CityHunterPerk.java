@@ -38,10 +38,9 @@ public class CityHunterPerk implements Listener {
             return;
         }
 
-        System.out.println(event.getDamage());
         double baseDamage = event.getDamage();
         double newDamage = baseDamage * 1.20;
-        System.out.println(newDamage);
+
         event.setDamage(newDamage);
     }
 }

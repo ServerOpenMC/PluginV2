@@ -19,6 +19,11 @@ import org.bukkit.potion.PotionEffectType;
 
 public class MinerPerk implements Listener {
 
+    /**
+     * Update the player's effects based on the current phase and their city perks.
+     *
+     * @param player The player to update.
+     */
     public static void updatePlayerEffects(Player player) {
         int phase = MayorManager.getInstance().phaseMayor;
 

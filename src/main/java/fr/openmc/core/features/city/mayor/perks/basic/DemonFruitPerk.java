@@ -17,6 +17,11 @@ public class DemonFruitPerk implements Listener {
     private static final NamespacedKey RANGE_MODIFIER_KEY = new NamespacedKey("mayor_perks","demon_fruit");
     private static final double BONUS_VALUE = 1.0;
 
+    /**
+     * Applies the reach bonus to the player.
+     *
+     * @param player The player to apply the bonus to.
+     */
     public static void applyReachBonus(Player player) {
         if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) {
             return;
@@ -45,6 +50,11 @@ public class DemonFruitPerk implements Listener {
         player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).addModifier(modifierBlock);
     }
 
+    /**
+     * Removes the reach bonus from the player.
+     *
+     * @param player The player to remove the bonus from.
+     */
     public static void removeReachBonus(Player player) {
         if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) return;
         try {
@@ -68,6 +78,12 @@ public class DemonFruitPerk implements Listener {
         }
     }
 
+    /**
+     * Checks if the player has the reach attribute bonus.
+     *
+     * @param player The player to check.
+     * @return true if the player has the reach attribute bonus, false otherwise.
+     */
     public static boolean hasRangeAttribute(Player player) {
         if (player.getAttribute(Attribute.ENTITY_INTERACTION_RANGE) == null && player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE) == null) return false;
 

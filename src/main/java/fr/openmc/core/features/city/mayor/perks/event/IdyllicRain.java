@@ -26,6 +26,12 @@ import java.util.Set;
 
 public class IdyllicRain implements Listener {
 
+    /**
+     * Spawns Aywenite items in the specified city.
+     *
+     * @param city       The city where the items will be spawned.
+     * @param totalItems The total number of items to spawn.
+     */
     public static void spawnAywenite(City city, int totalItems) {
         Set<BlockVector2> chunks = city.getChunks();
         if (chunks.isEmpty()) return;

@@ -7,12 +7,12 @@ depend:
   - WorldEdit
 
 softdepend:
-  - Citizens
   - PlaceholderAPI
   - LuckPerms
   - ItemsAdder
   - WorldGuard
   - ProtocolLib
+  - Citizens
 
 prefix: OMC
 authors: [ La communauté ]

@@ -9,7 +9,9 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -25,7 +27,12 @@ import java.util.UUID;
 
 
 public class ImpotCollection implements Listener {
-
+    /**
+     * Spawns zombies around the player in the specified city.
+     *
+     * @param player The player around whom the zombies will be spawned.
+     * @param city   The city where the zombies will be spawned.
+     */
     public static void spawnZombies(Player player, City city) {
         World world = player.getWorld();
         Location center = player.getLocation();

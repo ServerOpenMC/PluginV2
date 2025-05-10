@@ -21,6 +21,12 @@ import java.util.stream.Collectors;
 
 public class MilitaryDissuasion implements Listener {
 
+    /**
+     * Spawns Iron Golems in the specified city.
+     *
+     * @param city           The city where the golems will be spawned.
+     * @param golemsToSpawn  The number of golems to spawn.
+     */
     public static void spawnIronMan(City city, int golemsToSpawn) {
         Set<BlockVector2> chunks = city.getChunks();
         if (chunks.isEmpty()) return;
@@ -101,6 +107,11 @@ public class MilitaryDissuasion implements Listener {
     }
 
 
+    /**
+     * Clears all Iron Golems in the specified city.
+     *
+     * @param city The city whose golems will be cleared.
+     */
     public static void clearCityGolems(City city) {
         NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_golem");
         String cityUUID = city.getUUID();
@@ -116,16 +127,9 @@ public class MilitaryDissuasion implements Listener {
         }
     }
 
-    private static boolean cleared = false;
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        if (cleared) return;
-        cleared = true;
-
-        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::clearAllGolems, 20L * 5);
-    }
-
+    /**
+     * Clears all Iron Golems in the world.
+     */
     private void clearAllGolems() {
         NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_golem");
 
@@ -136,4 +140,15 @@ public class MilitaryDissuasion implements Listener {
             entity.remove();
         }
     }
+
+    private static boolean cleared = false;
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        if (cleared) return;
+        cleared = true;
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::clearAllGolems, 20L * 5);
+    }
+
 }

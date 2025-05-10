@@ -11,6 +11,11 @@ import java.util.Random;
 public class PerkManager {
     private static final Random RANDOM = new Random();
 
+    /**
+     * Get a perk by its ID
+     *
+     * @param id the ID of the perk
+     */
     public static Perks getPerkById(int id) {
         for (Perks perks : Perks.values()) {
             if (perks.getId() == id) return perks;
@@ -18,6 +23,9 @@ public class PerkManager {
         return null;
     }
 
+    /**
+     * Get a random list of perks
+     */
     public static List<Perks> getRandomPerksAll() {
         List<Perks> eventPerks = List.of(Perks.values()).stream()
                 .filter(perk -> perk.getType() == PerkType.EVENT)
@@ -44,6 +52,9 @@ public class PerkManager {
         return finalSelection;
     }
 
+    /**
+     * Get a random list of basic perks
+     */
     public static List<Perks> getRandomPerksBasic() {
         List<Perks> basicPerks = List.of(Perks.values()).stream()
                 .filter(perk -> perk.getType() == PerkType.BASIC)
@@ -63,6 +74,9 @@ public class PerkManager {
         return finalSelection;
     }
 
+    /**
+     * Get a random list of event perks
+     */
     public static Perks getRandomPerkEvent() {
         List<Perks> eventPerks = List.of(Perks.values()).stream()
                 .filter(perk -> perk.getType() == PerkType.EVENT)
@@ -71,6 +85,12 @@ public class PerkManager {
         return eventPerks.get(RANDOM.nextInt(eventPerks.size()));
     }
 
+    /**
+     * Check if a mayor has a perk by its ID
+     *
+     * @param mayor the mayor to check
+     * @param idPerk the ID of the perk to check
+     */
     public static boolean hasPerk(Mayor mayor, int idPerk) {
         if ((mayor.getIdPerk1() == idPerk) || (mayor.getIdPerk2() == idPerk) || (mayor.getIdPerk3() == idPerk)) {
             return true;

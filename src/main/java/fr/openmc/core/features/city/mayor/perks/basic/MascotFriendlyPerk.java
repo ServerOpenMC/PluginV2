@@ -20,6 +20,11 @@ import org.bukkit.potion.PotionEffect;
 
 public class MascotFriendlyPerk implements Listener {
 
+    /**
+     * Update the player's effects based on the current phase and their city mascot level.
+     *
+     * @param player The player to update.
+     */
     public static void updatePlayerEffects(Player player) {
         int phase = MayorManager.getInstance().phaseMayor;
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
