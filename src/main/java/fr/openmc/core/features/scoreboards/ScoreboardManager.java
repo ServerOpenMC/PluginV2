@@ -5,7 +5,7 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.contest.ContestData;
+import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
@@ -170,7 +170,7 @@ public class ScoreboardManager implements Listener {
             objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(6);
         }
 
-        ContestData data = ContestManager.getInstance().data;
+        Contest data = ContestManager.getInstance().data;
         int phase = data.getPhase();
         if(phase != 1) {
             objective.getScore(" ").setScore(5);

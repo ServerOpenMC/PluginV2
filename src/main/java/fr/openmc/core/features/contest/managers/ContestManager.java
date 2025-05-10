@@ -11,7 +11,7 @@ import java.time.DayOfWeek;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.features.contest.ContestData;
+import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
@@ -32,6 +32,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+
 import revxrsal.commands.autocomplete.SuggestionProvider;
 
 import java.time.LocalDate;
@@ -54,10 +60,11 @@ public class ContestManager {
     public YamlConfiguration contestConfig;
     private final OMCPlugin plugin;
 
+    private static Dao<Contest, String> contestDao;
 
     @Setter private ContestPlayerManager contestPlayerManager;
 
-    public ContestData data;
+    public Contest data;
     public Map<String, ContestPlayer> dataPlayer = new HashMap<>();
 
     private final List<String> colorContest = Arrays.asList(
@@ -100,21 +107,13 @@ public class ContestManager {
         loadContestPlayerData();
     }
 
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, Contest.class);
+        contestDao = DaoManager.createDao(connectionSource, Contest.class);
+        contestDao.create(new Contest("Mayonnaise", "Ketchup", "YELLOW", "RED", 1, "ven.", 0, 0));
+    }
+
     public static void initDb(Connection conn) throws SQLException {
-        // Système de Contest
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONTEST + " (phase int, camp1 VARCHAR(36), color1 VARCHAR(36), camp2 VARCHAR(36), color2 VARCHAR(36), startdate VARCHAR(36), points1 int, points2 int)").executeUpdate();
-        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_CONTEST);
-
-        ResultSet rs = state.executeQuery();
-
-        // push first contest
-        if (rs.next() && rs.getInt(1) == 0) {
-            PreparedStatement states = conn.prepareStatement("INSERT INTO " + TABLE_CONTEST + " (phase, camp1, color1, camp2, color2, startdate, points1, points2) VALUES (1, 'Mayonnaise', 'YELLOW', 'Ketchup', 'RED', ?, 0,0)");
-            String dateContestStart = "ven.";
-            states.setString(1, dateContestStart);
-            states.executeUpdate();
-        }
-
 
         // Table camps
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONTEST_CAMPS + " (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int, point_dep int)").executeUpdate();
@@ -152,7 +151,7 @@ public class ContestManager {
                 int point1 = result.getInt("points1");
                 int point2 = result.getInt("points2");
 
-                data = new ContestData(camp1, camp2, color1, color2, phase, startdate, point1, point2);
+                data = new Contest(camp1, camp2, color1, color2, phase, startdate, point1, point2);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -670,7 +669,7 @@ public class ContestManager {
         Random random = new Random();
         Map<String, Object> selectedContest = leastSelectedContests.get(random.nextInt(leastSelectedContests.size()));
 
-        data = new ContestData((String) selectedContest.get("camp1"), (String) selectedContest.get("camp2"), (String) selectedContest.get("color1"), (String) selectedContest.get("color2"), 1, "ven.", 0, 0);
+        data = new Contest((String) selectedContest.get("camp1"), (String) selectedContest.get("camp2"), (String) selectedContest.get("color1"), (String) selectedContest.get("color2"), 1, "ven.", 0, 0);
     }
 
     public void deleteTableContest(String table) {
@@ -691,6 +690,6 @@ public class ContestManager {
     }
 
     public void insertCustomContest(String camp1, String color1, String camp2, String color2) {
-        data = new ContestData(camp1, camp2, color1, color2, 1, "ven.", 0, 0);
+        data = new Contest(camp1, camp2, color1, color2, 1, "ven.", 0, 0);
     }
 }
