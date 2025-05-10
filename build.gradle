@@ -59,6 +59,7 @@ dependencies {
     implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
     implementation 'net.raidstone:wgevents:1.18.1'
+    implementation 'com.j256.ormlite:ormlite-jdbc:6.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
