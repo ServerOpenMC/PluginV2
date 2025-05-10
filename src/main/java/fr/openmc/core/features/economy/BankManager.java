@@ -107,24 +107,12 @@ public class BankManager {
     private Bank getPlayerBank(UUID player) {
         Bank bank = banks.get(player);
         if (bank != null) return bank;
-
-        try {
-            bank = banksDao.queryForId(player.toString());
-
-            if (bank == null) {
-                bank = new Bank(player.toString());
-                banksDao.create(bank);
-            }
-
-            return bank;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return new Bank(player.toString());
     }
 
     private void saveBank(Bank bank) {
         try {
-            banksDao.update(bank);
+            banksDao.createOrUpdate(bank);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
