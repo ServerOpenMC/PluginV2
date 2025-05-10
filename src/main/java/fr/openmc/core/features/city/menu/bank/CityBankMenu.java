@@ -3,16 +3,18 @@ package fr.openmc.core.features.city.menu.bank;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.menu.MenuUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import fr.openmc.core.utils.DateUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -24,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class CityBankMenu extends Menu {
 
@@ -82,14 +85,20 @@ public class CityBankMenu extends Menu {
             }));
 
             if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE)) {
-                inventory.put(13, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-                    itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
-                    itemMeta.lore(List.of(
-                           Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                            Component.text("§7Votre prochain intéret est de §b" + city.calculateCityInterest()*100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getInstance().getSecondsUntilInterest()))
-                        )
-                    );
-                }));
+
+                Supplier<ItemStack> interestItemSupplier = () -> {
+                    return new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+                        itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
+                        itemMeta.lore(List.of(
+                                        Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                                        Component.text("§7Votre prochain intéret est de §b" + city.calculateCityInterest() * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getInstance().getSecondsUntilInterest()))
+                                )
+                        );
+                    });
+                };
+
+                MenuUtils.runDynamicItem(player, this, 13, interestItemSupplier)
+                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             }
 
             List<Component> loreBankTake;
