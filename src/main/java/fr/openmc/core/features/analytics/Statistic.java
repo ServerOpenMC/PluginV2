@@ -5,7 +5,6 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import lombok.Getter;
 
-@Getter
 @DatabaseTable(tableName = "stats")
 class Statistic {
     Statistic() {
@@ -21,7 +20,8 @@ class Statistic {
     @DatabaseField(canBeNull = false)
     private String player;
     @DatabaseField(canBeNull = false)
-    public String scope;
+    private String scope;
+    @Getter
     @DatabaseField(canBeNull = false, defaultValue = "0")
     private int value;
 }
