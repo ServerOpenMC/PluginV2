@@ -28,7 +28,9 @@ public class ListenersManager {
                 new SleepListener(),
                 new PlayerDeadListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
-                new NPCManager()
+                new NPCManager(),
+                new PlayerDeathListener(),
+                new AsyncChatListener(OMCPlugin.getInstance())
         );
     }
 
