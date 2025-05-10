@@ -226,7 +226,7 @@ public class ContestManager {
         
         if (OMCPlugin.isUnitTestVersion()) {
             sql = "MERGE INTO " + TABLE_CONTEST_CAMPS +
-                    "KEY(minecraft_uuid) " +
+                    " KEY(minecraft_uuid) " +
                     "VALUES (?, ?, ?, ?)";
         } else {
             sql = "INSERT INTO " + TABLE_CONTEST_CAMPS + " (minecraft_uuid, name, camps, point_dep) " +

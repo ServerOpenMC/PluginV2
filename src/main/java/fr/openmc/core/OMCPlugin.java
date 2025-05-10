@@ -22,18 +22,13 @@ import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
-import fr.openmc.core.listeners.CitizensHookListener;
 import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.utils.MotdUtils;
-import fr.openmc.core.utils.api.ItemAdderApi;
-import fr.openmc.core.utils.api.LuckPermsApi;
-import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.utils.api.WorldGuardApi;
+import fr.openmc.core.utils.api.*;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -62,6 +57,7 @@ public class OMCPlugin extends JavaPlugin {
         new PapiApi();
         new WorldGuardApi();
         new ItemAdderApi();
+        new FancyNpcApi();
 
         /* MANAGERS */
         dbManager = new DatabaseManager();
@@ -97,8 +93,6 @@ public class OMCPlugin extends JavaPlugin {
 
         /* LOAD */
         DynamicCooldownManager.loadCooldowns();
-
-        Bukkit.getPluginManager().registerEvents(new CitizensHookListener(), OMCPlugin.getInstance());
 
         NPCManager.debug();
         getLogger().info("Plugin activé");

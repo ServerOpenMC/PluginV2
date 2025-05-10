@@ -146,15 +146,15 @@ public class MayorManager {
 
     public static void init_db(Connection conn) throws SQLException {
         // create city_mayor : contient l'actuel maire et les réformes actuelles
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_MAYOR + " (city_uuid VARCHAR(8) UNIQUE, mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int(2), idPerk2 int(2), idPerk3 int(2), electionType VARCHAR(36))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_MAYOR + " (city_uuid VARCHAR(8) UNIQUE, mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int, idPerk2 int, idPerk3 int, electionType VARCHAR(36))").executeUpdate();
         // create city_election : contient les membres d'une ville ayant participé pour etre maire
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_ELECTION + " (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int(2), idChoicePerk3 int(2), vote int(5))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_ELECTION + " (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int, idChoicePerk3 int, vote int)").executeUpdate();
         // create city_voted : contient les membres d'une ville ayant deja voté
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_VOTE + " (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) UNIQUE NOT NULL, candidateUUID VARCHAR(36) NOT NULL)").executeUpdate();
         // create city_law : contient les parametres d'une ville
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_LAW + " (city_uuid VARCHAR(8) UNIQUE, pvp BOOLEAN NOT NULL DEFAULT FALSE, warp_x DOUBLE, warp_y DOUBLE, warp_z DOUBLE, warp_world VARCHAR(255))").executeUpdate();
         // create constants : contient une information universelle pour tout le monde
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONSTANTS + " (mayorPhase int(1))").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONSTANTS + " (mayorPhase int)").executeUpdate();
         PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_CONSTANTS);
         ResultSet rs = state.executeQuery();
         if (rs.next() && rs.getInt(1) == 0) {
