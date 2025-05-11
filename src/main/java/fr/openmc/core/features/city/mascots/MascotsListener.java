@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.mascots;
 
-import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
