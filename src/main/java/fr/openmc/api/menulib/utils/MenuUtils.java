@@ -75,19 +75,24 @@ public class MenuUtils {
 		return new BukkitRunnable() {
 			@Override
 			public void run() {
-				boolean isSameName = false;
-				Component component = player.getOpenInventory().title();
-				if (component instanceof TextComponent textComponent) {
-					String content = textComponent.content();
-					if (!content.equals(ChatColor.stripColor(menu.getName()))) {
+				try {
+					Component component = player.getOpenInventory().title();
+					if (component instanceof TextComponent textComponent) {
+						String content = textComponent.content();
+						if (!ChatColor.stripColor(content).equals(ChatColor.stripColor(menu.getName()))) {
+							cancel();
+							return;
+						}
+					} else {
 						cancel();
 						return;
 					}
-					isSameName = true;
-				}
 
-				if (!isSameName) return;
-				player.getOpenInventory().getTopInventory().setItem(slot, itemSupplier.get());
+					ItemStack item = itemSupplier.get();
+					player.getOpenInventory().getTopInventory().setItem(slot, item);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		};
 	}
