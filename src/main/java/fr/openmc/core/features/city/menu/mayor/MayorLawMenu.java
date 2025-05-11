@@ -343,6 +343,16 @@ public class MayorLawMenu extends Menu {
                         .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             }
 
+            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.itemName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Vous allez retourner au Menu du Mandat du Maire"),
+                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                ));
+            }).setOnClick(inventoryClickEvent -> {
+                new MayorMandateMenu(player).open();
+            }));
+
             return inventory;
         } catch (Exception e) {
             MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);

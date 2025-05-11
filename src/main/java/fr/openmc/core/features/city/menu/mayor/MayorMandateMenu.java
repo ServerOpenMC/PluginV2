@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -147,12 +148,11 @@ public class MayorMandateMenu extends Menu {
             inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
                 itemMeta.lore(List.of(
-                        Component.text("§7Vous allez retourner au Menu des Elections"),
+                        Component.text("§7Vous allez retourner au Menu des Villes"),
                         Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                 ));
             }).setOnClick(inventoryClickEvent -> {
-                MayorElectionMenu menu = new MayorElectionMenu(player);
-                menu.open();
+                new CityMenu(player).open();
             }));
 
             return inventory;
