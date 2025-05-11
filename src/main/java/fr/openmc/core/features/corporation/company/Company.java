@@ -1,12 +1,18 @@
-package fr.openmc.core.features.corporation;
+package fr.openmc.core.features.corporation.company;
 
 
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.corporation.CorpPermission;
+import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.data.TransactionData;
+import fr.openmc.core.features.corporation.manager.CompanyManager;
+import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
+import fr.openmc.core.features.corporation.shops.Shop;
+import fr.openmc.core.features.corporation.shops.ShopOwner;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
 import fr.openmc.core.utils.database.DatabaseManager;

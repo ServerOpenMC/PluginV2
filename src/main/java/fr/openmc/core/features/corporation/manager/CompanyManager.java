@@ -1,18 +1,23 @@
-package fr.openmc.core.features.corporation;
+package fr.openmc.core.features.corporation.manager;
 
-import dev.lone.itemsadder.api.CustomBlock;
-import dev.lone.itemsadder.api.CustomFurniture;
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.commands.CompanyCommand;
 import fr.openmc.core.features.corporation.commands.ShopCommand;
+import fr.openmc.core.features.corporation.company.Company;
+import fr.openmc.core.features.corporation.company.CompanyOwner;
 import fr.openmc.core.features.corporation.data.MerchantData;
+import fr.openmc.core.features.corporation.listener.CustomItemsCompanyListener;
 import fr.openmc.core.features.corporation.listener.ShopListener;
+import fr.openmc.core.features.corporation.shops.Shop;
+import fr.openmc.core.features.corporation.shops.ShopItem;
+import fr.openmc.core.features.corporation.shops.Supply;
 import fr.openmc.core.utils.Queue;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
@@ -54,6 +59,12 @@ public class CompanyManager {
         OMCPlugin.registerEvents(
                 new ShopListener()
         );
+
+        if (CustomItemRegistry.hasItemsAdder()){
+            OMCPlugin.registerEvents(
+                    new CustomItemsCompanyListener()
+            );
+        }
 
         companies = getAllCompany();
         shops = loadAllShops();

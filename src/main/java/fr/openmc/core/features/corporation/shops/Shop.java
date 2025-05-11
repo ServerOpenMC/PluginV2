@@ -1,4 +1,4 @@
-package fr.openmc.core.features.corporation;
+package fr.openmc.core.features.corporation.shops;
 
 import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomFurniture;
@@ -6,6 +6,8 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.corporation.MethodState;
+import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;

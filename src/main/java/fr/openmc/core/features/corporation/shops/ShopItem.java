@@ -1,4 +1,4 @@
-package fr.openmc.core.features.corporation;
+package fr.openmc.core.features.corporation.shops;
 
 import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;

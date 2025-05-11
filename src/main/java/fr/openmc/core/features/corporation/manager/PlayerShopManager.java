@@ -1,5 +1,8 @@
-package fr.openmc.core.features.corporation;
+package fr.openmc.core.features.corporation.manager;
 
+import fr.openmc.core.features.corporation.MethodState;
+import fr.openmc.core.features.corporation.shops.Shop;
+import fr.openmc.core.features.corporation.shops.ShopOwner;
 import fr.openmc.core.features.economy.EconomyManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;

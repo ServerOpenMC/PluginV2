@@ -1,5 +1,6 @@
-package fr.openmc.core.features.corporation;
+package fr.openmc.core.features.corporation.shops;
 
+import fr.openmc.core.features.corporation.company.Company;
 import lombok.Getter;
 
 import java.util.UUID;

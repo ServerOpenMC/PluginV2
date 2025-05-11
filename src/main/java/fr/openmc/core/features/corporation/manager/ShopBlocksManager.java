@@ -1,9 +1,9 @@
-package fr.openmc.core.features.corporation;
+package fr.openmc.core.features.corporation.manager;
 
-import dev.lone.itemsadder.api.CustomBlock;
 import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -58,12 +57,20 @@ public class ShopBlocksManager {
         Block cashBlock = multiblock.getCashBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
 
-        CustomStack customFurniture = CustomFurniture.getInstance("omc_company:caisse");
+        if (CustomItemRegistry.hasItemsAdder()){
+            CustomStack customFurniture = CustomFurniture.getInstance("omc_company:caisse");
 
-        if (cashBlock.getType()!=Material.AIR || customFurniture == null){
-            cashBlock.setType(Material.OAK_SIGN);
+            if (cashBlock.getType()!=Material.AIR || customFurniture == null){
+                cashBlock.setType(Material.OAK_SIGN);
+            } else {
+                CustomFurniture.spawn("omc_company:caisse", cashBlock);
+            }
+
         } else {
-            CustomFurniture.spawn("omc_company:caisse", cashBlock);
+
+            if (cashBlock.getType()!=Material.AIR){
+                cashBlock.setType(Material.OAK_SIGN);
+            }
         }
 
         BlockData cashData = cashBlock.getBlockData();
@@ -81,30 +88,36 @@ public class ShopBlocksManager {
         Block cashBlock = multiblock.getCashBlock().getBlock();
         Block stockBlock = multiblock.getStockBlock().getBlock();
 
-        CustomStack customBlock = CustomFurniture.getInstance("omc_company:caisse");
+        if (CustomItemRegistry.hasItemsAdder()){
+            CustomStack customBlock = CustomFurniture.getInstance("omc_company:caisse");
 
-        if (cashBlock.getType() != Material.OAK_SIGN && customBlock != null) {
-            CustomStack placedBlock = CustomFurniture.byAlreadySpawned(cashBlock);
-            if (placedBlock == null){
-                System.out.println("test0");
-                return false;
+            if (cashBlock.getType() != Material.OAK_SIGN && customBlock != null) {
+                CustomStack placedBlock = CustomFurniture.byAlreadySpawned(cashBlock);
+                if (placedBlock == null){
+                    System.out.println("test0");
+                    return false;
+                }
+                if (!placedBlock.getNamespacedID().equals("omc_company:caisse")){
+                    return false;
+                }
             }
-            if (!placedBlock.getNamespacedID().equals("omc_company:caisse")){
-                return false;
-            }
-        }
 
-        if (customBlock == null){
-            if (cashBlock.getType() != Material.OAK_SIGN || stockBlock.getType() != Material.BARREL) {
+            if (customBlock == null){
+                if (cashBlock.getType() != Material.OAK_SIGN || stockBlock.getType() != Material.BARREL  || cashBlock.getType() != Material.BARRIER) {
+                    return false;
+                }
+            }
+
+            if (customBlock!=null) CustomFurniture.remove(CustomFurniture.byAlreadySpawned(cashBlock).getEntity(), false);
+
+        } else {
+            if (cashBlock.getType() != Material.OAK_SIGN || stockBlock.getType() != Material.BARREL || cashBlock.getType() != Material.BARRIER) {
                 return false;
             }
         }
 
         multiblocks.remove(shop.getUuid());
         cashBlock.setType(Material.AIR);
-        if (customBlock!=null){
-            CustomFurniture.remove(CustomFurniture.byAlreadySpawned(cashBlock).getEntity(), false);
-        }
         new BukkitRunnable() {
             @Override
             public void run() {
