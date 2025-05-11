@@ -208,7 +208,7 @@ public class MascotsListener implements Listener {
 
                                 scheduleGolemDespawn(golem, mob.getUniqueId());
 
-                                MessagesManager.sendMessage(player, Component.text("§8§o*terremblement* Quelque chose semble arriver..."), Prefix.MAYOR, MessageType.INFO, false);
+                                MessagesManager.sendMessage(player, Component.text("§8§o*tremblement* Quelque chose semble arriver..."), Prefix.MAYOR, MessageType.INFO, false);
                             }
                         }
 

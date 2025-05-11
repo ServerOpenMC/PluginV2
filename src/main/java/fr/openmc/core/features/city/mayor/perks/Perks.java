@@ -90,7 +90,7 @@ public enum Perks {
             8,
             "§e§lAyweniteur",
             List.of(
-                    Component.text("§7Casser une pierre donne 1% de chance d'avoir 2 d'Aywenite")
+                    Component.text("§7Casser une pierre donne 1% de chance d'avoir 2 d'Aywenites")
             ),
             CustomItemRegistry.getByName("omc_items:aywenite").getBest(),
             PerkType.BASIC,

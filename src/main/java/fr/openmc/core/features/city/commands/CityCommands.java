@@ -533,7 +533,7 @@ public class CityCommands {
     }
 
     @Subcommand({"setwarp"})
-    @Description("Teleporte au warp commun de la ville")
+    @Description("Déplacer le warp de votre ville")
     public void setWarpCommand(Player player) {
         setWarp(player);
     }

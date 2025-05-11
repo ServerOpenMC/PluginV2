@@ -115,7 +115,7 @@ public class ImpotCollection implements Listener {
                 }
             }
 
-            MessagesManager.sendMessage(victim, Component.text("§8§o*les zombies ont eu tout ce qu'il voulait*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(victim, Component.text("§8§o*les zombies ont eu tout ce qu'ils voulaient*"), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 }

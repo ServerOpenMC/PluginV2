@@ -119,7 +119,7 @@ public class DynamicCooldownManager {
 
             statement.executeBatch();
 
-            OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns réussi.");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns réussie.");
         } catch (SQLException e) {
             OMCPlugin.getInstance().getLogger().severe("Echec de la sauvegarde des cooldowns.");
             e.printStackTrace();

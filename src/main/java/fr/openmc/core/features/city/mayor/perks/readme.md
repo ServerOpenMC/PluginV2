@@ -10,7 +10,7 @@
 
 ## Vue d'ensemble
 
-Le système de Réforme permet d'implémenter de nouvelles façons de jouer et d'établie ces stratégies dans le jeu.
+Le Système de Réformes permet d'implémenter de nouvelles façons de jouer et d'établir ses stratégies dans le jeu.
 
 ## Guide d'implémentation
 
@@ -32,7 +32,7 @@ NOM(
 ```
 id devra etre un int
 nom, un string
-description, une liste de component
+description, une liste de components
 itemstack, un itemstack :
 - ItemStack.of(Material)
 - CustomItemRegistry.getByName("omc_items:aywenite").getBest(), un CustomItem d'ItemAdder
@@ -45,7 +45,9 @@ TNT_RAIN(
     "§e§lPluie de TNT",
     List.of(
         Component.text("§7Lorsque vous §3tapez un joueur§7, une tnt"),
-        Component.text("§7apparaitra au dessus de lui et §3explose §7!"),
+        Component.
+
+text("§7apparaitra au dessus de lui et §3explosera §7!"),
     ),
     ItemStack.of(Material.TNT),
     PerkType.BASIC,
@@ -69,7 +71,8 @@ IDYLLIC_RAIN(
 ### Gérer les comportements d'une Réforme :
 #### Réforme Basique
 1. Faites une classe dans `mayor.perks.basic`, vous pourrez implementer Listener si votre Réforme peut être activée lorsqu'une telle chose se passe
-2. Utilisez `PerkManager.hasPerk(<City>.getMayor(), id)` afin de regarder si le Maire a choisis ce Perk et assurez vous que le Maire est dans sa phase d'application `MayorManager.getInstance().phaseMayor==2`
+2. Utilisez `PerkManager.hasPerk(<City>.getMayor(), id)` afin de regarder si le Maire a choisit ce Perk et assurez vous
+   que le Maire est dans sa phase d'application `MayorManager.getInstance().phaseMayor==2`
 
 Exemple avec un Listener:
 ```java
@@ -123,7 +126,8 @@ public double calculateCityInterest() {
 
 #### Réforme Événementielle
 1. Faites une classe dans `mayor.perks.event`, vous pourrez mettre les méthodes qui sont concernées par votre Réforme Evenementielle.
-2. Allez dans `city.menu.mayor.MayorLawMenu`, vous devrez ajouter la détéction lorsque votre Réforme veut etre activé par le Maire.
+2. Allez dans `city.menu.mayor.MayorLawMenu`, vous devrez ajouter la détection lorsque votre Réforme est activée par le
+   Maire.
 
 Exemple : 
 ```java

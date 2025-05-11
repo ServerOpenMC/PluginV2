@@ -187,7 +187,7 @@ public class MayorManager {
             states.setInt(1, phaseMayor);
 
             states.executeUpdate();
-            plugin.getLogger().info("Sauvegarde des constantes pour les Maires réussi.");
+            plugin.getLogger().info("Sauvegarde des constantes pour les Maires réussie.");
         } catch (SQLException e) {
             plugin.getLogger().severe("Echec de la sauvegarde des constantes pour les Maires.");
             throw new RuntimeException(e);
@@ -225,7 +225,7 @@ public class MayorManager {
                         "ON DUPLICATE KEY UPDATE " +
                         "city_uuid = VALUES(city_uuid), mayorUUID = VALUES(mayorUUID), mayorName = VALUES(mayorName), mayorColor = VALUES(mayorColor), idPerk1 = VALUES(idPerk1), idPerk2 = VALUES(idPerk2), idPerk3 = VALUES(idPerk3), electionType = VALUES(electionType)"
         )) {
-            plugin.getLogger().info("Sauvegarde des données des Joueurs qui sont maire...");
+            plugin.getLogger().info("Sauvegarde des données des joueurs maire...");
             cityMayor.forEach((city, mayor) -> {
                 try {
                     statement.setString(1, city.getUUID());
@@ -245,9 +245,9 @@ public class MayorManager {
 
             statement.executeBatch();
 
-            plugin.getLogger().info("Sauvegarde des données des Joueurs qui sont maire réussi.");
+            plugin.getLogger().info("Sauvegarde des données des joueurs maire réussie.");
         } catch (SQLException e) {
-            plugin.getLogger().severe("Echec de la sauvegarde des données des Joueurs qui sont maire.");
+            plugin.getLogger().severe("Echec de la sauvegarde des données des joueurs maire.");
             e.printStackTrace();
         }
     }
