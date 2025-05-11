@@ -8,7 +8,6 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.BankManager;
@@ -94,7 +93,6 @@ public class OMCPlugin extends JavaPlugin {
         /* LOAD */
         DynamicCooldownManager.loadCooldowns();
 
-        NPCManager.debug();
         getLogger().info("Plugin activé");
     }
 

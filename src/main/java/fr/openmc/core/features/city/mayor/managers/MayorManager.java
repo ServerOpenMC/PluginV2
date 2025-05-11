@@ -39,7 +39,7 @@ public class MayorManager {
 
     private final OMCPlugin plugin;
 
-    public int MEMBER_REQ_ELECTION = 2;
+    public int MEMBER_REQ_ELECTION = 3;
 
     public static final String TABLE_MAYOR = "city_mayor";
     public static final String TABLE_ELECTION = "city_election";
@@ -63,8 +63,8 @@ public class MayorManager {
             NamedTextColor.DARK_GRAY
     );
 
-    public static final DayOfWeek PHASE_1_DAY = DayOfWeek.MONDAY;
-    public static final DayOfWeek PHASE_2_DAY = DayOfWeek.MONDAY;
+    public static final DayOfWeek PHASE_1_DAY = DayOfWeek.TUESDAY;
+    public static final DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
 
     public int phaseMayor;
     public HashMap<City, Mayor> cityMayor = new HashMap<>();

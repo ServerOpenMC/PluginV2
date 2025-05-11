@@ -24,7 +24,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -47,22 +46,6 @@ public class NPCManager implements Listener {
             });
         }, 20L * 30);
     }
-    public static void debug() {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (String uuid : ownerNpcMap.keySet()) {
-                    OwnerNPC ownerNpc = ownerNpcMap.get(uuid);
-                    System.out.println("OwnerNPC: " + ownerNpc.getNpc().getData().getName() + " " + ownerNpc.getCityUUID());
-                }
-                for (String uuid : mayorNpcMap.keySet()) {
-                    MayorNPC mayorNpc = mayorNpcMap.get(uuid);
-                    System.out.println("MayorNPC: " + mayorNpc.getNpc().getData().getName() + " " + mayorNpc.getCityUUID());
-                }
-            }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0, 600L); // 600 ticks = 30 secondes
-    }
-
 
     public static void createNPCS(String cityUUID, Location locationMayor, Location locationOwner, UUID creatorUUID) {
         if (!FancyNpcApi.hasFancyNpc()) return;
