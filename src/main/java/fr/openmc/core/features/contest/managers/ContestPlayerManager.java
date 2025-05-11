@@ -1,6 +1,6 @@
 package fr.openmc.core.features.contest.managers;
 
-import fr.openmc.core.features.contest.ContestPlayer;
+import fr.openmc.core.features.contest.models.ContestPlayer;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;

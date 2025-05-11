@@ -2,7 +2,7 @@ package fr.openmc.core.features.contest.menu;
 
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.ContestPlayer;
+import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.contest.managers.ColorUtils;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.utils.PapiAPI;

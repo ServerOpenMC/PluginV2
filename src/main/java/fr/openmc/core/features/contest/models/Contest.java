@@ -32,6 +32,10 @@ public class Contest {
     @DatabaseField(canBeNull = false)
     private int point2;
 
+    Contest() {
+        // required for ORMLite
+    }
+
     public Contest(String camp1, String camp2, String color1, String color2, int phase, String startdate,
             int point1, int point2) {
         this.camp1 = camp1;
