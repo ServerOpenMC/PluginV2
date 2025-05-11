@@ -6,6 +6,9 @@ import dev.xernas.menulib.utils.ItemUtils;
 import dev.xernas.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,7 +32,7 @@ public class CompanyMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.BLUE_STAINED_GLASS_PANE;
     }
 
     @Override
@@ -58,15 +61,15 @@ public class CompanyMenu extends PaginatedMenu {
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> buttons = new HashMap<>();
 
-        ItemBuilder closeButton = new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§7Fermer")).setCloseButton();
-        ItemBuilder backButton = new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName("§7Retour")).setBackButton();
+        ItemBuilder closeButton = new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer")).setCloseButton();
+        ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§7Retour")).setBackButton();
 
         buttons.put(49, isBackButton ? backButton : closeButton);
 
-        buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+        buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                 .setPreviousPageButton());
 
-        buttons.put(50, new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
+        buttons.put(50, new ItemBuilder(this,  CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
                 .setNextPageButton());
 
         ItemStack ownerItem;
@@ -121,7 +124,11 @@ public class CompanyMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return company.getName();
+        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_company_baltop_menu%");
+        } else {
+            return company.getName();
+        }
     }
 
     @Override

@@ -7,7 +7,10 @@ import fr.openmc.core.features.corporation.Shop;
 import fr.openmc.core.features.corporation.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.menu.ConfirmMenu;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,13 +38,13 @@ public class ShopStocksMenu extends PaginatedMenu {
         this.shop = shop;
         this.itemIndex = itemIndex;
 
-        accetpMsg.add(Component.text("§arécupérer"));
-        denyMsg.add(Component.text("§cannuler"));
+        accetpMsg.add(Component.text("§aRécupérer"));
+        denyMsg.add(Component.text("§cAnnuler"));
     }
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.BLUE_STAINED_GLASS_PANE;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class ShopStocksMenu extends PaginatedMenu {
             items.add(new ItemBuilder(this, stock.getItem().getType(), itemMeta -> {
                 itemMeta.setDisplayName(ChatColor.YELLOW + ShopItem.getItemName(stock.getItem()));
                 itemMeta.setLore(List.of(
-                        "§7■ Quantitée restante: " + EconomyManager.getInstance().getFormattedNumber(stock.getAmount()),
+                        "§7■ Quantité restante : " + EconomyManager.getInstance().getFormattedNumber(stock.getAmount()),
                         "§7■ Prix de vente (par item) : " + EconomyManager.getInstance().getFormattedNumber(stock.getPricePerItem()),
                         "§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
                 ));
@@ -72,15 +75,15 @@ public class ShopStocksMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> buttons = new HashMap<>();
-        buttons.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
-        ItemBuilder nextPageButton = new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
+        ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
         if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
-            buttons.put(48, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.setDisplayName("§cRetour"))
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cRetour"))
                     .setNextMenu(new ShopMenu(getOwner(), shop, itemIndex)));
             buttons.put(50, nextPageButton);
         } else {
-            buttons.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
         }
@@ -89,7 +92,11 @@ public class ShopStocksMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Stocks de " + shop.getName();
+        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
+        } else {
+            return "Stocks de " + shop.getName();
+        }
     }
 
     @Override

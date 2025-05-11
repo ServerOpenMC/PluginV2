@@ -1,5 +1,8 @@
 package fr.openmc.core.features.corporation;
 
+import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.CustomFurniture;
+import dev.lone.itemsadder.api.CustomStack;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
@@ -21,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -51,10 +55,10 @@ public class Shop {
     }
 
     /**
-     * @param shop the shop we want to check the stock
      * requirement : item need the uuid of the player who restock the shop
-     *
+
      * quand un item est vendu un partie du profit reviens a celui qui a approvisionner
+     * @param shop the shop we want to check the stock
      */
     public static void checkStock(Shop shop) {
         ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
@@ -113,6 +117,7 @@ public class Shop {
 
 
     public String getName() {
+        //TODO CacheOfflinePlayer
         return owner.isCompany() ? ("Shop #" + index) : Bukkit.getOfflinePlayer(owner.getPlayer()).getName() + "'s Shop";
     }
 
@@ -227,7 +232,6 @@ public class Shop {
                 MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + item.getPrice(amount) + EconomyManager.getEconomyIcon() + ", l'argent vous a été transféré !"), Prefix.SHOP, MessageType.SUCCESS, false);
             }
         }
-        //TODO Give certain amount of that item to the buyer
         ItemStack toGive = item.getItem().clone();
         toGive.setAmount(amount);
         List<ItemStack> stacks = ItemUtils.splitAmountIntoStack(toGive);
@@ -256,8 +260,8 @@ public class Shop {
         return new ItemBuilder(menu, fromShopMenu ? Material.GOLD_INGOT : Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§e§l" + (fromShopMenu ? "Informations" : getName()));
             List<String> lore = new ArrayList<>();
-            lore.add("§7■ Chiffre d'affaires: " + EconomyManager.getInstance().getFormattedNumber(turnover) + "€");
-            lore.add("§7■ Ventes: §f" + sales.size());
+            lore.add("§7■ Chiffre d'affaire : " + EconomyManager.getInstance().getFormattedNumber(turnover));
+            lore.add("§7■ Ventes : §f" + sales.size());
             if (!fromShopMenu)
                 lore.add("§7■ Cliquez pour accéder au shop");
             itemMeta.setLore(lore);
@@ -274,19 +278,26 @@ public class Shop {
 
     public static UUID getShopPlayerLookingAt(Player player, ShopBlocksManager shopBlocksManager, boolean onlyCash) {
         Block targetBlock = player.getTargetBlockExact(5);
-        //TODO ItemsAdder cash register
-        if (targetBlock == null || (targetBlock.getType() != Material.BARREL && targetBlock.getType() != Material.OAK_SIGN)) {
-            return null;
+
+        if (targetBlock == null) return null;
+
+        CustomStack customFurniture = CustomFurniture.getInstance("omc_company:caisse");
+
+        if (customFurniture != null && targetBlock.getType() != Material.BARREL && targetBlock.getType() != Material.OAK_SIGN) {
+            CustomStack placedBlock = CustomFurniture.byAlreadySpawned(targetBlock);
+            if (placedBlock == null || !placedBlock.getNamespacedID().equals("omc_company:caisse")) return null;
         }
+
+        if (targetBlock.getType() != Material.BARREL && targetBlock.getType() != Material.OAK_SIGN) return null;
         if (onlyCash) {
-            if (targetBlock.getType() != Material.OAK_SIGN) {
-                return null;
+            if (targetBlock.getType() != Material.OAK_SIGN && customFurniture == null) return null;
+            if (customFurniture != null) {
+                CustomBlock placedBlock = CustomBlock.byAlreadyPlaced(targetBlock);
+                if (placedBlock == null) return null;
             }
         }
         Shop shop = shopBlocksManager.getShop(targetBlock.getLocation());
-        if (shop == null) {
-            return null;
-        }
+        if (shop == null) return null;
         return shop.getUuid();
     }
 

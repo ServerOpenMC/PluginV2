@@ -1,10 +1,7 @@
 package fr.openmc.core.utils.customitems;
 
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.utils.customitems.buttons.MinusButton;
-import fr.openmc.core.utils.customitems.buttons.OneButton;
-import fr.openmc.core.utils.customitems.buttons.PlusButton;
-import fr.openmc.core.utils.customitems.buttons.StackButton;
+import fr.openmc.core.utils.customitems.buttons.*;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -35,6 +32,7 @@ public class CustomItemRegistry {
         new RefuseButton();
         new SearchButton();
         new OneButton();
+        new TenButton();
         new StackButton();
         new MinusButton();
         new PlusButton();

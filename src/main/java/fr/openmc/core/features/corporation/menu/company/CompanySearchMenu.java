@@ -6,6 +6,10 @@ import dev.xernas.menulib.utils.ItemBuilder;
 import dev.xernas.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.Company;
 import fr.openmc.core.features.corporation.CompanyManager;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -28,7 +32,7 @@ public class CompanySearchMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.BLUE_STAINED_GLASS_PANE;
     }
 
     @Override
@@ -76,18 +80,18 @@ public class CompanySearchMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
-        map.put(48, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                 .setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
+        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
                 .setNextPageButton());
         if (companyManager.isInCompany(getOwner().getUniqueId())) {
             map.put(4, new ItemBuilder(this, companyManager.getCompany(getOwner().getUniqueId()).getHead(), itemMeta -> {
                 itemMeta.setDisplayName("§6§l" + companyManager.getCompany(getOwner().getUniqueId()).getName());
                 itemMeta.setLore(List.of(
                         "§7■ - Entreprise -",
-                        "§7■ Chiffre d'affaires : §a" + companyManager.getCompany(getOwner().getUniqueId()).getTurnover() + "€",
+                        "§7■ Chiffre d'affaires : §a" + companyManager.getCompany(getOwner().getUniqueId()).getTurnover() + EconomyManager.getEconomyIcon(),
                         "§7■ Marchants : §f" + companyManager.getCompany(getOwner().getUniqueId()).getMerchants().size(),
                         "§7■ Cliquez pour voir les informations de l'entreprise"
                 ));
@@ -98,7 +102,11 @@ public class CompanySearchMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return companyManager.isInCompany(getOwner().getUniqueId()) ? "Rechercher une entreprise" : "Pôle travail";
+        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_paginate_company_menu%");
+        } else {
+            return companyManager.isInCompany(getOwner().getUniqueId()) ? "Rechercher une entreprise" : "Pôle travail";
+        }
     }
 
     @Override

@@ -1,6 +1,10 @@
 package fr.openmc.core.features.corporation;
 
+import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.CustomFurniture;
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
 import lombok.Getter;
@@ -53,8 +57,15 @@ public class ShopBlocksManager {
         }
         Block cashBlock = multiblock.getCashBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
-        //TODO ItemsAdder cash register
-        cashBlock.setType(Material.OAK_SIGN);
+
+        CustomStack customFurniture = CustomFurniture.getInstance("omc_company:caisse");
+
+        if (cashBlock.getType()!=Material.AIR || customFurniture == null){
+            cashBlock.setType(Material.OAK_SIGN);
+        } else {
+            CustomFurniture.spawn("omc_company:caisse", cashBlock);
+        }
+
         BlockData cashData = cashBlock.getBlockData();
         if (cashData instanceof Directional directional) {
             directional.setFacing(yaw.getOpposite().toBlockFace());
@@ -69,12 +80,31 @@ public class ShopBlocksManager {
         }
         Block cashBlock = multiblock.getCashBlock().getBlock();
         Block stockBlock = multiblock.getStockBlock().getBlock();
-        //TODO ItemsAdder cash register
-        if (cashBlock.getType() != Material.OAK_SIGN || stockBlock.getType() != Material.BARREL) {
-            return false;
+
+        CustomStack customBlock = CustomFurniture.getInstance("omc_company:caisse");
+
+        if (cashBlock.getType() != Material.OAK_SIGN && customBlock != null) {
+            CustomStack placedBlock = CustomFurniture.byAlreadySpawned(cashBlock);
+            if (placedBlock == null){
+                System.out.println("test0");
+                return false;
+            }
+            if (!placedBlock.getNamespacedID().equals("omc_company:caisse")){
+                return false;
+            }
         }
+
+        if (customBlock == null){
+            if (cashBlock.getType() != Material.OAK_SIGN || stockBlock.getType() != Material.BARREL) {
+                return false;
+            }
+        }
+
         multiblocks.remove(shop.getUuid());
         cashBlock.setType(Material.AIR);
+        if (customBlock!=null){
+            CustomFurniture.remove(CustomFurniture.byAlreadySpawned(cashBlock).getEntity(), false);
+        }
         new BukkitRunnable() {
             @Override
             public void run() {

@@ -1,5 +1,8 @@
 package fr.openmc.core.features.corporation;
 
+import dev.lone.itemsadder.api.CustomBlock;
+import dev.lone.itemsadder.api.CustomFurniture;
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.CPermission;
@@ -106,7 +109,7 @@ public class CompanyManager {
     }
 
     public static List<Company> getAllCompany() {
-        OMCPlugin.getInstance().getLogger().info("chargements des companies...");
+        OMCPlugin.getInstance().getLogger().info("Chargement des Companies...");
         List<Company> companies = new ArrayList<>();
 
         String query = "SELECT company_uuid, name, owner, cut, balance, city_uuid FROM company";
@@ -154,11 +157,12 @@ public class CompanyManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        OMCPlugin.getInstance().getLogger().info("Chargement terminé avec succes");
         return companies;
     }
 
     public static List<Shop> loadAllShops() {
-        OMCPlugin.getInstance().getLogger().info("chargements des shops...");
+        OMCPlugin.getInstance().getLogger().info("Chargement des Shops...");
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
         List<Shop> allShop = new ArrayList<>();
 
@@ -205,31 +209,33 @@ public class CompanyManager {
                 Block barrel = new Location(Bukkit.getWorld("world"), x, y, z).getBlock();
                 Block cashRegister = new Location(Bukkit.getWorld("world"), x, y + 1, z).getBlock();
 
-                if (barrel.getType() == Material.BARREL && cashRegister.getType().toString().contains("SIGN")) {
-                    Shop shop;
-                    if (company_uuid == null) {
-                        PlayerShopManager.getInstance().createShop(owner, barrel, cashRegister, shopUuid);
-                        shop = PlayerShopManager.getInstance().getShopByUUID(shopUuid);
-                    } else {
-                        Company company = getCompany(owner);
-                        if (cityUuid==null){
-                            company.createShop(owner, barrel, cashRegister, shopUuid);
+                if (barrel.getType() == Material.BARREL) {
+                    if (cashRegister.getType().toString().contains("SIGN") || cashRegister.getType().equals(Material.BARRIER)){
+                        Shop shop;
+                        if (company_uuid == null) {
+                            PlayerShopManager.getInstance().createShop(owner, barrel, cashRegister, shopUuid);
+                            shop = PlayerShopManager.getInstance().getShopByUUID(shopUuid);
                         } else {
-                            City city = CityManager.getCity(cityUuid);
-                            if (city != null) {
+                            Company company = getCompany(owner);
+                            if (cityUuid==null){
                                 company.createShop(owner, barrel, cashRegister, shopUuid);
+                            } else {
+                                City city = CityManager.getCity(cityUuid);
+                                if (city != null) {
+                                    company.createShop(owner, barrel, cashRegister, shopUuid);
+                                }
                             }
+                            shop = company.getShop(shopUuid);
                         }
-                        shop = company.getShop(shopUuid);
-                    }
-                    if (shop == null || shopItems.get(shopUuid)==null) {
-                        continue;
-                    }
-                    for (ShopItem shopItem : shopItems.get(shopUuid)) {
-                        shop.addItem(shopItem.getItem(), shopItem.getPricePerItem(), shopItem.getAmount());
-                    }
+                        if (shop == null || shopItems.get(shopUuid)==null) {
+                            continue;
+                        }
+                        for (ShopItem shopItem : shopItems.get(shopUuid)) {
+                            shop.addItem(shopItem.getItem(), shopItem.getPricePerItem(), shopItem.getAmount());
+                        }
 
-                    allShop.add(shop);
+                        allShop.add(shop);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -259,13 +265,14 @@ public class CompanyManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        OMCPlugin.getInstance().getLogger().info("Chargement terminé avec succes");
 
         return allShop;
     }
 
     @SneakyThrows
     public static void saveAllCompanies() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des commpanies...");
+        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Companies...");
 
         try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
 
@@ -324,11 +331,11 @@ public class CompanyManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des companies fini.");
+        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Companies finie.");
     }
 
     public static void saveAllShop() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des shops...");
+        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Shops...");
 
         try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
 
@@ -454,7 +461,7 @@ public class CompanyManager {
         } catch (SQLException e) {
            e.printStackTrace();
         }
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des shops fini.");
+        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Shops finie.");
     }
 
     /**

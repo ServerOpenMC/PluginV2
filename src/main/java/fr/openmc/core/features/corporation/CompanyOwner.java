@@ -8,7 +8,7 @@ import java.util.UUID;
 @Getter
 public class CompanyOwner {
 
-    private final City city; //TODO Team -> City
+    private final City city;
     private final UUID player;
 
     public CompanyOwner(City city) {

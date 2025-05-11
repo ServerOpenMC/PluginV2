@@ -35,14 +35,24 @@ public class ShopCommand {
         if (isInCompany) {
             ShopManageMenu shopManageMenu = new ShopManageMenu(player, companyManager.getCompany(player.getUniqueId()));
             shopManageMenu.open();
-            return;
         }
-        if (!playerShopManager.hasShop(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Usage: /shop <create | manage | sell | unsell | delete | search> <shop>"), Prefix.SHOP, MessageType.INFO, false);
-            return;
-        }
-        ShopMenu shopMenu = new ShopMenu(player, playerShopManager.getPlayerShop(player.getUniqueId()), 0);
-        shopMenu.open();
+    }
+
+    @Subcommand("help")
+    @Description("Explique comment marche un shop")
+    @Cooldown(30)
+    public void help(Player player) {
+        MessagesManager.sendMessage(player, Component.text("""
+            §6§lListe des commandes entreprise :
+            
+            §e▪ /shop create§7 - Crée un shop si vous regarder un tonneau
+            §e▪ /shop sell <prix>§7 - Permet de mettre en vente l'item dans votre main
+            §e▪ /shop unsell§7 - Permet de retirer de la vente l'item que vous tenez en main
+            §e▪ /shop delete§7 - Permet de supprimer votre shop en le regardant
+            §e▪ /shop manage§7 - Permet de gérer sont shop a distance seulement si vous n'êtes pas dans une entreprise
+            §e▪ /shop search§7 - Permet de rechercher des shops par leur nom ou le nom du joueur
+            """),
+                Prefix.ENTREPRISE, MessageType.INFO, false);
     }
 
     @Subcommand("create")

@@ -12,6 +12,7 @@ public class ShopOwner {
 
     /**
      * ShopOwner for a company or a player
+     * @param company to set a company as the owner
      */
 
     public ShopOwner(Company company) {
@@ -19,6 +20,10 @@ public class ShopOwner {
         this.player = null;
     }
 
+    /**
+     * ShopOwner for a company or a player
+     * @param owner to set a player as the owner
+     */
     public ShopOwner(UUID owner) {
         this.company = null;
         this.player = owner;

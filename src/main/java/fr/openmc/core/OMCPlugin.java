@@ -104,6 +104,9 @@ public class OMCPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        CompanyManager.saveAllCompanies();
+        CompanyManager.saveAllShop();
+
         HomesManager.getInstance().saveHomesData();
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
@@ -111,10 +114,6 @@ public class OMCPlugin extends JavaPlugin {
 
         MascotsManager.saveMascots(MascotsManager.mascots);
         CityManager.saveFreeClaims(CityManager.freeClaim);
-
-
-        CompanyManager.saveAllCompanies();
-        CompanyManager.saveAllShop();
 
         CubeListener.clearCube(CubeListener.currentLocation);
         if (dbManager != null) {

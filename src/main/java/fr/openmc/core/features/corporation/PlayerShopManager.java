@@ -42,30 +42,30 @@ public class PlayerShopManager {
         return true;
     }
 
-    public MethodState deleteShop(UUID player) {
-        Shop shop = getPlayerShop(player);
+    public MethodState deleteShop(UUID playerUUID) {
+        Shop shop = getPlayerShop(playerUUID);
         if (!shop.getItems().isEmpty()) {
             return MethodState.WARNING;
         }
         if (!shopBlocksManager.removeShop(shop)) {
             return MethodState.ESCAPE;
         }
-        playerShops.remove(player);
+        playerShops.remove(playerUUID);
         CompanyManager.shops.remove(shop);
-        economyManager.addBalance(player, 400);
+        economyManager.addBalance(playerUUID, 400);
         return MethodState.SUCCESS;
     }
 
-    public Shop getPlayerShop(UUID player) {
-        return playerShops.get(player);
+    public Shop getPlayerShop(UUID playerUUID) {
+        return playerShops.get(playerUUID);
     }
 
-    public Shop getShopByUUID(UUID uuid) {
-        return playerShops.values().stream().filter(shop -> shop.getUuid().equals(uuid)).findFirst().orElse(null);
+    public Shop getShopByUUID(UUID shop_uuid) {
+        return playerShops.values().stream().filter(shop -> shop.getUuid().equals(shop_uuid)).findFirst().orElse(null);
     }
 
-    public boolean hasShop(UUID player) {
-        return getPlayerShop(player) != null;
+    public boolean hasShop(UUID playerUUID) {
+        return getPlayerShop(playerUUID) != null;
     }
 
 }

@@ -8,6 +8,9 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.corporation.Company;
 import fr.openmc.core.features.corporation.CompanyManager;
 import fr.openmc.core.features.corporation.data.MerchantData;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,7 +32,11 @@ public class CompanyBaltopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Baltop des entreprises";
+        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_company_baltop_menu%");
+        } else {
+            return "Baltop des entreprises";
+        }
     }
 
     @Override
@@ -45,7 +53,7 @@ public class CompanyBaltopMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         List<Company> companies = CompanyManager.companies;
         companies.sort((company1, company2) -> Double.compare(company2.getTurnover(), company1.getTurnover()));
-        Map<Integer, ItemStack> content = fill(Material.GRAY_STAINED_GLASS_PANE);
+        Map<Integer, ItemStack> content = new HashMap<>();
         content.put(46, new ItemBuilder(this, Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§6§l" + "Baltop des entreprises");
             itemMeta.lore(List.of(
@@ -58,7 +66,7 @@ public class CompanyBaltopMenu extends Menu {
         content.put(10, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§61. §e" + companies.getFirst().getName());
             itemMeta.lore(List.of(
-                    Component.text("§7■ Chiffre d'affaires : §a" + companies.getFirst().getTurnover() + "€"),
+                    Component.text("§7■ Chiffre d'affaire : §a" + companies.getFirst().getTurnover() + "€"),
                             Component.text("§7■ Marchants : §a" + companies.getFirst().getMerchants().size())
             ));
         }));
@@ -96,7 +104,7 @@ public class CompanyBaltopMenu extends Menu {
         content.put(19, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§62. §e" + companies.get(1).getName());
             itemMeta.lore(List.of(
-                    Component.text("§7■ Chiffre d'affaires : §a" + companies.get(1).getTurnover() + "€"),
+                    Component.text("§7■ Chiffre d'affaire : §a" + companies.get(1).getTurnover() + "€"),
                     Component.text("§7■ Marchants : §a" + companies.get(1).getMerchants().size())
             ));
         }));
@@ -135,7 +143,7 @@ public class CompanyBaltopMenu extends Menu {
         content.put(28, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§63. §e"+ companies.get(2).getName());
             itemMeta.lore(List.of(
-                    Component.text("§7■ Chiffre d'affaires : §a" + companies.get(2).getTurnover() + "€"),
+                    Component.text("§7■ Chiffre d'affaire : §a" + companies.get(2).getTurnover() + "€"),
                     Component.text("§7■ Marchants : §a" + companies.get(2).getMerchants().size())
             ));
         }));

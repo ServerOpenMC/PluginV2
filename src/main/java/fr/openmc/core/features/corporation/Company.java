@@ -106,7 +106,7 @@ public class Company {
         loadPermission(playerUUID);
         Set<CorpPermission> playerPerms = permsCache.get(playerUUID);
 
-        if (playerPerms.contains(CorpPermission.OWNER) || playerPerms.contains(CorpPermission.CITYMEMBER)) return true;
+        if (playerPerms.contains(CorpPermission.OWNER)) return true;
 
         return playerPerms.contains(permission);
     }
@@ -254,7 +254,7 @@ public class Company {
                 newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
             }
 
-            shops.add(newShop);
+                shops.add(newShop);
             CompanyManager.shops.add(newShop);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
 
@@ -351,7 +351,7 @@ public class Company {
         removeMerchant(uuid);
         Player player = Bukkit.getPlayer(uuid);
         if (player != null) {
-            MessagesManager.sendMessage(player, Component.text("§cVous avez été renvoyé de l'entreprise' " + name), Prefix.ENTREPRISE, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("§cVous avez été renvoyé de l'entreprise §6§l" + name), Prefix.ENTREPRISE, MessageType.INFO, false);
         }
     }
 

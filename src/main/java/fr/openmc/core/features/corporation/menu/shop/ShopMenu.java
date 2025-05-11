@@ -1,16 +1,19 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
+import dev.lone.itemsadder.api.CustomStack;
 import dev.xernas.menulib.Menu;
 import dev.xernas.menulib.utils.InventorySize;
 import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -20,6 +23,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +47,11 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return shop.getName();
+        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+        } else {
+            return shop.getName();
+        }
     }
 
     @Override
@@ -127,23 +135,23 @@ public class ShopMenu extends Menu {
             catalogue = 35;
         }
 
-        Map<Integer, ItemStack> content = fill(Material.GRAY_STAINED_GLASS_PANE);
+        Map<Integer, ItemStack> content = new HashMap<>();
 
-        content.put(previousItemSlot, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> {
+        content.put(previousItemSlot, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§cItem précédent");
         }).setNextMenu(new ShopMenu(getOwner(), shop, onFirstItem() ? itemIndex : itemIndex - 1)));
 
-        content.put(nextItemSlot, new ItemBuilder(this, Material.LIME_CONCRETE, itemMeta -> {
+        content.put(nextItemSlot, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aItem suivant");
         }).setNextMenu(new ShopMenu(getOwner(), shop, onLastItem() ? itemIndex : itemIndex + 1)));
 
-        content.put(closeMenuSlot, new ItemBuilder(this, Material.BARRIER, itemMeta -> {
+        content.put(closeMenuSlot, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§7Fermer");
         }).setCloseButton());
 
         if (ownerItem)
             putOwnerItems(content);
-        content.put(purpleSetOne, new ItemBuilder(this, Material.PURPLE_STAINED_GLASS_PANE, itemMeta -> {
+        content.put(purpleSetOne, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§5Définir à 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -151,7 +159,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(redRemoveTen, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
+        content.put(redRemoveTen, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:10_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§cRetirer 10");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -164,7 +172,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(redRemoveOne, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
+        content.put(redRemoveOne, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§cRetirer 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -184,7 +192,7 @@ public class ShopMenu extends Menu {
                 itemMeta.setLore(lore);
             }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat")))));
 
-        content.put(greenAddOne, new ItemBuilder(this, Material.LIME_STAINED_GLASS_PANE, itemMeta -> {
+        content.put(greenAddOne, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -192,7 +200,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(greenAddTen, new ItemBuilder(this, Material.LIME_STAINED_GLASS_PANE, itemMeta -> {
+        content.put(greenAddTen, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:10_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 10");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -200,7 +208,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(purpleAddSixtyFour, new ItemBuilder(this, Material.PURPLE_STAINED_GLASS_PANE, itemMeta -> {
+        content.put(purpleAddSixtyFour, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§5Ajouter 64");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -209,7 +217,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(catalogue, new ItemBuilder(this, Material.CHEST, itemMeta -> {
+        content.put(catalogue, new ItemBuilder(this, CustomStack.getInstance("omc_company:company_box").getItemStack(), itemMeta -> {
             itemMeta.setDisplayName("§7Catalogue");
         }).setNextMenu(new ShopCatalogueMenu(getOwner(), shop, itemIndex)));
 
@@ -218,7 +226,7 @@ public class ShopMenu extends Menu {
 
     private void putOwnerItems(Map<Integer, ItemStack> content) {
 
-        content.put(0, new ItemBuilder(this, Material.RED_DYE, itemMeta -> {
+        content.put(0, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_bin_red").getItemStack(), itemMeta -> {
             itemMeta.setDisplayName("§c§lSupprimer le shop");
         }).setNextMenu(new ConfirmMenu(getOwner(), this::accept, this::refuse, List.of(Component.text("§aSupprimer")), List.of(Component.text("§cAnnuler la suppression")))));
 
@@ -245,7 +253,7 @@ public class ShopMenu extends Menu {
             if (shop.getOwner().isCompany()) {
                 if (shop.getOwner().getCompany().getOwner().isCity()) {
                     itemMeta.setLore(List.of(
-                            "§7■ Car vous faites partie de la team possédant l'entreprise"
+                            "§7■ Car vous faites partie de l'entreprise"
                     ));
                 }
             }
@@ -268,7 +276,8 @@ public class ShopMenu extends Menu {
                 );
                 meta.addPage(
                         "3. Ouvrez une fois le shop pour renouveler son stock\n\n" +
-                                "Et voilà comment utiliser votre shops"
+                                "Et voilà comment utiliser votre shops\n\n" +
+                                "§e▪ Pour plus d'info : /shop help§r"
                 );
 
                 book.setItemMeta(meta);
@@ -322,7 +331,7 @@ public class ShopMenu extends Menu {
             getOwner().closeInventory();
             return;
         }
-        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez bien acheté " + amountToBuy + " " + ShopItem.getItemName(getCurrentItem().getItem()) + " pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + "€"), Prefix.SHOP, MessageType.INFO, false);
+        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez bien acheté " + amountToBuy + " " + ShopItem.getItemName(getCurrentItem().getItem()) + " pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.INFO, false);
         getOwner().closeInventory();
     }
 
@@ -346,7 +355,7 @@ public class ShopMenu extends Menu {
                 MessagesManager.sendMessage(getOwner(), Component.text("§cCaisse introuvable (appelez un admin)"), Prefix.SHOP, MessageType.INFO, false);
             }
             MessagesManager.sendMessage(getOwner(), Component.text("§a" + shop.getName() + " a été supprimé !"), Prefix.SHOP, MessageType.INFO, false);
-            MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +75€ de remboursés sur la banque de l'entreprise"), Prefix.SHOP, MessageType.INFO, false);
+            MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +75" + EconomyManager.getEconomyIcon() + " de remboursés sur la banque de l'entreprise"), Prefix.SHOP, MessageType.INFO, false);
         }
         else {
             MethodState methodState = playerShopManager.deleteShop(getOwner().getUniqueId());
@@ -359,7 +368,7 @@ public class ShopMenu extends Menu {
                 return;
             }
             MessagesManager.sendMessage(getOwner(), Component.text("§aVotre shop a bien été supprimé !"), Prefix.SHOP, MessageType.INFO, false);
-            MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +400€ de remboursés sur votre compte personnel"), Prefix.SHOP, MessageType.INFO, false);
+            MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +400" + EconomyManager.getEconomyIcon() + " de remboursés sur votre compte personnel"), Prefix.SHOP, MessageType.INFO, false);
         }
         getOwner().closeInventory();
     }

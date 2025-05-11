@@ -1,9 +1,10 @@
 package fr.openmc.core.features.corporation.listener;
 
+import dev.lone.itemsadder.api.CustomFurniture;
+import dev.lone.itemsadder.api.CustomStack;
+import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
+import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -15,8 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -59,10 +58,42 @@ public class ShopListener implements Listener {
     }
 
     @EventHandler
+    public void onFurnitureBreak(FurnitureBreakEvent event){
+        CustomFurniture furniture = event.getFurniture();
+
+        if (furniture!=null && furniture.getNamespacedID().equals("omc_company:caisse") && !event.getPlayer().isOp()){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onFurnitureInteract(FurnitureInteractEvent e){
+        if (e.getFurniture() == null) {
+            return;
+        }
+
+        if (e.getFurniture().getNamespacedID().equals("omc_company:caisse")){
+
+            double x = e.getFurniture().getEntity().getLocation().getBlockX();
+            double y = e.getFurniture().getEntity().getLocation().getBlockY();
+            double z = e.getFurniture().getEntity().getLocation().getBlockZ();
+
+            Shop shop = shopBlocksManager.getShop(new Location(e.getFurniture().getEntity().getWorld(), x, y, z));
+            if (shop == null) {
+                return;
+            }
+            e.setCancelled(true);
+            ShopMenu menu = new ShopMenu(e.getPlayer(), shop, 0);
+            menu.open();
+        }
+    }
+
+    @EventHandler
     public void onShopClick(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) {
             return;
         }
+
         if (event.getClickedBlock().getState() instanceof Sign) {
             if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
                 return;

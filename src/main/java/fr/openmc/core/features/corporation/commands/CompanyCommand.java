@@ -1,6 +1,5 @@
 package fr.openmc.core.features.corporation.commands;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corporation.*;
@@ -8,6 +7,7 @@ import fr.openmc.core.features.corporation.menu.company.CompanyBaltopMenu;
 import fr.openmc.core.features.corporation.menu.company.CompanyMenu;
 import fr.openmc.core.features.corporation.menu.company.CompanySearchMenu;
 import fr.openmc.core.features.corporation.MethodState;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -19,7 +19,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.UUID;
 
-@Command({"company", "entreprise", "enterprise"})
+@Command({"company", "companies",  "entreprise", "enterprises"})
 @Description("Gestion des entreprises")
 @CommandPermission("ayw.command.company")
 public class CompanyCommand {
@@ -37,16 +37,31 @@ public class CompanyCommand {
         menu.open();
     }
 
-    @Subcommand("usage")
-    @Description("Afficher l'utilisation des commandes d'une entreprise")
-    public void usage(Player player) {
-        MessagesManager.sendMessage(player, Component.text("Usage : /company <help | baltop | balance | create | teamCreate | menu | search | apply | deny | accept | withdraw | deposit | setcut | leave | fire | owner | liquidate | perms>"), Prefix.ENTREPRISE, MessageType.INFO, false);
-    }
-
     @Subcommand("help")
-    @Description("explique comment marche une entreprise")
+    @Description("Explique comment marche une entreprise")
+    @Cooldown(30)
     public void help(Player player) {
-        //TODO mettre un message pour expliquer
+        MessagesManager.sendMessage(player, Component.text("""
+            §6§lListe des commandes entreprise :
+            
+            §e▪ /company baltop§7 - Affiche les meilleures entreprises
+            §e▪ /company balance§7 - Montre l'argent de votre entreprise
+            §e▪ /company create§7 - Crée une nouvelle entreprise
+            §e▪ /company menu§7 - Ouvre le menu de gestion de votre entreprise
+            §e▪ /company search§7 - Recherche une entreprise
+            §e▪ /company apply§7 - Postule pour une entreprise
+            §e▪ /company deny§7 - Refuse une candidature
+            §e▪ /company accept§7 - Accepte une candidature
+            §e▪ /company withdraw§7 - Retire de l'argent de l'entreprise
+            §e▪ /company deposit§7 - Dépose de l'argent dans l'entreprise
+            §e▪ /company setcut§7 - Définit la part de revenu pour l'entreprise
+            §e▪ /company leave§7 - Quitte l'entreprise
+            §e▪ /company fire§7 - Vire un employé
+            §e▪ /company owner§7 - Transfère la propriété de l'entreprise
+            §e▪ /company liquidate§7 - Supprime l'entreprise
+            §e▪ /company perms§7 - Gère les permissions des employés
+            """),
+                Prefix.ENTREPRISE, MessageType.INFO, false);
     }
 
     @Subcommand("apply")
@@ -88,7 +103,7 @@ public class CompanyCommand {
         Company company = manager.getCompany(player.getUniqueId());
         manager.acceptApplication(target.getUniqueId(), company);
         MessagesManager.sendMessage(player, Component.text("§aVous avez accepté la candidature de " + target.getName() + " !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
-        MessagesManager.sendMessage(target, Component.text("§aVotre candidature pour l'entreprise <<" + company.getName() + ">> a été acceptée !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("§aVotre candidature pour l'entreprise §6§l" + company.getName() + "§r a été acceptée !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("deny")
@@ -109,7 +124,7 @@ public class CompanyCommand {
         Company company = manager.getCompany(player.getUniqueId());
         manager.denyApplication(target.getUniqueId());
         MessagesManager.sendMessage(player, Component.text("§aVous avez refusé la candidature de " + target.getName() + " !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
-        MessagesManager.sendMessage(target, Component.text("§cVotre candidature pour la entreprise <<" + company.getName() + ">> a été refusée !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("§cVotre candidature pour la entreprise §6§l" + company.getName() + "§r a été refusée !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("search")
@@ -194,9 +209,10 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        MessagesManager.sendMessage(player, Component.text("§aSolde de l'entreprise : " + manager.getCompany(player.getUniqueId()).getBalance() + "€"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§aSolde de l'entreprise : " + manager.getCompany(player.getUniqueId()).getBalance() + EconomyManager.getEconomyIcon()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
+    // définit la part de l'entreprise sur tous ses shops
     @Subcommand("setcut")
     @Description("Définir la part de l'entreprise lors d'une vente")
     public void setCut(Player player, @Named("cut") double cut) {
@@ -224,6 +240,8 @@ public class CompanyCommand {
         manager.createCompany(name, new CompanyOwner(player.getUniqueId()), false, null);
         MessagesManager.sendMessage(player, Component.text("§aL'entreprise " + name + " a été créée avec succès !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
+
+    // laissez en commentaire, le système d'entreprise de ville doit être refait
 
     // les membres de la ville sont propriétaires
 //    @Subcommand("cityCreate")
@@ -333,13 +351,12 @@ public class CompanyCommand {
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.valueOf(perms));
-        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.valueOf(perms).name() + " ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
-        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission " + CorpPermission.valueOf(perms).name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, Component.text("Permission §6§l" + CorpPermission.valueOf(perms).name() + "§r ajoutée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez reçu la permission §6§l" + CorpPermission.valueOf(perms).name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
 
     //remove permissions
-    // only the owner or the owners can remove that permission
     @Subcommand({"permission remove", "perms remove"})
     @Description("Retire les permissions aux joueurs")
     @AutoComplete("@company_perms")
@@ -362,8 +379,8 @@ public class CompanyCommand {
             return;
         }
         company.addPermission(target.getUniqueId(), CorpPermission.valueOf(perms));
-        MessagesManager.sendMessage(sender, Component.text("Permission " + CorpPermission.valueOf(perms).name() + " retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
-        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission " + CorpPermission.valueOf(perms).name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, Component.text("Permission §6§l" + CorpPermission.valueOf(perms).name() + "§r retirée au joueur."), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target, Component.text("Vous avez perdu la permission §6§l" + CorpPermission.valueOf(perms).name()), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     private boolean check(Player player, String name, boolean teamCreate) {
