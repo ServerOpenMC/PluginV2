@@ -90,9 +90,11 @@ public class OMCPlugin extends JavaPlugin {
             new LeaderboardManager(this);
         new AdminShopManager(this);
 
-        new ShopBlocksManager(this);
-        new PlayerShopManager();
-        new CompanyManager();// laisser apres Economy Manager
+        if (!OMCPlugin.isUnitTestVersion()){
+            new ShopBlocksManager(this);
+            new PlayerShopManager();
+            new CompanyManager();// laisser apres Economy Manager
+        }
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
         contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
