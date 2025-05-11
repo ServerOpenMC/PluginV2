@@ -565,7 +565,7 @@ public class CityCommands {
                     @Override
                     public void run() {
                         player.teleport(warp);
-                        MessagesManager.sendMessage(player, Component.text("§aVous avez été envoyé au spawn"), Prefix.OPENMC, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(player, Component.text("Vous avez été envoyé au Warp §fde votre §dVille"), Prefix.CITY, MessageType.SUCCESS, true);
                     }
                 }.runTaskLater(OMCPlugin.getInstance(), 10);
             }
