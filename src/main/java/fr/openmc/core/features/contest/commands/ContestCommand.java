@@ -79,8 +79,7 @@ public class ContestCommand {
         int phase = contestManager.data.getPhase();
         if (phase == 1) {
             if (contestManager.getColorContestList().containsAll(Arrays.asList(color1, color2))) {
-                contestManager.deleteTableContest(ContestManager.TABLE_CONTEST);
-                contestManager.deleteTableContest(ContestManager.TABLE_CONTEST_CAMPS);
+                contestManager.clearDB();
                 contestManager.insertCustomContest(camp1, color1, camp2, color2);
 
                 MessagesManager.sendMessage(player, Component.text("§aLe Contest : " + camp1 + " VS " + camp2 + " a bien été sauvegardé\nMerci d'attendre que les données en cache s'actualise."), Prefix.STAFF, MessageType.SUCCESS, true);

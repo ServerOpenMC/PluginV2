@@ -51,9 +51,6 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getRunCommand
 
 public class ContestManager {
 
-    public static final String TABLE_CONTEST = "contest";
-    public static final String TABLE_CONTEST_CAMPS = "contest_camps";
-
     @Getter static ContestManager instance;
 
     public final File contestFile;
@@ -61,6 +58,7 @@ public class ContestManager {
     private final OMCPlugin plugin;
 
     private static Dao<Contest, String> contestDao;
+    private static Dao<ContestPlayer, String> playerDao;
 
     @Setter private ContestPlayerManager contestPlayerManager;
 
@@ -111,12 +109,9 @@ public class ContestManager {
         TableUtils.createTableIfNotExists(connectionSource, Contest.class);
         contestDao = DaoManager.createDao(connectionSource, Contest.class);
         contestDao.create(new Contest("Mayonnaise", "Ketchup", "YELLOW", "RED", 1, "ven.", 0, 0));
-    }
 
-    public static void initDb(Connection conn) throws SQLException {
-
-        // Table camps
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONTEST_CAMPS + " (minecraft_uuid VARCHAR(36) UNIQUE, name VARCHAR(36), camps int, point_dep int)").executeUpdate();
+        TableUtils.createTableIfNotExists(connectionSource, ContestPlayer.class);
+        playerDao = DaoManager.createDao(connectionSource, ContestPlayer.class);
     }
 
     private void loadContestConfig() {
@@ -139,38 +134,16 @@ public class ContestManager {
 
     // CONTEST DATA
     public void initContestData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT camp1, camp2, color1, color2, phase, startdate, points1, points2 FROM contest WHERE 1")) {
-            ResultSet result = states.executeQuery();
-            if (result.next()) {
-                String camp1 = result.getString("camp1");
-                String camp2 = result.getString("camp2");
-                String color1 = result.getString("color1");
-                String color2 = result.getString("color2");
-                int phase = result.getInt("phase");
-                String startdate = result.getString("startdate");
-                int point1 = result.getInt("points1");
-                int point2 = result.getInt("points2");
-
-                data = new Contest(camp1, camp2, color1, color2, phase, startdate, point1, point2);
-            }
+        try {
+            data = contestDao.queryForFirst();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void saveContestData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("UPDATE contest SET phase = ?, camp1 = ?, color1 = ?, camp2 = ?, color2 = ?, startdate = ?, points1 = ?, points2 = ?")) {
-            plugin.getLogger().info("Sauvegarde des données du Contest...");
-            states.setInt(1, data.getPhase());
-            states.setString(2, data.getCamp1());
-            states.setString(3, data.getColor1());
-            states.setString(4, data.getCamp2());
-            states.setString(5, data.getColor2());
-            states.setString(6, data.getStartdate());
-            states.setInt(7, data.getPoint1());
-            states.setInt(8, data.getPoint2());
-
-            states.executeUpdate();
+        try {
+            contestDao.update(data);
             plugin.getLogger().info("Sauvegarde des données du Contest réussi.");
         } catch (SQLException e) {
             plugin.getLogger().severe("Echec de la sauvegarde des données du Contest.");
@@ -180,17 +153,10 @@ public class ContestManager {
 
     // CONTEST PLAYER DATA
     public void loadContestPlayerData() {
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT minecraft_uuid, name, point_dep, camps FROM " + TABLE_CONTEST_CAMPS)) {
-            ResultSet result = states.executeQuery();
-            while (result.next()) {
-                String uuid = result.getString("minecraft_uuid");
-                String name = result.getString("name");
-                int points = result.getInt("point_dep");
-                int camp = result.getInt("camps");
-                String color = data.get("color" + camp);
-                NamedTextColor campColor = ColorUtils.getNamedTextColor(color);
-
-                dataPlayer.put(uuid, new ContestPlayer(name, points, camp, campColor));
+        try {
+            List<ContestPlayer> players = playerDao.queryForAll();
+            for (ContestPlayer player : players) {
+                dataPlayer.put(player.getName(), player);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -198,39 +164,23 @@ public class ContestManager {
     }
 
     public void saveContestPlayerData() {
-        String sql;
-        
-        if (OMCPlugin.isUnitTestVersion()) {
-            sql = "MERGE INTO " + TABLE_CONTEST_CAMPS +
-                    "KEY(minecraft_uuid) " +
-                    "VALUES (?, ?, ?, ?)";
-        } else {
-            sql = "INSERT INTO " + TABLE_CONTEST_CAMPS + " (minecraft_uuid, name, camps, point_dep) " +
-                    "VALUES (?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE " +
-                    "name = VALUES(name), camps = VALUES(camps), point_dep = VALUES(point_dep)";
-        }
-        
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql)) {
             plugin.getLogger().info("Sauvegarde des données des Joueurs du Contest...");
-            dataPlayer.forEach((uuid, playerData) -> {
+            dataPlayer.forEach((player, data) -> {
                 try {
-                    statement.setString(1, uuid);
-                    statement.setString(2, playerData.getName());
-                    statement.setInt(3, playerData.getCamp());
-                    statement.setInt(4, playerData.getPoints());
-
-                    statement.addBatch();
+                    playerDao.createOrUpdate(data);
                 } catch (SQLException e) {
+                    plugin.getLogger().severe("Echec de la sauvegarde des données des Joueurs du Contest.");
                     e.printStackTrace();
                 }
             });
-
-            statement.executeBatch();
-
             plugin.getLogger().info("Sauvegarde des données des Joueurs du Contest réussi.");
+    }
+
+    public void clearDB() {
+        try {
+            TableUtils.clearTable(DatabaseManager.getConnectionSource(), Contest.class);
+            TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
         } catch (SQLException e) {
-            plugin.getLogger().severe("Echec de la sauvegarde des données des Joueurs du Contest.");
             e.printStackTrace();
         }
     }
@@ -538,7 +488,11 @@ public class ContestManager {
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                     addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
-                    deleteTableContest(ContestManager.TABLE_CONTEST_CAMPS);
+                    try {
+                        TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                     selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
                     dataPlayer=new HashMap<>(); // on supprime les données précédentes du joueurs
                     MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
@@ -670,15 +624,6 @@ public class ContestManager {
         Map<String, Object> selectedContest = leastSelectedContests.get(random.nextInt(leastSelectedContests.size()));
 
         data = new Contest((String) selectedContest.get("camp1"), (String) selectedContest.get("camp2"), (String) selectedContest.get("color1"), (String) selectedContest.get("color2"), 1, "ven.", 0, 0);
-    }
-
-    public void deleteTableContest(String table) {
-        String sql = "DELETE FROM " + table;
-        try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement(sql)) {
-            states.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public List<String> getColorContestList() {

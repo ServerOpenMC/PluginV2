@@ -24,6 +24,7 @@ import java.sql.SQLException;
 
 public class DatabaseManager {
     private static Connection connection;
+    private static ConnectionSource connectionSource;
 
     public DatabaseManager() {
         // old database connection setup
@@ -31,7 +32,6 @@ public class DatabaseManager {
         try {
             // Déclencher au début du plugin pour créer les tables nécessaires
             CityManager.init_db(connection);
-            ContestManager.initDb(connection);
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
             HomesManager.init_db(connection);
@@ -56,11 +56,12 @@ public class DatabaseManager {
             String databaseUrl = config.getString("database.url");
             String username = config.getString("database.username");
             String password = config.getString("database.password");
-            ConnectionSource connectionSource = new JdbcConnectionSource(databaseUrl, username, password);
+            connectionSource = new JdbcConnectionSource(databaseUrl, username, password);
 
             BankManager.init_db(connectionSource);
             TransactionsManager.init_db(connectionSource);
             AnalyticsManager.init_db(connectionSource);
+            ContestManager.init_db(connectionSource);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
@@ -120,5 +121,9 @@ public class DatabaseManager {
         }
         connect();
         return connection;
+    }
+
+    public static ConnectionSource getConnectionSource() {
+        return connectionSource;
     }
 }
