@@ -295,21 +295,6 @@ public class MascotsListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onBlockPlace(CustomBlockPlaceEvent event) {
-        Block block = event.getBlock();
-        Location loc = block.getLocation();
-
-        Collection<Entity> nearbyEntities = loc.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5);
-
-        for (Entity entity : nearbyEntities) {
-            if (MascotUtils.isMascot(entity)) {
-                event.setCancelled(true);
-                return;
-            }
-        }
-    }
-
     @SneakyThrows
     @EventHandler
     void onInteractWithMascots(PlayerInteractEntityEvent e) {
