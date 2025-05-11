@@ -39,11 +39,16 @@ public class CompanyManager {
     @Getter public static List<Company> companies = new ArrayList<>();
     @Getter public static List<Shop> shops = new ArrayList<>();
 
+    public static NamespacedKey SUPPLIER_KEY;
+
     // File d'attente des candidatures en attente, avec une limite de 100
     private final Queue<UUID, Company> pendingApplications = new Queue<>(100);
 
     public CompanyManager () {
         instance = this;
+
+        /* KEY */
+        SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms", ((args, sender, command) -> {
             return Arrays.stream(CorpPermission.values())

@@ -222,7 +222,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(catalogue, new ItemBuilder(this, CustomStack.getInstance("omc_company:company_box").getItemStack(), itemMeta -> {
+        content.put(catalogue, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:company_box").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§7Catalogue");
         }).setNextMenu(new ShopCatalogueMenu(getOwner(), shop, itemIndex)));
 
@@ -231,7 +231,7 @@ public class ShopMenu extends Menu {
 
     private void putOwnerItems(Map<Integer, ItemStack> content) {
 
-        content.put(0, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_bin_red").getItemStack(), itemMeta -> {
+        content.put(0, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§c§lSupprimer le shop");
         }).setNextMenu(new ConfirmMenu(getOwner(), this::accept, this::refuse, List.of(Component.text("§aSupprimer")), List.of(Component.text("§cAnnuler la suppression")))));
 

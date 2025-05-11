@@ -1,12 +1,9 @@
 package fr.openmc.core.features.corporation.shops;
 
-import dev.lone.itemsadder.api.CustomBlock;
-import dev.lone.itemsadder.api.CustomFurniture;
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.MethodState;
+import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
@@ -89,9 +86,9 @@ public class Shop {
                 }
 
                 PersistentDataContainer dataContainer = itemMeta.getPersistentDataContainer();
-                if (dataContainer.has(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING)) {
+                if (dataContainer.has(CompanyManager.SUPPLIER_KEY, PersistentDataType.STRING)) {
 
-                    String supplierUUID = dataContainer.get(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING);
+                    String supplierUUID = dataContainer.get(CompanyManager.SUPPLIER_KEY, PersistentDataType.STRING);
                     if (supplierUUID == null) {
                         continue;
                     }
@@ -282,20 +279,9 @@ public class Shop {
 
         if (targetBlock == null) return null;
 
-        CustomStack customFurniture = CustomFurniture.getInstance("omc_company:caisse");
-
-        if (customFurniture != null && targetBlock.getType() != Material.BARREL && targetBlock.getType() != Material.OAK_SIGN) {
-            CustomStack placedBlock = CustomFurniture.byAlreadySpawned(targetBlock);
-            if (placedBlock == null || !placedBlock.getNamespacedID().equals("omc_company:caisse")) return null;
-        }
-
-        if (targetBlock.getType() != Material.BARREL && targetBlock.getType() != Material.OAK_SIGN) return null;
+        if (targetBlock.getType() != Material.BARREL && targetBlock.getType() != Material.OAK_SIGN && targetBlock.getType() != Material.BARRIER) return null;
         if (onlyCash) {
-            if (targetBlock.getType() != Material.OAK_SIGN && customFurniture == null) return null;
-            if (customFurniture != null) {
-                CustomBlock placedBlock = CustomBlock.byAlreadyPlaced(targetBlock);
-                if (placedBlock == null) return null;
-            }
+            if (targetBlock.getType() != Material.OAK_SIGN && targetBlock.getType() != Material.BARRIER) return null;
         }
         Shop shop = shopBlocksManager.getShop(targetBlock.getLocation());
         if (shop == null) return null;

@@ -45,14 +45,9 @@ public class OMCPlugin extends JavaPlugin {
     @Getter static TranslationManager translationManager;
     private DatabaseManager dbManager;
 
-    public static NamespacedKey SUPPLIER_KEY;
-
     @Override
     public void onEnable() {
         instance = this;
-
-        /* KEY */
-        SUPPLIER_KEY = new NamespacedKey(this, "supplier");
 
         /* CONFIG */
         saveDefaultConfig();

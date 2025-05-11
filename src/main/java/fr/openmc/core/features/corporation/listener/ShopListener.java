@@ -1,6 +1,5 @@
 package fr.openmc.core.features.corporation.listener;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
@@ -174,7 +173,7 @@ public class ShopListener implements Listener {
     private void setSupplierKey(ItemStack item, String uuid) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            meta.getPersistentDataContainer().set(OMCPlugin.SUPPLIER_KEY, PersistentDataType.STRING, uuid);
+            meta.getPersistentDataContainer().set(CompanyManager.SUPPLIER_KEY, PersistentDataType.STRING, uuid);
             item.setItemMeta(meta);
         }
     }
@@ -182,8 +181,8 @@ public class ShopListener implements Listener {
     // Retire la clé SUPPLIER_KEY d'un item
     private void removeSupplierKey(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        if (meta != null && meta.getPersistentDataContainer().has(OMCPlugin.SUPPLIER_KEY)) {
-            meta.getPersistentDataContainer().remove(OMCPlugin.SUPPLIER_KEY);
+        if (meta != null && meta.getPersistentDataContainer().has(CompanyManager.SUPPLIER_KEY)) {
+            meta.getPersistentDataContainer().remove(CompanyManager.SUPPLIER_KEY);
             item.setItemMeta(meta);
         }
     }

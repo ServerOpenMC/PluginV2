@@ -3,6 +3,7 @@ package fr.openmc.core.features.corporation.manager;
 import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.corporation.ItemsAdderIntegration;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.world.WorldUtils;
@@ -57,20 +58,13 @@ public class ShopBlocksManager {
         Block cashBlock = multiblock.getCashBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
 
-        if (CustomItemRegistry.hasItemsAdder()){
-            CustomStack customFurniture = CustomFurniture.getInstance("omc_company:caisse");
-
-            if (cashBlock.getType()!=Material.AIR || customFurniture == null){
+        if (CustomItemRegistry.hasItemsAdder()) {
+            boolean placed = ItemsAdderIntegration.placeShopFurniture(cashBlock);
+            if (!placed) {
                 cashBlock.setType(Material.OAK_SIGN);
-            } else {
-                CustomFurniture.spawn("omc_company:caisse", cashBlock);
             }
-
         } else {
-
-            if (cashBlock.getType()!=Material.AIR){
-                cashBlock.setType(Material.OAK_SIGN);
-            }
+            cashBlock.setType(Material.OAK_SIGN);
         }
 
         BlockData cashData = cashBlock.getBlockData();
@@ -89,29 +83,16 @@ public class ShopBlocksManager {
         Block stockBlock = multiblock.getStockBlock().getBlock();
 
         if (CustomItemRegistry.hasItemsAdder()){
-            CustomStack customBlock = CustomFurniture.getInstance("omc_company:caisse");
 
-            if (cashBlock.getType() != Material.OAK_SIGN && customBlock != null) {
-                CustomStack placedBlock = CustomFurniture.byAlreadySpawned(cashBlock);
-                if (placedBlock == null){
-                    System.out.println("test0");
-                    return false;
-                }
-                if (!placedBlock.getNamespacedID().equals("omc_company:caisse")){
-                    return false;
-                }
+            if (!ItemsAdderIntegration.hasFurniture(cashBlock)) {
+                return false;
             }
-
-            if (customBlock == null){
-                if (cashBlock.getType() != Material.OAK_SIGN || stockBlock.getType() != Material.BARREL  || cashBlock.getType() != Material.BARRIER) {
-                    return false;
-                }
+            if (!ItemsAdderIntegration.removeShopFurniture(cashBlock)){
+                return false;
             }
-
-            if (customBlock!=null) CustomFurniture.remove(CustomFurniture.byAlreadySpawned(cashBlock).getEntity(), false);
 
         } else {
-            if (cashBlock.getType() != Material.OAK_SIGN || stockBlock.getType() != Material.BARREL || cashBlock.getType() != Material.BARRIER) {
+            if (cashBlock.getType() != Material.OAK_SIGN && cashBlock.getType() != Material.BARRIER || stockBlock.getType() != Material.BARREL) {
                 return false;
             }
         }
