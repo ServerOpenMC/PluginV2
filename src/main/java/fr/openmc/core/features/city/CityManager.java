@@ -10,11 +10,9 @@ import fr.openmc.core.features.city.listeners.ChestMenuListener;
 import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
-import fr.openmc.core.features.city.mascots.CustomItemsMascotListener;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.utils.chronometer.Chronometer;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -77,10 +75,6 @@ public class CityManager implements Listener {
                 new MascotsListener(),
                 new CityChatListener()
         );
-
-        if (CustomItemRegistry.hasItemsAdder()){
-            OMCPlugin.registerEvents(new CustomItemsMascotListener());
-        }
 
         freeClaim = getAllFreeClaims();
     }
