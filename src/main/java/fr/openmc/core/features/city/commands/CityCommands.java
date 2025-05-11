@@ -8,6 +8,7 @@ import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.menu.*;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
+import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -379,6 +380,20 @@ public class CityCommands {
 
         new CityTypeMenu(player, name).open();
     }
+    
+    @Subcommand("list")
+    @CommandPermission("omc.commands.city.list")
+    public void list(Player player) {
+        List<City> cities = new ArrayList<>(CityManager.getCities());
+        if (cities.isEmpty()) {
+            MessagesManager.sendMessage(player, Component.text("Aucune ville n'existe"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        CityListMenu menu = new CityListMenu(player, cities);
+        menu.open();
+    }
+    
     @Subcommand("change")
     @CommandPermission("omc.commands.city.change")
     public void change(Player sender) {

@@ -173,9 +173,11 @@ public class ScoreboardManager implements Listener {
 
         objective.getScore("  ").setScore(7);
 
-        City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
-        String chunkCityName = (chunkCity != null) ? chunkCity.getName() : "Nature";
-        objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(6);
+        if (player.getWorld().getName().equalsIgnoreCase("world")) {
+            City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
+            String chunkCityName = (chunkCity != null) ? chunkCity.getName() : "Nature";
+            objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(6);
+        }
 
         ContestData data = ContestManager.getInstance().data;
         int phase = data.getPhase();

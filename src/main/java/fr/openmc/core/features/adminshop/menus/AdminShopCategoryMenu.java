@@ -1,11 +1,10 @@
 package fr.openmc.core.features.adminshop.menus;
 
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
-import fr.openmc.core.features.adminshop.ShopCategory;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;

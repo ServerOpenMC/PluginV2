@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes.command;
 
-import dev.xernas.menulib.Menu;
+import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomesManager;

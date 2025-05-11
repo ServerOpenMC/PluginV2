@@ -1,17 +1,14 @@
 package fr.openmc.core.features.quests.menus;
 
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+
+import java.util.*;
 
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
@@ -35,6 +32,7 @@ public class QuestsMenu extends Menu {
     private final int totalPages;
     private final QuestsManager questsManager;
     private Player target;
+    private final Map<Integer, Integer> slotToQuestIndex = new HashMap<>();
 
     public QuestsMenu(Player player, int currentPage) {
         super(player);
@@ -82,12 +80,29 @@ public class QuestsMenu extends Menu {
         } else if (slot == 26 && this.currentPage < this.totalPages - 1) {
             ++this.currentPage;
             this.refresh();
-        }
+        } else if (slot >= 9 && slot <= 17) {
+            Integer questIndex = this.slotToQuestIndex.get(slot);
+            if (questIndex != null && questIndex < questsManager.getAllQuests().size()) {
+                Quest quest = questsManager.getAllQuests().get(questIndex);
+                UUID playerUUID = this.target.getUniqueId();
 
+                Set<Integer> pendingQuestIndexes = quest.getPendingRewardTiers(playerUUID);
+
+                if (!pendingQuestIndexes.isEmpty()) {
+                    int tierIndex = pendingQuestIndexes.iterator().next();
+                    boolean allClaimed = quest.claimPendingRewards(target, tierIndex);
+
+                    if (allClaimed || !quest.getPendingRewardTiers(playerUUID).contains(tierIndex))
+                        this.refresh();
+                }
+            }
+        }
     }
 
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> content = new HashMap<>();
+        slotToQuestIndex.clear();
+
         int startIndex = this.currentPage * 9;
         int endIndex = Math.min(startIndex + 9, this.questsManager.getAllQuests().size());
         int slotIndex = 9;
@@ -96,6 +111,7 @@ public class QuestsMenu extends Menu {
             Quest quest = this.questsManager.getAllQuests().get(i);
             ItemStack item = this.createQuestItem(quest);
             content.put(slotIndex, item);
+            this.slotToQuestIndex.put(slotIndex, i);
             ++slotIndex;
         }
 
@@ -144,6 +160,10 @@ public class QuestsMenu extends Menu {
 
         int target = quest.isFullyCompleted(playerUUID) ? (quest.getTiers().get(tiersTotal - 1)).target() : (currentTier != null ? currentTier.target() : 0);
         boolean isCompleted = quest.isFullyCompleted(playerUUID);
+
+        Set<Integer> pendingQuestIndexes = quest.getPendingRewardTiers(playerUUID);
+        boolean hasPendingRewards = quest.hasPendingRewards(playerUUID);
+
         if (isCompleted) {
             meta.addEnchant(Enchantment.SHARPNESS, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -152,12 +172,41 @@ public class QuestsMenu extends Menu {
         Component bar = Component.text("§8§m                                §r");
         int var10000 = quest.isFullyCompleted(playerUUID) ? currentTierIndex : currentTierIndex + 1;
         String tierDisplay = "§7[§f" + var10000 + "§8/§f" + tiersTotal + "§7]";
-        String nameIcon = isCompleted ? "§2✓" : "§6➤";
+
+        String nameIcon;
+        if (hasPendingRewards)
+            nameIcon = "§d⚑";
+        else if (isCompleted)
+            nameIcon = "§a✓";
+        else
+            nameIcon = "§6➤";
+
         meta.displayName(Component.text(nameIcon + " §e" + quest.getName() + " " + tierDisplay));
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
         lore.add(Component.text("§7" + quest.getDescription(playerUUID)));
         lore.add(bar);
+
+        if (hasPendingRewards) {
+            lore.add(Component.text("§d✶ §dRécompenses en attente:"));
+            for (Integer tierIndex : pendingQuestIndexes) {
+                if (tierIndex < quest.getTiers().size()) {
+                    QuestTier tier = quest.getTiers().get(tierIndex);
+                    lore.add(Component.text("  §5➤ §dPalier " + (tierIndex + 1) + ":"));
+
+                    for (QuestReward reward : tier.getRewards()) {
+                        if (reward instanceof QuestItemReward itemReward) {
+                            ItemStack rewardItem = itemReward.getItemStack();
+                            String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
+                            lore.add(Component.text("    §7- §f" + itemName + " §7x" + rewardItem.getAmount()));
+                        } else if (reward instanceof QuestMoneyReward moneyReward) {
+                            lore.add(Component.text("    §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
+                        }
+                    }
+                }
+            }
+        }
+
         if (currentTier != null) {
             lore.add(Component.text("§6➤ §eRécompenses:"));
             for (QuestReward reward : currentTier.getRewards()) {

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.adminshop;
 
-import dev.xernas.menulib.Menu;
+import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
 import fr.openmc.core.features.adminshop.menus.ColorVariantsMenu;
@@ -170,7 +170,7 @@ public class AdminShopManager {
      * @param amountToAdd  The amount of items to check.
      * @return -1 if space is available, otherwise number of empty slots.
      */
-    private int checkInventorySpace(Player player, Material itemToAdd, int amountToAdd) {
+    private static int checkInventorySpace(Player player, Material itemToAdd, int amountToAdd) {
         PlayerInventory inventory = player.getInventory();
         int emptySlots = 0;
         int availableAmount = 0;
@@ -205,9 +205,13 @@ public class AdminShopManager {
      * @param amountToAdd The amount.
      * @return True if there's enough space, false otherwise.
      */
-    public boolean hasEnoughSpace(Player player, Material itemToAdd, int amountToAdd) {
+    public static boolean hasEnoughSpace(Player player, Material itemToAdd, int amountToAdd) {
         int result = checkInventorySpace(player, itemToAdd, amountToAdd);
         return result == -1 || result > 0;
+    }
+
+    public static boolean hasEnoughSpace(Player player, ItemStack itemToAdd) {
+        return hasEnoughSpace(player, itemToAdd.getType(), itemToAdd.getAmount());
     }
 
     /**

@@ -1,13 +1,11 @@
 package fr.openmc.core.features.economy.menu;
 
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.DateUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -64,7 +62,7 @@ public class PersonalBankMenu extends Menu {
                 Component.text("§7Vous avez actuellement §d" +
                         EconomyManager.getInstance().getFormattedSimplifiedNumber(BankManager.getInstance().getBankBalance(player.getUniqueId())) + " ")
                     .append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text("§7Votre prochain intéret est de §b" + BankManager.getInstance().calculatePlayerInterest(player.getUniqueId())*100 + "%")
+                Component.text("§7Votre prochain intéret est de §b" + BankManager.getInstance().calculatePlayerInterest(player.getUniqueId())*100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getInstance().getSecondsUntilInterest()))
                 )
             );
         }));

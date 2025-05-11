@@ -55,8 +55,6 @@ dependencies {
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
 
-    implementation 'de.rapha149.signgui:signgui:2.5.0'
-    implementation 'dev.xernas:menulib:1.1.0'
     implementation 'org.jetbrains:annotations:24.1.0'
     implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'

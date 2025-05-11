@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.menu;
 
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.signgui.SignGUI;
+import fr.openmc.api.signgui.exception.SignGUIVersionException;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
@@ -25,7 +25,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CityModifyMenu extends Menu {
 
