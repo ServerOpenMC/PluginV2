@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -31,7 +32,7 @@ public class AyweniterPerk implements Listener {
         Player player = event.getPlayer();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (MayorManager.getInstance().phaseMayor==2) {
-            if (!PerkManager.hasPerk(playerCity.getMayor(), 8)) return;
+            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {
 

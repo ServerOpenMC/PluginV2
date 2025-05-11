@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,8 +32,7 @@ public class MinerPerk implements Listener {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());
             if (playerCity == null) return;
 
-            // si ville a pas le perk 3 soit MINER
-            if (!PerkManager.hasPerk(playerCity.getMayor(), 3)) return;
+            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.MINER.getId())) return;
 
             player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, PotionEffect.INFINITE_DURATION, 1, false, false));
         } else {

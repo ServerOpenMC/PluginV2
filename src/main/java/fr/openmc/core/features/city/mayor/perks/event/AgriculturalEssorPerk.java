@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.MaterialUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -35,7 +36,7 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), 11)) return;
+        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         if (!DynamicCooldownManager.isReady(city.getUUID(), "city:agricultural_essor")) {
             MessagesManager.sendMessage(player, Component.text("La réforme d'événement l'§eEssor Agricole §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:agricultural_essor"))), Prefix.MAYOR, MessageType.INFO, false);
@@ -53,7 +54,7 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), 11)) return;
+        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         for (UUID memberUUID : city.getMembers()) {
             Player player = Bukkit.getPlayer(memberUUID);
@@ -73,7 +74,7 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (city == null) return;
 
-        if (!PerkManager.hasPerk(city.getMayor(), 11)) return;
+        if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
         if (DynamicCooldownManager.isReady(city.getUUID(), "city:agricultural_essor")) return;
 

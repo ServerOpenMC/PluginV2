@@ -64,7 +64,7 @@ public class ImpotCollection implements Listener {
         }
     }
 
-    private final HashMap<UUID, Double> playerPreveledAmount = new HashMap<>();
+    private final HashMap<UUID, Double> playerWithdrawnAmount = new HashMap<>();
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
@@ -95,8 +95,8 @@ public class ImpotCollection implements Listener {
         }
         EconomyManager.getInstance().addBalance(mayorPlayer.getUniqueId(), amount);
 
-        double newTotal = playerPreveledAmount.getOrDefault(victim.getUniqueId(), 0.0) + amount;
-        playerPreveledAmount.put(victim.getUniqueId(), newTotal);
+        double newTotal = playerWithdrawnAmount.getOrDefault(victim.getUniqueId(), 0.0) + amount;
+        playerWithdrawnAmount.put(victim.getUniqueId(), newTotal);
 
         MessagesManager.sendMessage(victim, Component.text("Tu as perdu §6" + amount + EconomyManager.getEconomyIcon() + "§f à cause du Maire " + mayorPlayer.getName()), Prefix.MAYOR, MessageType.WARNING, false);
         MessagesManager.sendMessage(mayorPlayer, Component.text("Vous venez de prélever §6" + amount + EconomyManager.getEconomyIcon() + "§f à " + victim.getName()), Prefix.MAYOR, MessageType.INFO, false);

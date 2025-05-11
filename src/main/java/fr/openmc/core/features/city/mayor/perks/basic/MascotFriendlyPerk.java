@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,9 +33,7 @@ public class MascotFriendlyPerk implements Listener {
 
         int level = MascotUtils.getMascotLevel(playerCity.getUUID());
         if (phase == 2) {
-
-            // si ville a pas le perk 14 soit MASCOTS_FRIENDLY
-            if (!PerkManager.hasPerk(playerCity.getMayor(), 15)) return;
+            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) return;
 
 
             for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){

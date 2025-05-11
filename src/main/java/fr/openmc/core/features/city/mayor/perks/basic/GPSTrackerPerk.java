@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +37,7 @@ public class GPSTrackerPerk implements Listener {
         );
         if (currentCity == null) return;
 
-        if (!PerkManager.hasPerk(currentCity.getMayor(), 9)) return;
+        if (!PerkManager.hasPerk(currentCity.getMayor(), Perks.GPS_TRACKER.getId())) return;
 
         player.removePotionEffect(PotionEffectType.GLOWING);
 

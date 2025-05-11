@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.menu.ChestMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -727,7 +728,7 @@ public class City {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.getInstance().phaseMayor == 2) {
-            if (PerkManager.hasPerk(getMayor(), 5)) {
+            if (PerkManager.hasPerk(getMayor(), Perks.BUISNESS_MAN.getId())) {
                 interest = .03; // interest is 3% when perk Buisness Man actived
             }
         }

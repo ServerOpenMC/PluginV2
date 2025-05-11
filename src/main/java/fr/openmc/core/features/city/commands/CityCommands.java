@@ -39,6 +39,7 @@ import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -521,7 +522,7 @@ public class CityCommands {
             String cityTypeAfter = "";
             if (cityTypeActuel != null) {
                 cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
-                cityTypeAfter = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+                cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix§7" : "§cen guerre§7";
             }
 
             MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
@@ -556,7 +557,19 @@ public class CityCommands {
             return;
         }
 
-        new CityBankMenu(player).open();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.teleport(warp);
+                        MessagesManager.sendMessage(player, Component.text("§aVous avez été envoyé au spawn"), Prefix.OPENMC, MessageType.SUCCESS, true);
+                    }
+                }.runTaskLater(OMCPlugin.getInstance(), 10);
+            }
+        }.runTaskLater(OMCPlugin.getInstance(), 15);
     }
 
     // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"

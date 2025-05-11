@@ -322,7 +322,7 @@ public class ItemInteraction implements Listener {
     }
 
     /*
-     * Méthode qui permet toutes les intéractions d'un joueur
+     * Méthode qui permet d'arreter toutes les intéractions d'un joueur
      */
     public static void stopAllInteractions(Player player) {
         if (player == null) return;

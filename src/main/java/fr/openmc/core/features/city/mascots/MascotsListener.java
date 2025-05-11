@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.menu.mascots.MascotMenu;
 import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -165,7 +166,7 @@ public class MascotsListener implements Listener {
                         mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
 
                         if (MayorManager.getInstance().phaseMayor==2) {
-                            if (PerkManager.hasPerk(MascotUtils.getCityFromMascot(mob.getUniqueId()).getMayor(), 6)) {
+                            if (PerkManager.hasPerk(MascotUtils.getCityFromMascot(mob.getUniqueId()).getMayor(), Perks.IRON_BLOOD.getId())) {
                                 long currentTime = System.currentTimeMillis();
                                 if (perkIronBloodCooldown.containsKey(city) && currentTime - perkIronBloodCooldown.get(city) < COOLDOWN_TIME) {
                                     return;

@@ -484,24 +484,24 @@ public class MayorManager {
                 if (offlinePlayer.isOnline()) {
                     Player player = offlinePlayer.getPlayer();
                     // Fou de Rage
-                    if (PerkManager.hasPerk(copyCityMayor.get(city), 1)) {
+                    if (PerkManager.hasPerk(copyCityMayor.get(city), Perks.FOU_DE_RAGE.getId())) {
                         player.removePotionEffect(PotionEffectType.STRENGTH);
                         player.removePotionEffect(PotionEffectType.RESISTANCE);
                     }
 
                     // Mineur Dévoué
-                    if (PerkManager.hasPerk(copyCityMayor.get(city), 3)) {
+                    if (PerkManager.hasPerk(copyCityMayor.get(city), Perks.MINER.getId())) {
                         MinerPerk.updatePlayerEffects(player);
                     }
 
 
                     // Mascotte de Compagnie
-                    if (PerkManager.hasPerk(copyCityMayor.get(city), 15)) {
+                    if (PerkManager.hasPerk(copyCityMayor.get(city), Perks.MASCOTS_FRIENDLY.getId())) {
                         MascotFriendlyPerk.updatePlayerEffects(player);
                     }
 
                     // Fruit du Démon
-                    if (PerkManager.hasPerk(copyCityMayor.get(city), 4)) {
+                    if (PerkManager.hasPerk(copyCityMayor.get(city), Perks.FRUIT_DEMON.getId())) {
                         DemonFruitPerk.removeReachBonus(player);
                     }
                 }
@@ -539,17 +539,17 @@ public class MayorManager {
                 if (offlinePlayer.isOnline()) {
                     Player player = offlinePlayer.getPlayer();
                     // Mineur Dévoué
-                    if (PerkManager.hasPerk(city.getMayor(), 3)) {
+                    if (PerkManager.hasPerk(city.getMayor(), Perks.MINER.getId())) {
                         MinerPerk.updatePlayerEffects(player);
                     }
 
                     // Mascotte de Compagnie
-                    if (PerkManager.hasPerk(city.getMayor(), 15)) {
+                    if (PerkManager.hasPerk(city.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) {
                         MascotFriendlyPerk.updatePlayerEffects(player);
                     }
 
                     // Fruit du Démon
-                    if (PerkManager.hasPerk(city.getMayor(), 4)) {
+                    if (PerkManager.hasPerk(city.getMayor(), Perks.FRUIT_DEMON.getId())) {
                         DemonFruitPerk.applyReachBonus(player);
                     }
                 }

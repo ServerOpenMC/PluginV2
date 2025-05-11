@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.mayor.perks.basic;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ public class CityHunterPerk implements Listener {
             return;
         }
 
-        if (!PerkManager.hasPerk(attackerCity.getMayor(), 7)) {
+        if (!PerkManager.hasPerk(attackerCity.getMayor(), Perks.CITY_HUNTER.getId())) {
             return;
         }
 

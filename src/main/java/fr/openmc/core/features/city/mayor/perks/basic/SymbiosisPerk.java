@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ public class SymbiosisPerk implements Listener {
             return;
         }
 
-        if (!PerkManager.hasPerk(playerCity.getMayor(), 10)) return;
+        if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.SYMBIOSIS.getId())) return;
 
         LivingEntity mascot = (LivingEntity) Bukkit.getEntity(MascotUtils.getMascotUUIDOfCity(playerCity.getUUID()));
         if (mascot == null || !mascot.isValid()) {

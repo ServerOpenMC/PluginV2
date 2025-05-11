@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,8 +30,7 @@ public class RagePerk implements Listener {
         City playerCity = CityManager.getPlayerCity(uuid);
         if (playerCity == null) return;
 
-        // si ville a pas le perk 1 soit FOU_DE_RAGE
-        if (!PerkManager.hasPerk(playerCity.getMayor(), 1)) return;
+        if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.FOU_DE_RAGE.getId())) return;
 
         City currentCity = CityManager.getCityFromChunk(
                 event.getTo().getChunk().getX(),
