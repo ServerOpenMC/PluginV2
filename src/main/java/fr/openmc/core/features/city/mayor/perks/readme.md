@@ -84,7 +84,7 @@ public class AyweniterPerk implements Listener {
         Player player = event.getPlayer();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (MayorManager.getInstance().phaseMayor==2) {
-            if (!PerkManager.hasPerk(playerCity.getMayor(), 8)) return;
+            if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {
 
@@ -103,20 +103,22 @@ public class AyweniterPerk implements Listener {
 
 Il est aussi autorisé d'implementer un comportement différent dans le code du plugin
 
-Exemple de la modfication des Intérêts : 
+Exemple de la modfication des Intérêts :
+
 ```java
-    // Interests calculated as proportion not percentage (eg: 0.01 = 1%)
-    public double calculateCityInterest() {
-        double interest = .01; // base interest is 1%
+    import fr.openmc.core.features.city.mayor.perks.Perks;// Interests calculated as proportion not percentage (eg: 0.01 = 1%)
 
-        if (MayorManager.getInstance().phaseMayor == 2) {
-            if (PerkManager.hasPerk(getMayor(), 5)) {
-                interest = .03; // interest is 3% when perk Buisness Man actived
-            }
+public double calculateCityInterest() {
+    double interest = .01; // base interest is 1%
+
+    if (MayorManager.getInstance().phaseMayor == 2) {
+        if (PerkManager.hasPerk(getMayor(), Perks.BUISNESS_MAN.getId())) {
+            interest = .03; // interest is 3% when perk Buisness Man actived
         }
-
-        return interest;
     }
+
+    return interest;
+}
 ```
 
 #### Réforme Événementielle
@@ -125,7 +127,9 @@ Exemple de la modfication des Intérêts :
 
 Exemple : 
 ```java
-else if (PerkManager.hasPerk(city.getMayor(), 13)) {
+else if(PerkManager.hasPerk(city.getMayor(),Perks.MILITARY_DISSUASION.
+
+getId())){
     // Dissuasion Militaire (id : 13) - Perk Event
     for (UUID uuid : city.getMembers()) {
         Player member = Bukkit.getPlayer(uuid);
