@@ -1,7 +1,7 @@
 package fr.openmc.core.features.corporation;
 
 
-import dev.xernas.menulib.utils.ItemUtils;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;

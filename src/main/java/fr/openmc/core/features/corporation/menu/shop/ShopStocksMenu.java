@@ -1,8 +1,8 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
-import dev.xernas.menulib.PaginatedMenu;
-import dev.xernas.menulib.utils.ItemBuilder;
-import dev.xernas.menulib.utils.StaticSlots;
+import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.Shop;
 import fr.openmc.core.features.corporation.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;

@@ -1,10 +1,10 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
-import dev.xernas.menulib.PaginatedMenu;
-import dev.xernas.menulib.utils.ItemBuilder;
-import dev.xernas.menulib.utils.StaticSlots;
+import fr.openmc.api.signgui.SignGUI;
+import fr.openmc.api.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.Company;
 import fr.openmc.core.features.corporation.CompanyManager;
 import fr.openmc.core.features.corporation.Shop;

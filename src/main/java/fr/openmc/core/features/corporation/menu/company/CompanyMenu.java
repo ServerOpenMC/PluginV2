@@ -1,9 +1,9 @@
 package fr.openmc.core.features.corporation.menu.company;
 
-import dev.xernas.menulib.PaginatedMenu;
-import dev.xernas.menulib.utils.ItemBuilder;
-import dev.xernas.menulib.utils.ItemUtils;
-import dev.xernas.menulib.utils.StaticSlots;
+import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.utils.PapiAPI;
