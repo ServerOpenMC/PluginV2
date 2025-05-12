@@ -10,7 +10,7 @@ import lombok.Getter;
 public class Bank {
 
     @DatabaseField(id = true)
-    private String uuid;
+    private String player;
 
     @DatabaseField(canBeNull = false, defaultValue = "0")
     private double balance;
@@ -19,8 +19,8 @@ public class Bank {
         // necessary for OrmLite
     }
 
-    Bank(String uuid) {
-        this.uuid = uuid;
+    Bank(String player) {
+        this.player = player;
         this.balance = 0;
     }
 

@@ -123,7 +123,7 @@ public class BankManager {
         try {
             List<Bank> dbBanks = banksDao.queryForAll();
             for (Bank bank : dbBanks) {
-                newBanks.put(UUID.fromString(bank.getUuid()), bank);
+                newBanks.put(UUID.fromString(bank.getPlayer()), bank);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
