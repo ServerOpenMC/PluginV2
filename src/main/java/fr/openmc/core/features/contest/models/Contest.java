@@ -10,7 +10,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @Getter
-@DatabaseTable(tableName = "contest")
+@DatabaseTable(tableName = "contests")
 public class Contest {
     @DatabaseField(canBeNull = false)
     private String camp1;
@@ -36,8 +36,7 @@ public class Contest {
         // required for ORMLite
     }
 
-    public Contest(String camp1, String camp2, String color1, String color2, int phase, String startdate,
-            int point1, int point2) {
+    public Contest(String camp1, String camp2, String color1, String color2, int phase, String startdate, int point1, int point2) {
         this.camp1 = camp1;
         this.camp2 = camp2;
         this.color1 = color1;
