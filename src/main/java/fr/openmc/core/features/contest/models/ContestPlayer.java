@@ -6,17 +6,19 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-@Getter
 @DatabaseTable(tableName = "contest_player_data")
 public class ContestPlayer {
+    @Getter
     @DatabaseField(id = true)
     private String name;
+    @Getter
     @DatabaseField(canBeNull = false)
     private int points;
+    @Getter
     @DatabaseField(canBeNull = false)
     private int camp;
     @DatabaseField(canBeNull = false)
-    private NamedTextColor color;
+    private int color;
 
     ContestPlayer() {
         // required for ORMLite
@@ -26,6 +28,10 @@ public class ContestPlayer {
         this.name = name;
         this.points = points;
         this.camp = camp;
-        this.color = color;
+        this.color = color.value();
+    }
+
+    public NamedTextColor getColor() {
+        return NamedTextColor.namedColor(color);
     }
 }
