@@ -1,13 +1,13 @@
 package fr.openmc.core.features.homes.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.customfonts.CustomFonts;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -50,7 +50,7 @@ public class HomeConfigMenu extends Menu {
         }).setNextMenu(new HomeChangeIconMenu(getOwner(), home)));
 
         content.put(24, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_bin_red").getItemStack(), itemMeta -> {
-            itemMeta.setDisplayName(new FontImageWrapper("omc_homes:bin").getString() + " §cSupprimer le home");
+            itemMeta.setDisplayName(CustomFonts.getBest("omc_homes:bin", "🗑️") + " §cSupprimer le home");
             itemMeta.setLore(List.of(ChatColor.GRAY + "■ §cClique §4gauche §cpour supprimer votre home"));
         }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
 
