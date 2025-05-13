@@ -31,7 +31,7 @@ public class CompanyOwner {
     }
 
     /**
-     * know if teh owner is a player
+     * know if the owner is a player
      *
      * @return true if it's a player
      */
