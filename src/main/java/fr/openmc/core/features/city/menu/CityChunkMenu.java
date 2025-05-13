@@ -24,10 +24,13 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
@@ -192,6 +195,11 @@ public class CityChunkMenu extends Menu {
         }
 
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
     }
 
     private void addNavigationButtons(Map<Integer, ItemStack> inventory) {

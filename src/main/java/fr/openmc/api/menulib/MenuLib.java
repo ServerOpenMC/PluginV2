@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -134,6 +135,16 @@ public final class MenuLib implements Listener {
 			} catch (Exception ignore) {
 			
 			}
+		}
+	}
+
+	/**
+	 * Handles the event that occurs when a player closes an inventory associated with a {@link Menu}.
+	 */
+	@EventHandler
+	public void onInventoryClose(InventoryCloseEvent e) {
+		if (e.getInventory().getHolder() instanceof Menu menu) {
+			menu.onClose(e);
 		}
 	}
 }

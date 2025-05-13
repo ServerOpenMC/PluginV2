@@ -23,14 +23,16 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static fr.openmc.core.features.city.mascots.MascotsListener.*;
-import static fr.openmc.core.features.city.mascots.MascotsManager.*;
+import static fr.openmc.core.features.city.mascots.MascotsListener.movingMascots;
+import static fr.openmc.core.features.city.mascots.MascotsManager.giveChest;
+import static fr.openmc.core.features.city.mascots.MascotsManager.upgradeMascots;
 import static fr.openmc.core.utils.chronometer.Chronometer.startChronometer;
 
 public class MascotMenu extends Menu {
@@ -200,6 +202,11 @@ public class MascotMenu extends Menu {
         }
 
         return map;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
     }
 
     public static Material getSpawnEgg(Entity entity) {

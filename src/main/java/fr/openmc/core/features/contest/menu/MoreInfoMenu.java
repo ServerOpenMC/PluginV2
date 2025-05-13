@@ -1,5 +1,6 @@
 package fr.openmc.core.features.contest.menu;
 
+import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
@@ -9,12 +10,15 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import fr.openmc.api.menulib.Menu;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MoreInfoMenu extends Menu {
     private final ContestManager contestManager;
@@ -111,5 +115,10 @@ public class MoreInfoMenu extends Menu {
         inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
 
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
     }
 }

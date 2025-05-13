@@ -9,6 +9,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -60,5 +61,10 @@ public class AdminShopMenu extends Menu {
         }
 
         return content;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
     }
 }

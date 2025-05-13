@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -74,5 +75,10 @@ public class CityListDetailsMenu extends Menu { // TODO : Adaptation pour les ma
 		map.put(26, new ItemBuilder(this, new ItemStack(CityManager.getCityType(city.getUUID()).equals("war") ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.displayName(Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")))));
 		return map;
+	}
+
+	@Override
+	public void onClose(InventoryCloseEvent event) {
+		//empty
 	}
 }

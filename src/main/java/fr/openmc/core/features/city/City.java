@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city;
 
 import com.sk89q.worldedit.math.BlockVector2;
-import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.menu.ChestMenu;
+import fr.openmc.core.features.city.events.*;
+import fr.openmc.core.features.city.menu.CityChestMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -13,7 +13,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -24,20 +23,25 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class City {
+    private String name;
     private final String cityUUID;
-    private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
     private Set<UUID> members = new HashSet<>();
     private Double balance = Double.valueOf(0); // set default value cause if its null, error in updateBalance
-    private String name;
-    private Integer chestPages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
-    private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
+    private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
 
+    private Integer chestPages;
+    private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
     @Getter @Setter private UUID chestWatcher;
-    @Getter @Setter private ChestMenu chestMenu;
+    @Getter
+    @Setter
+    private CityChestMenu chestMenu;
 
     public City(String uuid) {
         this.cityUUID = uuid;

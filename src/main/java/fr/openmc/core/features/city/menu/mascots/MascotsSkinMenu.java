@@ -17,6 +17,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -84,6 +85,11 @@ public class MascotsSkinMenu extends Menu {
         }).setOnClick(event -> new CityMenu(getOwner()).open()));
 
         return map;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
     }
 
     private ItemStack createMascotButton(MascotOption option) {

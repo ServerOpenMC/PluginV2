@@ -12,6 +12,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -105,5 +106,10 @@ public class InvitationsMenu extends PaginatedMenu {
                         itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
 
         return map;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
     }
 }
