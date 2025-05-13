@@ -22,7 +22,7 @@ public class CompanyOwner {
     }
 
     /**
-     * know if teh owner is a city
+     * know if the owner is a city
      *
      * @return true if it's a city
      */
