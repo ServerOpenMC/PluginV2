@@ -24,20 +24,43 @@ public class ShopItem {
         this.amount = 0;
     }
 
+    /**
+     * get the name of an item
+     *
+     * @param amount the new amount of the item
+     * @return default the ShopItem
+     */
     public ShopItem setAmount(int amount) {
         this.amount = amount;
         this.price = pricePerItem * amount;
         return this;
     }
 
+    /**
+     * copy an ShopItem
+     *
+     * @return a copy of the ShopItem
+     */
     public ShopItem copy() {
         return new ShopItem(item.clone(), pricePerItem);
     }
 
+    /**
+     * get the price of a certain amount of an item
+     *
+     * @param amount amount of item
+     * @return a price
+     */
     public double getPrice(int amount) {
         return pricePerItem * amount;
     }
 
+    /**
+     * get the name of an item
+     *
+     * @param itemStack the item
+     * @return default name if the item has no custom name
+     */
     public static String getItemName(ItemStack itemStack) {
         if (itemStack.hasItemMeta()) {
             ItemMeta itemMeta = itemStack.getItemMeta();

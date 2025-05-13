@@ -52,6 +52,13 @@ public class Company {
 
     private int shopCounter = 0;
 
+    /**
+     * create a company
+     *
+     * @param name the name of the company
+     * @param owner the owner
+     * @param company_uuid the uuid of the company if it has one
+     */
     public Company(String name, CompanyOwner owner, UUID company_uuid) {
         this.name = name;
         this.owner = owner;
@@ -61,6 +68,7 @@ public class Company {
         addMerchant(owner.getPlayer(), new MerchantData());
     }
 
+    // a revoir je l'utilisais pour les entreprises de ville
     public Company(String name, CompanyOwner owner, UUID company_uuid, boolean newMember) {
         this.name = name;
         this.owner = owner;
@@ -78,6 +86,12 @@ public class Company {
         addPermission(owner.getPlayer(), CorpPermission.OWNER);
     }
 
+
+    /**
+     * load permission in permsCache
+     *
+     * @param playerUUID the uuid of the player
+     */
     private void loadPermission(UUID playerUUID) {
         if (!permsCache.containsKey(playerUUID)) {
             try {
@@ -126,6 +140,12 @@ public class Company {
         return null;
     }
 
+    /**
+     * remove permission in permsCache and in db
+     *
+     * @param uuid the uuid of the player
+     * @param permission the permission
+     */
     public void removePermission(UUID uuid, CorpPermission permission) {
         loadPermission(uuid);
         Set<CorpPermission> playerPerms = permsCache.get(uuid);
@@ -152,6 +172,12 @@ public class Company {
         }
     }
 
+    /**
+     * add permission in permsCache and in db
+     *
+     * @param uuid the uuid of the player
+     * @param permission the permission
+     */
     public void addPermission(UUID uuid, CorpPermission permission) {
         Set<CorpPermission> playerPerms = permsCache.getOrDefault(uuid, new HashSet<>());
 

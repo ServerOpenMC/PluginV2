@@ -294,6 +294,9 @@ public class ShopMenu extends Menu {
         }));
     }
 
+    /**
+     * @return the current ShopItem
+     */
     private ShopItem getCurrentItem() {
         if (itemIndex < 0 || itemIndex >= items.size()) {
             return null;
@@ -301,10 +304,16 @@ public class ShopMenu extends Menu {
         return items.get(itemIndex);
     }
 
+    /**
+     * @return true if the menu is on the first item
+     */
     private boolean onFirstItem() {
         return itemIndex == 0;
     }
 
+    /**
+     * @return true if the menu is on the last item
+     */
     private boolean onLastItem() {
         return itemIndex == items.size() - 1;
     }

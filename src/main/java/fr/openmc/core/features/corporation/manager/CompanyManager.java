@@ -545,6 +545,13 @@ public class CompanyManager {
         pendingApplications.remove(playerUUID);
     }
 
+    /**
+     * know if a player has a pending application for a company
+     *
+     * @param playerUUID the uuid of the player
+     * @param company the company
+     * @return true if it has one
+     */
     public boolean hasPendingApplicationFor(UUID playerUUID, Company company) {
         return pendingApplications.get(playerUUID) == company;
     }

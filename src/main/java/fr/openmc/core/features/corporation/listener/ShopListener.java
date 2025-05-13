@@ -165,11 +165,22 @@ public class ShopListener implements Listener {
         }
     }
 
+    /**
+     * check if an item is valid
+     *
+     * @param item the item to check
+     * @return true if it's a valid item
+     */
     private boolean isValidItem(ItemStack item) {
         return item != null && item.getType() != Material.AIR;
     }
 
-    // Ajoute la clé SUPPLIER_KEY à un item
+    /**
+     * add the SUPPLIER_KEY to an item
+     *
+     * @param item the item to add the key
+     * @param uuid the uuid of the player ( the supplier_key )
+     */
     private void setSupplierKey(ItemStack item, String uuid) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
@@ -178,7 +189,11 @@ public class ShopListener implements Listener {
         }
     }
 
-    // Retire la clé SUPPLIER_KEY d'un item
+    /**
+     * remove the SUPPLIER_KEY to an item
+     *
+     * @param item the item to remove the key
+     */
     private void removeSupplierKey(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null && meta.getPersistentDataContainer().has(CompanyManager.SUPPLIER_KEY)) {

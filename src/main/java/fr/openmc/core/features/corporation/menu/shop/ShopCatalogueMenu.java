@@ -84,6 +84,12 @@ public class ShopCatalogueMenu extends PaginatedMenu {
 
     }
 
+    /**
+     * get the index of a ShopItem
+     *
+     * @param shopItem the ShopItem
+     * @return the index of the ShopItem
+     */
     private int getIndex(ShopItem shopItem) {
         int index = 0;
         for (ShopItem items : shop.getItems()){

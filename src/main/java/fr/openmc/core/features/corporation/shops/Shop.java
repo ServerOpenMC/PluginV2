@@ -123,6 +123,11 @@ public class Shop {
         return owner.isCompany() ? owner.getCompany().getOwner().getPlayer() : owner.getPlayer();
     }
 
+    /**
+     * know if the uuid is the shop owner
+     *
+     * @param uuid the uuid we check
+     */
     public boolean isOwner(UUID uuid) {
         if (owner.isCompany()) {
             return owner.getCompany().isOwner(uuid);
@@ -130,6 +135,13 @@ public class Shop {
         return owner.getPlayer().equals(uuid);
     }
 
+    /**
+     * add an item to the shop
+     *
+     * @param itemStack the item
+     * @param price the price
+     * @param amount the amount of it
+     */
     public boolean addItem(ItemStack itemStack, double price, int amount) {
         ShopItem item = new ShopItem(itemStack, price);
         for (ShopItem shopItem : items) {
@@ -144,10 +156,20 @@ public class Shop {
         return false;
     }
 
+    /**
+     * get an item from the shop
+     *
+     * @param index index of the item
+     */
     public ShopItem getItem(int index) {
         return items.get(index);
     }
 
+    /**
+     * remove an item from the shop
+     *
+     * @param item the item to remove
+     */
     public void removeItem(ShopItem item) {
         items.remove(item);
     }
@@ -166,6 +188,14 @@ public class Shop {
         return false;
     }
 
+    /**
+     * get the shop Icon
+     *
+     * @param item the item to buy
+     * @param amount the amount of it
+     * @param buyer the player who buy
+     * @return a MethodState
+     */
     public MethodState buy(ShopItem item, int amount, Player buyer) {
         if (!ItemUtils.hasAvailableSlot(buyer)) {
             return MethodState.SPECIAL;
@@ -254,6 +284,12 @@ public class Shop {
         }
     }
 
+    /**
+     * get the shop Icon
+     *
+     * @param menu the menu
+     * @param fromShopMenu know if it from shopMenu
+     */
     public ItemBuilder getIcon(Menu menu, boolean fromShopMenu) {
         return new ItemBuilder(menu, fromShopMenu ? Material.GOLD_INGOT : Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§e§l" + (fromShopMenu ? "Informations" : getName()));
@@ -274,6 +310,13 @@ public class Shop {
         return amount;
     }
 
+    /**
+     * get the shop with what player looking
+     *
+     * @param player the player we check
+     * @param shopBlocksManager the permission
+     * @param onlyCash if we only check the cach register
+     */
     public static UUID getShopPlayerLookingAt(Player player, ShopBlocksManager shopBlocksManager, boolean onlyCash) {
         Block targetBlock = player.getTargetBlockExact(5);
 

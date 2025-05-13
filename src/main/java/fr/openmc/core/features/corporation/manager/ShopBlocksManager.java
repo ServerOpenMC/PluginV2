@@ -34,6 +34,12 @@ public class ShopBlocksManager {
         this.plugin = plugin;
     }
 
+    /**
+     * Registers a shop's multiblock structure and maps its key locations.
+     *
+     * @param shop The shop to register.
+     * @param multiblock The multiblock structure associated with the shop.
+     */
     public void registerMultiblock(Shop shop, Shop.Multiblock multiblock) {
         multiblocks.put(shop.getUuid(), multiblock);
         Location stockLoc = multiblock.getStockBlock();
@@ -42,14 +48,34 @@ public class ShopBlocksManager {
         shopsByLocation.put(cashLoc, shop);
     }
 
+    /**
+     * Retrieves the multiblock structure associated with a given UUID.
+     *
+     * @param uuid The UUID of the shop.
+     * @return The multiblock structure if it exists, otherwise null.
+     */
     public Shop.Multiblock getMultiblock(UUID uuid) {
         return multiblocks.get(uuid);
     }
 
+    /**
+     * Retrieves a shop located at a given location.
+     *
+     * @param location The location to check.
+     * @return The shop found at that location, or null if none exists.
+     */
     public Shop getShop(Location location) {
         return shopsByLocation.get(location);
     }
 
+    /**
+     * Places the shop block (sign or ItemsAdder furniture) in the world,
+     * oriented based on the player's direction.
+     *
+     * @param shop The shop to place.
+     * @param player The player placing the shop.
+     * @param isCompany Whether the shop belongs to a company (unused here but may be relevant elsewhere).
+     */
     public void placeShop(Shop shop, Player player, boolean isCompany) {
         Shop.Multiblock multiblock = multiblocks.get(shop.getUuid());
         if (multiblock == null) {
@@ -74,6 +100,13 @@ public class ShopBlocksManager {
         }
     }
 
+    /**
+     * Removes a shop from the world and unregisters its multiblock structure.
+     * Handles both ItemsAdder and fallback vanilla types.
+     *
+     * @param shop The shop to remove.
+     * @return True if successfully removed, false otherwise.
+     */
     public boolean removeShop(Shop shop) {
         Shop.Multiblock multiblock = multiblocks.get(shop.getUuid());
         if (multiblock == null) {
@@ -97,6 +130,7 @@ public class ShopBlocksManager {
             }
         }
 
+        // Async cleanup of location mappings
         multiblocks.remove(shop.getUuid());
         cashBlock.setType(Material.AIR);
         new BukkitRunnable() {

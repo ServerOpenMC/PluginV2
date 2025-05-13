@@ -21,10 +21,20 @@ public class CompanyOwner {
         this.player = owner;
     }
 
+    /**
+     * know if teh owner is a city
+     *
+     * @return true if it's a city
+     */
     public boolean isCity() {
         return city != null;
     }
 
+    /**
+     * know if teh owner is a player
+     *
+     * @return true if it's a player
+     */
     public boolean isPlayer() {
         return player != null;
     }

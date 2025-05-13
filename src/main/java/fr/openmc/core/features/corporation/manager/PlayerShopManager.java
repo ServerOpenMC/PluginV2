@@ -25,6 +25,15 @@ public class PlayerShopManager {
         instance = this;
     }
 
+    /**
+     * create a shop
+     *
+     * @param playerUUID the uuif of the player who create it
+     * @param barrel the barrel block
+     * @param cashRegister the cash register
+     * @param shop_uuid the uuid of the shop if it already has one
+     * @return true if the shop has been created
+     */
     public boolean createShop(UUID playerUUID, Block barrel, Block cashRegister, UUID shop_uuid) {
         if (!economyManager.withdrawBalance(playerUUID, 500) && shop_uuid==null) {
             return false;
@@ -45,6 +54,12 @@ public class PlayerShopManager {
         return true;
     }
 
+    /**
+     * delete a shop
+     *
+     * @param playerUUID the uuid of the player who delete the shop
+     * @return a Methode state
+     */
     public MethodState deleteShop(UUID playerUUID) {
         Shop shop = getPlayerShop(playerUUID);
         if (!shop.getItems().isEmpty()) {
@@ -59,14 +74,32 @@ public class PlayerShopManager {
         return MethodState.SUCCESS;
     }
 
+    /**
+     * get a shop from the uuid of a player
+     *
+     * @param playerUUID the uuid we check
+     * @return a shop if found
+     */
     public Shop getPlayerShop(UUID playerUUID) {
         return playerShops.get(playerUUID);
     }
 
+    /**
+     * get a shop from a shop uuid
+     *
+     * @param shop_uuid the uuid we check
+     * @return a shop if found
+     */
     public Shop getShopByUUID(UUID shop_uuid) {
         return playerShops.values().stream().filter(shop -> shop.getUuid().equals(shop_uuid)).findFirst().orElse(null);
     }
 
+    /**
+     * know if a player has a shop
+     *
+     * @param playerUUID the player to check
+     * @return true if a shop is found
+     */
     public boolean hasShop(UUID playerUUID) {
         return getPlayerShop(playerUUID) != null;
     }
