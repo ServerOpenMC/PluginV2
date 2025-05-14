@@ -6,6 +6,7 @@ import fr.openmc.core.features.analytics.AnalyticsManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.BankManager;
+import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyData;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.friend.FriendSQLManager;
@@ -37,6 +38,7 @@ public class DatabaseManager {
             MascotsManager.init_db(connection);
             CityTypeCooldown.init_db(connection);
             FriendSQLManager.init_db(connection);
+            CompanyManager.init_db(connection);
 
         } catch (SQLException e) {
             e.printStackTrace();
