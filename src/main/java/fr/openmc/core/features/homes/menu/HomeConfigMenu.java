@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.customfonts.CustomFonts;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
@@ -49,8 +50,8 @@ public class HomeConfigMenu extends Menu {
             itemMeta.setLore(List.of(ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône de votre home"));
         }).setNextMenu(new HomeChangeIconMenu(getOwner(), home)));
 
-        content.put(24, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_bin_red").getItemStack(), itemMeta -> {
-            itemMeta.setDisplayName(CustomFonts.getBest("omc_homes:bin", "🗑️") + " §cSupprimer le home");
+        content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
+            itemMeta.setDisplayName(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home");
             itemMeta.setLore(List.of(ChatColor.GRAY + "■ §cClique §4gauche §cpour supprimer votre home"));
         }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
 
