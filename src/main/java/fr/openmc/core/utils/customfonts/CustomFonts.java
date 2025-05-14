@@ -5,6 +5,8 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 public abstract class CustomFonts {
 
     /**
+     * use exemple : CustomFonts.getBest("omc_homes:bin", "🗑️")
+     *
      * @param namespaceID the namespaceID of the font
      * @param baseFont the base font
      * @return Best Font to use for the server
