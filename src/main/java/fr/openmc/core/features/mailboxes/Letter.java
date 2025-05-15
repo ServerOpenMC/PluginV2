@@ -1,4 +1,4 @@
-package fr.openmc.core.features.mailboxes.models;
+package fr.openmc.core.features.mailboxes;
 
 import java.sql.Date;
 
@@ -7,7 +7,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "mail")
-public class Letter {
+class Letter {
     @DatabaseField(id = true, generatedId = true)
     private int id;
     @DatabaseField(canBeNull = false)
