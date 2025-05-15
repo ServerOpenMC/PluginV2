@@ -146,6 +146,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
+    @Override
     public Map<Integer, ItemStack> getButtons() {
         Player player = getOwner();
         Map<Integer, ItemStack> map = new HashMap<>();

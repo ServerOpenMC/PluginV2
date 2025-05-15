@@ -114,6 +114,31 @@ public final class MenuLib implements Listener {
 	 */
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
+		if (e.getInventory().getHolder() instanceof PaginatedMenu menu) {
+			if (e.getCurrentItem() == null) {
+				return;
+			}
+			if (menu.getTakableSlot().contains(e.getSlot())) {
+				return;
+			}
+			e.setCancelled(true);
+			menu.onInventoryClick(e);
+
+			try {
+				itemClickEvents.forEach((menu1, itemStackConsumerMap) -> {
+					if (menu1.equals(menu)) {
+						itemStackConsumerMap.forEach((itemStack, inventoryClickEventConsumer) -> {
+							if (itemStack.equals(e.getCurrentItem())) {
+								inventoryClickEventConsumer.accept(e);
+							}
+						});
+					}
+				});
+			} catch (Exception ignore) {
+
+			}
+		}
+
 		if (e.getInventory().getHolder() instanceof Menu menu) {
 			e.setCancelled(true);
 			if (e.getCurrentItem() == null) {

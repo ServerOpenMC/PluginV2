@@ -91,6 +91,11 @@ public class HomeMenu extends PaginatedMenu {
     }
 
     @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
+    @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
 

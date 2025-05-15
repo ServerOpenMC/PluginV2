@@ -81,7 +81,12 @@ public class CityListMenu extends PaginatedMenu { // TODO : Adaptation pour les 
 		})));
 		return items;
 	}
-	
+
+	@Override
+	public List<Integer> getTakableSlot() {
+		return List.of();
+	}
+
 	@Override
 	public Map<Integer, ItemStack> getButtons() {
 		Map<Integer, ItemStack> map = new HashMap<>();

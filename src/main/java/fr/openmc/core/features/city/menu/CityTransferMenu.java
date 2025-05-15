@@ -91,6 +91,11 @@ public class CityTransferMenu extends PaginatedMenu {
     }
 
     @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
+    @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
