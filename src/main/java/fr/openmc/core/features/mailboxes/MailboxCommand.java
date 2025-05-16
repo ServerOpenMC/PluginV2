@@ -69,9 +69,9 @@ public class MailboxCommand {
     @Subcommand("open")
     @Description("Ouvrir une lettre")
     public void openMailbox(Player player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        LetterHead letterHead = Letter.getById(player, id);
+        LetterHead letterHead = LetterMenu.getById(player, id);
         if (letterHead == null) return;
-        Letter mailbox = new Letter(player, letterHead);
+        LetterMenu mailbox = new LetterMenu(player, letterHead);
         mailbox.openInventory();
     }
 
@@ -79,7 +79,7 @@ public class MailboxCommand {
     @SecretCommand
     @Description("Refuser une lettre")
     public void refuseMailbox(Player player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        Letter.refuseLetter(player, id);
+        LetterMenu.refuseLetter(player, id);
     }
 
     @Subcommand("cancel")

@@ -213,7 +213,7 @@ public class MailboxListener implements Listener {
                 if (letterHead == null) return;
                 runTask(() -> letterHead.openLetter(player));
             }
-        } else if (holder instanceof Letter letter) {
+        } else if (holder instanceof LetterMenu letter) {
             if (acceptBtn(item)) {
                 runTask(letter::accept);
             } else if (refuseBtn(item)) {

@@ -20,11 +20,13 @@ import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
 
 @Getter
 public class LetterHead extends ItemStack {
+    private final int id;
     private final int itemsCount;
     private final ItemStack[] items;
 
-    public LetterHead(OfflinePlayer player, int itemsCount, LocalDateTime sentAt, ItemStack[] items) {
+    public LetterHead(OfflinePlayer player, int id, int itemsCount, LocalDateTime sentAt, ItemStack[] items) {
         super(Material.PLAYER_HEAD, 1);
+        this.id = id;
         this.itemsCount = itemsCount;
         this.items = items;
         SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
@@ -41,12 +43,12 @@ public class LetterHead extends ItemStack {
         this.setItemMeta(skullMeta);
     }
 
-    public LetterHead(OfflinePlayer player, int itemsCount, LocalDateTime sentAt) {
-        this(player, itemsCount, sentAt, null);
+    public LetterHead(OfflinePlayer player, int id, int itemsCount, LocalDateTime sentAt) {
+        this(player, id, itemsCount, sentAt, null);
     }
 
     public void openLetter(Player player) {
-        Letter letter = new Letter(player, this);
+        LetterMenu letter = new LetterMenu(player, this);
         letter.openInventory();
     }
 }

@@ -33,7 +33,6 @@ public class DatabaseManager {
         try {
             // Déclencher au début du plugin pour créer les tables nécessaires
             CityManager.init_db(connection);
-            MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
             HomesManager.init_db(connection);
             MascotsManager.init_db(connection);
@@ -64,6 +63,7 @@ public class DatabaseManager {
             TransactionsManager.init_db(connectionSource);
             AnalyticsManager.init_db(connectionSource);
             ContestManager.init_db(connectionSource);
+            MailboxManager.init_db(connectionSource);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
