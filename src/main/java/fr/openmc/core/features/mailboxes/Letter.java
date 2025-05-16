@@ -47,4 +47,8 @@ class Letter {
         this.sent = sent;
         this.refused = refused;
     }
+
+    public boolean isRefused() {
+        return refused;
+    }
 }
