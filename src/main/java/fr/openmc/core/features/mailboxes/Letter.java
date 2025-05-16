@@ -6,9 +6,12 @@ import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import lombok.Getter;
+
 @DatabaseTable(tableName = "mail")
 class Letter {
     @DatabaseField(id = true, generatedId = true)
+    @Getter
     private int id;
     @DatabaseField(canBeNull = false)
     private String sender;
@@ -27,11 +30,12 @@ class Letter {
         // required by ORMLite
     }
 
-    Letter(String sender, String receiver, byte[] items, int numItems, boolean refused) {
+    Letter(String sender, String receiver, byte[] items, int numItems, Date sent, boolean refused) {
         this.sender = sender;
         this.receiver = receiver;
         this.items = items;
         this.numItems = numItems;
+        this.sent = sent;
         this.refused = refused;
     }
 
