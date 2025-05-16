@@ -26,6 +26,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.commands.BankCommands;
+import fr.openmc.core.features.economy.models.Bank;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;

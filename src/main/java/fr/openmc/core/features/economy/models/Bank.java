@@ -1,4 +1,4 @@
-package fr.openmc.core.features.economy;
+package fr.openmc.core.features.economy.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -19,7 +19,7 @@ public class Bank {
         // necessary for OrmLite
     }
 
-    Bank(String player) {
+    public Bank(String player) {
         this.player = player;
         this.balance = 0;
     }
