@@ -35,26 +35,31 @@ public class PendingMailbox extends PaginatedMailbox<SenderLetter> {
     }
 
     public static void cancelLetter(Player player, int id) {
-        Letter letter = MailboxManager.getById(player, id);
-        if (letter == null) {
-            Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                    .append(Component.text(id, NamedTextColor.RED))
-                    .append(Component.text(" n'a pas été trouvée.", NamedTextColor.DARK_RED));
-            sendFailureMessage(player, message);
-        }
+        try {
+            Letter letter = MailboxManager.getById(player, id);
+            if (letter == null) {
+                Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
+                        .append(Component.text(id, NamedTextColor.RED))
+                        .append(Component.text(" n'a pas été trouvée.", NamedTextColor.DARK_RED));
+                sendFailureMessage(player, message);
+            }
 
-        int itemsCount = letter.getNumItems();
-        ItemStack[] items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-        Player receiver = Bukkit.getOfflinePlayer(UUID.fromString(letter.getReceiver())).getPlayer();
+            int itemsCount = letter.getNumItems();
+            ItemStack[] items = BukkitSerializer.deserializeItemStacks(letter.getItems());
+            Player receiver = Bukkit.getOfflinePlayer(UUID.fromString(letter.getReceiver())).getPlayer();
 
-        if (MailboxManager.deleteLetter(id)) {
-            if (receiver != null)
-                MailboxManager.cancelLetter(receiver, id);
-            MailboxManager.givePlayerItems(player, items);
-            Component message = Component.text("Vous avez annulé la lettre et reçu ", NamedTextColor.DARK_GREEN)
-                    .append(Component.text(itemsCount, NamedTextColor.GREEN))
-                    .append(Component.text(" " + getItemCount(itemsCount), NamedTextColor.DARK_GREEN));
-            sendSuccessMessage(player, message);
+            if (MailboxManager.deleteLetter(id)) {
+                if (receiver != null)
+                    MailboxManager.cancelLetter(receiver, id);
+                MailboxManager.givePlayerItems(player, items);
+                Component message = Component.text("Vous avez annulé la lettre et reçu ", NamedTextColor.DARK_GREEN)
+                        .append(Component.text(itemsCount, NamedTextColor.GREEN))
+                        .append(Component.text(" " + getItemCount(itemsCount), NamedTextColor.DARK_GREEN));
+                sendSuccessMessage(player, message);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendFailureMessage(player, "Une erreur est survenue.");
         }
     }
 
