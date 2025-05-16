@@ -177,6 +177,18 @@ public class MailboxManager {
         }
     }
 
+    public static List<Letter> getLetters(Player player) {
+        try {
+            QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
+            query.where().eq("sender", player.getUniqueId().toString());
+            query.orderBy("sent", false);
+            return letterDao.query(query.prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // todo
     public static boolean canSend(Player sender, OfflinePlayer receiver) {
         return true;
