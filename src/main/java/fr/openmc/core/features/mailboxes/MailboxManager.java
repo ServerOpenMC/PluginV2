@@ -103,7 +103,9 @@ public class MailboxManager {
                 Letter letter = new Letter(senderUUID.toString(), receiverUUID.toString(), itemsBytes, numItems, false);
                 letters.add(letter);
             }
-            letterDao.create(letters);
+            if (letterDao.create(letters) == 0)
+                Logger.getLogger(MailboxManager.class.getName()).log(Level.SEVERE,
+                        "Erreur lors de l'envoi des items batch à des joueurs hors ligne");
         } catch (SQLException sqlEx) {
             Logger.getLogger(MailboxManager.class.getName()).log(Level.SEVERE,
                     "Erreur lors de l'envoi des items batch à des joueurs hors ligne", sqlEx);
