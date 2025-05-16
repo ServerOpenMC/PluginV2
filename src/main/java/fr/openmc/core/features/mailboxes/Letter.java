@@ -1,11 +1,21 @@
 package fr.openmc.core.features.mailboxes;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.ItemStack;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import fr.openmc.core.features.mailboxes.letter.LetterHead;
+import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
+import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
 
 @DatabaseTable(tableName = "mail")
@@ -18,6 +28,7 @@ public class Letter {
     @DatabaseField(canBeNull = false)
     private String receiver;
     @DatabaseField(canBeNull = false)
+    @Getter
     private byte[] items;
     @DatabaseField(columnName = "num_items", canBeNull = false)
     private int numItems;
@@ -48,7 +59,26 @@ public class Letter {
         this.refused = refused;
     }
 
+    public boolean refuse() {
+        refused = true;
+        return MailboxManager.saveLetter(this);
+    }
+
     public boolean isRefused() {
         return refused;
+    }
+
+    public LetterHead toLetterHead() {
+        // TODO: offline player cache
+        OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(sender));
+        try {
+            ItemStack[] items = BukkitSerializer.deserializeItemStacks(this.items);
+            return new LetterHead(player, id, numItems,
+                    LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), items);
+        } catch (Exception e) {
+            e.printStackTrace();
+            MailboxUtils.sendFailureMessage(player.getPlayer(), "Une erreur est survenue.");
+            return null;
+        }
     }
 }
