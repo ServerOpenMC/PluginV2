@@ -14,6 +14,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
+import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
@@ -79,5 +80,13 @@ public class Letter {
             MailboxUtils.sendFailureMessage(player.getPlayer(), "Une erreur est survenue.");
             return null;
         }
+    }
+
+    public SenderLetter toSenderLetter() {
+        // TODO: offline player cache
+        OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(sender));
+
+        return new SenderLetter(player, id, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
+                refused);
     }
 }
