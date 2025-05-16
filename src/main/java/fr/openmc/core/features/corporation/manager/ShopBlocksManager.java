@@ -1,11 +1,9 @@
 package fr.openmc.core.features.corporation.manager;
 
-import dev.lone.itemsadder.api.CustomFurniture;
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.ItemsAdderIntegration;
 import fr.openmc.core.features.corporation.shops.Shop;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
 import lombok.Getter;
@@ -84,7 +82,7 @@ public class ShopBlocksManager {
         Block cashBlock = multiblock.getCashBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
 
-        if (CustomItemRegistry.hasItemsAdder()) {
+        if (ItemAdderApi.hasItemAdder()) {
             boolean placed = ItemsAdderIntegration.placeShopFurniture(cashBlock);
             if (!placed) {
                 cashBlock.setType(Material.OAK_SIGN);
@@ -115,7 +113,7 @@ public class ShopBlocksManager {
         Block cashBlock = multiblock.getCashBlock().getBlock();
         Block stockBlock = multiblock.getStockBlock().getBlock();
 
-        if (CustomItemRegistry.hasItemsAdder()){
+        if (ItemAdderApi.hasItemAdder()) {
 
             if (!ItemsAdderIntegration.hasFurniture(cashBlock)) {
                 return false;

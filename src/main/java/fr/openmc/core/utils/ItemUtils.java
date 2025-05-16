@@ -132,7 +132,7 @@ public class ItemUtils {
             playerName = player.getName();
             meta.setOwningPlayer(player);
         } else {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
+            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
             playerName = offlinePlayer.getName();
             meta.setOwningPlayer(offlinePlayer);
         }
