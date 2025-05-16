@@ -6,7 +6,7 @@ import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayersList;
-import fr.openmc.core.features.mailboxes.menu.letter.Letter;
+import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;

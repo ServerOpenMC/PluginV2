@@ -1,6 +1,6 @@
 package fr.openmc.core.features.mailboxes.letter;
 
-import fr.openmc.core.features.mailboxes.menu.letter.Letter;
+import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

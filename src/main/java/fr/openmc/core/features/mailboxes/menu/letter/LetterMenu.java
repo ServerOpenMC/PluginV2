@@ -23,7 +23,7 @@ import java.util.UUID;
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 
-public class Letter extends MailboxInv {
+public class LetterMenu extends MailboxInv {
     private final static String INV_NAME = "\uF990\uE003";
 
     static {
@@ -34,7 +34,7 @@ public class Letter extends MailboxInv {
     private final int itemsCount;
     private ItemStack[] items;
 
-    public Letter(Player player, LetterHead letterHead) {
+    public LetterMenu(Player player, LetterHead letterHead) {
         super(player);
         this.id = letterHead.getId();
         this.itemsCount = letterHead.getItemsCount();
