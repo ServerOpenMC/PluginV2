@@ -157,6 +157,16 @@ public class ProtectionListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        Entity entity = event.getRightClicked();
+
+        if (entity instanceof ItemFrame || entity instanceof GlowItemFrame || entity instanceof Hanging) {
+            verify(player, event, entity.getLocation());
+        }
+    }
+
+    @EventHandler
     void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
 
