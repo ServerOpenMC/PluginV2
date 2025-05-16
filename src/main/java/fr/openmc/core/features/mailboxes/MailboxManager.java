@@ -154,9 +154,9 @@ public class MailboxManager {
         }
     }
 
-    public static boolean deleteLetter(Letter letter) {
+    public static boolean deleteLetter(int id) {
         try {
-            return letterDao.delete(letter) != 0;
+            return letterDao.deleteById(id) != 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
