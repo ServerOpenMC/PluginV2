@@ -114,6 +114,7 @@ public final class MenuLib implements Listener {
 	 */
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
+		System.out.println(e.getSlot());
 		if (e.getInventory().getHolder() instanceof PaginatedMenu menu) {
 			if (e.getCurrentItem() == null) {
 				return;
@@ -137,6 +138,7 @@ public final class MenuLib implements Listener {
 			} catch (Exception ignore) {
 
 			}
+			return;
 		}
 
 		if (e.getInventory().getHolder() instanceof Menu menu) {
@@ -168,6 +170,11 @@ public final class MenuLib implements Listener {
 	 */
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent e) {
+		System.out.println("close" + e);
+		if (e.getInventory().getHolder() instanceof PaginatedMenu menu) {
+			menu.onClose(e);
+			return;
+		}
 		if (e.getInventory().getHolder() instanceof Menu menu) {
 			menu.onClose(e);
 		}

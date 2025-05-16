@@ -112,8 +112,10 @@ public class City {
     }
 
     public void saveChestContent(int page, ItemStack[] content) {
+        System.out.println(chestContent);
         chestContent.put(page, content);
 
+        System.out.println(chestContent);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_chests SET content=? WHERE city_uuid=? AND page=?");

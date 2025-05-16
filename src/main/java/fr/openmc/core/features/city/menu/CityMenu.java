@@ -284,8 +284,8 @@ public class CityMenu extends Menu {
 				MessagesManager.sendMessage(player, Component.text("Le coffre est déjà ouvert"), Prefix.CITY, MessageType.ERROR, false);
 				return;
 			}
-			
-			new ChestMenu(city, 1).open(player);
+
+            new CityChestMenu(player, city, 1).open();
 		}));
 		
 		inventory.put(40, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
