@@ -11,6 +11,7 @@ import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -54,7 +55,7 @@ public class HomeUpgradeMenu extends Menu {
                     : lastUpgrade;
 
             int finalCurrentHome = currentHome;
-            items.put(4, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_upgrade").getItemStack(), itemMeta -> {
+            items.put(4, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(), itemMeta -> {
                 itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Clique gauche)");
                 List<String> lore = new ArrayList<>();
                 lore.add("§6Nombre de home actuel: §e" + finalCurrentHome);

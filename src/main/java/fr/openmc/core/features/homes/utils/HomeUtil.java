@@ -5,6 +5,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomeIcons;
 import fr.openmc.core.utils.api.WorldGuardApi;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -47,7 +48,7 @@ public class HomeUtil {
 
     public static ItemStack getRandomsIcons() {
         String iconKey = String.valueOf(HOME_ICONS.get((int) (Math.random() * HOME_ICONS.size())).getId());
-        return CustomStack.getInstance(iconKey).getItemStack();
+        return CustomItemRegistry.getByName(iconKey).getBest();
     }
 
     public static HomeIcons getDefaultHomeIcon(String name) {
@@ -70,7 +71,7 @@ public class HomeUtil {
             OMCPlugin.getInstance().getLogger().severe("Error while getting home icon for home " + home.getName());
             return new ItemStack(Material.GRASS_BLOCK);
         }
-        return CustomStack.getInstance(iconKey).getItemStack();
+        return CustomItemRegistry.getByName(iconKey).getBest();
     }
 
     public static boolean checkName(Player player, MessagesManager msg, String name) {
@@ -96,7 +97,4 @@ public class HomeUtil {
 
         return false;
     }
-
-
-
 }

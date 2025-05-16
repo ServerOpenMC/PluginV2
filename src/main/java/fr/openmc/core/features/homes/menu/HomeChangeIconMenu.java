@@ -7,6 +7,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomeIcons;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -66,7 +67,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         try {
             for (int i = 0; i < HomeIcons.values().length; i++) {
                 HomeIcons homeIcon = HomeIcons.values()[i];
-                items.add(new ItemBuilder(this, CustomStack.getInstance(homeIcon.getId()).getItemStack(), itemMeta -> {
+                items.add(new ItemBuilder(this, CustomItemRegistry.getByName(homeIcon.getId()).getBest(), itemMeta -> {
                     itemMeta.setDisplayName("§a" + homeIcon.getName());
                     itemMeta.setLore(List.of(
                             ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône"
@@ -98,11 +99,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange").getItemStack(), itemMeta -> itemMeta.setDisplayName("§7Retour")).setBackButton());
+        map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§7Retour")).setBackButton());
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
         map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
-        map.put(53, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_invisible").getItemStack(), itemMeta -> itemMeta.setDisplayName("§7")));
+        map.put(53, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_invisible").getBest(), itemMeta -> itemMeta.setDisplayName("§7")));
 
         return map;
     }

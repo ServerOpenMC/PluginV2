@@ -2,16 +2,20 @@ package fr.openmc.core.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 
 public class ItemUtils {
     /**
@@ -104,6 +108,42 @@ public class ItemUtils {
      * @param item Objet concerné
      * @param amount Quantité nécessaire
      */
+    public static int getFreePlacesForItem(Player player, ItemStack item){
+        int stackSize = item.getMaxStackSize();
+        int freePlace = stackSize * getSlotNull(player);
+
+        Inventory inventory = player.getInventory();
+        for (ItemStack stack : inventory.getStorageContents()) {
+            if (stack != null && stack.getType()==item.getType()){
+                if (stack.getAmount() != stackSize) freePlace += stackSize - stack.getAmount();
+            }
+        }
+
+        return freePlace;
+    }
+
+    // IMPORT FROM MAILBOX
+    public static ItemStack getPlayerHead(UUID playerUUID) {
+        Player player = Bukkit.getPlayer(playerUUID);
+        ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
+        SkullMeta meta = (SkullMeta) item.getItemMeta();
+        String playerName = "not found";
+        if (player!=null){
+            playerName = player.getName();
+            meta.setOwningPlayer(player);
+        } else {
+            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
+            playerName = offlinePlayer.getName();
+            meta.setOwningPlayer(offlinePlayer);
+        }
+
+        Component displayName = Component.text(playerName, NamedTextColor.GOLD, TextDecoration.BOLD);
+        meta.displayName(nonItalic(displayName));
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    // IMPORT FROM AXENO
     public static boolean hasEnoughItems(Player player, Material item, int amount) {
         int totalItems = 0;
         ItemStack[] contents = player.getInventory().getContents();
@@ -209,5 +249,13 @@ public class ItemUtils {
         Biome playerBiome = player.getWorld().getBiome(player.getLocation());
 
         return biomeToSignType.getOrDefault(playerBiome, Material.OAK_SIGN);
+    }
+
+    public static Component getDefaultItemName(Material material) {
+        return Component.translatable(material.translationKey());
+    }
+
+    public static Component getDefaultItemName(ItemStack itemStack) {
+        return getDefaultItemName(itemStack.getType());
     }
 }

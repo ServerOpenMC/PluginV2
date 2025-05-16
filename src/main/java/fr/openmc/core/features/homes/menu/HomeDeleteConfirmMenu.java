@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.utils.HomeUtil;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -51,7 +52,7 @@ public class HomeDeleteConfirmMenu extends Menu {
         try {
             content.put(2, new ItemBuilder(
                             this,
-                            CustomStack.getInstance("omc_homes:omc_homes_icon_bin_red").getItemStack(),
+                            CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(),
                             itemMeta -> {
                                 itemMeta.setDisplayName("§cConfirmer la suppression");
                                 itemMeta.setLore(List.of(
@@ -73,7 +74,7 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(6, new ItemBuilder(
                     this,
-                    CustomStack.getInstance("omc_homes:omc_homes_icon_bin").getItemStack(),
+                    CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin").getBest(),
                     itemMeta ->
                     itemMeta.setDisplayName("§aAnnuler la suppression")).setBackButton()
             );

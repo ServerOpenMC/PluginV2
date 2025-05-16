@@ -1,6 +1,13 @@
 package fr.openmc.core.utils.customitems;
 
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.utils.customitems.buttons.*;
+import fr.openmc.core.utils.customitems.items.company.CompanyBox;
+import fr.openmc.core.utils.customitems.items.homes.Bin;
+import fr.openmc.core.utils.customitems.items.homes.BinRed;
+import fr.openmc.core.utils.customitems.items.homes.Information;
+import fr.openmc.core.utils.customitems.items.homes.Upgrade;
+import fr.openmc.core.utils.customitems.items.homes.icons.*;
 import fr.openmc.core.utils.customitems.armors.SuitBoots;
 import fr.openmc.core.utils.customitems.armors.SuitChestplate;
 import fr.openmc.core.utils.customitems.armors.SuitHelmet;
@@ -24,6 +31,8 @@ public class CustomItemRegistry {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
 
         // Ici, enregistrer tous les items custom
+
+        /* Buttons */
         new CloseButton();
         new PreviousPage();
         new NextPage();
@@ -31,10 +40,12 @@ public class CustomItemRegistry {
         new RefuseButton();
         new SearchButton();
         new OneButton();
+        new TenButton();
         new StackButton();
         new MinusButton();
         new PlusButton();
 
+        /* Items */
         new ContestShell();
         new Aywenite();
         new KebabItem();
@@ -45,6 +56,23 @@ public class CustomItemRegistry {
         new SuitChestplate();
         new SuitLeggings();
         new SuitBoots();
+
+        new CompanyBox();
+
+        new BinRed();
+        new Bin();
+        new Information();
+        new Upgrade();
+        new Axenq();
+        new Bank();
+        new Chateau();
+        new Chest();
+        new Default();
+        new Farm();
+        new Home();
+        new Sandblock();
+        new Shop();
+        new Xernas();
     }
 
     public static void register(String name, CustomItem item) {

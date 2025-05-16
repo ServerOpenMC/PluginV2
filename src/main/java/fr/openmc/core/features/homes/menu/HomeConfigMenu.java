@@ -11,6 +11,7 @@ import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -55,10 +56,11 @@ public class HomeConfigMenu extends Menu {
                 itemMeta.setLore(List.of(ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône de votre home"));
             }).setNextMenu(new HomeChangeIconMenu(player, home)));
 
-            content.put(24, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_bin_red").getItemStack(), itemMeta -> {
-                itemMeta.setDisplayName(new FontImageWrapper("omc_homes:bin").getString() + " §cSupprimer le home");
+            //TODO mettre un font de "omc_homes:bin" avant '§cSupprimer le home'
+            content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
+                itemMeta.setDisplayName("§cSupprimer le home");
                 itemMeta.setLore(List.of(ChatColor.GRAY + "■ §cClique §4gauche §cpour supprimer votre home"));
-            }).setNextMenu(new HomeDeleteConfirmMenu(player, home)));
+            }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
 
             content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setNextMenu(new HomeMenu(player)));
             content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());

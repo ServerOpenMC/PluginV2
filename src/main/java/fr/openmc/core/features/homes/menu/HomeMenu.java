@@ -7,6 +7,7 @@ import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -100,7 +101,7 @@ public class HomeMenu extends PaginatedMenu {
             Map<Integer, ItemStack> map = new HashMap<>();
 
             if(!wasTarget) {
-                map.put(45, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_information").getItemStack(),
+                map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information").getBest(),
                         itemMeta -> {
                             itemMeta.setDisplayName("§8(§bⓘ§8) §6Informations sur vos homes");
                             itemMeta.setLore(List.of(
@@ -113,7 +114,7 @@ public class HomeMenu extends PaginatedMenu {
                     )
                 );
 
-                map.put(53, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_upgrade").getItemStack(), itemMeta -> {
+                map.put(53, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(), itemMeta -> {
                     itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Click ici)");
                     itemMeta.setLore(List.of(
                         "§6Cliquez pour améliorer vos homes"
