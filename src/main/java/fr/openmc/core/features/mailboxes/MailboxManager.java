@@ -145,11 +145,12 @@ public class MailboxManager {
         }
     }
 
-    public static void saveLetter(Letter letter) {
+    public static boolean saveLetter(Letter letter) {
         try {
-            letterDao.createOrUpdate(letter);
+            return letterDao.createOrUpdate(letter) != null;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
