@@ -169,14 +169,16 @@ public final class MenuLib implements Listener {
 	 * Handles the event that occurs when a player closes an inventory associated with a {@link Menu}.
 	 */
 	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent e) {
-		System.out.println("close" + e);
-		if (e.getInventory().getHolder() instanceof PaginatedMenu menu) {
-			menu.onClose(e);
-			return;
-		}
+	public void onClose(InventoryCloseEvent e) {
 		if (e.getInventory().getHolder() instanceof Menu menu) {
+			System.out.println("menu" + menu.getName());
+			System.out.println("Holder class: " + e.getInventory().getHolder().getClass().getName());
+			try {
 			menu.onClose(e);
+			} catch (Exception ignore) {
+				ignore.printStackTrace();
+
+			}
 		}
 	}
 }

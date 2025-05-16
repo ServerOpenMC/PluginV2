@@ -182,20 +182,25 @@ public class CityChestMenu extends PaginatedMenu {
             return;
         }
 
+        System.out.print("1");
+
         City city = CityManager.getPlayerCity(player.getUniqueId()); // Permet de charger les villes en background
         if (city == null) {
             return;
         }
+
+        System.out.print("2");
 
         Inventory inv = event.getInventory();
         CityChestMenu menu = city.getChestMenu();
         if (menu == null) {
             return;
         }
+        System.out.print("3");
         if (inv != menu.getInventory()) {
             return;
         }
-
+        System.out.print("4");
         exit(city, inv, menu);
     }
 

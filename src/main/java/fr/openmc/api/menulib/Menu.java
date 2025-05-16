@@ -85,6 +85,7 @@ public abstract class Menu implements InventoryHolder {
 	 * @param event The {@link InventoryCloseEvent} containing details about the close action,
 	 */
 	public abstract void onClose(InventoryCloseEvent event);
+
 	/**
 	 * Retrieves the content of this menu as a mapping between inventory slot indexes and {@link ItemStack}s.
 	 * Each entry in the map represents an item stored in a specific slot of the menu's inventory.
