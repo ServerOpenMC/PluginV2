@@ -9,6 +9,7 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.OfflinePlayer;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -111,6 +113,35 @@ public class MailboxManager {
                     "Erreur lors de l'envoi des items batch à des joueurs hors ligne", sqlEx);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static void sendMailNotification(Player player) {
+        try {
+            QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
+            query.where().eq("receiver", player.getUniqueId().toString()).and().eq("refused", false);
+            long count = letterDao.countOf(query.prepare());
+
+            Component message = null;
+            message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN);
+            if (count > 1) {
+                message.append(Component.text(count, NamedTextColor.GREEN))
+                        .append(Component.text(" lettres.", NamedTextColor.DARK_GREEN));
+            } else if (count == 1) {
+                message.append(Component.text("une", NamedTextColor.GREEN))
+                        .append(Component.text(" lettre.", NamedTextColor.DARK_GREEN));
+            }
+
+            message.append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
+                    .clickEvent(ClickEvent.runCommand("/mailbox"))
+                    .hoverEvent(getHoverEvent("Ouvrir ma boîte aux lettres"))
+                    .append(Component.text(" pour ouvrir les lettres", NamedTextColor.GOLD));
+
+            if (message != null)
+                sendSuccessMessage(player, message);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            sendFailureMessage(player, "Une erreur est survenue.");
         }
     }
 
