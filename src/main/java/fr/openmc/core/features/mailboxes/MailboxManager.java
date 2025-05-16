@@ -154,6 +154,15 @@ public class MailboxManager {
         }
     }
 
+    public static boolean deleteLetter(Letter letter) {
+        try {
+            return letterDao.delete(letter) != 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static Letter getById(Player player, int id) {
         try {
             Letter letter = letterDao.queryForId(id);
