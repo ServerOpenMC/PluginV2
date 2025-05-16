@@ -30,12 +30,11 @@ class Letter {
         // required by ORMLite
     }
 
-    Letter(String sender, String receiver, byte[] items, int numItems, Date sent, boolean refused) {
+    Letter(String sender, String receiver, byte[] items, int numItems, boolean refused) {
         this.sender = sender;
         this.receiver = receiver;
         this.items = items;
         this.numItems = numItems;
-        this.sent = sent;
         this.refused = refused;
     }
 
