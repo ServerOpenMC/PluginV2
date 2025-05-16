@@ -145,6 +145,28 @@ public class MailboxManager {
         }
     }
 
+    public static void saveLetter(Letter letter) {
+        try {
+            letterDao.createOrUpdate(letter);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Letter getById(Player player, int id) {
+        try {
+            Letter letter = letterDao.queryForId(id);
+            if (letter.isRefused())
+                return null;
+
+            return letter;
+        } catch (Exception e) {
+            e.printStackTrace();
+            sendFailureMessage(player, "Une erreur est survenue.");
+            return null;
+        }
+    }
+
     // todo
     public static boolean canSend(Player sender, OfflinePlayer receiver) {
         return true;
