@@ -9,7 +9,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 
 @DatabaseTable(tableName = "mail")
-class Letter {
+public class Letter {
     @DatabaseField(id = true, generatedId = true)
     @Getter
     private int id;
