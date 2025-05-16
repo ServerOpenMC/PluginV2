@@ -18,17 +18,16 @@ import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
 
+@Getter
 @DatabaseTable(tableName = "mail")
 public class Letter {
     @DatabaseField(id = true, generatedId = true)
-    @Getter
     private int id;
     @DatabaseField(canBeNull = false)
     private String sender;
     @DatabaseField(canBeNull = false)
     private String receiver;
     @DatabaseField(canBeNull = false)
-    @Getter
     private byte[] items;
     @DatabaseField(columnName = "num_items", canBeNull = false)
     private int numItems;
