@@ -216,6 +216,15 @@ public class DynamicCooldownManager {
     }
 
     /**
+     * Removes all cooldowns for a specific entity
+     * 
+     * @param uuid Entity UUID
+     */
+    public static void clear(String uuid) {
+        clear(UUID.fromString(uuid));
+    }
+
+    /**
      * Removes a specific cooldown group for an entity
      * 
      * @param uuid  Entity UUID
@@ -229,5 +238,15 @@ public class DynamicCooldownManager {
                 cooldowns.remove(uuid);
             }
         }
+    }
+
+    /**
+     * Removes a specific cooldown group for an entity
+     * 
+     * @param uuid  Entity UUID
+     * @param group Cooldown group
+     */
+    public static void clear(String uuid, String group) {
+        clear(UUID.fromString(uuid), group);
     }
 }
