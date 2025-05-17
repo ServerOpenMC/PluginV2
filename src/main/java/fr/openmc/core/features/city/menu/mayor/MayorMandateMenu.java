@@ -20,6 +20,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -48,6 +49,11 @@ public class MayorMandateMenu extends Menu {
     @Override
     public void onInventoryClick(InventoryClickEvent click) {
         //empty
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+
     }
 
     @Override
@@ -162,5 +168,10 @@ public class MayorMandateMenu extends Menu {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

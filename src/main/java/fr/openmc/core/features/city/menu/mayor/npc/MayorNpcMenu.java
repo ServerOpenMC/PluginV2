@@ -20,6 +20,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -51,6 +52,11 @@ public class MayorNpcMenu extends Menu {
     @Override
     public void onInventoryClick(InventoryClickEvent click) {
         //empty
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+
     }
 
     @Override
@@ -158,5 +164,10 @@ public class MayorNpcMenu extends Menu {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

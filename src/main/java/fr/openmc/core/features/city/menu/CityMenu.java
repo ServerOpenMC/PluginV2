@@ -446,7 +446,7 @@ public class CityMenu extends Menu {
                     return;
                 }
 
-                new ChestMenu(city, 1).open(player);
+				new CityChestMenu(player, city, 1).open();
             }));
 
             inventory.put(40, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {

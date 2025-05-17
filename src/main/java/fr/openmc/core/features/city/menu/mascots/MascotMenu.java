@@ -41,10 +41,6 @@ import java.util.function.Supplier;
 
 import static fr.openmc.core.features.city.mascots.MascotsListener.movingMascots;
 import static fr.openmc.core.features.city.mascots.MascotsManager.upgradeMascots;
-import static fr.openmc.core.features.city.mascots.MascotsListener.movingMascots;
-import static fr.openmc.core.features.city.mascots.MascotsManager.giveChest;
-import static fr.openmc.core.features.city.mascots.MascotsManager.upgradeMascots;
-import static fr.openmc.core.utils.chronometer.Chronometer.startChronometer;
 
 public class MascotMenu extends Menu {
 
