@@ -1,4 +1,4 @@
-package fr.openmc.api.menulib.default_menu;
+package fr.openmc.core.utils.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -6,9 +6,6 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -65,57 +62,39 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public void onClose(InventoryCloseEvent event) {
-
-    }
-
-    @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
-        try {
-            List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);;
-            loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
 
-            List<Component> loreDeny = new ArrayList<>(loreDenyMsg);;
-            loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
+        List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);
+        loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
 
-            ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
-            ItemStack acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
+        List<Component> loreDeny = new ArrayList<>(loreDenyMsg);
+        loreDeny.add(Component.text("§e§lCLIQUEZ ICI POUR REFUSER"));
 
-            inventory.put(3, new ItemBuilder(this, refuseBtn, itemMeta -> {
-                itemMeta.displayName(Component.text("§cRefuser"));
-                itemMeta.lore(loreDeny);
-            }).setOnClick(event -> {
-                try {
-                    deny.run();
-                } catch (Exception e) {
-                    MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-                    player.closeInventory();
-                    e.printStackTrace();
-                }
-            }));
+        ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
+        ItemStack  acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
 
-            inventory.put(5, new ItemBuilder(this, acceptBtn, itemMeta -> {
-                itemMeta.displayName(Component.text("§aAccepter"));
-                itemMeta.lore(loreAccept);
-            }).setOnClick(event -> {
-                try {
-                    accept.run();
-                } catch (Exception e) {
-                    MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-                    player.closeInventory();
-                    e.printStackTrace();
-                }
-            }));
+        inventory.put(3, new ItemBuilder(this, refuseBtn, itemMeta -> {
+            itemMeta.displayName(Component.text("§cRefuser"));
+            itemMeta.lore(loreDeny);
+        }).setOnClick(event -> {
+            deny.run();
+        }));
 
-            return inventory;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
-        }
+        inventory.put(5, new ItemBuilder(this, acceptBtn, itemMeta -> {
+            itemMeta.displayName(Component.text("§aAccepter"));
+            itemMeta.lore(loreAccept);
+        }).setOnClick(event -> {
+            accept.run();
+        }));
+
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
     }
 
     @Override

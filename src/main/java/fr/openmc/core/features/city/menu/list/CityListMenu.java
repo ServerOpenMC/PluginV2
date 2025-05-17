@@ -15,6 +15,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,7 +83,12 @@ public class CityListMenu extends PaginatedMenu {
 		})));
 		return items;
 	}
-	
+
+	@Override
+	public List<Integer> getTakableSlot() {
+		return List.of();
+	}
+
 	@Override
 	public Map<Integer, ItemStack> getButtons() {
 		Map<Integer, ItemStack> map = new HashMap<>();
@@ -114,6 +120,11 @@ public class CityListMenu extends PaginatedMenu {
 		if (city != null) {
 			new CityListDetailsMenu(getOwner(), city).open();
 		}
+	}
+
+	@Override
+	public void onClose(InventoryCloseEvent event) {
+		//empty
 	}
 	
 	/**
