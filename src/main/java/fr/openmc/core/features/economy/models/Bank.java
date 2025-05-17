@@ -21,7 +21,7 @@ public class Bank {
         // necessary for OrmLite
     }
 
-    public Bank(String player) {
+    public Bank(UUID player) {
         this.player = player;
         this.balance = 0;
     }
