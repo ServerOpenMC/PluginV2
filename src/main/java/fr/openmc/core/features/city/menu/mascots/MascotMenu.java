@@ -216,4 +216,9 @@ public class MascotMenu extends Menu {
         }
         return Material.matchMaterial(eggName);
     }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
 }

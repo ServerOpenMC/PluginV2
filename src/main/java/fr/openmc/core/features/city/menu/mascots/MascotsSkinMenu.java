@@ -92,6 +92,11 @@ public class MascotsSkinMenu extends Menu {
         //empty
     }
 
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
     private ItemStack createMascotButton(MascotOption option) {
         return new ItemBuilder(this, option.material(), itemMeta -> {
             itemMeta.displayName(Component.text("§7" + option.displayName()));

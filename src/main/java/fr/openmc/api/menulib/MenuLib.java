@@ -114,39 +114,16 @@ public final class MenuLib implements Listener {
 	 */
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		System.out.println(e.getSlot());
-		if (e.getInventory().getHolder() instanceof PaginatedMenu menu) {
-			if (e.getCurrentItem() == null) {
-				return;
-			}
-			if (menu.getTakableSlot().contains(e.getSlot())) {
-				return;
-			}
-			e.setCancelled(true);
-			menu.onInventoryClick(e);
-
-			try {
-				itemClickEvents.forEach((menu1, itemStackConsumerMap) -> {
-					if (menu1.equals(menu)) {
-						itemStackConsumerMap.forEach((itemStack, inventoryClickEventConsumer) -> {
-							if (itemStack.equals(e.getCurrentItem())) {
-								inventoryClickEventConsumer.accept(e);
-							}
-						});
-					}
-				});
-			} catch (Exception ignore) {
-
-			}
-			return;
-		}
-
 		if (e.getInventory().getHolder() instanceof Menu menu) {
 			e.setCancelled(true);
 			if (e.getCurrentItem() == null) {
 				return;
 			}
-			
+
+			if (menu.getTakableSlot().contains(e.getSlot())) {
+				return;
+			}
+
 			menu.onInventoryClick(e);
 			
 			try {
@@ -170,15 +147,11 @@ public final class MenuLib implements Listener {
 	 */
 	@EventHandler
 	public void onClose(InventoryCloseEvent e) {
-		if (e.getInventory().getHolder() instanceof Menu menu) {
-			System.out.println("menu" + menu.getName());
-			System.out.println("Holder class: " + e.getInventory().getHolder().getClass().getName());
-			try {
+		if (e.getInventory().getHolder() instanceof PaginatedMenu menu) {
 			menu.onClose(e);
-			} catch (Exception ignore) {
-				ignore.printStackTrace();
-
-			}
+		}
+		if (e.getInventory().getHolder() instanceof Menu menu) {
+			menu.onClose(e);
 		}
 	}
 }

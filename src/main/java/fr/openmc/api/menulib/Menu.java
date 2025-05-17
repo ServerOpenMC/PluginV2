@@ -17,6 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -95,6 +96,15 @@ public abstract class Menu implements InventoryHolder {
 	 */
 	@NotNull
 	public abstract Map<Integer, ItemStack> getContent();
+
+	/**
+	 * Retrieves a list of inventory slot indices that can be taken from the menu.
+	 * These slots are typically used for items that can be moved or removed by the player.
+	 *
+	 * @return A non-null list of integers representing the takable inventory slot indices.
+	 */
+
+	public abstract List<Integer> getTakableSlot();
 	
 	/**
 	 * Opens the menu for the owner player. If the menu specifies a required permission,

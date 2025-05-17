@@ -117,6 +117,11 @@ public class MascotsDeadMenu extends Menu {
         //empty
     }
 
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
     private boolean hasRequiredItems(Player player, Map<Material, Integer> requiredItems) {
         for (Map.Entry<Material, Integer> entry : requiredItems.entrySet()) {
             Material material = entry.getKey();

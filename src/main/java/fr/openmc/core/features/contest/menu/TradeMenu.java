@@ -201,4 +201,9 @@ public class TradeMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {
         //empty
     }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
 }

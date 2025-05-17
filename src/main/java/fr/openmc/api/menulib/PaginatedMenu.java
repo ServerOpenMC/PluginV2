@@ -72,16 +72,6 @@ public abstract class PaginatedMenu extends Menu {
 	public abstract List<ItemStack> getItems();
 
 	/**
-	 * Retrieves a list of inventory slot indices that can be taken from the menu.
-	 * These slots are typically used for items that can be moved or removed by the player.
-	 *
-	 * @return A non-null list of integers representing the takable inventory slot indices.
-	 */
-
-	public abstract List<Integer> getTakableSlot();
-
-
-	/**
 	 * Retrieves a mapping of button slots to their corresponding {@link ItemStack} instances
 	 * for the current menu. Each entry in the map represents a specific button within the menu,
 	 * where the key is the slot index and the value is the item displayed as the button.

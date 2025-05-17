@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.mascots.MascotUtils.getEntityByMascotUUID;
@@ -80,5 +81,10 @@ public class CityListDetailsMenu extends Menu { // TODO : Adaptation pour les ma
 	@Override
 	public void onClose(InventoryCloseEvent event) {
 		//empty
+	}
+
+	@Override
+	public List<Integer> getTakableSlot() {
+		return List.of();
 	}
 }

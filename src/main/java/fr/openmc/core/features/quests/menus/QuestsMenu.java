@@ -131,6 +131,11 @@ public class QuestsMenu extends Menu {
         //empty
     }
 
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
     private void updateInventory() {
         this.getInventory().clear();
         Map<Integer, ItemStack> content = this.getContent();

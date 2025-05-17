@@ -202,6 +202,11 @@ public class CityChunkMenu extends Menu {
         //empty
     }
 
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
     private void addNavigationButtons(Map<Integer, ItemStack> inventory) {
         inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(Component.text("§aRetour"));

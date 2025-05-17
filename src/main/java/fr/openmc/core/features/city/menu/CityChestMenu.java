@@ -33,6 +33,7 @@ public class CityChestMenu extends PaginatedMenu {
     private final City city;
     @Getter
     private final int page;
+    private boolean loaded;
 
     public static final int UPGRADE_PER_MONEY = 3000;
     public static final int UPGRADE_PER_AYWENITE = 5;
@@ -58,7 +59,7 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.BOTTOM;
     }
 
     @Override
@@ -66,19 +67,23 @@ public class CityChestMenu extends PaginatedMenu {
         try {
             ItemStack[] contents = city.getChestContent(this.page);
             city.setChestWatcher(getOwner().getUniqueId());
-            city.setChestMenu(this);
+
+            System.out.println("open contents " + Arrays.toString(contents));
+
             if (contents == null) {
+                System.out.println("empty : " + contents);
                 return Collections.emptyList();
             }
 
-
+            System.out.println(List.of(contents));
             return List.of(contents);
-        } catch (Exception e) {
-            return Collections.emptyList();
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
         }
+        return Collections.emptyList();
     }
 
-    private final List<Integer> cityItemSlot = List.of(10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 25, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43);
+    private final List<Integer> cityItemSlot = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44);
 
     @Override
     public List<Integer> getTakableSlot() {
@@ -98,12 +103,7 @@ public class CityChestMenu extends PaginatedMenu {
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
         }).setOnClick(inventoryClickEvent -> {
-            CityChestMenu menu = city.getChestMenu();
-            if (menu == null) {
-                return;
-            }
-
-            exit(city, getInventory(), menu);
+            exit(city, getInventory());
             player.closeInventory();
         }));
 
@@ -158,7 +158,7 @@ public class CityChestMenu extends PaginatedMenu {
 
                 city.upgradeChest();
                 MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
-                exit(city, getInventory(), this);
+                exit(city, getInventory());
                 player.closeInventory();
             }));
         }
@@ -176,43 +176,37 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        System.out.print("onClose");
+        System.out.println("onClose");
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) {
             return;
         }
 
-        System.out.print("1");
+        System.out.println("1");
 
         City city = CityManager.getPlayerCity(player.getUniqueId()); // Permet de charger les villes en background
         if (city == null) {
             return;
         }
 
-        System.out.print("2");
+        System.out.println("2");
 
         Inventory inv = event.getInventory();
-        CityChestMenu menu = city.getChestMenu();
-        if (menu == null) {
-            return;
-        }
-        System.out.print("3");
-        if (inv != menu.getInventory()) {
-            return;
-        }
-        System.out.print("4");
-        exit(city, inv, menu);
+        exit(city, inv);
     }
 
-    private void exit(City city, Inventory inv, CityChestMenu menu) {
+    private void exit(City city, Inventory inv) {
         for (int i = 45; i < 54; i++) {
             inv.clear(i);
         }
 
-        city.saveChestContent(menu.getPage(), inv.getContents());
+        System.out.println("exit - saveChest " + Arrays.toString(inv.getContents()));
 
-        city.setChestMenu(null);
+        city.saveChestContent(this.getPage(), inv.getContents());
+
+        System.out.println("exit - chestWatcher");
         city.setChestWatcher(null);
+        System.out.println("exit - chestWatcher nice");
     }
 
     public boolean hasNextPage() {
