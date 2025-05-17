@@ -99,7 +99,7 @@ public class AdminShopManager {
         }
 
         double totalPrice = item.getActualBuyPrice() * amount;
-        if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), totalPrice)) {
+        if (EconomyManager.withdrawBalance(player.getUniqueId(), totalPrice)) {
             player.getInventory().addItem(new ItemStack(item.getMaterial(), amount));
             sendInfo(player, "Vous avez acheté " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
             adjustPrice(getPlayerCategory(player), itemId, amount, true);
@@ -133,7 +133,7 @@ public class AdminShopManager {
 
         double totalPrice = item.getActualSellPrice() * amount; // Calculate the total price for the items
         removeItems(player, item.getMaterial(), amount); // Remove items from the player's inventory
-        EconomyManager.getInstance().addBalance(player.getUniqueId(), totalPrice); // Add money to the player's balance
+        EconomyManager.addBalance(player.getUniqueId(), totalPrice); // Add money to the player's balance
         sendInfo(player, "Vous avez vendu " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
         adjustPrice(getPlayerCategory(player), itemId, amount, false); // Adjust the price based on the transaction
     }

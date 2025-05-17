@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.features.leaderboards.listeners.LeaderboardListener;
 import fr.openmc.core.features.leaderboards.utils.PacketUtils;
@@ -357,7 +358,10 @@ public class LeaderboardManager {
     private void updatePlayerMoneyMap() {
         playerMoneyMap.clear();
         int rank = 1;
-        Map<UUID, Double> combinedBalances = new HashMap<>(EconomyManager.getBalances());
+
+        Map<UUID, EconomyPlayer> balances = EconomyManager.getBalances();
+        Map<UUID, Double> combinedBalances = new HashMap<>();
+        balances.forEach((player, balance) -> combinedBalances.put(player, balance.getBalance()));
 
         BankManager.getBanks().forEach((uuid, bank) -> {
             combinedBalances.merge(uuid, bank.getBalance(), Double::sum);

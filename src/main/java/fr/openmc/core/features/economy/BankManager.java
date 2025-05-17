@@ -77,7 +77,7 @@ public class BankManager {
         if (InputUtils.isInputMoney(input)) {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
-            if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
+            if (EconomyManager.withdrawBalance(player.getUniqueId(), moneyDeposit)) {
                 addBankBalance(player.getUniqueId(), moneyDeposit);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
@@ -96,7 +96,7 @@ public class BankManager {
                 MessagesManager.sendMessage(player, Component.text("Tu n'a pas assez d'argent en banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
                 withdrawBankBalance(player.getUniqueId(), moneyDeposit);
-                EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
+                EconomyManager.addBalance(player.getUniqueId(), moneyDeposit);
                 MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
             }
         } else {
@@ -107,7 +107,7 @@ public class BankManager {
     private static Bank getPlayerBank(UUID player) {
         Bank bank = banks.get(player);
         if (bank != null) return bank;
-        return new Bank(player.toString());
+        return new Bank(player);
     }
 
     private static void saveBank(Bank bank) {

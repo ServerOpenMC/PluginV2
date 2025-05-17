@@ -169,7 +169,7 @@ public class ScoreboardManager implements Listener {
             objective.getScore("§8• §fEntreprise§7: "+compName).setScore(9);
         }
 
-        String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
+        String balance = EconomyManager.getMiniBalance(player.getUniqueId());
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
 
         objective.getScore("  ").setScore(7);

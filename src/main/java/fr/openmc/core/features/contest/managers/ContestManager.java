@@ -465,7 +465,7 @@ public class ContestManager {
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
+                EconomyManager.addBalance(player.getUniqueId(), money);
                 // Gagnant - Aywenite
                 int ayweniteMin = 40;
                 int ayweniteMax = 60;
@@ -482,7 +482,7 @@ public class ContestManager {
 
                 Random randomMoney = new Random();
                 money = randomMoney.nextInt(moneyMin, moneyMax);
-                EconomyManager.getInstance().addBalance(player.getUniqueId(), money);
+                EconomyManager.addBalance(player.getUniqueId(), money);
 
                 // Perdant - Aywenite
                 int ayweniteMin = 20;

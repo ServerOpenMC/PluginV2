@@ -33,7 +33,7 @@ public class QuestMoneyReward implements QuestReward {
      */
     @Override
     public void giveReward(Player player) {
-        EconomyManager.getInstance().addBalance(player.getUniqueId(), amount);
+        EconomyManager.addBalance(player.getUniqueId(), amount);
         MessagesManager.sendMessage(
                 player,
                 Component.text("§aVous avez reçu §e" + amount + EconomyManager.getEconomyIcon()),

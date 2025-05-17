@@ -36,7 +36,6 @@ import java.util.*;
 public class Company {
 
     private final String name;
-    private final EconomyManager economyManager = EconomyManager.getInstance();
     private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
     private final HashMap<UUID, Set<CorpPermission>> permsCache = new HashMap<>();
     private final Map<UUID, MerchantData> merchants = new HashMap<>();
@@ -281,7 +280,7 @@ public class Company {
 
             if (shopUUID==null){
                 newShop = new Shop(new ShopOwner(this), shopCounter);
-                economyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
+                EconomyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
             } else {
                 newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
             }
@@ -321,7 +320,7 @@ public class Company {
                 }
                 shops.remove(shop);
                 CompanyManager.shops.remove(shop);
-                economyManager.addBalance(player.getUniqueId(), 75);
+                EconomyManager.addBalance(player.getUniqueId(), 75);
                 return MethodState.SUCCESS;
             }
         }
@@ -485,7 +484,7 @@ public class Company {
             if (amount > 0) {
                 TransactionData transaction = new TransactionData(-amount, nature, additionalInfo, player.getUniqueId());
                 transactions.add(System.currentTimeMillis(), transaction);
-                economyManager.addBalance(player.getUniqueId(), amount);
+                EconomyManager.addBalance(player.getUniqueId(), amount);
             }
             return true;
         }
@@ -497,7 +496,7 @@ public class Company {
     }
 
     public boolean deposit(double amount, Player player, String nature, String additionalInfo) {
-        if (economyManager.withdrawBalance(player.getUniqueId(), amount)) {
+        if (EconomyManager.withdrawBalance(player.getUniqueId(), amount)) {
             balance += amount;
             if (amount > 0) {
                 TransactionData transaction = new TransactionData(amount, nature, additionalInfo, player.getUniqueId());

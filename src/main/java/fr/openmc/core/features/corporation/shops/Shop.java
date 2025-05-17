@@ -30,7 +30,6 @@ import java.util.*;
 public class Shop {
 
     private final ShopOwner owner;
-    private final EconomyManager economyManager = EconomyManager.getInstance();
     private final ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
     private final List<ShopItem> items = new ArrayList<>();
     private final List<ShopItem> sales = new ArrayList<>();
@@ -206,7 +205,7 @@ public class Shop {
         if (isOwner(buyer.getUniqueId())) {
             return MethodState.FAILURE;
         }
-        if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
+        if (!EconomyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
         double basePrice = item.getPrice(amount);
         item.setAmount(item.getAmount() - amount);
         turnover += item.getPrice(amount);
@@ -230,7 +229,7 @@ public class Shop {
                         amountToBuy -= supply.getAmount();
                         removeLatestSupply();
                         double supplierCut = suppliersCut * ((double) supply.getAmount() / amount);
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        EconomyManager.addBalance(supply.getSupplier(), supplierCut);
                         Player supplier = Bukkit.getPlayer(supply.getSupplier());
                         if (supplier!=null){
                             MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
@@ -239,7 +238,7 @@ public class Shop {
                     else {
                         supply.setAmount(supply.getAmount() - amountToBuy);
                         double supplierCut = suppliersCut * ((double) amountToBuy / amount);
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        EconomyManager.addBalance(supply.getSupplier(), supplierCut);
                         Player supplier = Bukkit.getPlayer(supply.getSupplier());
                         if (supplier!=null){
                             MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
@@ -254,7 +253,7 @@ public class Shop {
             owner.getCompany().deposit(companyCut, buyer, "Vente", getName());
         }
         else {
-            economyManager.addBalance(owner.getPlayer(), item.getPrice(amount));
+            EconomyManager.addBalance(owner.getPlayer(), item.getPrice(amount));
             Player player = Bukkit.getPlayer(owner.getPlayer());
             if (player!=null){
                 MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + item.getPrice(amount) + EconomyManager.getEconomyIcon() + ", l'argent vous a été transféré !"), Prefix.SHOP, MessageType.SUCCESS, false);
@@ -294,7 +293,7 @@ public class Shop {
         return new ItemBuilder(menu, fromShopMenu ? Material.GOLD_INGOT : Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§e§l" + (fromShopMenu ? "Informations" : getName()));
             List<String> lore = new ArrayList<>();
-            lore.add("§7■ Chiffre d'affaire : " + EconomyManager.getInstance().getFormattedNumber(turnover));
+            lore.add("§7■ Chiffre d'affaire : " + EconomyManager.getFormattedNumber(turnover));
             lore.add("§7■ Ventes : §f" + sales.size());
             if (!fromShopMenu)
                 lore.add("§7■ Cliquez pour accéder au shop");

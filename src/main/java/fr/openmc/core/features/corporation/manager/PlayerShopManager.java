@@ -16,7 +16,6 @@ import java.util.UUID;
 public class PlayerShopManager {
 
     private final Map<UUID, Shop> playerShops = new HashMap<>();
-    private final EconomyManager economyManager = EconomyManager.getInstance();
     private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
 
     @Getter static PlayerShopManager instance;
@@ -35,7 +34,7 @@ public class PlayerShopManager {
      * @return true if the shop has been created
      */
     public boolean createShop(UUID playerUUID, Block barrel, Block cashRegister, UUID shop_uuid) {
-        if (!economyManager.withdrawBalance(playerUUID, 500) && shop_uuid==null) {
+        if (!EconomyManager.withdrawBalance(playerUUID, 500) && shop_uuid==null) {
             return false;
         }
         Shop newShop;
@@ -70,7 +69,7 @@ public class PlayerShopManager {
         }
         playerShops.remove(playerUUID);
         CompanyManager.shops.remove(shop);
-        economyManager.addBalance(playerUUID, 400);
+        EconomyManager.addBalance(playerUUID, 400);
         return MethodState.SUCCESS;
     }
 

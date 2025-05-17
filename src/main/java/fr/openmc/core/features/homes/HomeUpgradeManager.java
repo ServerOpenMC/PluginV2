@@ -41,7 +41,7 @@ public class HomeUpgradeManager {
         HomeLimits nextUpgrade = getNextUpgrade(getCurrentUpgrade(player));
         Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
         if(nextUpgrade != null) {
-            double balance = EconomyManager.getInstance().getBalance(player.getUniqueId());
+            double balance = EconomyManager.getBalance(player.getUniqueId());
             int price = nextUpgrade.getPrice();
             int aywenite = nextUpgrade.getAyweniteCost();
 
@@ -63,7 +63,7 @@ public class HomeUpgradeManager {
                 }
 
                 ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
-                EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), price);
+                EconomyManager.withdrawBalance(player.getUniqueId(), price);
                 homesManager.updateHomeLimit(player.getUniqueId());
 
                 int updatedHomesLimit = homesManager.getHomeLimit(player.getUniqueId());

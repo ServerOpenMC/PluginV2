@@ -67,7 +67,7 @@ public class CityBankWithdrawMenu extends Menu {
                 loreBankWithdrawAll = List.of(
                         Component.text("§7Tout l'argent placé dans la §6Banque de la Ville §7vous sera donné"),
                         Component.text(""),
-                        Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                        Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
                 );
@@ -87,8 +87,8 @@ public class CityBankWithdrawMenu extends Menu {
                 }
                 if (halfMoneyBankCity != 0) {
                     city.updateBalance(moneyBankCity*-1);
-                    EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyBankCity);
-                    MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyBankCity) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+                    EconomyManager.addBalance(player.getUniqueId(), moneyBankCity);
+                    MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankCity) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
                 } else {
                     MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, le solde de la ville est vide"), Prefix.CITY, MessageType.ERROR, false);
                 }
@@ -101,7 +101,7 @@ public class CityBankWithdrawMenu extends Menu {
                 loreBankWithdrawHalf = List.of(
                         Component.text("§7La Moitié de l'Argent sera pris de la §6Banque de votre Ville §7pour vous le donner"),
                         Component.text(""),
-                        Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                        Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
                 );
@@ -122,8 +122,8 @@ public class CityBankWithdrawMenu extends Menu {
 
                 if (halfMoneyBankCity != 0) {
                     city.updateBalance(halfMoneyBankCity * -1);
-                    EconomyManager.getInstance().addBalance(player.getUniqueId(), halfMoneyBankCity);
-                    MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyBankCity) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+                    EconomyManager.addBalance(player.getUniqueId(), halfMoneyBankCity);
+                    MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankCity) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
                 } else {
                     MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, le solde de la ville est vide"), Prefix.CITY, MessageType.ERROR, false);
                 }

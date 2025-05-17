@@ -22,15 +22,14 @@ public class Pay {
     @Description("Permet de payer un joueur")
     @CommandPermission("omc.commands.pay")
     public void pay(Player player, Player target, @Range(min = 1) double amount) {
-        EconomyManager economyManager = EconomyManager.getInstance();
         if(player == target) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous payer vous-même"), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
-        if(economyManager.withdrawBalance(player.getUniqueId(), amount)) {
-            economyManager.addBalance(target.getUniqueId(), amount);
-            MessagesManager.sendMessage(player, Component.text("§aVous avez payé §e" + target.getName() + "§a de §e" + economyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
-            MessagesManager.sendMessage(target, Component.text("§aVous avez reçu §e" + economyManager.getFormattedNumber(amount) + "§a de §e" + player.getName()), Prefix.OPENMC, MessageType.INFO, true);
+        if(EconomyManager.withdrawBalance(player.getUniqueId(), amount)) {
+            EconomyManager.addBalance(target.getUniqueId(), amount);
+            MessagesManager.sendMessage(player, Component.text("§aVous avez payé §e" + target.getName() + "§a de §e" + EconomyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(target, Component.text("§aVous avez reçu §e" + EconomyManager.getFormattedNumber(amount) + "§a de §e" + player.getName()), Prefix.OPENMC, MessageType.INFO, true);
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 TransactionsManager.registerTransaction(new Transaction(
