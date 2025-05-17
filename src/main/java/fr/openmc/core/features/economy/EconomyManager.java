@@ -22,7 +22,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 public class EconomyManager {
-    @Getter private static Map<UUID, EconomyPlayer> players;
+    private static Map<UUID, EconomyPlayer> players;
 
     private static Dao<EconomyPlayer, String> playersDao;
 
@@ -84,8 +84,8 @@ public class EconomyManager {
         Map<UUID, EconomyPlayer> players = new HashMap<>();
         try {
             List<EconomyPlayer> dbPlayers = playersDao.queryForAll();
-            for (EconomyPlayer player : dbPlayers) {
-                players.put(UUID.fromString(player.getPlayer()), player);
+            for (EconomyPlayer bank : dbPlayers) {
+                players.put(bank.getPlayer(), bank);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
