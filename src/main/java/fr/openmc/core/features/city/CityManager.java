@@ -1,15 +1,22 @@
 package fr.openmc.core.features.city;
 
+import com.sk89q.worldedit.math.BlockVector2;
+import fr.openmc.api.chronometer.Chronometer;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
+import fr.openmc.core.features.city.listeners.ChestMenuListener;
+import fr.openmc.core.features.city.listeners.CityChatListener;
+import fr.openmc.core.features.city.listeners.ProtectionListener;
+import fr.openmc.core.features.city.mascots.Mascot;
+import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
-import com.sk89q.worldedit.math.BlockVector2;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.CommandsManager;
-import fr.openmc.core.features.city.commands.*;
-import fr.openmc.core.features.city.listeners.*;
-import fr.openmc.core.utils.chronometer.Chronometer;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -54,7 +61,7 @@ public class CityManager implements Listener {
 
             return playerCities.keySet().stream()
                     .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
-                    .map(uuid -> Bukkit.getOfflinePlayer(uuid).getName())
+                    .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.toList());
         }));
 
@@ -63,7 +70,8 @@ public class CityManager implements Listener {
                 new AdminCityCommands(),
                 new CityPermsCommands(),
                 new CityChatCommand(),
-                new CityChestCommand()
+                new CityChestCommand(),
+                new AdminMayorCommands()
         );
 
         OMCPlugin.registerEvents(
@@ -228,30 +236,36 @@ public class CityManager implements Listener {
             City cityz = cities.remove(city);
             if (cityz == null) return;
 
+            MayorManager mayorManager = MayorManager.getInstance();
+            mayorManager.cityMayor.remove(cityz);
+            mayorManager.cityElections.remove(cityz);
+            mayorManager.playerVote.remove(cityz);
+
             List<UUID> membersCopy = new ArrayList<>(cityz.getMembers());
             for (UUID members : membersCopy) {
                 Player member = Bukkit.getPlayer(members);
                 if (member == null) {
-                    member = Bukkit.getOfflinePlayer(members).getPlayer();
+                    member = CacheOfflinePlayer.getOfflinePlayer(members).getPlayer();
                     if (member == null) {
                         continue;
                     }
-                }
 
-                MascotsManager.removeChest(member);
+                    if (Chronometer.containsChronometer(members, "Mascot:chest")) {
+                        if (Bukkit.getEntity(members) != null) {
+                            Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
+                        }
+                    }
 
-                if (Chronometer.containsChronometer(members, "Mascot:chest")) {
-                    if (Bukkit.getEntity(members) != null) {
-                        Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
+                    Mascot mascot = MascotUtils.getMascotOfCity(cityz.getUUID());
+                    if (mascot != null) {
+
+                        if (!DynamicCooldownManager.isReady(mascot.getMascotUuid().toString(), "mascots:move")) {
+                            if (Bukkit.getEntity(members) != null) {
+                                DynamicCooldownManager.clear(mascot.getMascotUuid().toString(), "mascots:move");
+                            }
+                        }
                     }
                 }
-
-                if (Chronometer.containsChronometer(members, "mascotsMove")) {
-                    if (Bukkit.getEntity(members) != null) {
-                        Chronometer.stopChronometer(member, "mascotsMove", null, "%null%");
-                    }
-                }
-
                 cityz.removePlayer(members);
             }
 
@@ -273,15 +287,15 @@ public class CityManager implements Listener {
                 }
             }
 
+            if (DynamicCooldownManager.isReady(cityz.getUUID(), "city:type")) {
+                DynamicCooldownManager.clear(cityz.getUUID(), "city:type");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         freeClaim.remove(city);
-
-        if (CityTypeCooldown.isOnCooldown(city)) {
-            CityTypeCooldown.removeCityCooldown(city);
-        }
 
         MascotsManager.removeMascotsFromCity(city);
     }
@@ -338,7 +352,7 @@ public class CityManager implements Listener {
     public static String getCityType(String city_uuid) {
         String type = null;
 
-        if (city_uuid!=null){
+        if (city_uuid != null) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
                 statement.setString(1, city_uuid);
@@ -346,7 +360,7 @@ public class CityManager implements Listener {
                 if (rs.next()) {
                     type = rs.getString("type");
                 }
-            } catch (SQLException e){
+            } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
             }
@@ -358,7 +372,7 @@ public class CityManager implements Listener {
     public static int getCityPowerPoints(String city_uuid){
        int power_point = 0;
 
-        if (city_uuid!=null){
+        if (city_uuid != null) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT power_point FROM city_power WHERE city_uuid = ?");
                 statement.setString(1, city_uuid);
@@ -386,7 +400,7 @@ public class CityManager implements Listener {
                 String uuid = resultSet.getString("uuid");
                 uuidList.add(uuid);
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }

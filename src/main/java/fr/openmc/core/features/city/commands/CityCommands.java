@@ -1,33 +1,55 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.conditions.*;
-import fr.openmc.core.features.city.listeners.CityTypeCooldown;
-import fr.openmc.core.features.city.mascots.*;
 import com.sk89q.worldedit.math.BlockVector2;
-import fr.openmc.core.features.city.*;
-import fr.openmc.core.features.city.menu.*;
+import fr.openmc.api.chronometer.Chronometer;
+import fr.openmc.api.cooldown.DynamicCooldown;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityMessages;
+import fr.openmc.core.features.city.conditions.*;
+import fr.openmc.core.features.city.mascots.Mascot;
+import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.mascots.MascotsLevels;
+import fr.openmc.core.features.city.mascots.MascotsListener;
+import fr.openmc.core.features.city.mayor.CityLaw;
+import fr.openmc.core.features.city.mayor.ElectionType;
+import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
+import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.menu.CityTypeMenu;
+import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
+import fr.openmc.core.features.city.menu.list.CityListMenu;
+import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
+import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.WorldGuardApi;
-import fr.openmc.core.utils.chronometer.Chronometer;
-import fr.openmc.core.utils.cooldown.DynamicCooldown;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
+import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -38,6 +60,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.openmc.core.features.city.CityManager.getCityType;
+import static fr.openmc.core.features.city.conditions.CityCreateConditions.AYWENITE_CREATE;
+import static fr.openmc.core.features.city.conditions.CityCreateConditions.MONEY_CREATE;
+import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
+import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -83,6 +109,19 @@ public class CityCommands {
         }
     }
 
+    @Subcommand({"mayor", "maire"})
+    @CommandPermission("omc.commands.city.mayor")
+    @Description("Ouvre le menu des maires")
+    public void mayor(Player sender) {
+        if (MayorManager.getInstance().phaseMayor==1) {
+            MayorElectionMenu menu = new MayorElectionMenu(sender);
+            menu.open();
+        } else {
+            MayorMandateMenu menu = new MayorMandateMenu(sender);
+            menu.open();
+        }
+    }
+
     @Subcommand("accept")
     @CommandPermission("omc.commands.city.accept")
     @Description("Accepter une invitation")
@@ -92,7 +131,7 @@ public class CityCommands {
             MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        
+
         City newCity = CityManager.getPlayerCity(inviter.getUniqueId());
 
         if (!CityInviteConditions.canCityInviteAccept(newCity, inviter, player)) return;
@@ -251,7 +290,7 @@ public class CityCommands {
         city.delete();
         MessagesManager.sendMessage(sender, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
 
-        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
     }
 
     @Subcommand("claim")
@@ -379,6 +418,20 @@ public class CityCommands {
 
         new CityTypeMenu(player, name).open();
     }
+
+    @Subcommand("list")
+    @CommandPermission("omc.commands.city.list")
+    public void list(Player player) {
+        List<City> cities = new ArrayList<>(CityManager.getCities());
+        if (cities.isEmpty()) {
+            MessagesManager.sendMessage(player, Component.text("Aucune ville n'existe"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        CityListMenu menu = new CityListMenu(player, cities);
+        menu.open();
+    }
+
     @Subcommand("change")
     @CommandPermission("omc.commands.city.change")
     public void change(Player sender) {
@@ -431,13 +484,14 @@ public class CityCommands {
                 return;
             }
         }
-
-        if (CityTypeCooldown.isOnCooldown(city.getUUID())) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + CityTypeCooldown.getRemainingCooldown(city.getUUID()) + " seconds pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         CityManager.changeCityType(city.getUUID());
-        CityTypeCooldown.setCooldown(city.getUUID());
+        DynamicCooldownManager.use(city.getUUID(), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
+
+
         Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
 
         if (mascot != null) {
@@ -463,16 +517,66 @@ public class CityCommands {
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
+
+            String cityTypeActuel = getCityType(city.getUUID());
+            String cityTypeAfter = "";
+            if (cityTypeActuel != null) {
+                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
+                cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix§7" : "§cen guerre§7";
+            }
+
+            MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
+
         }
 
         MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le §5type §fde votre §dville"), Prefix.CITY, MessageType.SUCCESS, false);
+    }
+
+    @Subcommand({"setwarp"})
+    @Description("Déplacer le warp de votre ville")
+    public void setWarpCommand(Player player) {
+        setWarp(player);
+    }
+
+    @Subcommand({"warp"})
+    @Description("Teleporte au warp commun de la ville")
+    public void warp(Player player) {
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (playerCity == null) return;
+
+        CityLaw law = playerCity.getLaw();
+        Location warp = law.getWarp();
+
+        if (warp == null) {
+            if (MayorManager.getInstance().phaseMayor == 2) {
+                MessagesManager.sendMessage(player, Component.text("Le Warp de la Ville n'est pas encore défini ! Demandez au §6Maire §fActuel d'en mettre un ! §8§o*via /city setwarp ou avec le Menu des Lois*"), Prefix.CITY, MessageType.INFO, true);
+                return;
+            }
+            MessagesManager.sendMessage(player, Component.text("Le Warp de la Ville n'est pas encore défini ! Vous devez attendre que un Maire soit élu pour mettre un Warp"), Prefix.CITY, MessageType.INFO, true);
+            return;
+        }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.teleport(warp);
+                        MessagesManager.sendMessage(player, Component.text("Vous avez été envoyé au Warp §fde votre §dVille"), Prefix.CITY, MessageType.SUCCESS, true);
+                    }
+                }.runTaskLater(OMCPlugin.getInstance(), 10);
+            }
+        }.runTaskLater(OMCPlugin.getInstance(), 15);
     }
 
     // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
     @Subcommand({"bank view"})
     @Description("Ouvre le menu de la banque de ville")
     public void bank(Player player) {
-        if (CityManager.getPlayerCity(player.getUniqueId()) == null) 
+        if (CityManager.getPlayerCity(player.getUniqueId()) == null)
             return;
 
         new CityBankMenu(player).open();
@@ -482,7 +586,7 @@ public class CityCommands {
     @Description("Met de votre argent dans la banque de ville")
     void deposit(Player player, @Range(min=1) String input) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        
+
         if (!CityBankConditions.canCityDeposit(city, player)) return;
 
         city.depositCityBank(player, input);
@@ -503,7 +607,7 @@ public class CityCommands {
 
     // ACTIONS
 
-    public static boolean createCity(Player player, String name, String type) {
+    public static boolean createCity(Player player, String name, String type, Chunk origin) {
 
         if (!CityCreateConditions.canCityCreate(player)){
             MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -514,7 +618,6 @@ public class CityCommands {
 
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
 
-        Chunk origin = player.getChunk();
         AtomicBoolean isClaimed = new AtomicBoolean(false);
 
         if (WorldGuardApi.doesChunkContainWGRegion(origin)) {
@@ -553,9 +656,16 @@ public class CityCommands {
             }
         });
 
-        // innutile de recheck si le joueur a assez de ressource vu qu'on check dans CityCreateConditions
-        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE);
-        ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), CityCreateConditions.AYWENITE_CREATE);
+        if (EconomyManager.getInstance().getBalance(player.getUniqueId()) < MONEY_CREATE) {
+            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() +" §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
+        }
+
+        if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), AYWENITE_CREATE)) {
+            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE +" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+        }
+
+        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), MONEY_CREATE);
+        ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), AYWENITE_CREATE);
 
         City city = CityManager.createCity(player, cityUUID, name, type);
         city.addPlayer(uuid);
@@ -566,12 +676,78 @@ public class CityCommands {
 
         player.closeInventory();
 
+        // SETUP MAIRE
+        MayorManager mayorManager = MayorManager.getInstance();
+        if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
+            mayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+        } else { // si création pendant les réformes actives
+            NamedTextColor color = mayorManager.getRandomMayorColor();
+            List<Perks> perks = PerkManager.getRandomPerksAll();
+            mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
+            MessagesManager.sendMessage(player, Component.text("Vous avez été désigné comme §6Maire de la Ville.\n§8§oVous pourrez choisir vos Réformes dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)), Prefix.MAYOR, MessageType.SUCCESS, true);
+        }
+
+        // SETUP LAW
+        MayorManager.createCityLaws(city, false, null);
+
         MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
 
-        DynamicCooldownManager.use(uuid, "city:big", 60000); //1 minute
+        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
 
         return true;
+    }
+
+    public static void setWarp(Player player) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (city == null) return;
+
+        Mayor mayor = city.getMayor();
+
+        if (mayor == null) return;
+
+        if (!player.getUniqueId().equals(mayor.getUUID())) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le Maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+            return;
+        }
+        CityLaw law = city.getLaw();
+
+        List<Component> loreItemInterraction = List.of(
+                Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
+        );
+        ItemStack itemToGive = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
+        ItemMeta itemMeta = itemToGive.getItemMeta();
+
+        itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
+        itemMeta.lore(loreItemInterraction);
+        itemToGive.setItemMeta(itemMeta);
+        ItemInteraction.runLocationInteraction(
+                player,
+                itemToGive,
+                "mayor:wait-set-warp",
+                300,
+                "§7Vous avez 300s pour séléctionner votre point de spawn",
+                "§7Vous n'avez pas eu le temps de poser votre Warp",
+                locationClick -> {
+                    if (locationClick == null) return true;
+                    Chunk chunk = locationClick.getChunk();
+
+                    if (!city.hasChunk(chunk.getX(), chunk.getZ())) {
+                        MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le Warp ici car ce n'est pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                        return false;
+                    }
+
+                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
+                    law.setWarp(locationClick);
+                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- §fx=§6" + locationClick.x() + "\n §8- §fy=§6" + locationClick.y() + "\n §8- §fz=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
+                    return true;
+                }
+        );
     }
 
     public static void leaveCity(Player player) {

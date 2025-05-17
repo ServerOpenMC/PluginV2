@@ -5,6 +5,10 @@ import lombok.Getter;
 @Getter
 public enum HomeIcons {
 
+    /**
+     * Oublie pas de rajouter vos icon/items dans CustomItemRegistry
+     */
+
     AXENQ("omc_homes:omc_homes_icon_axenq", "axeno|axenq"),
     BANK("omc_homes:omc_homes_icon_bank", "bank|banks|banque|banques|tresor|tresors|vault|vaults|coffre-fort|coffres-forts|argent|money|finance|finances|epargne|epargnes|saving|savings|treasury|treasuries|caisse|caisses"),
     CHATEAU("omc_homes:omc_homes_icon_chateau", "chateau|chateaux|castle|castles|manor|manors|palace|palaces|forteresse|forteresses|fortress|fortresses|citadelle|citadelles|citadel|citadels|donjon|donjons|keep|keeps|tour|tours|tower|towers|palais"),
