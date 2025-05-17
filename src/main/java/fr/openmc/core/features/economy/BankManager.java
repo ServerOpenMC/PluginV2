@@ -1,5 +1,22 @@
 package fr.openmc.core.features.economy;
 
+import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
+import fr.openmc.core.features.economy.commands.BankCommands;
+import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,27 +30,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
-
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.CommandsManager;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.economy.models.Bank;
-import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import lombok.Getter;
-import net.kyori.adventure.text.Component;
 
 public class BankManager {
     @Getter private static Map<UUID, Bank> banks;
@@ -137,7 +139,11 @@ public class BankManager {
     public double calculatePlayerInterest(UUID player) {
         double interest = .01; // base interest is 1%
 
-        // TODO: link to other systems here by simply adding to the interest variable here
+        if (MayorManager.getInstance().phaseMayor == 2) {
+            if (PerkManager.hasPerk(CityManager.getPlayerCity(player).getMayor(), Perks.BUISNESS_MAN.getId())) {
+                interest = .03; // interest is 3% when perk Buisness Man actived
+            }
+        }
         
         return interest;
     }

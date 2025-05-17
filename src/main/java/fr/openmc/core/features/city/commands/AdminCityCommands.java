@@ -1,6 +1,10 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.*;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -236,14 +240,6 @@ public class AdminCityCommands {
         }
     }
 
-    @Subcommand("mascots chest")
-    @CommandPermission("omc.admins.commands.admcity.mascots.chest")
-    public void giveMascotsChest(@Named("player") Player target){
-        if (target.isOnline()){
-            MascotsManager.giveChest(target);
-        }
-    }
-
     @Subcommand("mascots immunityoff")
     @CommandPermission("omc.admins.commands.admcity.mascots.immunityoff")
     public void removeMascotImmunity(Player sender, @Named("player") Player target){
@@ -264,7 +260,7 @@ public class AdminCityCommands {
         if (MascotUtils.getMascotImmunity(city_uuid)){
             MascotUtils.changeMascotImmunity(city_uuid, false);
         }
-        MascotUtils.setImmunityTime(city_uuid, 0);
+        DynamicCooldownManager.clear(city_uuid, "mascot:immunity");
         UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
         if (mascotUUID!=null){
             Entity mob = Bukkit.getEntity(mascotUUID);

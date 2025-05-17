@@ -1,8 +1,16 @@
 package fr.openmc.core.features.leaderboards.commands;
 
+import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Description;
@@ -10,6 +18,8 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
 
@@ -49,20 +59,61 @@ public class LeaderboardCommands {
     }
 
 
-    //TODO: Utiliser ItemInteraction (Iambibi)
     @Subcommand("setPos")
     @CommandPermission("op")
     @Description("Défini la position d'un Hologram.")
     void setPosCommand(Player player, String leaderboard) {
         if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
-            try {
-                LeaderboardManager.getInstance().setHologramLocation(leaderboard, player.getLocation());
-                player.sendMessage("§aPosition du leaderboard " + leaderboard + " mise à jour.");
-            } catch (IOException e) {
-                player.sendMessage("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage());
+            ItemStack leaderboardMoveItem = new ItemStack(Material.STICK);
+            ItemMeta meta = leaderboardMoveItem.getItemMeta();
+
+            if (meta != null) {
+                List<Component> info = new ArrayList<>();
+                info.add(Component.text("§7Cliquez ou vous voulez pour poser le leaderboard"));
+                info.add(Component.text("§cITEM POUR ADMIN"));
+                meta.lore(info);
             }
+            leaderboardMoveItem.setItemMeta(meta);
+
+            ItemInteraction.runLocationInteraction(
+                    player,
+                    leaderboardMoveItem,
+                    "admin:move-leaderboard",
+                    120,
+                    "Temps Restant : %sec%s",
+                    "§cDéplacement du leaderboard",
+                    leaderboardMove -> {
+                        if (leaderboardMove == null) return true;
+                        try {
+                            LeaderboardManager.getInstance().setHologramLocation(leaderboard, leaderboardMove);
+                            MessagesManager.sendMessage(
+                                    player,
+                                    Component.text("§aPosition du leaderboard " + leaderboard + " mise à jour."),
+                                    Prefix.STAFF,
+                                    MessageType.SUCCESS,
+                                    true
+                            );
+                        } catch (IOException e) {
+                            MessagesManager.sendMessage(
+                                    player,
+                                    Component.text("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage()),
+                                    Prefix.STAFF,
+                                    MessageType.ERROR,
+                                    true
+                            );
+                        }
+                        return true;
+                    }
+            );
+
         } else {
-            player.sendMessage("§cVeuillez spécifier un leaderboard valide: contributors, money, ville-money, playtime");
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("§cVeuillez spécifier un leaderboard valide: contributors, money, ville-money, playtime"),
+                    Prefix.STAFF,
+                    MessageType.WARNING,
+                    true
+            );
         }
     }
 

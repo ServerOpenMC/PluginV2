@@ -4,6 +4,7 @@ import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -45,7 +46,7 @@ public class PendingMailbox extends PaginatedMailbox<SenderLetter> {
 
             int itemsCount = letter.getNumItems();
             ItemStack[] items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-            Player receiver = Bukkit.getOfflinePlayer(UUID.fromString(letter.getReceiver())).getPlayer();
+            Player receiver = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(letter.getReceiver())).getPlayer();
 
             if (MailboxManager.deleteLetter(id)) {
                 if (receiver != null)
