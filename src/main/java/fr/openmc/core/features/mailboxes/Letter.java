@@ -1,6 +1,6 @@
 package fr.openmc.core.features.mailboxes;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
@@ -22,18 +22,18 @@ import lombok.Getter;
 @Getter
 @DatabaseTable(tableName = "mail")
 public class Letter {
-    @DatabaseField(id = true, generatedId = true)
+    @DatabaseField(generatedId = true)
     private int id;
     @DatabaseField(canBeNull = false)
     private UUID sender;
     @DatabaseField(canBeNull = false)
     private UUID receiver;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
     private byte[] items;
     @DatabaseField(columnName = "num_items", canBeNull = false)
     private int numItems;
-    @DatabaseField(dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
-    private Date sent;
+    @DatabaseField(canBeNull = false)
+    private Timestamp sent;
     @DatabaseField
     private boolean refused;
 
@@ -41,12 +41,13 @@ public class Letter {
         // required by ORMLite
     }
 
-    Letter(UUID sender, UUID receiver, byte[] items, int numItems, boolean refused) {
+    Letter(UUID sender, UUID receiver, byte[] items, int numItems, Timestamp sent, boolean refused) {
         this.sender = sender;
         this.receiver = receiver;
         this.items = items;
         this.numItems = numItems;
         this.refused = refused;
+        this.sent = sent;
     }
 
     public boolean refuse() {

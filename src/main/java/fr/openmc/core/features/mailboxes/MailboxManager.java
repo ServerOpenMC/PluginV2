@@ -31,6 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,7 +67,8 @@ public class MailboxManager {
 
         try {
             byte[] itemsBytes = BukkitSerializer.serializeItemStacks(items);
-            Letter letter = new Letter(sender.getUniqueId(), receiver.getUniqueId(), itemsBytes, numItems, false);
+            Letter letter = new Letter(sender.getUniqueId(), receiver.getUniqueId(), itemsBytes, numItems,
+                    Timestamp.valueOf(LocalDateTime.now()), false);
             if (letterDao.create(letter) == 0)
                 return false;
             int id = letter.getId();
@@ -99,7 +101,8 @@ public class MailboxManager {
 
                 byte[] itemsBytes = BukkitSerializer.serializeItemStacks(items);
 
-                Letter letter = new Letter(player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems, false);
+                Letter letter = new Letter(player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
+                        Timestamp.valueOf(LocalDateTime.now()), false);
                 letters.add(letter);
             }
             if (letterDao.create(letters) == 0)
