@@ -7,10 +7,7 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityMessages;
+import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
@@ -441,12 +438,10 @@ public class CityCommands {
             return;
         }
 
-        String cityTypeActuel = city.getType();
+        String cityTypeActuel = "";
         String cityTypeAfter = "";
-        if (cityTypeActuel != null) {
-            cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
-            cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix§7" : "§cen guerre§7";
-        }
+        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
         ConfirmMenu menu = new ConfirmMenu(sender,
                 () -> {
@@ -517,12 +512,10 @@ public class CityCommands {
                 exception.printStackTrace();
             }
 
-            String cityTypeActuel = city.getType();
+            String cityTypeActuel = "";
             String cityTypeAfter = "";
-            if (cityTypeActuel != null) {
-                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
-                cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix§7" : "§cen guerre§7";
-            }
+            cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+            cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
             MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
 

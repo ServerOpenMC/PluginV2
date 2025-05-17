@@ -27,9 +27,17 @@ public class CityMessages {
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
-        int power = city.getCityPowerPoints();
+        int power = city.getPowerPoints();
 
-        String type = city.getType();
+        CityType type = city.getType();
+        String typeString;
+        if (type == CityType.WAR) {
+            typeString = "Guerre";
+        } else if (type == CityType.PEACE) {
+            typeString = "Paix";
+        } else {
+            typeString = "Inconnu";
+        }
         Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
         if (mascot!=null){
             LivingEntity mob = MascotUtils.loadMascot(mascot);
@@ -47,11 +55,11 @@ public class CityMessages {
         sendLine(sender, "Maire", mayorName);
         sendLine(sender, "Habitants", String.valueOf(citizens));
         sendLine(sender, "Superficie", String.valueOf(area));
-        if (type!=null && type.equals("war")){
+        if (type != null && type == CityType.WAR) {
             sendLine(sender, "Puissance", String.valueOf(power));
         }
         sendLine(sender, "Vie de la Mascotte", mascotLife);
-        sendLine(sender, "Type", type);
+        sendLine(sender, "Type", typeString);
 
         String money = EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon();
         if (sender instanceof Player player) {

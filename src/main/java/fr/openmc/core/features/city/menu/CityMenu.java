@@ -11,6 +11,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.mascots.Mascot;
@@ -324,28 +325,16 @@ public class CityMenu extends Menu {
             MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L*60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
 
-            String type = city.getType();
-            if (type.equals("war")) {
-                type = "guerre";
-            } else if (type.equals("peace")) {
-                type = "paix";
+            CityType type = city.getType();
+            String typeStr;
+            if (type.equals(CityType.WAR)) {
+                typeStr = "guerre";
+            } else if (type.equals(CityType.PEACE)) {
+                typeStr = "paix";
             } else {
-                type = "inconnu";
+                typeStr = "inconnu";
             }
-            String finalType = type;
-
-            List<Component> updatedLore = new ArrayList<>();
-            updatedLore.add(Component.text("§7Votre ville est en §5" + finalType));
-
-            if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
-                updatedLore.add(Component.text(""));
-                updatedLore.add(Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type"))));
-            }
-
-            if (hasPermissionChangeType) {
-                updatedLore.add(Component.text(""));
-                updatedLore.add(Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE"));
-            }
+            String finalType = typeStr;
 
             Supplier<ItemStack> typeItemSupplier = () -> {
 
@@ -370,13 +359,10 @@ public class CityMenu extends Menu {
                     try {
                         if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) return;
 
-                        String cityTypeActuel = city.getType();
+                        String cityTypeActuel = "";
                         String cityTypeAfter = "";
-                        if (cityTypeActuel != null) {
-                            boolean war = cityTypeActuel.equals("war");
-                            cityTypeActuel = war ? "§cen guerre§7" : "§aen paix§7";
-                            cityTypeAfter = war ? "§aen paix§7" : "§cen guerre§7";
-                        }
+                        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+                        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
                         ConfirmMenu confirmMenu = new ConfirmMenu(player,
                                 () -> {

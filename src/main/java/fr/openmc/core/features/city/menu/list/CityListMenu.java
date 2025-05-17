@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
@@ -75,7 +76,7 @@ public class CityListMenu extends PaginatedMenu {
 					Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
 					Component.text("§7Maire : ").append(Component.text(city.getMayor().getName()).color(city.getMayor().getMayorColor()).decoration(TextDecoration.ITALIC, false)),
 					Component.text("§bPopulation : " + city.getMembers().size()),
-					Component.text("§eType : " + (city.getType().equals("war") ? "§cGuerre" : "§aPaix")),
+					Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")),
 					Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
 			));
 		})));
@@ -204,9 +205,9 @@ public class CityListMenu extends PaginatedMenu {
 	 */
 	private void sortByPeaceWar(List<City> cities) {
 		cities.sort((o1, o2) -> {
-			String type1 = o1.getType();
-			String type2 = o2.getType();
-			return type1.equals(type2) ? 0 : type1.equals("war") ? - 1 : 1;
+			CityType type1 = o1.getType();
+			CityType type2 = o2.getType();
+			return type1.equals(type2) ? 0 : type1.equals(CityType.WAR) ? -1 : 1;
 		});
 	}
 	

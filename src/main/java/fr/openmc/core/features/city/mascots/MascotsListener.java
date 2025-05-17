@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.Events.CustomBlockPlaceEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
@@ -115,8 +116,8 @@ public class MascotsListener implements Listener {
                     String city_uuid = city.getUUID();
                     String cityEnemy_uuid = cityEnemy.getUUID();
 
-                    String city_type = city.getType();
-                    String cityEnemy_type = cityEnemy.getType();
+                    CityType city_type = city.getType();
+                    CityType cityEnemy_type = cityEnemy.getType();
 
                     if (city_type==null){
                         MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de votre ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
@@ -136,13 +137,13 @@ public class MascotsListener implements Listener {
                         return;
                     }
 
-                    if (cityEnemy_type.equals("peace")){
+                    if (cityEnemy_type.equals(CityType.PEACE)) {
                         MessagesManager.sendMessage(player, Component.text("§cCette ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
                         e.setCancelled(true);
                         return;
                     }
 
-                    if (city_type.equals("peace")){
+                    if (city_type.equals(CityType.PEACE)) {
                         MessagesManager.sendMessage(player, Component.text("§cVotre ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
                         e.setCancelled(true);
                         return;
