@@ -31,10 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.*;
 
@@ -224,6 +221,78 @@ public class City {
             err.printStackTrace();
         }
         return 0;
+    }
+
+    public void changeType() {
+        CityType cityType = getType();
+        String cityTypeString = "";
+        if (cityType != null) {
+
+            if (cityType.equals(CityType.WAR)) {
+                cityTypeString = "peace";
+            } else if (cityType.equals(CityType.PEACE)) {
+                cityTypeString = "war";
+            }
+        }
+
+        String finalCityType = cityTypeString;
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET type=? WHERE uuid=?;");
+                statement.setString(1, finalCityType);
+                statement.setString(2, cityUUID);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
+
+
+    public CityType getType() {
+        CityType type = null;
+
+        if (cityUUID != null) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
+                statement.setString(1, cityUUID);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    String typeString = rs.getString("type");
+
+                    if (Objects.equals(typeString, "war")) {
+                        type = CityType.WAR;
+                    } else if (Objects.equals(typeString, "peace")) {
+                        type = CityType.PEACE;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return type;
+    }
+
+    public int getPowerPoints() {
+        int power_point = 0;
+
+        if (cityUUID != null) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT power_point FROM city_power WHERE city_uuid = ?");
+                statement.setString(1, cityUUID);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    power_point = rs.getInt("power_point");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return power_point;
     }
 
     public @NotNull String getName() {
@@ -466,7 +535,7 @@ public class City {
      */
     public void updatePowerPoints(int point){
         try {
-            int result = CityManager.getCityPowerPoints(cityUUID) + point;
+            int result = getPowerPoints() + point;
             if (result<0)result=0;
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_power SET power_point=? WHERE city_uuid=?;");
             statement.setInt(1, result);
