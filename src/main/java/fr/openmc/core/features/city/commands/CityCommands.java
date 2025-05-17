@@ -199,10 +199,10 @@ public class CityCommands {
         if (!CityKickCondition.canCityKickPlayer(city, sender, player)) return;
 
         if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Tu as exclu "+player.getName()+" de la ville "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + player.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
             if (player.isOnline()) {
-                MessagesManager.sendMessage((Player) player, Component.text("Tu as été exclu de la ville "+ city.getCityName()), Prefix.CITY, MessageType.INFO, true);
+                MessagesManager.sendMessage((Player) player, Component.text("Tu as été exclu de la ville " + city.getName()), Prefix.CITY, MessageType.INFO, true);
             }
         } else {
             MessagesManager.sendMessage(sender, Component.text("Impossible d'exclure "+player.getName()+" de la ville"), Prefix.CITY, MessageType.ERROR, false);
@@ -237,7 +237,7 @@ public class CityCommands {
         }
         MessagesManager.sendMessage(sender, Component.text("Tu as invité "+target.getName()+" dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
         MessagesManager.sendMessage(target,
-                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getCityName() + "\n")
+                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getName() + "\n")
                         .append(Component.text("§8Faite §a/city accept §8pour accepter\n").clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
                         .append(Component.text("§8Faite §c/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
                 Prefix.CITY, MessageType.INFO, false);
@@ -333,7 +333,7 @@ public class CityCommands {
 
         if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
             City chunkCity = CityManager.getCityFromChunk(chunkX, chunkZ);
-            String cityName = chunkCity.getCityName();
+            String cityName = chunkCity.getName();
             MessagesManager.sendMessage(sender, Component.text("Ce chunk est déjà claim par " + cityName + "."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -395,7 +395,7 @@ public class CityCommands {
         }
 
         for (City city : CityManager.getCities()){
-            String cityName = city.getCityName();
+            String cityName = city.getName();
             if (cityName!=null && cityName.equalsIgnoreCase(name)){
                 MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
                 return;
@@ -745,7 +745,7 @@ public class CityCommands {
     public static void leaveCity(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Tu as quitté "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(player, Component.text("Tu as quitté " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
         } else {
             MessagesManager.sendMessage(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
         }

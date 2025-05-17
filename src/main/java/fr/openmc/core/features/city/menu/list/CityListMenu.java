@@ -71,7 +71,7 @@ public class CityListMenu extends PaginatedMenu {
 	public @NotNull List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
-			itemMeta.displayName(Component.text("§a" + city.getCityName()));
+			itemMeta.displayName(Component.text("§a" + city.getName()));
 			itemMeta.lore(List.of(
 					Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
 					Component.text("§7Maire : ").append(Component.text(city.getMayor().getName()).color(city.getMayor().getMayorColor()).decoration(TextDecoration.ITALIC, false)),
@@ -177,7 +177,7 @@ public class CityListMenu extends PaginatedMenu {
 	 * @param cities The list of cities to sort.
 	 */
 	private void sortByName(List<City> cities) {
-		cities.sort((o1, o2) -> o1.getCityName().compareToIgnoreCase(o2.getCityName()));
+		cities.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 	}
 	
 	/**

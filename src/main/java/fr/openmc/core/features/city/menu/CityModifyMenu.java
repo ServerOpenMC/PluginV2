@@ -70,7 +70,7 @@ public class CityModifyMenu extends Menu {
                 loreRename = List.of(
                         Component.text("§7Vous pouvez renommer votre §dville§7."),
                         Component.text(""),
-                        Component.text("§7Nom actuel : §d" + city.getCityName()),
+                        Component.text("§7Nom actuel : §d" + city.getName()),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR LE MODIFIER")
                 );
@@ -187,8 +187,8 @@ public class CityModifyMenu extends Menu {
                             });
                         },
                         () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getCityName() + " ?")),
-                        List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getCityName())));
+                        List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getName() + " ?")),
+                        List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getName())));
                 menu.open();
 
             }));

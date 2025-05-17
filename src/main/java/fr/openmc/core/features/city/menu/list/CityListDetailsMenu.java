@@ -48,7 +48,7 @@ public class CityListDetailsMenu extends Menu {
 	
 	@Override
 	public @NotNull String getName() {
-		return "Détails de la ville " + city.getCityName();
+		return "Détails de la ville " + city.getName();
 	}
 	
 	@Override

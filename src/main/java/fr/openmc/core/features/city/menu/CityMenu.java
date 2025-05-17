@@ -111,7 +111,7 @@ public class CityMenu extends Menu {
             }
 
             inventory.put(4, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
-                itemMeta.itemName(Component.text("§d" + city.getCityName()));
+                itemMeta.itemName(Component.text("§d" + city.getName()));
                 itemMeta.lore(loreModifyCity);
             }).setOnClick(inventoryClickEvent -> {
                 City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
@@ -456,7 +456,7 @@ public class CityMenu extends Menu {
                 inventory.put(44, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
                     itemMeta.itemName(Component.text("§cPartir de la Ville"));
                     itemMeta.lore(List.of(
-                            Component.text("§7Vous allez §cquitter §7" + city.getCityName()),
+                            Component.text("§7Vous allez §cquitter §7" + city.getName()),
                             Component.text(""),
                             Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
                     ));
@@ -472,8 +472,8 @@ public class CityMenu extends Menu {
                             () -> {
                                 player.closeInventory();
                             },
-                            List.of(Component.text("§7Voulez vous vraiment partir de " + city.getCityName() + " ?")),
-                            List.of(Component.text("§7Rester dans la ville " + city.getCityName()))
+                            List.of(Component.text("§7Voulez vous vraiment partir de " + city.getName() + " ?")),
+                            List.of(Component.text("§7Rester dans la ville " + city.getName()))
                     );
                     menu.open();
                 }));
