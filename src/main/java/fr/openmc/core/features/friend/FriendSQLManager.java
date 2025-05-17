@@ -3,6 +3,7 @@ package fr.openmc.core.features.friend;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -72,8 +73,7 @@ public class FriendSQLManager {
     }
 
     public static Timestamp getTimestamp(UUID first, UUID second) {
-        Friend friend = getFriendObject(first, second);
-        return new Timestamp(friend.getDate().getTime());
+        return getFriendObject(first, second).getDate();
     }
 
     public static CompletableFuture<List<UUID>> getAllFriendsAsync(UUID player) {

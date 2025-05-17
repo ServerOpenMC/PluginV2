@@ -1,6 +1,5 @@
 package fr.openmc.core.features.contest.models;
 
-import fr.openmc.core.features.contest.managers.ContestManager;
 import lombok.Getter;
 import lombok.Setter;
 
