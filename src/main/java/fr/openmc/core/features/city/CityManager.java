@@ -300,24 +300,6 @@ public class CityManager implements Listener {
         MascotsManager.removeMascotsFromCity(city);
     }
 
-    public static void changeCityType(String city_uuid) {
-        String cityType = getCityType(city_uuid);
-        if (cityType != null) {
-            cityType = cityType.equals("war") ? "peace" : "war";
-        }
-        String finalCityType = cityType;
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET type=? WHERE uuid=?;");
-                statement.setString(1, finalCityType);
-                statement.setString(2, city_uuid);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-
-    }
 
     public static void cachePlayer(UUID uuid, City city) {
         playerCities.put(uuid, city);

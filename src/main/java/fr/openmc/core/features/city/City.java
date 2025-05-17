@@ -226,6 +226,25 @@ public class City {
         return 0;
     }
 
+    public void changeCityType() {
+        String cityType = getCityType(cityUUID);
+        if (cityType != null) {
+            cityType = cityType.equals("war") ? "peace" : "war";
+        }
+        String finalCityType = cityType;
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city SET type=? WHERE uuid=?;");
+                statement.setString(1, finalCityType);
+                statement.setString(2, cityUUID);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
+
     public @NotNull String getName() {
         if (name != null) return name;
         try {
