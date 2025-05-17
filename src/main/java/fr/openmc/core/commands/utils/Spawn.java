@@ -36,9 +36,9 @@ public class Spawn {
                             player.teleport(spawnLocation);
                             MessagesManager.sendMessage(player, Component.text("§aVous avez été envoyé au spawn"), Prefix.OPENMC, MessageType.SUCCESS, true);
                         }
-                    }.runTaskLater(OMCPlugin.getInstance(), 8);
+                    }.runTaskLater(OMCPlugin.getInstance(), 10);
                 }
-            }.runTaskLater(OMCPlugin.getInstance(), 10);
+            }.runTaskLater(OMCPlugin.getInstance(), 15);
         } else {
             if(!(sender instanceof Player) || ((Player) sender).hasPermission("omc.admin.commands.spawn.others")) {
                 new BukkitRunnable() {
@@ -53,7 +53,7 @@ public class Spawn {
                                 MessagesManager.sendMessage(target, Component.text("§aVous avez été envoyé au spawn par §e" + (sender instanceof Player player ? player.getName() : "Console") + "§a"), Prefix.OPENMC, MessageType.WARNING, true);                            }
                         }.runTaskLater(OMCPlugin.getInstance(), 10);
                     }
-                }.runTaskLater(OMCPlugin.getInstance(), 8);
+                }.runTaskLater(OMCPlugin.getInstance(), 15);
             } else {
                 MessagesManager.sendMessage(sender, Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
             }
