@@ -60,27 +60,27 @@ public class MascotsListener implements Listener {
     void onMascotDamageCaused(EntityDamageEvent e){
         Entity entity = e.getEntity();
 
-        if (MascotUtils.isMascot(entity)){
-            if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)){
-                e.setCancelled(true);
-            }
+        if (!MascotUtils.isMascot(entity)) return;
 
-            City city = MascotUtils.getCityFromMascot(entity.getUniqueId());
-            if (city == null) return;
-            LivingEntity mob = (LivingEntity) entity;
+        if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)) {
+            e.setCancelled(true);
+        }
 
-            double newHealth = Math.floor(mob.getHealth());
-            mob.setHealth(newHealth);
-            double maxHealth = mob.getMaxHealth();
+        City city = MascotUtils.getCityFromMascot(entity.getUniqueId());
+        if (city == null) return;
+        LivingEntity mob = (LivingEntity) entity;
 
-            Mascot mascot = city.getMascot();
-            if (mascot == null) return;
+        double newHealth = Math.floor(mob.getHealth());
+        mob.setHealth(newHealth);
+        double maxHealth = mob.getMaxHealth();
 
-            if (!mascot.isAlive()) {
-                mob.setCustomName("§lMascotte en attente de §csoins");
-            } else {
-                mob.setCustomName("§l" + city.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
-            }
+        Mascot mascot = city.getMascot();
+        if (mascot == null) return;
+
+        if (!mascot.isAlive()) {
+            mob.setCustomName("§lMascotte en attente de §csoins");
+        } else {
+            mob.setCustomName("§l" + city.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
         }
     }
 
@@ -95,149 +95,146 @@ public class MascotsListener implements Listener {
         Entity damager = e.getDamager();
         double baseDamage;
 
-        if (MascotUtils.isMascot(damageEntity)){
+        if (!MascotUtils.isMascot(damageEntity)) return;
 
-            if (damager instanceof Player player){
+        if (!(damager instanceof Player player)) return;
 
-                PersistentDataContainer data = damageEntity.getPersistentDataContainer();
-                String mascotsID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        PersistentDataContainer data = damageEntity.getPersistentDataContainer();
+        String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
 
-                if (mascotsID!=null) {
+        if (mascotsUUID == null) return;
 
-                    City city = CityManager.getPlayerCity(player.getUniqueId());
-                    City cityEnemy = MascotUtils.getCityFromMascot(damageEntity.getUniqueId());
-                    if (city == null) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                        e.setCancelled(true);
-                        return;
-                    }
-                    if (cityEnemy==null){
-                        MessagesManager.sendMessage(player, Component.text("§cErreur : La ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
-                        e.setCancelled(true);
-                        return;
-                    }
-                    String city_uuid = city.getUUID();
-                    String cityEnemy_uuid = cityEnemy.getUUID();
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        City cityEnemy = MascotUtils.getCityFromMascot(damageEntity.getUniqueId());
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            e.setCancelled(true);
+            return;
+        }
 
-                    CityType city_type = city.getType();
-                    CityType cityEnemy_type = cityEnemy.getType();
+        if (cityEnemy == null) {
+            MessagesManager.sendMessage(player, Component.text("§cErreur : La ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+            e.setCancelled(true);
+            return;
+        }
+        String city_uuid = city.getUUID();
+        String cityEnemy_uuid = cityEnemy.getUUID();
 
-                    if (city_type==null){
-                        MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de votre ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
-                        e.setCancelled(true);
-                        return;
-                    }
+        CityType city_type = city.getType();
+        CityType cityEnemy_type = cityEnemy.getType();
 
-                    if (cityEnemy_type==null){
-                        MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de la ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
-                        e.setCancelled(true);
-                        return;
-                    }
+        if (city_type == null) {
+            MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de votre ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+            e.setCancelled(true);
+            return;
+        }
 
-                    if (mascotsID.equals(city_uuid)){
-                        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer votre mascotte"), Prefix.CITY, MessageType.INFO, false);
-                        e.setCancelled(true);
-                        return;
-                    }
+        if (cityEnemy_type == null) {
+            MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de la ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+            e.setCancelled(true);
+            return;
+        }
 
-                    if (cityEnemy_type.equals(CityType.PEACE)) {
-                        MessagesManager.sendMessage(player, Component.text("§cCette ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
-                        e.setCancelled(true);
-                        return;
-                    }
+        if (mascotsUUID.equals(city_uuid)) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer votre mascotte"), Prefix.CITY, MessageType.INFO, false);
+            e.setCancelled(true);
+            return;
+        }
 
-                    if (city_type.equals(CityType.PEACE)) {
-                        MessagesManager.sendMessage(player, Component.text("§cVotre ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
-                        e.setCancelled(true);
-                        return;
-                    }
+        if (cityEnemy_type.equals(CityType.PEACE)) {
+            MessagesManager.sendMessage(player, Component.text("§cCette ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
+            e.setCancelled(true);
+            return;
+        }
 
-                    if (cityEnemy.getMascot().isImmunity()) {
-                        MessagesManager.sendMessage(player, Component.text("§cCette mascotte est immunisée pour le moment"), Prefix.CITY, MessageType.INFO, false);
-                        e.setCancelled(true);
-                        return;
-                    }
+        if (city_type.equals(CityType.PEACE)) {
+            MessagesManager.sendMessage(player, Component.text("§cVotre ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
+            e.setCancelled(true);
+            return;
+        }
 
-                    if (!player.getEquipment().getItemInMainHand().getEnchantments().isEmpty()) {
-                        baseDamage = e.getDamage(EntityDamageByEntityEvent.DamageModifier.BASE);
-                        e.setDamage(baseDamage);
-                    }
-                    LivingEntity mob = (LivingEntity) damageEntity;
-                    try {
-                        double newHealth = Math.floor(mob.getHealth());
-                        mob.setHealth(newHealth);
-                        double maxHealth = mob.getMaxHealth();
-                        mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
+        if (cityEnemy.getMascot().isImmunity()) {
+            MessagesManager.sendMessage(player, Component.text("§cCette mascotte est immunisée pour le moment"), Prefix.CITY, MessageType.INFO, false);
+            e.setCancelled(true);
+            return;
+        }
 
-                        if (MayorManager.getInstance().phaseMayor==2) {
-                            if (PerkManager.hasPerk(MascotUtils.getCityFromMascot(mob.getUniqueId()).getMayor(), Perks.IRON_BLOOD.getId())) {
-                                long currentTime = System.currentTimeMillis();
-                                if (perkIronBloodCooldown.containsKey(city) && currentTime - perkIronBloodCooldown.get(city) < COOLDOWN_TIME) {
-                                    return;
-                                }
-                                perkIronBloodCooldown.put(city, currentTime);
-                                org.bukkit.Location location = mob.getLocation().clone();
-                                location.add(0, 3, 0);
+        if (!player.getEquipment().getItemInMainHand().getEnchantments().isEmpty()) {
+            baseDamage = e.getDamage(EntityDamageByEntityEvent.DamageModifier.BASE);
+            e.setDamage(baseDamage);
+        }
 
-                                IronGolem golem = (IronGolem) location.getWorld().spawnEntity(location, EntityType.IRON_GOLEM);
-                                golem.setPlayerCreated(false);
-                                golem.setLootTable(null);
-                                golem.setGlowing(true);
-                                golem.setHealth(30);
+        LivingEntity mob = (LivingEntity) damageEntity;
+        try {
+            double newHealth = Math.floor(mob.getHealth());
+            mob.setHealth(newHealth);
+            double maxHealth = mob.getMaxHealth();
+            mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
 
-                                Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
-                                    if (!golem.isValid() || golem.isDead()) {
-                                        return;
-                                    }
-                                    List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
-                                            .filter(ent -> ent instanceof Player)
-                                            .map(ent -> (Player) ent)
-                                            .filter(nearbyPlayer -> {
-                                                City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
-                                                return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromMascot(mob.getUniqueId()).getUUID());
-                                            })
-                                            .collect(Collectors.toList());
+            if (MayorManager.getInstance().phaseMayor != 2) return;
 
-                                    if (!nearbyEnemies.isEmpty()) {
-                                        Player target = nearbyEnemies.get(0);
-                                        golem.setAI(true);
-                                        golem.setTarget(target);
-                                        org.bukkit.util.Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();
-                                        golem.setVelocity(direction.multiply(0.5));
-                                    } else {
-                                        golem.setAI(false);
-                                        golem.setTarget(null);
-                                    }
-                                }, 0L, 20L);
+            if (!PerkManager.hasPerk(MascotUtils.getCityFromMascot(mob.getUniqueId()).getMayor(), Perks.IRON_BLOOD.getId()))
+                return;
+            long currentTime = System.currentTimeMillis();
+            if (perkIronBloodCooldown.containsKey(city) && currentTime - perkIronBloodCooldown.get(city) < COOLDOWN_TIME) {
+                return;
+            }
+            perkIronBloodCooldown.put(city, currentTime);
+            org.bukkit.Location location = mob.getLocation().clone();
+            location.add(0, 3, 0);
 
-                                scheduleGolemDespawn(golem, mob.getUniqueId());
+            IronGolem golem = (IronGolem) location.getWorld().spawnEntity(location, EntityType.IRON_GOLEM);
+            golem.setPlayerCreated(false);
+            golem.setLootTable(null);
+            golem.setGlowing(true);
+            golem.setHealth(30);
 
-                                MessagesManager.sendMessage(player, Component.text("§8§o*tremblement* Quelque chose semble arriver..."), Prefix.MAYOR, MessageType.INFO, false);
-                            }
-                        }
-
-                        if (regenTasks.containsKey(damageEntity.getUniqueId())) {
-                            regenTasks.get(damageEntity.getUniqueId()).cancel();
-                            regenTasks.remove(damageEntity.getUniqueId());
-                        }
-
-                        startRegenCooldown(damageEntity.getUniqueId());
-                        CityCommands.startBalanceCooldown(city_uuid);
-
-                        if (newHealth <= 0) {
-                            mob.setHealth(0);
-                        }
-
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-
+            Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
+                if (!golem.isValid() || golem.isDead()) {
                     return;
                 }
+                List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
+                        .filter(ent -> ent instanceof Player)
+                        .map(ent -> (Player) ent)
+                        .filter(nearbyPlayer -> {
+                            City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
+                            return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromMascot(mob.getUniqueId()).getUUID());
+                        })
+                        .collect(Collectors.toList());
 
+                if (!nearbyEnemies.isEmpty()) {
+                    Player target = nearbyEnemies.get(0);
+                    golem.setAI(true);
+                    golem.setTarget(target);
+                    org.bukkit.util.Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();
+                    golem.setVelocity(direction.multiply(0.5));
+                } else {
+                    golem.setAI(false);
+                    golem.setTarget(null);
+                }
+            }, 0L, 20L);
+            scheduleGolemDespawn(golem, mob.getUniqueId());
+
+            MessagesManager.sendMessage(player, Component.text("§8§o*tremblement* Quelque chose semble arriver..."), Prefix.MAYOR, MessageType.INFO, false);
+
+
+            if (regenTasks.containsKey(damageEntity.getUniqueId())) {
+                regenTasks.get(damageEntity.getUniqueId()).cancel();
+                regenTasks.remove(damageEntity.getUniqueId());
             }
-            e.setCancelled(true);
+
+            startRegenCooldown(damageEntity.getUniqueId());
+            CityCommands.startBalanceCooldown(city_uuid);
+
+            if (newHealth <= 0) {
+                mob.setHealth(0);
+            }
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+
+        e.setCancelled(true);
     }
 
     private void scheduleGolemDespawn(IronGolem golem, UUID mascotUUID) {
@@ -272,10 +269,10 @@ public class MascotsListener implements Listener {
         Collection<Entity> nearbyEntities = loc.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5);
 
         for (Entity entity : nearbyEntities) {
-            if (MascotUtils.isMascot(entity)) {
-                event.setCancelled(true);
-                return;
-            }
+            if (!MascotUtils.isMascot(entity)) return;
+
+            event.setCancelled(true);
+            return;
         }
     }
 
@@ -287,37 +284,36 @@ public class MascotsListener implements Listener {
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
 
-        if (MascotUtils.isMascot(clickEntity)){
+        if (!MascotUtils.isMascot(clickEntity)) return;
 
-            PersistentDataContainer data = clickEntity.getPersistentDataContainer();
-            String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
-            if (mascotsUUID == null) return;
+        PersistentDataContainer data = clickEntity.getPersistentDataContainer();
+        String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        if (mascotsUUID == null) return;
 
-            City city = CityManager.getPlayerCity(player.getUniqueId());
+        City city = CityManager.getPlayerCity(player.getUniqueId());
 
-            if (city == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
 
-            String city_uuid = city.getUUID();
-            if (mascotsUUID.equals(city_uuid)) {
-                if (!city.getMascot().isAlive()) {
-                    new MascotsDeadMenu(player, city_uuid).open();
-                    return;
-                }
-                new MascotMenu(player, clickEntity).open();
+        String city_uuid = city.getUUID();
+        if (mascotsUUID.equals(city_uuid)) {
+            if (!city.getMascot().isAlive()) {
+                new MascotsDeadMenu(player, city_uuid).open();
             } else {
-                MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
+                new MascotMenu(player, clickEntity).open();
             }
+        } else {
+            MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 
     @EventHandler
     public void onEntityPickupItem(EntityPickupItemEvent event) {
-        if (MascotUtils.isMascot(event.getEntity())) {
-            event.setCancelled(true);
-        }
+        if (!MascotUtils.isMascot(event.getEntity())) return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler
@@ -325,12 +321,12 @@ public class MascotsListener implements Listener {
         Location strikeLocation = e.getLightning().getLocation();
 
         for (Entity entity : strikeLocation.getWorld().getNearbyEntities(strikeLocation, 3, 3, 3)) {
-            if (entity instanceof LivingEntity) {
-                if (MascotUtils.isMascot(entity)) {
-                    e.setCancelled(true);
-                    return;
-                }
-            }
+            if (!(entity instanceof LivingEntity)) continue;
+
+            if (!MascotUtils.isMascot(entity)) continue;
+
+            e.setCancelled(true);
+            return;
         }
     }
 
@@ -338,22 +334,20 @@ public class MascotsListener implements Listener {
     void onPistonExtend(BlockPistonExtendEvent e) {
         Location pistonHeadLocation = e.getBlock().getRelative(e.getDirection()).getLocation();
         for (Entity entity : pistonHeadLocation.getWorld().getNearbyEntities(pistonHeadLocation, 0.5, 0.5, 0.5)) {
-            if (entity instanceof LivingEntity) {
-                if (MascotUtils.isMascot(entity)) {
-                    e.setCancelled(true);
-                    return;
-                }
-            }
+            if (!(entity instanceof LivingEntity)) continue;
+            if (!MascotUtils.isMascot(entity)) continue;
+
+            e.setCancelled(true);
+            return;
         }
         for (Block block : e.getBlocks()) {
             Location futureLocation = block.getRelative(e.getDirection()).getLocation();
             for (Entity entity : block.getWorld().getNearbyEntities(futureLocation, 0.5, 0.5, 0.5)) {
-                if (entity instanceof LivingEntity) {
-                    if (MascotUtils.isMascot(entity)) {
-                        e.setCancelled(true);
-                        return;
-                    }
-                }
+                if (!(entity instanceof LivingEntity)) continue;
+                if (!(MascotUtils.isMascot(entity))) continue;
+
+                e.setCancelled(true);
+                return;
             }
         }
     }
@@ -361,41 +355,41 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onTransform(EntityTransformEvent event) {
         Entity entity = event.getEntity();
-        if (MascotUtils.isMascot(entity)){
-            event.setCancelled(true);
-        }
+        if (!MascotUtils.isMascot(entity)) return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler
     void onPortal(EntityPortalEvent event) {
         Entity entity = event.getEntity();
-        if (MascotUtils.isMascot(entity)){
-            event.setCancelled(true);
-        }
+        if (!MascotUtils.isMascot(entity)) return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler
     void onFire(EntityCombustEvent e) {
         Entity entity = e.getEntity();
-        if (MascotUtils.isMascot(entity)){
-            e.setCancelled(true);
-        }
+        if (!MascotUtils.isMascot(entity)) return;
+
+        e.setCancelled(true);
     }
 
     @EventHandler
     void onPigMount(EntityMountEvent e) {
         Entity entity = e.getMount();
-        if (MascotUtils.isMascot(entity)){
-            e.setCancelled(true);
-        }
+        if (!MascotUtils.isMascot(entity)) return;
+
+        e.setCancelled(true);
     }
 
     @EventHandler
     void onMove(EntityMoveEvent e) {
         Entity entity = e.getEntity();
-        if (MascotUtils.isMascot(entity)){
-            e.setCancelled(true);
-        }
+        if (!MascotUtils.isMascot(entity)) return;
+
+        e.setCancelled(true);
     }
 
     @EventHandler
@@ -403,55 +397,55 @@ public class MascotsListener implements Listener {
         Entity entity = e.getEntity();
         Player killer = e.getEntity().getKiller();
 
-        if (MascotUtils.isMascot(entity)){
-            PersistentDataContainer data = entity.getPersistentDataContainer();
-            String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        if (!MascotUtils.isMascot(entity)) return;
 
-            City city = CityManager.getCity(city_uuid);
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+        String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
 
-            if (city == null) return;
+        City city = CityManager.getCity(city_uuid);
 
-            Mascot mascot = city.getMascot();
+        if (city == null) return;
 
-            if (mascot == null) return;
+        Mascot mascot = city.getMascot();
 
-            int level = mascot.getLevel();
+        if (mascot == null) return;
 
-            MascotUtils.changeMascotImmunity(city_uuid, true);
-            MascotUtils.changeMascotState(city_uuid, false);
+        int level = mascot.getLevel();
 
-            entity.setCustomName("§lMascotte en attente de §csoins");
-            entity.setGlowing(true);
-            e.setCancelled(true);
+        MascotUtils.changeMascotImmunity(city_uuid, true);
+        MascotUtils.changeMascotState(city_uuid, false);
 
-            for (UUID townMember : city.getMembers()) {
-                if (!(Bukkit.getEntity(townMember) instanceof Player player)) continue;
-                for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
-                    player.removePotionEffect(potionEffect.getType());
-                }
-                MascotsManager.giveMascotsEffect(townMember);
+        entity.setCustomName("§lMascotte en attente de §csoins");
+        entity.setGlowing(true);
+        e.setCancelled(true);
+
+        for (UUID townMember : city.getMembers()) {
+            if (!(Bukkit.getEntity(townMember) instanceof Player player)) continue;
+            for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
+                player.removePotionEffect(potionEffect.getType());
             }
-
-            if (killer == null) return;
-
-            City cityEnemy = CityManager.getPlayerCity(killer.getUniqueId());
-
-            if (cityEnemy == null) return;
-
-            cityEnemy.updatePowerPoints(level);
-            city.updatePowerPoints(-level);
-
-            cityEnemy.updateBalance(0.15 * city.getBalance() / 100);
-            city.updateBalance(-(0.15 * city.getBalance() / 100));
+            MascotsManager.giveMascotsEffect(townMember);
         }
+
+        if (killer == null) return;
+
+        City cityEnemy = CityManager.getPlayerCity(killer.getUniqueId());
+
+        if (cityEnemy == null) return;
+
+        cityEnemy.updatePowerPoints(level);
+        city.updatePowerPoints(-level);
+
+        cityEnemy.updateBalance(0.15 * city.getBalance() / 100);
+        city.updateBalance(-(0.15 * city.getBalance() / 100));
     }
 
     @EventHandler
     void onAxolotlBucket(PlayerBucketEntityEvent e) {
         Entity entity = e.getEntity();
-        if (MascotUtils.isMascot(entity)){
-            e.setCancelled(true);
-        }
+        if (!MascotUtils.isMascot(entity)) return;
+
+        e.setCancelled(true);
     }
 
     @EventHandler

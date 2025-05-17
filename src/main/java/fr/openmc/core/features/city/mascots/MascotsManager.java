@@ -28,7 +28,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public class MascotsManager {
 
@@ -88,36 +91,6 @@ public class MascotsManager {
             throw new RuntimeException(e);
         }
         return mascots;
-    }
-
-    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
-        String query;
-
-        if (OMCPlugin.isUnitTestVersion()) {
-            query = "MERGE INTO free_claim KEY(city_uuid) VALUES (?, ?)";
-        } else {
-            query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
-        }
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
-            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
-                if (entry.getValue() > 0) {
-                    statement.setString(1, entry.getKey());
-                    statement.setInt(2, entry.getValue());
-                    statement.setInt(3, entry.getValue());
-                    statement.addBatch();
-                } else {
-                        try (PreparedStatement deleteStatement = DatabaseManager.getConnection().prepareStatement(
-                                "DELETE FROM free_claim WHERE city_uuid = ?")) {
-                            deleteStatement.setString(1, entry.getKey());
-                            deleteStatement.executeUpdate();
-                        }
-                    }
-
-                }
-            statement.executeBatch();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static void saveMascots(List<Mascot> mascots) {
@@ -200,9 +173,7 @@ public class MascotsManager {
 
         LivingEntity mascots = MascotUtils.loadMascot(mascot);
 
-        if (mascots != null) {
-            mascots.remove();
-        }
+        if (mascots != null) mascots.remove();
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -308,10 +279,12 @@ public class MascotsManager {
     public static void changeMascotsSkin(Entity mascots, EntityType skin, Player player, Material matAywenite, int aywenite) {
         World world = Bukkit.getWorld("world");
         Location mascotsLoc = mascots.getLocation();
+
         Mascot mascot = MascotUtils.getMascotByEntity(mascots);
         if (mascot==null){
             return;
         }
+
         LivingEntity mob = MascotUtils.loadMascot(mascot);
         boolean glowing = mascots.isGlowing();
         long cooldown = 0;
@@ -348,22 +321,23 @@ public class MascotsManager {
 
         mob.remove();
 
-        if (world != null) {
-            LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc, skin);
-            newMascots.setGlowing(glowing);
+        if (world == null) return;
 
-            if (hasCooldown){
-                DynamicCooldownManager.use(newMascots.getUniqueId().toString(), "mascots:move" , cooldown);
-            }
+        LivingEntity newMascots = (LivingEntity) world.spawnEntity(mascotsLoc, skin);
+        newMascots.setGlowing(glowing);
 
-            setMascotsData(newMascots, name, maxHealth, baseHealth);
-            PersistentDataContainer newData = newMascots.getPersistentDataContainer();
-
-            if (mascotsCustomUUID != null) {
-                newData.set(mascotsKey, PersistentDataType.STRING, mascotsCustomUUID);
-                MascotUtils.setMascotUUID(mascotsCustomUUID, newMascots.getUniqueId());
-            }
+        if (hasCooldown) {
+            DynamicCooldownManager.use(newMascots.getUniqueId().toString(), "mascots:move", cooldown);
         }
+
+        setMascotsData(newMascots, name, maxHealth, baseHealth);
+        PersistentDataContainer newData = newMascots.getPersistentDataContainer();
+
+        if (mascotsCustomUUID != null) {
+            newData.set(mascotsKey, PersistentDataType.STRING, mascotsCustomUUID);
+            MascotUtils.setMascotUUID(mascotsCustomUUID, newMascots.getUniqueId());
+        }
+
         ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
     }
 
@@ -384,16 +358,16 @@ public class MascotsManager {
         mob.setCanPickupItems(false);
 
         EntityEquipment equipment = mob.getEquipment();
-        if (equipment != null) {
-            equipment.clear();
+        if (equipment == null) return;
 
-            equipment.setHelmetDropChance(0f);
-            equipment.setChestplateDropChance(0f);
-            equipment.setLeggingsDropChance(0f);
-            equipment.setBootsDropChance(0f);
-            equipment.setItemInMainHandDropChance(0f);
-            equipment.setItemInOffHandDropChance(0f);
-        }
+        equipment.clear();
+
+        equipment.setHelmetDropChance(0f);
+        equipment.setChestplateDropChance(0f);
+        equipment.setLeggingsDropChance(0f);
+        equipment.setBootsDropChance(0f);
+        equipment.setItemInMainHandDropChance(0f);
+        equipment.setItemInOffHandDropChance(0f);
     }
 
 }

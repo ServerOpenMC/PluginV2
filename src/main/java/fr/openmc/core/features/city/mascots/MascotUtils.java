@@ -113,7 +113,7 @@ public class MascotUtils {
 	public static void setMascotUUID(String city_uuid, UUID uuid) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUUID().equals(city_uuid)) {
-				mascot.setMascotUuid(uuid);
+				mascot.setMascotUUID(uuid);
 				return;
 			}
 		}
