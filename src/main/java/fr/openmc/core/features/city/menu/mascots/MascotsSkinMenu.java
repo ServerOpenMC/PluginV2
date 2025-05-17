@@ -43,7 +43,7 @@ public class MascotsSkinMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§cMascotte";
+        return "Menu des Skins des Mascottes";
     }
 
     @Override
@@ -59,31 +59,39 @@ public class MascotsSkinMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> map = new HashMap<>();
+        Player player = getOwner();
 
-        List<MascotOption> mascotsOptions = List.of(
-                // price : 10 taille normale, 15 taille petite, 20 taille très petite
-                new MascotOption(3, Material.PIG_SPAWN_EGG, EntityType.PIG, "Cochon", 15),
-                new MascotOption(4, Material.PANDA_SPAWN_EGG, EntityType.PANDA, "Panda", 10),
-                new MascotOption(5, Material.SHEEP_SPAWN_EGG, EntityType.SHEEP, "Mouton",10),
-                new MascotOption(10, Material.AXOLOTL_SPAWN_EGG, EntityType.AXOLOTL, "Axolotl",20),
-                new MascotOption(11, Material.CHICKEN_SPAWN_EGG, EntityType.CHICKEN, "Poulet",20),
-                new MascotOption(12, Material.COW_SPAWN_EGG, EntityType.COW, "Vache",10),
-                new MascotOption(13, Material.GOAT_SPAWN_EGG, EntityType.GOAT, "Chèvre",15),
-                new MascotOption(14, Material.MOOSHROOM_SPAWN_EGG, EntityType.MOOSHROOM, "Vache champignon",10),
-                new MascotOption(15, Material.WOLF_SPAWN_EGG, EntityType.WOLF, "Loup",15),
-                new MascotOption(16, Material.VILLAGER_SPAWN_EGG, EntityType.VILLAGER, "Villageois",10),
-                new MascotOption(21, Material.SKELETON_SPAWN_EGG, EntityType.SKELETON, "Squelette",10),
-                new MascotOption(22, Material.SPIDER_SPAWN_EGG, EntityType.SPIDER, "Araignée",10),
-                new MascotOption(23, Material.ZOMBIE_SPAWN_EGG, EntityType.ZOMBIE, "Zombie",10)
-        );
+        try {
+            List<MascotOption> mascotsOptions = List.of(
+                    // price : 10 taille normale, 15 taille petite, 20 taille très petite
+                    new MascotOption(3, Material.PIG_SPAWN_EGG, EntityType.PIG, "Cochon", 15),
+                    new MascotOption(4, Material.PANDA_SPAWN_EGG, EntityType.PANDA, "Panda", 10),
+                    new MascotOption(5, Material.SHEEP_SPAWN_EGG, EntityType.SHEEP, "Mouton",10),
+                    new MascotOption(10, Material.AXOLOTL_SPAWN_EGG, EntityType.AXOLOTL, "Axolotl",20),
+                    new MascotOption(11, Material.CHICKEN_SPAWN_EGG, EntityType.CHICKEN, "Poulet",20),
+                    new MascotOption(12, Material.COW_SPAWN_EGG, EntityType.COW, "Vache",10),
+                    new MascotOption(13, Material.GOAT_SPAWN_EGG, EntityType.GOAT, "Chèvre",15),
+                    new MascotOption(14, Material.MOOSHROOM_SPAWN_EGG, EntityType.MOOSHROOM, "Vache champignon",10),
+                    new MascotOption(15, Material.WOLF_SPAWN_EGG, EntityType.WOLF, "Loup",15),
+                    new MascotOption(16, Material.VILLAGER_SPAWN_EGG, EntityType.VILLAGER, "Villageois",10),
+                    new MascotOption(21, Material.SKELETON_SPAWN_EGG, EntityType.SKELETON, "Squelette",10),
+                    new MascotOption(22, Material.SPIDER_SPAWN_EGG, EntityType.SPIDER, "Araignée",10),
+                    new MascotOption(23, Material.ZOMBIE_SPAWN_EGG, EntityType.ZOMBIE, "Zombie",10)
+            );
 
-        mascotsOptions.forEach(option -> map.put(option.slot(), createMascotButton(option)));
+            mascotsOptions.forEach(option -> map.put(option.slot(), createMascotButton(option)));
 
-        map.put(18, new ItemBuilder(this, Material.ARROW, meta -> {
-            meta.displayName(Component.text("§aRetour"));
-            meta.lore(List.of(Component.text("§7Retourner au menu de votre mascotte")));
-        }).setOnClick(event -> new CityMenu(getOwner()).open()));
+            map.put(18, new ItemBuilder(this, Material.ARROW, meta -> {
+                meta.displayName(Component.text("§aRetour"));
+                meta.lore(List.of(Component.text("§7Retourner au menu de votre mascotte")));
+            }).setOnClick(event -> new CityMenu(getOwner()).open()));
 
+            return map;
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
+        }
         return map;
     }
 

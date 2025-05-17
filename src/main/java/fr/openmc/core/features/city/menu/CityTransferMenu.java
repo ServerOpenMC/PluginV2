@@ -2,20 +2,20 @@ package fr.openmc.core.features.city.menu;
 
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -45,47 +45,55 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<ItemStack> getItems() {
-        Player player = getOwner();
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        assert city != null;
-
-        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
-
         List<ItemStack> items = new ArrayList<>();
-        for (UUID uuid : city.getMembers()) {
-            if (uuid.equals(city.getPlayerWith(CPermission.OWNER))) {
-                continue;
-            }
+        Player player = getOwner();
 
-            OfflinePlayer playerOffline = Bukkit.getOfflinePlayer(uuid);
+        try {
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            assert city != null;
 
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text("Membre " + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                itemMeta.lore(List.of(
-                        Component.text("§7Voulez-vous donner à §d" + playerOffline.getName() + " §7votre ville ?"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
-            }).setOnClick(inventoryClickEvent -> {
-                if (!hasPermissionOwner) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    return;
+            boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
+
+            for (UUID uuid : city.getMembers()) {
+                if (uuid.equals(city.getPlayerWith(CPermission.OWNER))) {
+                    continue;
                 }
 
-                ConfirmMenu menu = new ConfirmMenu(player,
-                        () -> {
-                            city.changeOwner(playerOffline.getUniqueId());
-                            MessagesManager.sendMessage(player, Component.text("Le nouveau maire est "+ playerOffline.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-                            if (playerOffline.isOnline()) {
-                                MessagesManager.sendMessage((Player) playerOffline, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
-                            }
-                            player.closeInventory();
-                        },
-                        () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez-vous vraiment donner la ville à " + playerOffline.getName() + " ?")),
-                        List.of(Component.text("§7Vous allez garder la ville " + playerOffline.getName())));
-                menu.open();
-            }));
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
+                    itemMeta.displayName(Component.text("Membre " + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                    itemMeta.lore(List.of(
+                            Component.text("§7Voulez-vous donner à §d" + playerOffline.getName() + " §7votre ville ?"),
+                            Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                    ));
+                }).setOnClick(inventoryClickEvent -> {
+                    if (!hasPermissionOwner) {
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        return;
+                    }
+
+                    ConfirmMenu menu = new ConfirmMenu(player,
+                            () -> {
+                                city.changeOwner(playerOffline.getUniqueId());
+                                MessagesManager.sendMessage(player, Component.text("Le nouveau maire est "+ playerOffline.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+
+                                if (playerOffline.isOnline()) {
+                                    MessagesManager.sendMessage((Player) playerOffline, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
+                                }
+                                player.closeInventory();
+                            },
+                            () -> player.closeInventory(),
+                            List.of(Component.text("§7Voulez-vous vraiment donner la ville à " + playerOffline.getName() + " ?")),
+                            List.of(Component.text("§7Vous allez garder la ville " + playerOffline.getName())));
+                    menu.open();
+                }));
+            }
+            return items;
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
         }
         return items;
     }

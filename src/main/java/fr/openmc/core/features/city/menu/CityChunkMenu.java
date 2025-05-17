@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
@@ -12,8 +13,7 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
 import fr.openmc.core.utils.ChunkPos;
-import fr.openmc.core.utils.WorldGuardApi;
-import fr.openmc.core.utils.menu.ConfirmMenu;
+import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

@@ -1,17 +1,19 @@
 package fr.openmc.core.features.scoreboards;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.corporation.company.Company;
+import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.LuckPermsAPI;
-import fr.openmc.core.utils.PapiAPI;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.LuckPermsApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -33,6 +35,7 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +44,7 @@ import java.util.UUID;
 public class ScoreboardManager implements Listener {
     public Set<UUID> disabledPlayers = new HashSet<>();
     public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder();
+    private final boolean canShowLogo = PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder();
     OMCPlugin plugin = OMCPlugin.getInstance();
     private GlobalTeamManager globalTeamManager = null;
 
@@ -49,7 +52,7 @@ public class ScoreboardManager implements Listener {
         OMCPlugin.registerEvents(this);
         CommandsManager.getHandler().register(this);
         Bukkit.getScheduler().runTaskTimer(plugin, this::updateAllScoreboards, 0L, 20L * 5); //20x5 = 5s
-        if (LuckPermsAPI.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
+        if (LuckPermsApi.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
     }
 
     @EventHandler
@@ -141,7 +144,6 @@ public class ScoreboardManager implements Listener {
             scoreboard.resetScores(entry);
         }
 
-
         if (Restart.isRestarting) {
             objective.getScore("§7").setScore(3);
             objective.getScore("   ").setScore(2);
@@ -151,13 +153,21 @@ public class ScoreboardManager implements Listener {
             return;
         }
 
-        objective.getScore("§7").setScore(11);
+        objective.getScore("§7").setScore(12);
         
-        objective.getScore("§8• §fNom: §7"+player.getName()).setScore(10);
+        objective.getScore("§8• §fNom: §7"+player.getName()).setScore(11);
 
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        String cityName = city != null ? city.getName() : "Aucune";
-        objective.getScore("§8• §fVille§7: "+cityName).setScore(9);
+        if (player.getWorld().getName().equalsIgnoreCase("world")) {
+            City city = CityManager.getPlayerCity(player.getUniqueId());
+            String cityName = city != null ? city.getName() : "Aucune";
+            objective.getScore("§8• §fVille§7: "+cityName).setScore(10);
+        }
+
+        if (CompanyManager.getInstance().isInCompany(player.getUniqueId())){
+            Company company = CompanyManager.getCompany(player.getUniqueId());
+            String compName = company != null ? company.getName() : "Introuvable";
+            objective.getScore("§8• §fEntreprise§7: "+compName).setScore(9);
+        }
 
         String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
@@ -176,12 +186,12 @@ public class ScoreboardManager implements Listener {
             objective.getScore(" ").setScore(5);
             objective.getScore("§8• §6§lCONTEST!").setScore(4);
             objective.getScore(ChatColor.valueOf(data.getColor1()) + data.getCamp1() + " §8VS " + ChatColor.valueOf(data.getColor2()) + data.getCamp2()).setScore(3);
-            objective.getScore("§cFin dans " + DateUtils.getTimeUntilNextMonday()).setScore(2);
+            objective.getScore("§cFin dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY)).setScore(2);
         }
 
         objective.getScore("   ").setScore(1);
         objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
 
-        if (LuckPermsAPI.hasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
+        if (LuckPermsApi.hasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
     }
 }
