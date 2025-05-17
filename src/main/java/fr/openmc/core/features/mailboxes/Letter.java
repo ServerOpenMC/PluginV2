@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
@@ -16,6 +15,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
 
@@ -69,8 +69,7 @@ public class Letter {
     }
 
     public LetterHead toLetterHead() {
-        // TODO: offline player cache
-        OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(sender));
+        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(sender));
         try {
             ItemStack[] items = BukkitSerializer.deserializeItemStacks(this.items);
             return new LetterHead(player, id, numItems,
@@ -83,8 +82,7 @@ public class Letter {
     }
 
     public SenderLetter toSenderLetter() {
-        // TODO: offline player cache
-        OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(sender));
+        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(sender));
 
         return new SenderLetter(player, id, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
                 refused);
