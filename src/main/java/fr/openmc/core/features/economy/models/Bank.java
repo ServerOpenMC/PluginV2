@@ -1,5 +1,7 @@
 package fr.openmc.core.features.economy.models;
 
+import java.util.UUID;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -10,7 +12,7 @@ import lombok.Getter;
 public class Bank {
 
     @DatabaseField(id = true)
-    private String player;
+    private UUID player;
 
     @DatabaseField(canBeNull = false, defaultValue = "0")
     private double balance;

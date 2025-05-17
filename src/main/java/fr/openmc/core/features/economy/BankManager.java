@@ -38,8 +38,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.features.economy.models.Bank;
 
 public class BankManager {
-    @Getter private static Map<UUID, Bank> banks;
-    @Getter static BankManager instance;
+    private static Map<UUID, Bank> banks;
 
     private static Dao<Bank, String> banksDao;
 
@@ -49,34 +48,31 @@ public class BankManager {
     }
 
     public BankManager() {
-        instance = this;
         banks = loadAllBanks();
-
         CommandsManager.getHandler().register(new BankCommands());
-
         updateInterestTimer();
     }
 
-    public double getBankBalance(UUID player) {
+    public static double getBankBalance(UUID player) {
         Bank bank = getPlayerBank(player);
         return bank.getBalance();
     }
 
-    public void addBankBalance(UUID player, double amount) {
+    public static void addBankBalance(UUID player, double amount) {
         Bank bank = getPlayerBank(player);
         
         bank.deposit(amount);
         saveBank(bank);
     }
 
-    public void withdrawBankBalance(UUID player, double amount) {
+    public static void withdrawBankBalance(UUID player, double amount) {
         Bank bank = getPlayerBank(player);
         
         bank.withdraw(amount);
         saveBank(bank);
     }
 
-    public void addBankBalance(Player player, String input) {
+    public static void addBankBalance(Player player, String input) {
         if (InputUtils.isInputMoney(input)) {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
@@ -91,7 +87,7 @@ public class BankManager {
         }
     }
 
-    public void withdrawBankBalance(Player player, String input) {
+    public static void withdrawBankBalance(Player player, String input) {
         if (InputUtils.isInputMoney(input)) {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
@@ -107,13 +103,13 @@ public class BankManager {
         }
     }
 
-    private Bank getPlayerBank(UUID player) {
+    private static Bank getPlayerBank(UUID player) {
         Bank bank = banks.get(player);
         if (bank != null) return bank;
         return new Bank(player.toString());
     }
 
-    private void saveBank(Bank bank) {
+    private static void saveBank(Bank bank) {
         try {
             banksDao.createOrUpdate(bank);
         } catch (SQLException e) {
@@ -121,12 +117,12 @@ public class BankManager {
         }
     }
 
-    private Map<UUID, Bank> loadAllBanks() {
+    private static Map<UUID, Bank> loadAllBanks() {
         Map<UUID, Bank> newBanks = new HashMap<>();
         try {
             List<Bank> dbBanks = banksDao.queryForAll();
             for (Bank bank : dbBanks) {
-                newBanks.put(UUID.fromString(bank.getPlayer()), bank);
+                newBanks.put(bank.getPlayer(), bank);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -136,7 +132,7 @@ public class BankManager {
     }
 
     // Interests calculated as proportion not percentage (eg: 0.01 = 1%)
-    public double calculatePlayerInterest(UUID player) {
+    public static double calculatePlayerInterest(UUID player) {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.getInstance().phaseMayor == 2) {
@@ -148,7 +144,7 @@ public class BankManager {
         return interest;
     }
 
-    public void applyPlayerInterest(UUID player) {
+    public static void applyPlayerInterest(UUID player) {
         double interest = calculatePlayerInterest(player);
         double amount = getBankBalance(player) * interest;
         addBankBalance(player, amount);
@@ -159,14 +155,14 @@ public class BankManager {
     }
 
     // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY BANKS SAVED IN THE DB
-    public void applyAllPlayerInterests() {
+    public static void applyAllPlayerInterests() {
         banks = loadAllBanks();
         for (UUID player : banks.keySet()) {
             applyPlayerInterest(player);
         }
     }
 
-    private void updateInterestTimer() {
+    private static void updateInterestTimer() {
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
             applyAllPlayerInterests();
@@ -177,7 +173,7 @@ public class BankManager {
         }, getSecondsUntilInterest() * 20); // 20 ticks per second (ideally)
     }
 
-    public long getSecondsUntilInterest() {
+    public static long getSecondsUntilInterest() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextMonday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY)).withHour(2).withMinute(0).withSecond(0);
         // if it is after 2 AM, get the monday after
