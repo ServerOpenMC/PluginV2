@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AdminShopMenu extends Menu {
@@ -66,5 +67,10 @@ public class AdminShopMenu extends Menu {
     @Override
     public void onClose(InventoryCloseEvent event) {
         //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AdminShopCategoryMenu extends Menu {
@@ -90,5 +91,10 @@ public class AdminShopCategoryMenu extends Menu {
         content.put(40, backButton);
 
         return content;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }
