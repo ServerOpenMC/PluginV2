@@ -10,13 +10,13 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @DatabaseTable(tableName = "friends")
 public class Friend {
     @DatabaseField(canBeNull = false)
     private UUID first;
     @DatabaseField(canBeNull = false)
     private UUID second;
+    @Getter
     @DatabaseField(dataType = DataType.DATE_STRING, format = "yyyy-MM-dd HH:mm:ss", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     private Date date;
     @Setter
@@ -30,5 +30,13 @@ public class Friend {
     Friend(UUID first, UUID second) {
         this.first = first;
         this.second = second;
+    }
+
+    public boolean isBestFriend() {
+        return bestFriend;
+    }
+
+    public UUID getOther(UUID player) {
+        return player == first ? second : first;
     }
 }
