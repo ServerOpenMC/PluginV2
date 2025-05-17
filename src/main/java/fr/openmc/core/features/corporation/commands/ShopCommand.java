@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @Command({"shop", "shops"})
 @Description("Manage shops")
-@CommandPermission("ayw.command.shop")
+@CommandPermission("omc.commands.shop")
 public class ShopCommand {
 
     private final CompanyManager companyManager = CompanyManager.getInstance();
