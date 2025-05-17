@@ -5,34 +5,34 @@ import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
+import fr.openmc.core.features.economy.models.EconomyPlayer;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 
 public class EconomyManager {
-    @Getter private static Map<UUID, Double> balances;
-    @Getter static EconomyManager instance;
+    @Getter private static Map<UUID, EconomyPlayer> players;
 
-    private final DecimalFormat decimalFormat;
-    private final NavigableMap<Long, String> suffixes;
+    private static Dao<EconomyPlayer, String> playersDao;
+
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, EconomyPlayer.class);
+        playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
+    }
 
     public EconomyManager() {
-        balances = EconomyData.loadBalances();
-        instance = this;
-
-        decimalFormat = new DecimalFormat("#.##");
-        suffixes = new TreeMap<>();
-        suffixes.put(1_000L, "k");
-        suffixes.put(1_000_000L, "M");
-        suffixes.put(1_000_000_000L, "B");
-        suffixes.put(1_000_000_000_000L, "T");
-        suffixes.put(1_000_000_000_000_000L, "Q");
-        suffixes.put(1_000_000_000_000_000_000L, "Qi");
+        players = loadAllPlayers();
 
         CommandsManager.getHandler().register(
                 new Pay(),
@@ -43,43 +43,58 @@ public class EconomyManager {
     }
     
     public static double getBalance(UUID player) {
-        return balances.getOrDefault(player, 0.0);
+        EconomyPlayer bank = getPlayerBank(player);
+        return bank.getBalance();
     }
     
     public static void addBalance(UUID player, double amount) {
-        double balance = getBalance(player);
-        balance += amount;
-        balances.put(player, balance);
-        saveBalances(player);
+        EconomyPlayer bank = getPlayerBank(player);
+        bank.deposit(amount);
+        savePlayerBank(bank);
     }
     
     public static boolean withdrawBalance(UUID player, double amount) {
-        double balance = getBalance(player);
-        if(balance >= amount) {
-            balance -= amount;
-            balances.put(player, balance);
-            saveBalances(player);
-            return true;
-        }
-        return false;
+        EconomyPlayer bank = getPlayerBank(player);
+        bank.withdraw(amount);
+        savePlayerBank(bank);
+        return true;
     }
 
-    public void setBalance(UUID player, double amount) {
-        balances.put(player, amount);
-        saveBalances(player);
-    }
-    
-    public static void saveBalances(UUID player) {
-        EconomyData.saveBalances(player, getBalance(player));
-    }
-
-    public String getMiniBalance(UUID player) {
+    public static String getMiniBalance(UUID player) {
         double balance = getBalance(player);
 
         return getFormattedSimplifiedNumber(balance);
     }
 
-    public String getFormattedBalance(UUID player) {
+    public static void savePlayerBank(EconomyPlayer player) {
+        try {
+            playersDao.createOrUpdate(player);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static EconomyPlayer getPlayerBank(UUID player) {
+        EconomyPlayer bank = players.get(player);
+        if (bank != null) return bank;
+        return new EconomyPlayer(player);
+    }
+
+    public static Map<UUID, EconomyPlayer> loadAllPlayers() {
+        Map<UUID, EconomyPlayer> players = new HashMap<>();
+        try {
+            List<EconomyPlayer> dbPlayers = playersDao.queryForAll();
+            for (EconomyPlayer player : dbPlayers) {
+                players.put(UUID.fromString(player.getPlayer()), player);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return players;
+    }
+
+    public static String getFormattedBalance(UUID player) {
         String balance = String.valueOf(getBalance(player));
         Currency currency = Currency.getInstance(Locale.FRANCE);
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
@@ -88,7 +103,7 @@ public class EconomyManager {
         return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), getEconomyIcon());
     }
 
-    public String getFormattedNumber(double number) {
+    public static String getFormattedNumber(double number) {
         Currency currency = Currency.getInstance(Locale.FRANCE);
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
