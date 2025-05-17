@@ -1,5 +1,6 @@
-package fr.openmc.core.features.homes;
+package fr.openmc.core.features.homes.models;
 
+import fr.openmc.core.features.homes.HomeIcons;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class Home {
 
     @DatabaseField(id = true)
-    private final UUID owner;
+    private UUID owner;
     @Setter
     @DatabaseField(canBeNull = false)
     private String name;
@@ -28,6 +29,10 @@ public class Home {
     @Setter
     @DatabaseField(canBeNull = false)
     private HomeIcons icon;
+
+    Home() {
+        // required for ORMLite
+    }
 
     public Home(UUID owner, String name, Location location, HomeIcons icon) {
         this.owner = owner;
