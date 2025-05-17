@@ -2,6 +2,7 @@ package fr.openmc.core.features.economy;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,7 +25,7 @@ public class TransactionsMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Transactions de "+ Bukkit.getOfflinePlayer(target).getName();
+        return "Transactions de "+ CacheOfflinePlayer.getOfflinePlayer(target).getName();
     }
 
     @Override

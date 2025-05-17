@@ -5,7 +5,8 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
-import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Material;
@@ -15,7 +16,10 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ShopCatalogueMenu extends PaginatedMenu {
     private final Shop shop;
@@ -72,7 +76,7 @@ public class ShopCatalogueMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
         } else {
             return shop.getName();

@@ -12,24 +12,24 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class MascotUtils {
-	
+
 	public static boolean addMascotForCity(String city_uuid, UUID mascotUUID, Chunk chunk) {
 		if (getMascotOfCity(city_uuid) != null) {
 			return false;
 		}
-		
-		Mascot newMascot = new Mascot(city_uuid, mascotUUID, 1, true, 10080, true, chunk);
+
+		Mascot newMascot = new Mascot(city_uuid, mascotUUID, 1, true, true, chunk);
 		return MascotsManager.mascots.add(newMascot);
 	}
-	
+
 	public static boolean removeMascotOfCity(String city_uuid) {
 		return MascotsManager.mascots.remove(getMascotOfCity(city_uuid));
 	}
-	
+
 	public static @Nullable UUID getMascotUUIDOfCity(String city_uuid) {
 		return getMascotOfCity(city_uuid).getMascotUuid();
 	}
-	
+
 	public static Mascot getMascotByUUID(UUID uuid) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getMascotUuid().equals(uuid)) {
@@ -38,7 +38,7 @@ public class MascotUtils {
 		}
 		return null;
 	}
-	
+
 	public static Mascot getMascotOfCity(String city_uuid) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
@@ -47,7 +47,7 @@ public class MascotUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get the mascot of a city by its entity.
 	 *
@@ -64,7 +64,7 @@ public class MascotUtils {
 		}
 		return null;
 	}
-	
+
 	public static @Nullable Entity getEntityByMascotUUID(UUID mascotUUID) {
 		if (mascotUUID != null) {
 			if (getMascotByUUID(mascotUUID) != null) {
@@ -73,7 +73,7 @@ public class MascotUtils {
 		}
 		return null;
 	}
-	
+
 	public static LivingEntity loadMascot(Mascot mascot) {
 		boolean toUnload = false;
 		Chunk chunk = mascot.getChunk();
@@ -92,7 +92,7 @@ public class MascotUtils {
 		if (toUnload) chunk.unload();
 		return (LivingEntity) mob;
 	}
-	
+
 	public static boolean mascotsContains(String city_uuid) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
@@ -101,17 +101,17 @@ public class MascotUtils {
 		}
 		return false;
 	}
-	
+
 	public static int getMascotLevel(String city_uuid) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
 				return mascot.getLevel();
 			}
 		}
-		
+
 		return 0;
 	}
-	
+
 	public static boolean getMascotState(String city_uuid) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
@@ -120,7 +120,7 @@ public class MascotUtils {
 		}
 		return false;
 	}
-	
+
 	public static boolean getMascotImmunity(String city_uuid) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
@@ -129,16 +129,7 @@ public class MascotUtils {
 		}
 		return false;
 	}
-	
-	public static long getMascotImmunityTime(String city_uuid) {
-		for (Mascot mascot : MascotsManager.mascots) {
-			if (mascot.getCityUuid().equals(city_uuid)) {
-				return mascot.getImmunity_time();
-			}
-		}
-		return 0;
-	}
-	
+
 	public static void setMascotLevel(String city_uuid, int level) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
@@ -147,7 +138,7 @@ public class MascotUtils {
 			}
 		}
 	}
-	
+
 	public static void setMascotUUID(String city_uuid, UUID uuid) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
@@ -156,16 +147,7 @@ public class MascotUtils {
 			}
 		}
 	}
-	
-	public static void setImmunityTime(String city_uuid, long time) {
-		for (Mascot mascot : MascotsManager.mascots) {
-			if (mascot.getCityUuid().equals(city_uuid)) {
-				mascot.setImmunity_time(time);
-				return;
-			}
-		}
-	}
-	
+
 	public static void changeMascotState(String city_uuid, boolean alive) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
@@ -174,7 +156,7 @@ public class MascotUtils {
 			}
 		}
 	}
-	
+
 	public static void changeMascotImmunity(String city_uuid, boolean immunity) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUuid().equals(city_uuid)) {
@@ -183,7 +165,7 @@ public class MascotUtils {
 			}
 		}
 	}
-	
+
 	public static City getCityFromMascot(UUID mascotUUID) {
 		City city = null;
 		if (mascotUUID != null) {
@@ -196,7 +178,7 @@ public class MascotUtils {
 		}
 		return city;
 	}
-	
+
 	public static boolean isMascot(Entity entity) {
 		return entity.getPersistentDataContainer().has(MascotsManager.mascotsKey, PersistentDataType.STRING);
 	}

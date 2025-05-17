@@ -3,6 +3,7 @@ package fr.openmc.core.features.city;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -23,7 +24,7 @@ public class CityMessages {
     public static void sendInfo(CommandSender sender, City city) {
         String mascotLife = "dead";
         String cityName = city.getName();
-        String mayorName = Bukkit.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();

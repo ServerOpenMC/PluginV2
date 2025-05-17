@@ -1,7 +1,7 @@
 package fr.openmc.core.commands.debug;
 
-import fr.openmc.core.utils.cooldown.DynamicCooldown;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
+import fr.openmc.api.cooldown.DynamicCooldown;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -20,7 +20,7 @@ public class CooldownCommand {
     public void cooldown(Player player, @Named("isSuccess") String isSuccess) {
         if (isSuccess.equals("success")) {
             player.sendMessage(Component.text("Succès, le cooldown est activé").color(NamedTextColor.GREEN));
-            DynamicCooldownManager.use(player.getUniqueId(), "test" ,5000);
+            DynamicCooldownManager.use(player.getUniqueId().toString(), "test" ,5000);
         } else {
             player.sendMessage(Component.text("Erreur, vous pouvez refaire la commande").color(NamedTextColor.RED));
         }

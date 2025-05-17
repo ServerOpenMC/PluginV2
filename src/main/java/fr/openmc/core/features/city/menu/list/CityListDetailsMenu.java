@@ -7,8 +7,15 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.ElectionType;
+import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,13 +23,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.mascots.MascotUtils.getEntityByMascotUUID;
 import static fr.openmc.core.features.city.mascots.MascotUtils.getMascotOfCity;
 
-public class CityListDetailsMenu extends Menu { // TODO : Adaptation pour les maires
+public class CityListDetailsMenu extends Menu {
 	
 	private final City city;
 	
@@ -55,10 +64,64 @@ public class CityListDetailsMenu extends Menu { // TODO : Adaptation pour les ma
 	@Override
 	public @NotNull Map<Integer, ItemStack> getContent() {
 		Map<Integer, ItemStack> map = new HashMap<>();
-		
-		map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
-				itemMeta -> itemMeta.displayName(Component.text("§7Maire : " + Bukkit.getServer().getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()))));
-		
+
+		List<Component> loreOwner = new ArrayList<>();
+
+		if (MayorManager.getInstance().phaseMayor == 2) {
+			Mayor mayor = this.city.getMayor();
+			ElectionType electionType = mayor.getElectionType();
+			Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+			Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
+			Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+
+			loreOwner.add(Component.text(""));
+			loreOwner.add(Component.text(perk1.getName()));
+			loreOwner.addAll(perk1.getLore());
+			if (electionType == ElectionType.OWNER_CHOOSE) {
+				loreOwner.add(Component.text(""));
+				loreOwner.add(Component.text(perk2.getName()));
+				loreOwner.addAll(perk2.getLore());
+				loreOwner.add(Component.text(""));
+				loreOwner.add(Component.text(perk3.getName()));
+				loreOwner.addAll(perk3.getLore());
+			}
+
+			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+					itemMeta -> {
+						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()));
+						itemMeta.lore(loreOwner);
+					})
+			);
+
+			if (electionType == ElectionType.ELECTION) {
+				List<Component> loreMayor = new ArrayList<>();
+				loreMayor.add(Component.text(""));
+				loreMayor.add(Component.text(perk2.getName()));
+				loreMayor.addAll(perk2.getLore());
+				loreMayor.add(Component.text(""));
+				loreMayor.add(Component.text(perk3.getName()));
+				loreMayor.addAll(perk3.getLore());
+
+				map.put(14, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+								itemMeta -> {
+									itemMeta.displayName(
+											Component.text("§7Maire : ")
+													.append(Component.text(mayor.getName()).color(this.city.getMayor().getMayorColor()).decoration(TextDecoration.ITALIC, false))
+									);
+									itemMeta.lore(loreMayor);
+								}
+						)
+				);
+			}
+		} else {
+			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+					itemMeta -> {
+						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()));
+					})
+			);
+		}
+
+
 		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(getMascotOfCity(city.getUUID()).getMascotUuid()).getType())),
 				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + getMascotOfCity(city.getUUID()).getLevel()))));
 		

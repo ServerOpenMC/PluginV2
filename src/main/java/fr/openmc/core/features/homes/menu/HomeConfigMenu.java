@@ -7,9 +7,13 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.customfonts.CustomFonts;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -42,22 +46,30 @@ public class HomeConfigMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> content = new HashMap<>();
+        Player player = getOwner();
 
-        content.put(4, home.getIconItem());
+        try {
+            content.put(4, home.getIconItem());
 
-        content.put(20, new ItemBuilder(this, HomeUtil.getRandomsIcons(),itemMeta -> {
-            itemMeta.setDisplayName("§aChanger l'icône");
-            itemMeta.setLore(List.of(ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône de votre home"));
-        }).setNextMenu(new HomeChangeIconMenu(getOwner(), home)));
+            content.put(20, new ItemBuilder(this, HomeUtil.getRandomsIcons(),itemMeta -> {
+                itemMeta.setDisplayName("§aChanger l'icône");
+                itemMeta.setLore(List.of(ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône de votre home"));
+            }).setNextMenu(new HomeChangeIconMenu(player, home)));
 
         content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
             itemMeta.setDisplayName(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home");
             itemMeta.setLore(List.of(ChatColor.GRAY + "■ §cClique §4gauche §cpour supprimer votre home"));
         }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
 
-        content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setNextMenu(new HomeMenu(getOwner())));
-        content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+            content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setNextMenu(new HomeMenu(player)));
+            content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
 
+            return content;
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
+        }
         return content;
     }
 

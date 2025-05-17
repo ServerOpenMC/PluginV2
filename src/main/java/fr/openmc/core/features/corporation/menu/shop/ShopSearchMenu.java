@@ -1,7 +1,7 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
-import fr.openmc.api.signgui.SignGUI;
-import fr.openmc.api.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -9,12 +9,14 @@ import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -24,8 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-
-import net.kyori.adventure.text.Component;
 
 public class ShopSearchMenu extends PaginatedMenu {
 
@@ -148,7 +148,7 @@ public class ShopSearchMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
         } else {
             return "§l§6search";
