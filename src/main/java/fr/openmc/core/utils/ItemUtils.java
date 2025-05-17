@@ -39,6 +39,11 @@ public class ItemUtils {
         return getItemTranslation(new ItemStack(material));
     }
 
+    /**
+     * Découpe un nombre d'item en packet de 64
+     * @param items Votre ItemStack
+     * @return Une Liste d'ItemStack
+     */
     public static List<ItemStack> splitAmountIntoStack(ItemStack items) {
         int amount = items.getAmount();
 
@@ -60,6 +65,12 @@ public class ItemUtils {
         return stacks;
     }
 
+    /**
+     * Retourne le nombre d'item qui peut aller dans un Stack
+     * @param player Joueur pour acceder a son inventaire
+     * @param item Item recherché pour completer un stack
+     * @return Le nombre d'item qui peut completer un stack
+     */
     public static int getNumberItemToStack(Player player, ItemStack item) {
         Inventory inventory = player.getInventory();
         int numberitemtostack = 0;
@@ -72,6 +83,11 @@ public class ItemUtils {
         return numberitemtostack;
     }
 
+
+    /**
+     * Retourne le nombre de slot vide
+     * @param player Joueur pour acceder a son inventaire
+     */
     public static int getSlotNull(Player player) {
         Inventory inventory = player.getInventory();
 
@@ -86,6 +102,12 @@ public class ItemUtils {
         return slot;
     }
 
+    /**
+     * Dire si le joueur a assez d'un objet
+     * @param player Joueur pour acceder a son inventaire
+     * @param item Objet concerné
+     * @param amount Quantité nécessaire
+     */
     public static int getFreePlacesForItem(Player player, ItemStack item){
         int stackSize = item.getMaxStackSize();
         int freePlace = stackSize * getSlotNull(player);
@@ -110,7 +132,7 @@ public class ItemUtils {
             playerName = player.getName();
             meta.setOwningPlayer(player);
         } else {
-            OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerUUID);
+            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
             playerName = offlinePlayer.getName();
             meta.setOwningPlayer(offlinePlayer);
         }
@@ -136,6 +158,10 @@ public class ItemUtils {
         return totalItems >= amount;
     }
 
+    /**
+     * Dire si le joueur a des ou un slot de libre
+     * @param player Joueur pour acceder a son inventaire
+     */
     public static boolean hasAvailableSlot(Player player) {
         Inventory inv = player.getInventory();
         ItemStack[] contents = inv.getContents();
@@ -151,6 +177,12 @@ public class ItemUtils {
         return false;
     }
 
+    /**
+     * Retirer le nombre d'objet au joueur (vérification obligatoire avant execution)
+     * @param player Joueur pour acceder a son inventaire
+     * @param item Objet a retirer
+     * @param quantity Quantité a retirer
+     */
     public static void removeItemsFromInventory(Player player, Material item, int quantity) {
         ItemStack[] contents = player.getInventory().getContents();
         int remaining = quantity;
@@ -170,6 +202,29 @@ public class ItemUtils {
         }
     }
 
+    public static void removeItemsFromInventory(Player player, ItemStack item, int quantity) {
+        ItemStack[] contents = player.getInventory().getContents();
+        int remaining = quantity;
+
+        for (int i = 0; i < contents.length && remaining > 0; i++) {
+            ItemStack stack = contents[i];
+            if (stack != null && stack == item) {
+                int stackAmount = stack.getAmount();
+                if (stackAmount <= remaining) {
+                    player.getInventory().setItem(i, null);
+                    remaining -= stackAmount;
+                } else {
+                    stack.setAmount(stackAmount - remaining);
+                    remaining = 0;
+                }
+            }
+        }
+    }
+
+    /**
+     * Donner le Type de Panneau en fonction du biome ou il se trouve
+     * @param player Joueur pour acceder au biome ou il est
+     */
     public static Material getSignType(Player player) {
         HashMap<Biome, Material> biomeToSignType = new HashMap<>();
         biomeToSignType.put(Biome.BAMBOO_JUNGLE, Material.BAMBOO_SIGN);
