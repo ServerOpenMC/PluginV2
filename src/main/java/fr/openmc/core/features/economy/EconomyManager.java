@@ -21,6 +21,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 public class EconomyManager {
+    private static EconomyManager instance;
     private static Map<UUID, EconomyPlayer> players;
 
     private static Dao<EconomyPlayer, String> playersDao;
@@ -30,8 +31,22 @@ public class EconomyManager {
         playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
     }
 
+    private final DecimalFormat decimalFormat;
+    private final NavigableMap<Long, String> suffixes;
+
     public EconomyManager() {
+        instance = this;
+
         players = loadAllPlayers();
+
+        decimalFormat = new DecimalFormat("#.##");
+        suffixes = new TreeMap<>();
+        suffixes.put(1_000L, "k");
+        suffixes.put(1_000_000L, "M");
+        suffixes.put(1_000_000_000L, "B");
+        suffixes.put(1_000_000_000_000L, "T");
+        suffixes.put(1_000_000_000_000_000L, "Q");
+        suffixes.put(1_000_000_000_000_000_000L, "Qi");
 
         CommandsManager.getHandler().register(
                 new Pay(),
