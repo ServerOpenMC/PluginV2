@@ -64,23 +64,22 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<ItemStack> getItems() {
-        try {
-            ItemStack[] contents = city.getChestContent(this.page);
-            city.setChestWatcher(getOwner().getUniqueId());
+        ItemStack[] contents = city.getChestContent(this.page);
+        city.setChestWatcher(getOwner().getUniqueId());
 
-            System.out.println("open contents " + Arrays.toString(contents));
+        System.out.println("open contents " + Arrays.toString(contents));
 
-            if (contents == null) {
-                System.out.println("empty : " + contents);
-                return Collections.emptyList();
-            }
-
-            System.out.println(List.of(contents));
-            return List.of(contents);
-        } catch (Exception ignore) {
-            ignore.printStackTrace();
+        if (contents == null) {
+            return Collections.emptyList();
         }
-        return Collections.emptyList();
+
+        for (int i = 0; i < contents.length; i++) {
+            if (contents[i] == null) {
+                contents[i] = new ItemStack(Material.AIR);
+            }
+        }
+
+        return Arrays.asList(contents);
     }
 
     private final List<Integer> cityItemSlot = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44);

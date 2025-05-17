@@ -3,7 +3,6 @@ package fr.openmc.core.features.city;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
-import fr.openmc.core.features.city.menu.CityChestMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -39,9 +38,6 @@ public class City {
     private Integer chestPages;
     private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
     @Getter @Setter private UUID chestWatcher;
-    @Getter
-    @Setter
-    private CityChestMenu chestMenu;
 
     public City(String uuid) {
         this.cityUUID = uuid;
@@ -113,6 +109,9 @@ public class City {
 
     public void saveChestContent(int page, ItemStack[] content) {
         System.out.println(chestContent);
+        chestContent.forEach((chestPage, items) -> {
+            System.out.println(items);
+        });
         chestContent.put(page, content);
 
         System.out.println(chestContent);

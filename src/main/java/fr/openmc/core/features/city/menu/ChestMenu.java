@@ -9,18 +9,6 @@ public class ChestMenu {
 //    public static final int UPGRADE_PER_MONEY = 3000;
 //    public static final int UPGRADE_PER_AYWENITE = 5;
 //
-//    private static ItemStack getBorder() {
-//        if (border != null) {
-//            return border.clone();
-//        }
-//        border = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-//
-//        ItemMeta meta = border.getItemMeta();
-//        meta.displayName(Component.empty());
-//        border.setItemMeta(meta);
-//
-//        return border.clone();
-//    }
 //
 //    public ChestMenu(City city, int page) {
 //        this.city = city;
