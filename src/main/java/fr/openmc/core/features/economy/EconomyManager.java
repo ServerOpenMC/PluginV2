@@ -75,6 +75,12 @@ public class EconomyManager {
         return true;
     }
 
+    public static void setBalance(UUID player, double amount) {
+        EconomyPlayer bank = getPlayerBank(player);
+        bank.withdraw(bank.getBalance());
+        savePlayerBank(bank);
+    }
+
     public static String getMiniBalance(UUID player) {
         double balance = getBalance(player);
 
@@ -96,18 +102,18 @@ public class EconomyManager {
         return new EconomyPlayer(player);
     }
 
-    public static Map<UUID, EconomyPlayer> loadAllPlayers() {
-        Map<UUID, EconomyPlayer> players = new HashMap<>();
+    public static Map<UUID, EconomyPlayer> loadAllBalances() {
+        Map<UUID, EconomyPlayer> balances = new HashMap<>();
         try {
-            List<EconomyPlayer> dbPlayers = playersDao.queryForAll();
-            for (EconomyPlayer bank : dbPlayers) {
-                players.put(bank.getPlayer(), bank);
+            List<EconomyPlayer> dbBalances = playersDao.queryForAll();
+            for (EconomyPlayer bank : dbBalances) {
+                balances.put(bank.getPlayer(), bank);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return players;
+        return balances;
     }
 
     public static String getFormattedBalance(UUID player) {
