@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.homes.Home;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
