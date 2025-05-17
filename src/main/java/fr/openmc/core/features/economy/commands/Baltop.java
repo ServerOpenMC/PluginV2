@@ -1,6 +1,7 @@
 package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -36,7 +37,7 @@ public class Baltop {
         int index = 1;
         for(PlayerBalance balance : balances) {
             builder.append(Component.text(index + ". ", getColor(index)))
-                    .append(Component.text(Bukkit.getOfflinePlayer(balance.playerId).getName() + ": ", NamedTextColor.GRAY))
+                    .append(Component.text(CacheOfflinePlayer.getOfflinePlayer(balance.playerId).getName() + ": ", NamedTextColor.GRAY))
                     .append(Component.text(EconomyManager.getInstance().getFormattedNumber(balance.balance) + "\n", NamedTextColor.GREEN));
             index++;
         }
