@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.listeners;
 
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotUtils;
@@ -9,7 +8,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,7 +25,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.projectiles.ProjectileSource;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,36 +38,19 @@ public class ProtectionListener implements Listener {
     private static final Map<UUID, Long> lastErrorMessageTime = new HashMap<>();
     private static final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
 
-    private boolean isMemberOf(@Nullable City city, Player player) {
-        if (city == null) {
-            return true;
-        }
-
-        return city.getMembers().contains(player.getUniqueId());
-    }
-
-    @Nullable
-    private City getCityByChunk(Chunk chunk) {
-        for (City city: CityManager.getCities()) {
-            if (city.getChunks().contains(BlockVector2.at(chunk.getX(), chunk.getZ()))) {
-                return city;
-            }
-        }
-        return null;
-    }
-
     private void verify(Player player, Cancellable event, Location loc) {
         if (!player.getWorld().getName().equals("world")) return;
 
         Boolean canBypass = playerCanBypass.get(player.getUniqueId());
         if (canBypass != null && canBypass) return;
 
-        City city = getCityByChunk(loc.getChunk());
-        City cityz = CityManager.getPlayerCity(player.getUniqueId());
+        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
+        City cityz = CityManager.getPlayerCity(player.getUniqueId()); // on regarde la city du membre
 
-        if (isMemberOf(city, player)) return;
+        if (city == null) return;
 
-        if (cityz != null) {
+        if (city.isMember(player)) return;
+        if (cityz!=null){
             String city_type = CityManager.getCityType(city.getUUID());
             String cityz_type = CityManager.getCityType(cityz.getUUID());
             if (city_type != null && cityz_type != null && city_type.equals("war") && cityz_type.equals("war")) {
@@ -93,7 +73,7 @@ public class ProtectionListener implements Listener {
     private void verify(Entity entity, Cancellable event, Location loc) {
         if (!entity.getWorld().getName().equals("world")) return;
 
-        City city = getCityByChunk(loc.getChunk()); // on regarde le claim ou l'action a été fait
+        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
         if (city == null || !"war".equals(CityManager.getCityType(city.getUUID())))
             return;
 
@@ -241,9 +221,10 @@ public class ProtectionListener implements Listener {
             City cityz = CityManager.getPlayerCity(player.getUniqueId());
 
             event.blockList().removeIf(block -> {
-                City blockCity = getCityByChunk(block.getChunk());
+                City blockCity = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
+                if (blockCity == null) return false;
 
-                if (isMemberOf(blockCity, player)) return false;
+                if (blockCity.isMember(player)) return false;
                 if (cityz != null) {
                     String type1 = CityManager.getCityType(blockCity.getUUID());
                     String type2 = CityManager.getCityType(cityz.getUUID());
@@ -257,7 +238,7 @@ public class ProtectionListener implements Listener {
 
         if (entity instanceof TNTPrimed) {
             event.blockList().removeIf(block -> {
-                City city = getCityByChunk(block.getChunk());
+                City city = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
                 return city != null && "peace".equals(CityManager.getCityType(city.getUUID()));
             });
             return;
@@ -265,7 +246,7 @@ public class ProtectionListener implements Listener {
 
         if (NATURAL_EXPLOSIVE_ENTITIES.contains(entity.getType())) {
             event.blockList().removeIf(block -> {
-                City city = getCityByChunk(block.getChunk());
+                City city = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
                 return city != null && "peace".equals(CityManager.getCityType(city.getUUID()));
             });
         }
@@ -274,7 +255,7 @@ public class ProtectionListener implements Listener {
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
         event.blockList().removeIf(block -> {
-            City blockCity = getCityByChunk(block.getChunk());
+            City blockCity = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
 
             return blockCity != null && CityManager.getCityType(blockCity.getUUID()).equals("peace");
         });
@@ -285,7 +266,7 @@ public class ProtectionListener implements Listener {
         Entity entity = event.getEntity();
 
         if (entity.getType() == EntityType.WITHER || entity.getType() == EntityType.WITHER_SKULL) {
-            City city = getCityByChunk(event.getBlock().getChunk());
+            City city = CityManager.getCityFromChunk(event.getBlock().getChunk().getX(), event.getBlock().getChunk().getZ());
             if (city != null && "peace".equals(CityManager.getCityType(city.getUUID()))) {
                 event.setCancelled(true);
             }
@@ -329,10 +310,10 @@ public class ProtectionListener implements Listener {
         if (event.isCancelled()) return;
         if (event.getEntity() instanceof Player player) {
             Location loc = player.getLocation();
-            City city = getCityByChunk(loc.getChunk());
+            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
 
             //si ville en paix alors on annule
-            if (city != null && "peace".equals(CityManager.getCityType(city.getUUID())) && !isMemberOf(city, player)) {
+            if (city != null && "peace".equals(CityManager.getCityType(city.getUUID())) && !city.isMember(player)) {
                 event.setCancelled(true);
                 return;
             }
@@ -355,7 +336,7 @@ public class ProtectionListener implements Listener {
             return;
 
         Location witchLocation = witch.getLocation();
-        City city = getCityByChunk(witchLocation.getChunk());
+        City city = CityManager.getCityFromChunk(witchLocation.getChunk().getX(), witchLocation.getChunk().getZ());
         if (city == null)
             return;
 
@@ -366,7 +347,7 @@ public class ProtectionListener implements Listener {
             if (!(affectedEntity instanceof Player player))
                 continue;
 
-            boolean isNotMember = !isMemberOf(city, player);
+            boolean isNotMember = !city.isMember(player);
             if (!isNotMember || isCityInWar)
                 continue;
 

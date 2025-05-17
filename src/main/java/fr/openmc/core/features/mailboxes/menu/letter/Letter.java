@@ -4,6 +4,7 @@ package fr.openmc.core.features.mailboxes.menu.letter;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
@@ -59,7 +60,7 @@ public class Letter extends MailboxInv {
                 if (result.next()) {
                     int itemsCount = result.getInt("items_count");
                     LocalDateTime sentAt = result.getTimestamp("sent_at").toLocalDateTime();
-                    OfflinePlayer sender = Bukkit.getOfflinePlayer(UUID.fromString(result.getString("sender_id")));
+                    OfflinePlayer sender = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(result.getString("sender_id")));
                     ItemStack[] items = BukkitSerializer.deserializeItemStacks(result.getBytes("items"));
                     return new LetterHead(sender, id, itemsCount, sentAt, items);
                 }

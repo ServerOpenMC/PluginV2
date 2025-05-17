@@ -1,11 +1,12 @@
 package fr.openmc.core.features.corporation.manager;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.corporation.*;
+import fr.openmc.core.features.corporation.CorpPermission;
+import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.commands.CompanyCommand;
 import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.features.corporation.company.Company;
@@ -17,12 +18,15 @@ import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.corporation.shops.Supply;
 import fr.openmc.core.utils.Queue;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -65,7 +69,7 @@ public class CompanyManager {
                 new ShopListener()
         );
 
-        if (CustomItemRegistry.hasItemsAdder()){
+        if (ItemAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new CustomItemsCompanyListener()
             );
