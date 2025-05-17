@@ -6,7 +6,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
-import fr.openmc.core.features.city.listeners.ChestMenuListener;
 import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.listeners.CityTypeCooldown;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
@@ -71,7 +70,6 @@ public class CityManager implements Listener {
 
         OMCPlugin.registerEvents(
                 new ProtectionListener(),
-                new ChestMenuListener(),
                 new MascotsListener(),
                 new CityChatListener()
         );
