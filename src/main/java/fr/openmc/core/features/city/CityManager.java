@@ -81,16 +81,7 @@ public class CityManager implements Listener {
                 new CityChatListener()
         );
 
-        freeClaim = getAllFreeClaims();
-    }
-
-    @EventHandler
-    public void onChunkClaim(ChunkClaimedEvent event) {
-        claimedChunks.put(BlockVector2.at(event.getChunk().getX(), event.getChunk().getZ()), event.getCity());
-    }
-
-    public static Collection<City> getCities() {
-        return cities.values();
+        freeClaim = loadFreeClaims();
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -103,7 +94,50 @@ public class CityManager implements Listener {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
     }
 
-    public static HashMap<String, Integer> getAllFreeClaims() {
+    @EventHandler
+    public void onChunkClaim(ChunkClaimedEvent event) {
+        claimedChunks.put(BlockVector2.at(event.getChunk().getX(), event.getChunk().getZ()), event.getCity());
+    }
+
+    /**
+     * Get all City
+     *
+     * @return A collection of all cities
+     */
+    public static Collection<City> getCities() {
+        return cities.values();
+    }
+
+    /**
+     * Get all UUIDs of cities
+     *
+     * @return A list of all city UUIDs
+     */
+    public static List<String> getAllCityUUIDs() throws SQLException {
+        Connection conn = DatabaseManager.getConnection();
+        List<String> uuidList = new ArrayList<>();
+
+        String query = "SELECT uuid FROM city";
+        try (PreparedStatement statement = conn.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String uuid = resultSet.getString("uuid");
+                uuidList.add(uuid);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return uuidList;
+    }
+
+    /**
+     * Get all free claims
+     *
+     * @return A map of city UUIDs and their claim
+     */
+    public static HashMap<String, Integer> loadFreeClaims() {
         HashMap<String, Integer> freeClaims = new HashMap<>();
 
         String query = "SELECT city_uuid, claim FROM free_claim";
@@ -123,6 +157,10 @@ public class CityManager implements Listener {
         return freeClaims;
     }
 
+    /**
+     * Save free claims to the database
+     * @param freeClaims A map of city UUIDs and their claim
+     */
     public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
         String query;
 
@@ -153,10 +191,76 @@ public class CityManager implements Listener {
         }
     }
 
+    /**
+     * Check if a chunk is claimed
+     * @param x The x coordinate of the chunk
+     * @param z The z coordinate of the chunk
+     * @return true if the chunk is claimed, false otherwise
+     */
     public static boolean isChunkClaimed(int x, int z) {
         return getCityFromChunk(x, z) != null;
     }
 
+    /**
+     * Get a city by its UUID
+     * @param city The UUID of the city
+     * @return The city object, or null if not found
+     */
+    public static City getCity(String city) {
+        if (!cities.containsKey(city)) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
+                statement.setString(1, city);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    City c = new City(city);
+                    cities.put(c.getUUID(), c);
+                    return c;
+                }
+
+                return null;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return cities.get(city);
+    }
+
+    /**
+     * Get a city by its member
+     * @param uuid The UUID of the member
+     * @return The city object, or null if not found
+     */
+    public static City getPlayerCity(UUID uuid) {
+        if (!playerCities.containsKey(uuid)) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_members WHERE player = ? LIMIT 1");
+                statement.setString(1, uuid.toString());
+                ResultSet rs = statement.executeQuery();
+
+                if (!rs.next()) {
+                    return null;
+                }
+
+                String city = rs.getString(1);
+                cachePlayer(uuid, getCity(city));
+                return getCity(city);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return playerCities.get(uuid);
+    }
+
+    /**
+     * Get a city from a chunk
+     *
+     * @param x The x coordinate of the chunk
+     * @param z The z coordinate of the chunk
+     * @return The city object, or null if not found
+     */
     @Nullable
     public static City getCityFromChunk(int x, int z) {
         if (claimedChunks.containsKey(BlockVector2.at(x, z))) {
@@ -182,6 +286,49 @@ public class CityManager implements Listener {
         }
     }
 
+    /**
+     * Apply all city interests
+     * WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY CITIES SAVED IN THE DB
+     */
+    public static void applyAllCityInterests() {
+        try {
+            List<String> cityUUIDs = getAllCityUUIDs();
+            for (String cityUUID : cityUUIDs) {
+                getCity(cityUUID).applyCityInterest();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Cache a player with its city
+     *
+     * @param uuid The UUID of the player
+     * @param city The city object
+     */
+    public static void cachePlayer(UUID uuid, City city) {
+        playerCities.put(uuid, city);
+    }
+
+    /**
+     * Uncache a player with its city
+     *
+     * @param uuid The UUID of the player
+     */
+    public static void uncachePlayer(UUID uuid) {
+        playerCities.remove(uuid);
+    }
+
+    /**
+     * Create a new city
+     *
+     * @param owner    The owner of the city
+     * @param cityUUID The UUID of the city
+     * @param name     The name of the city
+     * @param type     The type of the city
+     * @return The created city object
+     */
     public static City createCity(Player owner, String cityUUID, String name, String type) {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -206,31 +353,20 @@ public class CityManager implements Listener {
         return city;
     }
 
+    /**
+     * Register a city
+     *
+     * @param city The city object
+     */
     public static void registerCity(City city) {
         cities.put(city.getUUID(), city);
     }
 
-    public static City getCity(String city) {
-        if (!cities.containsKey(city)) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
-                statement.setString(1, city);
-                ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    City c = new City(city);
-                    cities.put(c.getUUID(), c);
-                    return c;
-                }
-
-                return null;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return cities.get(city);
-    }
-
+    /**
+     * Delete a city
+     *
+     * @param city The UUID of the city
+     */
     public static void forgetCity(String city) {
         try {
             City cityz = cities.remove(city);
@@ -298,68 +434,5 @@ public class CityManager implements Listener {
         freeClaim.remove(city);
 
         MascotsManager.removeMascotsFromCity(city);
-    }
-
-
-    public static void cachePlayer(UUID uuid, City city) {
-        playerCities.put(uuid, city);
-    }
-
-    public static City getPlayerCity(UUID uuid) {
-        if (!playerCities.containsKey(uuid)) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_members WHERE player = ? LIMIT 1");
-                statement.setString(1, uuid.toString());
-                ResultSet rs = statement.executeQuery();
-
-                if (!rs.next()) {
-                    return null;
-                }
-
-                String city = rs.getString(1);
-                cachePlayer(uuid, getCity(city));
-                return getCity(city);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return playerCities.get(uuid);
-    }
-
-
-    public static List<String> getAllCityUUIDs() throws SQLException {
-        Connection conn = DatabaseManager.getConnection();
-        List<String> uuidList = new ArrayList<>();
-
-        String query = "SELECT uuid FROM city";
-        try (PreparedStatement statement = conn.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                String uuid = resultSet.getString("uuid");
-                uuidList.add(uuid);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return uuidList;
-    }
-
-    public static void uncachePlayer(UUID uuid) {
-        playerCities.remove(uuid);
-    }
-
-    // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY CITIES SAVED IN THE DB
-    public static void applyAllCityInterests() {
-        try {
-            List<String> cityUUIDs = getAllCityUUIDs();
-            for (String cityUUID : cityUUIDs) {
-                getCity(cityUUID).applyCityInterest();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
