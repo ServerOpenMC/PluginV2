@@ -11,7 +11,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @Getter
 @DatabaseTable(tableName = "contests")
 public class Contest {
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, id = true) // id is required for dao.update function
     private String camp1;
     @DatabaseField(canBeNull = false)
     private String camp2;

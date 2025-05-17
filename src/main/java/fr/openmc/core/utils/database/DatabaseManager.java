@@ -29,21 +29,6 @@ public class DatabaseManager {
     private static ConnectionSource connectionSource;
 
     public DatabaseManager() {
-        // old database connection setup
-        connect();
-        try {
-            // Déclencher au début du plugin pour créer les tables nécessaires
-            CityManager.init_db(connection);
-            MayorManager.init_db(connection);
-            MascotsManager.init_db(connection);
-            DynamicCooldownManager.init_db(connection);
-            CompanyManager.init_db(connection);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
-        }
-
         // ormlite
         try {
             if (OMCPlugin.isUnitTestVersion()) {
@@ -67,6 +52,21 @@ public class DatabaseManager {
             HomesManager.init_db(connectionSource);
             FriendSQLManager.init_db(connectionSource);
         } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
+        }
+
+        // old database connection setup
+        connect();
+        try {
+            // Déclencher au début du plugin pour créer les tables nécessaires
+            CityManager.init_db(connection);
+            MayorManager.init_db(connection);
+            MascotsManager.init_db(connection);
+            DynamicCooldownManager.init_db(connection);
+            CompanyManager.init_db(connection);
+
+        } catch (SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
         }
