@@ -138,6 +138,15 @@ public class DynamicCooldownManager {
     }
 
     /**
+     * @param uuid  Entity UUID to check
+     * @param group Cooldown group
+     * @return true if entity can perform action
+     */
+    public static boolean isReady(String uuid, String group) {
+        return isReady(UUID.fromString(uuid), group);
+    }
+
+    /**
      * Puts entity on cooldown
      * 
      * @param uuid     Entity UUID
@@ -147,6 +156,17 @@ public class DynamicCooldownManager {
     public static void use(UUID uuid, String group, long duration) {
         cooldowns.computeIfAbsent(uuid, k -> new HashMap<>())
                 .put(group, new Cooldown(uuid, group, duration, System.currentTimeMillis()));
+    }
+
+    /**
+     * Puts entity on cooldown
+     * 
+     * @param uuid     Entity UUID
+     * @param group    Cooldown group
+     * @param duration Cooldown duration in ms
+     */
+    public static void use(String uuid, String group, long duration) {
+        use(UUID.fromString(uuid), group, duration);
     }
 
     /**
@@ -163,6 +183,17 @@ public class DynamicCooldownManager {
 
         Cooldown cooldown = userCooldowns.get(group);
         return cooldown == null ? 0 : cooldown.getRemaining();
+    }
+
+    /**
+     * Get remaining cooldown time
+     * 
+     * @param uuid  Entity UUID
+     * @param group Cooldown group
+     * @return remaining time in milliseconds, 0 if no cooldown
+     */
+    public static long getRemaining(String uuid, String group) {
+        return getRemaining(UUID.fromString(uuid), group);
     }
 
     /**
