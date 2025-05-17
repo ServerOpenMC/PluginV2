@@ -38,6 +38,7 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.features.economy.models.Bank;
 
 public class BankManager {
+    @Getter
     private static Map<UUID, Bank> banks;
 
     private static Dao<Bank, String> banksDao;
