@@ -115,7 +115,6 @@ public final class MenuLib implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		if (e.getInventory().getHolder() instanceof Menu menu) {
-			e.setCancelled(true);
 			if (e.getCurrentItem() == null) {
 				return;
 			}
@@ -124,6 +123,7 @@ public final class MenuLib implements Listener {
 				return;
 			}
 
+			e.setCancelled(true);
 			menu.onInventoryClick(e);
 			
 			try {

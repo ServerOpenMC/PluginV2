@@ -33,7 +33,6 @@ public class CityChestMenu extends PaginatedMenu {
     private final City city;
     @Getter
     private final int page;
-    private boolean loaded;
 
     public static final int UPGRADE_PER_MONEY = 3000;
     public static final int UPGRADE_PER_AYWENITE = 5;
@@ -67,8 +66,6 @@ public class CityChestMenu extends PaginatedMenu {
         ItemStack[] contents = city.getChestContent(this.page);
         city.setChestWatcher(getOwner().getUniqueId());
 
-        System.out.println("open contents " + Arrays.toString(contents));
-
         if (contents == null) {
             return Collections.emptyList();
         }
@@ -95,9 +92,6 @@ public class CityChestMenu extends PaginatedMenu {
 
         Player player = getOwner();
 
-        City city = CityManager.getPlayerCity(player.getUniqueId()); // Permet de charger les villes en background
-        if (city == null) return null;
-
         Map<Integer, ItemStack> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
@@ -110,22 +104,24 @@ public class CityChestMenu extends PaginatedMenu {
             map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> {
                 itemMeta.displayName(Component.text("§cPage précédente"));
             }).setOnClick(inventoryClickEvent -> {
-//                CityChestMenu menu = city.getChestMenu();
-//                if (menu == null) { return; }
-//
-//                if (menu.hasPreviousPage()) {
-//                    exit(city, inv, menu);
-//                    city.setChestMenu(new CityChestMenu(player, city, menu.getPage() - 1));
-//                    city.getChestMenu().open(player);
-//                    return;
-//                }
+                if (hasPreviousPage()) {
+                    Inventory inv = inventoryClickEvent.getInventory();
+
+                    exit(city, inv);
+                    new CityChestMenu(player, city, this.getPage() - 1).open();
+                }
             }));
         }
         if (hasNextPage()) {
             map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> {
                 itemMeta.displayName(Component.text("§aPage suivante"));
             }).setOnClick(inventoryClickEvent -> {
+                if (hasNextPage()) {
+                    Inventory inv = inventoryClickEvent.getInventory();
 
+                    exit(city, inv);
+                    new CityChestMenu(player, city, this.getPage() + 1).open();
+                }
             }));
         }
 
@@ -175,20 +171,15 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
-        System.out.println("onClose");
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) {
             return;
         }
 
-        System.out.println("1");
-
         City city = CityManager.getPlayerCity(player.getUniqueId()); // Permet de charger les villes en background
         if (city == null) {
             return;
         }
-
-        System.out.println("2");
 
         Inventory inv = event.getInventory();
         exit(city, inv);
@@ -199,13 +190,8 @@ public class CityChestMenu extends PaginatedMenu {
             inv.clear(i);
         }
 
-        System.out.println("exit - saveChest " + Arrays.toString(inv.getContents()));
-
         city.saveChestContent(this.getPage(), inv.getContents());
-
-        System.out.println("exit - chestWatcher");
         city.setChestWatcher(null);
-        System.out.println("exit - chestWatcher nice");
     }
 
     public boolean hasNextPage() {
