@@ -6,6 +6,7 @@ import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
+import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 
@@ -21,8 +22,9 @@ import java.text.NumberFormat;
 import java.util.*;
 
 public class EconomyManager {
-    private static EconomyManager instance;
+    @Getter
     private static Map<UUID, EconomyPlayer> players;
+    private static EconomyManager instance;
 
     private static Dao<EconomyPlayer, String> playersDao;
 
@@ -52,21 +54,20 @@ public class EconomyManager {
                 new Pay(),
                 new Baltop(),
                 new History(),
-                new Money()
-        );
+                new Money());
     }
-    
+
     public static double getBalance(UUID player) {
         EconomyPlayer bank = getPlayerBank(player);
         return bank.getBalance();
     }
-    
+
     public static void addBalance(UUID player, double amount) {
         EconomyPlayer bank = getPlayerBank(player);
         bank.deposit(amount);
         savePlayerBank(bank);
     }
-    
+
     public static boolean withdrawBalance(UUID player, double amount) {
         EconomyPlayer bank = getPlayerBank(player);
         bank.withdraw(amount);
@@ -90,7 +91,8 @@ public class EconomyManager {
 
     public static EconomyPlayer getPlayerBank(UUID player) {
         EconomyPlayer bank = players.get(player);
-        if (bank != null) return bank;
+        if (bank != null)
+            return bank;
         return new EconomyPlayer(player);
     }
 
@@ -114,7 +116,8 @@ public class EconomyManager {
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
         BigDecimal bd = new BigDecimal(balance);
-        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), getEconomyIcon());
+        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
+                getEconomyIcon());
     }
 
     public static String getFormattedNumber(double number) {
@@ -122,30 +125,32 @@ public class EconomyManager {
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
         BigDecimal bd = new BigDecimal(number);
-        return  format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(), getEconomyIcon());
+        return format.format(bd).replace(NumberFormat.getCurrencyInstance(Locale.FRANCE).getCurrency().getSymbol(),
+                getEconomyIcon());
     }
 
     public static String getFormattedSimplifiedNumber(double balance) {
         if (balance == 0) {
             return "0";
         }
-    
+
         Map.Entry<Long, String> entry = instance.suffixes.floorEntry((long) balance);
         if (entry == null) {
             return instance.decimalFormat.format(balance);
         }
-    
+
         long divideBy = entry.getKey();
         String suffix = entry.getValue();
-    
+
         double truncated = balance / divideBy;
         String formatted = instance.decimalFormat.format(truncated);
-    
+
         return formatted + suffix;
     }
 
     public static String getEconomyIcon() {
-        if(Bukkit.getPluginManager().getPlugin("ItemsAdder") != null && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null
+                && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             return "§f" + PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
         }
         return "Ⓐ";
