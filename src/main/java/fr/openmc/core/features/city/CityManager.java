@@ -327,48 +327,6 @@ public class CityManager implements Listener {
         return playerCities.get(uuid);
     }
 
-    /**
-     * return 'war' / 'peace' / 'null' if not found
-     */
-
-    public static String getCityType(String city_uuid) {
-        String type = null;
-
-        if (city_uuid != null) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
-                statement.setString(1, city_uuid);
-                ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    type = rs.getString("type");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        return type;
-    }
-
-    public static int getCityPowerPoints(String city_uuid){
-       int power_point = 0;
-
-        if (city_uuid != null) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT power_point FROM city_power WHERE city_uuid = ?");
-                statement.setString(1, city_uuid);
-                ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    power_point = rs.getInt("power_point");
-                }
-            } catch (SQLException e){
-                e.printStackTrace();
-            }
-        }
-
-        return power_point;
-    }
 
     public static List<String> getAllCityUUIDs() throws SQLException {
         Connection conn = DatabaseManager.getConnection();

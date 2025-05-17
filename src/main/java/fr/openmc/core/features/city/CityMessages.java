@@ -8,7 +8,6 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -28,9 +27,9 @@ public class CityMessages {
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
-        int power = CityManager.getCityPowerPoints(city.getUUID());
+        int power = city.getCityPowerPoints();
 
-        String type = CityManager.getCityType(city.getUUID());
+        String type = city.getType();
         Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
         if (mascot!=null){
             LivingEntity mob = MascotUtils.loadMascot(mascot);

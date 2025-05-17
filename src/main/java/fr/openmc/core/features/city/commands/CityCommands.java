@@ -59,7 +59,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fr.openmc.core.features.city.CityManager.getCityType;
 import static fr.openmc.core.features.city.conditions.CityCreateConditions.AYWENITE_CREATE;
 import static fr.openmc.core.features.city.conditions.CityCreateConditions.MONEY_CREATE;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
@@ -442,7 +441,7 @@ public class CityCommands {
             return;
         }
 
-        String cityTypeActuel = getCityType(city.getUUID());
+        String cityTypeActuel = city.getType();
         String cityTypeAfter = "";
         if (cityTypeActuel != null) {
             cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
@@ -488,7 +487,7 @@ public class CityCommands {
             MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        CityManager.changeCityType(city.getUUID());
+        city.changeType();
         DynamicCooldownManager.use(city.getUUID(), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
 
 
@@ -518,7 +517,7 @@ public class CityCommands {
                 exception.printStackTrace();
             }
 
-            String cityTypeActuel = getCityType(city.getUUID());
+            String cityTypeActuel = city.getType();
             String cityTypeAfter = "";
             if (cityTypeActuel != null) {
                 cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";

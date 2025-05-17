@@ -115,8 +115,8 @@ public class MascotsListener implements Listener {
                     String city_uuid = city.getUUID();
                     String cityEnemy_uuid = cityEnemy.getUUID();
 
-                    String city_type = CityManager.getCityType(city_uuid);
-                    String cityEnemy_type = CityManager.getCityType(cityEnemy_uuid);
+                    String city_type = city.getType();
+                    String cityEnemy_type = cityEnemy.getType();
 
                     if (city_type==null){
                         MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de votre ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);

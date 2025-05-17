@@ -226,8 +226,8 @@ public class City {
         return 0;
     }
 
-    public void changeCityType() {
-        String cityType = getCityType(cityUUID);
+    public void changeType() {
+        String cityType = getType();
         if (cityType != null) {
             cityType = cityType.equals("war") ? "peace" : "war";
         }
@@ -243,6 +243,49 @@ public class City {
             }
         });
 
+    }
+
+    /**
+     * return 'war' / 'peace' / 'null' if not found
+     */
+
+    public String getType() {
+        String type = null;
+
+        if (cityUUID != null) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
+                statement.setString(1, cityUUID);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    type = rs.getString("type");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        return type;
+    }
+
+    public int getCityPowerPoints() {
+        int power_point = 0;
+
+        if (cityUUID != null) {
+            try {
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT power_point FROM city_power WHERE city_uuid = ?");
+                statement.setString(1, cityUUID);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    power_point = rs.getInt("power_point");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return power_point;
     }
 
     public @NotNull String getName() {
@@ -485,7 +528,7 @@ public class City {
      */
     public void updatePowerPoints(int point){
         try {
-            int result = CityManager.getCityPowerPoints(cityUUID) + point;
+            int result = getCityPowerPoints() + point;
             if (result<0)result=0;
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_power SET power_point=? WHERE city_uuid=?;");
             statement.setInt(1, result);

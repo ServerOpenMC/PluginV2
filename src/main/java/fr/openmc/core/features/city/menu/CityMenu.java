@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static fr.openmc.core.features.city.CityManager.getCityType;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
 
@@ -325,7 +324,7 @@ public class CityMenu extends Menu {
             MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L*60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
 
-            String type = getCityType(city.getUUID());
+            String type = city.getType();
             if (type.equals("war")) {
                 type = "guerre";
             } else if (type.equals("peace")) {
@@ -371,7 +370,7 @@ public class CityMenu extends Menu {
                     try {
                         if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) return;
 
-                        String cityTypeActuel = getCityType(city.getUUID());
+                        String cityTypeActuel = city.getType();
                         String cityTypeAfter = "";
                         if (cityTypeActuel != null) {
                             boolean war = cityTypeActuel.equals("war");
