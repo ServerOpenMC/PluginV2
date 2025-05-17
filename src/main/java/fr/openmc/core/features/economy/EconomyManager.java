@@ -23,7 +23,7 @@ import java.util.*;
 
 public class EconomyManager {
     @Getter
-    private static Map<UUID, EconomyPlayer> players;
+    private static Map<UUID, EconomyPlayer> balances;
     private static EconomyManager instance;
 
     private static Dao<EconomyPlayer, String> playersDao;
@@ -39,7 +39,7 @@ public class EconomyManager {
     public EconomyManager() {
         instance = this;
 
-        players = loadAllPlayers();
+        balances = loadAllBalances();
 
         decimalFormat = new DecimalFormat("#.##");
         suffixes = new TreeMap<>();
@@ -90,7 +90,7 @@ public class EconomyManager {
     }
 
     public static EconomyPlayer getPlayerBank(UUID player) {
-        EconomyPlayer bank = players.get(player);
+        EconomyPlayer bank = balances.get(player);
         if (bank != null)
             return bank;
         return new EconomyPlayer(player);
