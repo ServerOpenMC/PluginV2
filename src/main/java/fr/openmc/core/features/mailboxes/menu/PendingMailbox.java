@@ -46,7 +46,7 @@ public class PendingMailbox extends PaginatedMailbox<SenderLetter> {
 
             int itemsCount = letter.getNumItems();
             ItemStack[] items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-            Player receiver = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(letter.getReceiver())).getPlayer();
+            Player receiver = CacheOfflinePlayer.getOfflinePlayer(letter.getReceiver()).getPlayer();
 
             if (MailboxManager.deleteLetter(id)) {
                 if (receiver != null)

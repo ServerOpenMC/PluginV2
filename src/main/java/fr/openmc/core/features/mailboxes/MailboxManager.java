@@ -66,8 +66,7 @@ public class MailboxManager {
 
         try {
             byte[] itemsBytes = BukkitSerializer.serializeItemStacks(items);
-            Letter letter = new Letter(sender.getUniqueId().toString(), receiver.getUniqueId().toString(), itemsBytes,
-                    numItems, false);
+            Letter letter = new Letter(sender.getUniqueId(), receiver.getUniqueId(), itemsBytes, numItems, false);
             if (letterDao.create(letter) == 0)
                 return false;
             int id = letter.getId();
@@ -96,13 +95,11 @@ public class MailboxManager {
                 OfflinePlayer player = entry.getKey();
                 ItemStack[] items = entry.getValue();
 
-                String receiverUUID = player.getUniqueId().toString();
                 int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
-                String senderUUID = player.getUniqueId().toString();
 
                 byte[] itemsBytes = BukkitSerializer.serializeItemStacks(items);
 
-                Letter letter = new Letter(senderUUID.toString(), receiverUUID.toString(), itemsBytes, numItems, false);
+                Letter letter = new Letter(player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems, false);
                 letters.add(letter);
             }
             if (letterDao.create(letters) == 0)

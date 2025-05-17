@@ -25,9 +25,9 @@ public class Letter {
     @DatabaseField(id = true, generatedId = true)
     private int id;
     @DatabaseField(canBeNull = false)
-    private String sender;
+    private UUID sender;
     @DatabaseField(canBeNull = false)
-    private String receiver;
+    private UUID receiver;
     @DatabaseField(canBeNull = false)
     private byte[] items;
     @DatabaseField(columnName = "num_items", canBeNull = false)
@@ -41,21 +41,11 @@ public class Letter {
         // required by ORMLite
     }
 
-    Letter(String sender, String receiver, byte[] items, int numItems, boolean refused) {
+    Letter(UUID sender, UUID receiver, byte[] items, int numItems, boolean refused) {
         this.sender = sender;
         this.receiver = receiver;
         this.items = items;
         this.numItems = numItems;
-        this.refused = refused;
-    }
-
-    Letter(int id, String sender, String receiver, byte[] items, int numItems, Date sent, boolean refused) {
-        this.id = id;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.items = items;
-        this.numItems = numItems;
-        this.sent = sent;
         this.refused = refused;
     }
 
@@ -69,7 +59,7 @@ public class Letter {
     }
 
     public LetterHead toLetterHead() {
-        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(sender));
+        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
         try {
             ItemStack[] items = BukkitSerializer.deserializeItemStacks(this.items);
             return new LetterHead(player, id, numItems,
@@ -82,7 +72,7 @@ public class Letter {
     }
 
     public SenderLetter toSenderLetter() {
-        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(sender));
+        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
 
         return new SenderLetter(player, id, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
                 refused);
