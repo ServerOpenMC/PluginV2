@@ -192,7 +192,7 @@ public class ShopMenu extends Menu {
                 itemMeta.setDisplayName("§l§f" + ItemUtils.getItemTranslation(getCurrentItem().getItem()));
                 List<String> lore = new ArrayList<>();
                 lore.add("§7■ Prix: §c" + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon());
-                lore.add("§7■ En stock: " + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getAmount()));
+                lore.add("§7■ En stock: " + EconomyManager.getFormattedNumber(getCurrentItem().getAmount()));
                 lore.add("§7■ Cliquez pour en acheter §f" + amountToBuy);
                 itemMeta.setLore(lore);
             }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat")))));

@@ -427,9 +427,9 @@ public class City {
         if (InputUtils.isInputMoney(input)) {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
-            if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), moneyDeposit)) {
+            if (EconomyManager.withdrawBalance(player.getUniqueId(), moneyDeposit)) {
                 updateBalance(moneyDeposit);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
@@ -451,8 +451,8 @@ public class City {
                 MessagesManager.sendMessage(player, Component.text("Ta ville n'a pas assez d'argent en banque"), Prefix.CITY, MessageType.ERROR, false);
             } else {
                 updateBalance(moneyDeposit * -1);
-                EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyDeposit);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
+                EconomyManager.addBalance(player.getUniqueId(), moneyDeposit);
+                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.CITY, MessageType.SUCCESS, false);
             }
         } else {
             MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);

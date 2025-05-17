@@ -656,7 +656,7 @@ public class CityCommands {
             }
         });
 
-        if (EconomyManager.getInstance().getBalance(player.getUniqueId()) < MONEY_CREATE) {
+        if (EconomyManager.getBalance(player.getUniqueId()) < MONEY_CREATE) {
             MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() +" §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
         }
 
@@ -664,7 +664,7 @@ public class CityCommands {
             MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE +" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
         }
 
-        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), MONEY_CREATE);
+        EconomyManager.withdrawBalance(player.getUniqueId(), MONEY_CREATE);
         ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), AYWENITE_CREATE);
 
         City city = CityManager.createCity(player, cityUUID, name, type);

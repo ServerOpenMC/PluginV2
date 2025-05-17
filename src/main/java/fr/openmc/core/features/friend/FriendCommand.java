@@ -140,7 +140,7 @@ public class FriendCommand {
                     boolean isOnline = friend.isOnline();
 
                     City city = CityManager.getPlayerCity(friend.getUniqueId());
-                    String formattedMoney = EconomyManager.getInstance().getFormattedBalance(friend.getUniqueId());
+                    String formattedMoney = EconomyManager.getFormattedBalance(friend.getUniqueId());
 
                     TextComponent friendComponent = Component.text("  " + (i+1) + ". ")
                             .color(NamedTextColor.GRAY)

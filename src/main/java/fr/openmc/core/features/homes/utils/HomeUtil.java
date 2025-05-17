@@ -2,7 +2,7 @@ package fr.openmc.core.features.homes.utils;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.homes.Home;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomeIcons;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;

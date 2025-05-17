@@ -3,6 +3,8 @@ package fr.openmc.core.features.homes;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.homes.command.*;
+import fr.openmc.core.features.homes.models.Home;
+import fr.openmc.core.features.homes.models.HomeLimit;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -12,6 +14,11 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.WorldInfo;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,14 +31,17 @@ import java.util.UUID;
 @Getter
 public class HomesManager {
 
-    // Les TODOs présents, sont du plus, donc je prend mon temps pour les faire / faire les autres features
+    // Les TODOs présents, sont du plus, donc je prend mon temps pour les faire /
+    // faire les autres features
     // TODO: Faire le menu sign pour changer le nom du home
-    // TODO: Dans le menu HomeChangeIcon, ajouter les items vanilla + un menu pour faire une recherche par nom, les filtres, etc
+    // TODO: Dans le menu HomeChangeIcon, ajouter les items vanilla + un menu pour
+    // faire une recherche par nom, les filtres, etc
 
     public static List<Home> homes = new ArrayList<>();
     public static List<HomeLimit> homeLimits = new ArrayList<>();
     public DisabledWorldHome disabledWorldHome;
-    @Getter private static HomesManager instance;
+    @Getter
+    private static HomesManager instance;
 
     public HomesManager() {
         instance = this;
@@ -173,7 +183,7 @@ public class HomesManager {
 
     public int getHomeLimit(UUID owner) {
         HomeLimit homeLimit = homeLimits.stream()
-                .filter(hl -> hl.getPlayerUUID().equals(owner))
+                .filter(hl -> hl.getPlayer().equals(owner))
                 .findFirst()
                 .orElse(null);
 
@@ -182,12 +192,12 @@ public class HomesManager {
             homeLimits.add(homeLimit);
         }
 
-        return homeLimit == null ? 0 : homeLimit.getHomeLimit().getLimit();
+        return homeLimit == null ? 0 : homeLimit.getLimit();
     }
 
     public void updateHomeLimit(UUID owner) {
         HomeLimit homeLimit = homeLimits.stream()
-                .filter(hl -> hl.getPlayerUUID().equals(owner))
+                .filter(hl -> hl.getPlayer().equals(owner))
                 .findFirst()
                 .orElse(null);
         if (homeLimit == null) {
@@ -195,44 +205,26 @@ public class HomesManager {
         } else {
             int currentLimitIndex = homeLimit.getHomeLimit().ordinal();
             HomeLimits newLimit = HomeLimits.values()[currentLimitIndex + 1];
-            homeLimit.setHomeLimit(newLimit);
+            homeLimit.setLimit(newLimit.getLimit());
         }
     }
 
     // DB methods
 
-    public static void init_db(Connection conn) throws SQLException {
-        String createHomesTable = "CREATE TABLE IF NOT EXISTS homes (" +
-                "owner VARCHAR(36), " +
-                "name VARCHAR(32), " +
-                "x DOUBLE, " +
-                "y DOUBLE, " +
-                "z DOUBLE, " +
-                "yaw FLOAT, " +
-                "pitch FLOAT, " +
-                "world VARCHAR(32), " +
-                "icon VARCHAR(32))";
-        conn.prepareStatement(createHomesTable).executeUpdate();
+    private static Dao<Home, UUID> homesDao;
+    private static Dao<HomeLimit, UUID> limitsDao;
 
-        String createHomesLimitsTable = "CREATE TABLE IF NOT EXISTS homes_limits (" +
-                "player_uuid VARCHAR(36) PRIMARY KEY, " +
-                "`limit` INT)";
-        conn.prepareStatement(createHomesLimitsTable).executeUpdate();
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, Home.class);
+        homesDao = DaoManager.createDao(connectionSource, Home.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, HomeLimit.class);
+        limitsDao = DaoManager.createDao(connectionSource, HomeLimit.class);
     }
 
     private static void loadHomeLimit() {
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT player_uuid, `limit` FROM homes_limits");
-            statement.executeQuery();
-            ResultSet rs = statement.getResultSet();
-
-            while (rs.next()) {
-                UUID playerUUID = UUID.fromString(rs.getString("player_uuid"));
-                int limit = rs.getInt("limit");
-                HomeLimit homeLimit = new HomeLimit(playerUUID, HomeLimits.values()[limit]);
-
-                homeLimits.add(homeLimit);
-            }
+            homeLimits.addAll(limitsDao.queryForAll());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -240,15 +232,9 @@ public class HomesManager {
 
     private static void saveHomeLimit() {
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("TRUNCATE TABLE homes_limits");
-            statement.executeUpdate();
-
+            TableUtils.clearTable(DatabaseManager.getConnectionSource(), HomeLimit.class);
             for (HomeLimit homeLimit : homeLimits) {
-                statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO homes_limits (player_uuid, `limit`) VALUES (?, ?)");
-                statement.setString(1, homeLimit.getPlayerUUID().toString());
-                HomeLimits limit = homeLimit.getHomeLimit();
-                statement.setInt(2, Integer.parseInt(limit.name().split("_")[1]));
-                statement.executeUpdate();
+                limitsDao.create(homeLimit);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -257,26 +243,7 @@ public class HomesManager {
 
     private static void loadHomes() {
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT owner, name, x, y, z, yaw, pitch, world, icon FROM homes");
-            statement.executeQuery();
-            ResultSet rs = statement.getResultSet();
-
-            while (rs.next()) {
-                UUID owner = UUID.fromString(rs.getString("owner"));
-                String name = rs.getString("name");
-                double x = rs.getDouble("x");
-                double y = rs.getDouble("y");
-                double z = rs.getDouble("z");
-                float yaw = rs.getFloat("yaw");
-                float pitch = rs.getFloat("pitch");
-                String world = rs.getString("world");
-                String icon = rs.getString("icon");
-
-                Location location = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
-                Home home = new Home(owner, name, location, HomeUtil.getHomeIcon(icon));
-
-                homes.add(home);
-            }
+            homes.addAll(homesDao.queryForAll());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -284,22 +251,9 @@ public class HomesManager {
 
     private static void saveHomes() {
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("TRUNCATE TABLE homes");
-            statement.executeUpdate();
-
+            TableUtils.clearTable(DatabaseManager.getConnectionSource(), Home.class);
             for (Home home : homes) {
-                statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO homes (owner, name, x, y, z, yaw, pitch, world, icon) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                statement.setString(1, home.getOwner().toString());
-                statement.setString(2, home.getName());
-                statement.setDouble(3, home.getLocation().getX());
-                statement.setDouble(4, home.getLocation().getY());
-                statement.setDouble(5, home.getLocation().getZ());
-                statement.setFloat(6, home.getLocation().getYaw());
-                statement.setFloat(7, home.getLocation().getPitch());
-                statement.setString(8, home.getLocation().getWorld().getName());
-                statement.setString(9, home.getIcon().getId());
-
-                statement.executeUpdate();
+                homesDao.create(home);
             }
         } catch (SQLException e) {
             e.printStackTrace();
