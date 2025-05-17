@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Command({"company", "companies",  "entreprise", "enterprises"})
 @Description("Gestion des entreprises")
-@CommandPermission("ayw.command.company")
+@CommandPermission("omc.commands.company")
 public class CompanyCommand {
 
     private final CompanyManager manager = CompanyManager.getInstance();
