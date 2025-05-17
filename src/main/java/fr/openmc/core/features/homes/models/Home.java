@@ -4,6 +4,9 @@ import fr.openmc.core.features.homes.HomeIcons;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,10 +28,21 @@ public class Home {
     private String name;
     @Setter
     @DatabaseField(canBeNull = false)
-    private Location location;
-    @Setter
-    @DatabaseField(canBeNull = false)
     private HomeIcons icon;
+
+    // Location
+    @DatabaseField(canBeNull = false)
+    private String world;
+    @DatabaseField(canBeNull = false)
+    private double x;
+    @DatabaseField(canBeNull = false)
+    private double y;
+    @DatabaseField(canBeNull = false)
+    private double z;
+    @DatabaseField(canBeNull = false)
+    private float yaw;
+    @DatabaseField(canBeNull = false)
+    private float pitch;
 
     Home() {
         // required for ORMLite
@@ -37,11 +51,25 @@ public class Home {
     public Home(UUID owner, String name, Location location, HomeIcons icon) {
         this.owner = owner;
         this.name = name;
-        this.location = location;
+        setLocation(location);
         this.icon = icon;
     }
 
+    public Location getLocation() {
+        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+    }
+
+    public void setLocation(Location location) {
+        world = location.getWorld().getName();
+        x = location.getBlockX();
+        y = location.getBlockY();
+        z = location.getBlockZ();
+        yaw = location.getYaw();
+        pitch = location.getPitch();
+    }
+
     public String serializeLocation() {
+        Location location = getLocation();
         return location.getWorld().getName() + "," +
                 location.getBlockX() + "," +
                 location.getBlockY() + "," +
@@ -64,13 +92,14 @@ public class Home {
     public ItemStack getIconItem() {
         ItemStack item = HomeUtil.getHomeIconItem(this);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§a" + name);
-        item.setLore(List.of(
-                "§6Position:",
-                "§6  W: §e" + location.getWorld().getName(),
-                "§6  X: §e" + location.getBlockX(),
-                "§6  Y: §e" + location.getBlockY(),
-                "§6  Z: §e" + location.getBlockZ()));
+        Location location = getLocation();
+        meta.displayName(Component.text("§a" + name));
+        item.lore(List.of(
+                Component.text("§6Position:"),
+                Component.text("§6  W: §e" + location.getWorld().getName()),
+                Component.text("§6  X: §e" + location.getBlockX()),
+                Component.text("§6  Y: §e" + location.getBlockY()),
+                Component.text("§6  Z: §e" + location.getBlockZ())));
         item.setItemMeta(meta);
         return item;
     }
