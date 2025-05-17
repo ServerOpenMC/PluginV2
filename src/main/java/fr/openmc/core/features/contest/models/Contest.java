@@ -27,41 +27,42 @@ public class Contest {
     private String startdate;
     @Setter
     @DatabaseField(canBeNull = false)
-    private int point1;
+    private int points1;
     @Setter
     @DatabaseField(canBeNull = false)
-    private int point2;
+    private int points2;
 
     Contest() {
         // required for ORMLite
     }
 
-    public Contest(String camp1, String camp2, String color1, String color2, int phase, String startdate, int point1, int point2) {
+    public Contest(String camp1, String camp2, String color1, String color2, int phase, String startdate, int points1,
+            int points2) {
         this.camp1 = camp1;
         this.camp2 = camp2;
         this.color1 = color1;
         this.color2 = color2;
         this.phase = phase;
         this.startdate = startdate;
-        this.point1 = point1;
-        this.point2 = point2;
+        this.points1 = points1;
+        this.points2 = points2;
     }
 
     public String get(String input) {
         return switch (input) {
-            case "camp1" -> getCamp1();
-            case "camp2" -> getCamp2();
-            case "color1" -> getColor1();
-            case "color2" -> getColor2();
+            case "camp1" -> camp1;
+            case "camp2" -> camp2;
+            case "color1" -> color1;
+            case "color2" -> color2;
             case null, default -> null;
         };
     }
 
     public int getInteger(String input) {
         if (Objects.equals(input, "points1")) {
-            return getPoint1();
+            return points1;
         } else if (Objects.equals(input, "points2")) {
-            return getPoint2();
+            return points2;
         } else {
             return -1;
         }

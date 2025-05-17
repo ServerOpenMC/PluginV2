@@ -37,6 +37,8 @@ import com.j256.ormlite.table.TableUtils;
 
 import revxrsal.commands.autocomplete.SuggestionProvider;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.*;
@@ -316,8 +318,8 @@ public class ContestManager {
         int totalvote = vote1 + vote2;
         int vote1Taux = (int) (((double) vote1 / totalvote) * 100);
         int vote2Taux = (int) (((double) vote2 / totalvote) * 100);
-        int points1 = data.getPoint1();
-        int points2 = data.getPoint2();
+        int points1 = data.getPoints1();
+        int points2 = data.getPoints2();
 
         int multiplicateurPoint = Math.abs(vote1Taux - vote2Taux)/16;
         multiplicateurPoint=Integer.parseInt(df.format(multiplicateurPoint));

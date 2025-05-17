@@ -133,8 +133,8 @@ public class ContestPlayerManager  {
     public boolean hasWinInCampFromOfflinePlayer(OfflinePlayer player) {
         int playerCamp = contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
 
-        int points1 = contestManager.data.getPoint1();
-        int points2 = contestManager.data.getPoint2();
+        int points1 = contestManager.data.getPoints1();
+        int points2 = contestManager.data.getPoints2();
 
 
         int vote1 = contestManager.getVoteTaux(1);
