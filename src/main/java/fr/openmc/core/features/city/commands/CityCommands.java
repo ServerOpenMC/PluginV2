@@ -472,8 +472,10 @@ public class CityCommands {
             return;
         }
 
+        Mascot mascot = city.getMascot();
+
         if (MascotUtils.mascotsContains(city.getUUID())) {
-            if (!MascotUtils.getMascotState(city.getUUID())) {
+            if (!mascot.isAlive()) {
                 MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -485,12 +487,9 @@ public class CityCommands {
         city.changeType();
         DynamicCooldownManager.use(city.getUUID(), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
 
-
-        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
-
         if (mascot != null) {
             LivingEntity mob = MascotUtils.loadMascot(mascot);
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
+            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
             double lastHealth = mascotsLevels.getHealth();
             int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", "")) - 2;
@@ -498,7 +497,7 @@ public class CityCommands {
                 newLevel = 1;
             }
             MascotUtils.setMascotLevel(city.getUUID(), newLevel);
-            mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
+            mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
             try {
                 int maxHealth = mascotsLevels.getHealth();

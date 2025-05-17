@@ -3,6 +3,8 @@ package fr.openmc.core.features.city;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
+import fr.openmc.core.features.city.mascots.Mascot;
+import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
@@ -920,5 +922,16 @@ public class City {
             return true;
         }
         return false;
+    }
+
+    // ==================== Mascots Methods ====================
+
+    public Mascot getMascot() {
+        for (Mascot mascot : MascotsManager.mascots) {
+            if (mascot.getCityUUID().equals(cityUUID)) {
+                return mascot;
+            }
+        }
+        return null;
     }
 }

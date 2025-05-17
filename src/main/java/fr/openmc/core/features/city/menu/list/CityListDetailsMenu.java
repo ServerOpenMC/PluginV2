@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.mascots.MascotUtils.getEntityByMascotUUID;
-import static fr.openmc.core.features.city.mascots.MascotUtils.getMascotOfCity;
 
 public class CityListDetailsMenu extends Menu {
 	
@@ -113,8 +112,8 @@ public class CityListDetailsMenu extends Menu {
 		}
 
 
-		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(getMascotOfCity(city.getUUID()).getMascotUuid()).getType())),
-				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + getMascotOfCity(city.getUUID()).getLevel()))));
+		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(city.getMascot().getMascotUUID()).getType())),
+				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + city.getMascot().getLevel()))));
 		
 		map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
 				itemMeta -> itemMeta.displayName(Component.text("§bTaille : " + city.getChunks().size() + " chunks"))));

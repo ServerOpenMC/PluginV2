@@ -38,10 +38,10 @@ public class CityMessages {
         } else {
             typeString = "Inconnu";
         }
-        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+        Mascot mascot = city.getMascot();
         if (mascot!=null){
             LivingEntity mob = MascotUtils.loadMascot(mascot);
-            if (MascotUtils.getMascotState(city.getUUID())){
+            if (mascot.isAlive()) {
                 mascotLife = String.valueOf(mob.getHealth());
             }
         }

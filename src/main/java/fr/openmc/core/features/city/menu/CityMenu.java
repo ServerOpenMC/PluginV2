@@ -126,14 +126,14 @@ public class CityMenu extends Menu {
                 }
             }));
 
-            Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+            Mascot mascot = city.getMascot();
             LivingEntity mob;
             List<Component> loreMascots;
 
             if (mascot!=null){
                 mob = MascotUtils.loadMascot(mascot);
 
-                if (!MascotUtils.getMascotState(city.getUUID())) {
+                if (!mascot.isAlive()) {
                     loreMascots = List.of(
                             Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
                             Component.text("§7Status : §cEn Attente de Soins"),
@@ -162,7 +162,7 @@ public class CityMenu extends Menu {
                     itemMeta.itemName(Component.text("§cVotre Mascotte"));
                     itemMeta.lore(loreMascots);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (!MascotUtils.getMascotState(city.getUUID())){
+                    if (!mascot.isAlive()) {
                         MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
                         menu.open();
                         return;

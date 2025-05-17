@@ -12,7 +12,6 @@ import fr.openmc.core.features.city.listeners.ChestMenuListener;
 import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.city.mascots.Mascot;
-import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
@@ -392,12 +391,12 @@ public class CityManager implements Listener {
                         }
                     }
 
-                    Mascot mascot = MascotUtils.getMascotOfCity(cityz.getUUID());
+                    Mascot mascot = cityz.getMascot();
                     if (mascot != null) {
 
-                        if (!DynamicCooldownManager.isReady(mascot.getMascotUuid().toString(), "mascots:move")) {
+                        if (!DynamicCooldownManager.isReady(mascot.getMascotUUID().toString(), "mascots:move")) {
                             if (Bukkit.getEntity(members) != null) {
-                                DynamicCooldownManager.clear(mascot.getMascotUuid().toString(), "mascots:move");
+                                DynamicCooldownManager.clear(mascot.getMascotUUID().toString(), "mascots:move");
                             }
                         }
                     }
