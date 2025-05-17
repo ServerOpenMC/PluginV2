@@ -7,16 +7,27 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import java.util.List;
 import java.util.UUID;
 
 @Getter
+@DatabaseTable(tableName = "homes")
 public class Home {
 
+    @DatabaseField(id = true)
     private final UUID owner;
-    @Setter private String name;
-    @Setter private Location location;
-    @Setter private HomeIcons icon;
+    @Setter
+    @DatabaseField(canBeNull = false)
+    private String name;
+    @Setter
+    @DatabaseField(canBeNull = false)
+    private Location location;
+    @Setter
+    @DatabaseField(canBeNull = false)
+    private HomeIcons icon;
 
     public Home(UUID owner, String name, Location location, HomeIcons icon) {
         this.owner = owner;
@@ -42,8 +53,7 @@ public class Home {
                 Double.parseDouble(loc[2]),
                 Double.parseDouble(loc[3]),
                 Float.parseFloat(loc[4]),
-                Float.parseFloat(loc[5])
-        );
+                Float.parseFloat(loc[5]));
     }
 
     public ItemStack getIconItem() {
@@ -55,8 +65,7 @@ public class Home {
                 "§6  W: §e" + location.getWorld().getName(),
                 "§6  X: §e" + location.getBlockX(),
                 "§6  Y: §e" + location.getBlockY(),
-                "§6  Z: §e" + location.getBlockZ()
-        ));
+                "§6  Z: §e" + location.getBlockZ()));
         item.setItemMeta(meta);
         return item;
     }
