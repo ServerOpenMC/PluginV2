@@ -1,7 +1,5 @@
 package fr.openmc.core.features.homes.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -12,6 +10,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.customfonts.CustomFonts;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -56,11 +55,10 @@ public class HomeConfigMenu extends Menu {
                 itemMeta.setLore(List.of(ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône de votre home"));
             }).setNextMenu(new HomeChangeIconMenu(player, home)));
 
-            //TODO mettre un font de "omc_homes:bin" avant '§cSupprimer le home'
-            content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
-                itemMeta.setDisplayName("§cSupprimer le home");
-                itemMeta.setLore(List.of(ChatColor.GRAY + "■ §cClique §4gauche §cpour supprimer votre home"));
-            }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
+        content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
+            itemMeta.setDisplayName(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home");
+            itemMeta.setLore(List.of(ChatColor.GRAY + "■ §cClique §4gauche §cpour supprimer votre home"));
+        }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
 
             content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setNextMenu(new HomeMenu(player)));
             content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
