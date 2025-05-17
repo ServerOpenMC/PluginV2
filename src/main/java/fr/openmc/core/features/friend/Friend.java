@@ -26,4 +26,9 @@ public class Friend {
     Friend() {
         // required for ORMLite
     }
+
+    Friend(UUID first, UUID second) {
+        this.first = first;
+        this.second = second;
+    }
 }
