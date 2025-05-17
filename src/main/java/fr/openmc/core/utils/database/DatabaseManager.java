@@ -8,8 +8,8 @@ import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.BankManager;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
-import fr.openmc.core.features.economy.EconomyData;
 import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.friend.FriendSQLManager;
 import fr.openmc.core.features.homes.HomesManager;
@@ -35,7 +35,6 @@ public class DatabaseManager {
             // Déclencher au début du plugin pour créer les tables nécessaires
             CityManager.init_db(connection);
             MayorManager.init_db(connection);
-            EconomyData.init_db(connection);
             HomesManager.init_db(connection);
             MascotsManager.init_db(connection);
             DynamicCooldownManager.init_db(connection);
@@ -66,6 +65,7 @@ public class DatabaseManager {
             AnalyticsManager.init_db(connectionSource);
             ContestManager.init_db(connectionSource);
             MailboxManager.init_db(connectionSource);
+            EconomyManager.init_db(connectionSource);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
