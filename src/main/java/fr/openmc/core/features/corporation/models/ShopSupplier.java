@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "shop_suppliers")
 public class ShopSupplier {
     @DatabaseField(id = true)
-    private UUID supplier;
+    private UUID supplier; // différencie les supplier (un joueur peut avoir plusieurs supplier)
     @DatabaseField(canBeNull = false)
     private UUID shop;
     @DatabaseField(canBeNull = false)
