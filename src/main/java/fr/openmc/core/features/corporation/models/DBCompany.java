@@ -6,7 +6,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "companies")
-public class Company {
+public class DBCompany {
     @DatabaseField(id = true)
     private UUID id;
     @DatabaseField(canBeNull = false)
@@ -20,7 +20,7 @@ public class Company {
     @DatabaseField
     private UUID city;
 
-    Company() {
+    DBCompany() {
         // required for ORMLite
     }
 }
