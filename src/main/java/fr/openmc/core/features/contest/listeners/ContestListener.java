@@ -2,6 +2,7 @@ package fr.openmc.core.features.contest.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.utils.DateUtils;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -21,21 +22,21 @@ public class ContestListener implements Listener {
                 DayOfWeek dayStartContestOfWeek = DayOfWeek.from(formatter.parse(contestManager.data.getStartdate()));
                 int phase = contestManager.data.getPhase();
 
-                if (phase == 1 && contestManager.getCurrentDayOfWeek().getValue() == dayStartContestOfWeek.getValue()) {
+                if (phase == 1 && DateUtils.getCurrentDayOfWeek().getValue() == dayStartContestOfWeek.getValue()) {
                     contestManager.initPhase1();
                 }
                 int dayStart = dayStartContestOfWeek.getValue() + 1;
                 if (dayStart == 8) {
                     dayStart = 1;
                 }
-                if (phase == 2 && contestManager.getCurrentDayOfWeek().getValue() == dayStart) {
+                if (phase == 2 && DateUtils.getCurrentDayOfWeek().getValue() == dayStart) {
                     contestManager.initPhase2();
                 }
                 int dayEnd = dayStart + 2;
                 if (dayEnd >= 8) {
                     dayEnd = 1;
                 } //attention ne pas modifier les valeurs de départ des contest sinon le systeme va broke
-                if (phase == 3 && contestManager.getCurrentDayOfWeek().getValue() == dayEnd) {
+                if (phase == 3 && DateUtils.getCurrentDayOfWeek().getValue() == dayEnd) {
                     contestManager.initPhase3();
                 }
             }

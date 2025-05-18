@@ -2,8 +2,8 @@ package fr.openmc.core.features.economy;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.analytics.Stats;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -47,7 +47,7 @@ public class Transaction {
 
             String recipient = "CONSOLE";
             if (!this.recipient.equals("CONSOLE")){
-                recipient = Bukkit.getServer().getOfflinePlayer(UUID.fromString(this.recipient)).getName();
+                recipient = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(this.recipient)).getName();
             }
 
             itemmeta.setLore(List.of(
@@ -62,7 +62,7 @@ public class Transaction {
 
             String senderName = "CONSOLE";
             if (!this.sender.equals("CONSOLE")){
-                senderName = Bukkit.getServer().getOfflinePlayer(UUID.fromString(this.sender)).getName();
+                senderName = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(this.sender)).getName();
             }
 
             itemmeta.setLore(List.of(

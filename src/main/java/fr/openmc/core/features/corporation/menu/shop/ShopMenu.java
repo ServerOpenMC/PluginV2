@@ -1,10 +1,10 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.corporation.*;
+import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.PlayerShopManager;
@@ -12,9 +12,9 @@ import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -52,7 +52,7 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
         } else {
             return shop.getName();

@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomeIcons;
-import fr.openmc.core.utils.WorldGuardApi;
+import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
