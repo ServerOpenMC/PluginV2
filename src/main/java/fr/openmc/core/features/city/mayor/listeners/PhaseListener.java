@@ -19,16 +19,15 @@ public class PhaseListener {
      * @param plugin The OMCPlugin instance.
      */
     public PhaseListener(OMCPlugin plugin) {
-        MayorManager mayorManager = MayorManager.getInstance();
         BukkitRunnable eventRunnable = new BukkitRunnable() {
             @Override
             public void run() {
-                int phase = mayorManager.phaseMayor;
+                int phase = MayorManager.phaseMayor;
 
                 // PHASE 1 - Elections - Mardi à Mercredi
                 if (phase == 2 && PHASE_1_DAY == DateUtils.getCurrentDayOfWeek()) {
                     try {
-                        mayorManager.initPhase1();
+                        MayorManager.initPhase1();
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -36,7 +35,7 @@ public class PhaseListener {
 
                 // PHASE 2 - Maire Elu - Jeudi à Jeudi Prochain
                 if (phase == 1 && PHASE_2_DAY == DateUtils.getCurrentDayOfWeek()) {
-                    mayorManager.initPhase2();
+                    MayorManager.initPhase2();
                 }
             }
         };

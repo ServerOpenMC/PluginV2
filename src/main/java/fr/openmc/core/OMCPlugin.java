@@ -66,7 +66,7 @@ public class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MayorManager(this);
+        new MayorManager();
         new BankManager();
         new ScoreboardManager();
         new HomesManager();
@@ -96,12 +96,11 @@ public class OMCPlugin extends JavaPlugin {
         // SAUVEGARDE
 
         // - Maires
-        MayorManager mayorManager = MayorManager.getInstance();
-        mayorManager.saveMayorConstant();
-        mayorManager.savePlayersVote();
-        mayorManager.saveMayorCandidates();
-        mayorManager.saveCityMayors();
-        mayorManager.saveCityLaws();
+        MayorManager.saveMayorConstant();
+        MayorManager.savePlayersVote();
+        MayorManager.saveMayorCandidates();
+        MayorManager.saveCityMayors();
+        MayorManager.saveCityLaws();
 
         // - Home
         CompanyManager.saveAllCompanies();

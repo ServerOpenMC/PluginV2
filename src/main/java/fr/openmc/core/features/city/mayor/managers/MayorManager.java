@@ -34,12 +34,7 @@ import java.time.DayOfWeek;
 import java.util.*;
 
 public class MayorManager {
-    @Getter
-    static MayorManager instance;
-
-    private final OMCPlugin plugin;
-
-    public int MEMBER_REQ_ELECTION = 3;
+    public static int MEMBER_REQ_ELECTION = 3;
 
     public static final String TABLE_MAYOR = "city_mayor";
     public static final String TABLE_ELECTION = "city_election";
@@ -47,7 +42,7 @@ public class MayorManager {
     public static final String TABLE_LAW = "city_law";
     public static final String TABLE_CONSTANTS = "mayor_constants";
 
-    private final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
+    private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
             NamedTextColor.GOLD,
             NamedTextColor.YELLOW,
@@ -66,23 +61,19 @@ public class MayorManager {
     public static final DayOfWeek PHASE_1_DAY = DayOfWeek.TUESDAY;
     public static final DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
 
-    public int phaseMayor;
-    public HashMap<City, Mayor> cityMayor = new HashMap<>();
+    public static int phaseMayor;
+    public static HashMap<City, Mayor> cityMayor = new HashMap<>();
     public static HashMap<City, CityLaw> cityLaws = new HashMap<>();
-    public Map<City, List<MayorCandidate>> cityElections = new HashMap<>(){};
-    public Map<City, List<MayorVote>> playerVote = new HashMap<>();
+    public static Map<City, List<MayorCandidate>> cityElections = new HashMap<>(){};
+    public static Map<City, List<MayorVote>> playerVote = new HashMap<>();
 
 
     private static final Random RANDOM = new Random();
 
 
-    public MayorManager(OMCPlugin plugin) {
-        instance = this;
-
-        this.plugin = plugin;
-
+    public MayorManager() {
         // LISTENERS
-        new PhaseListener(plugin);
+        new PhaseListener(OMCPlugin.getInstance());
         OMCPlugin.registerEvents(
                 new JoinListener(),
                 new RagePerk(),
@@ -147,7 +138,7 @@ public class MayorManager {
 //
 //                Bukkit.getLogger().info("================================");
 //            }
-//        }.runTaskTimer(plugin, 0, 600L); // 600 ticks = 30 secondes
+//        }.runTaskTimer(OMCPlugin.ggetInstance, 0, 600L); // 600 ticks = 30 secondes
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -170,7 +161,7 @@ public class MayorManager {
     }
 
     // Load and Save Data Methods
-    public void loadMayorConstant() {
+    public static void loadMayorConstant() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_CONSTANTS + " WHERE 1")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
@@ -181,20 +172,20 @@ public class MayorManager {
         }
     }
 
-    public void saveMayorConstant() {
+    public static void saveMayorConstant() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("UPDATE " + TABLE_CONSTANTS + " SET mayorPhase = ?")) {
-            plugin.getLogger().info("Sauvegarde des constantes pour les Maires...");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des constantes pour les Maires...");
             states.setInt(1, phaseMayor);
 
             states.executeUpdate();
-            plugin.getLogger().info("Sauvegarde des constantes pour les Maires réussie.");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des constantes pour les Maires réussie.");
         } catch (SQLException e) {
-            plugin.getLogger().severe("Echec de la sauvegarde des constantes pour les Maires.");
+            OMCPlugin.getInstance().getLogger().severe("Echec de la sauvegarde des constantes pour les Maires.");
             throw new RuntimeException(e);
         }
     }
 
-    public void loadCityMayors() {
+    public static void loadCityMayors() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_MAYOR + " WHERE 1")) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
@@ -218,14 +209,14 @@ public class MayorManager {
         }
     }
 
-    public void saveCityMayors() {
+    public static void saveCityMayors() {
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
                 "INSERT INTO " + TABLE_MAYOR + " (city_uuid, mayorUUID, mayorName, mayorColor, idPerk1, idPerk2, idPerk3, electionType) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                         "ON DUPLICATE KEY UPDATE " +
                         "city_uuid = VALUES(city_uuid), mayorUUID = VALUES(mayorUUID), mayorName = VALUES(mayorName), mayorColor = VALUES(mayorColor), idPerk1 = VALUES(idPerk1), idPerk2 = VALUES(idPerk2), idPerk3 = VALUES(idPerk3), electionType = VALUES(electionType)"
         )) {
-            plugin.getLogger().info("Sauvegarde des données des joueurs maire...");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des joueurs maire...");
             cityMayor.forEach((city, mayor) -> {
                 try {
                     statement.setString(1, city.getUUID());
@@ -245,14 +236,14 @@ public class MayorManager {
 
             statement.executeBatch();
 
-            plugin.getLogger().info("Sauvegarde des données des joueurs maire réussie.");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des joueurs maire réussie.");
         } catch (SQLException e) {
-            plugin.getLogger().severe("Echec de la sauvegarde des données des joueurs maire.");
+            OMCPlugin.getInstance().getLogger().severe("Echec de la sauvegarde des données des joueurs maire.");
             e.printStackTrace();
         }
     }
 
-    public void loadMayorCandidates() {
+    public static void loadMayorCandidates() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_ELECTION)) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
@@ -274,7 +265,7 @@ public class MayorManager {
         }
     }
 
-    public void saveMayorCandidates() {
+    public static void saveMayorCandidates() {
         String sql = "INSERT INTO " + TABLE_ELECTION + " (city_uuid, candidateUUID, candidateName, candidateColor, idChoicePerk2, idChoicePerk3, vote) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
@@ -284,7 +275,7 @@ public class MayorManager {
         try (Connection connection = DatabaseManager.getConnection();
 
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            plugin.getLogger().info("Sauvegarde des données des joueurs qui se sont présentés...");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des joueurs qui se sont présentés...");
 
             for (Map.Entry<City, List<MayorCandidate>> entry : cityElections.entrySet()) {
                 City city = entry.getKey();
@@ -304,15 +295,15 @@ public class MayorManager {
             }
 
             statement.executeBatch();
-            plugin.getLogger().info("Sauvegarde des données des joueurs qui se sont présentés réussie.");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des joueurs qui se sont présentés réussie.");
 
         } catch (SQLException e) {
-            plugin.getLogger().severe("Échec de la sauvegarde des données des joueurs qui se sont présentés.");
+            OMCPlugin.getInstance().getLogger().severe("Échec de la sauvegarde des données des joueurs qui se sont présentés.");
             e.printStackTrace();
         }
     }
 
-    public void loadPlayersVote() {
+    public static void loadPlayersVote() {
         try (PreparedStatement states = DatabaseManager.getConnection().prepareStatement("SELECT * FROM " + TABLE_VOTE)) {
             ResultSet result = states.executeQuery();
             while (result.next()) {
@@ -348,13 +339,13 @@ public class MayorManager {
         }
     }
 
-    public void savePlayersVote() {
+    public static void savePlayersVote() {
         String sql = "INSERT INTO " + TABLE_VOTE + " (city_uuid, voterUUID, candidateUUID) " +
                 "VALUES (?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
                 "city_uuid = VALUES(city_uuid), voterUUID = VALUES(voterUUID), candidateUUID = VALUES(candidateUUID)";
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql)) {
-            plugin.getLogger().info("Sauvegarde des données des Joueurs qui ont voté pour un maire...");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Joueurs qui ont voté pour un maire...");
 
             playerVote.forEach((city, mayorVotes) -> {
                 for (MayorVote vote : mayorVotes) {
@@ -371,14 +362,14 @@ public class MayorManager {
             });
 
             statement.executeBatch();
-            plugin.getLogger().info("Sauvegarde des données des Joueurs qui ont voté pour un maire réussie.");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Joueurs qui ont voté pour un maire réussie.");
         } catch (SQLException e) {
-            plugin.getLogger().severe("Échec de la sauvegarde des données des Joueurs qui ont voté pour un maire.");
+            OMCPlugin.getInstance().getLogger().severe("Échec de la sauvegarde des données des Joueurs qui ont voté pour un maire.");
             e.printStackTrace();
         }
     }
 
-    public void loadCityLaws() {
+    public static void loadCityLaws() {
         String sql = "SELECT city_uuid, pvp, warp_x, warp_y, warp_z, warp_world FROM " + TABLE_LAW;
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql);
@@ -413,7 +404,7 @@ public class MayorManager {
         }
     }
 
-    public void saveCityLaws() {
+    public static void saveCityLaws() {
         String sql = "INSERT INTO " + TABLE_LAW + " (city_uuid, pvp, warp_x, warp_y, warp_z, warp_world) " +
                 "VALUES (?, ?, ?, ?, ?, ?) " +
                 "ON DUPLICATE KEY UPDATE " +
@@ -422,7 +413,7 @@ public class MayorManager {
 
         try (Connection connection = DatabaseManager.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            plugin.getLogger().info("Sauvegarde des lois des villes...");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des lois des villes...");
 
             for (Map.Entry<City, CityLaw> entry : cityLaws.entrySet()) {
                 City city = entry.getKey();
@@ -439,16 +430,16 @@ public class MayorManager {
             }
 
             statement.executeBatch();
-            plugin.getLogger().info("Sauvegarde des lois des villes réussie.");
+            OMCPlugin.getInstance().getLogger().info("Sauvegarde des lois des villes réussie.");
 
         } catch (SQLException e) {
-            plugin.getLogger().severe("Échec de la sauvegarde des lois des villes.");
+            OMCPlugin.getInstance().getLogger().severe("Échec de la sauvegarde des lois des villes.");
             e.printStackTrace();
         }
     }
 
     // setup elections
-    public void initPhase1() throws SQLException {
+    public static void initPhase1() throws SQLException {
         // ---OUVERTURE DES ELECTIONS---
         phaseMayor = 1;
 
@@ -469,7 +460,7 @@ public class MayorManager {
                 deleteStmt2.executeUpdate();
                 deleteStmt3.executeUpdate();
             } catch (SQLException e) {
-                plugin.getLogger().severe("Échec du vidage des tables pour les Maires");
+                OMCPlugin.getInstance().getLogger().severe("Échec du vidage des tables pour les Maires");
                 e.printStackTrace();
             }
         });
@@ -527,7 +518,7 @@ public class MayorManager {
         ));
     }
 
-    public void initPhase2() {
+    public static void initPhase2() {
         phaseMayor = 2;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
@@ -573,7 +564,7 @@ public class MayorManager {
      *
      * @param city The city to update mayor
      */
-    public void runSetupMayor(City city) {
+    public static void runSetupMayor(City city) {
         UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getName();
         Mayor mayor = city.getMayor();
@@ -646,7 +637,7 @@ public class MayorManager {
      * @param city The city to add candidate
      * @param candidate The candidate to add
      */
-    public void createCandidate(City city, MayorCandidate candidate) {
+    public static void createCandidate(City city, MayorCandidate candidate) {
         List<MayorCandidate> candidates = cityElections.computeIfAbsent(city, key -> new ArrayList<>());
 
         candidates.add(candidate);
@@ -657,7 +648,7 @@ public class MayorManager {
      *
      * @param player The player to get candidate
      */
-    public MayorCandidate getCandidate(Player player) {
+    public static MayorCandidate getCandidate(Player player) {
         UUID playerUUID = player.getUniqueId();
 
         for (List<MayorCandidate> candidates : cityElections.values()) {
@@ -676,7 +667,7 @@ public class MayorManager {
      *
      * @param player The player to check
      */
-    public boolean hasCandidated(Player player) {
+    public static boolean hasCandidated(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         if (cityElections.get(playerCity) == null) return false;
@@ -691,7 +682,7 @@ public class MayorManager {
      *
      * @param player The player to remove vote
      */
-    public void removeVotePlayer(Player player) {
+    public static void removeVotePlayer(Player player) {
         playerVote.forEach((city, votes) ->
                 votes.removeIf(vote -> vote.getVoterUUID().equals(player.getUniqueId()))
         );
@@ -704,7 +695,7 @@ public class MayorManager {
      * @param player The player who vote
      * @param candidate The candidate to vote
      */
-    public void voteCandidate(City playerCity, Player player, MayorCandidate candidate) {
+    public static void voteCandidate(City playerCity, Player player, MayorCandidate candidate) {
         candidate.setVote(candidate.getVote() + 1);
         List<MayorVote> votes = playerVote.computeIfAbsent(playerCity, key -> new ArrayList<>());
 
@@ -716,7 +707,7 @@ public class MayorManager {
      *
      * @param player The player to check
      */
-    public boolean hasVoted(Player player) {
+    public static boolean hasVoted(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         if (playerVote.get(playerCity) == null) return false;
@@ -731,7 +722,7 @@ public class MayorManager {
      *
      * @param player The player to get vote
      */
-    public MayorCandidate getPlayerVote(Player player) {
+    public static MayorCandidate getPlayerVote(Player player) {
         for (List<MayorVote> votes : playerVote.values()) {
             for (MayorVote vote : votes) {
                 if (vote.getVoterUUID().equals(player.getUniqueId())) {
@@ -748,7 +739,7 @@ public class MayorManager {
      *
      * @param player The player to check
      */
-    public boolean hasChoicePerkOwner(Player player) {
+    public static boolean hasChoicePerkOwner(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         Mayor mayor = cityMayor.get(playerCity);
@@ -763,7 +754,7 @@ public class MayorManager {
      * @param city The city to set perk
      * @param perk1 The perk to set
      */
-    public void put1Perk(City city, Perks perk1) {
+    public static void put1Perk(City city, Perks perk1) {
         Mayor mayor = cityMayor.get(city);
         if (mayor != null) {
             mayor.setIdPerk1(perk1.getId());
@@ -784,7 +775,7 @@ public class MayorManager {
      * @param color The color of the mayor
      * @param type The type of the election
      */
-    public void createMayor(String playerName, UUID playerUUID, City city, Perks perk1, Perks perk2, Perks perk3, NamedTextColor color, ElectionType type) {
+    public static void createMayor(String playerName, UUID playerUUID, City city, Perks perk1, Perks perk2, Perks perk3, NamedTextColor color, ElectionType type) {
         Mayor mayor = cityMayor.get(city);
         int idPerk1 = perk1 != null ? perk1.getId() : 0;
         int idPerk2 = perk2 != null ? perk2.getId() : 0;
@@ -805,7 +796,7 @@ public class MayorManager {
     /**
      * Get random mayor color from the list.
      */
-    public NamedTextColor getRandomMayorColor() {
+    public static NamedTextColor getRandomMayorColor() {
         return LIST_MAYOR_COLOR.get(RANDOM.nextInt(LIST_MAYOR_COLOR.size()));
     }
 

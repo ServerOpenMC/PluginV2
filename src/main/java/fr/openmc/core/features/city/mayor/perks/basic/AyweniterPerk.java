@@ -31,7 +31,7 @@ public class AyweniterPerk implements Listener {
         Block block = event.getBlock();
         Player player = event.getPlayer();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        if (MayorManager.getInstance().phaseMayor==2) {
+        if (MayorManager.phaseMayor==2) {
             if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.AYWENITER.getId())) return;
 
             if (block.getType() == Material.STONE) {

@@ -30,7 +30,7 @@ import java.util.UUID;
 public class MineralRushPerk implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (MayorManager.getInstance().phaseMayor !=2) return;
+        if (MayorManager.phaseMayor !=2) return;
 
         Player player = event.getPlayer();
 
@@ -47,7 +47,7 @@ public class MineralRushPerk implements Listener {
 
     @EventHandler
     void onTimeEnd(Chronometer.ChronometerEndEvent e) {
-        if (MayorManager.getInstance().phaseMayor !=2) return;
+        if (MayorManager.phaseMayor !=2) return;
 
         String chronometerGroup = e.getGroup();
         if (!chronometerGroup.equals("city:mineral_rush")) return;
@@ -69,7 +69,7 @@ public class MineralRushPerk implements Listener {
 
     @EventHandler
     public void onMineralBreak(BlockBreakEvent event) {
-        if (MayorManager.getInstance().phaseMayor !=2) return;
+        if (MayorManager.phaseMayor !=2) return;
 
         Player player = event.getPlayer();
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -98,7 +98,7 @@ public class MineralRushPerk implements Listener {
 
     @EventHandler
     public void onAyweniteBreak(CustomBlockBreakEvent event) {
-        if (MayorManager.getInstance().phaseMayor != 2) return;
+        if (MayorManager.phaseMayor != 2) return;
 
         Player player = event.getPlayer();
         City city = CityManager.getPlayerCity(player.getUniqueId());
