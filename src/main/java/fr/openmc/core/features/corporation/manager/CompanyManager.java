@@ -17,7 +17,7 @@ import fr.openmc.core.features.corporation.listener.ShopListener;
 import fr.openmc.core.features.corporation.models.CompanyMerchant;
 import fr.openmc.core.features.corporation.models.CompanyPermission;
 import fr.openmc.core.features.corporation.models.DBCompany;
-import fr.openmc.core.features.corporation.models.MerchantDBData;
+import fr.openmc.core.features.corporation.models.Merchant;
 import fr.openmc.core.features.corporation.models.ShopSupplier;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
@@ -37,6 +37,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -93,8 +94,8 @@ public class CompanyManager {
     private static Dao<Shop, UUID> shopsDao;
     private static Dao<ShopItem, UUID> itemsDao;
     private static Dao<DBCompany, UUID> companiesDao;
-    private static Dao<CompanyMerchant, UUID> merchantsDao;
-    private static Dao<MerchantDBData, UUID> merchantDataDao;
+    private static Dao<CompanyMerchant, UUID> companyMerchantsDao;
+    private static Dao<Merchant, UUID> merchantsDao;
     private static Dao<ShopSupplier, UUID> suppliersDao;
 
     public static void init_db(ConnectionSource connectionSource) throws SQLException {
@@ -111,10 +112,10 @@ public class CompanyManager {
         companiesDao = DaoManager.createDao(connectionSource, DBCompany.class);
 
         TableUtils.createTableIfNotExists(connectionSource, CompanyMerchant.class);
-        merchantsDao = DaoManager.createDao(connectionSource, CompanyMerchant.class);
+        companyMerchantsDao = DaoManager.createDao(connectionSource, CompanyMerchant.class);
 
-        TableUtils.createTableIfNotExists(connectionSource, MerchantDBData.class);
-        merchantDataDao = DaoManager.createDao(connectionSource, MerchantDBData.class);
+        TableUtils.createTableIfNotExists(connectionSource, Merchant.class);
+        merchantsDao = DaoManager.createDao(connectionSource, Merchant.class);
 
         TableUtils.createTableIfNotExists(connectionSource, ShopSupplier.class);
         suppliersDao = DaoManager.createDao(connectionSource, ShopSupplier.class);
@@ -124,52 +125,31 @@ public class CompanyManager {
         OMCPlugin.getInstance().getLogger().info("Chargement des Companies...");
         List<Company> companies = new ArrayList<>();
 
-        String query = "SELECT company_uuid, name, owner, cut, balance, city_uuid FROM company";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement(query);
-             ResultSet rs = statement.executeQuery()) {
+        try {
+            List<DBCompany> dbCompanies = companiesDao.queryForAll();
+            for (DBCompany dbCompany : dbCompanies) {
+                Company company = dbCompany.deserialize();
 
-            while (rs.next()) {
-                String company_uuid = rs.getString("company_uuid");
-                String cityUuid = rs.getString("city_uuid");
-                UUID owner = UUID.fromString(rs.getString("owner"));
-                String name = rs.getString("name");
-                double cut = rs.getDouble("cut");
-                double balance = rs.getDouble("balance");
+                QueryBuilder<CompanyMerchant, UUID> query = companyMerchantsDao.queryBuilder();
+                query.where().eq("company", company.getCompany_uuid());
+                List<CompanyMerchant> merchants = companyMerchantsDao.query(query.prepare());
+                for (CompanyMerchant merchant : merchants) {
+                    MerchantData merchantData = new MerchantData();
+                    merchantData.addMoneyWon(merchant.getMoneyWon());
 
-                Company company = (cityUuid == null)
-                        ? new Company(name, new CompanyOwner(owner), UUID.fromString(company_uuid))
-                        : new Company(name, new CompanyOwner(CityManager.getCity(cityUuid)), UUID.fromString(company_uuid));
-
-                company.setCut(cut);
-                company.setBalance(balance);
-
-                String merchantQuery = "SELECT player, moneyWon FROM company_merchants WHERE company_uuid = ?";
-                try (PreparedStatement merchantStmt = conn.prepareStatement(merchantQuery)) {
-
-                    merchantStmt.setString(1, company_uuid);
-                    ResultSet merchantRs = merchantStmt.executeQuery();
-
-                    while (merchantRs.next()) {
-                        UUID playerUuid = UUID.fromString(merchantRs.getString("player"));
-                        double moneyWon = merchantRs.getDouble("moneyWon");
-
-                        MerchantData merchantData = new MerchantData();
-                        merchantData.addMoneyWon(moneyWon);
-
-                        for (ItemStack item : getMerchantItem(playerUuid, conn)) {
-                            merchantData.depositItem(item);
-                        }
-
-                        company.addMerchant(playerUuid, merchantData);
+                    for (ItemStack item : getMerchantItem(merchantData.getPlayer())) {
+                        merchantData.depositItem(item);
                     }
+
+                    company.addMerchant(merchantData.getPlayer(), merchantData);
                 }
                 companies.add(company);
             }
+            OMCPlugin.getInstance().getLogger().info("Chargement terminé avec succes");
         } catch (SQLException e) {
             e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().info("Erreur lors du chargement");
         }
-        OMCPlugin.getInstance().getLogger().info("Chargement terminé avec succes");
         return companies;
     }
 
@@ -483,7 +463,7 @@ public class CompanyManager {
      * @param conn use to have the same connection
      * @return A ItemStack[] from bytes stock in the database
      */
-    public static ItemStack[] getMerchantItem(UUID playerUUID, Connection conn) {
+    public static ItemStack[] getMerchantItem(UUID player) {
         String query = "SELECT content FROM merchants_data WHERE uuid = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
 
