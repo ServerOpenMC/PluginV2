@@ -11,6 +11,9 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -116,16 +119,16 @@ public class ShopStocksMenu extends PaginatedMenu {
                 getOwner().getInventory().addItem(toGive);
                 stock.setAmount(stock.getAmount() - amount);
                 if (stock.getAmount()>0){
-                    getOwner().sendMessage("§6Vous avez récupéré §a" + amount + "§6 dans le stock de cet item");
+                    MessagesManager.sendMessage(getOwner(), Component.text("§6Vous avez récupéré §a" + amount + "§6 dans le stock de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
                 } else {
-                    getOwner().sendMessage("§6Vous avez récupéré le stock restant de cet item");
+                    MessagesManager.sendMessage(getOwner(), Component.text("§6Vous avez récupéré le stock restant de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
                 }
             } else {
-                getOwner().sendMessage("§cVous n'avez pas assez de place");
+                MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez de place"), Prefix.SHOP, MessageType.INFO, false);
             }
         } else {
             shop.removeItem(stock);
-            getOwner().sendMessage("§aL'item a bien été retiré du shop !");
+            MessagesManager.sendMessage(getOwner(), Component.text("§aL'item a bien été retiré du shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
         }
         getOwner().closeInventory();
     }
