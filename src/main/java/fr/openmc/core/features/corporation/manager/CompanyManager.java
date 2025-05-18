@@ -14,6 +14,11 @@ import fr.openmc.core.features.corporation.company.CompanyOwner;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.listener.CustomItemsCompanyListener;
 import fr.openmc.core.features.corporation.listener.ShopListener;
+import fr.openmc.core.features.corporation.models.CompanyMerchant;
+import fr.openmc.core.features.corporation.models.CompanyPermission;
+import fr.openmc.core.features.corporation.models.DBCompany;
+import fr.openmc.core.features.corporation.models.MerchantDBData;
+import fr.openmc.core.features.corporation.models.ShopSupplier;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.corporation.shops.Supply;
@@ -29,6 +34,11 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 import java.sql.*;
 import java.util.*;
@@ -79,53 +89,35 @@ public class CompanyManager {
         shops = loadAllShops();
     }
 
-    public static void init_db(Connection conn) throws SQLException {
-        try (Statement stmt = conn.createStatement()) {
-            conn.prepareStatement("CREATE TABLE IF NOT EXISTS company_perms (company_uuid VARCHAR(36) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
+    private static Dao<CompanyPermission, UUID> permissionsDao;
+    private static Dao<Shop, UUID> shopsDao;
+    private static Dao<ShopItem, UUID> itemsDao;
+    private static Dao<DBCompany, UUID> companiesDao;
+    private static Dao<CompanyMerchant, UUID> merchantsDao;
+    private static Dao<MerchantDBData, UUID> merchantDataDao;
+    private static Dao<ShopSupplier, UUID> suppliersDao;
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS shops (" +
-                    "shop_uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
-                    "owner VARCHAR(36), " +
-                    "city_uuid VARCHAR(36), " +
-                    "company_uuid VARCHAR(36), " +
-                    "x MEDIUMINT NOT NULL, " +
-                    "y MEDIUMINT NOT NULL, " +
-                    "z MEDIUMINT NOT NULL)");
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, CompanyPermission.class);
+        permissionsDao = DaoManager.createDao(connectionSource, CompanyPermission.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS shops_item (" +
-                    "item LONGBLOB NOT NULL, " +
-                    "shop_uuid VARCHAR(36) NOT NULL, " +
-                    "price DOUBLE NOT NULL, " +
-                    "amount INT NOT NULL, " +
-                    "PRIMARY KEY (shop_uuid, item(255)))");
+        TableUtils.createTableIfNotExists(connectionSource, Shop.class);
+        shopsDao = DaoManager.createDao(connectionSource, Shop.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS company (" +
-                    "company_uuid VARCHAR(36) PRIMARY KEY, " +
-                    "name VARCHAR(255) NOT NULL, " +
-                    "owner VARCHAR(36), " +
-                    "cut DOUBLE NOT NULL, " +
-                    "balance DOUBLE NOT NULL, " +
-                    "city_uuid VARCHAR(36))");
+        TableUtils.createTableIfNotExists(connectionSource, ShopItem.class);
+        itemsDao = DaoManager.createDao(connectionSource, ShopItem.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS company_merchants (" +
-                    "company_uuid VARCHAR(36), " +
-                    "player VARCHAR(36) NOT NULL PRIMARY KEY, " +
-                    "moneyWon DOUBLE NOT NULL DEFAULT 0)");
+        TableUtils.createTableIfNotExists(connectionSource, DBCompany.class);
+        companiesDao = DaoManager.createDao(connectionSource, DBCompany.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS merchants_data (" +
-                    "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
-                    "content LONGBLOB)");
+        TableUtils.createTableIfNotExists(connectionSource, CompanyMerchant.class);
+        merchantsDao = DaoManager.createDao(connectionSource, CompanyMerchant.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS shop_supplier (" +
-                    "time LONG DEFAULT 0, " +
-                    "uuid VARCHAR(36) NOT NULL , " + // uuid du joueur
-                    "item_uuid VARCHAR(36) NOT NULL, " + // uuid de l'item qu'il a mis en stock
-                    "shop_uuid VARCHAR(36) NOT NULL, " + // uuid du shop pour retrouver son shop
-                    "supplier_uuid VARCHAR(36) NOT NULL PRIMARY KEY, " + // uuid pour différencier tous les supply ( car il peut avoir plusieurs fois l'uuid d'un joueur )
-                    "amount INT DEFAULT 0)");
+        TableUtils.createTableIfNotExists(connectionSource, MerchantDBData.class);
+        merchantDataDao = DaoManager.createDao(connectionSource, MerchantDBData.class);
 
-            stmt.executeBatch();
-        }
+        TableUtils.createTableIfNotExists(connectionSource, ShopSupplier.class);
+        suppliersDao = DaoManager.createDao(connectionSource, ShopSupplier.class);
     }
 
     public static List<Company> getAllCompany() {
