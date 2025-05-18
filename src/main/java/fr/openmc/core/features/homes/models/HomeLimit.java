@@ -9,7 +9,7 @@ import fr.openmc.core.features.homes.HomeLimits;
 import lombok.Getter;
 import lombok.Setter;
 
-@DatabaseTable(tableName = "homes")
+@DatabaseTable(tableName = "home_limits")
 public class HomeLimit {
 
     @Getter

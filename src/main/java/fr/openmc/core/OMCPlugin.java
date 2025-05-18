@@ -9,14 +9,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
-import fr.openmc.core.features.corporation.manager.PlayerShopManager;
-import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.friend.FriendManager;
-import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.quests.QuestsManager;
@@ -31,7 +26,6 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -66,8 +60,6 @@ public class OMCPlugin extends JavaPlugin {
         dbManager = new DatabaseManager();
         new CommandsManager();
         CustomItemRegistry.init();
-        ContestManager contestManager = new ContestManager(this);
-        ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
         new UpdateManager();
         new MascotsManager(this); // laisser avant CityManager
@@ -78,10 +70,8 @@ public class OMCPlugin extends JavaPlugin {
         new BankManager();
         new ScoreboardManager();
         new HomesManager();
-        new HomeUpgradeManager(HomesManager.getInstance());
         new TPAManager();
         new FreezeManager();
-        new FriendManager();
         new QuestsManager();
         new TabList();
         if (!OMCPlugin.isUnitTestVersion())
@@ -91,15 +81,12 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion()){
             new CompanyManager();// laisser apres Economy Manager
         }
-        contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
-        contestManager.setContestPlayerManager(contestPlayerManager);
         new MotdUtils(this);
         translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
         translationManager.loadAllLanguages();
 
         /* LOAD */
         DynamicCooldownManager.loadCooldowns();
-
 
         getLogger().info("Plugin activé");
     }
@@ -120,11 +107,11 @@ public class OMCPlugin extends JavaPlugin {
         CompanyManager.saveAllCompanies();
         CompanyManager.saveAllShop();
 
-        HomesManager.getInstance().saveHomesData();
+        HomesManager.saveHomesData();
 
         // - Contest
-        ContestManager.getInstance().saveContestData();
-        ContestManager.getInstance().saveContestPlayerData();
+        ContestManager.saveContestData();
+        ContestManager.saveContestPlayerData();
         QuestsManager.getInstance().saveQuests();
 
         // - Mascottes

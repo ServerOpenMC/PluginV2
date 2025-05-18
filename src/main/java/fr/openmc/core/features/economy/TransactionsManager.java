@@ -2,10 +2,8 @@ package fr.openmc.core.features.economy;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.analytics.Stats;
-import fr.openmc.core.utils.database.DatabaseManager;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;

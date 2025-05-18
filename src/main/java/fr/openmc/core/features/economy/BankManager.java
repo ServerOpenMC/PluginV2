@@ -8,7 +8,6 @@ import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -17,9 +16,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -33,7 +29,6 @@ import java.util.UUID;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.DatabaseTable;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.features.economy.models.Bank;
 
@@ -61,14 +56,14 @@ public class BankManager {
 
     public static void addBankBalance(UUID player, double amount) {
         Bank bank = getPlayerBank(player);
-        
+
         bank.deposit(amount);
         saveBank(bank);
     }
 
     public static void withdrawBankBalance(UUID player, double amount) {
         Bank bank = getPlayerBank(player);
-        
+
         bank.withdraw(amount);
         saveBank(bank);
     }
@@ -79,12 +74,17 @@ public class BankManager {
 
             if (EconomyManager.withdrawBalance(player.getUniqueId(), moneyDeposit)) {
                 addBankBalance(player.getUniqueId(), moneyDeposit);
-                MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player,
+                        Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit)
+                                + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"),
+                        Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.BANK, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(),
+                        Prefix.BANK, MessageType.ERROR, false);
             }
         } else {
-            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.BANK, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.BANK,
+                    MessageType.ERROR, true);
         }
     }
 
@@ -93,25 +93,32 @@ public class BankManager {
             double moneyDeposit = InputUtils.convertToMoneyValue(input);
 
             if (getBankBalance(player.getUniqueId()) < moneyDeposit) {
-                MessagesManager.sendMessage(player, Component.text("Tu n'a pas assez d'argent en banque"), Prefix.BANK, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, Component.text("Tu n'a pas assez d'argent en banque"), Prefix.BANK,
+                        MessageType.ERROR, false);
             } else {
                 withdrawBankBalance(player.getUniqueId(), moneyDeposit);
                 EconomyManager.addBalance(player.getUniqueId(), moneyDeposit);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
+                MessagesManager.sendMessage(player,
+                        Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyDeposit) + "§r"
+                                + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"),
+                        Prefix.BANK, MessageType.SUCCESS, false);
             }
         } else {
-            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.BANK, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.BANK,
+                    MessageType.ERROR, true);
         }
     }
 
     private static Bank getPlayerBank(UUID player) {
         Bank bank = banks.get(player);
-        if (bank != null) return bank;
+        if (bank != null)
+            return bank;
         return new Bank(player);
     }
 
     private static void saveBank(Bank bank) {
         try {
+            banks.put(bank.getPlayer(), bank);
             banksDao.createOrUpdate(bank);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -141,7 +148,7 @@ public class BankManager {
                 interest = .03; // interest is 3% when perk Buisness Man actived
             }
         }
-        
+
         return interest;
     }
 
@@ -152,10 +159,15 @@ public class BankManager {
 
         Player sender = Bukkit.getPlayer(player);
         if (sender != null)
-            MessagesManager.sendMessage(sender, Component.text("Vous venez de percevoir §d" + interest*100 + "% §rd'intérèt, soit §d" + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r" + EconomyManager.getEconomyIcon()), Prefix.CITY, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(sender,
+                    Component.text("Vous venez de percevoir §d" + interest * 100 + "% §rd'intérèt, soit §d"
+                            + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r"
+                            + EconomyManager.getEconomyIcon()),
+                    Prefix.CITY, MessageType.SUCCESS, false);
     }
 
-    // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY BANKS SAVED IN THE DB
+    // WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT
+    // PERFORMANCE IF THERE ARE MANY BANKS SAVED IN THE DB
     public static void applyAllPlayerInterests() {
         banks = loadAllBanks();
         for (UUID player : banks.keySet()) {
@@ -176,18 +188,22 @@ public class BankManager {
 
     public static long getSecondsUntilInterest() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime nextMonday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY)).withHour(2).withMinute(0).withSecond(0);
+        LocalDateTime nextMonday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.MONDAY)).withHour(2).withMinute(0)
+                .withSecond(0);
         // if it is after 2 AM, get the monday after
         if (nextMonday.isBefore(now))
-            nextMonday = nextMonday.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).withHour(2).withMinute(0).withSecond(0);
+            nextMonday = nextMonday.with(TemporalAdjusters.next(DayOfWeek.MONDAY)).withHour(2).withMinute(0)
+                    .withSecond(0);
 
-        LocalDateTime nextThursday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY)).withHour(2).withMinute(0).withSecond(0);
+        LocalDateTime nextThursday = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.THURSDAY)).withHour(2)
+                .withMinute(0).withSecond(0);
         // if it is after 2 AM, get the thursday after
         if (nextThursday.isBefore(now))
-            nextThursday = nextThursday.with(TemporalAdjusters.next(DayOfWeek.THURSDAY)).withHour(2).withMinute(0).withSecond(0);
+            nextThursday = nextThursday.with(TemporalAdjusters.next(DayOfWeek.THURSDAY)).withHour(2).withMinute(0)
+                    .withSecond(0);
 
         LocalDateTime nextInterestUpdate = nextMonday.isBefore(nextThursday) ? nextMonday : nextThursday;
-        
+
         return ChronoUnit.SECONDS.between(now, nextInterestUpdate);
     }
 }

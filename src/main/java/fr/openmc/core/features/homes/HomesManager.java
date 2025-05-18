@@ -5,7 +5,6 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
-import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.utils.database.DatabaseManager;
 import lombok.Getter;
@@ -20,9 +19,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +36,8 @@ public class HomesManager {
     public static List<Home> homes = new ArrayList<>();
     public static List<HomeLimit> homeLimits = new ArrayList<>();
     public DisabledWorldHome disabledWorldHome;
-    @Getter
-    private static HomesManager instance;
 
     public HomesManager() {
-        instance = this;
         disabledWorldHome = new DisabledWorldHome(OMCPlugin.getInstance());
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("homes",
@@ -146,24 +139,24 @@ public class HomesManager {
         loadHomes();
     }
 
-    public void saveHomesData() {
+    public static void saveHomesData() {
         saveHomes();
         saveHomeLimit();
     }
 
-    public void addHome(Home home) {
+    public static void addHome(Home home) {
         homes.add(home);
     }
 
-    public void removeHome(Home home) {
+    public static void removeHome(Home home) {
         homes.remove(home);
     }
 
-    public void renameHome(Home home, String newName) {
+    public static void renameHome(Home home, String newName) {
         home.setName(newName);
     }
 
-    public void relocateHome(Home home, Location newLoc) {
+    public static void relocateHome(Home home, Location newLoc) {
         home.setLocation(newLoc);
     }
 
@@ -181,7 +174,7 @@ public class HomesManager {
                 .toList();
     }
 
-    public int getHomeLimit(UUID owner) {
+    public static int getHomeLimit(UUID owner) {
         HomeLimit homeLimit = homeLimits.stream()
                 .filter(hl -> hl.getPlayer().equals(owner))
                 .findFirst()
@@ -195,7 +188,7 @@ public class HomesManager {
         return homeLimit == null ? 0 : homeLimit.getLimit();
     }
 
-    public void updateHomeLimit(UUID owner) {
+    public static void updateHomeLimit(UUID owner) {
         HomeLimit homeLimit = homeLimits.stream()
                 .filter(hl -> hl.getPlayer().equals(owner))
                 .findFirst()
@@ -233,9 +226,7 @@ public class HomesManager {
     private static void saveHomeLimit() {
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), HomeLimit.class);
-            for (HomeLimit homeLimit : homeLimits) {
-                limitsDao.create(homeLimit);
-            }
+            limitsDao.create(homeLimits);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -252,9 +243,7 @@ public class HomesManager {
     private static void saveHomes() {
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), Home.class);
-            for (Home home : homes) {
-                homesDao.create(home);
-            }
+            homesDao.create(homes);
         } catch (SQLException e) {
             e.printStackTrace();
         }

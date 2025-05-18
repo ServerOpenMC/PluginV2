@@ -17,13 +17,11 @@ import lombok.Getter;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 public class CommandsManager {
-    @Getter static CommandsManager instance;
-    @Getter static BukkitCommandHandler handler;
+    @Getter
+    static BukkitCommandHandler handler;
 
     public CommandsManager() {
-        instance = this;
-        OMCPlugin plugin = OMCPlugin.getInstance();
-        handler = BukkitCommandHandler.create(plugin);
+        handler = BukkitCommandHandler.create(OMCPlugin.getInstance());
 
         handler.registerCondition(new CooldownInterceptor());
 
@@ -31,7 +29,7 @@ public class CommandsManager {
         registerCommands();
     }
 
-    private void registerCommands() {
+    private static void registerCommands() {
         handler.register(
                 new Socials(),
                 new Spawn(),
@@ -47,11 +45,10 @@ public class CommandsManager {
                 new FriendCommand(),
                 new QuestCommand(),
                 new Restart(),
-                new AdminShopCommand()
-        );
+                new AdminShopCommand());
     }
 
-    private void registerSuggestions() {
-        FriendManager.getInstance().initCommandSuggestion();
+    private static void registerSuggestions() {
+        FriendManager.initCommandSuggestion();
     }
 }

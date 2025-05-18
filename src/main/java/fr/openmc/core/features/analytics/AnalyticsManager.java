@@ -2,7 +2,6 @@ package fr.openmc.core.features.analytics;
 
 import fr.openmc.core.OMCPlugin;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
@@ -42,14 +41,14 @@ public class AnalyticsManager {
 
         try {
             QueryBuilder<Statistic, String> query = statsDao.queryBuilder();
-            query.where().eq("player", player.toString()).or().eq("scope", scope);
+            query.where().eq("player", player).or().eq("scope", scope);
             List<Statistic> stats = statsDao.query(query.prepare());
             if (stats.size() == 0)
                 return 0;
 
             return stats.get(0).getValue();
-        } catch (SQLException err) {
-            err.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
             return defaultValue;
         }
     }
@@ -70,11 +69,17 @@ public class AnalyticsManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                int current = getStatistic(scope, player, 0);
-                Statistic statistic = new Statistic(player.toString(), scope, current + value);
-                statsDao.createOrUpdate(statistic);
-            } catch (SQLException err) {
-                err.printStackTrace();
+                QueryBuilder<Statistic, String> query = statsDao.queryBuilder();
+                query.where().eq("player", player).or().eq("scope", scope);
+                List<Statistic> stats = statsDao.query(query.prepare());
+                if (stats.size() != 1)
+                    return;
+                statsDao.delete(stats);
+
+                Statistic statistic = new Statistic(player, scope, stats.get(0).getValue() + value);
+                statsDao.create(statistic);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         });
     }

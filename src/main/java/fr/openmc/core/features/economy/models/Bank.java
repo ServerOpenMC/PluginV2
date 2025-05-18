@@ -28,6 +28,7 @@ public class Bank {
 
     public void deposit(double amount) {
         balance += amount;
+        assert balance >= 0;
     }
 
     public void withdraw(double amount) {

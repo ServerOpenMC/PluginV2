@@ -180,7 +180,7 @@ public class ScoreboardManager implements Listener {
             objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(6);
         }
 
-        Contest data = ContestManager.getInstance().data;
+        Contest data = ContestManager.data;
         int phase = data.getPhase();
         if(phase != 1) {
             objective.getScore(" ").setScore(5);

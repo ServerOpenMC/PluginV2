@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-@DatabaseTable(tableName = "contest_player_data")
+@DatabaseTable(tableName = "contest_players")
 public class ContestPlayer {
     @Getter
     @DatabaseField(id = true)

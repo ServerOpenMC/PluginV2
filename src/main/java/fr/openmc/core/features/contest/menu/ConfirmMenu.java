@@ -30,11 +30,9 @@ import java.util.Map;
 public class ConfirmMenu extends Menu {
     private final String getCampName;
     private final String getColor;
-    private final ContestManager contestManager;
 
     public ConfirmMenu(Player owner, String camp, String color) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
         this.getCampName = camp;
         this.getColor = color;
     }
@@ -67,8 +65,8 @@ public class ConfirmMenu extends Menu {
         try {
             String messageTeam = "La Team ";
 
-            String campName = contestManager.data.get(getCampName);
-            String campColor = contestManager.data.get(getColor);
+            String campName = ContestManager.data.get(getCampName);
+            String campColor = ContestManager.data.get(getColor);
 
             NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
             List<Component> lore1 = Arrays.asList(
@@ -95,10 +93,10 @@ public class ConfirmMenu extends Menu {
                 itemMeta.lore(lore1);
             }).setOnClick(inventoryClickEvent -> {
                 String substring = this.getCampName.substring(this.getCampName.length() - 1);
-                String color = contestManager.data.get("color" + Integer.valueOf(substring));
+                String color = ContestManager.data.get("color" + Integer.valueOf(substring));
                 NamedTextColor campColorF = ColorUtils.getNamedTextColor(color);
 
-                contestManager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(player.getName(), 0, Integer.valueOf(substring), campColorF));
+                ContestManager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(player.getName(), 0, Integer.valueOf(substring), campColorF));
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
                 MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
 

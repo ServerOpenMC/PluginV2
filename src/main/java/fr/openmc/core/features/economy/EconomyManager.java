@@ -24,7 +24,6 @@ import java.util.*;
 public class EconomyManager {
     @Getter
     private static Map<UUID, EconomyPlayer> balances;
-    private static EconomyManager instance;
 
     private static Dao<EconomyPlayer, String> playersDao;
 
@@ -33,22 +32,17 @@ public class EconomyManager {
         playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
     }
 
-    private final DecimalFormat decimalFormat;
-    private final NavigableMap<Long, String> suffixes;
+    private static DecimalFormat decimalFormat = new DecimalFormat("#.##");;
+    private static NavigableMap<Long, String> suffixes = new TreeMap<>(Map.of(
+            1_000L, "k",
+            1_000_000L, "M",
+            1_000_000_000L, "B",
+            1_000_000_000_000L, "T",
+            1_000_000_000_000_000L, "Q",
+            1_000_000_000_000_000_000L, "Qi"));
 
     public EconomyManager() {
-        instance = this;
-
         balances = loadAllBalances();
-
-        decimalFormat = new DecimalFormat("#.##");
-        suffixes = new TreeMap<>();
-        suffixes.put(1_000L, "k");
-        suffixes.put(1_000_000L, "M");
-        suffixes.put(1_000_000_000L, "B");
-        suffixes.put(1_000_000_000_000L, "T");
-        suffixes.put(1_000_000_000_000_000L, "Q");
-        suffixes.put(1_000_000_000_000_000_000L, "Qi");
 
         CommandsManager.getHandler().register(
                 new Pay(),
@@ -78,6 +72,7 @@ public class EconomyManager {
     public static void setBalance(UUID player, double amount) {
         EconomyPlayer bank = getPlayerBank(player);
         bank.withdraw(bank.getBalance());
+        bank.deposit(amount);
         savePlayerBank(bank);
     }
 
@@ -89,6 +84,7 @@ public class EconomyManager {
 
     public static void savePlayerBank(EconomyPlayer player) {
         try {
+            balances.put(player.getPlayer(), player);
             playersDao.createOrUpdate(player);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -140,16 +136,16 @@ public class EconomyManager {
             return "0";
         }
 
-        Map.Entry<Long, String> entry = instance.suffixes.floorEntry((long) balance);
+        Map.Entry<Long, String> entry = suffixes.floorEntry((long) balance);
         if (entry == null) {
-            return instance.decimalFormat.format(balance);
+            return decimalFormat.format(balance);
         }
 
         long divideBy = entry.getKey();
         String suffix = entry.getValue();
 
         double truncated = balance / divideBy;
-        String formatted = instance.decimalFormat.format(truncated);
+        String formatted = decimalFormat.format(truncated);
 
         return formatted + suffix;
     }

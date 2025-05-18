@@ -1,6 +1,5 @@
 package fr.openmc.core.features.homes.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -26,13 +25,8 @@ import java.util.Map;
 
 public class HomeUpgradeMenu extends Menu {
 
-    private final HomeUpgradeManager homeUpgradeManager;
-    private final HomesManager homesManager;
-
     public HomeUpgradeMenu(Player owner) {
         super(owner);
-        this.homeUpgradeManager = HomeUpgradeManager.getInstance();
-        this.homesManager = HomesManager.getInstance();
     }
 
     @Override
@@ -45,13 +39,13 @@ public class HomeUpgradeMenu extends Menu {
         Map<Integer, ItemStack> items = new HashMap<>();
 
         try {
-            int currentHome = homesManager.getHomeLimit(getOwner().getUniqueId());
+            int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId());
 
             int homeMaxLimit = HomeLimits.values().length - 1;
 
             HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
-            HomeLimits nextUpgrade = homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer())) != null
-                    ? homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer()))
+            HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer())) != null
+                    ? HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer()))
                     : lastUpgrade;
 
             int finalCurrentHome = currentHome;
@@ -70,7 +64,7 @@ public class HomeUpgradeMenu extends Menu {
 
                 itemMeta.setLore(lore);
             }).setOnClick(event -> {
-                homeUpgradeManager.upgradeHome(getOwner());
+                HomeUpgradeManager.upgradeHome(getOwner());
                 getOwner().closeInventory();
             }));
 

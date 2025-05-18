@@ -5,8 +5,6 @@ import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -26,16 +24,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,12 +48,10 @@ public class MailboxManager {
     }
 
     public static boolean sendItems(Player sender, OfflinePlayer receiver, ItemStack[] items) {
-        String receiverUUID = receiver.getUniqueId().toString();
         if (!canSend(sender, receiver))
             return false;
         String receiverName = receiver.getName();
         int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
-        String senderUUID = sender.getUniqueId().toString();
         LocalDateTime sent = LocalDateTime.now();
 
         try {
@@ -105,12 +94,10 @@ public class MailboxManager {
                         Timestamp.valueOf(LocalDateTime.now()), false);
                 letters.add(letter);
             }
-            if (letterDao.create(letters) == 0)
-                Logger.getLogger(MailboxManager.class.getName()).log(Level.SEVERE,
-                        "Erreur lors de l'envoi des items batch à des joueurs hors ligne");
-        } catch (SQLException sqlEx) {
+            letterDao.create(letters);
+        } catch (SQLException e) {
             Logger.getLogger(MailboxManager.class.getName()).log(Level.SEVERE,
-                    "Erreur lors de l'envoi des items batch à des joueurs hors ligne", sqlEx);
+                    "Erreur lors de l'envoi des items batch à des joueurs hors ligne", e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -119,8 +106,12 @@ public class MailboxManager {
     public static void sendMailNotification(Player player) {
         try {
             QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
-            query.where().eq("receiver", player.getUniqueId().toString()).and().eq("refused", false);
+            query.where().eq("receiver", player.getUniqueId()).and().eq("refused", false);
+            query.setCountOf(true);
             long count = letterDao.countOf(query.prepare());
+
+            if (count == 0)
+                return;
 
             Component message = null;
             message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN);
