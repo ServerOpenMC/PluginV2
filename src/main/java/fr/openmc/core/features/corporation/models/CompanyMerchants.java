@@ -1,0 +1,20 @@
+package fr.openmc.core.features.corporation.models;
+
+import java.util.UUID;
+
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "company_merchants")
+public class CompanyMerchants {
+    @DatabaseField(id = true)
+    private UUID player;
+    @DatabaseField
+    private UUID company;
+    @DatabaseField(canBeNull = false, defaultValue = "0", columnName = "money_won")
+    private double moneyWon;
+
+    CompanyMerchants() {
+        // required for ORMLite
+    }
+}
