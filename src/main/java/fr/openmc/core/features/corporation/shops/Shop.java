@@ -6,6 +6,7 @@ import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -30,7 +31,6 @@ import java.util.*;
 public class Shop {
 
     private final ShopOwner owner;
-    private final ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
     private final List<ShopItem> items = new ArrayList<>();
     private final List<ShopItem> sales = new ArrayList<>();
     private final Map<Long, Supply> suppliers = new HashMap<>();
@@ -58,8 +58,7 @@ public class Shop {
      * @param shop the shop we want to check the stock
      */
     public static void checkStock(Shop shop) {
-        ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
-        Multiblock multiblock = blocksManager.getMultiblock(shop.getUuid());
+        Multiblock multiblock = ShopBlocksManager.getMultiblock(shop.getUuid());
 
         if (multiblock == null) {
             return;
@@ -67,7 +66,7 @@ public class Shop {
 
         Block stockBlock = multiblock.getStockBlock().getBlock();
         if (stockBlock.getType() != Material.BARREL) {
-            blocksManager.removeShop(shop);
+            ShopBlocksManager.removeShop(shop);
             return;
         }
 
@@ -114,8 +113,7 @@ public class Shop {
 
 
     public String getName() {
-        //TODO CacheOfflinePlayer
-        return owner.isCompany() ? ("Shop #" + index) : Bukkit.getOfflinePlayer(owner.getPlayer()).getName() + "'s Shop";
+        return owner.isCompany() ? ("Shop #" + index) : CacheOfflinePlayer.getOfflinePlayer(owner.getPlayer()).getName() + "'s Shop";
     }
 
     public UUID getSupremeOwner() {
@@ -313,10 +311,9 @@ public class Shop {
      * get the shop with what player looking
      *
      * @param player the player we check
-     * @param shopBlocksManager the permission
      * @param onlyCash if we only check the cach register
      */
-    public static UUID getShopPlayerLookingAt(Player player, ShopBlocksManager shopBlocksManager, boolean onlyCash) {
+    public static UUID getShopPlayerLookingAt(Player player, boolean onlyCash) {
         Block targetBlock = player.getTargetBlockExact(5);
 
         if (targetBlock == null) return null;
@@ -325,7 +322,7 @@ public class Shop {
         if (onlyCash) {
             if (targetBlock.getType() != Material.OAK_SIGN && targetBlock.getType() != Material.BARRIER) return null;
         }
-        Shop shop = shopBlocksManager.getShop(targetBlock.getLocation());
+        Shop shop = ShopBlocksManager.getShop(targetBlock.getLocation());
         if (shop == null) return null;
         return shop.getUuid();
     }

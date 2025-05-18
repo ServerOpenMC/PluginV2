@@ -184,8 +184,8 @@ public class CompanyManager {
 
                 Shop shop;
                 if (dbShop.getCompany() == null) {
-                    PlayerShopManager.getInstance().createShop(dbShop.getOwner(), barrel, cashRegister, dbShop.getId());
-                    shop = PlayerShopManager.getInstance().getShopByUUID(dbShop.getId());
+                    PlayerShopManager.createShop(dbShop.getOwner(), barrel, cashRegister, dbShop.getId());
+                    shop = PlayerShopManager.getShopByUUID(dbShop.getId());
                 } else {
                     Company company = getCompany(dbShop.getOwner());
                     if (dbShop.getCity() == null) {
@@ -296,9 +296,9 @@ public class CompanyManager {
                     cityUuid = UUID.fromString(company.getOwner().getCity().getUUID());
                 }
 
-                double x = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-                double y = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-                double z = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+                double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
+                double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
+                double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
 
                 dbShops.add(new DBShop(shop.getUuid(), shop.getSupremeOwner(), cityUuid, companyId, x, y, z));
 
@@ -323,12 +323,12 @@ public class CompanyManager {
             }
         }
 
-        for (Map.Entry<UUID, Shop> entry : PlayerShopManager.getInstance().getPlayerShops().entrySet()) {
+        for (Map.Entry<UUID, Shop> entry : PlayerShopManager.getPlayerShops().entrySet()) {
             Shop shop = entry.getValue();
             UUID owner = entry.getKey();
-            double x = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-            double y = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-            double z = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
 
             for (ShopItem shopItem : shop.getItems()) {
                 byte[] item = shopItem.getItem().serializeAsBytes();

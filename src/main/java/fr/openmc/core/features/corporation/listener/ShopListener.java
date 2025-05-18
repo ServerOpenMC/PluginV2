@@ -33,24 +33,23 @@ import java.util.UUID;
 
 public class ShopListener implements Listener {
 
-    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
     private final Map<UUID, Boolean> inShopBarrel = new HashMap<>();
 
     @EventHandler
     public void onShopBreak(BlockBreakEvent event) {
-        if (shopBlocksManager.getShop(event.getBlock().getLocation()) != null) {
+        if (ShopBlocksManager.getShop(event.getBlock().getLocation()) != null) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onShopExplode(BlockExplodeEvent event){
-        event.blockList().removeIf(block -> shopBlocksManager.getShop(block.getLocation()) != null);
+        event.blockList().removeIf(block -> ShopBlocksManager.getShop(block.getLocation()) != null);
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        event.blockList().removeIf(block -> shopBlocksManager.getShop(block.getLocation()) != null);
+        event.blockList().removeIf(block -> ShopBlocksManager.getShop(block.getLocation()) != null);
     }
 
     @EventHandler
@@ -63,7 +62,7 @@ public class ShopListener implements Listener {
             if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
                 return;
             }
-            Shop shop = shopBlocksManager.getShop(event.getClickedBlock().getLocation());
+            Shop shop = ShopBlocksManager.getShop(event.getClickedBlock().getLocation());
             if (shop == null) {
                 return;
             }
@@ -77,7 +76,7 @@ public class ShopListener implements Listener {
     public void onInteractWithBlock(PlayerInteractEvent e) {
         Block block = e.getClickedBlock();
         if (block != null && block.getType() == Material.BARREL) {
-            Shop shop = shopBlocksManager.getShop(block.getLocation());
+            Shop shop = ShopBlocksManager.getShop(block.getLocation());
             boolean isShop = shop!=null;
             if (isShop){
                 Company company = CompanyManager.getCompany(e.getPlayer().getUniqueId());

@@ -37,7 +37,6 @@ import java.util.*;
 public class Company {
 
     private final String name;
-    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
     private final HashMap<UUID, Set<CorpPermission>> permsCache = new HashMap<>();
     private final Map<UUID, MerchantData> merchants = new HashMap<>();
     private final List<Shop> shops = new ArrayList<>();
@@ -291,7 +290,7 @@ public class Company {
         if (whoCreated==null && shopUUID != null){
             Shop newShop;
             newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
-            shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
+            ShopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
             shopCounter++;
             return true;
         }
@@ -314,10 +313,10 @@ public class Company {
 
                 shops.add(newShop);
             CompanyManager.shops.add(newShop);
-            shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
+            ShopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
 
             if (shopUUID==null){
-                shopBlocksManager.placeShop(newShop, whoCreated, true);
+                ShopBlocksManager.placeShop(newShop, whoCreated, true);
             }
 
             shopCounter++;
@@ -342,7 +341,7 @@ public class Company {
                 if (!deposit(75, player, "Suppression de shop")) {
                     return MethodState.SPECIAL;
                 }
-                if (!shopBlocksManager.removeShop(shop)) {
+                if (!ShopBlocksManager.removeShop(shop)) {
                     return MethodState.ESCAPE;
                 }
                 shops.remove(shop);

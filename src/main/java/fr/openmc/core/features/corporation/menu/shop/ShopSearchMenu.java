@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
+import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemAdderApi;
@@ -52,9 +53,9 @@ public class ShopSearchMenu extends PaginatedMenu {
             if (shops==null){continue;}
 
             List<Component> loc = new ArrayList<>();
-            double x = shops.getBlocksManager().getMultiblock(shops.getUuid()).getStockBlock().getBlockX();
-            double y = shops.getBlocksManager().getMultiblock(shops.getUuid()).getStockBlock().getBlockY();
-            double z = shops.getBlocksManager().getMultiblock(shops.getUuid()).getStockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockZ();
 
             loc.add(Component.text("§lLocation : §r x : " + x + " y : " + y + " z : " + z));
 
@@ -97,9 +98,9 @@ public class ShopSearchMenu extends PaginatedMenu {
                                 boolean shopFind = false;
 
                                 for (Shop shop : CompanyManager.shops){
-                                    double x = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-                                    double y = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-                                    double z = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+                                    double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
+                                    double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
+                                    double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
 
                                     if (shop.getName().contains(input)){
                                         MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);

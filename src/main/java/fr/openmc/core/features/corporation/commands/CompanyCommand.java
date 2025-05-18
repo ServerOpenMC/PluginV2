@@ -27,7 +27,6 @@ import java.util.UUID;
 @Description("Gestion des entreprises")
 @CommandPermission("omc.commands.company")
 public class CompanyCommand {
-    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
 
     @DefaultFor("~")
     public void onCommand(Player player) {
@@ -77,7 +76,7 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous êtes déjà dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        if (playerShopManager.hasShop(player.getUniqueId())) {
+        if (PlayerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas postuler pour une entreprise si vous possédez un shop !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
@@ -398,7 +397,7 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cUne entreprise avec ce nom existe déjà !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return false;
         }
-        if (playerShopManager.hasShop(player.getUniqueId())) {
+        if (PlayerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise si vous possédez un shop !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return false;
         }
@@ -406,7 +405,7 @@ public class CompanyCommand {
             City city = CityManager.getPlayerCity(player.getUniqueId());
             if (city!=null) {
                 for (UUID cityMember : city.getMembers()) {
-                    if (playerShopManager.hasShop(cityMember)) {
+                    if (PlayerShopManager.hasShop(cityMember)) {
                         MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise si un membre de votre ville possède un shop !"), Prefix.ENTREPRISE, MessageType.INFO, false);
                         return false;
                     }

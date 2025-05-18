@@ -5,7 +5,6 @@ import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.PlayerShopManager;
-import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.corporation.menu.company.ShopManageMenu;
 import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
 import fr.openmc.core.features.corporation.MethodState;
@@ -30,9 +29,6 @@ import java.util.UUID;
 @Description("Manage shops")
 @CommandPermission("omc.commands.shop")
 public class ShopCommand {
-
-    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
-    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
 
     @DefaultFor("~")
     public void onCommand(Player player) {
@@ -88,11 +84,11 @@ public class ShopCommand {
             MessagesManager.sendMessage(player, Component.text("§aUn shop a bien été crée pour votre entreprise !"), Prefix.SHOP, MessageType.SUCCESS, false);
             return;
         }
-        if (playerShopManager.hasShop(player.getUniqueId())) {
+        if (PlayerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous avez déjà un shop"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
-        if (!playerShopManager.createShop(player.getUniqueId(), targetBlock, aboveBlock, null)) {
+        if (!PlayerShopManager.createShop(player.getUniqueId(), targetBlock, aboveBlock, null)) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent pour créer un shop (500€)"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
@@ -105,7 +101,7 @@ public class ShopCommand {
     public void sellItem(Player player, @Named("price") double price) {
         boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
-            UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
+            UUID shopUUID = Shop.getShopPlayerLookingAt(player, false);
             if (shopUUID == null) {
                 MessagesManager.sendMessage(player, Component.text("§cShop non reconnu"), Prefix.SHOP, MessageType.INFO, false);
                 return;
@@ -128,11 +124,11 @@ public class ShopCommand {
             MessagesManager.sendMessage(player, Component.text("§aL'item a bien été ajouté au shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
             return;
         }
-        if (!playerShopManager.hasShop(player.getUniqueId())) {
+        if (!PlayerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas de shop"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
-        Shop shop = playerShopManager.getPlayerShop(player.getUniqueId());
+        Shop shop = PlayerShopManager.getPlayerShop(player.getUniqueId());
         ItemStack item = player.getInventory().getItemInMainHand();
         if (item.getType() == Material.AIR) {
             MessagesManager.sendMessage(player, Component.text("§cVous devez tenir un item dans votre main"), Prefix.SHOP, MessageType.INFO, false);
@@ -151,7 +147,7 @@ public class ShopCommand {
     public void unsellItem(Player player, @Named("item number") int itemIndex) {
         boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
-            UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
+            UUID shopUUID = Shop.getShopPlayerLookingAt(player, false);
             if (shopUUID == null) {
                 MessagesManager.sendMessage(player, Component.text("§cShop non reconnu"), Prefix.SHOP, MessageType.INFO, false);
                 return;
@@ -183,11 +179,11 @@ public class ShopCommand {
             }
             return;
         }
-        if (!playerShopManager.hasShop(player.getUniqueId())) {
+        if (!PlayerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas de shop"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
-        Shop shop = playerShopManager.getPlayerShop(player.getUniqueId());
+        Shop shop = PlayerShopManager.getPlayerShop(player.getUniqueId());
         ShopItem item = shop.getItem(itemIndex - 1);
         if (item == null) {
             MessagesManager.sendMessage(player, Component.text("§cCet item n'est pas dans le shop"), Prefix.SHOP, MessageType.INFO, false);
@@ -207,7 +203,7 @@ public class ShopCommand {
     @Description("Delete a shop")
     public void deleteShop(Player player) {
         boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
-        UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
+        UUID shopUUID = Shop.getShopPlayerLookingAt(player, false);
         if (shopUUID == null) {
             MessagesManager.sendMessage(player, Component.text("§cShop non reconnu"), Prefix.SHOP, MessageType.INFO, false);
             return;
@@ -241,11 +237,11 @@ public class ShopCommand {
             MessagesManager.sendMessage(player, Component.text("§a" + shop.getName() + " supprimé !"), Prefix.SHOP, MessageType.SUCCESS, false);
             MessagesManager.sendMessage(player, Component.text("§6[Shop] §a +75€ de remboursés sur la banque de l'entreprise"), Prefix.SHOP, MessageType.SUCCESS, false);
         }
-        if (!playerShopManager.hasShop(player.getUniqueId())) {
+        if (!PlayerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas de shop"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
-        MethodState methodState = playerShopManager.deleteShop(player.getUniqueId());
+        MethodState methodState = PlayerShopManager.deleteShop(player.getUniqueId());
         if (methodState == MethodState.WARNING) {
             MessagesManager.sendMessage(player, Component.text("§cVotre shop n'est pas vide"), Prefix.SHOP, MessageType.INFO, false);
             return;
@@ -267,11 +263,11 @@ public class ShopCommand {
             shopManageMenu.open();
             return;
         }
-        if (!playerShopManager.hasShop(player.getUniqueId())) {
+        if (!PlayerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas de shop"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
-        ShopMenu shopMenu = new ShopMenu(player, playerShopManager.getPlayerShop(player.getUniqueId()), 0);
+        ShopMenu shopMenu = new ShopMenu(player, PlayerShopManager.getPlayerShop(player.getUniqueId()), 0);
         shopMenu.open();
     }
 

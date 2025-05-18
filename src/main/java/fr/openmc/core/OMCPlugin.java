@@ -89,8 +89,6 @@ public class OMCPlugin extends JavaPlugin {
         new AdminShopManager(this);
 
         if (!OMCPlugin.isUnitTestVersion()){
-            new ShopBlocksManager(this);
-            new PlayerShopManager();
             new CompanyManager();// laisser apres Economy Manager
         }
         contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
