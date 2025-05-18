@@ -175,82 +175,62 @@ public class CompanyManager {
             e.printStackTrace();
         }
 
-        try (Connection conn = DatabaseManager.getConnection();
-                PreparedStatement statement = conn
-                        .prepareStatement("SELECT shop_uuid, owner, city_uuid, company_uuid, x, y, z FROM shops");
-                ResultSet rs = statement.executeQuery()) {
+        try {
+            List<DBShop> dbShops = shopsDao.queryForAll();
+            for (DBShop dbShop : dbShops) {
+                Block barrel = new Location(Bukkit.getWorld("world"), dbShop.getX(), dbShop.getY(), dbShop.getZ())
+                        .getBlock();
+                Block cashRegister = new Location(Bukkit.getWorld("world"), dbShop.getX(), dbShop.getY() + 1,
+                        dbShop.getZ()).getBlock();
 
-            while (rs.next()) {
-                UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
-                UUID owner = UUID.fromString(rs.getString("owner"));
-                String cityUuid = rs.getString("city_uuid");
-                String uuid = rs.getString("company_uuid");
-                UUID company_uuid = null;
-                if (uuid != null) {
-                    company_uuid = UUID.fromString(uuid);
-                }
-                double x = rs.getDouble("x");
-                double y = rs.getDouble("y");
-                double z = rs.getDouble("z");
+                if (barrel.getType() != Material.BARREL)
+                    continue;
 
-                Block barrel = new Location(Bukkit.getWorld("world"), x, y, z).getBlock();
-                Block cashRegister = new Location(Bukkit.getWorld("world"), x, y + 1, z).getBlock();
+                if (!cashRegister.getType().toString().contains("SIGN")
+                        && !cashRegister.getType().equals(Material.BARRIER))
+                    continue;
 
-                if (barrel.getType() == Material.BARREL) {
-                    if (cashRegister.getType().toString().contains("SIGN")
-                            || cashRegister.getType().equals(Material.BARRIER)) {
-                        Shop shop;
-                        if (company_uuid == null) {
-                            PlayerShopManager.getInstance().createShop(owner, barrel, cashRegister, shopUuid);
-                            shop = PlayerShopManager.getInstance().getShopByUUID(shopUuid);
-                        } else {
-                            Company company = getCompany(owner);
-                            if (cityUuid == null) {
-                                company.createShop(owner, barrel, cashRegister, shopUuid);
-                            } else {
-                                City city = CityManager.getCity(cityUuid);
-                                if (city != null) {
-                                    company.createShop(owner, barrel, cashRegister, shopUuid);
-                                }
-                            }
-                            shop = company.getShop(shopUuid);
+                Shop shop;
+                if (dbShop.getCompany() == null) {
+                    PlayerShopManager.getInstance().createShop(dbShop.getOwner(), barrel, cashRegister, dbShop.getId());
+                    shop = PlayerShopManager.getInstance().getShopByUUID(dbShop.getId());
+                } else {
+                    Company company = getCompany(dbShop.getOwner());
+                    if (dbShop.getCity() == null) {
+                        company.createShop(dbShop.getOwner(), barrel, cashRegister, dbShop.getId());
+                    } else {
+                        City city = CityManager.getCity(dbShop.getCity().toString());
+                        if (city != null) {
+                            company.createShop(dbShop.getOwner(), barrel, cashRegister, dbShop.getId());
                         }
-                        if (shop == null || shopItems.get(shopUuid) == null) {
-                            continue;
-                        }
-                        for (ShopItem shopItem : shopItems.get(shopUuid)) {
-                            shop.addItem(shopItem.getItem(), shopItem.getPricePerItem(), shopItem.getAmount());
-                        }
-
-                        allShop.add(shop);
                     }
+                    shop = company.getShop(dbShop.getId());
                 }
+                if (shop == null || shopItems.get(dbShop.getId()) == null) {
+                    continue;
+                }
+
+                for (ShopItem shopItem : shopItems.get(dbShop.getId())) {
+                    shop.addItem(shopItem.getItem(), shopItem.getPricePerItem(), shopItem.getAmount());
+                }
+
+                allShop.add(shop);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        try (Connection conn = DatabaseManager.getConnection();
-                PreparedStatement statement = conn.prepareStatement(
-                        "SELECT time, uuid, item_uuid, shop_uuid, supplier_uuid, amount FROM shop_supplier");
-                ResultSet rs = statement.executeQuery()) {
-
-            while (rs.next()) {
-                long time = rs.getLong("time");
-                UUID uuid = UUID.fromString(rs.getString("uuid"));
-                UUID item_uuid = UUID.fromString(rs.getString("item_uuid"));
-                UUID shop_uuid = UUID.fromString(rs.getString("shop_uuid"));
-                UUID supplier_uuid = UUID.fromString(rs.getString("supplier_uuid"));
-                int amount = rs.getInt("amount");
-
+        try {
+            List<ShopSupplier> suppliers = suppliersDao.queryForAll();
+            for (ShopSupplier supplier : suppliers) {
                 for (Shop shop : allShop) {
-                    if (shop.getUuid().equals(shop_uuid)) {
-                        shop.getSuppliers().put(time, new Supply(uuid, item_uuid, amount, supplier_uuid));
+                    if (shop.getUuid().equals(supplier.getShop())) {
+                        shop.getSuppliers().put(supplier.getTime(), new Supply(supplier.getPlayer(), supplier.getItem(),
+                                supplier.getAmount(), supplier.getId()));
                         break;
                     }
                 }
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

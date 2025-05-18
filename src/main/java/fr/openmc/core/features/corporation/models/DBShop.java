@@ -5,6 +5,9 @@ import java.util.UUID;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import lombok.Getter;
+
+@Getter
 @DatabaseTable(tableName = "shops")
 public class DBShop {
     @DatabaseField(id = true)

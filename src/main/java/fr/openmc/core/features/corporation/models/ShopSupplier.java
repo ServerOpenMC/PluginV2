@@ -5,10 +5,13 @@ import java.util.UUID;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import lombok.Getter;
+
 @DatabaseTable(tableName = "shop_suppliers")
+@Getter
 public class ShopSupplier {
     @DatabaseField(id = true)
-    private UUID supplier; // différencie les supplier (un joueur peut avoir plusieurs supplier)
+    private UUID id; // différencie les supplier (un joueur peut avoir plusieurs supplier)
     @DatabaseField(canBeNull = false)
     private UUID shop;
     @DatabaseField(canBeNull = false)
