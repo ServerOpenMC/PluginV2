@@ -85,6 +85,23 @@ public class Company {
         addPermission(owner.getPlayer(), CorpPermission.OWNER);
     }
 
+    /**
+     * create a company object (use to serliaze to DBCompany)
+     *
+     * @param name the name of the company
+     * @param owner the owner
+     * @param company_uuid the uuid of the company if it has one
+     */
+    public Company(UUID id, String name, UUID player, UUID city, double cut, double balance) {
+        this.name = name;
+        this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city));
+        assert company_uuid != null;
+        this.company_uuid = id;
+        this.cut = cut;
+        this.balance = balance;
+
+        addPermission(owner.getPlayer(), CorpPermission.OWNER);
+    }
 
     /**
      * load permission in permsCache
