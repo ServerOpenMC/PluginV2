@@ -31,15 +31,14 @@ import java.util.UUID;
 @CommandPermission("omc.commands.shop")
 public class ShopCommand {
 
-    private final CompanyManager companyManager = CompanyManager.getInstance();
     private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
     private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
 
     @DefaultFor("~")
     public void onCommand(Player player) {
-        boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
+        boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
-            ShopManageMenu shopManageMenu = new ShopManageMenu(player, companyManager.getCompany(player.getUniqueId()));
+            ShopManageMenu shopManageMenu = new ShopManageMenu(player, CompanyManager.getCompany(player.getUniqueId()));
             shopManageMenu.open();
         }
     }
@@ -64,7 +63,7 @@ public class ShopCommand {
     @Subcommand("create")
     @Description("Create a shop")
     public void createShop(Player player) {
-        boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
+        boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         Block targetBlock = player.getTargetBlockExact(5);
         if (targetBlock == null || targetBlock.getType() != Material.BARREL) {
             MessagesManager.sendMessage(player, Component.text("§cVous devez regarder un tonneau pour créer un shop"), Prefix.SHOP, MessageType.INFO, false);
@@ -76,7 +75,7 @@ public class ShopCommand {
             return;
         }
         if (isInCompany) {
-            Company company = companyManager.getCompany(player.getUniqueId());
+            Company company = CompanyManager.getCompany(player.getUniqueId());
             if (!company.hasPermission(player.getUniqueId(), CorpPermission.CREATESHOP)) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission pour créer un shop dans l'entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
@@ -104,19 +103,19 @@ public class ShopCommand {
     @Subcommand("sell")
     @Description("Sell an item in your shop")
     public void sellItem(Player player, @Named("price") double price) {
-        boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
+        boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
             UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
             if (shopUUID == null) {
                 MessagesManager.sendMessage(player, Component.text("§cShop non reconnu"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            Shop shop = companyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
+            Shop shop = CompanyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
             if (shop == null) {
                 MessagesManager.sendMessage(player, Component.text("§cCe shop n'appartient pas à votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            if (!CompanyManager.getInstance().getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SELLER)) {
+            if (!CompanyManager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SELLER)) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas l'autorisation de vendre un item dans ce shop de l'entrprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
@@ -150,19 +149,19 @@ public class ShopCommand {
     @Subcommand("unsell")
     @Description("Unsell an item in your shop")
     public void unsellItem(Player player, @Named("item number") int itemIndex) {
-        boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
+        boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
             UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
             if (shopUUID == null) {
                 MessagesManager.sendMessage(player, Component.text("§cShop non reconnu"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            Shop shop = companyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
+            Shop shop = CompanyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
             if (shop == null) {
                 MessagesManager.sendMessage(player, Component.text("§cCe shop n'appartient pas à votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            if (!CompanyManager.getInstance().getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SELLER)) {
+            if (!CompanyManager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SELLER)) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas l'autorisation de retirer un item en vente dans ce shop de l'entrprise"), Prefix.SHOP, MessageType.INFO, false);
             }
             if (itemIndex < 1 || itemIndex >= shop.getItems().size() + 1) {
@@ -207,23 +206,23 @@ public class ShopCommand {
     @Subcommand("delete")
     @Description("Delete a shop")
     public void deleteShop(Player player) {
-        boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
+        boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
         if (shopUUID == null) {
             MessagesManager.sendMessage(player, Component.text("§cShop non reconnu"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
         if (isInCompany) {
-            Shop shop = companyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
+            Shop shop = CompanyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
             if (shop == null) {
                 MessagesManager.sendMessage(player, Component.text("§cCe shop n'appartient pas à votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            if (!companyManager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.DELETESHOP)) {
+            if (!CompanyManager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.DELETESHOP)) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission pour supprimer un shop de l'entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            MethodState deleteState = companyManager.getCompany(player.getUniqueId()).deleteShop(player, shop.getUuid());
+            MethodState deleteState = CompanyManager.getCompany(player.getUniqueId()).deleteShop(player, shop.getUuid());
             if (deleteState == MethodState.ERROR) {
                 MessagesManager.sendMessage(player, Component.text("§cCe shop n'existe pas dans votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
@@ -262,9 +261,9 @@ public class ShopCommand {
     @Subcommand("manage")
     @Description("Manage a shop")
     public void manageShop(Player player) {
-        boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
+        boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
-            ShopManageMenu shopManageMenu = new ShopManageMenu(player, companyManager.getCompany(player.getUniqueId()));
+            ShopManageMenu shopManageMenu = new ShopManageMenu(player, CompanyManager.getCompany(player.getUniqueId()));
             shopManageMenu.open();
             return;
         }

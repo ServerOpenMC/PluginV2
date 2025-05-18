@@ -163,7 +163,7 @@ public class ScoreboardManager implements Listener {
             objective.getScore("§8• §fVille§7: "+cityName).setScore(10);
         }
 
-        if (CompanyManager.getInstance().isInCompany(player.getUniqueId())){
+        if (CompanyManager.isInCompany(player.getUniqueId())){
             Company company = CompanyManager.getCompany(player.getUniqueId());
             String compName = company != null ? company.getName() : "Introuvable";
             objective.getScore("§8• §fEntreprise§7: "+compName).setScore(9);

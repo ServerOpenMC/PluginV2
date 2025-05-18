@@ -80,7 +80,7 @@ public class ShopListener implements Listener {
             Shop shop = shopBlocksManager.getShop(block.getLocation());
             boolean isShop = shop!=null;
             if (isShop){
-                Company company = CompanyManager.getInstance().getCompany(e.getPlayer().getUniqueId());
+                Company company = CompanyManager.getCompany(e.getPlayer().getUniqueId());
                 if (company==null){
                     if (shop.getOwner().getPlayer()==null){
                         e.setCancelled(true);
@@ -113,7 +113,7 @@ public class ShopListener implements Listener {
         UUID playerUUID = e.getWhoClicked().getUniqueId();
         if (inShopBarrel.getOrDefault(playerUUID, false)) {
             Player player = (Player) e.getWhoClicked();
-            Company company = CompanyManager.getInstance().getCompany(playerUUID);
+            Company company = CompanyManager.getCompany(playerUUID);
             if (company!=null){
                 if (!company.hasPermission(playerUUID, CorpPermission.SUPPLY)){
                     MessagesManager.sendMessage(player, Component.text("Vous n'avez pas la permission de réapprovisionner les shops dans l'entreprise"), Prefix.SHOP, MessageType.INFO, false);

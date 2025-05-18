@@ -35,7 +35,6 @@ import java.util.Map;
 public class ShopMenu extends Menu {
 
     private final List<ShopItem> items = new ArrayList<>();
-    private final CompanyManager companyManager = CompanyManager.getInstance();
     private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
     private final Shop shop;
     private final int itemIndex;
@@ -350,9 +349,9 @@ public class ShopMenu extends Menu {
     }
 
     private void accept () {
-        boolean isInCompany = companyManager.isInCompany(getOwner().getUniqueId());
+        boolean isInCompany = CompanyManager.isInCompany(getOwner().getUniqueId());
         if (isInCompany) {
-            MethodState deleteState = companyManager.getCompany(getOwner().getUniqueId()).deleteShop(getOwner(), shop.getUuid());
+            MethodState deleteState = CompanyManager.getCompany(getOwner().getUniqueId()).deleteShop(getOwner(), shop.getUuid());
             if (deleteState == MethodState.ERROR) {
                 MessagesManager.sendMessage(getOwner(), Component.text("§cCe shop n'existe pas dans votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
