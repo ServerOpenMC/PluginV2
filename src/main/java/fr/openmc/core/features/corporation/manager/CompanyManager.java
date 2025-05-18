@@ -19,6 +19,7 @@ import fr.openmc.core.features.corporation.models.CompanyPermission;
 import fr.openmc.core.features.corporation.models.DBCompany;
 import fr.openmc.core.features.corporation.models.Merchant;
 import fr.openmc.core.features.corporation.models.ShopSupplier;
+import fr.openmc.core.features.corporation.models.DBShopItem;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.corporation.shops.Supply;
@@ -92,7 +93,7 @@ public class CompanyManager {
 
     private static Dao<CompanyPermission, UUID> permissionsDao;
     private static Dao<Shop, UUID> shopsDao;
-    private static Dao<ShopItem, UUID> itemsDao;
+    private static Dao<DBShopItem, UUID> itemsDao;
     private static Dao<DBCompany, UUID> companiesDao;
     private static Dao<CompanyMerchant, UUID> companyMerchantsDao;
     private static Dao<Merchant, UUID> merchantsDao;
@@ -105,8 +106,8 @@ public class CompanyManager {
         TableUtils.createTableIfNotExists(connectionSource, Shop.class);
         shopsDao = DaoManager.createDao(connectionSource, Shop.class);
 
-        TableUtils.createTableIfNotExists(connectionSource, ShopItem.class);
-        itemsDao = DaoManager.createDao(connectionSource, ShopItem.class);
+        TableUtils.createTableIfNotExists(connectionSource, DBShopItem.class);
+        itemsDao = DaoManager.createDao(connectionSource, DBShopItem.class);
 
         TableUtils.createTableIfNotExists(connectionSource, DBCompany.class);
         companiesDao = DaoManager.createDao(connectionSource, DBCompany.class);
@@ -137,11 +138,11 @@ public class CompanyManager {
                     MerchantData merchantData = new MerchantData();
                     merchantData.addMoneyWon(merchant.getMoneyWon());
 
-                    for (ItemStack item : getMerchantItem(merchantData.getPlayer())) {
+                    for (ItemStack item : getMerchantItem(merchant.getPlayer())) {
                         merchantData.depositItem(item);
                     }
 
-                    company.addMerchant(merchantData.getPlayer(), merchantData);
+                    company.addMerchant(merchant.getPlayer(), merchantData);
                 }
                 companies.add(company);
             }
@@ -158,23 +159,14 @@ public class CompanyManager {
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
         List<Shop> allShop = new ArrayList<>();
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement("SELECT item, shop_uuid, price, amount FROM shops_item");
-             ResultSet rs = statement.executeQuery()) {
+        try {
+            List<DBShopItem> dbShopItems = itemsDao.queryForAll();
+            for (DBShopItem dbShopItem : dbShopItems) {
+                byte[] itemBytes = dbShopItem.getItems();
 
-            while (rs.next()) {
-                UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
-                double price = rs.getDouble("price");
-                int amount = rs.getInt("amount");
-                byte[] itemBytes = rs.getBytes("item");
+                if (itemBytes == null) continue;
 
-                if (itemBytes != null) {
-                    ItemStack itemStack = ItemStack.deserializeBytes(itemBytes);
-                    ShopItem shopItem = new ShopItem(itemStack, price);
-                    shopItem.setAmount(amount);
-
-                    shopItems.computeIfAbsent(shopUuid, k -> new ArrayList<>()).add(shopItem);
-                }
+                shopItems.computeIfAbsent(dbShopItem.getShop(), k -> new ArrayList<>()).add(dbShopItem.deserialize());
             }
         } catch (SQLException e) {
             e.printStackTrace();

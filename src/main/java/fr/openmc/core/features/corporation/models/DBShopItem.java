@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import fr.openmc.core.features.corporation.shops.ShopItem;
 import lombok.Getter;
 
 @Getter
@@ -29,5 +30,6 @@ public class DBShopItem {
         ItemStack item = ItemStack.deserializeBytes(items);
         ShopItem shopItem = new ShopItem(item, price);
         shopItem.setAmount(amount);
+        return shopItem;
     }
 }
