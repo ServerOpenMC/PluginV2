@@ -201,8 +201,6 @@ public class MascotsManager {
 
         if (mascot.isAlive()) return;
 
-        if (!MascotUtils.mascotsContains(city.getUUID())) return;
-
         int level = mascot.getLevel();
 
         for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getMalus()) {

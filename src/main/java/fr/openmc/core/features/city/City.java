@@ -32,7 +32,10 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.*;
 
@@ -46,6 +49,8 @@ public class City {
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
     private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
     private MayorManager mayorManager;
+    private CityType cachedType;
+    private Integer cachedPowerPoints;
 
     @Getter @Setter private UUID chestWatcher;
     @Getter @Setter private ChestMenu chestMenu;
@@ -157,29 +162,27 @@ public class City {
      * @return The type of the city, or null if not found.
      */
     public CityType getType() {
-        CityType type = null;
+        if (cachedType != null) return cachedType;
 
-        if (cityUUID != null) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
-                statement.setString(1, cityUUID);
-                ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    String typeString = rs.getString("type");
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT type FROM city WHERE uuid = ?");
+            statement.setString(1, cityUUID);
+            ResultSet rs = statement.executeQuery();
 
-                    if (Objects.equals(typeString, "war")) {
-                        type = CityType.WAR;
-                    } else if (Objects.equals(typeString, "peace")) {
-                        type = CityType.PEACE;
-                    }
+            if (rs.next()) {
+                String typeString = rs.getString("type");
+                if ("war".equalsIgnoreCase(typeString)) {
+                    cachedType = CityType.WAR;
+                } else if ("peace".equalsIgnoreCase(typeString)) {
+                    cachedType = CityType.PEACE;
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
 
-        return type;
+        return cachedType;
     }
 
     /**
@@ -192,8 +195,10 @@ public class City {
 
             if (cityType.equals(CityType.WAR)) {
                 cityTypeString = "peace";
+                cachedType = CityType.PEACE;
             } else if (cityType.equals(CityType.PEACE)) {
                 cityTypeString = "war";
+                cachedType = CityType.WAR;
             }
         }
 
@@ -566,22 +571,24 @@ public class City {
      * @return The power points of the city, or 0 if not found.
      */
     public int getPowerPoints() {
-        int power_point = 0;
+        if (cachedPowerPoints != null) return cachedPowerPoints;
 
-        if (cityUUID != null) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT power_point FROM city_power WHERE city_uuid = ?");
-                statement.setString(1, cityUUID);
-                ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    power_point = rs.getInt("power_point");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT points FROM city_power WHERE city_uuid = ?");
+            statement.setString(1, cityUUID);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                cachedPowerPoints = rs.getInt("points");
+            } else {
+                cachedPowerPoints = 0;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            cachedPowerPoints = 0;
         }
 
-        return power_point;
+        return cachedPowerPoints;
     }
 
     /**
@@ -595,6 +602,7 @@ public class City {
             if (result < 0) result = 0;
             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_power SET power_point=? WHERE city_uuid=?;");
             statement.setInt(1, result);
+            cachedPowerPoints = result;
             statement.setString(2, cityUUID);
             statement.executeUpdate();
         } catch (SQLException e) {
