@@ -11,7 +11,10 @@ import com.j256.ormlite.table.DatabaseTable;
 @Getter
 @DatabaseTable(tableName = "contests")
 public class Contest {
-    @DatabaseField(canBeNull = false, id = true) // id is required for dao.update function
+    @DatabaseField(id = true)
+    private int id; // required for Dao.update function
+
+    @DatabaseField(canBeNull = false)
     private String camp1;
     @DatabaseField(canBeNull = false)
     private String camp2;
@@ -37,6 +40,7 @@ public class Contest {
 
     public Contest(String camp1, String camp2, String color1, String color2, int phase, String startdate, int points1,
             int points2) {
+        this.id = 1; // we will only be storing one row, so we need a constant id
         this.camp1 = camp1;
         this.camp2 = camp2;
         this.color1 = color1;

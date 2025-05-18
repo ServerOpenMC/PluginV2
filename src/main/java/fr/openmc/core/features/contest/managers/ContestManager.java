@@ -110,7 +110,7 @@ public class ContestManager {
     public static void init_db(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Contest.class);
         contestDao = DaoManager.createDao(connectionSource, Contest.class);
-        contestDao.create(new Contest("Mayonnaise", "Ketchup", "YELLOW", "RED", 1, "ven.", 0, 0));
+        contestDao.createIfNotExists(new Contest("Mayonnaise", "Ketchup", "YELLOW", "RED", 1, "ven.", 0, 0));
 
         TableUtils.createTableIfNotExists(connectionSource, ContestPlayer.class);
         playerDao = DaoManager.createDao(connectionSource, ContestPlayer.class);

@@ -2,6 +2,7 @@ package fr.openmc.core.features.corporation.models;
 
 import java.util.UUID;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -12,7 +13,7 @@ public class Merchant {
     @DatabaseField(id = true)
     private UUID id;
     @Getter
-    @DatabaseField
+    @DatabaseField(dataType = DataType.BYTE_ARRAY)
     private byte[] content;
 
     Merchant() {

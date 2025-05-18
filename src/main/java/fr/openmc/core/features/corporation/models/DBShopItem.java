@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.inventory.ItemStack;
 
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -13,9 +14,9 @@ import lombok.Getter;
 @Getter
 @DatabaseTable(tableName = "shop_items")
 public class DBShopItem {
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
     private byte[] items;
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false)
     private UUID shop;
     @DatabaseField(canBeNull = false)
     private double price;
