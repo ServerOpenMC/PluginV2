@@ -53,7 +53,7 @@ public class CompanySearchMenu extends PaginatedMenu {
                 companyItem = new ItemBuilder(this, company.getHead(), itemMeta -> {
                     itemMeta.setDisplayName("§e" + company.getName());
                     itemMeta.setLore(List.of(
-                            "§7■ Chiffre d'affaires : §a"+ company.getTurnover() + "€",
+                            "§7■ Chiffre d'affaires : §a"+ company.getTurnover() + EconomyManager.getEconomyIcon(),
                             "§7■ Marchants : §f" + company.getMerchants().size(),
                             "§7■ Cliquez pour voir les informations de l'enreprise"
                     ));
@@ -62,7 +62,7 @@ public class CompanySearchMenu extends PaginatedMenu {
                 companyItem = new ItemBuilder(this, company.getHead(), itemMeta -> {
                     itemMeta.setDisplayName("§e" + company.getName());
                     itemMeta.setLore(List.of(
-                            "§7■ Chiffre d'affaires : §a" + company.getTurnover() + "€",
+                            "§7■ Chiffre d'affaires : §a" + company.getTurnover() + EconomyManager.getEconomyIcon(),
                             "§7■ Marchants : §f" + company.getMerchants().size(),
                             "§7■ Candidatures : §f" + companyManager.getPendingApplications(company).size(),
                             "§7■ Cliquez pour postuler"

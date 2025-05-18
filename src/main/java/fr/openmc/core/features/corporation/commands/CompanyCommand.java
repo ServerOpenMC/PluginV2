@@ -291,7 +291,7 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent dans la banque d'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        MessagesManager.sendMessage(player, Component.text("§aVous avez retiré " + amount + "€ de l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez retiré " + amount + "" + EconomyManager.getEconomyIcon() + " de l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("deposit")
@@ -310,7 +310,7 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent sur vous !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        MessagesManager.sendMessage(player, Component.text("§aVous avez déposé " + amount + "€ dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez déposé " + amount + "" + EconomyManager.getEconomyIcon() + " dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("owner")

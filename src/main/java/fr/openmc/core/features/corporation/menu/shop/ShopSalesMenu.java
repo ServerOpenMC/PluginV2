@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -48,7 +49,7 @@ import java.util.Map;
                 items.add(new ItemBuilder(this, sale.getItem().getType(), itemMeta -> {
                     itemMeta.setDisplayName("§e" + ShopItem.getItemName(sale.getItem()));
                     itemMeta.setLore(List.of(
-                            "§7■ Prix : §a" + sale.getPrice() + "€",
+                            "§7■ Prix : §a" + sale.getPrice() + EconomyManager.getEconomyIcon(),
                             "§7■ Quantité : §a" + sale.getAmount()
                     ));
                 }));
