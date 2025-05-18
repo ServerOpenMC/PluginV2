@@ -59,7 +59,7 @@ public class CompanyManager {
     public static NamespacedKey SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
 
     // File d'attente des candidatures en attente, avec une limite de 100
-    private final Queue<UUID, Company> pendingApplications = new Queue<>(100);
+    private static Queue<UUID, Company> pendingApplications = new Queue<>(100);
 
     public CompanyManager() {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms",
@@ -378,7 +378,7 @@ public class CompanyManager {
      * @param company_uuid use to set the company uuid if it's create at the load of
      *                     the server
      */
-    public void createCompany(String name, CompanyOwner owner, boolean newMember, UUID company_uuid) {
+    public static void createCompany(String name, CompanyOwner owner, boolean newMember, UUID company_uuid) {
         companies.add(new Company(name, owner, company_uuid, newMember));
     }
 
@@ -388,7 +388,7 @@ public class CompanyManager {
      * @param playerUUID the uuid of the applier
      * @param company    the company where he wants to apply
      */
-    public void applyToCompany(UUID playerUUID, Company company) {
+    public static void applyToCompany(UUID playerUUID, Company company) {
         Company playerCompany = getCompany(playerUUID);
 
         if (playerCompany != null)
@@ -405,7 +405,7 @@ public class CompanyManager {
      * @param playerUUID the uuid of the applier
      * @param company    the company which accept the player
      */
-    public void acceptApplication(UUID playerUUID, Company company) {
+    public static void acceptApplication(UUID playerUUID, Company company) {
         company.addMerchant(playerUUID, new MerchantData());
         pendingApplications.remove(playerUUID);
     }
@@ -417,7 +417,7 @@ public class CompanyManager {
      * @param company    the company
      * @return true if it has one
      */
-    public boolean hasPendingApplicationFor(UUID playerUUID, Company company) {
+    public static boolean hasPendingApplicationFor(UUID playerUUID, Company company) {
         return pendingApplications.get(playerUUID) == company;
     }
 
@@ -426,7 +426,7 @@ public class CompanyManager {
      *
      * @param playerUUID the uuid of the applier
      */
-    public void denyApplication(UUID playerUUID) {
+    public static void denyApplication(UUID playerUUID) {
         if (pendingApplications.getQueue().containsKey(playerUUID)) {
             pendingApplications.remove(playerUUID);
         }
@@ -438,7 +438,7 @@ public class CompanyManager {
      * @param company the company we check
      * @return A list of all the application
      */
-    public List<UUID> getPendingApplications(Company company) {
+    public static List<UUID> getPendingApplications(Company company) {
         List<UUID> players = new ArrayList<>();
         for (UUID player : pendingApplications.getQueue().keySet()) {
             if (hasPendingApplicationFor(player, company)) {
@@ -454,7 +454,7 @@ public class CompanyManager {
      * @param company the company we check
      * @return true or false
      */
-    public boolean liquidateCompany(Company company) {
+    public static boolean liquidateCompany(Company company) {
         // L'entreprise ne peut pas être liquidée si elle a encore des marchands
         if (!company.getMerchants().isEmpty()) {
             fireAllMerchants(company);
@@ -478,7 +478,7 @@ public class CompanyManager {
      *
      * @param company the company we check
      */
-    public void fireAllMerchants(Company company) {
+    public static void fireAllMerchants(Company company) {
         for (UUID uuid : company.getMerchants().keySet()) {
             company.fireMerchant(uuid);
         }
@@ -490,7 +490,7 @@ public class CompanyManager {
      * @param playerUUID the uuid of the player who want to leave the company
      * @return A different MethodeState
      */
-    public MethodState leaveCompany(UUID playerUUID) {
+    public static MethodState leaveCompany(UUID playerUUID) {
         Company company = getCompany(playerUUID);
 
         if (company.isOwner(playerUUID)) {
@@ -527,7 +527,7 @@ public class CompanyManager {
      * @param name the name we check
      * @return A company if found
      */
-    public Company getCompany(String name) {
+    public static Company getCompany(String name) {
         for (Company company : companies) {
             if (company.getName().equals(name)) {
                 return company;
@@ -542,7 +542,7 @@ public class CompanyManager {
      * @param shopUUID the shop uuid use for the check
      * @return A shop if found
      */
-    public Shop getAnyShop(UUID shopUUID) {
+    public static Shop getAnyShop(UUID shopUUID) {
         for (Company company : companies) {
             Shop shop = company.getShop(shopUUID);
             if (shop != null) {
@@ -595,7 +595,7 @@ public class CompanyManager {
      * @param playerUUID the uuid of the player we check
      * @return true or false
      */
-    public boolean isInCompany(UUID playerUUID) {
+    public static boolean isInCompany(UUID playerUUID) {
         return getCompany(playerUUID) != null;
     }
 
@@ -606,7 +606,7 @@ public class CompanyManager {
      * @param company    the company we check
      * @return true or false
      */
-    public boolean isMerchantOfCompany(UUID playerUUID, Company company) {
+    public static boolean isMerchantOfCompany(UUID playerUUID, Company company) {
         return company.getMerchants().containsKey(playerUUID);
     }
 
@@ -616,7 +616,7 @@ public class CompanyManager {
      * @param name the name use for the check
      * @return true or false
      */
-    public boolean companyExists(String name) {
+    public static boolean companyExists(String name) {
         return getCompany(name) != null;
     }
 }
