@@ -235,63 +235,40 @@ public class CompanyManager {
     public static void saveAllCompanies() {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Companies...");
 
-        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
-
-            stmt.executeUpdate("TRUNCATE TABLE company;");
-            stmt.executeUpdate("TRUNCATE TABLE company_merchants;");
-            stmt.executeUpdate("TRUNCATE TABLE merchants_data;");
-
+        try {
+            ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
+            TableUtils.clearTable(connectionSource, DBCompany.class);
+            TableUtils.clearTable(connectionSource, CompanyMerchant.class);
+            TableUtils.clearTable(connectionSource, Merchant.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        String queryCompany = "INSERT INTO company (company_uuid, name, owner, cut, balance, city_uuid) VALUES (?, ?, ?, ?, ?, ?)";
-        String queryMerchant = "INSERT INTO company_merchants (company_uuid, player, moneyWon) VALUES (?, ?, ?)";
-        String queryMerchantData = "INSERT INTO merchants_data (uuid, content) VALUES (?, ?)";
+        List<DBCompany> dbCompanies = new ArrayList<>();
+        List<CompanyMerchant> dbCompanyMerchants = new ArrayList<>();
+        List<Merchant> dbMerchants = new ArrayList<>();
 
-        try (
-                Connection conn = DatabaseManager.getConnection();
-                PreparedStatement stmtCompany = conn.prepareStatement(queryCompany);
-                PreparedStatement stmtMerchant = conn.prepareStatement(queryMerchant);
-                PreparedStatement stmtMerchantData = conn.prepareStatement(queryMerchantData)) {
-            for (Company company : companies) {
-                City city = company.getOwner().getCity();
-                String cityUuid = city == null ? null : city.getUUID();
-                String company_uuid = company.getCompany_uuid().toString();
-                String name = company.getName();
-                UUID owner = city == null ? company.getOwner().getPlayer() : city.getPlayerWith(CPermission.OWNER);
-                double cut = company.getCut();
-                double balance = company.getBalance();
+        for (Company company : companies) {
+            dbCompanies.add(company.serialize());
+            for (UUID merchantUuid : company.getMerchantsUUID()) {
+                double moneyWon = company.getMerchant(merchantUuid).getMoneyWon();
+                dbCompanyMerchants.add(new CompanyMerchant(merchantUuid, company.getCompany_uuid(), moneyWon));
 
-                stmtCompany.setString(1, company_uuid);
-                stmtCompany.setString(2, name);
-                stmtCompany.setString(3, owner.toString());
-                stmtCompany.setDouble(4, cut);
-                stmtCompany.setDouble(5, balance);
-                stmtCompany.setString(6, cityUuid);
-                stmtCompany.addBatch(); // Adding the company to batch
-
-                for (UUID merchantUUID : company.getMerchantsUUID()) {
-                    double moneyWon = company.getMerchant(merchantUUID).getMoneyWon();
-                    stmtMerchant.setString(1, company_uuid);
-                    stmtMerchant.setString(2, merchantUUID.toString());
-                    stmtMerchant.setDouble(3, moneyWon);
-                    stmtMerchant.addBatch(); // Adding merchant info to batch
-
-                    ItemStack[] items = company.getMerchants().get(merchantUUID).getDepositedItems()
-                            .toArray(new ItemStack[0]);
-                    byte[] content = BukkitSerializer.serializeItemStacks(items);
-                    stmtMerchantData.setString(1, merchantUUID.toString());
-                    stmtMerchantData.setBytes(2, content);
-                    stmtMerchantData.addBatch(); // Adding merchant data to batch
-                }
+                ItemStack[] items = company.getMerchants().get(merchantUuid).getDepositedItems()
+                        .toArray(new ItemStack[0]);
+                byte[] content = BukkitSerializer.serializeItemStacks(items);
+                dbMerchants.add(new Merchant(merchantUuid, content));
             }
-            stmtCompany.executeBatch(); // Execute batch for companies
-            stmtMerchant.executeBatch(); // Execute batch for merchants
-            stmtMerchantData.executeBatch(); // Execute batch for merchant data
+        }
+
+        try {
+            companiesDao.create(dbCompanies);
+            companyMerchantsDao.create(dbCompanyMerchants);
+            merchantsDao.create(dbMerchants);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Companies finie.");
     }
 
