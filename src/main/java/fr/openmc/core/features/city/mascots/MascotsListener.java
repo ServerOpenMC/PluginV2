@@ -92,8 +92,6 @@ public class MascotsListener implements Listener {
     @SneakyThrows
     @EventHandler
     void onMascotTakeDamage(EntityDamageByEntityEvent e) {
-        if (entity instanceof Player)
-            return;
         Entity damageEntity = e.getEntity();
         Entity damager = e.getDamager();
         double baseDamage;
