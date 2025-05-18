@@ -26,6 +26,15 @@ public class DBCompany {
         // required for ORMLite
     }
 
+    public DBCompany(UUID id, String name, UUID owner, UUID city, double cut, double balance) {
+        this.id = id;
+        this.name = name;
+        this.owner = owner;
+        this.city = city;
+        this.cut = cut;
+        this.balance = balance;
+    }
+
     public Company deserialize() {
         return new Company(id, name, owner, city, cut, balance);
     }

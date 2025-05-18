@@ -1,16 +1,17 @@
 package fr.openmc.core.features.corporation.company;
 
-
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corporation.CorpPermission;
 import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.data.TransactionData;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
+import fr.openmc.core.features.corporation.models.DBCompany;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopOwner;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -94,13 +95,22 @@ public class Company {
      */
     public Company(UUID id, String name, UUID player, UUID city, double cut, double balance) {
         this.name = name;
-        this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city));
-        assert company_uuid != null;
+        this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city.toString()));
+        assert id != null;
         this.company_uuid = id;
         this.cut = cut;
         this.balance = balance;
 
         addPermission(owner.getPlayer(), CorpPermission.OWNER);
+    }
+
+    /**
+     * convert {@link Company} to {@link fr.openmc.core.features.corporation.models.DBCompany} for database
+     *
+     * @return the company to be saved to the DB
+     */
+    public DBCompany serialize() {
+        return new DBCompany(company_uuid, name, owner.getPlayer(), UUID.fromString(owner.getCity().getUUID()), cut, balance);
     }
 
     /**
