@@ -353,6 +353,17 @@ public class MayorLawMenu extends Menu {
                 new MayorMandateMenu(player).open();
             }));
 
+            List<Component> loreInfo = Arrays.asList(
+                    Component.text("§7Apprenez en plus sur les Maires !"),
+                    Component.text("§7Le déroulement..., Les éléctions, ..."),
+                    Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
+            );
+
+            inventory.put(26, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+                itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+                itemMeta.lore(loreInfo);
+            }).setNextMenu(new MoreInfoMenu(getOwner())));
+
             return inventory;
         } catch (Exception e) {
             MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
