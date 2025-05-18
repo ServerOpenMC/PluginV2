@@ -75,7 +75,7 @@ public class OMCPlugin extends JavaPlugin {
         new QuestsManager();
         new TabList();
         if (!OMCPlugin.isUnitTestVersion())
-            new LeaderboardManager(this);
+            new LeaderboardManager();
         new AdminShopManager(this);
 
         if (!OMCPlugin.isUnitTestVersion()){
