@@ -21,4 +21,10 @@ public class CompanyMerchant {
     CompanyMerchant() {
         // required for ORMLite
     }
+
+    public CompanyMerchant(UUID player, UUID company, double moneyWon) {
+        this.player = player;
+        this.company = company;
+        this.moneyWon = moneyWon;
+    }
 }

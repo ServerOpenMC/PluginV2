@@ -15,4 +15,9 @@ public class Merchant {
     Merchant() {
         // required for ORMLite
     }
+
+    public Merchant(UUID id, byte[] content) {
+        this.id = id;
+        this.content = content;
+    }
 }
