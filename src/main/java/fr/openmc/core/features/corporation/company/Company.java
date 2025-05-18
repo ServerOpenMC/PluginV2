@@ -16,7 +16,6 @@ import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopOwner;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -28,9 +27,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 @Getter
@@ -117,28 +113,9 @@ public class Company {
      *
      * @param playerUUID the uuid of the player
      */
-    private void loadPermission(UUID playerUUID) {
-        if (!permsCache.containsKey(playerUUID)) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM company_perms WHERE company_uuid = ? AND player = ?");
-                statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
-                statement.setString(2, playerUUID.toString());
-                ResultSet rs = statement.executeQuery();
-
-                Set<CorpPermission> plrPerms = permsCache.getOrDefault(playerUUID, new HashSet<>());
-
-                while (rs.next()) {
-                    try {
-                        plrPerms.add(CorpPermission.valueOf(rs.getString("permission")));
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Invalid permission: " + rs.getString("permission"));
-                    }
-                }
-
-                permsCache.put(playerUUID, plrPerms);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    private void loadPermission(UUID player) {
+        if (!permsCache.containsKey(player)) {
+            permsCache.put(player, CompanyManager.getPermissions(this, player));
         }
     }
 
@@ -168,12 +145,12 @@ public class Company {
     /**
      * remove permission in permsCache and in db
      *
-     * @param uuid the uuid of the player
+     * @param player the uuid of the player
      * @param permission the permission
      */
-    public void removePermission(UUID uuid, CorpPermission permission) {
-        loadPermission(uuid);
-        Set<CorpPermission> playerPerms = permsCache.get(uuid);
+    public void removePermission(UUID player, CorpPermission permission) {
+        loadPermission(player);
+        Set<CorpPermission> playerPerms = permsCache.get(player);
 
         if (playerPerms == null) {
             return;
@@ -181,18 +158,10 @@ public class Company {
 
         if (playerPerms.contains(permission)) {
             playerPerms.remove(permission);
-            permsCache.put(uuid, playerPerms);
+            permsCache.put(player, playerPerms);
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM company_perms WHERE company_uuid = ? AND player = ? AND permission = ?");
-                    statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
-                    statement.setString(2, uuid.toString());
-                    statement.setString(3, permission.toString());
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                CompanyManager.removePermissions(this, player, permission);
             });
         }
     }
@@ -200,26 +169,18 @@ public class Company {
     /**
      * add permission in permsCache and in db
      *
-     * @param uuid the uuid of the player
+     * @param player the uuid of the player
      * @param permission the permission
      */
-    public void addPermission(UUID uuid, CorpPermission permission) {
-        Set<CorpPermission> playerPerms = permsCache.getOrDefault(uuid, new HashSet<>());
+    public void addPermission(UUID player, CorpPermission permission) {
+        Set<CorpPermission> playerPerms = permsCache.getOrDefault(player, new HashSet<>());
 
         if (!playerPerms.contains(permission)) {
             playerPerms.add(permission);
-            permsCache.put(uuid, playerPerms);
+            permsCache.put(player, playerPerms);
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO company_perms (company_uuid, player, permission) VALUES (?, ?, ?)");
-                    statement.setString(1, company_uuid.toString());
-                    statement.setString(2, uuid.toString());
-                    statement.setString(3, permission.toString());
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                CompanyManager.addPermissions(this, player, permission);
             });
         }
     }

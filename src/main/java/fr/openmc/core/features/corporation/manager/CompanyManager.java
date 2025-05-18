@@ -352,6 +352,52 @@ public class CompanyManager {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Shops finie.");
     }
 
+    public static Set<CorpPermission> getPermissions(Company company, UUID player) {
+        Set<CorpPermission> permissions = new HashSet<>();
+        try {
+            UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
+                    : UUID.fromString(company.getOwner().getCity().getUUID());
+            QueryBuilder<CompanyPermission, UUID> query = permissionsDao.queryBuilder();
+            query.where().eq("company", companyUuid).and().eq("player", player);
+
+            List<CompanyPermission> perms = permissionsDao.query(query.prepare());
+            for (CompanyPermission perm : perms) {
+                try {
+                    permissions.add(CorpPermission.valueOf(perm.getPermission()));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid permission found in databse: " + perm.getPermission());
+                }
+            }
+
+            return permissions;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void removePermissions(Company company, UUID player, CorpPermission permission) {
+        try {
+            UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
+                    : UUID.fromString(company.getOwner().getCity().getUUID());
+
+            permissionsDao.delete(new CompanyPermission(companyUuid, player, permission.toString()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addPermissions(Company company, UUID player, CorpPermission permission) {
+        try {
+            UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
+                    : UUID.fromString(company.getOwner().getCity().getUUID());
+
+            permissionsDao.create(new CompanyPermission(companyUuid, player, permission.toString()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * get the items of a marchant from the database
      *
