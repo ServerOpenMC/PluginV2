@@ -5,14 +5,14 @@ import java.util.UUID;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "merchant_data")
-public class MerchantDBData {
+@DatabaseTable(tableName = "merchants")
+public class Merchant {
     @DatabaseField(id = true)
     private UUID id;
     @DatabaseField
     private byte[] content;
 
-    MerchantDBData() {
+    Merchant() {
         // required for ORMLite
     }
 }
