@@ -12,7 +12,6 @@ import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
-import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
@@ -67,6 +66,8 @@ public class CityCommands {
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     private static ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+
+    public static Map<UUID, Map<String, CityType>> futurCreateCity = new HashMap<>();
 
     private Location[] getCorners(Player player) {
         World world = player.getWorld();
@@ -407,7 +408,7 @@ public class CityCommands {
             return;
         }
 
-        if (MascotsListener.futurCreateCity.containsKey(player.getUniqueId())){
+        if (futurCreateCity.containsKey(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Vous êtes déjà entrain de créer une ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -438,8 +439,8 @@ public class CityCommands {
             return;
         }
 
-        String cityTypeActuel = "";
-        String cityTypeAfter = "";
+        String cityTypeActuel;
+        String cityTypeAfter;
         cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
         cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
@@ -511,8 +512,8 @@ public class CityCommands {
                 exception.printStackTrace();
             }
 
-            String cityTypeActuel = "";
-            String cityTypeAfter = "";
+            String cityTypeActuel;
+            String cityTypeAfter;
             cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
             cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
@@ -598,7 +599,7 @@ public class CityCommands {
 
     // ACTIONS
 
-    public static boolean createCity(Player player, String name, String type, Chunk origin) {
+    public static boolean createCity(Player player, String name, CityType type, Chunk origin) {
 
         if (!CityCreateConditions.canCityCreate(player)){
             MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);

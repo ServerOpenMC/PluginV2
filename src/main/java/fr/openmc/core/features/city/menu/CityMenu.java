@@ -359,8 +359,8 @@ public class CityMenu extends Menu {
                     try {
                         if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) return;
 
-                        String cityTypeActuel = "";
-                        String cityTypeAfter = "";
+                        String cityTypeActuel;
+                        String cityTypeAfter;
                         cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
                         cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 

@@ -47,8 +47,6 @@ public class MascotsListener implements Listener {
     private final Map<UUID, BukkitRunnable> cooldownTasks = new HashMap<>();
     public static List<String> movingMascots = new ArrayList<>();
 
-    public static Map<UUID, Map<String, String>> futurCreateCity = new HashMap<>();
-
     @SneakyThrows
     public MascotsListener() {
         for (Mascot mascot : MascotsManager.mascots) {

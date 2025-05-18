@@ -202,17 +202,17 @@ public class CityManager implements Listener {
 
     /**
      * Get a city by its UUID
-     * @param city The UUID of the city
+     * @param cityUUID The UUID of the city
      * @return The city object, or null if not found
      */
-    public static City getCity(String city) {
-        if (!cities.containsKey(city)) {
+    public static City getCity(String cityUUID) {
+        if (!cities.containsKey(cityUUID)) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
-                statement.setString(1, city);
+                statement.setString(1, cityUUID);
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
-                    City c = new City(city);
+                    City c = new City(cityUUID);
                     cities.put(c.getUUID(), c);
                     return c;
                 }
@@ -223,19 +223,19 @@ public class CityManager implements Listener {
                 return null;
             }
         }
-        return cities.get(city);
+        return cities.get(cityUUID);
     }
 
     /**
      * Get a city by its member
-     * @param uuid The UUID of the member
+     * @param playerUUID The UUID of the member
      * @return The city object, or null if not found
      */
-    public static City getPlayerCity(UUID uuid) {
-        if (!playerCities.containsKey(uuid)) {
+    public static City getPlayerCity(UUID playerUUID) {
+        if (!playerCities.containsKey(playerUUID)) {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_members WHERE player = ? LIMIT 1");
-                statement.setString(1, uuid.toString());
+                statement.setString(1, playerUUID.toString());
                 ResultSet rs = statement.executeQuery();
 
                 if (!rs.next()) {
@@ -243,14 +243,14 @@ public class CityManager implements Listener {
                 }
 
                 String city = rs.getString(1);
-                cachePlayer(uuid, getCity(city));
+                cachePlayer(playerUUID, getCity(city));
                 return getCity(city);
             } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
             }
         }
-        return playerCities.get(uuid);
+        return playerCities.get(playerUUID);
     }
 
     /**
@@ -303,20 +303,20 @@ public class CityManager implements Listener {
     /**
      * Cache a player with its city
      *
-     * @param uuid The UUID of the player
+     * @param playerUUID The UUID of the player
      * @param city The city object
      */
-    public static void cachePlayer(UUID uuid, City city) {
-        playerCities.put(uuid, city);
+    public static void cachePlayer(UUID playerUUID, City city) {
+        playerCities.put(playerUUID, city);
     }
 
     /**
      * Uncache a player with its city
      *
-     * @param uuid The UUID of the player
+     * @param playerUUID The UUID of the player
      */
-    public static void uncachePlayer(UUID uuid) {
-        playerCities.remove(uuid);
+    public static void uncachePlayer(UUID playerUUID) {
+        playerCities.remove(playerUUID);
     }
 
     /**
@@ -328,14 +328,14 @@ public class CityManager implements Listener {
      * @param type     The type of the city
      * @return The created city object
      */
-    public static City createCity(Player owner, String cityUUID, String name, String type) {
+    public static City createCity(Player owner, String cityUUID, String name, CityType type) {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0, ?)");
                 statement.setString(1, cityUUID);
                 statement.setString(2, owner.getUniqueId().toString());
                 statement.setString(3, name);
-                statement.setString(4, type);
+                statement.setString(4, type == CityType.PEACE ? "peace" : "war");
                 statement.executeUpdate();
 
                 statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests VALUE (?, 1, null)");
