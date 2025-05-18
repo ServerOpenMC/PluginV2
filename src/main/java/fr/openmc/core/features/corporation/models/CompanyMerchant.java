@@ -6,7 +6,7 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "company_merchants")
-public class CompanyMerchants {
+public class CompanyMerchant {
     @DatabaseField(id = true)
     private UUID player;
     @DatabaseField
@@ -14,7 +14,7 @@ public class CompanyMerchants {
     @DatabaseField(canBeNull = false, defaultValue = "0", columnName = "money_won")
     private double moneyWon;
 
-    CompanyMerchants() {
+    CompanyMerchant() {
         // required for ORMLite
     }
 }
