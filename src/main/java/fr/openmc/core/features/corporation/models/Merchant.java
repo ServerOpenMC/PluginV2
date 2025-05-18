@@ -5,10 +5,13 @@ import java.util.UUID;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import lombok.Getter;
+
 @DatabaseTable(tableName = "merchants")
 public class Merchant {
     @DatabaseField(id = true)
     private UUID id;
+    @Getter
     @DatabaseField
     private byte[] content;
 

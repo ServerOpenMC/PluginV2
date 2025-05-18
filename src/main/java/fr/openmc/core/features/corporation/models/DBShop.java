@@ -21,13 +21,23 @@ public class DBShop {
     private UUID company;
 
     @DatabaseField(canBeNull = false)
-    private int x;
+    private double x;
     @DatabaseField(canBeNull = false)
-    private int y;
+    private double y;
     @DatabaseField(canBeNull = false)
-    private int z;
+    private double z;
 
     DBShop() {
         // required for ORMLite
+    }
+
+    public DBShop(UUID id, UUID owner, UUID city, UUID company, double x, double y, double z) {
+        this.id = id;
+        this.owner = owner;
+        this.city = city;
+        this.company = company;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 }

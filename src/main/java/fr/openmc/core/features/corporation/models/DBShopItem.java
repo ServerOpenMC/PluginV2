@@ -26,6 +26,13 @@ public class DBShopItem {
         // required for ORMLite
     }
 
+    public DBShopItem(byte[] items, UUID shop, double price, int amount) {
+        this.items = items;
+        this.shop = shop;
+        this.price = price;
+        this.amount = amount;
+    }
+
     public ShopItem deserialize() {
         ItemStack item = ItemStack.deserializeBytes(items);
         ShopItem shopItem = new ShopItem(item, price);

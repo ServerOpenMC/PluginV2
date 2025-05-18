@@ -26,4 +26,13 @@ public class ShopSupplier {
     ShopSupplier() {
         // required for ORMLite
     }
+
+    public ShopSupplier(UUID id, UUID shop, UUID item, UUID player, int amount, long time) {
+        this.id = id;
+        this.shop = shop;
+        this.item = item;
+        this.player = player;
+        this.amount = amount;
+        this.time = time;
+    }
 }
