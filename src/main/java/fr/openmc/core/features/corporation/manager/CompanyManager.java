@@ -17,6 +17,7 @@ import fr.openmc.core.features.corporation.listener.ShopListener;
 import fr.openmc.core.features.corporation.models.CompanyMerchant;
 import fr.openmc.core.features.corporation.models.CompanyPermission;
 import fr.openmc.core.features.corporation.models.DBCompany;
+import fr.openmc.core.features.corporation.models.DBShop;
 import fr.openmc.core.features.corporation.models.Merchant;
 import fr.openmc.core.features.corporation.models.ShopSupplier;
 import fr.openmc.core.features.corporation.models.DBShopItem;
@@ -49,42 +50,43 @@ import java.util.stream.Collectors;
 @Getter
 public class CompanyManager {
 
-    @Getter static CompanyManager instance;
+    @Getter
+    static CompanyManager instance;
 
     // Liste de toutes les entreprises créées
-    @Getter public static List<Company> companies = new ArrayList<>();
-    @Getter public static List<Shop> shops = new ArrayList<>();
+    @Getter
+    public static List<Company> companies = new ArrayList<>();
+    @Getter
+    public static List<Shop> shops = new ArrayList<>();
 
     public static NamespacedKey SUPPLIER_KEY;
 
     // File d'attente des candidatures en attente, avec une limite de 100
     private final Queue<UUID, Company> pendingApplications = new Queue<>(100);
 
-    public CompanyManager () {
+    public CompanyManager() {
         instance = this;
 
         /* KEY */
         SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
 
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms", ((args, sender, command) -> {
-            return Arrays.stream(CorpPermission.values())
-                    .map(Enum::name)
-                    .collect(Collectors.toList());
-        }));
+        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms",
+                ((args, sender, command) -> {
+                    return Arrays.stream(CorpPermission.values())
+                            .map(Enum::name)
+                            .collect(Collectors.toList());
+                }));
 
         CommandsManager.getHandler().register(
                 new CompanyCommand(),
-                new ShopCommand()
-        );
+                new ShopCommand());
 
         OMCPlugin.registerEvents(
-                new ShopListener()
-        );
+                new ShopListener());
 
         if (ItemAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
-                    new CustomItemsCompanyListener()
-            );
+                    new CustomItemsCompanyListener());
         }
 
         companies = getAllCompany();
@@ -92,7 +94,7 @@ public class CompanyManager {
     }
 
     private static Dao<CompanyPermission, UUID> permissionsDao;
-    private static Dao<Shop, UUID> shopsDao;
+    private static Dao<DBShop, UUID> shopsDao;
     private static Dao<DBShopItem, UUID> itemsDao;
     private static Dao<DBCompany, UUID> companiesDao;
     private static Dao<CompanyMerchant, UUID> companyMerchantsDao;
@@ -103,8 +105,8 @@ public class CompanyManager {
         TableUtils.createTableIfNotExists(connectionSource, CompanyPermission.class);
         permissionsDao = DaoManager.createDao(connectionSource, CompanyPermission.class);
 
-        TableUtils.createTableIfNotExists(connectionSource, Shop.class);
-        shopsDao = DaoManager.createDao(connectionSource, Shop.class);
+        TableUtils.createTableIfNotExists(connectionSource, DBShop.class);
+        shopsDao = DaoManager.createDao(connectionSource, DBShop.class);
 
         TableUtils.createTableIfNotExists(connectionSource, DBShopItem.class);
         itemsDao = DaoManager.createDao(connectionSource, DBShopItem.class);
@@ -164,7 +166,8 @@ public class CompanyManager {
             for (DBShopItem dbShopItem : dbShopItems) {
                 byte[] itemBytes = dbShopItem.getItems();
 
-                if (itemBytes == null) continue;
+                if (itemBytes == null)
+                    continue;
 
                 shopItems.computeIfAbsent(dbShopItem.getShop(), k -> new ArrayList<>()).add(dbShopItem.deserialize());
             }
@@ -173,8 +176,9 @@ public class CompanyManager {
         }
 
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement("SELECT shop_uuid, owner, city_uuid, company_uuid, x, y, z FROM shops");
-             ResultSet rs = statement.executeQuery()) {
+                PreparedStatement statement = conn
+                        .prepareStatement("SELECT shop_uuid, owner, city_uuid, company_uuid, x, y, z FROM shops");
+                ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
                 UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
@@ -182,26 +186,26 @@ public class CompanyManager {
                 String cityUuid = rs.getString("city_uuid");
                 String uuid = rs.getString("company_uuid");
                 UUID company_uuid = null;
-                if (uuid!=null){
+                if (uuid != null) {
                     company_uuid = UUID.fromString(uuid);
                 }
                 double x = rs.getDouble("x");
                 double y = rs.getDouble("y");
                 double z = rs.getDouble("z");
 
-
                 Block barrel = new Location(Bukkit.getWorld("world"), x, y, z).getBlock();
                 Block cashRegister = new Location(Bukkit.getWorld("world"), x, y + 1, z).getBlock();
 
                 if (barrel.getType() == Material.BARREL) {
-                    if (cashRegister.getType().toString().contains("SIGN") || cashRegister.getType().equals(Material.BARRIER)){
+                    if (cashRegister.getType().toString().contains("SIGN")
+                            || cashRegister.getType().equals(Material.BARRIER)) {
                         Shop shop;
                         if (company_uuid == null) {
                             PlayerShopManager.getInstance().createShop(owner, barrel, cashRegister, shopUuid);
                             shop = PlayerShopManager.getInstance().getShopByUUID(shopUuid);
                         } else {
                             Company company = getCompany(owner);
-                            if (cityUuid==null){
+                            if (cityUuid == null) {
                                 company.createShop(owner, barrel, cashRegister, shopUuid);
                             } else {
                                 City city = CityManager.getCity(cityUuid);
@@ -211,7 +215,7 @@ public class CompanyManager {
                             }
                             shop = company.getShop(shopUuid);
                         }
-                        if (shop == null || shopItems.get(shopUuid)==null) {
+                        if (shop == null || shopItems.get(shopUuid) == null) {
                             continue;
                         }
                         for (ShopItem shopItem : shopItems.get(shopUuid)) {
@@ -227,8 +231,9 @@ public class CompanyManager {
         }
 
         try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement("SELECT time, uuid, item_uuid, shop_uuid, supplier_uuid, amount FROM shop_supplier");
-             ResultSet rs = statement.executeQuery()) {
+                PreparedStatement statement = conn.prepareStatement(
+                        "SELECT time, uuid, item_uuid, shop_uuid, supplier_uuid, amount FROM shop_supplier");
+                ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
                 long time = rs.getLong("time");
@@ -238,8 +243,8 @@ public class CompanyManager {
                 UUID supplier_uuid = UUID.fromString(rs.getString("supplier_uuid"));
                 int amount = rs.getInt("amount");
 
-                for (Shop shop : allShop){
-                    if (shop.getUuid().equals(shop_uuid)){
+                for (Shop shop : allShop) {
+                    if (shop.getUuid().equals(shop_uuid)) {
                         shop.getSuppliers().put(time, new Supply(uuid, item_uuid, amount, supplier_uuid));
                         break;
                     }
@@ -276,8 +281,7 @@ public class CompanyManager {
                 Connection conn = DatabaseManager.getConnection();
                 PreparedStatement stmtCompany = conn.prepareStatement(queryCompany);
                 PreparedStatement stmtMerchant = conn.prepareStatement(queryMerchant);
-                PreparedStatement stmtMerchantData = conn.prepareStatement(queryMerchantData)
-        ) {
+                PreparedStatement stmtMerchantData = conn.prepareStatement(queryMerchantData)) {
             for (Company company : companies) {
                 City city = company.getOwner().getCity();
                 String cityUuid = city == null ? null : city.getUUID();
@@ -302,16 +306,17 @@ public class CompanyManager {
                     stmtMerchant.setDouble(3, moneyWon);
                     stmtMerchant.addBatch(); // Adding merchant info to batch
 
-                    ItemStack[] items = company.getMerchants().get(merchantUUID).getDepositedItems().toArray(new ItemStack[0]);
+                    ItemStack[] items = company.getMerchants().get(merchantUUID).getDepositedItems()
+                            .toArray(new ItemStack[0]);
                     byte[] content = BukkitSerializer.serializeItemStacks(items);
                     stmtMerchantData.setString(1, merchantUUID.toString());
                     stmtMerchantData.setBytes(2, content);
                     stmtMerchantData.addBatch(); // Adding merchant data to batch
                 }
             }
-            stmtCompany.executeBatch();  // Execute batch for companies
-            stmtMerchant.executeBatch();  // Execute batch for merchants
-            stmtMerchantData.executeBatch();  // Execute batch for merchant data
+            stmtCompany.executeBatch(); // Execute batch for companies
+            stmtMerchant.executeBatch(); // Execute batch for merchants
+            stmtMerchantData.executeBatch(); // Execute batch for merchant data
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -340,8 +345,7 @@ public class CompanyManager {
         try (
                 PreparedStatement stmtShop = conn.prepareStatement(queryShop);
                 PreparedStatement stmtShopItem = conn.prepareStatement(queryShopItem);
-                PreparedStatement stmtShopSupplier = conn.prepareStatement(queryShopSupplier)
-        ) {
+                PreparedStatement stmtShopSupplier = conn.prepareStatement(queryShopSupplier)) {
 
             for (Company company : companies) {
                 for (Shop shop : company.getShops()) {
@@ -408,8 +412,7 @@ public class CompanyManager {
 
         try (
                 PreparedStatement stmtShop = conn.prepareStatement(queryShop);
-                PreparedStatement stmtShopItem = conn.prepareStatement(queryShopItem)
-        ) {
+                PreparedStatement stmtShopItem = conn.prepareStatement(queryShopItem)) {
             for (Map.Entry<UUID, Shop> entry : PlayerShopManager.getInstance().getPlayerShops().entrySet()) {
                 Shop shop = entry.getValue();
                 UUID shopUuid = shop.getUuid();
@@ -437,13 +440,13 @@ public class CompanyManager {
                 stmtShop.setDouble(5, x);
                 stmtShop.setDouble(6, y);
                 stmtShop.setDouble(7, z);
-                stmtShop.addBatch();  // Adding shop to batch
+                stmtShop.addBatch(); // Adding shop to batch
             }
 
             stmtShop.executeBatch(); // Execute batch for shops
             stmtShopItem.executeBatch();
         } catch (SQLException e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Shops finie.");
     }
@@ -452,7 +455,7 @@ public class CompanyManager {
      * get the items of a marchant from the database
      *
      * @param playerUUID the uuid of the player we check
-     * @param conn use to have the same connection
+     * @param conn       use to have the same connection
      * @return A ItemStack[] from bytes stock in the database
      */
     public static ItemStack[] getMerchantItem(UUID player) {
@@ -477,10 +480,11 @@ public class CompanyManager {
     /**
      * create a new company
      *
-     * @param name the name of the company
-     * @param owner the owner of the company
-     * @param newMember use for the city company ( not working for now )
-     * @param company_uuid use to set the company uuid if it's create at the load of the server
+     * @param name         the name of the company
+     * @param owner        the owner of the company
+     * @param newMember    use for the city company ( not working for now )
+     * @param company_uuid use to set the company uuid if it's create at the load of
+     *                     the server
      */
     public void createCompany(String name, CompanyOwner owner, boolean newMember, UUID company_uuid) {
         companies.add(new Company(name, owner, company_uuid, newMember));
@@ -490,14 +494,15 @@ public class CompanyManager {
      * appling for a company
      *
      * @param playerUUID the uuid of the applier
-     * @param company the company where he wants to apply
+     * @param company    the company where he wants to apply
      */
     public void applyToCompany(UUID playerUUID, Company company) {
         Company playerCompany = getCompany(playerUUID);
 
-        if (playerCompany!=null) return;
+        if (playerCompany != null)
+            return;
 
-        if (!pendingApplications.getQueue().containsKey(playerUUID)){
+        if (!pendingApplications.getQueue().containsKey(playerUUID)) {
             pendingApplications.add(playerUUID, company);
         }
     }
@@ -506,7 +511,7 @@ public class CompanyManager {
      * accept the application of a player
      *
      * @param playerUUID the uuid of the applier
-     * @param company the company which accept the player
+     * @param company    the company which accept the player
      */
     public void acceptApplication(UUID playerUUID, Company company) {
         company.addMerchant(playerUUID, new MerchantData());
@@ -517,7 +522,7 @@ public class CompanyManager {
      * know if a player has a pending application for a company
      *
      * @param playerUUID the uuid of the player
-     * @param company the company
+     * @param company    the company
      * @return true if it has one
      */
     public boolean hasPendingApplicationFor(UUID playerUUID, Company company) {
@@ -706,7 +711,7 @@ public class CompanyManager {
      * know if a player is a merchant in a company
      *
      * @param playerUUID the uuid of the player we check
-     * @param company the company we check
+     * @param company    the company we check
      * @return true or false
      */
     public boolean isMerchantOfCompany(UUID playerUUID, Company company) {
