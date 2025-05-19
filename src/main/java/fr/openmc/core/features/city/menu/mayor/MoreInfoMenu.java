@@ -32,7 +32,7 @@ public class MoreInfoMenu extends Menu {
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.LARGE;
+        return InventorySize.NORMAL;
     }
 
     @Override

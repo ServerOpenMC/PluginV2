@@ -18,6 +18,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -136,12 +137,23 @@ public class UrneListener implements Listener {
         Player player = event.getPlayer();
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        if (playerCity == null) return;
+        if (playerCity == null) {
+            event.setCancelled(true);
+            return;
+        }
 
-        if (playerCity.getMayor().getUUID() == null) return;
+        if (playerCity.getMayor() == null) {
+            event.setCancelled(true);
+            return;
+        }
 
-        if (!playerCity.getMayor().getUUID().equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le maire"), Prefix.MAYOR, MessageType.ERROR, false);
+        if (playerCity.getMayor().getUUID() == null) {
+            event.setCancelled(true);
+            return;
+        }
+
+        if (!playerCity.getPlayerWith(CPermission.OWNER).equals(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le propriétaire"), Prefix.MAYOR, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
         }
@@ -162,19 +174,41 @@ public class UrneListener implements Listener {
         }, 1L);
     }
 
-    private Location getSafeNearbySurface(Location loc) {
-        Location check = loc.clone();
-        World world = check.getWorld();
+    private Location getSafeNearbySurface(Location urneLoc) {
+        World world = urneLoc.getWorld();
+        int baseY = urneLoc.getBlockY();
 
-        for (int yOffset = 0; yOffset <= 2; yOffset++) {
-            Location candidate = check.clone().add(0, yOffset, 0);
-            if (world.getBlockAt(candidate).isPassable() &&
-                    world.getBlockAt(candidate.clone().add(0, 1, 0)).isPassable() &&
-                    !world.getBlockAt(candidate.clone().add(0, -1, 0)).isPassable()) {
-                return candidate;
+        int radius = 2;
+
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                Location candidate = new Location(
+                        world,
+                        urneLoc.getX() + dx,
+                        baseY,
+                        urneLoc.getZ() + dz
+                );
+
+                Block under = world.getBlockAt(candidate.getBlockX(), baseY - 1, candidate.getBlockZ());
+                Block feet = world.getBlockAt(candidate.getBlockX(), baseY, candidate.getBlockZ());
+                Block head = world.getBlockAt(candidate.getBlockX(), baseY + 1, candidate.getBlockZ());
+
+                if (!under.isPassable() && feet.isPassable() && head.isPassable()) {
+                    return new Location(
+                            world,
+                            candidate.getBlockX() + 0.5,
+                            baseY,
+                            candidate.getBlockZ() + 0.5
+                    );
+                }
             }
         }
 
-        return loc;
+        return new Location(
+                world,
+                urneLoc.getBlockX() + 0.5,
+                baseY,
+                urneLoc.getBlockZ() + 0.5
+        );
     }
 }
