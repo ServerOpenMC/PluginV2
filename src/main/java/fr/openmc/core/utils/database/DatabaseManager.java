@@ -100,7 +100,7 @@ public class DatabaseManager {
         }
     }
 
-    public void close() throws SQLException {
+    public static void close() throws SQLException {
         if (connection != null) {
             if (!connection.isClosed()) {
                 try {

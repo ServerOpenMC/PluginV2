@@ -59,8 +59,8 @@ public class OMCPlugin extends JavaPlugin {
         /* MANAGERS */
         dbManager = new DatabaseManager();
         new CommandsManager();
-        CustomItemRegistry.init();
-        new SpawnManager(this);
+        new CustomItemRegistry();
+        new SpawnManager();
         new UpdateManager();
         new MascotsManager(this); // laisser avant CityManager
         new CityManager();

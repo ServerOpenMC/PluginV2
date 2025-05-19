@@ -12,7 +12,6 @@ import fr.openmc.core.utils.customitems.armors.SuitBoots;
 import fr.openmc.core.utils.customitems.armors.SuitChestplate;
 import fr.openmc.core.utils.customitems.armors.SuitHelmet;
 import fr.openmc.core.utils.customitems.armors.SuitLeggings;
-import fr.openmc.core.utils.customitems.buttons.*;
 import fr.openmc.core.utils.customitems.items.*;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.NamespacedKey;
@@ -27,7 +26,7 @@ public class CustomItemRegistry {
     static HashMap<String, CustomItem> items = new HashMap<>();
     static NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
 
-    static public void init() {
+    public CustomItemRegistry() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
 
         // Ici, enregistrer tous les items custom
