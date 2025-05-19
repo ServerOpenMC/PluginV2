@@ -16,6 +16,8 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -62,9 +64,9 @@ public class ShopStocksMenu extends PaginatedMenu {
 
         for (ShopItem stock : shop.getItems()) {
             items.add(new ItemBuilder(this, stock.getItem().getType(), itemMeta -> {
-                itemMeta.setDisplayName(ChatColor.YELLOW + ShopItem.getItemName(stock.getItem()));
+                itemMeta.displayName(ShopItem.getItemName(stock.getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
                 itemMeta.setLore(List.of(
-                        "§7■ Quantité restante : " + EconomyManager.getInstance().getFormattedNumber(stock.getAmount()),
+                        "§7■ Quantité restante : " + EconomyManager.getFormattedSimplifiedNumber(stock.getAmount()),
                         "§7■ Prix de vente (par item) : " + EconomyManager.getInstance().getFormattedNumber(stock.getPricePerItem()),
                         "§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
                 ));

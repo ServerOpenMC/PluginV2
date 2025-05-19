@@ -20,6 +20,8 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -189,11 +191,11 @@ public class ShopMenu extends Menu {
         if (getCurrentItem() != null)
 
             content.put(itemSlot, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
-                itemMeta.setDisplayName("§l§f" + ItemUtils.getItemTranslation(getCurrentItem().getItem()));
+                itemMeta.displayName(ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
                 List<String> lore = new ArrayList<>();
-                lore.add("§7■ Prix: §c" + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon());
-                lore.add("§7■ En stock: " + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getAmount()));
-                lore.add("§7■ Cliquez pour en acheter §f" + amountToBuy);
+                lore.add("§7■ Prix: §c" + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getPricePerItem() * amountToBuy));
+                lore.add("§7■ En stock: " + EconomyManager.getFormattedSimplifiedNumber(getCurrentItem().getAmount()));
+                lore.add("§7■ Cliquez pour en acheter §f" + EconomyManager.getFormattedSimplifiedNumber(amountToBuy));
                 itemMeta.setLore(lore);
             }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat")))));
 
