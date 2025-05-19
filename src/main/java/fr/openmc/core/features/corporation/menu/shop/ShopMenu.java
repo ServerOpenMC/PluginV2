@@ -284,7 +284,7 @@ public class ShopMenu extends Menu {
                 meta.addPage(
                         "3. Ouvrez une fois le shop pour renouveler son stock\n\n" +
                                 "Et voilà comment utiliser votre shops\n\n" +
-                                "§e▪ Pour plus d'info : /shop help§r"
+                                "§6▪ Pour plus d'info : /shop help§r"
                 );
 
                 book.setItemMeta(meta);
