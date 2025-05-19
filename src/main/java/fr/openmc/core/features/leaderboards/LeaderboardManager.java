@@ -73,7 +73,6 @@ public class LeaderboardManager {
     private static BukkitTask taskTimer;
     private static float scale;
 
-
     public LeaderboardManager() {
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());

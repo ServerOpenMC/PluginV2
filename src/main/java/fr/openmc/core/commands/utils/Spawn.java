@@ -22,7 +22,7 @@ public class Spawn {
     @CommandPermission("omc.commands.spawn")
     public void spawn(CommandSender sender, @Default("me") Player target) {
         
-        Location spawnLocation = SpawnManager.getInstance().getSpawnLocation();
+        Location spawnLocation = SpawnManager.getSpawnLocation();
 
         if(sender instanceof Player player && player == target) {
             new BukkitRunnable() {

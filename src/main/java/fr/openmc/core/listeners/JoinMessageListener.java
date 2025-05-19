@@ -30,7 +30,7 @@ public class JoinMessageListener implements Listener {
 
         MessagesManager.sendMessage(player, Component.text("Bienvenue sur OpenMC !"), Prefix.OPENMC, MessageType.INFO, false);
 
-        TabList.getInstance().updateTabList(player);
+        TabList.updateTabList(player);
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
@@ -46,7 +46,7 @@ public class JoinMessageListener implements Listener {
 
         // Quest pending reward notification
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            for (Quest quest : QuestsManager.getInstance().getAllQuests()) {
+            for (Quest quest : QuestsManager.getAllQuests()) {
                 if (quest.hasPendingRewards(player.getUniqueId())) {
                     int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
@@ -66,13 +66,13 @@ public class JoinMessageListener implements Listener {
         event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName()));
 
         // Adjust player's spawn location
-        if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getInstance().getSpawnLocation());
+        if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getSpawnLocation());
 
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                TabList.getInstance().updateTabList(player);
+                TabList.updateTabList(player);
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 100L);
     }
@@ -81,7 +81,7 @@ public class JoinMessageListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 
-        QuestsManager.getInstance().saveQuests(player.getUniqueId());
+        QuestsManager.saveQuests(player.getUniqueId());
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {

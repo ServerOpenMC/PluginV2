@@ -61,6 +61,10 @@ public class DynamicCooldownManager {
         }
     }
 
+    public DynamicCooldownManager() {
+        loadCooldowns();
+    }
+
     // Map structure: UUID -> (Group -> Cooldown)
     private static final HashMap<UUID, HashMap<String, Cooldown>> cooldowns = new HashMap<>();
 

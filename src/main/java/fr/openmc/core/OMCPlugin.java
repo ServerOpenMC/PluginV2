@@ -14,6 +14,7 @@ import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
@@ -36,8 +37,6 @@ import java.sql.SQLException;
 public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
-    @Getter static TranslationManager translationManager;
-    private DatabaseManager dbManager;
 
     @Override
     public void onEnable() {
@@ -57,7 +56,7 @@ public class OMCPlugin extends JavaPlugin {
         new FancyNpcApi();
 
         /* MANAGERS */
-        dbManager = new DatabaseManager();
+        new DatabaseManager();
         new CommandsManager();
         new CustomItemRegistry();
         new SpawnManager();
@@ -73,20 +72,18 @@ public class OMCPlugin extends JavaPlugin {
         new TPAManager();
         new FreezeManager();
         new QuestsManager();
+        new QuestProgressSaveManager();
         new TabList();
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager();
-        new AdminShopManager(this);
+        new AdminShopManager();
 
         if (!OMCPlugin.isUnitTestVersion()){
             new CompanyManager();// laisser apres Economy Manager
         }
-        new MotdUtils(this);
-        translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
-        translationManager.loadAllLanguages();
-
-        /* LOAD */
-        DynamicCooldownManager.loadCooldowns();
+        new MotdUtils();
+        new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
+        new DynamicCooldownManager();
 
         getLogger().info("Plugin activé");
     }
@@ -111,7 +108,7 @@ public class OMCPlugin extends JavaPlugin {
         // - Contest
         ContestManager.saveContestData();
         ContestManager.saveContestPlayerData();
-        QuestsManager.getInstance().saveQuests();
+        QuestsManager.saveQuests();
 
         // - Mascottes
         MascotsManager.saveMascots(MascotsManager.mascots);
@@ -123,12 +120,10 @@ public class OMCPlugin extends JavaPlugin {
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();
 
-        if (dbManager != null) {
-            try {
-                dbManager.close();
-            } catch (SQLException e) {
-                getLogger().severe("Impossible de fermer la connexion à la base de données");
-            }
+        try {
+            DatabaseManager.close();
+        } catch (SQLException e) {
+            getLogger().severe("Impossible de fermer la connexion à la base de données");
         }
 
         getLogger().info("Plugin désactivé");
