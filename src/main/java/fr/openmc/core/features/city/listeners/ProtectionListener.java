@@ -168,6 +168,29 @@ public class ProtectionListener implements Listener {
         Entity victim = event.getEntity();
         Entity damager = event.getDamager();
 
+        Player attacker = null;
+        if (damager instanceof Player p) {
+            attacker = p;
+        } else if (damager instanceof Projectile proj && proj.getShooter() instanceof Player shooter) {
+            attacker = shooter;
+        }
+
+        if (victim instanceof Player victimPlayer && attacker != null) {
+            Location loc = victimPlayer.getLocation();
+            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+
+            if (city != null
+                    && city.isMember(victimPlayer)
+                    && city.isMember(attacker)) {
+
+                if (!city.getLaw().isPvp()) {
+                    event.setCancelled(true);
+                    return;
+                }
+                return;
+            }
+        }
+
         if (victim instanceof Player victimPlayer) {
             verify(victimPlayer, event, victimPlayer.getLocation());
             if (event.isCancelled()) return;
@@ -175,13 +198,8 @@ public class ProtectionListener implements Listener {
 
         if (MascotUtils.isMascot(victim)) return;
 
-        if (damager instanceof Player attacker) {
+        if (attacker != null) {
             verify(attacker, event, victim.getLocation());
-        }
-
-        if (damager instanceof Projectile projectile
-                && projectile.getShooter() instanceof Player shooter) {
-            verify(shooter, event, victim.getLocation());
         }
     }
 
@@ -211,10 +229,10 @@ public class ProtectionListener implements Listener {
         verify(event.getPlayer(), event, rightClicked.getLocation());
     }
 
-    @EventHandler
-    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
-        verify(event.getPlayer(), event, event.getRightClicked().getLocation());
-    }
+//    @EventHandler
+//    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+//        verify(event.getPlayer(), event, event.getRightClicked().getLocation());
+//    }
 
     @EventHandler
     void onFish(PlayerFishEvent event) { verify(event.getPlayer(), event, event.getHook().getLocation()); }
