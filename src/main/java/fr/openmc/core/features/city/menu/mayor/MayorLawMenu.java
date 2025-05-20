@@ -101,7 +101,7 @@ public class MayorLawMenu extends Menu {
                         DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-pvp", COOLDOWN_TIME_PVP);
 
                         law.setPvp(!law.isPvp());
-                        String messageLawPVP = law.isPvp() ? "§7Vous avez §cdésactivé §7le PVP dans votre ville" : "§7Vous avez §4activé §7le PVP dans votre ville";
+                        String messageLawPVP = !law.isPvp() ? "§7Vous avez §cdésactivé §7le PVP dans votre ville" : "§7Vous avez §4activé §7le PVP dans votre ville";
                         MessagesManager.sendMessage(player, Component.text(messageLawPVP), Prefix.MAYOR, MessageType.SUCCESS, false);
 
                         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
