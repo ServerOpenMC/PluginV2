@@ -116,8 +116,6 @@ public class MayorManager {
         loadPlayersVote();
         loadCityLaws();
 
-
-
 //        new BukkitRunnable() {
 //            @Override
 //            public void run() {
