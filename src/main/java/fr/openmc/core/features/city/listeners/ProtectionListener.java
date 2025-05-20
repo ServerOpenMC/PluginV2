@@ -212,6 +212,11 @@ public class ProtectionListener implements Listener {
     }
 
     @EventHandler
+    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+        verify(event.getPlayer(), event, event.getRightClicked().getLocation());
+    }
+
+    @EventHandler
     void onFish(PlayerFishEvent event) { verify(event.getPlayer(), event, event.getHook().getLocation()); }
 
     @EventHandler
