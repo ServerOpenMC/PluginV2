@@ -85,16 +85,16 @@ public class LeaderboardListener extends PacketAdapter implements Listener {
 
     public void sendLeaderboard(Player player) {
         if (player.getWorld().equals(contributorsHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
-            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(100000, manager.getContributorsHologramLocation()));
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-610329143, manager.getContributorsHologramLocation()));
         }
         if (player.getWorld().equals(moneyHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
-            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(100001, manager.getMoneyHologramLocation()));
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-102388303, manager.getMoneyHologramLocation()));
         }
         if (player.getWorld().equals(villeMoneyHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
-            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(100002, manager.getVilleMoneyHologramLocation()));
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-699947630, manager.getVilleMoneyHologramLocation()));
         }
         if (player.getWorld().equals(playTimeHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
-            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(100003, manager.getPlayTimeHologramLocation()));
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-348090140, manager.getPlayTimeHologramLocation()));
         }
     }
 

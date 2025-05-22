@@ -53,8 +53,6 @@ public class LeaderboardManager {
     @Getter
     private final Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
     private final OMCPlugin plugin;
-    private final String repoOwner = "ServerOpenMC";
-    private final String repoName = "PluginV2";
     private final File leaderBoardFile;
     @Getter
     ClientboundSetEntityDataPacket contributorsHologramMetadataPacket;
@@ -295,10 +293,13 @@ public class LeaderboardManager {
 
     /**
      * Updates the GitHub contributors leaderboard map by fetching data from the GitHub API.
+     *
      * @param attempts The number of attempts made to fetch the data.
      */
     private void updateGithubContributorsMap(int attempts) {
         // doc de l'api ici: https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity
+        String repoOwner = "ServerOpenMC";
+        String repoName = "PluginV2";
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/stats/contributors", repoOwner, repoName);
         try {
             HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
@@ -359,9 +360,7 @@ public class LeaderboardManager {
         int rank = 1;
         Map<UUID, Double> combinedBalances = new HashMap<>(EconomyManager.getBalances());
 
-        BankManager.getBanks().forEach((uuid, money) -> {
-            combinedBalances.merge(uuid, money, Double::sum);
-        });
+        BankManager.getBanks().forEach((uuid, money) -> combinedBalances.merge(uuid, money, Double::sum));
         for (var entry : combinedBalances.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
                 .limit(10)
@@ -410,22 +409,22 @@ public class LeaderboardManager {
     public void updateHolograms() {
         if (contributorsHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createContributorsTextLeaderboard());
-            contributorsHologramMetadataPacket = createMetadataPacket(text, 100000);
+            contributorsHologramMetadataPacket = createMetadataPacket(text, -610329143);
             updateHologram(contributorsHologramLocation.getWorld().getPlayersSeeingChunk(contributorsHologramLocation.getChunk()), contributorsHologramMetadataPacket); // On met 100000 à l'id de l'entité pour pouvoir la modifier facilement
         }
         if (moneyHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createMoneyTextLeaderboard());
-            moneyHologramMetadataPacket = createMetadataPacket(text, 100001);
+            moneyHologramMetadataPacket = createMetadataPacket(text, -102388303);
             updateHologram(moneyHologramLocation.getWorld().getPlayersSeeingChunk(moneyHologramLocation.getChunk()), moneyHologramMetadataPacket);
         }
         if (villeMoneyHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createCityMoneyTextLeaderboard());
-            villeMoneyHologramMetadataPacket = createMetadataPacket(text, 100002);
+            villeMoneyHologramMetadataPacket = createMetadataPacket(text, -699947630);
             updateHologram(villeMoneyHologramLocation.getWorld().getPlayersSeeingChunk(villeMoneyHologramLocation.getChunk()), villeMoneyHologramMetadataPacket);
         }
         if (playTimeHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createPlayTimeTextLeaderboard());
-            playtimeHologramMetadataPacket = createMetadataPacket(text, 100003);
+            playtimeHologramMetadataPacket = createMetadataPacket(text, -348090140);
             updateHologram(playTimeHologramLocation.getWorld().getPlayersSeeingChunk(playTimeHologramLocation.getChunk()), playtimeHologramMetadataPacket);
         }
     }
