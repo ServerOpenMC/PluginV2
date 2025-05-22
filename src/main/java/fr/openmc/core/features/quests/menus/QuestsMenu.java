@@ -7,9 +7,6 @@ import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestStep;
 import fr.openmc.core.features.quests.objects.QuestTier;
-
-import java.util.*;
-
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
@@ -23,6 +20,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public class QuestsMenu extends Menu {
     private int currentPage;
@@ -221,7 +220,7 @@ public class QuestsMenu extends Menu {
         if (isCompleted) {
             lore.add(Component.text("  §aQuête complétée !  "));
         } else if (currentTier != null) {
-            int progressPercent = (int) Math.min(100.0F, Math.ceil((double) progress / target * 100.0F));
+            int progressPercent = (int) Math.min(100.0F, Math.floor((double) progress / target * 100.0F));
             int barLength = 26;
             int filledLength = (int)((double)barLength * ((double)progress / (double)target));
             StringBuilder progressBar = new StringBuilder();
