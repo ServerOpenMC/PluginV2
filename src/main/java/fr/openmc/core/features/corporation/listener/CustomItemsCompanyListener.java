@@ -11,8 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class CustomItemsCompanyListener implements Listener {
-    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
-
 
     @EventHandler
     public void onFurnitureBreak(FurnitureBreakEvent event){
@@ -35,7 +33,7 @@ public class CustomItemsCompanyListener implements Listener {
             double y = e.getFurniture().getEntity().getLocation().getBlockY();
             double z = e.getFurniture().getEntity().getLocation().getBlockZ();
 
-            Shop shop = shopBlocksManager.getShop(new Location(e.getFurniture().getEntity().getWorld(), x, y, z));
+            Shop shop = ShopBlocksManager.getShop(new Location(e.getFurniture().getEntity().getWorld(), x, y, z));
             if (shop == null) {
                 return;
             }

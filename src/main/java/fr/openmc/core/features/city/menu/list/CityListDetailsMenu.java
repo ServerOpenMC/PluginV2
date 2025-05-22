@@ -67,7 +67,7 @@ public class CityListDetailsMenu extends Menu {
 
 		List<Component> loreOwner = new ArrayList<>();
 
-		if (MayorManager.getInstance().phaseMayor == 2) {
+		if (MayorManager.phaseMayor == 2) {
 			Mayor mayor = this.city.getMayor();
 			ElectionType electionType = mayor.getElectionType();
 			Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());

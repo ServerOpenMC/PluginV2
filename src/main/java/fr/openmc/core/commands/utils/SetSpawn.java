@@ -20,7 +20,7 @@ public class SetSpawn {
 
         Location location = player.getLocation();
 
-        SpawnManager.getInstance().setSpawn(location);
+        SpawnManager.setSpawn(location);
 
         MessagesManager.sendMessage(player, Component.text("§aVous avez changé le point de spawn en §6X: §e" + location.getBlockX() + "§6, Y:§e" + location.getBlockY() + "§6, Z: §e" + location.getBlockY()), Prefix.OPENMC, MessageType.SUCCESS, true);
 

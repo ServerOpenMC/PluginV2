@@ -9,16 +9,12 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
-import fr.openmc.core.features.corporation.manager.PlayerShopManager;
-import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.friend.FriendManager;
-import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
@@ -31,7 +27,6 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,8 +37,6 @@ import java.sql.SQLException;
 public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
-    @Getter static TranslationManager translationManager;
-    private DatabaseManager dbManager;
 
     @Override
     public void onEnable() {
@@ -63,45 +56,34 @@ public class OMCPlugin extends JavaPlugin {
         new FancyNpcApi();
 
         /* MANAGERS */
-        dbManager = new DatabaseManager();
+        new DatabaseManager();
         new CommandsManager();
-        CustomItemRegistry.init();
-        ContestManager contestManager = new ContestManager(this);
-        ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
-        new SpawnManager(this);
+        new CustomItemRegistry();
+        new SpawnManager();
         new UpdateManager();
         new MascotsManager(this); // laisser avant CityManager
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MayorManager(this);
+        new MayorManager();
         new BankManager();
         new ScoreboardManager();
         new HomesManager();
-        new HomeUpgradeManager(HomesManager.getInstance());
         new TPAManager();
         new FreezeManager();
-        new FriendManager();
         new QuestsManager();
+        new QuestProgressSaveManager();
         new TabList();
         if (!OMCPlugin.isUnitTestVersion())
-            new LeaderboardManager(this);
-        new AdminShopManager(this);
+            new LeaderboardManager();
+        new AdminShopManager();
 
         if (!OMCPlugin.isUnitTestVersion()){
-            new ShopBlocksManager(this);
-            new PlayerShopManager();
             new CompanyManager();// laisser apres Economy Manager
         }
-        contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
-        contestManager.setContestPlayerManager(contestPlayerManager);
-        new MotdUtils(this);
-        translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
-        translationManager.loadAllLanguages();
-
-        /* LOAD */
-        DynamicCooldownManager.loadCooldowns();
-
+        new MotdUtils();
+        new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
+        new DynamicCooldownManager();
 
         getLogger().info("Plugin activé");
     }
@@ -111,23 +93,22 @@ public class OMCPlugin extends JavaPlugin {
         // SAUVEGARDE
 
         // - Maires
-        MayorManager mayorManager = MayorManager.getInstance();
-        mayorManager.saveMayorConstant();
-        mayorManager.savePlayersVote();
-        mayorManager.saveMayorCandidates();
-        mayorManager.saveCityMayors();
-        mayorManager.saveCityLaws();
+        MayorManager.saveMayorConstant();
+        MayorManager.savePlayersVote();
+        MayorManager.saveMayorCandidates();
+        MayorManager.saveCityMayors();
+        MayorManager.saveCityLaws();
 
         // - Home
         CompanyManager.saveAllCompanies();
         CompanyManager.saveAllShop();
 
-        HomesManager.getInstance().saveHomesData();
+        HomesManager.saveHomesData();
 
         // - Contest
-        ContestManager.getInstance().saveContestData();
-        ContestManager.getInstance().saveContestPlayerData();
-        QuestsManager.getInstance().saveQuests();
+        ContestManager.saveContestData();
+        ContestManager.saveContestPlayerData();
+        QuestsManager.saveQuests();
 
         // - Mascottes
         MascotsManager.saveMascots(MascotsManager.mascots);
@@ -139,12 +120,10 @@ public class OMCPlugin extends JavaPlugin {
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();
 
-        if (dbManager != null) {
-            try {
-                dbManager.close();
-            } catch (SQLException e) {
-                getLogger().severe("Impossible de fermer la connexion à la base de données");
-            }
+        try {
+            DatabaseManager.close();
+        } catch (SQLException e) {
+            getLogger().severe("Impossible de fermer la connexion à la base de données");
         }
 
         getLogger().info("Plugin désactivé");

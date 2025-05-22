@@ -81,9 +81,6 @@ public class CityMenu extends Menu {
             City city = CityManager.getPlayerCity(player.getUniqueId());
             assert city != null;
 
-
-            MayorManager mayorManager = MayorManager.getInstance();
-
             boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
             boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
             boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
@@ -222,14 +219,14 @@ public class CityMenu extends Menu {
             Supplier<ItemStack> electionItemSupplier = () -> {
                 List<Component> loreElections = List.of();
                 if (city.getElectionType() == ElectionType.ELECTION) {
-                    if (mayorManager.phaseMayor == 2) {
+                    if (MayorManager.phaseMayor == 2) {
                         loreElections = List.of(
                                 Component.text("§7Votre ville a un §6Maire !"),
                                 Component.text("§7Maire : ").append(Component.text(mayorName)).color(mayorColor).decoration(TextDecoration.ITALIC, false),
                                 Component.text(""),
                                 Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
                         );
-                    } else if (mayorManager.phaseMayor == 1) {
+                    } else if (MayorManager.phaseMayor == 1) {
                         loreElections = List.of(
                                 Component.text("§7Les Elections sont actuellement §6ouverte"),
                                 Component.text(""),
@@ -244,7 +241,7 @@ public class CityMenu extends Menu {
                         );
                     }
                 } else {
-                    if (mayorManager.phaseMayor == 2) {
+                    if (MayorManager.phaseMayor == 2) {
                         loreElections = List.of(
                                 Component.text("§7Votre ville a un §6Maire !"),
                                 Component.text("§7Maire §7: ").append(Component.text(mayorName)).color(mayorColor).decoration(TextDecoration.ITALIC, false),
@@ -252,12 +249,12 @@ public class CityMenu extends Menu {
                                 Component.text(""),
                                 Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
                         );
-                    } else if (mayorManager.phaseMayor == 1) {
+                    } else if (MayorManager.phaseMayor == 1) {
                         if (hasPermissionOwner) {
                             if (city.hasMayor()) {
                                 loreElections = List.of(
                                         Component.text("§7Les Elections sont §6désactivées"),
-                                        Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
                                         Component.text(""),
                                         Component.text("§7Vous avez déjà choisis vos §3Réformes §7!"),
                                         Component.text("§7Cependant vous pouvez changer votre couleur !"),
@@ -267,7 +264,7 @@ public class CityMenu extends Menu {
                             } else {
                                 loreElections = List.of(
                                         Component.text("§7Les Elections sont §6désactivées"),
-                                        Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
                                         Component.text(""),
                                         Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
                                         Component.text(""),
@@ -279,7 +276,7 @@ public class CityMenu extends Menu {
                         } else {
                             loreElections = List.of(
                                     Component.text("§7Les Elections sont §6désactivées"),
-                                    Component.text("§cIl vous faut au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                    Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
                                     Component.text(""),
                                     Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
                                     Component.text(""),
@@ -295,7 +292,7 @@ public class CityMenu extends Menu {
                     itemMeta.lore(finalLoreElections);
                 }).setOnClick(inventoryClickEvent -> {
                     if (city.getElectionType() == ElectionType.ELECTION) {
-                        if (mayorManager.phaseMayor == 1) {
+                        if (MayorManager.phaseMayor == 1) {
                             MayorElectionMenu menu = new MayorElectionMenu(player);
                             menu.open();
                         } else {
@@ -303,10 +300,10 @@ public class CityMenu extends Menu {
                             menu.open();
                         }
                     } else {
-                        if (mayorManager.phaseMayor == 2) {
+                        if (MayorManager.phaseMayor == 2) {
                             MayorMandateMenu menu = new MayorMandateMenu(player);
                             menu.open();
-                        } else if (mayorManager.phaseMayor == 1) {
+                        } else if (MayorManager.phaseMayor == 1) {
                             if (hasPermissionOwner) {
                                 if (!city.hasMayor()) {
                                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {

@@ -49,7 +49,7 @@ public class MayorModifyMenu extends Menu {
         Player player = getOwner();
 
         try {
-            MayorCandidate mayorCandidate = MayorManager.getInstance().getCandidate(player);
+            MayorCandidate mayorCandidate = MayorManager.getCandidate(player);
             Perks perk2 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk2());
             Perks perk3 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk3());
 

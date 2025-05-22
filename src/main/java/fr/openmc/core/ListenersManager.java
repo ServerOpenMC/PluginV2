@@ -30,7 +30,7 @@ public class ListenersManager {
         );
     }
 
-    private void registerEvents(Listener... args) {
+    private static void registerEvents(Listener... args) {
         Server server = Bukkit.getServer();
         JavaPlugin plugin = OMCPlugin.getInstance();
         for (Listener listener : args) {

@@ -165,7 +165,7 @@ public class MascotsListener implements Listener {
                         double maxHealth = mob.getMaxHealth();
                         mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
 
-                        if (MayorManager.getInstance().phaseMayor==2) {
+                        if (MayorManager.phaseMayor==2) {
                             if (PerkManager.hasPerk(MascotUtils.getCityFromMascot(mob.getUniqueId()).getMayor(), Perks.IRON_BLOOD.getId())) {
                                 long currentTime = System.currentTimeMillis();
                                 if (perkIronBloodCooldown.containsKey(city) && currentTime - perkIronBloodCooldown.get(city) < COOLDOWN_TIME) {

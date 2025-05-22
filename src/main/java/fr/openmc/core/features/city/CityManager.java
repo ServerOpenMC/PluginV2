@@ -236,10 +236,9 @@ public class CityManager implements Listener {
             City cityz = cities.remove(city);
             if (cityz == null) return;
 
-            MayorManager mayorManager = MayorManager.getInstance();
-            mayorManager.cityMayor.remove(cityz);
-            mayorManager.cityElections.remove(cityz);
-            mayorManager.playerVote.remove(cityz);
+            MayorManager.cityMayor.remove(cityz);
+            MayorManager.cityElections.remove(cityz);
+            MayorManager.playerVote.remove(cityz);
 
             List<UUID> membersCopy = new ArrayList<>(cityz.getMembers());
             for (UUID members : membersCopy) {

@@ -113,7 +113,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.mayor")
     @Description("Ouvre le menu des maires")
     public void mayor(Player sender) {
-        if (MayorManager.getInstance().phaseMayor==1) {
+        if (MayorManager.phaseMayor==1) {
             MayorElectionMenu menu = new MayorElectionMenu(sender);
             menu.open();
         } else {
@@ -549,7 +549,7 @@ public class CityCommands {
         Location warp = law.getWarp();
 
         if (warp == null) {
-            if (MayorManager.getInstance().phaseMayor == 2) {
+            if (MayorManager.phaseMayor == 2) {
                 MessagesManager.sendMessage(player, Component.text("Le Warp de la Ville n'est pas encore défini ! Demandez au §6Maire §fActuel d'en mettre un ! §8§o*via /city setwarp ou avec le Menu des Lois*"), Prefix.CITY, MessageType.INFO, true);
                 return;
             }
@@ -656,7 +656,7 @@ public class CityCommands {
             }
         });
 
-        if (EconomyManager.getInstance().getBalance(player.getUniqueId()) < MONEY_CREATE) {
+        if (EconomyManager.getBalance(player.getUniqueId()) < MONEY_CREATE) {
             MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() +" §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
         }
 
@@ -664,7 +664,7 @@ public class CityCommands {
             MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE +" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
         }
 
-        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), MONEY_CREATE);
+        EconomyManager.withdrawBalance(player.getUniqueId(), MONEY_CREATE);
         ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), AYWENITE_CREATE);
 
         City city = CityManager.createCity(player, cityUUID, name, type);
@@ -677,13 +677,12 @@ public class CityCommands {
         player.closeInventory();
 
         // SETUP MAIRE
-        MayorManager mayorManager = MayorManager.getInstance();
-        if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
-            mayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+        if (MayorManager.phaseMayor == 1) { // si création pendant le choix des maires
+            MayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
         } else { // si création pendant les réformes actives
-            NamedTextColor color = mayorManager.getRandomMayorColor();
+            NamedTextColor color = MayorManager.getRandomMayorColor();
             List<Perks> perks = PerkManager.getRandomPerksAll();
-            mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
+            MayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
             MessagesManager.sendMessage(player, Component.text("Vous avez été désigné comme §6Maire de la Ville.\n§8§oVous pourrez choisir vos Réformes dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)), Prefix.MAYOR, MessageType.SUCCESS, true);
         }
 

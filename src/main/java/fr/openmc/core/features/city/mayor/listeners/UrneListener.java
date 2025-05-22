@@ -45,19 +45,17 @@ public class UrneListener implements Listener {
             return;
         }
 
-        MayorManager mayorManager = MayorManager.getInstance();
-
         if (playerCity.getElectionType() == ElectionType.OWNER_CHOOSE) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
-        if (mayorManager.phaseMayor != 1) {
+        if (MayorManager.phaseMayor != 1) {
             MessagesManager.sendMessage(player, Component.text("§8§o*Les éléctions ont déjà eu lieu !*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
-        if (mayorManager.cityElections.get(playerCity) == null) {
+        if (MayorManager.cityElections.get(playerCity) == null) {
             MessagesManager.sendMessage(player, Component.text("§8§o*personne ne s'est présenté ! Présenter vous ! /city*"), Prefix.MAYOR, MessageType.INFO, true);
             return;
         }

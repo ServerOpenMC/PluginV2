@@ -164,7 +164,7 @@ public class NPCManager implements Listener {
         Npc npc = event.getNpc();
 
         if (npc.getData().getName().startsWith("mayor-")) {
-            if (MayorManager.getInstance().phaseMayor == 1) {
+            if (MayorManager.phaseMayor == 1) {
                 MessagesManager.sendMessage(player, Component.text("§8§o*les elections sont en cours... on ne sait pas ce qu'il décide de prendre*"), Prefix.MAYOR, MessageType.INFO, true);
                 event.setCancelled(true);
                 return;
@@ -193,7 +193,7 @@ public class NPCManager implements Listener {
         Npc npc = event.getNpc();
 
         if (npc.getData().getName().startsWith("owner-")) {
-            if (MayorManager.getInstance().phaseMayor == 1) {
+            if (MayorManager.phaseMayor == 1) {
                 MessagesManager.sendMessage(player, Component.text("§8§o*les elections sont en cours...*"), Prefix.MAYOR, MessageType.INFO, true);
                 event.setCancelled(true);
                 return;

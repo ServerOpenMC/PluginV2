@@ -6,6 +6,7 @@ import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -30,8 +31,6 @@ import java.util.*;
 public class Shop {
 
     private final ShopOwner owner;
-    private final EconomyManager economyManager = EconomyManager.getInstance();
-    private final ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
     private final List<ShopItem> items = new ArrayList<>();
     private final List<ShopItem> sales = new ArrayList<>();
     private final Map<Long, Supply> suppliers = new HashMap<>();
@@ -59,8 +58,7 @@ public class Shop {
      * @param shop the shop we want to check the stock
      */
     public static void checkStock(Shop shop) {
-        ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
-        Multiblock multiblock = blocksManager.getMultiblock(shop.getUuid());
+        Multiblock multiblock = ShopBlocksManager.getMultiblock(shop.getUuid());
 
         if (multiblock == null) {
             return;
@@ -68,7 +66,7 @@ public class Shop {
 
         Block stockBlock = multiblock.getStockBlock().getBlock();
         if (stockBlock.getType() != Material.BARREL) {
-            blocksManager.removeShop(shop);
+            ShopBlocksManager.removeShop(shop);
             return;
         }
 
@@ -115,8 +113,7 @@ public class Shop {
 
 
     public String getName() {
-        //TODO CacheOfflinePlayer
-        return owner.isCompany() ? ("Shop #" + index) : Bukkit.getOfflinePlayer(owner.getPlayer()).getName() + "'s Shop";
+        return owner.isCompany() ? ("Shop #" + index) : CacheOfflinePlayer.getOfflinePlayer(owner.getPlayer()).getName() + "'s Shop";
     }
 
     public UUID getSupremeOwner() {
@@ -206,7 +203,7 @@ public class Shop {
         if (isOwner(buyer.getUniqueId())) {
             return MethodState.FAILURE;
         }
-        if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
+        if (!EconomyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
         double basePrice = item.getPrice(amount);
         item.setAmount(item.getAmount() - amount);
         turnover += item.getPrice(amount);
@@ -230,7 +227,7 @@ public class Shop {
                         amountToBuy -= supply.getAmount();
                         removeLatestSupply();
                         double supplierCut = suppliersCut * ((double) supply.getAmount() / amount);
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        EconomyManager.addBalance(supply.getSupplier(), supplierCut);
                         Player supplier = Bukkit.getPlayer(supply.getSupplier());
                         if (supplier!=null){
                             MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
@@ -239,7 +236,7 @@ public class Shop {
                     else {
                         supply.setAmount(supply.getAmount() - amountToBuy);
                         double supplierCut = suppliersCut * ((double) amountToBuy / amount);
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        EconomyManager.addBalance(supply.getSupplier(), supplierCut);
                         Player supplier = Bukkit.getPlayer(supply.getSupplier());
                         if (supplier!=null){
                             MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
@@ -254,7 +251,7 @@ public class Shop {
             owner.getCompany().deposit(companyCut, buyer, "Vente", getName());
         }
         else {
-            economyManager.addBalance(owner.getPlayer(), item.getPrice(amount));
+            EconomyManager.addBalance(owner.getPlayer(), item.getPrice(amount));
             Player player = Bukkit.getPlayer(owner.getPlayer());
             if (player!=null){
                 MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + item.getPrice(amount) + EconomyManager.getEconomyIcon() + ", l'argent vous a été transféré !"), Prefix.SHOP, MessageType.SUCCESS, false);
@@ -294,7 +291,7 @@ public class Shop {
         return new ItemBuilder(menu, fromShopMenu ? Material.GOLD_INGOT : Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§e§l" + (fromShopMenu ? "Informations" : getName()));
             List<String> lore = new ArrayList<>();
-            lore.add("§7■ Chiffre d'affaire : " + EconomyManager.getInstance().getFormattedNumber(turnover));
+            lore.add("§7■ Chiffre d'affaire : " + EconomyManager.getFormattedNumber(turnover));
             lore.add("§7■ Ventes : §f" + sales.size());
             if (!fromShopMenu)
                 lore.add("§7■ Cliquez pour accéder au shop");
@@ -314,10 +311,9 @@ public class Shop {
      * get the shop with what player looking
      *
      * @param player the player we check
-     * @param shopBlocksManager the permission
      * @param onlyCash if we only check the cach register
      */
-    public static UUID getShopPlayerLookingAt(Player player, ShopBlocksManager shopBlocksManager, boolean onlyCash) {
+    public static UUID getShopPlayerLookingAt(Player player, boolean onlyCash) {
         Block targetBlock = player.getTargetBlockExact(5);
 
         if (targetBlock == null) return null;
@@ -326,7 +322,7 @@ public class Shop {
         if (onlyCash) {
             if (targetBlock.getType() != Material.OAK_SIGN && targetBlock.getType() != Material.BARRIER) return null;
         }
-        Shop shop = shopBlocksManager.getShop(targetBlock.getLocation());
+        Shop shop = ShopBlocksManager.getShop(targetBlock.getLocation());
         if (shop == null) return null;
         return shop.getUuid();
     }

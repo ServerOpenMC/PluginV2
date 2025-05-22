@@ -18,11 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdminShopMenu extends Menu {
-    private final AdminShopManager shopManager;
 
-    public AdminShopMenu(Player owner, AdminShopManager shopManager) {
+    public AdminShopMenu(Player owner) {
         super(owner);
-        this.shopManager = shopManager;
     }
 
     @Override
@@ -43,7 +41,7 @@ public class AdminShopMenu extends Menu {
         Map<Integer, ItemStack> content = new HashMap<>();
 
         int slot = 10;
-        for (ShopCategory category : shopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
+        for (ShopCategory category : AdminShopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
             ItemStack itemStack = new ItemStack(category.material());
             ItemMeta meta = itemStack.getItemMeta();
             meta.displayName(Component.text(category.name()));
@@ -52,8 +50,8 @@ public class AdminShopMenu extends Menu {
             content.put(slot, new ItemBuilder(this, itemStack)
                     .setItemId(category.id())
                     .setOnClick(e -> {
-                        shopManager.currentCategory.put(getOwner().getUniqueId(), category.id());
-                        new AdminShopCategoryMenu(getOwner(), shopManager, category.id()).open();
+                        AdminShopManager.currentCategory.put(getOwner().getUniqueId(), category.id());
+                        new AdminShopCategoryMenu(getOwner(), category.id()).open();
                     }));
 
             slot += 2;
