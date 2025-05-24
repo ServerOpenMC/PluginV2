@@ -1,7 +1,7 @@
 package fr.openmc.core.commands.debug;
 
-import fr.openmc.core.utils.chronometer.Chronometer;
-import fr.openmc.core.utils.chronometer.ChronometerType;
+import fr.openmc.api.chronometer.Chronometer;
+import fr.openmc.api.chronometer.ChronometerType;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;

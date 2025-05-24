@@ -3,6 +3,7 @@ package fr.openmc.core.features.friend;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -130,7 +131,7 @@ public class FriendCommand {
             player.sendMessage(header);
             for (int i = startIndex; i < endIndex; i++) {
                 UUID friendUUID = friendsList.get(i);
-                OfflinePlayer friend = Bukkit.getOfflinePlayer(friendUUID);
+                OfflinePlayer friend = CacheOfflinePlayer.getOfflinePlayer(friendUUID);
 
                 try {
                     Timestamp timestamp = friendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());

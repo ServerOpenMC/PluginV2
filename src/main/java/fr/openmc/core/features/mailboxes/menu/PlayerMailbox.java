@@ -3,6 +3,7 @@ package fr.openmc.core.features.mailboxes.menu;
 
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -55,7 +56,7 @@ public class PlayerMailbox extends PaginatedMailbox<LetterHead> {
                     UUID senderUUID = UUID.fromString(result.getString("sender_id"));
                     int itemsCount = result.getInt("items_count");
                     LocalDateTime sentAt = result.getTimestamp("sent_at").toLocalDateTime();
-                    pageItems.add(new LetterHead(Bukkit.getOfflinePlayer(senderUUID), id, itemsCount, sentAt));
+                    pageItems.add(new LetterHead(CacheOfflinePlayer.getOfflinePlayer(senderUUID), id, itemsCount, sentAt));
                 }
                 return true;
             }

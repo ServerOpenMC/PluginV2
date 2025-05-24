@@ -7,6 +7,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomeIcons;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -61,28 +62,36 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     @Override
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
+        Player player = getOwner();
 
-        for (int i = 0; i < HomeIcons.values().length; i++) {
-            HomeIcons homeIcon = HomeIcons.values()[i];
-            items.add(new ItemBuilder(this, CustomStack.getInstance(homeIcon.getId()).getItemStack(), itemMeta -> {
-                itemMeta.setDisplayName("§a" + homeIcon.getName());
-                itemMeta.setLore(List.of(
-                        ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône"
-                ));
+        try {
+            for (int i = 0; i < HomeIcons.values().length; i++) {
+                HomeIcons homeIcon = HomeIcons.values()[i];
+                items.add(new ItemBuilder(this, CustomItemRegistry.getByName(homeIcon.getId()).getBest(), itemMeta -> {
+                    itemMeta.setDisplayName("§a" + homeIcon.getName());
+                    itemMeta.setLore(List.of(
+                            ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône"
+                    ));
 
-                if(home.getIcon().equals(homeIcon)) {
-                    itemMeta.addEnchant(Enchantment.SHARPNESS, 5, false);
-                    itemMeta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
-                }
-            }).setOnClick(event -> {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    home.setIcon(homeIcon);
-                    MessagesManager.sendMessage(getOwner(), Component.text("§aL'icône de votre home §2"+ home.getName() + " §achangée avec succès !"), Prefix.HOME, MessageType.SUCCESS, true);
-                });
-                getOwner().closeInventory();
-            }));
+                    if(home.getIcon().equals(homeIcon)) {
+                        itemMeta.addEnchant(Enchantment.SHARPNESS, 5, false);
+                        itemMeta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
+                    }
+                }).setOnClick(event -> {
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                        home.setIcon(homeIcon);
+                        MessagesManager.sendMessage(player, Component.text("§aL'icône de votre home §2"+ home.getName() + " §achangée avec succès !"), Prefix.HOME, MessageType.SUCCESS, true);
+                    });
+                    player.closeInventory();
+                }));
+            }
+
+            return items;
+        } catch (Exception e) {
+            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            e.printStackTrace();
         }
-
         return items;
     }
 
@@ -90,11 +99,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange").getItemStack(), itemMeta -> itemMeta.setDisplayName("§7Retour")).setBackButton());
+        map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§7Retour")).setBackButton());
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
         map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
-        map.put(53, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_invisible").getItemStack(), itemMeta -> itemMeta.setDisplayName("§7")));
+        map.put(53, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_invisible").getBest(), itemMeta -> itemMeta.setDisplayName("§7")));
 
         return map;
     }

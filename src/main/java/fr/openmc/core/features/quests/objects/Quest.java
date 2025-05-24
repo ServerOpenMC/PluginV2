@@ -437,50 +437,48 @@ public class Quest {
     public void incrementProgress(UUID playerUUID) {
         incrementProgress(playerUUID, 1);
     }
-	
-	/**
-	 * Increment the progress of the quest for a player by a specified amount.
-	 * <p>
+
+    /**
+     * Increment the progress of the quest for a player by a specified amount.
+     * <p>
      * This method will check if the quest is fully completed, and if not, it will increase the progress.
-	 * @param playerUUID The UUID of the player
-	 * @param amount The amount to increment the progress by
-	 */
-	public void incrementProgress(UUID playerUUID, int amount) {
-		if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
-			this.progressLock.put(playerUUID, true);
-			
-			try {
-				Player onlinePlayer = Bukkit.getPlayer(playerUUID);
-				if (onlinePlayer != null && onlinePlayer.isOnline() && !onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)) return;
-				int currentProgress = this.progress.getOrDefault(playerUUID, 0);
-				int newProgress = currentProgress + amount;
-				int currentTarget = this.getCurrentTarget(playerUUID);
-				
-				if (newProgress >= currentTarget) newProgress = currentTarget;
-				
-				if (currentProgress < currentTarget) {
-					this.progress.put(playerUUID, newProgress);
-					this.checkTierCompletion(playerUUID);
-					
-					if (onlinePlayer != null && onlinePlayer.isOnline()) {
-						if (this.isLargeActionBar && newProgress % 50 != 0) return;
-						Component actionBar = Component.text()
-								.append(MiniMessage.miniMessage().deserialize(Prefix.QUEST.getPrefix()))
-								.append(Component.text(" » ", NamedTextColor.DARK_GRAY))
-								.append(Component.text("Progression de la quête ", NamedTextColor.GRAY))
-								.append(Component.text(this.name, NamedTextColor.WHITE))
-								.append(Component.text(" : ", NamedTextColor.GRAY))
-								.append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
-								.build();
-						
-						onlinePlayer.sendActionBar(actionBar);
-					}
-				}
-			} finally {
-				this.progressLock.put(playerUUID, false);
-			}
-		}
-	}
+     * @param playerUUID The UUID of the player
+     * @param amount The amount to increment the progress by
+     */
+    public void incrementProgress(UUID playerUUID, int amount) {
+        if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
+            this.progressLock.put(playerUUID, true);
+            
+            try {
+                Player onlinePlayer = Bukkit.getPlayer(playerUUID);
+                if (onlinePlayer != null && onlinePlayer.isOnline() && !onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)) return;
+                int currentProgress = this.progress.getOrDefault(playerUUID, 0);
+                int newProgress = currentProgress + amount;
+                int currentTarget = this.getCurrentTarget(playerUUID);
+
+                if (newProgress >= currentTarget) newProgress = currentTarget;
+
+                if (currentProgress < currentTarget) {
+                    this.progress.put(playerUUID, newProgress);
+                    this.checkTierCompletion(playerUUID);
+                    if (onlinePlayer != null && onlinePlayer.isOnline()) {
+                        if (this.isLargeActionBar && newProgress % 50 != 0) return;
+                        Component actionBar = Component.text()
+                                .append(MiniMessage.miniMessage().deserialize(Prefix.QUEST.getPrefix()))
+                                .append(Component.text(" » ", NamedTextColor.DARK_GRAY))
+                                .append(Component.text("Progression de la quête ", NamedTextColor.GRAY))
+                                .append(Component.text(this.name, NamedTextColor.WHITE))
+                                .append(Component.text(" : ", NamedTextColor.GRAY))
+                                .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
+                                .build();
+                        onlinePlayer.sendActionBar(actionBar);
+                    }
+                }
+            } finally {
+                this.progressLock.put(playerUUID, false);
+            }
+        }
+    }
 
     /**
      * Increment the progress of a specific step of the current tier for a player.
