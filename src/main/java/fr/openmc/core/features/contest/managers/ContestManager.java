@@ -3,6 +3,7 @@ package fr.openmc.core.features.contest.managers;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.ContestData;
+import fr.openmc.core.features.contest.ContestEndEvent;
 import fr.openmc.core.features.contest.ContestPlayer;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
@@ -38,6 +39,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -393,21 +397,21 @@ public class ContestManager {
         points2Taux = Integer.parseInt(df.format(points2Taux));
 
         // 1ERE PAGE - STATS GLOBAL
-        String campWinner = null;
-        NamedTextColor colorWinner = null;
-        int voteWinnerTaux = 0;
-        int pointsWinnerTaux = 0;
-
-        String campLooser = null;
-        NamedTextColor colorLooser = null;
-        int voteLooserTaux = 0;
-        int pointsLooserTaux = 0;
+        String campWinner;
+        NamedTextColor colorWinner;
+        int voteWinnerTaux;
+        int pointsWinnerTaux;
+        
+        String campLooser;
+        NamedTextColor colorLooser;
+        int voteLooserTaux;
+        int pointsLooserTaux;
 
         if (points1 > points2) {
             campWinner = camp1Name;
             colorWinner = color1;
-            voteWinnerTaux=vote1Taux;
-            pointsWinnerTaux=points1Taux;
+            voteWinnerTaux = vote1Taux;
+            pointsWinnerTaux = points1Taux;
 
             campLooser = camp2Name;
             colorLooser = color2;
@@ -474,6 +478,9 @@ public class ContestManager {
         });
 
         baseBookMeta.addPages(leaderboard[0]);
+        
+        List<OfflinePlayer> winners = new ArrayList<>();
+        List<OfflinePlayer> losers = new ArrayList<>();
 
         // STATS PERSO + REWARDS
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
@@ -510,7 +517,6 @@ public class ContestManager {
             int aywenite = 0;
             double multiplicator = contestPlayerManager.getMultiplicatorFromRank(contestPlayerManager.getRankContestFromOfflineInt(player));
             if(contestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
-
                 // Gagnant - ARGENT
                 int moneyMin = 10000;
                 int moneyMax = 12000;
@@ -527,6 +533,9 @@ public class ContestManager {
                 ayweniteMax = (int) (ayweniteMax * multiplicator);
                 Random randomAwyenite = new Random();
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
+                
+                // Gagnant - EVENT
+                winners.add(player);
             } else {
                 // Perdant - ARGENT
                 int moneyMin = 2000;
@@ -545,6 +554,9 @@ public class ContestManager {
                 ayweniteMax = (int) (ayweniteMax * multiplicator);
                 Random randomAwyenite = new Random();
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
+                
+                // Perdant - EVENT
+                losers.add(player);
             }
             // PRINT REWARDS
 
@@ -567,6 +579,12 @@ public class ContestManager {
             playerItemsMap.put(player, rewards);
             rank.getAndIncrement();
         });
+        
+        try {
+            Bukkit.getServer().getPluginManager().callEvent(new ContestEndEvent(data, winners, losers));
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
