@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
@@ -31,7 +32,6 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -87,6 +87,7 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager(this);
         new AdminShopManager(this);
+        new AccountDetectionManager(this);
 
         if (!OMCPlugin.isUnitTestVersion()){
             new ShopBlocksManager(this);
