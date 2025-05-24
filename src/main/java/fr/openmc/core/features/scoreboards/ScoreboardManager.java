@@ -17,6 +17,7 @@ import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -41,6 +42,9 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ScoreboardManager implements Listener {
+    @Getter
+    static ScoreboardManager instance;
+
     public Set<UUID> disabledPlayers = new HashSet<>();
     public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
     private final boolean canShowLogo = PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder();
@@ -48,6 +52,8 @@ public class ScoreboardManager implements Listener {
     private GlobalTeamManager globalTeamManager = null;
 
     public ScoreboardManager() {
+        instance = this;
+
         OMCPlugin.registerEvents(this);
         CommandsManager.getHandler().register(this);
         Bukkit.getScheduler().runTaskTimer(plugin, this::updateAllScoreboards, 0L, 20L * 5); //20x5 = 5s
@@ -103,7 +109,7 @@ public class ScoreboardManager implements Listener {
         return scoreboard;
     }
 
-    private void updateAllScoreboards() {
+    public void updateAllScoreboards() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (disabledPlayers.contains(player.getUniqueId())) continue;
 

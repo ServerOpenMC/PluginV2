@@ -2,9 +2,14 @@ package fr.openmc.core.features.city.mayor.perks.basic;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,9 +18,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class GPSTrackerPerk implements Listener {
+
+    private final Map<UUID, City> lastCityMap = new HashMap<>();
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
@@ -24,34 +34,61 @@ public class GPSTrackerPerk implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        // ça sert a rien de lancer ça si on change pas de chunk
         if (event.getFrom().getChunk().equals(event.getTo().getChunk())) return;
 
-        City playerCity = CityManager.getPlayerCity(uuid);
-        if (playerCity == null) return;
-
-
-        City currentCity = CityManager.getCityFromChunk(
+        City newCity = CityManager.getCityFromChunk(
                 event.getTo().getChunk().getX(),
                 event.getTo().getChunk().getZ()
         );
-        if (currentCity == null) return;
 
-        if (!PerkManager.hasPerk(currentCity.getMayor(), Perks.GPS_TRACKER.getId())) return;
+        City oldCity = lastCityMap.get(uuid);
 
-        player.removePotionEffect(PotionEffectType.GLOWING);
+        if (Objects.equals(oldCity, newCity)) return;
 
-        if (currentCity != null) {
-            if (!currentCity.equals(playerCity)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, PotionEffect.INFINITE_DURATION, 0, false, false));
-            }
+        lastCityMap.put(uuid, newCity);
+
+        if (oldCity != null && hasGpsTrackerPerk(oldCity) && !oldCity.isMember(player)) {
+            removeGlowing(player);
         }
+
+        if (newCity != null && hasGpsTrackerPerk(newCity) && !newCity.isMember(player)) {
+            applyGlowing(player);
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("§cVous venez d'entrer dans la ville §e" + newCity.getName() + "§c qui dispose du §e§lGPS Tracker§c ! Soyez sur vos gardes."),
+                    Prefix.MAYOR,
+                    MessageType.INFO,
+                    false
+            );
+        } else {
+            removeGlowing(player);
+        }
+    }
+
+    private boolean hasGpsTrackerPerk(City city) {
+        Mayor mayor = city.getMayor();
+        return mayor != null && PerkManager.hasPerk(mayor, Perks.GPS_TRACKER.getId());
+    }
+
+    private void applyGlowing(Player player) {
+        player.addPotionEffect(new PotionEffect(
+                PotionEffectType.GLOWING,
+                Integer.MAX_VALUE,
+                0,
+                false,
+                false,
+                false
+        ));
+    }
+
+    private void removeGlowing(Player player) {
+        player.removePotionEffect(PotionEffectType.GLOWING);
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-
-        player.removePotionEffect(PotionEffectType.GLOWING);
+        lastCityMap.remove(player.getUniqueId());
+        removeGlowing(player);
     }
 }

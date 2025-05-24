@@ -11,10 +11,12 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -71,10 +73,12 @@ public class CityListMenu extends PaginatedMenu {
 	public @NotNull List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
+			String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
+			NamedTextColor mayorColor = city.getMayor() == null ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
 			itemMeta.displayName(Component.text("§a" + city.getCityName()));
 			itemMeta.lore(List.of(
 					Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
-					Component.text("§7Maire : ").append(Component.text(city.getMayor().getName()).color(city.getMayor().getMayorColor()).decoration(TextDecoration.ITALIC, false)),
+					Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
 					Component.text("§bPopulation : " + city.getMembers().size()),
 					Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")),
 					Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
@@ -82,7 +86,12 @@ public class CityListMenu extends PaginatedMenu {
 		})));
 		return items;
 	}
-	
+
+	@Override
+	public List<Integer> getTakableSlot() {
+		return List.of();
+	}
+
 	@Override
 	public Map<Integer, ItemStack> getButtons() {
 		Map<Integer, ItemStack> map = new HashMap<>();
@@ -114,6 +123,11 @@ public class CityListMenu extends PaginatedMenu {
 		if (city != null) {
 			new CityListDetailsMenu(getOwner(), city).open();
 		}
+	}
+
+	@Override
+	public void onClose(InventoryCloseEvent event) {
+		//empty
 	}
 	
 	/**
