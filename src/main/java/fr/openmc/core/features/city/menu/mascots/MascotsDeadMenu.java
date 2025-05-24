@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -117,6 +118,16 @@ public class MascotsDeadMenu extends Menu {
             e.printStackTrace();
         }
         return map;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 
     private boolean hasRequiredItems(Player player, Map<Material, Integer> requiredItems) {

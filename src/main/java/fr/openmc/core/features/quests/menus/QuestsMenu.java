@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -123,6 +124,16 @@ public class QuestsMenu extends Menu {
         }
 
         return content;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 
     private void updateInventory() {
