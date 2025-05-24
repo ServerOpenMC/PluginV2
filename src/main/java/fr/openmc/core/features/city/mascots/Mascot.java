@@ -10,16 +10,16 @@ import java.util.UUID;
 @Getter
 public class Mascot {
 
-    private String cityUuid;
-    private UUID mascotUuid;
+    private String cityUUID;
+    private UUID mascotUUID;
     private int level;
     private boolean immunity;
     private boolean alive;
     private Chunk chunk;
 
-    public Mascot(String cityUuid, UUID mascotUuid, int level, boolean immunity, boolean alive, Chunk chunk) {
-        this.cityUuid = cityUuid;
-        this.mascotUuid = mascotUuid;
+    public Mascot(String cityUUID, UUID mascotUUID, int level, boolean immunity, boolean alive, Chunk chunk) {
+        this.cityUUID = cityUUID;
+        this.mascotUUID = mascotUUID;
         this.level = level;
         this.immunity = immunity;
         this.alive = alive;

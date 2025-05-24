@@ -8,7 +8,6 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -28,13 +27,21 @@ public class CityMessages {
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
-        int power = CityManager.getCityPowerPoints(city.getUUID());
+        int power = city.getPowerPoints();
 
-        String type = CityManager.getCityType(city.getUUID());
-        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+        CityType type = city.getType();
+        String typeString;
+        if (type == CityType.WAR) {
+            typeString = "Guerre";
+        } else if (type == CityType.PEACE) {
+            typeString = "Paix";
+        } else {
+            typeString = "Inconnu";
+        }
+        Mascot mascot = city.getMascot();
         if (mascot!=null){
             LivingEntity mob = MascotUtils.loadMascot(mascot);
-            if (MascotUtils.getMascotState(city.getUUID())){
+            if (mascot.isAlive()) {
                 mascotLife = String.valueOf(mob.getHealth());
             }
         }
@@ -48,11 +55,11 @@ public class CityMessages {
         sendLine(sender, "Maire", mayorName);
         sendLine(sender, "Habitants", String.valueOf(citizens));
         sendLine(sender, "Superficie", String.valueOf(area));
-        if (type!=null && type.equals("war")){
+        if (type != null && type == CityType.WAR) {
             sendLine(sender, "Puissance", String.valueOf(power));
         }
         sendLine(sender, "Vie de la Mascotte", mascotLife);
-        sendLine(sender, "Type", type);
+        sendLine(sender, "Type", typeString);
 
         String money = EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon();
         if (sender instanceof Player player) {
