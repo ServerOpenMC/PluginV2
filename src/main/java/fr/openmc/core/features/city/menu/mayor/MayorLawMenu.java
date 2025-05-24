@@ -101,7 +101,7 @@ public class MayorLawMenu extends Menu {
                         DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-pvp", COOLDOWN_TIME_PVP);
 
                         law.setPvp(!law.isPvp());
-                        String messageLawPVP = law.isPvp() ? "§7Vous avez §cdésactivé §7le PVP dans votre ville" : "§7Vous avez §4activé §7le PVP dans votre ville";
+                        String messageLawPVP = !law.isPvp() ? "§7Vous avez §cdésactivé §7le PVP dans votre ville" : "§7Vous avez §4activé §7le PVP dans votre ville";
                         MessagesManager.sendMessage(player, Component.text(messageLawPVP), Prefix.MAYOR, MessageType.SUCCESS, false);
 
                         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
@@ -352,6 +352,17 @@ public class MayorLawMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 new MayorMandateMenu(player).open();
             }));
+
+            List<Component> loreInfo = Arrays.asList(
+                    Component.text("§7Apprenez en plus sur les Maires !"),
+                    Component.text("§7Le déroulement..., Les éléctions, ..."),
+                    Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
+            );
+
+            inventory.put(26, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+                itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+                itemMeta.lore(loreInfo);
+            }).setNextMenu(new MoreInfoMenu(getOwner())));
 
             return inventory;
         } catch (Exception e) {

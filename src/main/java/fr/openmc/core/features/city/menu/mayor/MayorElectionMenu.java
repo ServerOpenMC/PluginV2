@@ -29,10 +29,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
@@ -178,6 +175,18 @@ public class MayorElectionMenu extends Menu {
                 CityMenu menu = new CityMenu(player);
                 menu.open();
             }));
+
+
+            List<Component> loreInfo = Arrays.asList(
+                    Component.text("§7Apprenez en plus sur les Maires !"),
+                    Component.text("§7Le déroulement..., Les éléctions, ..."),
+                    Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
+            );
+
+            inventory.put(26, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+                itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+                itemMeta.lore(loreInfo);
+            }).setNextMenu(new MoreInfoMenu(getOwner())));
 
 
             return inventory;

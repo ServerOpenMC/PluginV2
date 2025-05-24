@@ -45,29 +45,52 @@ public class ProtectionListener implements Listener {
         Boolean canBypass = playerCanBypass.get(player.getUniqueId());
         if (canBypass != null && canBypass) return;
 
-        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
-        City cityz = CityManager.getPlayerCity(player.getUniqueId()); // on regarde la city du membre
+        City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+        if (cityAtLoc == null) return;
 
-        if (city == null) return;
+        String cityType = CityManager.getCityType(cityAtLoc.getUUID());
+        boolean isMember = cityAtLoc.isMember(player);
 
-        if (city.isMember(player)) return;
-        if (cityz!=null){
-            CityType cityType = city.getType();
-            CityType cityzType = cityz.getType();
-            if (cityType != null && cityzType != null && cityType.equals(CityType.WAR) && cityzType.equals(CityType.WAR)) {
-                return;
-            }
+        if ("war".equals(cityType)) {
+            return;
         }
 
+        if (!isMember) {
+            event.setCancelled(true);
+
+            long now = System.currentTimeMillis();
+            long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
+            if (now - last >= ERROR_MESSAGE_COOLDOWN) {
+                lastErrorMessageTime.put(player.getUniqueId(), now);
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("Vous n'avez pas l'autorisation de faire ceci !"),
+                        Prefix.CITY,
+                        MessageType.ERROR,
+                        0.6F,
+                        true
+                );
+            }
+        }
+    }
+
+    private void cancelWithMessage(Player player, Cancellable event) {
         event.setCancelled(true);
 
         UUID uuid = player.getUniqueId();
         long now = System.currentTimeMillis();
-        long lastTime = lastErrorMessageTime.getOrDefault(uuid, 0L);
+        long last = lastErrorMessageTime.getOrDefault(uuid, 0L);
 
-        if (now - lastTime >= ERROR_MESSAGE_COOLDOWN) {
+        if (now - last >= ERROR_MESSAGE_COOLDOWN) {
             lastErrorMessageTime.put(uuid, now);
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas l'autorisation de faire ceci !"), Prefix.CITY, MessageType.ERROR, 0.6F, true);
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas l'autorisation de faire ceci !"),
+                    Prefix.CITY,
+                    MessageType.ERROR,
+                    0.6F,
+                    true
+            );
         }
     }
 
@@ -80,7 +103,6 @@ public class ProtectionListener implements Listener {
 
         event.setCancelled(true);
     }
-
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onFoodConsume(PlayerItemConsumeEvent event) {
@@ -141,16 +163,45 @@ public class ProtectionListener implements Listener {
     }
 
     @EventHandler
-    public void onDamageEntity(EntityDamageByEntityEvent event) {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) return;
-        if (!(event.getDamager() instanceof Player damager)) return;
 
-        Entity entity = event.getEntity();
-        if ((entity instanceof Player)) return;
-        if (MascotUtils.isMascot(entity)) return;
+        Entity victim = event.getEntity();
+        Entity damager = event.getDamager();
 
-        Location loc = entity.getLocation();
-        verify(damager, event, loc);
+        Player attacker = null;
+        if (damager instanceof Player p) {
+            attacker = p;
+        } else if (damager instanceof Projectile proj && proj.getShooter() instanceof Player shooter) {
+            attacker = shooter;
+        }
+
+        if (victim instanceof Player victimPlayer && attacker != null) {
+            Location loc = victimPlayer.getLocation();
+            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+
+            if (city != null
+                    && city.isMember(victimPlayer)
+                    && city.isMember(attacker)) {
+
+                if (!city.getLaw().isPvp()) {
+                    event.setCancelled(true);
+                    return;
+                }
+                return;
+            }
+        }
+
+        if (victim instanceof Player victimPlayer) {
+            verify(victimPlayer, event, victimPlayer.getLocation());
+            if (event.isCancelled()) return;
+        }
+
+        if (MascotUtils.isMascot(victim)) return;
+
+        if (attacker != null) {
+            verify(attacker, event, victim.getLocation());
+        }
     }
 
     @EventHandler
@@ -178,6 +229,11 @@ public class ProtectionListener implements Listener {
 
         verify(event.getPlayer(), event, rightClicked.getLocation());
     }
+
+//    @EventHandler
+//    public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+//        verify(event.getPlayer(), event, event.getRightClicked().getLocation());
+//    }
 
     @EventHandler
     void onFish(PlayerFishEvent event) { verify(event.getPlayer(), event, event.getHook().getLocation()); }
@@ -274,14 +330,6 @@ public class ProtectionListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onEntityDamageByProjectile(EntityDamageByEntityEvent event) {
-        if (event.isCancelled()) return;
-        if (!(event.getDamager() instanceof Projectile projectile)) return;
-        if (!(projectile.getShooter() instanceof Player player)) return;
-
-        verify(player, event, event.getEntity().getLocation());
-    }
 
     @EventHandler
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
