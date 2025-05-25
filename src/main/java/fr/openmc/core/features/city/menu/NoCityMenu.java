@@ -115,7 +115,7 @@ public class NoCityMenu extends Menu {
                                 String input = result.getLine(0);
 
                             for (City city : CityManager.getCities()){
-                                String cityName = city.getCityName();
+                                String cityName = city.getName();
                                 if (cityName!=null && cityName.equalsIgnoreCase(input)){
                                     MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
                                     return Collections.emptyList();

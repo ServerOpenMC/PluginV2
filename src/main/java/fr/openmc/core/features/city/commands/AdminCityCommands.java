@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -314,18 +315,18 @@ public class AdminCityCommands {
             return;
         }
 
-        String city_uuid = city.getUUID();
+        Mascot mascot = city.getMascot();
 
-        if (!MascotUtils.getMascotState(city_uuid)){
+        if (!mascot.isAlive()) {
             MessagesManager.sendMessage(sender, Component.text("§cLa mascotte est en immunité forcée"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        if (MascotUtils.getMascotImmunity(city_uuid)){
-            MascotUtils.changeMascotImmunity(city_uuid, false);
+        if (mascot.isImmunity()) {
+            MascotUtils.changeMascotImmunity(city.getUUID(), false);
         }
-        DynamicCooldownManager.clear(city_uuid, "mascot:immunity");
-        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+        DynamicCooldownManager.clear(city.getUUID(), "mascot:immunity");
+        UUID mascotUUID = mascot.getMascotUUID();
         if (mascotUUID!=null){
             Entity mob = Bukkit.getEntity(mascotUUID);
             if (mob!=null) mob.setGlowing(false);

@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
@@ -75,12 +75,12 @@ public class CityListMenu extends PaginatedMenu {
 		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
 			String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
 			NamedTextColor mayorColor = city.getMayor() == null ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
-			itemMeta.displayName(Component.text("§a" + city.getCityName()));
+			itemMeta.displayName(Component.text("§a" + city.getName()));
 			itemMeta.lore(List.of(
 					Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
 					Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
 					Component.text("§bPopulation : " + city.getMembers().size()),
-					Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")),
+					Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")),
 					Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
 			));
 		})));
@@ -191,7 +191,7 @@ public class CityListMenu extends PaginatedMenu {
 	 * @param cities The list of cities to sort.
 	 */
 	private void sortByName(List<City> cities) {
-		cities.sort((o1, o2) -> o1.getCityName().compareToIgnoreCase(o2.getCityName()));
+		cities.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 	}
 	
 	/**
@@ -219,9 +219,9 @@ public class CityListMenu extends PaginatedMenu {
 	 */
 	private void sortByPeaceWar(List<City> cities) {
 		cities.sort((o1, o2) -> {
-			String type1 = CityManager.getCityType(o1.getUUID());
-			String type2 = CityManager.getCityType(o2.getUUID());
-			return type1.equals(type2) ? 0 : type1.equals("war") ? - 1 : 1;
+			CityType type1 = o1.getType();
+			CityType type2 = o2.getType();
+			return type1.equals(type2) ? 0 : type1.equals(CityType.WAR) ? -1 : 1;
 		});
 	}
 	

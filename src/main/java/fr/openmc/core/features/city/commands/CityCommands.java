@@ -7,15 +7,11 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityMessages;
+import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
-import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
@@ -59,7 +55,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fr.openmc.core.features.city.CityManager.getCityType;
 import static fr.openmc.core.features.city.conditions.CityCreateConditions.AYWENITE_CREATE;
 import static fr.openmc.core.features.city.conditions.CityCreateConditions.MONEY_CREATE;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
@@ -71,6 +66,8 @@ public class CityCommands {
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     private static ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+
+    public static Map<UUID, Map<String, CityType>> futurCreateCity = new HashMap<>();
 
     private Location[] getCorners(Player player) {
         World world = player.getWorld();
@@ -209,10 +206,10 @@ public class CityCommands {
         if (!CityKickCondition.canCityKickPlayer(city, sender, player)) return;
 
         if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Tu as exclu "+player.getName()+" de la ville "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + player.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
             if (player.isOnline()) {
-                MessagesManager.sendMessage((Player) player, Component.text("Tu as été exclu de la ville "+ city.getCityName()), Prefix.CITY, MessageType.INFO, true);
+                MessagesManager.sendMessage((Player) player, Component.text("Tu as été exclu de la ville " + city.getName()), Prefix.CITY, MessageType.INFO, true);
             }
         } else {
             MessagesManager.sendMessage(sender, Component.text("Impossible d'exclure "+player.getName()+" de la ville"), Prefix.CITY, MessageType.ERROR, false);
@@ -247,7 +244,7 @@ public class CityCommands {
         }
         MessagesManager.sendMessage(sender, Component.text("Tu as invité "+target.getName()+" dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
         MessagesManager.sendMessage(target,
-                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getCityName() + "\n")
+                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getName() + "\n")
                         .append(Component.text("§8Faite §a/city accept §8pour accepter\n").clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
                         .append(Component.text("§8Faite §c/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
                 Prefix.CITY, MessageType.INFO, false);
@@ -343,7 +340,7 @@ public class CityCommands {
 
         if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
             City chunkCity = CityManager.getCityFromChunk(chunkX, chunkZ);
-            String cityName = chunkCity.getCityName();
+            String cityName = chunkCity.getName();
             MessagesManager.sendMessage(sender, Component.text("Ce chunk est déjà claim par " + cityName + "."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -405,7 +402,7 @@ public class CityCommands {
         }
 
         for (City city : CityManager.getCities()){
-            String cityName = city.getCityName();
+            String cityName = city.getName();
             if (cityName!=null && cityName.equalsIgnoreCase(name)){
                 MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
                 return;
@@ -417,7 +414,7 @@ public class CityCommands {
             return;
         }
 
-        if (MascotsListener.futurCreateCity.containsKey(player.getUniqueId())){
+        if (futurCreateCity.containsKey(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Vous êtes déjà entrain de créer une ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -448,12 +445,10 @@ public class CityCommands {
             return;
         }
 
-        String cityTypeActuel = getCityType(city.getUUID());
-        String cityTypeAfter = "";
-        if (cityTypeActuel != null) {
-            cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
-            cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix§7" : "§cen guerre§7";
-        }
+        String cityTypeActuel;
+        String cityTypeAfter;
+        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
         ConfirmMenu menu = new ConfirmMenu(sender,
                 () -> {
@@ -484,8 +479,10 @@ public class CityCommands {
             return;
         }
 
+        Mascot mascot = city.getMascot();
+
         if (MascotUtils.mascotsContains(city.getUUID())) {
-            if (!MascotUtils.getMascotState(city.getUUID())) {
+            if (!mascot.isAlive()) {
                 MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -494,15 +491,12 @@ public class CityCommands {
             MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        CityManager.changeCityType(city.getUUID());
+        city.changeType();
         DynamicCooldownManager.use(city.getUUID(), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
-
-
-        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
 
         if (mascot != null) {
             LivingEntity mob = MascotUtils.loadMascot(mascot);
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
+            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
             double lastHealth = mascotsLevels.getHealth();
             int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", "")) - 2;
@@ -510,7 +504,7 @@ public class CityCommands {
                 newLevel = 1;
             }
             MascotUtils.setMascotLevel(city.getUUID(), newLevel);
-            mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
+            mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
             try {
                 int maxHealth = mascotsLevels.getHealth();
@@ -524,12 +518,10 @@ public class CityCommands {
                 exception.printStackTrace();
             }
 
-            String cityTypeActuel = getCityType(city.getUUID());
-            String cityTypeAfter = "";
-            if (cityTypeActuel != null) {
-                cityTypeActuel = cityTypeActuel.equals("war") ? "§cen guerre§7" : "§aen paix§7";
-                cityTypeAfter = cityTypeActuel.equals("war") ? "§aen paix§7" : "§cen guerre§7";
-            }
+            String cityTypeActuel;
+            String cityTypeAfter;
+            cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+            cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
             MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
 
@@ -613,7 +605,7 @@ public class CityCommands {
 
     // ACTIONS
 
-    public static boolean createCity(Player player, String name, String type, Chunk origin) {
+    public static boolean createCity(Player player, String name, CityType type, Chunk origin) {
 
         if (!CityCreateConditions.canCityCreate(player)){
             MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -759,7 +751,7 @@ public class CityCommands {
     public static void leaveCity(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Tu as quitté "+ city.getCityName()), Prefix.CITY, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(player, Component.text("Tu as quitté " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
         } else {
             MessagesManager.sendMessage(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
         }
