@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
@@ -91,6 +92,7 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager(this);
         new AdminShopManager(this);
+        new AccountDetectionManager(this);
 
         if (!OMCPlugin.isUnitTestVersion()){
             new ShopBlocksManager(this);
