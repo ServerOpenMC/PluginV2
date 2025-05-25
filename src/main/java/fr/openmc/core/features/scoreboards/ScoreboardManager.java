@@ -10,6 +10,7 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.limbo.LimboManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.LuckPermsApi;
@@ -21,7 +22,6 @@ import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -47,10 +47,10 @@ public class ScoreboardManager implements Listener {
     static ScoreboardManager instance;
 
     public Set<UUID> disabledPlayers = new HashSet<>();
-    public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder();
+    public static HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
+    private static final boolean canShowLogo = PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder();
     OMCPlugin plugin = OMCPlugin.getInstance();
-    private GlobalTeamManager globalTeamManager = null;
+    private static GlobalTeamManager globalTeamManager = null;
 
     public ScoreboardManager() {
         instance = this;
@@ -96,16 +96,22 @@ public class ScoreboardManager implements Listener {
         }
     }
 
-    private Scoreboard createNewScoreboard(Player player) {
+    public static Scoreboard createNewScoreboard(Player player) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-        Objective objective;
-        if (canShowLogo) {
-            objective = scoreboard.registerNewObjective("sb_aywen", "dummy", PlaceholderAPI.setPlaceholders(player, "%img_openmc%"));
-        } else {
-            objective = scoreboard.registerNewObjective("sb_aywen", "dummy", Component.text("OPENMC").decorate(TextDecoration.BOLD).color(NamedTextColor.LIGHT_PURPLE));
-        }
-        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
+        String displayName;
+
+        if (canShowLogo && LimboManager.isInLimbo(player.getUniqueId())) {
+            displayName = PlaceholderAPI.setPlaceholders(player, "%img_dream_openmc%");
+        } else if (canShowLogo) {
+            displayName = PlaceholderAPI.setPlaceholders(player, "%img_openmc%");
+        } else {
+            displayName = "OPENMC";
+        }
+
+
+        Objective objective = scoreboard.registerNewObjective("sb_aywen", "dummy", Component.text(displayName));
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         updateScoreboard(player, scoreboard, objective);
         return scoreboard;
     }
@@ -116,6 +122,10 @@ public class ScoreboardManager implements Listener {
 
             updateScoreboard(player);
         }
+    }
+
+    public static void removePlayerScoreboard(Player player) {
+        playerScoreboards.remove(player.getUniqueId());
     }
 
     private void updateScoreboard(Player player) {
@@ -134,7 +144,7 @@ public class ScoreboardManager implements Listener {
         updateScoreboard(player, scoreboard, objective);
     }
 
-    private void updateScoreboard(Player player, Scoreboard scoreboard, Objective objective) {
+    private static void updateScoreboard(Player player, Scoreboard scoreboard, Objective objective) {
         /*
          * 07 |
          * 06 | Username
@@ -159,6 +169,13 @@ public class ScoreboardManager implements Listener {
             return;
         }
 
+        if (LimboManager.isInLimbo(player.getUniqueId())) {
+            objective.getScore("§7").setScore(3);
+            objective.getScore("§8Faites §1/limbo").setScore(2);
+            objective.getScore("   ").setScore(1);
+            objective.getScore("§1      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
+            return;
+        }
         objective.getScore("§7").setScore(12);
         
         objective.getScore("§8• §fNom: §7"+player.getName()).setScore(11);

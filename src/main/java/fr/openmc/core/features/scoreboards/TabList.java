@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import fr.openmc.core.features.limbo.LimboManager;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
@@ -36,7 +37,7 @@ public class TabList {
     public void updateTabList(Player player) {
         int visibleOnlinePlayers = 0;
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (p.canSee(player)) {
+            if (p.canSee(player) && !LimboManager.isInLimbo(player.getUniqueId())) {
                 visibleOnlinePlayers++;
             }
         }
