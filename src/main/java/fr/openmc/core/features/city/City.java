@@ -12,7 +12,6 @@ import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
-import fr.openmc.core.features.city.menu.ChestMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
@@ -36,24 +35,27 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.*;
 
 public class City {
+    private String name;
     private final String cityUUID;
-    private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
     private Set<UUID> members = new HashSet<>();
     private Double balance = Double.valueOf(0); // set default value cause if its null, error in updateBalance
-    private String name;
-    private Integer chestPages;
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
-    private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
+    private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
     private MayorManager mayorManager;
     private CityType cachedType;
     private Integer cachedPowerPoints;
 
+    private Integer chestPages;
+    private HashMap<Integer, ItemStack[]> chestContent = new HashMap<>();
     @Getter @Setter private UUID chestWatcher;
-    @Getter @Setter private ChestMenu chestMenu;
 
     public City(String uuid) {
         this.cityUUID = uuid;
