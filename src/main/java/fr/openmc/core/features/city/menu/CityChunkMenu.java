@@ -275,7 +275,7 @@ public class CityChunkMenu extends Menu {
         return new ItemBuilder(this, material, itemMeta -> {
             itemMeta.displayName(Component.text("§9Claim de votre ville"));
             itemMeta.lore(List.of(
-                    Component.text("§7Ville : §d" + city.getCityName()),
+                    Component.text("§7Ville : §d" + city.getName()),
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
             ));
         });
@@ -285,7 +285,7 @@ public class CityChunkMenu extends Menu {
         return new ItemBuilder(this, material, itemMeta -> {
             itemMeta.displayName(Component.text("§cClaim d'une ville adverse"));
             itemMeta.lore(List.of(
-                    Component.text("§7Ville : §d" + city.getCityName()),
+                    Component.text("§7Ville : §d" + city.getName()),
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
             ));
         });

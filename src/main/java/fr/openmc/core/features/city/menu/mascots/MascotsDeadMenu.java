@@ -6,7 +6,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.menu.CityMenu;
@@ -38,10 +38,14 @@ public class MascotsDeadMenu extends Menu {
         this.city_uuid = city_uuid;
 
 
+        City city = CityManager.getCity(city_uuid);
+
+        Mascot mascot = city.getMascot();
+
         Map<Material, Integer> itemCount = new HashMap<>();
         requiredItemsLore.add(Component.text("§bRequière :"));
 
-        int level = MascotUtils.getMascotLevel(city_uuid);
+        int level = mascot.getLevel();
         requiredItems = MascotsLevels.valueOf("level"+level).getRequiredItems();
 
         for (ItemStack item : getOwner().getInventory().getContents()) {
