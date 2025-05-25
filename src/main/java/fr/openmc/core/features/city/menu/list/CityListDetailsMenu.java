@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,50 +66,59 @@ public class CityListDetailsMenu extends Menu {
 	public @NotNull Map<Integer, ItemStack> getContent() {
 		Map<Integer, ItemStack> map = new HashMap<>();
 
-		Mayor mayor = this.city.getMayor();
-		ElectionType electionType = mayor.getElectionType();
-		Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
-		Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
-		Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+		List<Component> loreOwner = new ArrayList<>();
 
-		List<Component> loreOwner =  new ArrayList<>();
-		loreOwner.add(Component.text(""));
-		loreOwner.add(Component.text(perk1.getName()));
-		loreOwner.addAll(perk1.getLore());
-		if (electionType == ElectionType.OWNER_CHOOSE) {
+		if (MayorManager.getInstance().phaseMayor == 2) {
+			Mayor mayor = this.city.getMayor();
+			ElectionType electionType = mayor.getElectionType();
+			Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+			Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
+			Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
+
 			loreOwner.add(Component.text(""));
-			loreOwner.add(Component.text(perk2.getName()));
-			loreOwner.addAll(perk2.getLore());
-			loreOwner.add(Component.text(""));
-			loreOwner.add(Component.text(perk3.getName()));
-			loreOwner.addAll(perk3.getLore());
-		}
+			loreOwner.add(Component.text(perk1.getName()));
+			loreOwner.addAll(perk1.getLore());
+			if (electionType == ElectionType.OWNER_CHOOSE) {
+				loreOwner.add(Component.text(""));
+				loreOwner.add(Component.text(perk2.getName()));
+				loreOwner.addAll(perk2.getLore());
+				loreOwner.add(Component.text(""));
+				loreOwner.add(Component.text(perk3.getName()));
+				loreOwner.addAll(perk3.getLore());
+			}
 
-		map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
-				itemMeta -> {
-					itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()));
-					itemMeta.lore(loreOwner);
-				})
-		);
+			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+					itemMeta -> {
+						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()));
+						itemMeta.lore(loreOwner);
+					})
+			);
 
-		if (MayorManager.getInstance().phaseMayor == 2 && electionType == ElectionType.ELECTION) {
-			List<Component> loreMayor =  new ArrayList<>();
-			loreMayor.add(Component.text(""));
-			loreMayor.add(Component.text(perk2.getName()));
-			loreMayor.addAll(perk2.getLore());
-			loreMayor.add(Component.text(""));
-			loreMayor.add(Component.text(perk3.getName()));
-			loreMayor.addAll(perk3.getLore());
+			if (electionType == ElectionType.ELECTION) {
+				List<Component> loreMayor = new ArrayList<>();
+				loreMayor.add(Component.text(""));
+				loreMayor.add(Component.text(perk2.getName()));
+				loreMayor.addAll(perk2.getLore());
+				loreMayor.add(Component.text(""));
+				loreMayor.add(Component.text(perk3.getName()));
+				loreMayor.addAll(perk3.getLore());
 
-			map.put(14, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
-							itemMeta -> {
-								itemMeta.displayName(
-										Component.text("§7Maire : ")
-												.append(Component.text(mayor.getName()).color(this.city.getMayor().getMayorColor()).decoration(TextDecoration.ITALIC, false))
-								);
-								itemMeta.lore(loreMayor);
-							}
-					)
+				map.put(14, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+								itemMeta -> {
+									itemMeta.displayName(
+											Component.text("§7Maire : ")
+													.append(Component.text(mayor.getName()).color(this.city.getMayor().getMayorColor()).decoration(TextDecoration.ITALIC, false))
+									);
+									itemMeta.lore(loreMayor);
+								}
+						)
+				);
+			}
+		} else {
+			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+					itemMeta -> {
+						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()));
+					})
 			);
 		}
 
@@ -128,5 +138,15 @@ public class CityListDetailsMenu extends Menu {
 		map.put(26, new ItemBuilder(this, new ItemStack(CityManager.getCityType(city.getUUID()).equals("war") ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.displayName(Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")))));
 		return map;
+	}
+
+	@Override
+	public void onClose(InventoryCloseEvent event) {
+		//empty
+	}
+
+	@Override
+	public List<Integer> getTakableSlot() {
+		return List.of();
 	}
 }

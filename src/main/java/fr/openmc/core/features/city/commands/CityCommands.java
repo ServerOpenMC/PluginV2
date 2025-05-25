@@ -113,6 +113,12 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.mayor")
     @Description("Ouvre le menu des maires")
     public void mayor(Player sender) {
+        City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
+
+        if (playerCity == null) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+        }
+
         if (MayorManager.getInstance().phaseMayor==1) {
             MayorElectionMenu menu = new MayorElectionMenu(sender);
             menu.open();

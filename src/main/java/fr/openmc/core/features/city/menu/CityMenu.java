@@ -39,6 +39,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -445,7 +446,7 @@ public class CityMenu extends Menu {
                     return;
                 }
 
-                new ChestMenu(city, 1).open(player);
+				new CityChestMenu(player, city, 1).open();
             }));
 
             inventory.put(40, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
@@ -501,5 +502,15 @@ public class CityMenu extends Menu {
             e.printStackTrace();
         }
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

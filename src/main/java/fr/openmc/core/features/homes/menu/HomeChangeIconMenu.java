@@ -19,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,6 +97,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
+    @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
 
@@ -110,4 +116,9 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
 }
