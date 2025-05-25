@@ -446,34 +446,40 @@ public class CompanyManager {
                 PreparedStatement stmtShop = conn.prepareStatement(queryShop);
                 PreparedStatement stmtShopItem = conn.prepareStatement(queryShopItem)
         ) {
-            for (Map.Entry<UUID, Shop> entry : PlayerShopManager.getInstance().getPlayerShops().entrySet()) {
-                Shop shop = entry.getValue();
-                UUID shopUuid = shop.getUuid();
-                UUID owner = entry.getKey();
-                double x = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockX();
-                double y = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockY();
-                double z = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockZ();
+            PlayerShopManager manager = PlayerShopManager.getInstance();
+            if (manager != null) {
+                Map<UUID, Shop> playerShops = manager.getPlayerShops();
+                if (playerShops != null) {
+                    for (Map.Entry<UUID, Shop> entry : playerShops.entrySet()) {
+                        Shop shop = entry.getValue();
+                        UUID shopUuid = shop.getUuid();
+                        UUID owner = entry.getKey();
+                        double x = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockX();
+                        double y = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockY();
+                        double z = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockZ();
 
-                for (ShopItem shopItem : shop.getItems()) {
-                    byte[] item = shopItem.getItem().serializeAsBytes();
-                    double price = shopItem.getPricePerItem();
-                    int amount = shopItem.getAmount();
+                        for (ShopItem shopItem : shop.getItems()) {
+                            byte[] item = shopItem.getItem().serializeAsBytes();
+                            double price = shopItem.getPricePerItem();
+                            int amount = shopItem.getAmount();
 
-                    stmtShopItem.setBytes(1, item);
-                    stmtShopItem.setString(2, shopUuid.toString());
-                    stmtShopItem.setDouble(3, price);
-                    stmtShopItem.setInt(4, amount);
-                    stmtShopItem.addBatch();
+                            stmtShopItem.setBytes(1, item);
+                            stmtShopItem.setString(2, shopUuid.toString());
+                            stmtShopItem.setDouble(3, price);
+                            stmtShopItem.setInt(4, amount);
+                            stmtShopItem.addBatch();
+                        }
+
+                        stmtShop.setString(1, shopUuid.toString());
+                        stmtShop.setString(2, owner.toString());
+                        stmtShop.setString(3, null);
+                        stmtShop.setString(4, null);
+                        stmtShop.setDouble(5, x);
+                        stmtShop.setDouble(6, y);
+                        stmtShop.setDouble(7, z);
+                        stmtShop.addBatch();  // Adding shop to batch
+                    }
                 }
-
-                stmtShop.setString(1, shopUuid.toString());
-                stmtShop.setString(2, owner.toString());
-                stmtShop.setString(3, null);
-                stmtShop.setString(4, null);
-                stmtShop.setDouble(5, x);
-                stmtShop.setDouble(6, y);
-                stmtShop.setDouble(7, z);
-                stmtShop.addBatch();  // Adding shop to batch
             }
 
             stmtShop.executeBatch(); // Execute batch for shops
