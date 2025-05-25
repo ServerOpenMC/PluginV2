@@ -48,10 +48,10 @@ public class ProtectionListener implements Listener {
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
         if (cityAtLoc == null) return;
 
-        String cityType = CityManager.getCityType(cityAtLoc.getUUID());
+        CityType cityType = cityAtLoc.getType();
         boolean isMember = cityAtLoc.isMember(player);
 
-        if ("war".equals(cityType)) {
+        if (cityType.equals(CityType.WAR)) {
             return;
         }
 
@@ -352,28 +352,6 @@ public class ProtectionListener implements Listener {
         if (player==null) return;
 
         verify(event.getPlayer(), event, loc);
-    }
-
-    @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.isCancelled()) return;
-        if (event.getEntity() instanceof Player player) {
-            Location loc = player.getLocation();
-            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-
-            //si ville en paix alors on annule
-            if (city != null && city.getType().equals(CityType.PEACE) && !city.isMember(player)) {
-                event.setCancelled(true);
-                return;
-            }
-
-            return;
-        }
-
-        if (event.getDamager() instanceof Player damager) {
-            if (MascotUtils.isMascot(event.getEntity())) return;
-            verify(damager, event, event.getEntity().getLocation());
-        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
