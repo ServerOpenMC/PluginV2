@@ -1,10 +1,13 @@
 package fr.openmc.core;
 
+import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.mainmenu.MainMenu;
+import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
@@ -31,7 +34,6 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -84,8 +86,11 @@ public class OMCPlugin extends JavaPlugin {
         new FriendManager();
         new QuestsManager();
         new TabList();
-        if (!OMCPlugin.isUnitTestVersion())
+        if (!OMCPlugin.isUnitTestVersion()) { // Tous les trucs faits par misieur qui fonctionne à peu près
             new LeaderboardManager(this);
+            new PacketMenuLib(this);
+            new MainMenu(this);
+        }
         new AdminShopManager(this);
 
         if (!OMCPlugin.isUnitTestVersion()){
