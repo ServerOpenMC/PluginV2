@@ -171,13 +171,13 @@ public class OMCPlugin extends JavaPlugin {
         String javaVersion = System.getProperty("java.version");
         String server = Bukkit.getName() + " " + Bukkit.getVersion();
 
-        log.info("\u001B[35m   ____    _____   ______   _   _   __  __   _____       " + "\u001B[35mOpenMC " + pluginVersion);
-        log.info("\u001B[35m  / __ \\  |  __ \\ |  ____| | \\ | | |  \\/  | / ____|         " + "\u001B[90m" + server);
-        log.info("\u001B[35m | |  | | | |__) || |__    |  \\| | | \\  / || |           " + "\u001B[90mJava " + javaVersion);
-        log.info("\u001B[35m | |  | | |  ___/ |  __|   | . ` | | |\\/| || |          ");
-        log.info("\u001B[35m | |__| | | |     | |____  | |\\  | | |  | || |____      ");
-        log.info("\u001B[35m  \\____/  |_|     |______| |_| \\_| |_|  |_| \\_____|   ");
-        log.info("\u001B[0m");
+        log.info("\u001B[1;35m   ____    _____   ______   _   _   __  __   _____       " + "\u001B[0;90mOpenMC " + pluginVersion + "\u001B[0m");
+        log.info("\u001B[1;35m  / __ \\  |  __ \\ |  ____| | \\ | | |  \\/  | / ____|      " + "\u001B[0;90m" + server + "\u001B[0m");
+        log.info("\u001B[1;35m | |  | | | |__) || |__    |  \\| | | \\  / || |           " + "\u001B[0;90mJava " + javaVersion + "\u001B[0m");
+        log.info("\u001B[1;35m | |  | | |  ___/ |  __|   | . ` | | |\\/| || |          \u001B[0m");
+        log.info("\u001B[1;35m | |__| | | |     | |____  | |\\  | | |  | || |____      \u001B[0m");
+        log.info("\u001B[1;35m  \\____/  |_|     |______| |_| \\_| |_|  |_| \\_____|   \u001B[0m");
+        log.info("");
 
         String[] plugins = {
                 "WorldEdit", "WorldGuard", "LuckPerms", "ItemsAdder", "PlaceholderAPI", "FancyNpcs", "ProtocolLib"
@@ -186,7 +186,7 @@ public class OMCPlugin extends JavaPlugin {
         for (String pluginName : plugins) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
             if (plugin != null && plugin.isEnabled()) {
-                log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getDescription().getVersion() + "trouvé \u001B [0m");
+                log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getDescription().getVersion() + " trouvé \u001B[0m");
             } else {
                 log.info("  \u001B[31m✘ " + pluginName + " (facultatif)\u001B[0m");
             }
