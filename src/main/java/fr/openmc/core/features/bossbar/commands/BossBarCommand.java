@@ -93,6 +93,7 @@ public class BossBarCommand {
                 .hoverEvent(HoverEvent.showText(Component.text("Exécuter: " + command)));
     }
 
+    @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("add")
     public void addMessage(BukkitCommandActor actor, String message) {
         try {
@@ -106,6 +107,7 @@ public class BossBarCommand {
         }
     }
 
+    @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("edit")
     public void editMessage(BukkitCommandActor actor, int index, String newMessage) {
         try {
@@ -119,6 +121,7 @@ public class BossBarCommand {
         }
     }
 
+    @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("confirm")
     public void confirmDelete(BukkitCommandActor actor, int index) {
         Component confirmation = Component.text()
@@ -132,6 +135,7 @@ public class BossBarCommand {
         actor.reply(confirmation);
     }
 
+    @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("delete")
     public void deleteMessage(BukkitCommandActor actor, int index) {
         BossbarManager.getInstance().removeMessage(index);
