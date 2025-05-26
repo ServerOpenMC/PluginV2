@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -20,6 +21,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +30,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static fr.openmc.core.features.city.mascots.MascotsListener.futurCreateCity;
+import static fr.openmc.core.features.city.commands.CityCommands.futurCreateCity;
 import static fr.openmc.core.features.city.mascots.MascotsListener.movingMascots;
 
 public class CityTypeMenu extends Menu {
@@ -74,14 +80,14 @@ public class CityTypeMenu extends Menu {
                 itemMeta.displayName(Component.text("§aVille en paix"));
                 itemMeta.lore(peaceInfo);
             }).setOnClick(inventoryClickEvent -> {
-                runChoiceType(player, "peace");
+                runChoiceType(player, CityType.PEACE);
             }));
 
             map.put(15, new ItemBuilder(this, Material.DIAMOND_SWORD, itemMeta -> {
                 itemMeta.displayName(Component.text("§cVille en guerre"));
                 itemMeta.lore(warInfo);
             }).setOnClick(inventoryClickEvent -> {
-                runChoiceType(player, "war");
+                runChoiceType(player, CityType.WAR);
             }));
 
             return map;
@@ -93,7 +99,7 @@ public class CityTypeMenu extends Menu {
         return map;
     }
 
-    private void runChoiceType(Player player, String type) {
+    private void runChoiceType(Player player, CityType type) {
         futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, type);
 
         ItemStack mascotsItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
@@ -171,5 +177,15 @@ public class CityTypeMenu extends Menu {
                 }
         );
         getOwner().closeInventory();
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

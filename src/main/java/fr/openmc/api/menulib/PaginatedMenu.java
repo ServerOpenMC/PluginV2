@@ -70,7 +70,7 @@ public abstract class PaginatedMenu extends Menu {
 	 */
 	@NotNull
 	public abstract List<ItemStack> getItems();
-	
+
 	/**
 	 * Retrieves a mapping of button slots to their corresponding {@link ItemStack} instances
 	 * for the current menu. Each entry in the map represents a specific button within the menu,
@@ -138,7 +138,7 @@ public abstract class PaginatedMenu extends Menu {
 	public final @NotNull InventorySize getInventorySize() {
 		return InventorySize.LARGEST;
 	}
-	
+
 	/**
 	 * Determines whether the current page is the last page in the paginated menu.
 	 *

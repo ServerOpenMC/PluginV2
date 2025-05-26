@@ -517,10 +517,12 @@ public class MayorManager {
     }
 
     public static void initPhase2() {
+        Bukkit.getLogger().info("MAYOR - INIT PHASE 2");
         phaseMayor = 2;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : CityManager.getCities()) {
+            Bukkit.getLogger().info("- City : " + city.getName());
             runSetupMayor(city);
 
             for (UUID uuid : city.getMembers()) {

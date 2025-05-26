@@ -1,30 +1,28 @@
 package fr.openmc.core.commands.utils;
 
-import java.util.List;
-import java.util.UUID;
-
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+import java.util.List;
+import java.util.UUID;
 
 public class Restart {
 
@@ -54,6 +52,7 @@ public class Restart {
         }
 
         OMCPlugin plugin = OMCPlugin.getInstance();
+        ScoreboardManager scoreboardManager = ScoreboardManager.getInstance();
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -72,6 +71,7 @@ public class Restart {
 
                 if (!announce.contains(remainingTime)) {
                     remainingTime -= 1;
+                    scoreboardManager.updateAllScoreboards();
                     return;
                 }
 

@@ -12,6 +12,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -80,6 +81,16 @@ public class ShopSalesMenu extends PaginatedMenu {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
         } else {
             return "Ventes de " + shop.getName();
+        }
+
+        @Override
+        public void onClose(InventoryCloseEvent event) {
+
+        }
+
+        @Override
+        public List<Integer> getTakableSlot() {
+            return List.of();
         }
     }
 

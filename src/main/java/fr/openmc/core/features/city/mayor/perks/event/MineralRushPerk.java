@@ -76,6 +76,8 @@ public class MineralRushPerk implements Listener {
 
         if (city == null) return;
 
+        if (city.getMayor() == null) return;
+
         if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
         if (DynamicCooldownManager.isReady(city.getUUID(), "city:mineral_rush")) return;

@@ -92,6 +92,7 @@ public class PerkManager {
      * @param idPerk the ID of the perk to check
      */
     public static boolean hasPerk(Mayor mayor, int idPerk) {
+        if (mayor == null) return false;
         if ((mayor.getIdPerk1() == idPerk) || (mayor.getIdPerk2() == idPerk) || (mayor.getIdPerk3() == idPerk)) {
             return true;
         }

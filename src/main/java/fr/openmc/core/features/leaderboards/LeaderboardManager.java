@@ -226,7 +226,7 @@ public class LeaderboardManager {
             @Override
             public void run() {
                 if (i % 120 == 0)
-                    updateGithubContributorsMap(0); // toutes les 30 minutes pour ne pas être rate limitée par github
+                    updateGithubContributorsMap(); // toutes les 30 minutes pour ne pas être rate limitée par github
                 updatePlayerMoneyMap();
                 updateCityMoneyMap();
                 updatePlayTimeMap();
@@ -289,59 +289,91 @@ public class LeaderboardManager {
 
     /**
      * Updates the GitHub contributors leaderboard map by fetching data from the GitHub API.
-     * @param attempts The number of attempts made to fetch the data.
+     * Documentation GitHub API (REST) : https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity
      */
-    private static void updateGithubContributorsMap(int attempts) {
-        // doc de l'api ici: https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity
-        String apiUrl = String.format("https://api.github.com/repos/%s/%s/stats/contributors", repoOwner, repoName);
+    private static void updateGithubContributorsMap() {
+        String repoOwner = "ServerOpenMC";
+        String repoName = "PluginV2";
+
+        Set<String> realContributors = getRealContributors(repoOwner, repoName);
+
+        fetchAndFilterContributorStats(repoOwner, repoName, realContributors);
+    }
+
+    private Set<String> getRealContributors(String owner, String repo) {
+        Set<String> contributors = new HashSet<>();
+        String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors?per_page=100", owner, repo);
+
         try {
             HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("User-Agent", "OpenMC-BOT");
 
-            if (con.getResponseCode() == 202) { // Ce code indique que la requête est en cours de traitement par GitHub
-                if (attempts < 3) {
-                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> updateGithubContributorsMap(attempts + 1), 3000L); // Attend 15 secondes que github traite la requête et retente avec un essai en plus
-                } else {
-                    OMCPlugin.getInstance().getLogger().warning("Impossible de récupérer les statistiques Github."); // Ce message n'est jamais censé s'afficher, mais on sait jamais
-                }
-                return;
-            } else if (con.getResponseCode() != 200) {
-                OMCPlugin.getInstance().getLogger().warning("Erreur lors de la récupération des contributeurs GitHub: " + con.getResponseCode());
-                return;
-            }
+            if (con.getResponseCode() == 200) {
+                JSONArray array = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
 
-            JSONArray array = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
+                for (Object obj : array) {
+                    JSONObject contributor = (JSONObject) obj;
+                    String login = (String) contributor.get("login");
+                    String type = (String) contributor.get("type"); // "User" ou "Bot"
+
+                    if (!"Bot".equals(type)) {
+                        contributors.add(login);
+                    }
+                }
+            }
             con.disconnect();
-
-            List<Map.Entry<String, Integer>> statsList = new ArrayList<>();
-
-            for (Object obj : array) {
-                JSONObject contributor = (JSONObject) obj;
-                JSONObject author = (JSONObject) contributor.get("author");
-                if (author == null) continue;
-                String login = (String) author.get("login");
-                JSONArray weeks = (JSONArray) contributor.get("weeks");
-
-                int totalNetLines = 0;
-                for (Object wObj : weeks) {
-                    JSONObject week = (JSONObject) wObj;
-                    int added = ((Long) week.get("a")).intValue();
-                    int deleted = ((Long) week.get("d")).intValue();
-                    totalNetLines += added - deleted;
-                }
-                statsList.add(new AbstractMap.SimpleEntry<>(login, totalNetLines));
-            }
-
-            githubContributorsMap.clear();
-
-            statsList.sort((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue()));
-            for (int i = 0; i < Math.min(10, statsList.size()); i++) {
-                githubContributorsMap.put(i + 1, statsList.get(i));
-            }
-
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("Erreur lors de la récupération des contributeurs GitHub: " + e.getMessage());
+            plugin.getLogger().warning("Erreur lors de la récupération de la liste des contributeurs: " + e.getMessage());
+        }
+
+        return contributors;
+    }
+
+    private void fetchAndFilterContributorStats(String owner, String repo, Set<String> allowedContributors) {
+        String apiUrl = String.format("https://api.github.com/repos/%s/%s/stats/contributors", owner, repo);
+
+        try {
+            HttpURLConnection con = (HttpURLConnection) new URI(apiUrl).toURL().openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("User-Agent", "OpenMC-BOT");
+
+            if (con.getResponseCode() == 200) {
+                JSONArray statsArray = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
+                List<Map.Entry<String, Integer>> statsList = new ArrayList<>();
+
+                for (Object obj : statsArray) {
+                    JSONObject contributor = (JSONObject) obj;
+                    JSONObject author = (JSONObject) contributor.get("author");
+                    if (author == null) continue;
+
+                    String login = (String) author.get("login");
+                    if (!allowedContributors.contains(login)) continue;
+
+                    // Calcul des contributions
+                    JSONArray weeks = (JSONArray) contributor.get("weeks");
+                    int totalNetLines = 0;
+                    for (Object wObj : weeks) {
+                        JSONObject week = (JSONObject) wObj;
+                        totalNetLines += ((Long) week.get("a")).intValue() - ((Long) week.get("d")).intValue();
+                    }
+
+                    if (totalNetLines > 0) {
+                        statsList.add(new AbstractMap.SimpleEntry<>(login, totalNetLines));
+                    }
+                }
+
+                // Tri et affichage du classement
+                statsList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+                githubContributorsMap.clear();
+
+                for (int i = 0; i < Math.min(10, statsList.size()); i++) {
+                    githubContributorsMap.put(i + 1, statsList.get(i));
+                }
+            }
+            con.disconnect();
+        } catch (Exception e) {
+            OMCPlugin.getInstance().getLogger().warning("Erreur lors de la récupération des stats: " + e.getMessage());
         }
     }
 
@@ -356,9 +388,8 @@ public class LeaderboardManager {
         Map<UUID, Double> combinedBalances = new HashMap<>();
         balances.forEach((player, balance) -> combinedBalances.put(player, balance.getBalance()));
 
-        BankManager.getBanks().forEach((uuid, bank) -> {
-            combinedBalances.merge(uuid, bank.getBalance(), Double::sum);
-        });
+        BankManager.getBanks().forEach((uuid, bank) -> combinedBalances.merge(uuid, bank.getBalance(), Double::sum));
+
         for (var entry : combinedBalances.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue(), entry1.getValue()))
                 .limit(10)
@@ -407,22 +438,22 @@ public class LeaderboardManager {
     public static void updateHolograms() {
         if (contributorsHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createContributorsTextLeaderboard());
-            contributorsHologramMetadataPacket = createMetadataPacket(text, 100000);
+            contributorsHologramMetadataPacket = createMetadataPacket(text, -610329143);
             updateHologram(contributorsHologramLocation.getWorld().getPlayersSeeingChunk(contributorsHologramLocation.getChunk()), contributorsHologramMetadataPacket); // On met 100000 à l'id de l'entité pour pouvoir la modifier facilement
         }
         if (moneyHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createMoneyTextLeaderboard());
-            moneyHologramMetadataPacket = createMetadataPacket(text, 100001);
+            moneyHologramMetadataPacket = createMetadataPacket(text, -102388303);
             updateHologram(moneyHologramLocation.getWorld().getPlayersSeeingChunk(moneyHologramLocation.getChunk()), moneyHologramMetadataPacket);
         }
         if (villeMoneyHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createCityMoneyTextLeaderboard());
-            villeMoneyHologramMetadataPacket = createMetadataPacket(text, 100002);
+            villeMoneyHologramMetadataPacket = createMetadataPacket(text, -699947630);
             updateHologram(villeMoneyHologramLocation.getWorld().getPlayersSeeingChunk(villeMoneyHologramLocation.getChunk()), villeMoneyHologramMetadataPacket);
         }
         if (playTimeHologramLocation != null) {
             String text = JSONComponentSerializer.json().serialize(createPlayTimeTextLeaderboard());
-            playtimeHologramMetadataPacket = createMetadataPacket(text, 100003);
+            playtimeHologramMetadataPacket = createMetadataPacket(text, -348090140);
             updateHologram(playTimeHologramLocation.getWorld().getPlayersSeeingChunk(playTimeHologramLocation.getChunk()), playtimeHologramMetadataPacket);
         }
     }

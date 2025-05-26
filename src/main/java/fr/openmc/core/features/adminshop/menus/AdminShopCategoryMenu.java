@@ -11,11 +11,13 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AdminShopCategoryMenu extends Menu {
@@ -38,6 +40,11 @@ public class AdminShopCategoryMenu extends Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {}
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+
+    }
 
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
@@ -82,5 +89,10 @@ public class AdminShopCategoryMenu extends Menu {
         content.put(40, backButton);
 
         return content;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

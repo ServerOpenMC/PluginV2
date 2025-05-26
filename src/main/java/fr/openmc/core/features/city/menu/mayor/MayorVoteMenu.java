@@ -21,14 +21,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MayorVoteMenu extends PaginatedMenu {
     public MayorVoteMenu(Player owner) {
@@ -153,6 +151,17 @@ public class MayorVoteMenu extends PaginatedMenu {
         map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§aPage suivante"));
         }).setNextPageButton());
+
+        List<Component> loreInfo = Arrays.asList(
+                Component.text("§7Apprenez en plus sur les Maires !"),
+                Component.text("§7Le déroulement..., Les éléctions, ..."),
+                Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
+        );
+
+        map.put(54, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
+            itemMeta.lore(loreInfo);
+        }).setNextMenu(new MoreInfoMenu(getOwner())));
         return map;
     }
 
@@ -164,5 +173,15 @@ public class MayorVoteMenu extends PaginatedMenu {
     @Override
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
         //empty
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

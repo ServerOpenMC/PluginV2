@@ -322,7 +322,10 @@ public class CompanyManager {
             }
         }
 
-        for (Map.Entry<UUID, Shop> entry : PlayerShopManager.getPlayerShops().entrySet()) {
+        Map<UUID, Shop> playerShops = PlayerShopManager.getPlayerShops();
+        if (playerShops == null) return;
+      
+        for (Map.Entry<UUID, Shop> entry : playerShops.entrySet()) {
             Shop shop = entry.getValue();
             UUID owner = entry.getKey();
             double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();

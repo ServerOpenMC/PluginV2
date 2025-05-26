@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.listeners;
 import com.destroystokyo.paper.event.player.PlayerLaunchProjectileEvent;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -47,10 +48,10 @@ public class ProtectionListener implements Listener {
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
         if (cityAtLoc == null) return;
 
-        String cityType = CityManager.getCityType(cityAtLoc.getUUID());
+        CityType cityType = cityAtLoc.getType();
         boolean isMember = cityAtLoc.isMember(player);
 
-        if ("war".equals(cityType)) {
+        if (cityType.equals(CityType.WAR)) {
             return;
         }
 
@@ -97,7 +98,7 @@ public class ProtectionListener implements Listener {
         if (!entity.getWorld().getName().equals("world")) return;
 
         City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ()); // on regarde le claim ou l'action a été fait
-        if (city == null || !"war".equals(CityManager.getCityType(city.getUUID())))
+        if (city == null || !CityType.WAR.equals(city.getType()))
             return;
 
         event.setCancelled(true);
@@ -282,10 +283,10 @@ public class ProtectionListener implements Listener {
 
                 if (blockCity.isMember(player)) return false;
                 if (cityz != null) {
-                    String type1 = CityManager.getCityType(blockCity.getUUID());
-                    String type2 = CityManager.getCityType(cityz.getUUID());
+                    CityType type1 = blockCity.getType();
+                    CityType type2 = cityz.getType();
 
-                    return !(type1 != null && type2 != null && type1.equals("war") && type2.equals("war"));
+                    return !(type1 != null && type2 != null && type1.equals(CityType.WAR) && type2.equals(CityType.WAR));
                 }
                 return true;
             });
@@ -295,7 +296,7 @@ public class ProtectionListener implements Listener {
         if (entity instanceof TNTPrimed) {
             event.blockList().removeIf(block -> {
                 City city = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
-                return city != null && "peace".equals(CityManager.getCityType(city.getUUID()));
+                return city != null && CityType.PEACE.equals(city.getType());
             });
             return;
         }
@@ -303,7 +304,7 @@ public class ProtectionListener implements Listener {
         if (NATURAL_EXPLOSIVE_ENTITIES.contains(entity.getType())) {
             event.blockList().removeIf(block -> {
                 City city = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
-                return city != null && "peace".equals(CityManager.getCityType(city.getUUID()));
+                return city != null && CityType.PEACE.equals(city.getType());
             });
         }
     }
@@ -313,7 +314,7 @@ public class ProtectionListener implements Listener {
         event.blockList().removeIf(block -> {
             City blockCity = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
 
-            return blockCity != null && CityManager.getCityType(blockCity.getUUID()).equals("peace");
+            return blockCity != null && blockCity.getType().equals(CityType.PEACE);
         });
     }
 
@@ -323,7 +324,7 @@ public class ProtectionListener implements Listener {
 
         if (entity.getType() == EntityType.WITHER || entity.getType() == EntityType.WITHER_SKULL) {
             City city = CityManager.getCityFromChunk(event.getBlock().getChunk().getX(), event.getBlock().getChunk().getZ());
-            if (city != null && "peace".equals(CityManager.getCityType(city.getUUID()))) {
+            if (city != null && city.getType().equals(CityType.PEACE)) {
                 event.setCancelled(true);
             }
         }
@@ -366,8 +367,7 @@ public class ProtectionListener implements Listener {
         if (city == null)
             return;
 
-        String cityType = CityManager.getCityType(city.getUUID());
-        boolean isCityInWar = "war".equals(cityType);
+        boolean isCityInWar = city.getType().equals(CityType.WAR);
 
         for (LivingEntity affectedEntity : event.getAffectedEntities()) {
             if (!(affectedEntity instanceof Player player))

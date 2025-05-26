@@ -6,7 +6,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import static fr.openmc.core.features.city.mascots.MascotUtils.getEntityByMascotUUID;
-import static fr.openmc.core.features.city.mascots.MascotUtils.getMascotOfCity;
 
 public class CityListDetailsMenu extends Menu {
 	
@@ -48,7 +48,7 @@ public class CityListDetailsMenu extends Menu {
 	
 	@Override
 	public @NotNull String getName() {
-		return "Détails de la ville " + city.getCityName();
+		return "Détails de la ville " + city.getName();
 	}
 	
 	@Override
@@ -122,8 +122,8 @@ public class CityListDetailsMenu extends Menu {
 		}
 
 
-		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(getMascotOfCity(city.getUUID()).getMascotUuid()).getType())),
-				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + getMascotOfCity(city.getUUID()).getLevel()))));
+		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(city.getMascot().getMascotUUID()).getType())),
+				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + city.getMascot().getLevel()))));
 		
 		map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
 				itemMeta -> itemMeta.displayName(Component.text("§bTaille : " + city.getChunks().size() + " chunks"))));
@@ -133,9 +133,19 @@ public class CityListDetailsMenu extends Menu {
 		
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
 				itemMeta -> itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")))));
-		
-		map.put(26, new ItemBuilder(this, new ItemStack(CityManager.getCityType(city.getUUID()).equals("war") ? Material.RED_BANNER : Material.GREEN_BANNER),
-				itemMeta -> itemMeta.displayName(Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")))));
+
+		map.put(26, new ItemBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
+				itemMeta -> itemMeta.displayName(Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")))));
 		return map;
+	}
+
+	@Override
+	public void onClose(InventoryCloseEvent event) {
+		//empty
+	}
+
+	@Override
+	public List<Integer> getTakableSlot() {
+		return List.of();
 	}
 }

@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
@@ -27,12 +28,15 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
@@ -54,6 +58,8 @@ public class OMCPlugin extends JavaPlugin {
         new WorldGuardApi();
         new ItemAdderApi();
         new FancyNpcApi();
+
+        logLoadMessage();
 
         /* MANAGERS */
         new DatabaseManager();
@@ -77,6 +83,7 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager();
         new AdminShopManager();
+        new AccountDetectionManager(this);
 
         if (!OMCPlugin.isUnitTestVersion()){
             new CompanyManager();// laisser apres Economy Manager
@@ -137,5 +144,34 @@ public class OMCPlugin extends JavaPlugin {
 
     public static boolean isUnitTestVersion() {
         return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
+    }
+
+    private void logLoadMessage() {
+        Logger log = OMCPlugin.getInstance().getLogger();
+
+        String pluginVersion = getDescription().getVersion();
+        String javaVersion = System.getProperty("java.version");
+        String server = Bukkit.getName() + " " + Bukkit.getVersion();
+
+        log.info("\u001B[1;35m   ____    _____   ______   _   _   __  __   _____       " + "\u001B[0;90mOpenMC " + pluginVersion + "\u001B[0m");
+        log.info("\u001B[1;35m  / __ \\  |  __ \\ |  ____| | \\ | | |  \\/  | / ____|      " + "\u001B[0;90m" + server + "\u001B[0m");
+        log.info("\u001B[1;35m | |  | | | |__) || |__    |  \\| | | \\  / || |           " + "\u001B[0;90mJava " + javaVersion + "\u001B[0m");
+        log.info("\u001B[1;35m | |  | | |  ___/ |  __|   | . ` | | |\\/| || |          \u001B[0m");
+        log.info("\u001B[1;35m | |__| | | |     | |____  | |\\  | | |  | || |____      \u001B[0m");
+        log.info("\u001B[1;35m  \\____/  |_|     |______| |_| \\_| |_|  |_| \\_____|   \u001B[0m");
+        log.info("");
+
+        String[] plugins = {
+                "WorldEdit", "WorldGuard", "LuckPerms", "ItemsAdder", "PlaceholderAPI", "FancyNpcs", "ProtocolLib"
+        };
+
+        for (String pluginName : plugins) {
+            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+            if (plugin != null && plugin.isEnabled()) {
+                log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getDescription().getVersion() + " trouvé \u001B[0m");
+            } else {
+                log.info("  \u001B[31m✘ " + pluginName + " (facultatif)\u001B[0m");
+            }
+        }
     }
 }

@@ -40,12 +40,12 @@ public class RagePerk implements Listener {
         player.removePotionEffect(PotionEffectType.STRENGTH);
         player.removePotionEffect(PotionEffectType.RESISTANCE);
 
-        if (currentCity != null) {
-            if (currentCity.equals(playerCity)) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, PotionEffect.INFINITE_DURATION, 0, false, false));
-            } else {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, PotionEffect.INFINITE_DURATION, 0, false, false));
-            }
+        if (currentCity == null) return;
+
+        if (currentCity.equals(playerCity)) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, PotionEffect.INFINITE_DURATION, 0, false, false));
+        } else {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, PotionEffect.INFINITE_DURATION, 0, false, false));
         }
     }
 
