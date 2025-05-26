@@ -7,10 +7,12 @@ import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class MineAyweniteQuest extends Quest implements Listener {
 
@@ -26,13 +28,17 @@ public class MineAyweniteQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreakBlock(BlockBreakEvent event) {
+        ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
+        if (tool != null && tool.getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {
+            return; // Ne pas compter si le joueur utilise Silk Touch
+        }
+
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());
         if (customBlock != null && customBlock.getNamespacedID() != null &&
                 ("omc_blocks:aywenite_ore".equals(customBlock.getNamespacedID()) ||
-                "omc_blocks:deepslate_aywenite_ore".equals(customBlock.getNamespacedID()))
+                        "omc_blocks:deepslate_aywenite_ore".equals(customBlock.getNamespacedID()))
         ) {
             this.incrementProgress(event.getPlayer().getUniqueId());
         }
     }
-
 }
