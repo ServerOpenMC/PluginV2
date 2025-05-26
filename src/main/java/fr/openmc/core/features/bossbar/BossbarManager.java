@@ -23,6 +23,8 @@ public class BossbarManager {
     private final Map<UUID, BossBar> activeBossBars = new HashMap<>();
     private final List<Component> helpMessages = new ArrayList<>();
     @Getter
+    private boolean bossBarEnabled = true;
+    @Getter
     private final File configFile;
     private int currentMessageIndex = 0;
     @Getter
@@ -80,7 +82,9 @@ public class BossbarManager {
     }
 
     public void addBossBar(Player player) {
-        if (activeBossBars.containsKey(player.getUniqueId())) return;
+        if (!bossBarEnabled || activeBossBars.containsKey(player.getUniqueId())) return;
+
+        removeBossBar(player);
 
         BossBar bossBar = BossBar.bossBar(
                 helpMessages.get(0),
@@ -100,6 +104,7 @@ public class BossbarManager {
         }
     }
 
+
     public void toggleBossBar(Player player) {
         if (activeBossBars.containsKey(player.getUniqueId())) {
             removeBossBar(player);
@@ -115,7 +120,62 @@ public class BossbarManager {
         loadDefaultMessages();
     }
 
-    public boolean hasBossBar(Player player) {
-        return activeBossBars.containsKey(player.getUniqueId());
+    public boolean hasBossBar() {
+        return bossBarEnabled;
+    }
+
+    public List<Component> getHelpMessages() {
+        return new ArrayList<>(helpMessages);
+    }
+
+    public void setHelpMessages(List<Component> messages) {
+        helpMessages.clear();
+        helpMessages.addAll(messages);
+        saveMessagesToConfig();
+    }
+
+    private void saveMessagesToConfig() {
+        try {
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+            List<String> serializedMessages = new ArrayList<>();
+
+            for (Component message : helpMessages) {
+                serializedMessages.add(MiniMessage.miniMessage().serialize(message));
+            }
+
+            config.set("messages", serializedMessages);
+            config.save(configFile);
+        } catch (Exception e) {
+            plugin.getLogger().severe("Erreur lors de la sauvegarde des messages: " + e.getMessage());
+        }
+    }
+
+    public void addMessage(Component message) {
+        helpMessages.add(message);
+        saveMessagesToConfig();
+    }
+
+    public void removeMessage(int index) {
+        if (index >= 0 && index < helpMessages.size()) {
+            helpMessages.remove(index);
+            saveMessagesToConfig();
+        }
+    }
+
+    public void updateMessage(int index, Component newMessage) {
+        if (index >= 0 && index < helpMessages.size()) {
+            helpMessages.set(index, newMessage);
+            saveMessagesToConfig();
+        }
+    }
+
+    public void toggleGlobalBossBar() {
+        bossBarEnabled = !bossBarEnabled;
+
+        if (bossBarEnabled) {
+            Bukkit.getOnlinePlayers().forEach(this::addBossBar);
+        } else {
+            Bukkit.getOnlinePlayers().forEach(this::removeBossBar);
+        }
     }
 }
