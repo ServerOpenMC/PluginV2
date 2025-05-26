@@ -1,0 +1,6 @@
+messages:
+  - "<bold><gold>Bienvenue sur <gradient:#ff77e9:#ff1493>OpenMC</gradient> !</gold></bold>"
+  - "<bold><aqua>Astuce :</aqua></bold> <white>Utilisez <green>/leaderboard</green> pour voir les <yellow>classements</yellow> !"
+  - "<bold><light_purple>Événement en cours :</light_purple></bold> <gradient:#ff416c:#ff4b2b>UPDATE V2 !</gradient>"
+  - "<bold><aqua>Astuce :</aqua></bold> <white>Utilisez <gradient:#ff77e9:#ff1493>/omcbossbar</gradient> pour activer/désactiver la <yellow>bossbar</yellow> !"
+  - "<blue>Rejoignez le <bold><aqua>discord</aqua></bold> pour contribuer au <green>développement</green> !"
