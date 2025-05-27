@@ -34,7 +34,7 @@ public class AdminShopManager {
      * @param plugin The main plugin instance.
      */
     public AdminShopManager() {
-        adminShopYAML = new AdminShopYAML(OMCPlugin.getInstance());
+        adminShopYAML = new AdminShopYAML();
         adminShopYAML.loadConfig();
     }
 

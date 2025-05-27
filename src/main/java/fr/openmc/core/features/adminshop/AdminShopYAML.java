@@ -19,26 +19,21 @@ import java.util.logging.Level;
  * Handles loading and saving the admin shop data from a YAML file.
  */
 public class AdminShopYAML {
-    private final OMCPlugin plugin;
     private FileConfiguration config;
     private final File configFile;
 
     /**
      * Constructs the AdminShopYAML manager.
-     *
-     * @param plugin       The plugin instance.
-     * @param shopManager  The admin shop manager instance to populate with data.
      */
-    public AdminShopYAML(OMCPlugin plugin) {
-        this.plugin = plugin;
-        this.configFile = new File(plugin.getDataFolder() + "/data", "adminshop.yml");
+    public AdminShopYAML() {
+        this.configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "adminshop.yml");
     }
 
     /**
      * Loads the configuration file and populates categories and items.
      */
     public void loadConfig() {
-        if (!configFile.exists()) plugin.saveResource("data/adminshop.yml", false);
+        if (!configFile.exists()) OMCPlugin.getInstance().saveResource("data/adminshop.yml", false);
         config = YamlConfiguration.loadConfiguration(configFile);
         loadCategories(); // Load categories first
         loadItems(); // Load items after categories
@@ -122,7 +117,7 @@ public class AdminShopYAML {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save shop config", e);
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not save shop config", e);
         }
     }
 
