@@ -201,7 +201,6 @@ public class NPCManager implements Listener {
             if (city == null) return;
 
             if (MayorManager.phaseMayor == 1) {
-                MessagesManager.sendMessage(player, Component.text("§8§o*les elections sont en cours...*"), Prefix.MAYOR, MessageType.INFO, true);
                 Component message = Component.text("§8§o*Bonjour ? Tu veux me bouger ? Clique ici !*")
                         .clickEvent(ClickEvent.callback(audience -> {
                             List<Component> loreItemNPC = List.of(
