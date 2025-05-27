@@ -58,7 +58,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
-    compileOnly "de.oliver:FancyNpcs:2.5.0"
+    compileOnly 'de.oliver:FancyNpcs:2.5.0'
 
     implementation 'org.jetbrains:annotations:24.1.0'
     implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
