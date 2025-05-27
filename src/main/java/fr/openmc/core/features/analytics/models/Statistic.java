@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 
 @DatabaseTable(tableName = "stats")
-class Statistic {
+public class Statistic {
     @DatabaseField(canBeNull = false, uniqueCombo = true)
     private UUID player;
     @DatabaseField(canBeNull = false, uniqueCombo = true)
@@ -21,7 +21,7 @@ class Statistic {
         // required for ORMLite
     }
 
-    Statistic(UUID player, String scope, int value) {
+    public Statistic(UUID player, String scope, int value) {
         this.player = player;
         this.scope = scope;
         this.value = value;
