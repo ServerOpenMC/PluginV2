@@ -35,10 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.*;
 
@@ -638,7 +634,7 @@ public class City {
      * @return The election type of the city, or null if not found.
      */
     public ElectionType getElectionType() {
-        Mayor mayor = mayorManager.cityMayor.get(this);
+        Mayor mayor = MayorManager.cityMayor.get(this);
         if (mayor == null) return null;
 
         return mayor.getElectionType();
@@ -650,9 +646,7 @@ public class City {
      * @return The law of the city, or null if not found.
      */
     public CityLaw getLaw() {
-        MayorManager mayorManager = MayorManager.getInstance();
-
-        return mayorManager.cityLaws.get(CityManager.getCity(cityUUID));
+        return MayorManager.cityLaws.get(CityManager.getCity(cityUUID));
     }
 
     // ==================== Economy Methods ====================
@@ -765,7 +759,7 @@ public class City {
     public double calculateCityInterest() {
         double interest = .01; // base interest is 1%
 
-        if (MayorManager.getInstance().phaseMayor == 2) {
+        if (MayorManager.phaseMayor == 2) {
             if (PerkManager.hasPerk(getMayor(), Perks.BUISNESS_MAN.getId())) {
                 interest = .03; // interest is 3% when perk Buisness Man actived
             }
