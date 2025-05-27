@@ -82,16 +82,16 @@ public class ShopSalesMenu extends PaginatedMenu {
         } else {
             return "Ventes de " + shop.getName();
         }
+    }
 
-        @Override
-        public void onClose(InventoryCloseEvent event) {
+    @Override
+    public void onClose(InventoryCloseEvent event) {
 
-        }
+    }
 
-        @Override
-        public List<Integer> getTakableSlot() {
-            return List.of();
-        }
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 
     @Override
