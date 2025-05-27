@@ -1,6 +1,7 @@
 package fr.openmc.core.features.analytics;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.analytics.models.Statistic;
 
 import java.sql.SQLException;
 import java.util.List;

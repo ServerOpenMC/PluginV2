@@ -1,4 +1,4 @@
-package fr.openmc.core.features.analytics;
+package fr.openmc.core.features.analytics.models;
 
 import java.util.UUID;
 
