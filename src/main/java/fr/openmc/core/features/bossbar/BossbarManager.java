@@ -31,7 +31,10 @@ public class BossbarManager {
     @Getter
     private final OMCPlugin plugin;
 
-
+    /**
+     * Constructs the BossbarManager and initializes its components
+     * @param plugin The main plugin instance
+     */
     public BossbarManager(OMCPlugin plugin) {
         instance = this;
         this.plugin = plugin;
@@ -42,6 +45,10 @@ public class BossbarManager {
         CommandsManager.getHandler().register(new BossBarCommand());
     }
 
+    /**
+     * Loads configuration from bossbars.yml file
+     * Creates the file if it doesn't exist
+     */
     private void loadConfig() {
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
@@ -50,6 +57,9 @@ public class BossbarManager {
         reloadMessages();
     }
 
+    /**
+     * Loads messages from the configuration file
+     */
     private void loadDefaultMessages() {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         helpMessages.clear();
@@ -59,10 +69,14 @@ public class BossbarManager {
         }
 
         if (helpMessages.isEmpty()) {
-            plugin.getLogger().warning("Aucun message chargé - vérifiez bossbars.yml");
+            plugin.getLogger().warning("Aucun message trouvé - vérifiez bossbars.yml");
         }
     }
 
+    /**
+     * Starts the message rotation task for bossbars
+     * Messages change every 10 seconds (200 ticks)
+     */
     private void startRotationTask() {
         new BukkitRunnable() {
             @Override
@@ -79,9 +93,13 @@ public class BossbarManager {
                     }
                 });
             }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0, 200); // Change toutes les 10 secondes (200 ticks)
+        }.runTaskTimer(OMCPlugin.getInstance(), 0, 200);
     }
 
+    /**
+     * Adds a bossbar to the specified player
+     * @param player The player to add the bossbar to
+     */
     public void addBossBar(Player player) {
         if (!bossBarEnabled || activeBossBars.containsKey(player.getUniqueId())) return;
 
@@ -98,6 +116,10 @@ public class BossbarManager {
         activeBossBars.put(player.getUniqueId(), bossBar);
     }
 
+    /**
+     * Removes the bossbar from the specified player
+     * @param player The player to remove the bossbar from
+     */
     public void removeBossBar(Player player) {
         BossBar bossBar = activeBossBars.remove(player.getUniqueId());
         if (bossBar != null) {
@@ -105,7 +127,10 @@ public class BossbarManager {
         }
     }
 
-
+    /**
+     * Toggles the bossbar for a specific player
+     * @param player The player to toggle the bossbar for
+     */
     public void toggleBossBar(Player player) {
         if (activeBossBars.containsKey(player.getUniqueId())) {
             removeBossBar(player);
@@ -116,21 +141,35 @@ public class BossbarManager {
         }
     }
 
+    /**
+     * Reloads messages from the configuration file
+     */
     public void reloadMessages() {
         helpMessages.clear();
         loadDefaultMessages();
     }
 
+    /**
+     * Checks if bossbars are globally enabled
+     * @return true if bossbars are enabled, false otherwise
+     */
     public boolean hasBossBar() {
         return bossBarEnabled;
     }
 
+    /**
+     * Sets the list of messages to display in bossbars
+     * @param messages The list of new messages
+     */
     public void setHelpMessages(List<Component> messages) {
         helpMessages.clear();
         helpMessages.addAll(messages);
         saveMessagesToConfig();
     }
 
+    /**
+     * Saves messages to the configuration file
+     */
     private void saveMessagesToConfig() {
         try {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
@@ -147,11 +186,19 @@ public class BossbarManager {
         }
     }
 
+    /**
+     * Adds a message to the message list
+     * @param message The message to add
+     */
     public void addMessage(Component message) {
         helpMessages.add(message);
         saveMessagesToConfig();
     }
 
+    /**
+     * Removes a message from the message list
+     * @param index The index of the message to remove
+     */
     public void removeMessage(int index) {
         if (index >= 0 && index < helpMessages.size()) {
             helpMessages.remove(index);
@@ -159,6 +206,11 @@ public class BossbarManager {
         }
     }
 
+    /**
+     * Updates an existing message
+     * @param index The index of the message to update
+     * @param newMessage The new message content
+     */
     public void updateMessage(int index, Component newMessage) {
         if (index >= 0 && index < helpMessages.size()) {
             helpMessages.set(index, newMessage);
@@ -166,6 +218,9 @@ public class BossbarManager {
         }
     }
 
+    /**
+     * Toggles bossbars globally for all players
+     */
     public void toggleGlobalBossBar() {
         bossBarEnabled = !bossBarEnabled;
 
