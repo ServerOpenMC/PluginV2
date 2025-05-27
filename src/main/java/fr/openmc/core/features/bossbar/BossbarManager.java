@@ -21,6 +21,7 @@ public class BossbarManager {
     @Getter
     private static BossbarManager instance;
     private final Map<UUID, BossBar> activeBossBars = new HashMap<>();
+    @Getter
     private final List<Component> helpMessages = new ArrayList<>();
     @Getter
     private boolean bossBarEnabled = true;
@@ -122,10 +123,6 @@ public class BossbarManager {
 
     public boolean hasBossBar() {
         return bossBarEnabled;
-    }
-
-    public List<Component> getHelpMessages() {
-        return new ArrayList<>(helpMessages);
     }
 
     public void setHelpMessages(List<Component> messages) {
