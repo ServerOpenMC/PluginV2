@@ -16,7 +16,6 @@ import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.api.FancyNpcApi;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.database.DatabaseManager;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;

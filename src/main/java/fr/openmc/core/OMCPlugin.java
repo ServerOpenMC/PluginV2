@@ -67,7 +67,7 @@ public class OMCPlugin extends JavaPlugin {
         new CustomItemRegistry();
         new SpawnManager();
         new UpdateManager();
-        new MascotsManager(this); // laisser avant CityManager
+        new MascotsManager(); // laisser avant CityManager
         new CityManager();
         new ListenersManager();
         new EconomyManager();
@@ -80,14 +80,15 @@ public class OMCPlugin extends JavaPlugin {
         new QuestsManager();
         new QuestProgressSaveManager();
         new TabList();
-        if (!OMCPlugin.isUnitTestVersion())
-            new LeaderboardManager();
         new AdminShopManager();
         new AccountDetectionManager();
 
+        // TODO: enlever la condition
         if (!OMCPlugin.isUnitTestVersion()){
+            new LeaderboardManager();
             new CompanyManager();// laisser apres Economy Manager
         }
+
         new MotdUtils();
         new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
         new DynamicCooldownManager();
@@ -147,7 +148,7 @@ public class OMCPlugin extends JavaPlugin {
     }
 
     private void logLoadMessage() {
-        Logger log = OMCPlugin.getInstance().getLogger();
+        Logger log = getLogger();
 
         String pluginVersion = getDescription().getVersion();
         String javaVersion = System.getProperty("java.version");

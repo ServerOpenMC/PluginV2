@@ -41,7 +41,7 @@ public class MascotsManager {
     public static NamespacedKey mascotsKey;
     public static List<Mascot> mascots = new ArrayList<>();
 
-    public MascotsManager(OMCPlugin plugin) {
+    public MascotsManager() {
         //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -52,8 +52,8 @@ public class MascotsManager {
             e.printStackTrace();
         }
 
-        chestKey = new NamespacedKey(plugin, "mascots_chest");
-        mascotsKey = new NamespacedKey(plugin, "mascotsKey");
+        chestKey = new NamespacedKey(OMCPlugin.getInstance(), "mascots_chest");
+        mascotsKey = new NamespacedKey(OMCPlugin.getInstance(), "mascotsKey");
 
         mascots = getAllMascots();
 
