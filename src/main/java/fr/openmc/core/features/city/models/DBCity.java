@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import fr.openmc.core.features.city.City;
+
 @DatabaseTable(tableName = "cities")
 public class DBCity {
     @DatabaseField(id = true)
@@ -24,5 +26,9 @@ public class DBCity {
 
     DBCity() {
         // required for ORMLite
+    }
+
+    public City deserialize() {
+        return null;
     }
 }
