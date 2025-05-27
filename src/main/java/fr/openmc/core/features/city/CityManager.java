@@ -38,7 +38,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
@@ -51,15 +50,18 @@ public class CityManager implements Listener {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_members", ((args, sender, command) -> {
             String playerCity = playerCities.get(sender.getUniqueId()).getUUID();
 
-            if (playerCity == null) return List.of();
+            if (playerCity == null)
+                return List.of();
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid, x, z FROM city_regions");
+                    PreparedStatement statement = DatabaseManager.getConnection()
+                            .prepareStatement("SELECT city_uuid, x, z FROM city_regions");
                     ResultSet rs = statement.executeQuery();
 
                     while (rs.next()) {
-                        claimedChunks.put(BlockVector2.at(rs.getInt("x"), rs.getInt("z")), getCity(rs.getString("city_uuid")));
+                        claimedChunks.put(BlockVector2.at(rs.getInt("x"), rs.getInt("z")),
+                                getCity(rs.getString("city_uuid")));
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -78,14 +80,12 @@ public class CityManager implements Listener {
                 new CityPermsCommands(),
                 new CityChatCommand(),
                 new CityChestCommand(),
-                new AdminMayorCommands()
-        );
+                new AdminMayorCommands());
 
         OMCPlugin.registerEvents(
                 new ProtectionListener(),
                 new MascotsListener(),
-                new CityChatListener()
-        );
+                new CityChatListener());
 
         freeClaim = loadFreeClaims();
     }
@@ -138,7 +138,7 @@ public class CityManager implements Listener {
 
         String query = "SELECT uuid FROM city";
         try (PreparedStatement statement = conn.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
+                ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 String uuid = resultSet.getString("uuid");
@@ -161,7 +161,7 @@ public class CityManager implements Listener {
 
         String query = "SELECT city_uuid, claim FROM free_claim";
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
-             ResultSet rs = statement.executeQuery()) {
+                ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
                 String cityUuid = rs.getString("city_uuid");
@@ -178,9 +178,10 @@ public class CityManager implements Listener {
 
     /**
      * Save free claims to the database
+     * 
      * @param freeClaims A map of city UUIDs and their claim
      */
-    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
+    public static void saveFreeClaims(HashMap<String, Integer> freeClaims) {
         String query;
 
         if (OMCPlugin.isUnitTestVersion()) {
@@ -212,6 +213,7 @@ public class CityManager implements Listener {
 
     /**
      * Check if a chunk is claimed
+     * 
      * @param x The x coordinate of the chunk
      * @param z The z coordinate of the chunk
      * @return true if the chunk is claimed, false otherwise
@@ -222,13 +224,15 @@ public class CityManager implements Listener {
 
     /**
      * Get a city by its UUID
+     * 
      * @param cityUUID The UUID of the city
      * @return The city object, or null if not found
      */
     public static City getCity(String cityUUID) {
         if (!cities.containsKey(cityUUID)) {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
+                PreparedStatement statement = DatabaseManager.getConnection()
+                        .prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
                 statement.setString(1, cityUUID);
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
@@ -248,13 +252,15 @@ public class CityManager implements Listener {
 
     /**
      * Get a city by its member
+     * 
      * @param playerUUID The UUID of the member
      * @return The city object, or null if not found
      */
     public static City getPlayerCity(UUID playerUUID) {
         if (!playerCities.containsKey(playerUUID)) {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_members WHERE player = ? LIMIT 1");
+                PreparedStatement statement = DatabaseManager.getConnection()
+                        .prepareStatement("SELECT city_uuid FROM city_members WHERE player = ? LIMIT 1");
                 statement.setString(1, playerUUID.toString());
                 ResultSet rs = statement.executeQuery();
 
@@ -287,7 +293,8 @@ public class CityManager implements Listener {
         }
 
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT city_uuid FROM city_regions WHERE x = ? AND z = ? LIMIT 1");
+            PreparedStatement statement = DatabaseManager.getConnection()
+                    .prepareStatement("SELECT city_uuid FROM city_regions WHERE x = ? AND z = ? LIMIT 1");
             statement.setInt(1, x);
             statement.setInt(2, z);
             ResultSet rs = statement.executeQuery();
@@ -307,7 +314,8 @@ public class CityManager implements Listener {
 
     /**
      * Apply all city interests
-     * WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY CITIES SAVED IN THE DB
+     * WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT
+     * PERFORMANCE IF THERE ARE MANY CITIES SAVED IN THE DB
      */
     public static void applyAllCityInterests() {
         try {
@@ -324,7 +332,7 @@ public class CityManager implements Listener {
      * Cache a player with its city
      *
      * @param playerUUID The UUID of the player
-     * @param city The city object
+     * @param city       The city object
      */
     public static void cachePlayer(UUID playerUUID, City city) {
         playerCities.put(playerUUID, city);
@@ -351,14 +359,16 @@ public class CityManager implements Listener {
     public static City createCity(Player owner, String cityUUID, String name, CityType type) {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0, ?)");
+                PreparedStatement statement = DatabaseManager.getConnection()
+                        .prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0, ?)");
                 statement.setString(1, cityUUID);
                 statement.setString(2, owner.getUniqueId().toString());
                 statement.setString(3, name);
                 statement.setString(4, type == CityType.PEACE ? "peace" : "war");
                 statement.executeUpdate();
 
-                statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests VALUE (?, 1, null)");
+                statement = DatabaseManager.getConnection()
+                        .prepareStatement("INSERT INTO city_chests VALUE (?, 1, null)");
                 statement.setString(1, cityUUID);
                 statement.executeUpdate();
             } catch (SQLException e) {
@@ -389,7 +399,8 @@ public class CityManager implements Listener {
     public static void forgetCity(String city) {
         try {
             City cityz = cities.remove(city);
-            if (cityz == null) return;
+            if (cityz == null)
+                return;
 
             MayorManager.cityMayor.remove(cityz);
             MayorManager.cityElections.remove(cityz);
