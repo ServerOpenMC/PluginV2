@@ -51,8 +51,6 @@ public class LeaderboardManager {
     private static final Map<Integer, Map.Entry<String, String>> villeMoneyMap = new TreeMap<>();
     @Getter
     private static final Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
-    private static final String repoOwner = "ServerOpenMC";
-    private static final String repoName = "PluginV2";
     private static final File leaderBoardFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "leaderboards.yml");
     @Getter
     static ClientboundSetEntityDataPacket contributorsHologramMetadataPacket;
@@ -76,7 +74,7 @@ public class LeaderboardManager {
     public LeaderboardManager() {
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());
-        new LeaderboardListener(this);
+        new LeaderboardListener();
         enable();
     }
 
@@ -300,7 +298,7 @@ public class LeaderboardManager {
         fetchAndFilterContributorStats(repoOwner, repoName, realContributors);
     }
 
-    private Set<String> getRealContributors(String owner, String repo) {
+    private static Set<String> getRealContributors(String owner, String repo) {
         Set<String> contributors = new HashSet<>();
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/contributors?per_page=100", owner, repo);
 
@@ -324,13 +322,13 @@ public class LeaderboardManager {
             }
             con.disconnect();
         } catch (Exception e) {
-            plugin.getLogger().warning("Erreur lors de la récupération de la liste des contributeurs: " + e.getMessage());
+            OMCPlugin.getInstance().getLogger().warning("Erreur lors de la récupération de la liste des contributeurs: " + e.getMessage());
         }
 
         return contributors;
     }
 
-    private void fetchAndFilterContributorStats(String owner, String repo, Set<String> allowedContributors) {
+    private static void fetchAndFilterContributorStats(String owner, String repo, Set<String> allowedContributors) {
         String apiUrl = String.format("https://api.github.com/repos/%s/%s/stats/contributors", owner, repo);
 
         try {
