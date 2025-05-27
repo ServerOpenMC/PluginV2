@@ -83,7 +83,7 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager();
         new AdminShopManager();
-        new AccountDetectionManager(this);
+        new AccountDetectionManager();
 
         if (!OMCPlugin.isUnitTestVersion()){
             new CompanyManager();// laisser apres Economy Manager

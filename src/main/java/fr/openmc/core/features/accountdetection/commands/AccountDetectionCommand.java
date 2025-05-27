@@ -26,7 +26,7 @@ public class AccountDetectionCommand {
     @CommandPermission("omc.admin.commands.accountdetection.reload")
     @Subcommand("reload")
     void reloadCommand(CommandSender sender) {
-        AccountDetectionManager.getInstance().reload();
+        AccountDetectionManager.reload();
         sender.sendMessage("§aLa configuration a été rechargée.");
     }
 
@@ -34,7 +34,7 @@ public class AccountDetectionCommand {
     @Subcommand("exemptePlayer")
     void exemptPlayerCommand(CommandSender sender, Player player) {
         try {
-            AccountDetectionManager.getInstance().addExemptedPlayer(player.getUniqueId());
+            AccountDetectionManager.addExemptedPlayer(player.getUniqueId());
             sender.sendMessage("§aLe joueur " + player.getName() + " a été exempté.");
         } catch (IOException e) {
             sender.sendMessage("§cErreur lors de l'ajout du joueur à la liste des exemptés: " + e.getMessage());
