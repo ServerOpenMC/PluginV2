@@ -1,5 +1,9 @@
 package fr.openmc.core.features.city;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
@@ -14,6 +18,11 @@ import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.models.DBCity;
+import fr.openmc.core.features.city.models.DBCityChest;
+import fr.openmc.core.features.city.models.DBCityClaim;
+import fr.openmc.core.features.city.models.DBCityMember;
+import fr.openmc.core.features.city.models.DBCityPermission;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
@@ -81,14 +90,27 @@ public class CityManager implements Listener {
         freeClaim = loadFreeClaims();
     }
 
-    public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city (uuid VARCHAR(8) NOT NULL PRIMARY KEY, owner VARCHAR(36) NOT NULL, name VARCHAR(32), balance DOUBLE DEFAULT 0, type VARCHAR(8) NOT NULL);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_members (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL PRIMARY KEY);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_permissions (city_uuid VARCHAR(8) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_chests (city_uuid VARCHAR(8) NOT NULL, page TINYINT NOT NULL, content LONGBLOB);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_regions (city_uuid VARCHAR(8) NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();// Il faut esperer qu'aucun clodo n'ira à 134.217.712 blocks du spawn
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_power (city_uuid VARCHAR(8) NOT NULL, power_point INT NOT NULL);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
+    private static Dao<DBCity, String> citiesDao;
+    private static Dao<DBCityMember, String> membersDao;
+    private static Dao<DBCityPermission, String> permissionsDao;
+    private static Dao<DBCityClaim, String> claimsDao;
+    private static Dao<DBCityChest, String> chestsDao;
+
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, DBCity.class);
+        citiesDao = DaoManager.createDao(connectionSource, DBCity.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, DBCityMember.class);
+        membersDao = DaoManager.createDao(connectionSource, DBCityMember.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, DBCityPermission.class);
+        permissionsDao = DaoManager.createDao(connectionSource, DBCityPermission.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, DBCityClaim.class);
+        claimsDao = DaoManager.createDao(connectionSource, DBCityClaim.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, DBCityChest.class);
+        chestsDao = DaoManager.createDao(connectionSource, DBCityChest.class);
     }
 
     @EventHandler

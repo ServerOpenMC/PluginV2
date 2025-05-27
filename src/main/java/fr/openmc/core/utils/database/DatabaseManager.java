@@ -53,6 +53,7 @@ public class DatabaseManager {
             FriendSQLManager.init_db(connectionSource);
             DynamicCooldownManager.init_db(connectionSource);
             CompanyManager.init_db(connectionSource);
+            CityManager.init_db(connectionSource);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
@@ -62,7 +63,6 @@ public class DatabaseManager {
         connect();
         try {
             // Déclencher au début du plugin pour créer les tables nécessaires
-            CityManager.init_db(connection);
             MayorManager.init_db(connection);
             MascotsManager.init_db(connection);
 
