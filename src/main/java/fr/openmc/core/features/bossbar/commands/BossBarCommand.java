@@ -18,7 +18,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
 
-@Command({"omcbossbar"})
+@Command({"omcbossbar", "bb", "bossbaromc"})
 public class BossBarCommand {
 
     @DefaultFor("~")
