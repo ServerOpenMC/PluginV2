@@ -29,10 +29,6 @@ public class BreakStoneQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreak(BlockBreakEvent event) {
         ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
-        if (tool.containsEnchantment(Enchantment.SILK_TOUCH)) {
-            return; // Ne pas compter si le joueur utilise Silk Touch
-        }
-        
         Block block = event.getBlock();
         if (block.getType().equals(Material.STONE)) {
             this.incrementProgress(event.getPlayer().getUniqueId());
