@@ -14,6 +14,7 @@ import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.PlayerShopManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
+import fr.openmc.core.features.discordlink.DiscordLinkManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
@@ -93,6 +94,7 @@ public class OMCPlugin extends JavaPlugin {
             new LeaderboardManager(this);
         new AdminShopManager(this);
         new AccountDetectionManager(this);
+        new DiscordLinkManager(this);
 
         if (!OMCPlugin.isUnitTestVersion()){
             new ShopBlocksManager(this);

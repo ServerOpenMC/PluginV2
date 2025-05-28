@@ -26,7 +26,8 @@ public enum Prefix {
     SHOP("<gradient:#084CFB:#5AAFC4>ѕʜᴏᴘ</gradient>"),
     ADMINSHOP("<gradient:#EE2222:#F04949>ᴀᴅᴍɪɴꜱʜᴏᴘ</gradient>"),
     ACCOUTDETECTION("<gradient:#F45454:#545eb6>ᴀᴄᴄᴏᴜɴᴛ ᴅᴇᴛᴇᴄᴛɪᴏɴ</gradient>"),
-    DEATH("<gradient:#FF0000:#FF7F7F>☠</gradient>")
+    DEATH("<gradient:#FF0000:#FF7F7F>☠</gradient>"),
+    DISCORD("<gradient:#7289DA:#99AAB5>ᴅɪѕᴄᴏʀᴅ</gradient>"),
     ;
 
     @Getter private final String prefix;
