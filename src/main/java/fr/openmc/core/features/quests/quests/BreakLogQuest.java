@@ -26,7 +26,7 @@ public class BreakLogQuest extends Quest implements Listener {
      * @return ItemStack enchanté
      */
     private ItemStack getEnchantedAxe(Material material) {
-        ItemStack axe = new ItemStack(material, 1);
+        ItemStack axe = ItemStack.of(material);
         axe.editMeta(meta -> {
             meta.addEnchant(Enchantment.EFFICIENCY, 3, true); // Efficacité III
             meta.addEnchant(Enchantment.UNBREAKING, 2, true); // Solidité II

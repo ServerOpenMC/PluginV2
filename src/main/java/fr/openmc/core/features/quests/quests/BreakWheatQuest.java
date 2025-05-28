@@ -57,7 +57,7 @@ public class BreakWheatQuest extends Quest implements Listener {
      * @return ItemStack enchanté
      */
     private ItemStack getEnchantedHoe(Material material, int efficiencyLevel, int unbreakingLevel) {
-        ItemStack hoe = new ItemStack(material, 1);
+        ItemStack hoe = ItemStack.of(material);
         hoe.editMeta(meta -> {
             meta.addEnchant(Enchantment.EFFICIENCY, efficiencyLevel, true);
             meta.addEnchant(Enchantment.UNBREAKING, unbreakingLevel, true);
@@ -67,8 +67,12 @@ public class BreakWheatQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType() == Material.WHEAT && event.getBlock().getBlockData() instanceof Ageable ageable &&  ageable.getAge() == ageable.getMaximumAge()) {
-            this.incrementProgress(event.getPlayer().getUniqueId(), 1);
+        if (event.getBlock().getType() == Material.WHEAT) {
+            Ageable ageable = (Ageable) event.getBlock().getBlockData();
+            if (ageable.getAge() == ageable.getMaximumAge()) {
+                this.incrementProgress(event.getPlayer().getUniqueId(), 1);
+            }
         }
     }
+
 }

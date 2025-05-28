@@ -6,6 +6,7 @@ import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -57,7 +58,7 @@ public class FishingQuest extends Quest implements Listener {
      * @return ItemStack enchanté
      */
     private ItemStack getEnchantedRod(int luckLevel, int lureLevel, int unbreakingLevel, boolean hasMending) {
-        ItemStack rod = new ItemStack(Material.FISHING_ROD, 1);
+        ItemStack rod = ItemStack.of(Material.FISHING_ROD);
         rod.editMeta(meta -> {
             meta.addEnchant(Enchantment.LUCK_OF_THE_SEA, luckLevel, true);
             meta.addEnchant(Enchantment.LURE, lureLevel, true);
@@ -75,8 +76,12 @@ public class FishingQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerFish(PlayerFishEvent event) {
-        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
-            this.incrementProgress(event.getPlayer().getUniqueId(), 1);
+        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() instanceof Item item) {
+            Material type = item.getItemStack().getType();
+            if (type == Material.COD || type == Material.SALMON || type == Material.TROPICAL_FISH || type == Material.PUFFERFISH) {
+                this.incrementProgress(event.getPlayer().getUniqueId(), 1);
+            }
         }
     }
+
 }
