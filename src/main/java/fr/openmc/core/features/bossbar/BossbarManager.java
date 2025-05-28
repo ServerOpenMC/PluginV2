@@ -2,8 +2,10 @@ package fr.openmc.core.features.bossbar;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.accountdetection.commands.AccountDetectionCommand;
 import fr.openmc.core.features.bossbar.commands.BossBarCommand;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -134,10 +136,10 @@ public class BossbarManager {
     public void toggleBossBar(Player player) {
         if (activeBossBars.containsKey(player.getUniqueId())) {
             removeBossBar(player);
-            player.sendMessage(Component.text("Bossbar désactivée").color(NamedTextColor.RED));
+            MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
         } else {
             addBossBar(player);
-            player.sendMessage(Component.text("Bossbar activée").color(NamedTextColor.GREEN));
+            MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
         }
     }
 
