@@ -4,10 +4,12 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class BreakDiamondQuest extends Quest implements Listener {
 
@@ -27,6 +29,11 @@ public class BreakDiamondQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreak(BlockBreakEvent event) {
+        ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
+        if (tool.containsEnchantment(Enchantment.SILK_TOUCH)) {
+            return; // Ne pas compter si le joueur utilise Silk Touch
+        }
+
         if (event.getBlock().getType().equals(Material.DIAMOND_ORE)
                 || event.getBlock().getType().equals(Material.DEEPSLATE_DIAMOND_ORE)
         ) {
