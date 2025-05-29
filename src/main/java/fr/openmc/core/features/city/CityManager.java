@@ -263,9 +263,6 @@ public class CityManager implements Listener {
         }
     }
 
-    public static void updateFreeClaims(City city, int diff) {
-    }
-
     // ==================== General helper methods ====================
 
     /**

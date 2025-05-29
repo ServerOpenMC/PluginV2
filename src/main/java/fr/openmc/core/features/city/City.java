@@ -201,8 +201,9 @@ public class City {
      *
      */
     public void updateFreeClaims(int diff) {
+        freeClaims += diff;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.updateFreeClaims(this, diff);
+            CityManager.saveCity(this);
         });
     }
 
