@@ -10,7 +10,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.events.CityCreationEvent;
-import fr.openmc.core.features.city.mascots.Mascot;
+import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mayor.CityLaw;
