@@ -19,6 +19,8 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -65,13 +67,14 @@ public class HomeConfigMenu extends Menu {
             }).setNextMenu(new HomeChangeIconMenu(player, home)));
 
             content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
-                itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN));
+                itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).style(Style.style(TextDecoration.ITALIC.withState(false))));
 
                 TextComponent lore = Component.text()
                         .append(Component.text("■ ", NamedTextColor.GRAY))
                         .append(Component.text("Clique ", NamedTextColor.GREEN))
                         .append(Component.text("gauche ", NamedTextColor.DARK_GREEN))
                         .append(Component.text("pour changer le nom de votre home", NamedTextColor.GREEN))
+                        .style(Style.style(TextDecoration.ITALIC.withState(false)))
                         .build();
                 itemMeta.lore(Collections.singletonList(lore));
             }).setOnClick(e -> {
