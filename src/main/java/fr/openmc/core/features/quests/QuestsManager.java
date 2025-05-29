@@ -79,7 +79,12 @@ public class QuestsManager {
                 new WinContestQuest(),
                 new CraftKebabQuest(),
                 new ConsumeKebabQuest(),
-                new MineAyweniteQuest()
+                new MineAyweniteQuest(),
+                new ChickenThrowerQuest(),
+                new BreakWheatQuest(),
+                new BreakLogQuest(),
+                new FishingQuest()
+
         );
     }
 

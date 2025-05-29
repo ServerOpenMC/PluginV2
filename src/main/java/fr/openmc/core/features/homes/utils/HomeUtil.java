@@ -1,6 +1,5 @@
 package fr.openmc.core.features.homes.utils;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomeIcons;
@@ -74,7 +73,7 @@ public class HomeUtil {
         return CustomItemRegistry.getByName(iconKey).getBest();
     }
 
-    public static boolean checkName(Player player, MessagesManager msg, String name) {
+    public static boolean checkName(Player player, String name) {
         if(WorldGuardApi.isRegionConflict(player.getLocation())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas ajouter un home dans une région protégée !"), Prefix.HOME, MessageType.ERROR, true);
             return true;

@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.bossbar.BossbarManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
@@ -82,6 +83,7 @@ public class OMCPlugin extends JavaPlugin {
         new TabList();
         new AdminShopManager();
         new AccountDetectionManager();
+        new BossbarManager(this);
 
         // TODO: enlever la condition
         if (!OMCPlugin.isUnitTestVersion()){

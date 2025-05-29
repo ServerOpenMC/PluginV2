@@ -18,8 +18,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class SetHome {
-
-    private MessagesManager msg;
     private final HomesManager homesManager;
 
     public SetHome(HomesManager homesManager) {
@@ -53,7 +51,7 @@ public class SetHome {
                 return;
             }
 
-            if(HomeUtil.checkName(player, msg, homeName)) return;
+            if(HomeUtil.checkName(player, homeName)) return;
 
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home home : homes) {
@@ -74,7 +72,7 @@ public class SetHome {
             return;
         }
 
-        if(HomeUtil.checkName(player, msg, name)) return;
+        if(HomeUtil.checkName(player, name)) return;
 
         int currentHome = HomesManager.getHomes(player.getUniqueId()).size();
         int homesLimit = homesManager.getHomeLimit(player.getUniqueId());

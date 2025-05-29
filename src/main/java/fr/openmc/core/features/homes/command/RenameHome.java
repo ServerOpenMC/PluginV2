@@ -18,8 +18,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class RenameHome {
-
-    private MessagesManager msg;
     private final HomesManager homesManager;
     public RenameHome(HomesManager homesManager) {
         this.homesManager = homesManager;
@@ -43,7 +41,7 @@ public class RenameHome {
                 return;
             }
 
-            if (HomeUtil.checkName(player, msg, newName)) return;
+            if (HomeUtil.checkName(player, newName)) return;
 
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home h : homes) {
@@ -64,7 +62,7 @@ public class RenameHome {
             return;
         }
 
-        if(HomeUtil.checkName(player, msg, newName)) return;
+        if(HomeUtil.checkName(player, newName)) return;
 
         List<Home> homes = HomesManager.getHomes(player.getUniqueId());
 

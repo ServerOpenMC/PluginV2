@@ -5,6 +5,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -27,6 +28,7 @@ public class BreakStoneQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreak(BlockBreakEvent event) {
+        ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
         Block block = event.getBlock();
         if (block.getType().equals(Material.STONE)) {
             this.incrementProgress(event.getPlayer().getUniqueId());
