@@ -67,7 +67,7 @@ public class HomeConfigMenu extends Menu {
             }).setNextMenu(new HomeChangeIconMenu(player, home)));
 
             content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
-                itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).style(Style.style(TextDecoration.ITALIC.withState(false))));
+                itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
 
                 TextComponent lore = Component.text()
                         .append(Component.text("■ ", NamedTextColor.GRAY))
