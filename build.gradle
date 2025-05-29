@@ -48,6 +48,9 @@ repositories {
     maven {
         url "https://jitpack.io" // Toujours à la fin
     }
+    maven {
+        url "https://m2.dv8tion.net/releases"
+    }
 }
 
 dependencies {
@@ -64,6 +67,7 @@ dependencies {
     implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
     implementation 'net.raidstone:wgevents:1.18.1'
+    implementation "net.dv8tion:JDA:5.0.0-beta.20"
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'

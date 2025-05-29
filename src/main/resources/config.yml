@@ -14,6 +14,10 @@ chat:
   # {prefix}, {suffix}, {name}, {message}
   message: "&r{prefix} {name}&8: &f{message}"
 
+bot-discord:
+  bot-token: "TOKEN_BOT_DISCORD"
+  guild-id: "ID_SERVEUR_DISCORD"
+
 #####
 # Paramètres pour un environnement de production
 #####
