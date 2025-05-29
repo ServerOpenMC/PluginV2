@@ -120,7 +120,6 @@ public class OMCPlugin extends JavaPlugin {
 
         // - Mascottes
         MascotsManager.saveMascots(MascotsManager.mascots);
-        CityManager.saveFreeClaims(CityManager.freeClaim);
 
         // - Cube
         CubeListener.clearCube(CubeListener.currentLocation);
