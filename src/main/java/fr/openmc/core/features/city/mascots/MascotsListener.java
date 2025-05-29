@@ -130,7 +130,7 @@ public class MascotsListener implements Listener {
         }
 
         if (cityEnemy_type == null) {
-           MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de la ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de la ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
