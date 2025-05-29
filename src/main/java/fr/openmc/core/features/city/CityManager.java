@@ -244,11 +244,23 @@ public class CityManager implements Listener {
     }
 
     public static void claimChunk(City city, BlockVector2 chunk) {
-        // TODO: update claimedChunks
+        claimedChunks.put(chunk, city);
+
+        try {
+            claimsDao.create(new DBCityClaim(chunk, city.getUUID()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void unclaimChunk(City city, BlockVector2 chunk) {
-        // TODO: update claimedChunks
+        claimedChunks.remove(chunk);
+
+        try {
+            claimsDao.delete(new DBCityClaim(chunk, city.getUUID()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void updateFreeClaims(City city, int diff) {
