@@ -83,7 +83,7 @@ public class OMCPlugin extends JavaPlugin {
         new TabList();
         new AdminShopManager();
         new AccountDetectionManager();
-        new BossbarManager(this);
+        new BossbarManager();
 
         // TODO: enlever la condition
         if (!OMCPlugin.isUnitTestVersion()){

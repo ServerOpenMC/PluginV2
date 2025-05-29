@@ -31,22 +31,22 @@ public class BossBarCommand {
             return;
         }
 
-        BossbarManager.getInstance().toggleBossBar(player);
+        BossbarManager.toggleBossBar(player);
     }
 
     @CommandPermission("omc.admin.commands.bossbar.reload")
     @Subcommand("reload")
     public void reloadCommand(CommandSender sender) {
-        BossbarManager.getInstance().reloadMessages();
+        BossbarManager.reloadMessages();
         MessagesManager.sendMessage(sender, Component.text("§aBossbar rechargée avec succès!"), Prefix.OPENMC, MessageType.SUCCESS, true);
     }
 
     @CommandPermission("omc.admin.commands.bossbar.toggle")
     @Subcommand("toggle")
     public void toggleCommand(CommandSender sender) {
-        BossbarManager.getInstance().toggleGlobalBossBar();
+        BossbarManager.toggleGlobalBossBar();
         if (sender instanceof Player player) {
-            MessagesManager.sendMessage(player, Component.text("§aBossbar " + (BossbarManager.getInstance().hasBossBar() ? "activée" : "désactivée") + " pour vous."), Prefix.OPENMC, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(player, Component.text("§aBossbar " + (BossbarManager.hasBossBar() ? "activée" : "désactivée") + " pour vous."), Prefix.OPENMC, MessageType.SUCCESS, true);
         }
     }
 
@@ -57,7 +57,7 @@ public class BossBarCommand {
             return;
         }
 
-        List<Component> messages = BossbarManager.getInstance().getHelpMessages();
+        List<Component> messages = BossbarManager.getHelpMessages();
 
         Component header = Component.text("\n§6§lGestion des messages de Bossbar\n")
                 .color(NamedTextColor.GOLD)
@@ -103,8 +103,8 @@ public class BossBarCommand {
     public void addMessage(BukkitCommandActor actor, String message) {
         try {
             Component component = MiniMessage.miniMessage().deserialize(message);
-            BossbarManager.getInstance().addMessage(component);
-            BossbarManager.getInstance().reloadMessages();
+            BossbarManager.addMessage(component);
+            BossbarManager.reloadMessages();
             MessagesManager.sendMessage(actor.getSender(), Component.text("§aMessage ajouté avec succès!"), Prefix.OPENMC, MessageType.SUCCESS, true);
             manageCommand(actor);
         } catch (Exception e) {
@@ -117,8 +117,8 @@ public class BossBarCommand {
     public void editMessage(BukkitCommandActor actor, int index, String newMessage) {
         try {
             Component component = MiniMessage.miniMessage().deserialize(newMessage);
-            BossbarManager.getInstance().updateMessage(index, component);
-            BossbarManager.getInstance().reloadMessages();
+            BossbarManager.updateMessage(index, component);
+            BossbarManager.reloadMessages();
             MessagesManager.sendMessage(actor.getSender(), Component.text("§aMessage mis à jour avec succès!"), Prefix.OPENMC, MessageType.SUCCESS, true);
             manageCommand(actor);
         } catch (Exception e) {
@@ -143,8 +143,8 @@ public class BossBarCommand {
     @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("delete")
     public void deleteMessage(BukkitCommandActor actor, int index) {
-        BossbarManager.getInstance().removeMessage(index);
-        BossbarManager.getInstance().reloadMessages();
+        BossbarManager.removeMessage(index);
+        BossbarManager.reloadMessages();
         MessagesManager.sendMessage(actor.getSender(), Component.text("Message supprimé avec succès."), Prefix.OPENMC, MessageType.SUCCESS, true);
         manageCommand(actor);
     }

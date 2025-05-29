@@ -8,7 +8,6 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,27 +19,20 @@ import java.io.File;
 import java.util.*;
 
 public class BossbarManager {
+    private static final Map<UUID, BossBar> activeBossBars = new HashMap<>();
     @Getter
-    private static BossbarManager instance;
-    private final Map<UUID, BossBar> activeBossBars = new HashMap<>();
+    private static final List<Component> helpMessages = new ArrayList<>();
     @Getter
-    private final List<Component> helpMessages = new ArrayList<>();
+    private static boolean bossBarEnabled = true;
     @Getter
-    private boolean bossBarEnabled = true;
-    @Getter
-    private final File configFile;
-    private int currentMessageIndex = 0;
-    @Getter
-    private final OMCPlugin plugin;
+    private static File configFile;
+    private static int currentMessageIndex = 0;
 
     /**
      * Constructs the BossbarManager and initializes its components
-     * @param plugin The main plugin instance
      */
-    public BossbarManager(OMCPlugin plugin) {
-        instance = this;
-        this.plugin = plugin;
-        this.configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "bossbars.yml");
+    public BossbarManager() {
+        configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "bossbars.yml");
         loadConfig();
         loadDefaultMessages();
         startRotationTask();
@@ -51,7 +43,7 @@ public class BossbarManager {
      * Loads configuration from bossbars.yml file
      * Creates the file if it doesn't exist
      */
-    private void loadConfig() {
+    private static void loadConfig() {
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
             OMCPlugin.getInstance().saveResource("data/bossbars.yml", false);
@@ -62,7 +54,7 @@ public class BossbarManager {
     /**
      * Loads messages from the configuration file
      */
-    private void loadDefaultMessages() {
+    private static void loadDefaultMessages() {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         helpMessages.clear();
 
@@ -71,7 +63,7 @@ public class BossbarManager {
         }
 
         if (helpMessages.isEmpty()) {
-            plugin.getLogger().warning("Aucun message trouvé - vérifiez bossbars.yml");
+            OMCPlugin.getInstance().getLogger().warning("Aucun message trouvé - vérifiez bossbars.yml");
         }
     }
 
@@ -79,7 +71,7 @@ public class BossbarManager {
      * Starts the message rotation task for bossbars
      * Messages change every 10 seconds (200 ticks)
      */
-    private void startRotationTask() {
+    private static void startRotationTask() {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -102,7 +94,7 @@ public class BossbarManager {
      * Adds a bossbar to the specified player
      * @param player The player to add the bossbar to
      */
-    public void addBossBar(Player player) {
+    public static void addBossBar(Player player) {
         if (!bossBarEnabled || activeBossBars.containsKey(player.getUniqueId())) return;
 
         removeBossBar(player);
@@ -122,7 +114,7 @@ public class BossbarManager {
      * Removes the bossbar from the specified player
      * @param player The player to remove the bossbar from
      */
-    public void removeBossBar(Player player) {
+    public static void removeBossBar(Player player) {
         BossBar bossBar = activeBossBars.remove(player.getUniqueId());
         if (bossBar != null) {
             player.hideBossBar(bossBar);
@@ -133,7 +125,7 @@ public class BossbarManager {
      * Toggles the bossbar for a specific player
      * @param player The player to toggle the bossbar for
      */
-    public void toggleBossBar(Player player) {
+    public static void toggleBossBar(Player player) {
         if (activeBossBars.containsKey(player.getUniqueId())) {
             removeBossBar(player);
             MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
@@ -146,7 +138,7 @@ public class BossbarManager {
     /**
      * Reloads messages from the configuration file
      */
-    public void reloadMessages() {
+    public static void reloadMessages() {
         helpMessages.clear();
         loadDefaultMessages();
     }
@@ -155,7 +147,7 @@ public class BossbarManager {
      * Checks if bossbars are globally enabled
      * @return true if bossbars are enabled, false otherwise
      */
-    public boolean hasBossBar() {
+    public static boolean hasBossBar() {
         return bossBarEnabled;
     }
 
@@ -163,7 +155,7 @@ public class BossbarManager {
      * Sets the list of messages to display in bossbars
      * @param messages The list of new messages
      */
-    public void setHelpMessages(List<Component> messages) {
+    public static void setHelpMessages(List<Component> messages) {
         helpMessages.clear();
         helpMessages.addAll(messages);
         saveMessagesToConfig();
@@ -172,7 +164,7 @@ public class BossbarManager {
     /**
      * Saves messages to the configuration file
      */
-    private void saveMessagesToConfig() {
+    private static void saveMessagesToConfig() {
         try {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
             List<String> serializedMessages = new ArrayList<>();
@@ -184,7 +176,7 @@ public class BossbarManager {
             config.set("messages", serializedMessages);
             config.save(configFile);
         } catch (Exception e) {
-            plugin.getLogger().severe("Erreur lors de la sauvegarde des messages: " + e.getMessage());
+            OMCPlugin.getInstance().getLogger().severe("Erreur lors de la sauvegarde des messages: " + e.getMessage());
         }
     }
 
@@ -192,7 +184,7 @@ public class BossbarManager {
      * Adds a message to the message list
      * @param message The message to add
      */
-    public void addMessage(Component message) {
+    public static void addMessage(Component message) {
         helpMessages.add(message);
         saveMessagesToConfig();
     }
@@ -201,7 +193,7 @@ public class BossbarManager {
      * Removes a message from the message list
      * @param index The index of the message to remove
      */
-    public void removeMessage(int index) {
+    public static void removeMessage(int index) {
         if (index >= 0 && index < helpMessages.size()) {
             helpMessages.remove(index);
             saveMessagesToConfig();
@@ -213,7 +205,7 @@ public class BossbarManager {
      * @param index The index of the message to update
      * @param newMessage The new message content
      */
-    public void updateMessage(int index, Component newMessage) {
+    public static void updateMessage(int index, Component newMessage) {
         if (index >= 0 && index < helpMessages.size()) {
             helpMessages.set(index, newMessage);
             saveMessagesToConfig();
@@ -223,13 +215,13 @@ public class BossbarManager {
     /**
      * Toggles bossbars globally for all players
      */
-    public void toggleGlobalBossBar() {
+    public static void toggleGlobalBossBar() {
         bossBarEnabled = !bossBarEnabled;
 
         if (bossBarEnabled) {
-            Bukkit.getOnlinePlayers().forEach(this::addBossBar);
+            Bukkit.getOnlinePlayers().forEach(BossbarManager::addBossBar);
         } else {
-            Bukkit.getOnlinePlayers().forEach(this::removeBossBar);
+            Bukkit.getOnlinePlayers().forEach(BossbarManager::removeBossBar);
         }
     }
 }
