@@ -11,12 +11,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ProtectionsManager {
-    public static HashMap<UUID, Boolean> playerCanBypass = new HashMap<>();
+    public static Set<UUID> canBypassPlayer = new HashSet<>();
 
     private static final Map<UUID, Long> lastErrorMessageTime = new HashMap<>();
     private static final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
@@ -43,8 +41,8 @@ public class ProtectionsManager {
     public static void verify(Player player, Cancellable event, Location loc) {
         if (!player.getWorld().getName().equals("world")) return;
 
-        Boolean canBypass = playerCanBypass.get(player.getUniqueId());
-        if (canBypass != null && canBypass) return;
+        boolean canBypass = canBypassPlayer.contains(player.getUniqueId());
+        if (canBypass) return;
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
         if (cityAtLoc == null) return;
