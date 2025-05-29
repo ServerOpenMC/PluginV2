@@ -182,8 +182,6 @@ public class CityManager implements Listener {
         }
     }
 
-    // TODO: actually implement DB methods
-
     public static HashMap<UUID, Set<CPermission>> getCityPermissions(City city) {
         HashMap<UUID, Set<CPermission>> permissions = new HashMap<>();
 
@@ -215,17 +213,34 @@ public class CityManager implements Listener {
 
     public static void removePlayerPermission(City city, UUID player, CPermission permission) {
         try {
-            permissionsDao.delete(new DBCityPermission(city.getUUID(), player, permission.name()));
+            permissionsDao.create(new DBCityPermission(city.getUUID(), player, permission.name()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public static HashMap<Integer, ItemStack[]> getCityChestContent(City city) {
-        return null;
+        HashMap<Integer, ItemStack[]> pages = new HashMap<>();
+
+        try {
+            QueryBuilder<DBCityChest, String> query = chestsDao.queryBuilder();
+            query.where().eq("city", city.getUUID());
+            List<DBCityChest> dbChestPages = chestsDao.query(query.prepare());
+
+            dbChestPages.forEach(page -> pages.put(page.getPage(), page.getContent()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return pages;
     }
 
     public static void saveChestPage(City city, int page, ItemStack[] content) {
+        try {
+            chestsDao.createOrUpdate(new DBCityChest(city.getUUID(), page, content));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void claimChunk(City city, BlockVector2 chunk) {

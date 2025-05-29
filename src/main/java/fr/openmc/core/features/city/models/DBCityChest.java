@@ -7,12 +7,14 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import fr.openmc.core.utils.serializer.BukkitSerializer;
+import lombok.Getter;
 
 @DatabaseTable(tableName = "city_chests")
 public class DBCityChest {
     @DatabaseField(canBeNull = false)
     private String city;
     @DatabaseField(canBeNull = false)
+    @Getter
     private int page;
     @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
     private byte[] content;
