@@ -3,6 +3,7 @@ package fr.openmc.core.features.city;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.sk89q.worldedit.math.BlockVector2;
@@ -186,13 +187,38 @@ public class CityManager implements Listener {
     public static HashMap<UUID, Set<CPermission>> getCityPermissions(City city) {
         HashMap<UUID, Set<CPermission>> permissions = new HashMap<>();
 
+        try {
+            QueryBuilder<DBCityPermission, String> query = permissionsDao.queryBuilder();
+            query.where().eq("city", city.getUUID());
+            List<DBCityPermission> dbPermissions = permissionsDao.query(query.prepare());
+
+            dbPermissions.forEach(dbPermission -> {
+                Set<CPermission> playerPermissions = permissions.getOrDefault(dbPermission.getPlayer(),
+                        new HashSet<>());
+                playerPermissions.add(dbPermission.getPermission());
+                permissions.put(dbPermission.getPlayer(), playerPermissions);
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return permissions;
     }
 
     public static void addPlayerPermission(City city, UUID player, CPermission permission) {
+        try {
+            permissionsDao.create(new DBCityPermission(city.getUUID(), player, permission.name()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void removePlayerPermission(City city, UUID player, CPermission permission) {
+        try {
+            permissionsDao.delete(new DBCityPermission(city.getUUID(), player, permission.name()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static HashMap<Integer, ItemStack[]> getCityChestContent(City city) {
