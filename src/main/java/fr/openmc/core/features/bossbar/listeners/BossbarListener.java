@@ -4,6 +4,7 @@ import fr.openmc.core.features.bossbar.BossbarManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class BossbarListener implements Listener {
 
@@ -12,7 +13,7 @@ public class BossbarListener implements Listener {
         BossbarManager.getInstance().addBossBar(event.getPlayer());
     }
     @EventHandler
-    public void onPlayerQuit(PlayerJoinEvent event) {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         BossbarManager.getInstance().removeBossBar(event.getPlayer());
     }
 }
