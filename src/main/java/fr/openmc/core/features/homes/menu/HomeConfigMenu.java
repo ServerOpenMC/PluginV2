@@ -91,9 +91,10 @@ public class HomeConfigMenu extends Menu {
                             .setLines(lines)
                             .setType(ItemUtils.getSignType(player))
                             .setHandler((p, result) -> {
+                                System.out.println("aaaaa");
                                 String input = result.getLine(0);
 
-                                if (!HomeUtil.checkName(player, input))
+                                if (HomeUtil.checkName(player, input))
                                     return Collections.emptyList();
 
                                 if (HomesManager.getHomesNames(p.getUniqueId()).contains(input)) {
