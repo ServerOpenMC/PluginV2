@@ -36,7 +36,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class OMCPlugin extends JavaPlugin {
@@ -128,12 +127,6 @@ public class OMCPlugin extends JavaPlugin {
 
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();
-
-        try {
-            DatabaseManager.close();
-        } catch (SQLException e) {
-            getLogger().severe("Impossible de fermer la connexion à la base de données");
-        }
 
         getLogger().info("Plugin désactivé");
     }
