@@ -564,7 +564,7 @@ public class MayorManager {
      * @param city The city to update mayor
      */
     public static void runSetupMayor(City city) {
-        UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
+        UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getName();
         Mayor mayor = city.getMayor();
 

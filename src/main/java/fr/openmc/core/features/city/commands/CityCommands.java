@@ -162,7 +162,7 @@ public class CityCommands {
             return;
         }
 
-        playerCity.renameCity(name);
+        playerCity.rename(name);
         MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + name), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
@@ -204,15 +204,13 @@ public class CityCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityKickCondition.canCityKickPlayer(city, sender, player)) return;
+        
+        city.removePlayer(player.getUniqueId());
 
-        if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + player.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + player.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
-            if (player.isOnline()) {
-                MessagesManager.sendMessage((Player) player, Component.text("Tu as été exclu de la ville " + city.getName()), Prefix.CITY, MessageType.INFO, true);
-            }
-        } else {
-            MessagesManager.sendMessage(sender, Component.text("Impossible d'exclure "+player.getName()+" de la ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (player.isOnline()) {
+            MessagesManager.sendMessage((Player) player, Component.text("Tu as été exclu de la ville " + city.getName()), Prefix.CITY, MessageType.INFO, true);
         }
     }
 
@@ -353,9 +351,7 @@ public class CityCommands {
         int price = calculatePrice(city.getChunks().size());
         int aywenite = calculateAywenite(city.getChunks().size());
 
-
-
-        if ((!CityManager.freeClaim.containsKey(city.getUUID())) || (CityManager.freeClaim.get(city.getUUID()) <= 0)) {
+        if (city.getFreeClaims() <= 0) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -369,7 +365,7 @@ public class CityCommands {
             city.updateBalance((double) (price*-1));
             ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
         } else {
-            CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) - 1);
+            city.updateFreeClaims(-1);
         }
 
         city.addChunk(chunk);
@@ -669,8 +665,8 @@ public class CityCommands {
         city.addPlayer(uuid);
         city.addPermission(uuid, CPermission.OWNER);
 
-        CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
-        CityManager.freeClaim.put(cityUUID, 15);
+        city.addChunk(origin);
+        city.updateFreeClaims(15-city.getFreeClaims());
 
         player.closeInventory();
 
@@ -734,7 +730,7 @@ public class CityCommands {
                     if (locationClick == null) return true;
                     Chunk chunk = locationClick.getChunk();
 
-                    if (!city.hasChunk(chunk.getX(), chunk.getZ())) {
+                    if (!city.hasChunk(chunk)) {
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le Warp ici car ce n'est pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
                         return false;
                     }
@@ -749,11 +745,9 @@ public class CityCommands {
 
     public static void leaveCity(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Tu as quitté " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
-        } else {
-            MessagesManager.sendMessage(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
-        }
+        city.removePlayer(player.getUniqueId());
+        
+        MessagesManager.sendMessage(player, Component.text("Tu as quitté " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     public static void startBalanceCooldown(String city_uuid) {

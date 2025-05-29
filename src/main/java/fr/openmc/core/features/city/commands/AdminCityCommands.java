@@ -131,7 +131,7 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        city.renameCity(newName);
+        city.rename(newName);
 
         MessagesManager.sendMessage(player, Component.text("La ville a été renommée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
@@ -254,11 +254,8 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        if (CityManager.freeClaim.get(city.getUUID())==null){
-            CityManager.freeClaim.put(city.getUUID(), claim);
-            return;
-        }
-        CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) + claim);
+
+        city.updateFreeClaims(claim);
     }
 
     @Subcommand("freeclaim remove")
@@ -269,11 +266,8 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        if (CityManager.freeClaim.get(city.getUUID()) - claim <= 0){
-            CityManager.freeClaim.remove(city.getUUID());
-            return;
-        }
-        CityManager.freeClaim.replace(city.getUUID(),CityManager.freeClaim.get(city.getUUID()) - claim);
+
+        city.updateFreeClaims(-claim);
     }
 
     @Subcommand("freeclaim delete")
@@ -284,7 +278,7 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        CityManager.freeClaim.remove(city.getUUID());
+        city.updateFreeClaims(-city.getFreeClaims());
     }
 
     @Subcommand("mascots remove")

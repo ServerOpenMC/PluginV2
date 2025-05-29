@@ -424,7 +424,7 @@ public class Company {
             return owner.getPlayer().equals(uuid);
         }
         else {
-            return owner.getCity().getPlayerWith(CPermission.OWNER).equals(uuid);
+            return owner.getCity().getPlayerWithPermission(CPermission.OWNER).equals(uuid);
         }
     }
 
@@ -457,7 +457,7 @@ public class Company {
             return ItemUtils.getPlayerSkull(owner.getPlayer());
         }
         else {
-            return ItemUtils.getPlayerSkull(owner.getCity().getPlayerWith(CPermission.OWNER));
+            return ItemUtils.getPlayerSkull(owner.getCity().getPlayerWithPermission(CPermission.OWNER));
         }
     }
 

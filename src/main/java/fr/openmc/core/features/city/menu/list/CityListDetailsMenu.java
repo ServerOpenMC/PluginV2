@@ -86,9 +86,9 @@ public class CityListDetailsMenu extends Menu {
 				loreOwner.addAll(perk3.getLore());
 			}
 
-			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWithPermission(CPermission.OWNER)),
 					itemMeta -> {
-						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()));
+						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWithPermission(CPermission.OWNER)).getName()));
 						itemMeta.lore(loreOwner);
 					})
 			);
@@ -102,7 +102,7 @@ public class CityListDetailsMenu extends Menu {
 				loreMayor.add(Component.text(perk3.getName()));
 				loreMayor.addAll(perk3.getLore());
 
-				map.put(14, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+				map.put(14, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWithPermission(CPermission.OWNER)),
 								itemMeta -> {
 									itemMeta.displayName(
 											Component.text("§7Maire : ")
@@ -114,9 +114,9 @@ public class CityListDetailsMenu extends Menu {
 				);
 			}
 		} else {
-			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWith(CPermission.OWNER)),
+			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWithPermission(CPermission.OWNER)),
 					itemMeta -> {
-						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWith(CPermission.OWNER)).getName()));
+						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWithPermission(CPermission.OWNER)).getName()));
 					})
 			);
 		}

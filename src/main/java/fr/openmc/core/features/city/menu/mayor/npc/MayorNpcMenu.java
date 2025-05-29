@@ -79,7 +79,7 @@ public class MayorNpcMenu extends Menu {
             loreMayor.add(Component.text(perk3.getName()));
             loreMayor.addAll(perk3.getLore());
 
-            inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
+            inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWithPermission(CPermission.OWNER)), itemMeta -> {
                 itemMeta.displayName(Component.text("§eMaire " + city.getMayor().getName()));
                 itemMeta.lore(loreMayor);
             }));

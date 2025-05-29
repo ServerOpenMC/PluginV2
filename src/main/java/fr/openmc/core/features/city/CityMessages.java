@@ -23,7 +23,7 @@ public class CityMessages {
     public static void sendInfo(CommandSender sender, City city) {
         String mascotLife = "dead";
         String cityName = city.getName();
-        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
@@ -68,8 +68,6 @@ public class CityMessages {
         } else {
             sendLine(sender, "Banque", money);
         }
-        if (CityManager.freeClaim.containsKey(city.getUUID())){
-            sendLine(sender, "Claim gratuit", String.valueOf(CityManager.freeClaim.get(city.getUUID())));
-        }
+        sendLine(sender, "Claim gratuit", String.valueOf(city.getFreeClaims()));
     }
 }

@@ -11,7 +11,6 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
-import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.city.mascots.Mascot;
@@ -24,49 +23,41 @@ import fr.openmc.core.features.city.models.DBCityClaim;
 import fr.openmc.core.features.city.models.DBCityMember;
 import fr.openmc.core.features.city.models.DBCityPermission;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.database.DatabaseManager;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
-    public static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
-    public static HashMap<String, Integer> freeClaim = new HashMap<>();
+    private static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
+
+        loadCities();
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_members", ((args, sender, command) -> {
             String playerCity = playerCities.get(sender.getUniqueId()).getUUID();
 
             if (playerCity == null)
                 return List.of();
-
-            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                try {
-                    PreparedStatement statement = DatabaseManager.getConnection()
-                            .prepareStatement("SELECT city_uuid, x, z FROM city_regions");
-                    ResultSet rs = statement.executeQuery();
-
-                    while (rs.next()) {
-                        claimedChunks.put(BlockVector2.at(rs.getInt("x"), rs.getInt("z")),
-                                getCity(rs.getString("city_uuid")));
-                    }
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            });
 
             return playerCities.keySet().stream()
                     .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
@@ -86,8 +77,6 @@ public class CityManager implements Listener {
                 new ProtectionListener(),
                 new MascotsListener(),
                 new CityChatListener());
-
-        freeClaim = loadFreeClaims();
     }
 
     private static Dao<DBCity, String> citiesDao;
@@ -115,13 +104,118 @@ public class CityManager implements Listener {
 
     @EventHandler
     public void onChunkClaim(ChunkClaimedEvent event) {
-        claimedChunks.put(BlockVector2.at(event.getChunk().getX(), event.getChunk().getZ()), event.getCity());
+        City city = event.getCity();
+        BlockVector2 chunk = BlockVector2.at(event.getChunk().getX(), event.getChunk().getZ());
+        claimedChunks.put(chunk, city);
+
+        try {
+            claimsDao.create(new DBCityClaim(chunk, city.getUUID()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ==================== Database Methods ====================
+
+    private static void loadCities() {
+        try {
+            cities.clear();
+            citiesDao.queryForAll().forEach(city -> cities.put(city.getId(), city.deserialize()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            playerCities.clear();
+            membersDao.queryForAll().forEach(member -> playerCities.put(member.getPlayer(), member.getCity()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            claimedChunks.clear();
+            claimsDao.queryForAll().forEach(claim -> claimedChunks.put(claim.getBlockVector(), claim.getCity()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveCity(City city) {
+        try {
+            citiesDao.createOrUpdate(city.serialize());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
-     * Get all City
+     * Will add a player to a city in the database
      *
-     * @return A collection of all cities
+     * @param city   The city to add the player to
+     * @param player The player to add to the city
+     */
+    public static void addPlayerToCity(City city, UUID player) {
+        try {
+            playerCities.put(player, city);
+            membersDao.create(new DBCityMember(player, city.getUUID()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Will remove a player from a city in the database
+     *
+     * @param city   The city to remove the player from
+     * @param player The player to remove from the city
+     */
+    public static void removePlayerFromCity(City city, UUID player) {
+        try {
+            playerCities.remove(player);
+            membersDao.delete(new DBCityMember(player, city.getUUID()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // TODO: actually implement DB methods
+
+    public static HashMap<UUID, Set<CPermission>> getCityPermissions(City city) {
+        HashMap<UUID, Set<CPermission>> permissions = new HashMap<>();
+
+        return permissions;
+    }
+
+    public static void addPlayerPermission(City city, UUID player, CPermission permission) {
+    }
+
+    public static void removePlayerPermission(City city, UUID player, CPermission permission) {
+    }
+
+    public static HashMap<Integer, ItemStack[]> getCityChestContent(City city) {
+        return null;
+    }
+
+    public static void saveChestPage(City city, int page, ItemStack[] content) {
+    }
+
+    public static void claimChunk(City city, BlockVector2 chunk) {
+        // TODO: update claimedChunks
+    }
+
+    public static void unclaimChunk(City city, BlockVector2 chunk) {
+        // TODO: update claimedChunks
+    }
+
+    public static void updateFreeClaims(City city, int diff) {
+    }
+
+    // ==================== General helper methods ====================
+
+    /**
+     * Get all cities registered in manager
+     * 
+     * @return cities
      */
     public static Collection<City> getCities() {
         return cities.values();
@@ -133,82 +227,9 @@ public class CityManager implements Listener {
      * @return A list of all city UUIDs
      */
     public static List<String> getAllCityUUIDs() throws SQLException {
-        Connection conn = DatabaseManager.getConnection();
         List<String> uuidList = new ArrayList<>();
-
-        String query = "SELECT uuid FROM city";
-        try (PreparedStatement statement = conn.prepareStatement(query);
-                ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                String uuid = resultSet.getString("uuid");
-                uuidList.add(uuid);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+        cities.forEach((name, city) -> uuidList.add(city.getUUID()));
         return uuidList;
-    }
-
-    /**
-     * Get all free claims
-     *
-     * @return A map of city UUIDs and their claim
-     */
-    public static HashMap<String, Integer> loadFreeClaims() {
-        HashMap<String, Integer> freeClaims = new HashMap<>();
-
-        String query = "SELECT city_uuid, claim FROM free_claim";
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
-                ResultSet rs = statement.executeQuery()) {
-
-            while (rs.next()) {
-                String cityUuid = rs.getString("city_uuid");
-                int claim = rs.getInt("claim");
-                if (claim > 0) {
-                    freeClaims.put(cityUuid, claim);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return freeClaims;
-    }
-
-    /**
-     * Save free claims to the database
-     * 
-     * @param freeClaims A map of city UUIDs and their claim
-     */
-    public static void saveFreeClaims(HashMap<String, Integer> freeClaims) {
-        String query;
-
-        if (OMCPlugin.isUnitTestVersion()) {
-            query = "MERGE INTO free_claim KEY(city_uuid) VALUES (?, ?)";
-        } else {
-            query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
-        }
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
-            for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
-                if (entry.getValue() > 0) {
-                    statement.setString(1, entry.getKey());
-                    statement.setInt(2, entry.getValue());
-                    statement.setInt(3, entry.getValue());
-                    statement.addBatch();
-                } else {
-                    try (PreparedStatement deleteStatement = DatabaseManager.getConnection().prepareStatement(
-                            "DELETE FROM free_claim WHERE city_uuid = ?")) {
-                        deleteStatement.setString(1, entry.getKey());
-                        deleteStatement.executeUpdate();
-                    }
-                }
-
-            }
-            statement.executeBatch();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -225,58 +246,55 @@ public class CityManager implements Listener {
     /**
      * Get a city by its UUID
      * 
-     * @param cityUUID The UUID of the city
+     * @param city The UUID of the city
      * @return The city object, or null if not found
      */
-    public static City getCity(String cityUUID) {
-        if (!cities.containsKey(cityUUID)) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection()
-                        .prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
-                statement.setString(1, cityUUID);
-                ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    City c = new City(cityUUID);
-                    cities.put(c.getUUID(), c);
-                    return c;
-                }
+    public static City getCity(String city) {
+        return cities.get(city);
+    }
 
-                return null;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return cities.get(cityUUID);
+    /**
+     * Get a cities claimed chunks
+     * 
+     * @param inCity The cities whose chunks are requested
+     * @return The cities claimed chunks
+     */
+    public static Set<BlockVector2> getCityChunks(City inCity) {
+        Set<BlockVector2> chunks = new HashSet<>();
+
+        claimedChunks.forEach((chunk, city) -> {
+            if (city.getUUID() == inCity.getUUID())
+                chunks.add(chunk);
+        });
+
+        return chunks;
+    }
+
+    /**
+     * Get a cities members
+     * 
+     * @param inCity The cities whose members are requested
+     * @return The cities members
+     */
+    public static Set<UUID> getCityMembers(City inCity) {
+        Set<UUID> members = new HashSet<>();
+
+        playerCities.forEach((player, city) -> {
+            if (city.getUUID() == inCity.getUUID())
+                members.add(player);
+        });
+
+        return members;
     }
 
     /**
      * Get a city by its member
      * 
-     * @param playerUUID The UUID of the member
+     * @param player The UUID of the member
      * @return The city object, or null if not found
      */
-    public static City getPlayerCity(UUID playerUUID) {
-        if (!playerCities.containsKey(playerUUID)) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection()
-                        .prepareStatement("SELECT city_uuid FROM city_members WHERE player = ? LIMIT 1");
-                statement.setString(1, playerUUID.toString());
-                ResultSet rs = statement.executeQuery();
-
-                if (!rs.next()) {
-                    return null;
-                }
-
-                String city = rs.getString(1);
-                cachePlayer(playerUUID, getCity(city));
-                return getCity(city);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return playerCities.get(playerUUID);
+    public static City getPlayerCity(UUID player) {
+        return playerCities.get(player);
     }
 
     /**
@@ -288,28 +306,7 @@ public class CityManager implements Listener {
      */
     @Nullable
     public static City getCityFromChunk(int x, int z) {
-        if (claimedChunks.containsKey(BlockVector2.at(x, z))) {
-            return claimedChunks.get(BlockVector2.at(x, z));
-        }
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection()
-                    .prepareStatement("SELECT city_uuid FROM city_regions WHERE x = ? AND z = ? LIMIT 1");
-            statement.setInt(1, x);
-            statement.setInt(2, z);
-            ResultSet rs = statement.executeQuery();
-
-            if (!rs.next()) {
-                claimedChunks.put(BlockVector2.at(x, z), null);
-                return null;
-            }
-
-            claimedChunks.put(BlockVector2.at(x, z), CityManager.getCity(rs.getString("city_uuid")));
-            return claimedChunks.get(BlockVector2.at(x, z));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return claimedChunks.get(BlockVector2.at(x, z));
     }
 
     /**
@@ -329,23 +326,15 @@ public class CityManager implements Listener {
     }
 
     /**
-     * Cache a player with its city
+     * Register a city
      *
-     * @param playerUUID The UUID of the player
-     * @param city       The city object
+     * @param city The city object
      */
-    public static void cachePlayer(UUID playerUUID, City city) {
-        playerCities.put(playerUUID, city);
+    public static void registerCity(City city) {
+        cities.put(city.getUUID(), city);
     }
 
-    /**
-     * Uncache a player with its city
-     *
-     * @param playerUUID The UUID of the player
-     */
-    public static void uncachePlayer(UUID playerUUID) {
-        playerCities.remove(playerUUID);
-    }
+    // TODO: fix everything below
 
     /**
      * Create a new city
@@ -357,38 +346,21 @@ public class CityManager implements Listener {
      * @return The created city object
      */
     public static City createCity(Player owner, String cityUUID, String name, CityType type) {
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection()
-                        .prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0, ?)");
-                statement.setString(1, cityUUID);
-                statement.setString(2, owner.getUniqueId().toString());
-                statement.setString(3, name);
-                statement.setString(4, type == CityType.PEACE ? "peace" : "war");
-                statement.executeUpdate();
+        return null;
+        // try {
+        // City city = new City(cityUUID);
+        // citiesDao.create(city.serialize());
 
-                statement = DatabaseManager.getConnection()
-                        .prepareStatement("INSERT INTO city_chests VALUE (?, 1, null)");
-                statement.setString(1, cityUUID);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-        City city = new City(cityUUID);
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
-        });
-        return city;
-    }
+        // // TODO: create blank city chest page
 
-    /**
-     * Register a city
-     *
-     * @param city The city object
-     */
-    public static void registerCity(City city) {
-        cities.put(city.getUUID(), city);
+        // Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+        // Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
+        // });
+        // return city;
+        // } catch (SQLException e) {
+        // e.printStackTrace();
+        // return null;
+        // }
     }
 
     /**
@@ -459,8 +431,6 @@ public class CityManager implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        freeClaim.remove(city);
 
         MascotsManager.removeMascotsFromCity(city);
     }

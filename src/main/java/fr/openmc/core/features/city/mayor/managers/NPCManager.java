@@ -80,7 +80,7 @@ public class NPCManager implements Listener {
         Npc npcMayor = FancyNpcsPlugin.get().getNpcAdapter().apply(dataMayor);
 
         NpcData dataOwner = new NpcData("owner-" + cityUUID, creatorUUID, locationOwner);
-        String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
         dataOwner.setSkin(ownerName);
         dataOwner.setDisplayName("<yellow>Propriétaire " + ownerName + "</yellow>");
 

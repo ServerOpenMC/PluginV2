@@ -67,9 +67,9 @@ public class OwnerNpcMenu extends Menu {
         Player player = getOwner();
         try {
             Mayor mayor = city.getMayor();
-            UUID uuidOwner = city.getPlayerWith(CPermission.OWNER);
+            UUID uuidOwner = city.getPlayerWithPermission(CPermission.OWNER);
 
-            String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+            String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
 
             if (electionType == ElectionType.ELECTION) {
                 Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());

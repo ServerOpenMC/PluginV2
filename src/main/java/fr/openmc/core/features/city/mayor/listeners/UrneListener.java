@@ -100,7 +100,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!playerCity.getPlayerWith(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (!playerCity.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
             removeUrne(event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le propriétaire !"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
@@ -150,7 +150,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!playerCity.getPlayerWith(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (!playerCity.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le propriétaire"), Prefix.MAYOR, MessageType.ERROR, false);
             event.setCancelled(true);
             return;

@@ -113,8 +113,8 @@ public class MayorMandateMenu extends Menu {
             loreOwner.add(Component.text(perk1.getName()));
             loreOwner.addAll(perk1.getLore());
 
-            inventory.put(5, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)),itemMeta -> {
-                itemMeta.displayName(Component.text("§ePropriétaire " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()));
+            inventory.put(5, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWithPermission(CPermission.OWNER)),itemMeta -> {
+                itemMeta.displayName(Component.text("§ePropriétaire " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()));
                 itemMeta.lore(loreOwner);
             }));
 

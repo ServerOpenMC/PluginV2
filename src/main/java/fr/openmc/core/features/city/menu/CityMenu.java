@@ -94,7 +94,7 @@ public class CityMenu extends Menu {
 
             if (hasPermissionRenameCity || hasPermissionOwner) {
                 loreModifyCity = List.of(
-                        Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                        Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
                         Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                         Component.text("§7Membre(s) : " + city.getMembers().size()),
                         Component.text(""),
@@ -102,7 +102,7 @@ public class CityMenu extends Menu {
                 );
             } else {
                 loreModifyCity = List.of(
-                        Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
+                        Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
                         Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                         Component.text("§7Membre(s) : " + city.getMembers().size())
                 );
