@@ -198,7 +198,7 @@ public class City {
     }
 
     /**
-     *
+     * Updates the number of free claims of the city
      */
     public void updateFreeClaims(int diff) {
         freeClaims += diff;
@@ -208,7 +208,7 @@ public class City {
     }
 
     /**
-     *
+     * Updates the power of a city
      */
     public void updatePowerPoints(int diff) {
         powerPoints += diff;
