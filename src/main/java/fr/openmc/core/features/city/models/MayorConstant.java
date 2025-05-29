@@ -1,0 +1,20 @@
+package fr.openmc.core.features.city.models;
+
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "mayor_constants")
+public class MayorConstant {
+    @DatabaseField(id = true)
+    private int id = 1;
+    @DatabaseField(canBeNull = false)
+    private int phase;
+
+    MayorConstant() {
+        // required for ORMLite
+    }
+
+    public MayorConstant(int phase) {
+        this.phase = phase;
+    }
+}

@@ -12,6 +12,11 @@ import fr.openmc.core.features.city.mayor.listeners.UrneListener;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.mayor.perks.basic.*;
 import fr.openmc.core.features.city.mayor.perks.event.*;
+import fr.openmc.core.features.city.models.CityLaw;
+import fr.openmc.core.features.city.models.Mayor;
+import fr.openmc.core.features.city.models.MayorCandidate;
+import fr.openmc.core.features.city.models.MayorConstant;
+import fr.openmc.core.features.city.models.MayorVote;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.api.FancyNpcApi;
 import fr.openmc.core.utils.api.ItemAdderApi;
@@ -24,6 +29,11 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -138,23 +148,28 @@ public class MayorManager {
 //        }.runTaskTimer(OMCPlugin.ggetInstance, 0, 600L); // 600 ticks = 30 secondes
     }
 
-    public static void init_db(Connection conn) throws SQLException {
-        // create city_mayor : contient l'actuel maire et les réformes actuelles
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_MAYOR + " (city_uuid VARCHAR(8) UNIQUE, mayorUUID VARCHAR(36), mayorName VARCHAR(36), mayorColor VARCHAR(36), idPerk1 int, idPerk2 int, idPerk3 int, electionType VARCHAR(36))").executeUpdate();
-        // create city_election : contient les membres d'une ville ayant participé pour etre maire
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_ELECTION + " (city_uuid VARCHAR(8) NOT NULL, candidateUUID VARCHAR(36) UNIQUE NOT NULL, candidateName VARCHAR(36) NOT NULL, candidateColor VARCHAR(36) NOT NULL, idChoicePerk2 int, idChoicePerk3 int, vote int)").executeUpdate();
-        // create city_voted : contient les membres d'une ville ayant deja voté
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_VOTE + " (city_uuid VARCHAR(8) NOT NULL, voterUUID VARCHAR(36) UNIQUE NOT NULL, candidateUUID VARCHAR(36) NOT NULL)").executeUpdate();
-        // create city_law : contient les parametres d'une ville
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_LAW + " (city_uuid VARCHAR(8) UNIQUE, pvp BOOLEAN NOT NULL DEFAULT FALSE, warp_x DOUBLE, warp_y DOUBLE, warp_z DOUBLE, warp_world VARCHAR(255))").executeUpdate();
-        // create constants : contient une information universelle pour tout le monde
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_CONSTANTS + " (mayorPhase int)").executeUpdate();
-        PreparedStatement state = conn.prepareStatement("SELECT COUNT(*) FROM " + TABLE_CONSTANTS);
-        ResultSet rs = state.executeQuery();
-        if (rs.next() && rs.getInt(1) == 0) {
-            PreparedStatement states = conn.prepareStatement("INSERT INTO " + TABLE_CONSTANTS + " (mayorPhase) VALUES (1)");
-            states.executeUpdate();
-        }
+    private static Dao<Mayor, String> mayorsDao;
+    private static Dao<MayorCandidate, UUID> candidatesDao;
+    private static Dao<MayorVote, UUID> votesDao;
+    private static Dao<CityLaw, String> lawsDao;
+    private static Dao<MayorConstant, Integer> constantsDao;
+
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, Mayor.class);
+        mayorsDao = DaoManager.createDao(connectionSource, Mayor.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, MayorCandidate.class);
+        candidatesDao = DaoManager.createDao(connectionSource, MayorCandidate.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, MayorVote.class);
+        votesDao = DaoManager.createDao(connectionSource, MayorVote.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, CityLaw.class);
+        lawsDao = DaoManager.createDao(connectionSource, CityLaw.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, MayorConstant.class);
+        constantsDao = DaoManager.createDao(connectionSource, MayorConstant.class);
+        constantsDao.create(new MayorConstant(1));
     }
 
     // Load and Save Data Methods
