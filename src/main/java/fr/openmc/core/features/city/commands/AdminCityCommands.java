@@ -43,7 +43,7 @@ public class AdminCityCommands {
             return;
         }
 
-        city.delete();
+        CityManager.deleteCity(city);
         MessagesManager.sendMessage(player, Component.text("La ville a été supprimée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 

@@ -9,6 +9,7 @@ import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.conditions.*;
+import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
@@ -288,7 +289,7 @@ public class CityCommands {
             }
         }
 
-        city.delete();
+        CityManager.deleteCity(city);
         MessagesManager.sendMessage(sender, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
 
         DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
@@ -661,13 +662,13 @@ public class CityCommands {
         EconomyManager.withdrawBalance(player.getUniqueId(), MONEY_CREATE);
         ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), AYWENITE_CREATE);
 
-        City city = CityManager.createCity(player, cityUUID, name, type);
-        city.addPlayer(uuid);
-        city.addPermission(uuid, CPermission.OWNER);
+        City city = new City(cityUUID, name, player.getUniqueId(), type);
+
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, player));
+        });
 
         city.addChunk(origin);
-        city.updateFreeClaims(15-city.getFreeClaims());
-
         player.closeInventory();
 
         // SETUP MAIRE

@@ -2,6 +2,7 @@ package fr.openmc.core.features.city;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.sk89q.worldedit.math.BlockVector2;
@@ -11,12 +12,14 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
+import fr.openmc.core.features.city.events.CityDeleteEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.models.DBCity;
 import fr.openmc.core.features.city.models.DBCityChest;
 import fr.openmc.core.features.city.models.DBCityClaim;
@@ -334,104 +337,97 @@ public class CityManager implements Listener {
         cities.put(city.getUUID(), city);
     }
 
-    // TODO: fix everything below
-
-    /**
-     * Create a new city
-     *
-     * @param owner    The owner of the city
-     * @param cityUUID The UUID of the city
-     * @param name     The name of the city
-     * @param type     The type of the city
-     * @return The created city object
-     */
-    public static City createCity(Player owner, String cityUUID, String name, CityType type) {
-        return null;
-        // try {
-        // City city = new City(cityUUID);
-        // citiesDao.create(city.serialize());
-
-        // // TODO: create blank city chest page
-
-        // Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-        // Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
-        // });
-        // return city;
-        // } catch (SQLException e) {
-        // e.printStackTrace();
-        // return null;
-        // }
-    }
-
     /**
      * Delete a city
      *
      * @param city The UUID of the city
      */
-    public static void forgetCity(String city) {
-        try {
-            City cityz = cities.remove(city);
-            if (cityz == null)
-                return;
+    public static void deleteCity(City city) {
+        MayorManager.cityMayor.remove(city);
+        MayorManager.cityElections.remove(city);
+        MayorManager.playerVote.remove(city);
 
-            MayorManager.cityMayor.remove(cityz);
-            MayorManager.cityElections.remove(cityz);
-            MayorManager.playerVote.remove(cityz);
+        List<UUID> membersCopy = new ArrayList<>(city.getMembers());
+        for (UUID memberId : membersCopy) {
+            Player member = Bukkit.getPlayer(memberId);
+            if (member != null)
+                city.removePlayer(memberId);
 
-            List<UUID> membersCopy = new ArrayList<>(cityz.getMembers());
-            for (UUID members : membersCopy) {
-                Player member = Bukkit.getPlayer(members);
-                if (member == null) {
-                    member = CacheOfflinePlayer.getOfflinePlayer(members).getPlayer();
-                    if (member == null) {
-                        continue;
-                    }
+            member = CacheOfflinePlayer.getOfflinePlayer(memberId).getPlayer();
+            if (member == null)
+                continue;
 
-                    if (Chronometer.containsChronometer(members, "Mascot:chest")) {
-                        if (Bukkit.getEntity(members) != null) {
-                            Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
-                        }
-                    }
+            if (Chronometer.containsChronometer(memberId, "Mascot:chest"))
+                if (Bukkit.getEntity(memberId) != null)
+                    Chronometer.stopChronometer(member, "Mascot:chest", null, "%null%");
 
-                    Mascot mascot = cityz.getMascot();
-                    if (mascot != null) {
+            Mascot mascot = city.getMascot();
+            if (mascot == null)
+                continue;
 
-                        if (!DynamicCooldownManager.isReady(mascot.getMascotUUID().toString(), "mascots:move")) {
-                            if (Bukkit.getEntity(members) != null) {
-                                DynamicCooldownManager.clear(mascot.getMascotUUID().toString(), "mascots:move");
-                            }
-                        }
-                    }
-                }
-                cityz.removePlayer(members);
-            }
-
-            Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
-            while (iterator.hasNext()) {
-                BlockVector2 vector = iterator.next();
-                City claimedCity = claimedChunks.get(vector);
-                if (claimedCity != null && claimedCity.equals(cityz)) {
-                    iterator.remove();
+            if (!DynamicCooldownManager.isReady(mascot.getMascotUUID().toString(), "mascots:move")) {
+                if (Bukkit.getEntity(memberId) != null) {
+                    DynamicCooldownManager.clear(mascot.getMascotUUID().toString(), "mascots:move");
                 }
             }
-
-            Iterator<UUID> playerIterator = playerCities.keySet().iterator();
-            while (playerIterator.hasNext()) {
-                UUID uuid = playerIterator.next();
-                City playerCity = playerCities.get(uuid);
-                if (playerCity != null && playerCity.getUUID().equals(city)) {
-                    playerIterator.remove();
-                }
-            }
-
-            if (DynamicCooldownManager.isReady(cityz.getUUID(), "city:type")) {
-                DynamicCooldownManager.clear(cityz.getUUID(), "city:type");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
-        MascotsManager.removeMascotsFromCity(city);
+        Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
+        while (iterator.hasNext()) {
+            BlockVector2 vector = iterator.next();
+            City claimedCity = claimedChunks.get(vector);
+            if (claimedCity != null && claimedCity.equals(city)) {
+                iterator.remove();
+            }
+        }
+
+        Iterator<UUID> playerIterator = playerCities.keySet().iterator();
+        while (playerIterator.hasNext()) {
+            UUID uuid = playerIterator.next();
+            City playerCity = playerCities.get(uuid);
+            if (playerCity != null && playerCity.equals(city)) {
+                playerIterator.remove();
+            }
+        }
+
+        if (DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+            DynamicCooldownManager.clear(city.getUUID(), "city:type");
+        }
+
+        MascotsManager.removeMascotsFromCity(city.getUUID());
+        NPCManager.removeNPCS(city.getUUID());
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                citiesDao.delete(city.serialize());
+
+                DeleteBuilder<DBCityMember, String> membersDelete = membersDao.deleteBuilder();
+                membersDelete.where().eq("city", city.getUUID());
+                membersDao.delete(membersDelete.prepare());
+
+                DeleteBuilder<DBCityPermission, String> permissionsDelete = permissionsDao.deleteBuilder();
+                permissionsDelete.where().eq("city", city.getUUID());
+                permissionsDao.delete(permissionsDelete.prepare());
+
+                DeleteBuilder<DBCityClaim, String> claimsDelete = claimsDao.deleteBuilder();
+                claimsDelete.where().eq("city", city.getUUID());
+                claimsDao.delete(claimsDelete.prepare());
+
+                DeleteBuilder<DBCityChest, String> chestsDelete = chestsDao.deleteBuilder();
+                chestsDelete.where().eq("city", city.getUUID());
+                chestsDao.delete(chestsDelete.prepare());
+
+                // TODO: delete from Mayor table
+                // TODO: delete from Election table
+                // TODO: delete from Vote table
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityDeleteEvent(city));
+        });
     }
 }

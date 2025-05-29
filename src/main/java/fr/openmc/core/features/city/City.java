@@ -9,14 +9,12 @@ import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.models.DBCity;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -57,6 +55,28 @@ public class City {
     @Getter
     @Setter
     private UUID chestWatcher;
+
+    /**
+     * Constructor used for City creation
+     */
+    public City(String id, String name, UUID owner, CityType type) {
+        this.cityUUID = id;
+        this.name = name;
+        this.type = type;
+        this.freeClaims = 15;
+
+        CityManager.saveCity(this);
+        CityManager.registerCity(this);
+
+        this.members = new HashSet<>();
+        this.permissions = new HashMap<>();
+        this.chunks = new HashSet<>();
+        this.chestContent = new HashMap<>();
+
+        addPlayer(owner);
+        addPermission(owner, CPermission.OWNER);
+        saveChestContent(1, null);
+    }
 
     /**
      * Constructor used to deserialize City database object
@@ -121,44 +141,6 @@ public class City {
         }
 
         CityManager.saveCity(this);
-    }
-
-    /**
-     * Deletes a city, removing it from records and updating members and regions
-     * accordingly.
-     */
-    // TODO: city deletion
-    public void delete() {
-        // CityManager.forgetCity(cityUUID);
-
-        // NPCManager.removeNPCS(cityUUID);
-
-        // Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-        //     try {
-        //         String[] queries = {
-        //                 "DELETE FROM city_members WHERE city_uuid=?",
-        //                 "DELETE FROM city WHERE uuid=?",
-        //                 "DELETE FROM city_permissions WHERE city_uuid=?",
-        //                 "DELETE FROM city_regions WHERE city_uuid=?",
-        //                 "DELETE FROM city_chests WHERE city_uuid=?",
-        //                 "DELETE FROM city_power WHERE city_uuid=?",
-        //                 "DELETE FROM " + TABLE_MAYOR + " WHERE city_uuid = ?",
-        //                 "DELETE FROM " + TABLE_ELECTION + " WHERE city_uuid = ?",
-        //                 "DELETE FROM " + TABLE_VOTE + " WHERE city_uuid = ?"
-        //         };
-
-        //         for (String sql : queries) {
-        //             PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql);
-        //             statement.setString(1, cityUUID);
-        //             statement.executeUpdate();
-        //         }
-        //     } catch (SQLException e) {
-        //         e.printStackTrace();
-        //     }
-        // });
-        // Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-        //     Bukkit.getPluginManager().callEvent(new CityDeleteEvent(this));
-        // });
     }
 
     // ==================== Members Methods ====================
