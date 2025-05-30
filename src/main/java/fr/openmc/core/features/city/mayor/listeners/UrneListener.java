@@ -145,7 +145,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (playerCity.getMayor().getUUID() == null) {
+        if (playerCity.getMayor().getId() == null) {
             event.setCancelled(true);
             return;
         }

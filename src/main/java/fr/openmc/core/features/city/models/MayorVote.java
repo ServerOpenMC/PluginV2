@@ -9,11 +9,12 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
 
 @DatabaseTable(tableName = "votes")
-@Getter
 public class MayorVote {
     @DatabaseField(id = true)
+    @Getter
     private UUID voter;
     @DatabaseField(canBeNull = false)
     private String city;
@@ -32,5 +33,9 @@ public class MayorVote {
 
     public City getCity() {
         return CityManager.getCity(city);
+    }
+
+    public MayorCandidate getCandidate() {
+        return MayorManager.getCandidate(voter);
     }
 }

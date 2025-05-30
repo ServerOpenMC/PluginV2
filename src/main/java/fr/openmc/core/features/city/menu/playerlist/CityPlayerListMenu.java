@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.PaginatedMenu;
@@ -69,7 +68,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                 String title = "";
                 if(hasPermissionOwner) {
                     title = "Propriétaire ";
-                } else if (MayorManager.cityMayor.get(city).getUUID() == uuid) {
+                } else if (MayorManager.cityMayor.get(city).getId() == uuid) {
                     title = "Maire ";
                 } else {
                     title = "Membre ";

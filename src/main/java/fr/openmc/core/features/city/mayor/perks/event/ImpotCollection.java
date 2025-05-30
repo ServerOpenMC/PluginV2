@@ -60,7 +60,7 @@ public class ImpotCollection implements Listener {
 
             zombie.setShouldBurnInDay(false);
 
-            zombie.setMetadata("mayor:zombie", new FixedMetadataValue(OMCPlugin.getInstance(), city.getMayor().getUUID()));
+            zombie.setMetadata("mayor:zombie", new FixedMetadataValue(OMCPlugin.getInstance(), city.getMayor().getId()));
         }
     }
 

@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.models.Mayor;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.menu.CityMenu;
@@ -76,7 +76,7 @@ public class MayorMandateMenu extends Menu {
             loreMayor.addAll(perk3.getLore());
 
 
-            inventory.put(3, new ItemBuilder(this, ItemUtils.getPlayerSkull(mayor.getUUID()),itemMeta -> {
+            inventory.put(3, new ItemBuilder(this, ItemUtils.getPlayerSkull(mayor.getId()),itemMeta -> {
                 itemMeta.displayName(Component.text("Maire " + mayor.getName()).color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(loreMayor);
             }));
@@ -89,7 +89,7 @@ public class MayorMandateMenu extends Menu {
 
             // si le joueur est maire
 
-            if (player.getUniqueId().equals(mayor.getUUID())) {
+            if (player.getUniqueId().equals(mayor.getId())) {
                 List<Component> loreLaw = List.of(
                         Component.text("§7Vous êtes le ").append(Component.text("Maire").color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false).append(Component.text("§7!"))),
                         Component.text(""),

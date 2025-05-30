@@ -63,8 +63,8 @@ public class NPCManager implements Listener {
         if (city == null) return;
 
         NpcData dataMayor = new NpcData("mayor-" + cityUUID, creatorUUID, locationMayor);
-        if (city.getMayor().getUUID() != null && city.getElectionType() == ElectionType.ELECTION) {
-            String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getMayor().getUUID()).getName();
+        if (city.getMayor().getId() != null && city.getElectionType() == ElectionType.ELECTION) {
+            String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getMayor().getId()).getName();
             dataMayor.setSkin(mayorName);
             dataMayor.setDisplayName("§6Maire " + mayorName);
 

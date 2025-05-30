@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.menu.mayor.create;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.city.mayor.MayorCandidate;
+import fr.openmc.core.features.city.models.MayorCandidate;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
@@ -55,7 +55,7 @@ public class MayorModifyMenu extends Menu {
         Player player = getOwner();
 
         try {
-            MayorCandidate mayorCandidate = MayorManager.getCandidate(player);
+            MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
             Perks perk2 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk2());
             Perks perk3 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk3());
 

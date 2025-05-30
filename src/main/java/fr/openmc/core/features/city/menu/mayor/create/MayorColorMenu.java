@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.mayor.MayorCandidate;
+import fr.openmc.core.features.city.models.MayorCandidate;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -120,7 +120,7 @@ public class MayorColorMenu extends Menu {
                                 () -> {
                             try {
                                 if (menuType == MenuType.CANDIDATE) {
-                                    MayorCandidate candidate = new MayorCandidate(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
+                                    MayorCandidate candidate = new MayorCandidate(city.getUUID(), player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
                                     MayorManager.createCandidate(city, candidate);
 
                                     for (UUID uuid : city.getMembers()) {
@@ -174,7 +174,7 @@ public class MayorColorMenu extends Menu {
                             );
                             menu.open();
                         } else {
-                            MayorCandidate mayorCandidate = MayorManager.getCandidate(player);
+                            MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
                             NamedTextColor thisColor = mayorCandidate.getCandidateColor();
                             ConfirmMenu menu = new ConfirmMenu(player,
                                     () -> {

@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.models.Mayor;
 import fr.openmc.core.features.city.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
@@ -104,7 +104,7 @@ public class MayorNpcMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }));
 
-            if (mayor.getUUID().equals(player.getUniqueId())) {
+            if (mayor.getId().equals(player.getUniqueId())) {
                 inventory.put(18, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                     itemMeta.itemName(Component.text("§aDéplacer ce NPC"));
                     itemMeta.lore(List.of(

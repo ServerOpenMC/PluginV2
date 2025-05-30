@@ -11,24 +11,28 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.utils.ColorUtils;
 
-@Getter
 @DatabaseTable(tableName = "candidates")
 public class MayorCandidate {
     @DatabaseField(id = true)
+    @Getter
     private UUID id;
     @DatabaseField(canBeNull = false)
     private String city;
     @DatabaseField(canBeNull = false)
+    @Getter
     private String name;
     @DatabaseField(canBeNull = false)
-    @Setter
     private String candidateColor;
     @DatabaseField(canBeNull = false)
+    @Getter
     private int idChoicePerk2;
     @DatabaseField(canBeNull = false)
+    @Getter
     private int idChoicePerk3;
     @DatabaseField(canBeNull = false)
+    @Getter
     @Setter
     private int vote;
 
@@ -49,5 +53,13 @@ public class MayorCandidate {
 
     public City getCity() {
         return CityManager.getCity(city);
+    }
+
+    public NamedTextColor getCandidateColor() {
+        return ColorUtils.getNamedTextColor(candidateColor);
+    }
+
+    public void setCandidateColor(NamedTextColor color) {
+        this.candidateColor = color.toString();
     }
 }

@@ -5,9 +5,9 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.features.city.mayor.CityLaw;
+import fr.openmc.core.features.city.models.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.models.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
@@ -335,7 +335,7 @@ public class City {
         if (mayor == null)
             return false;
 
-        return mayor.getUUID() != null;
+        return mayor.getId() != null;
     }
 
     /**

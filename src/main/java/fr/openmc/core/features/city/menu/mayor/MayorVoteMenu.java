@@ -6,7 +6,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.MayorCandidate;
+import fr.openmc.core.features.city.models.MayorCandidate;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
@@ -84,7 +84,7 @@ public class MayorVoteMenu extends PaginatedMenu {
                 }
 
 
-                ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getUUID()), itemMeta -> {
+                ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getId()), itemMeta -> {
                     itemMeta.displayName(Component.text("Maire " + candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(loreMayor);
                     itemMeta.setEnchantmentGlintOverride(ench);
