@@ -197,7 +197,8 @@ public class OwnerNpcMenu extends Menu {
                                 NPCManager.moveNPC("owner", locationClick, city.getUUID());
                                 NPCManager.updateNPCS(city.getUUID());
                                 return true;
-                            }
+                            },
+                            null
                     );
                 }));
             }

@@ -244,7 +244,8 @@ public class NPCManager implements Listener {
                                         NPCManager.moveNPC("owner", locationClick, city.getUUID());
                                         NPCManager.updateNPCS(city.getUUID());
                                         return true;
-                                    }
+                                    },
+                                    null
                             );
                         }))
                         .hoverEvent(HoverEvent.showText(Component.text("Déplacer ce NPC")));

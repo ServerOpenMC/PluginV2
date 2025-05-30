@@ -6,12 +6,10 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -96,10 +94,6 @@ public class NoCityMenu extends Menu {
                 itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
                 itemMeta.lore(loreCreate);
             }).setOnClick(inventoryClickEvent -> {
-                if (!CityCreateConditions.canCityCreate(player)) {
-                    return;
-                }
-
                 String[] lines = new String[4];
                 lines[0] = "";
                 lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
@@ -114,23 +108,9 @@ public class NoCityMenu extends Menu {
                             .setHandler((p, result) -> {
                                 String input = result.getLine(0);
 
-                            for (City city : CityManager.getCities()){
-                                String cityName = city.getName();
-                                if (cityName!=null && cityName.equalsIgnoreCase(input)){
-                                    MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
-                                    return Collections.emptyList();
-                                }
-                            }
-
-                            if (InputUtils.isInputCityName(input)) {
                                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                    CityTypeMenu menu = new CityTypeMenu(player, input);
-                                    menu.open();
+                                    CityCreateAction.beginCreateCity(player, input);
                                 });
-
-                                } else {
-                                    MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                                }
 
                                 return Collections.emptyList();
                             })

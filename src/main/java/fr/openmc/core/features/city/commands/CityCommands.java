@@ -2,23 +2,21 @@ package fr.openmc.core.features.city.commands;
 
 import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.chronometer.Chronometer;
-import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
-import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.CityLaw;
-import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.PerkManager;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
@@ -31,7 +29,6 @@ import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -39,37 +36,26 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fr.openmc.core.features.city.conditions.CityCreateConditions.AYWENITE_CREATE;
-import static fr.openmc.core.features.city.conditions.CityCreateConditions.MONEY_CREATE;
-import static fr.openmc.core.features.city.mascots.MascotsListener.movingMascots;
-import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
 import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 @Command({"ville", "city"})
 public class CityCommands {
     public static HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
-
-    private static ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-
-    public static Map<UUID, Map<String, CityType>> futurCreateCity = new HashMap<>();
-
+    private static final ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
     private Location[] getCorners(Player player) {
         World world = player.getWorld();
         Location location = player.getLocation();
@@ -395,105 +381,42 @@ public class CityCommands {
     @Subcommand("create")
     @CommandPermission("omc.commands.city.create")
     @Description("Créer une ville")
-    @DynamicCooldown(group="city:big", message = "§cTu dois attendre avant de pouvoir créer une ville (%sec% secondes)")
-    void create(Player player, @Named("nom") String name) {
-        if (!CityCreateConditions.canCityCreate(player)){
-            MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+    void create(Player player, @Optional String name) {
+        if (!CityCreateConditions.canCityCreate(player, null)) {
             return;
         }
 
-        for (City city : CityManager.getCities()){
-            String cityName = city.getName();
-            if (cityName!=null && cityName.equalsIgnoreCase(name)){
-                MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
-                return;
-            }
-        }
-
-        if (!InputUtils.isInputCityName(name)) {
-            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
+        if (name != null) {
+            CityCreateAction.beginCreateCity(player, name);
             return;
         }
 
-        if (futurCreateCity.containsKey(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Vous êtes déjà entrain de créer une ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
+        String[] lines = new String[4];
+        lines[0] = "";
+        lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
+        lines[2] = "Entrez votre nom";
+        lines[3] = "de ville ci dessus";
+
+        SignGUI gui;
+        try {
+            gui = SignGUI.builder()
+                    .setLines(null, lines[1], lines[2], lines[3])
+                    .setType(ItemUtils.getSignType(player))
+                    .setHandler((p, result) -> {
+                        String input = result.getLine(0);
+
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                            CityCreateAction.beginCreateCity(player, input);
+                        });
+
+                        return Collections.emptyList();
+                    })
+                    .build();
+        } catch (SignGUIVersionException e) {
+            throw new RuntimeException(e);
         }
 
-        ItemStack mascotsItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
-        ItemMeta meta = mascotsItem.getItemMeta();
-
-        if (meta != null) {
-            List<Component> info = new ArrayList<>();
-            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre et créera votre ville"));
-            info.add(Component.text("§cCe coffre n'est pas retirable"));
-            info.add(Component.text("§clors de votre déconnection la création sera annuler"));
-
-            meta.displayName(Component.text("§lMascotte"));
-            meta.lore(info);
-        }
-
-        mascotsItem.setItemMeta(meta);
-
-        ItemInteraction.runLocationInteraction(
-                player,
-                mascotsItem,
-                "Mascot:chest",
-                300,
-                "Vous avez reçu un coffre pour poser votre mascotte",
-                "§cCréation annulée",
-                mascotSpawn -> {
-                    if (mascotSpawn == null) return true;
-
-                    World world = Bukkit.getWorld("world");
-                    World player_world = player.getWorld();
-
-                    if (player_world != world) {
-                        MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre dans ce monde"), Prefix.CITY, MessageType.INFO, false);
-                        return false;
-                    }
-
-                    if (mascotSpawn.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-                        MessagesManager.sendMessage(player, Component.text("§cIl ne doit pas y avoir de block au dessus du coffre"), Prefix.CITY, MessageType.INFO, false);
-                        return false;
-                    }
-
-                    if (!futurCreateCity.containsKey(player.getUniqueId())) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                        return false;
-                    }
-
-                    Chunk chunk = mascotSpawn.getChunk();
-
-                    String cityName = futurCreateCity.get(player.getUniqueId()).keySet().iterator().next();
-                    boolean cityAdd = CityCommands.createCity(player, cityName, futurCreateCity.get(player.getUniqueId()).get(cityName), chunk);
-
-                    // on return true maintenant pour eviter que createCity s'execute plusieurs fois
-                    if (!cityAdd) {
-                        return true;
-                    }
-
-                    futurCreateCity.remove(player.getUniqueId());
-                    City city = CityManager.getPlayerCity(player.getUniqueId());
-
-                    if (city == null) {
-                        MessagesManager.sendMessage(player, Component.text("§cErreur : la ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
-                        return true;
-                    }
-
-                    String city_uuid = city.getUUID();
-
-                    if (MascotUtils.mascotsContains(city_uuid) && !movingMascots.contains(city_uuid)) {
-                        MessagesManager.sendMessage(player, Component.text("§cVous possédez déjà une mascotte"), Prefix.CITY, MessageType.INFO, false);
-                        return true;
-                    }
-
-                    player_world.getBlockAt(mascotSpawn).setType(Material.AIR);
-
-                    MascotsManager.createMascot(city_uuid, player_world, mascotSpawn);
-                    return true;
-                }
-        );
+        gui.open(player);
     }
 
     @Subcommand("list")
@@ -679,96 +602,7 @@ public class CityCommands {
 
     // ACTIONS
 
-    public static boolean createCity(Player player, String name, CityType type, Chunk origin) {
 
-        if (!CityCreateConditions.canCityCreate(player)){
-            MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
-        UUID uuid = player.getUniqueId();
-
-        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
-
-        AtomicBoolean isClaimed = new AtomicBoolean(false);
-
-        if (WorldGuardApi.doesChunkContainWGRegion(origin)) {
-            MessagesManager.sendMessage(player, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
-        for (int x = -1; x <= 1; x++) {
-            for (int z = -1; z <= 1; z++) {
-                if (CityManager.isChunkClaimed(origin.getX() + x, origin.getZ() + z)) {
-                    isClaimed.set(true);
-                    break;
-                }
-            }
-        }
-
-        if (isClaimed.get()) {
-            MessagesManager.sendMessage(player, Component.text("Une des parcelles autour de ce chunk est claim! "), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
-                statement.setString(1, cityUUID);
-
-                statement.setInt(2, origin.getX());
-                statement.setInt(3, origin.getZ());
-                statement.addBatch();
-
-                statement.executeBatch();
-                statement.close();
-            } catch (SQLException e) {
-                MessagesManager.sendMessage(player, Component.text("Une erreur est survenue, réessayez plus tard"), Prefix.CITY, MessageType.ERROR, false);
-                throw new RuntimeException(e);
-            }
-        });
-
-        if (EconomyManager.getInstance().getBalance(player.getUniqueId()) < MONEY_CREATE) {
-            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() +" §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
-        }
-
-        if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), AYWENITE_CREATE)) {
-            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE +" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-        }
-
-        EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), MONEY_CREATE);
-        ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), AYWENITE_CREATE);
-
-        City city = CityManager.createCity(player, cityUUID, name, type);
-        city.addPlayer(uuid);
-        city.addPermission(uuid, CPermission.OWNER);
-
-        CityManager.claimedChunks.put(BlockVector2.at(origin.getX(), origin.getZ()), city);
-        CityManager.freeClaim.put(cityUUID, 15);
-
-        player.closeInventory();
-
-        // SETUP MAIRE
-        MayorManager mayorManager = MayorManager.getInstance();
-        if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
-            mayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
-        } else { // si création pendant les réformes actives
-            NamedTextColor color = mayorManager.getRandomMayorColor();
-            List<Perks> perks = PerkManager.getRandomPerksAll();
-            mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
-            MessagesManager.sendMessage(player, Component.text("Vous avez été désigné comme §6Maire de la Ville.\n§8§oVous pourrez choisir vos Réformes dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)), Prefix.MAYOR, MessageType.SUCCESS, true);
-        }
-
-        // SETUP LAW
-        MayorManager.createCityLaws(city, false, null);
-
-        MessagesManager.sendMessage(player, Component.text("Votre ville a été créée : " + name), Prefix.CITY, MessageType.SUCCESS, true);
-        MessagesManager.sendMessage(player, Component.text("Vous disposez de 15 claims gratuits"), Prefix.CITY, MessageType.SUCCESS, false);
-
-        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
-
-        return true;
-    }
 
     public static void setWarp(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -818,7 +652,8 @@ public class CityCommands {
                     law.setWarp(locationClick);
                     MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- §fx=§6" + locationClick.x() + "\n §8- §fy=§6" + locationClick.y() + "\n §8- §fz=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
                     return true;
-                }
+                },
+                null
         );
     }
 

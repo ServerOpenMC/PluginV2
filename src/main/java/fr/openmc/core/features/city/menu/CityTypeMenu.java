@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.openmc.core.features.city.commands.CityCommands.futurCreateCity;
 
 public class CityTypeMenu extends Menu {
     String name;
@@ -84,8 +83,6 @@ public class CityTypeMenu extends Menu {
     }
 
     private void runChoiceType(Player player, CityType type) {
-        futurCreateCity.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>()).put(name, type);
-
 
         getOwner().closeInventory();
     }

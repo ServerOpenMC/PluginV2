@@ -17,6 +17,7 @@ import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -196,6 +197,24 @@ public class CityManager implements Listener {
      */
     public static boolean isChunkClaimed(int x, int z) {
         return getCityFromChunk(x, z) != null;
+    }
+
+    /**
+     * Check if a chunk is claimed in radius
+     *
+     * @param chunk  The chunk
+     * @param radius The radius
+     * @return true if the chunk is claimed, false otherwise
+     */
+    public static boolean isChunkClaimedInRadius(Chunk chunk, int radius) {
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                if (CityManager.isChunkClaimed(chunk.getX() + x, chunk.getZ() + z)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -153,7 +153,8 @@ public class MayorNpcMenu extends Menu {
                                 NPCManager.moveNPC("mayor", locationClick, city.getUUID());
                                 NPCManager.updateNPCS(city.getUUID());
                                 return true;
-                            }
+                            },
+                            null
                     );
                 }));
             }
