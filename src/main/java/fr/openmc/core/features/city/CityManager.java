@@ -79,7 +79,7 @@ public class CityManager implements Listener {
         OMCPlugin.registerEvents(
                 new MascotsListener(),
                 new CityChatListener());
-      
+
         new ProtectionsManager();
     }
 
@@ -237,7 +237,11 @@ public class CityManager implements Listener {
 
     public static void saveChestPage(City city, int page, ItemStack[] content) {
         try {
-            chestsDao.createOrUpdate(new DBCityChest(city.getUUID(), page, content));
+            DeleteBuilder<DBCityChest, String> delete = chestsDao.deleteBuilder();
+            delete.where().eq("city", city.getUUID()).and().eq("page", page);
+            chestsDao.delete(delete.prepare());
+
+            chestsDao.create(new DBCityChest(city.getUUID(), page, content));
         } catch (SQLException e) {
             e.printStackTrace();
         }
