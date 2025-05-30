@@ -609,7 +609,7 @@ public class MayorManager {
         int idPerk3 = perk3 != null ? perk3.getId() : 0;
         if (mayor != null) {
             mayor.setName(playerName);
-            mayor.setId(playerUUID);
+            mayor.setUuid(playerUUID);
             mayor.setMayorColor(color);
             mayor.setIdPerk1(idPerk1);
             mayor.setIdPerk2(idPerk2);

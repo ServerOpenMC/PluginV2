@@ -335,7 +335,7 @@ public class City {
         if (mayor == null)
             return false;
 
-        return mayor.getId() != null;
+        return mayor.getUuid() != null;
     }
 
     /**

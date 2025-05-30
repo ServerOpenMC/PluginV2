@@ -20,7 +20,7 @@ public class Mayor {
     @DatabaseField(canBeNull = false)
     @Getter
     @Setter
-    private UUID id;
+    private UUID uuid;
     @DatabaseField(canBeNull = false)
     @Getter
     @Setter
@@ -50,7 +50,7 @@ public class Mayor {
             int idPerk3, ElectionType electionType) {
         this.city = city;
         this.name = mayorName;
-        this.id = mayorUUID;
+        this.uuid = mayorUUID;
         this.mayorColor = mayorColor.toString();
         this.idPerk1 = idPerk1;
         this.idPerk2 = idPerk2;

@@ -153,7 +153,7 @@ public class OwnerNpcMenu extends Menu {
                 }));
             }
 
-            if (mayor.getId().equals(player.getUniqueId())) {
+            if (mayor.getUuid().equals(player.getUniqueId())) {
                 inventory.put(18, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                     itemMeta.itemName(Component.text("§aDéplacer ce NPC"));
                     itemMeta.lore(List.of(
