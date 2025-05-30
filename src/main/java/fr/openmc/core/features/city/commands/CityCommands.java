@@ -206,22 +206,8 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.kick")
     @Description("Exclure un habitant de votre ville")
     @AutoComplete("@city_members")
-    public static void kick(Player sender, @Named("exclu") OfflinePlayer player) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
-
-        if (!CityKickCondition.canCityKickPlayer(city, sender, player)) return;
-
-        if (city == null) return;
-
-        if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + player.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
-
-            if (player.isOnline()) {
-                MessagesManager.sendMessage((Player) player, Component.text("Tu as été exclu de la ville " + city.getName()), Prefix.CITY, MessageType.INFO, true);
-            }
-        } else {
-            MessagesManager.sendMessage(sender, Component.text("Impossible d'exclure "+player.getName()+" de la ville"), Prefix.CITY, MessageType.ERROR, false);
-        }
+    void kick(Player sender, @Named("exclu") OfflinePlayer player) {
+        CityKickAction.startKick(sender, player);
     }
 
     @Subcommand("leave")
