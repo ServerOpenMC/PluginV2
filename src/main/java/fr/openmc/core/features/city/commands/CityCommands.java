@@ -634,24 +634,6 @@ public class CityCommands {
             return false;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            // TODO: fix this
-            // try {
-            //     PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
-            //     statement.setString(1, cityUUID);
-               
-            //     statement.setInt(2, origin.getX());
-            //     statement.setInt(3, origin.getZ());
-            //     statement.addBatch();
-               
-            //     statement.executeBatch();
-            //     statement.close();
-            // } catch (SQLException e) {
-            //     MessagesManager.sendMessage(player, Component.text("Une erreur est survenue, réessayez plus tard"), Prefix.CITY, MessageType.ERROR, false);
-            //     throw new RuntimeException(e);
-            // }
-        });
-
         if (EconomyManager.getBalance(player.getUniqueId()) < MONEY_CREATE) {
             MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() +" §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
         }
