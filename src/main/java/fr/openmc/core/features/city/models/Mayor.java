@@ -25,7 +25,7 @@ public class Mayor {
     @Getter
     @Setter
     private String name;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     private String mayorColor;
     @DatabaseField(canBeNull = false)
     @Getter
@@ -51,11 +51,11 @@ public class Mayor {
         this.city = city;
         this.name = mayorName;
         this.uuid = mayorUUID;
-        this.mayorColor = mayorColor.toString();
+        setMayorColor(mayorColor);
         this.idPerk1 = idPerk1;
         this.idPerk2 = idPerk2;
         this.idPerk3 = idPerk3;
-        this.electionType = electionType.name();
+        setElectionType(electionType);
     }
 
     public City getCity() {
@@ -67,7 +67,7 @@ public class Mayor {
     }
 
     public void setMayorColor(NamedTextColor color) {
-        this.mayorColor = color.toString();
+        this.mayorColor = color == null ? null : color.toString();
     }
 
     public ElectionType getElectionType() {
@@ -75,6 +75,6 @@ public class Mayor {
     }
 
     public void setElectionType(ElectionType type) {
-        this.electionType = type.toString();
+        this.electionType = type.name();
     }
 }

@@ -23,7 +23,7 @@ public class MayorCandidate {
     @DatabaseField(canBeNull = false)
     @Getter
     private String name;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     private String candidateColor;
     @DatabaseField(canBeNull = false)
     @Getter
@@ -60,6 +60,6 @@ public class MayorCandidate {
     }
 
     public void setCandidateColor(NamedTextColor color) {
-        this.candidateColor = color.toString();
+        this.candidateColor = color == null ? null : color.toString();
     }
 }

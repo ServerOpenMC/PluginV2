@@ -53,6 +53,9 @@ public class CityLaw {
     }
 
     public void setWarp(Location warp) {
+        if (warp == null)
+            return;
+
         this.warpX = warp.getX();
         this.warpY = warp.getY();
         this.warpZ = warp.getZ();
