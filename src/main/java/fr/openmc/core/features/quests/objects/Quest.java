@@ -441,14 +441,14 @@ public class Quest {
     /**
      * Increment the progress of the quest for a player by a specified amount.
      * <p>
-     * This method will check if the quest is fully completed and if not, it will increment the progress.
+     * This method will check if the quest is fully completed, and if not, it will increase the progress.
      * @param playerUUID The UUID of the player
      * @param amount The amount to increment the progress by
      */
     public void incrementProgress(UUID playerUUID, int amount) {
         if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
             this.progressLock.put(playerUUID, true);
-
+            
             try {
                 Player onlinePlayer = Bukkit.getPlayer(playerUUID);
                 if (onlinePlayer != null && onlinePlayer.isOnline() && !onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)) return;
@@ -461,7 +461,6 @@ public class Quest {
                 if (currentProgress < currentTarget) {
                     this.progress.put(playerUUID, newProgress);
                     this.checkTierCompletion(playerUUID);
-
                     if (onlinePlayer != null && onlinePlayer.isOnline()) {
                         if (this.isLargeActionBar && newProgress % 50 != 0) return;
                         Component actionBar = Component.text()
@@ -472,7 +471,6 @@ public class Quest {
                                 .append(Component.text(" : ", NamedTextColor.GRAY))
                                 .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
                                 .build();
-
                         onlinePlayer.sendActionBar(actionBar);
                     }
                 }
