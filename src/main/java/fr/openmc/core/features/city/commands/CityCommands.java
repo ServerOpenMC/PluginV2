@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
@@ -11,12 +10,12 @@ import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.actions.CityDeleteAction;
+import fr.openmc.core.features.city.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mayor.CityLaw;
-import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
@@ -27,7 +26,6 @@ import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -41,16 +39,12 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
-
-import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -71,6 +65,54 @@ public class CityCommands {
         } else {
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas ouvrir le menu des villes si vous devez poser votre mascotte"), Prefix.CITY, MessageType.ERROR, false);
         }
+    }
+
+    @Subcommand("create")
+    @CommandPermission("omc.commands.city.create")
+    @Description("Créer une ville")
+    void create(Player player, @Optional String name) {
+        if (!CityCreateConditions.canCityCreate(player, null)) {
+            return;
+        }
+
+        if (name != null) {
+            CityCreateAction.beginCreateCity(player, name);
+            return;
+        }
+
+        String[] lines = new String[4];
+        lines[0] = "";
+        lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
+        lines[2] = "Entrez votre nom";
+        lines[3] = "de ville ci dessus";
+
+        SignGUI gui;
+        try {
+            gui = SignGUI.builder()
+                    .setLines(null, lines[1], lines[2], lines[3])
+                    .setType(ItemUtils.getSignType(player))
+                    .setHandler((p, result) -> {
+                        String input = result.getLine(0);
+
+                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                            CityCreateAction.beginCreateCity(player, input);
+                        });
+
+                        return Collections.emptyList();
+                    })
+                    .build();
+        } catch (SignGUIVersionException e) {
+            throw new RuntimeException(e);
+        }
+
+        gui.open(player);
+    }
+
+    @Subcommand("delete")
+    @CommandPermission("omc.commands.city.delete")
+    @Description("Supprimer votre ville")
+    void delete(Player sender) {
+        CityDeleteAction.startDeleteCity(sender);
     }
 
     @Subcommand({"mayor", "maire"})
@@ -116,6 +158,19 @@ public class CityCommands {
         }
     }
 
+    @Subcommand("deny")
+    @CommandPermission("omc.commands.city.deny")
+    @Description("Refuser une invitation")
+    public static void denyInvitation(Player player, Player inviter) {
+        if (!CityInviteConditions.canCityInviteDeny(player, inviter)) return;
+
+        invitations.remove(player);
+
+        if (inviter.isOnline()) {
+            MessagesManager.sendMessage(inviter, Component.text(player.getName() + " a refusé ton invitation"), Prefix.CITY, MessageType.WARNING, true);
+        }
+    }
+
     @Subcommand("rename")
     @CommandPermission("omc.commands.city.rename")
     @Description("Renommer une ville")
@@ -147,19 +202,6 @@ public class CityCommands {
 
         if (player.isOnline()) {
             MessagesManager.sendMessage((Player) player, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
-        }
-    }
-
-    @Subcommand("deny")
-    @CommandPermission("omc.commands.city.deny")
-    @Description("Refuser une invitation")
-    public static void denyInvitation(Player player, Player inviter) {
-        if (!CityInviteConditions.canCityInviteDeny(player, inviter)) return;
-
-        invitations.remove(player);
-
-        if (inviter.isOnline()) {
-            MessagesManager.sendMessage(inviter, Component.text(player.getName()+" a refusé ton invitation"), Prefix.CITY, MessageType.WARNING, true);
         }
     }
 
@@ -217,13 +259,6 @@ public class CityCommands {
                 Prefix.CITY, MessageType.INFO, false);
     }
 
-    @Subcommand("delete")
-    @CommandPermission("omc.commands.city.delete")
-    @Description("Supprimer votre ville")
-    void delete(Player sender) {
-        CityDeleteAction.startDeleteCity(sender);
-    }
-
     @Subcommand("claim")
     @CommandPermission("omc.commands.city.claim")
     @Description("Claim un chunk pour votre ville")
@@ -249,47 +284,6 @@ public class CityCommands {
         }
 
         CityMessages.sendInfo(player, city);
-    }
-
-    @Subcommand("create")
-    @CommandPermission("omc.commands.city.create")
-    @Description("Créer une ville")
-    void create(Player player, @Optional String name) {
-        if (!CityCreateConditions.canCityCreate(player, null)) {
-            return;
-        }
-
-        if (name != null) {
-            CityCreateAction.beginCreateCity(player, name);
-            return;
-        }
-
-        String[] lines = new String[4];
-        lines[0] = "";
-        lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-        lines[2] = "Entrez votre nom";
-        lines[3] = "de ville ci dessus";
-
-        SignGUI gui;
-        try {
-            gui = SignGUI.builder()
-                    .setLines(null, lines[1], lines[2], lines[3])
-                    .setType(ItemUtils.getSignType(player))
-                    .setHandler((p, result) -> {
-                        String input = result.getLine(0);
-
-                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                            CityCreateAction.beginCreateCity(player, input);
-                        });
-
-                        return Collections.emptyList();
-                    })
-                    .build();
-        } catch (SignGUIVersionException e) {
-            throw new RuntimeException(e);
-        }
-
-        gui.open(player);
     }
 
     @Subcommand("list")
@@ -403,7 +397,7 @@ public class CityCommands {
     @Subcommand({"setwarp"})
     @Description("Déplacer le warp de votre ville")
     public void setWarpCommand(Player player) {
-        setWarp(player);
+        MayorSetWarpAction.setWarp(player);
     }
 
     @Subcommand({"warp"})
@@ -475,69 +469,6 @@ public class CityCommands {
 
     // ACTIONS
 
-
-
-    public static void setWarp(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (city == null) return;
-
-        Mayor mayor = city.getMayor();
-
-        if (mayor == null) return;
-
-        if (!player.getUniqueId().equals(mayor.getUUID())) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le Maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
-            return;
-        }
-
-        if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
-            return;
-        }
-        CityLaw law = city.getLaw();
-
-        List<Component> loreItemInterraction = List.of(
-                Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
-        );
-        ItemStack itemToGive = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
-        ItemMeta itemMeta = itemToGive.getItemMeta();
-
-        itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
-        itemMeta.lore(loreItemInterraction);
-        itemToGive.setItemMeta(itemMeta);
-        ItemInteraction.runLocationInteraction(
-                player,
-                itemToGive,
-                "mayor:wait-set-warp",
-                300,
-                "§7Vous avez 300s pour séléctionner votre point de spawn",
-                "§7Vous n'avez pas eu le temps de poser votre Warp",
-                locationClick -> {
-                    if (locationClick == null) return true;
-                    Chunk chunk = locationClick.getChunk();
-
-                    if (!city.hasChunk(chunk.getX(), chunk.getZ())) {
-                        MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le Warp ici car ce n'est pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
-                        return false;
-                    }
-
-                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
-                    law.setWarp(locationClick);
-                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- §fx=§6" + locationClick.x() + "\n §8- §fy=§6" + locationClick.y() + "\n §8- §fz=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
-                    return true;
-                },
-                null
-        );
-    }
-
-    public static void leaveCity(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city.removePlayer(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Tu as quitté " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
-        } else {
-            MessagesManager.sendMessage(player, Component.text("Impossible de quitter la ville"), Prefix.CITY, MessageType.ERROR, false);
-        }
-    }
 
     public static void startBalanceCooldown(String city_uuid) {
         if (balanceCooldownTasks.containsKey(city_uuid)) {

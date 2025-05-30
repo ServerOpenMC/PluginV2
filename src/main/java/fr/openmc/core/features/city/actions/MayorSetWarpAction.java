@@ -1,0 +1,76 @@
+package fr.openmc.core.features.city.actions;
+
+import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.mayor.CityLaw;
+import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Chunk;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
+
+import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME_WARP;
+
+public class MayorSetWarpAction {
+    public static void setWarp(Player player) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (city == null) return;
+
+        Mayor mayor = city.getMayor();
+
+        if (mayor == null) return;
+
+        if (!player.getUniqueId().equals(mayor.getUUID())) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le Maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+            return;
+        }
+        CityLaw law = city.getLaw();
+
+        List<Component> loreItemInterraction = List.of(
+                Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
+        );
+        ItemStack itemToGive = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
+        ItemMeta itemMeta = itemToGive.getItemMeta();
+
+        itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
+        itemMeta.lore(loreItemInterraction);
+        itemToGive.setItemMeta(itemMeta);
+        ItemInteraction.runLocationInteraction(
+                player,
+                itemToGive,
+                "mayor:wait-set-warp",
+                300,
+                "§7Vous avez 300s pour séléctionner votre point de spawn",
+                "§7Vous n'avez pas eu le temps de poser votre Warp",
+                locationClick -> {
+                    if (locationClick == null) return true;
+                    Chunk chunk = locationClick.getChunk();
+
+                    if (!city.hasChunk(chunk.getX(), chunk.getZ())) {
+                        MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le Warp ici car ce n'est pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                        return false;
+                    }
+
+                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
+                    law.setWarp(locationClick);
+                    MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- §fx=§6" + locationClick.x() + "\n §8- §fy=§6" + locationClick.y() + "\n §8- §fz=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
+                    return true;
+                },
+                null
+        );
+    }
+}
