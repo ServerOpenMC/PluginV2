@@ -1,10 +1,10 @@
 package fr.openmc.core;
 
-import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.bossbar.BossbarManager;
 import fr.openmc.core.features.city.CityManager;
@@ -126,15 +126,18 @@ public class OMCPlugin extends JavaPlugin {
         mayorManager.saveCityMayors();
         mayorManager.saveCityLaws();
 
-        // - Home
+        // - Companies & Shop
         CompanyManager.saveAllCompanies();
         CompanyManager.saveAllShop();
 
+        // - Home
         HomesManager.getInstance().saveHomesData();
 
         // - Contest
         ContestManager.getInstance().saveContestData();
         ContestManager.getInstance().saveContestPlayerData();
+
+        // - Quetes
         QuestsManager.getInstance().saveQuests();
 
         // - Mascottes

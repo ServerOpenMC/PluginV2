@@ -9,7 +9,6 @@ import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
-import fr.openmc.core.features.city.listeners.ProtectionListener;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotsListener;
 import fr.openmc.core.features.city.mascots.MascotsManager;
@@ -73,10 +72,10 @@ public class CityManager implements Listener {
         );
 
         OMCPlugin.registerEvents(
-                new ProtectionListener(),
                 new MascotsListener(),
                 new CityChatListener()
         );
+        new ProtectionsManager();
 
         freeClaim = loadFreeClaims();
     }
