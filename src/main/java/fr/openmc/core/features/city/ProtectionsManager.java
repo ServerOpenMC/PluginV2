@@ -14,7 +14,7 @@ import org.bukkit.event.Cancellable;
 import java.util.*;
 
 public class ProtectionsManager {
-    public static Set<UUID> canBypassPlayer = new HashSet<>();
+    public static final Set<UUID> canBypassPlayer = new HashSet<>();
 
     private static final Map<UUID, Long> lastErrorMessageTime = new HashMap<>();
     private static final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
