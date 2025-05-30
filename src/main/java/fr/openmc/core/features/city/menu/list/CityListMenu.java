@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.PlayerNameCache;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -21,10 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CityListMenu extends PaginatedMenu {
 	
@@ -72,18 +69,23 @@ public class CityListMenu extends PaginatedMenu {
 	@Override
 	public @NotNull List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
-		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
-			String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
-			NamedTextColor mayorColor = city.getMayor() == null ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
-			itemMeta.displayName(Component.text("§a" + city.getName()));
-			itemMeta.lore(List.of(
-					Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
-					Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
-					Component.text("§bPopulation : " + city.getMembers().size()),
-					Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")),
-					Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
-			));
-		})));
+		cities.forEach(city -> {
+			UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
+			String ownerName = PlayerNameCache.getName(ownerUUID);
+
+			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+				String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
+				NamedTextColor mayorColor = city.getMayor() == null ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
+				itemMeta.displayName(Component.text("§a" + city.getName()));
+				itemMeta.lore(List.of(
+						Component.text("§7Propriétaire : " + ownerName),
+						Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
+						Component.text("§bPopulation : " + city.getMembers().size()),
+						Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")),
+						Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
+				));
+			}));
+		});
 		return items;
 	}
 
