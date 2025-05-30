@@ -50,7 +50,6 @@ public class ContestManager {
 
     public static File contestFile;
     public static YamlConfiguration contestConfig;
-    private static OMCPlugin plugin;
 
     private static Dao<Contest, String> contestDao;
     private static Dao<ContestPlayer, String> playerDao;
@@ -82,7 +81,7 @@ public class ContestManager {
         );
 
         //Load config
-        contestFile = new File(plugin.getDataFolder() + "/data", "contest.yml");
+        contestFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "contest.yml");
         loadContestConfig();
 
         // Fill data and playerData
@@ -108,7 +107,7 @@ public class ContestManager {
     private static void loadContestConfig() {
         if(!contestFile.exists()) {
             contestFile.getParentFile().mkdirs();
-            plugin.saveResource("data/contest.yml", false);
+            OMCPlugin.getInstance().saveResource("data/contest.yml", false);
         }
 
         contestConfig = YamlConfiguration.loadConfiguration(contestFile);
@@ -121,7 +120,7 @@ public class ContestManager {
         try {
             contestConfig.save(contestFile);
         } catch (IOException e) {
-            plugin.getLogger().severe("Impossible de sauvegarder le fichier de configuration des contests");
+            OMCPlugin.getInstance().getLogger().severe("Impossible de sauvegarder le fichier de configuration des contests");
             e.printStackTrace();
         }
     }
@@ -144,9 +143,7 @@ public class ContestManager {
     public static void saveContestData() {
         try {
             contestDao.update(data);
-            plugin.getLogger().info("Sauvegarde des données du Contest réussi.");
         } catch (SQLException e) {
-            plugin.getLogger().severe("Echec de la sauvegarde des données du Contest.");
             throw new RuntimeException(e);
         }
     }
@@ -170,16 +167,16 @@ public class ContestManager {
      * Sauvegarder les données des Joueurs du Contests
      */
     public static void saveContestPlayerData() {
-        plugin.getLogger().info("Sauvegarde des données des Joueurs du Contest...");
+        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Joueurs du Contest...");
         dataPlayer.forEach((player, data) -> {
             try {
                 playerDao.createOrUpdate(data);
             } catch (SQLException e) {
-                plugin.getLogger().severe("Echec de la sauvegarde des données des Joueurs du Contest.");
+                OMCPlugin.getInstance().getLogger().severe("Echec de la sauvegarde des données des Joueurs du Contest.");
                 e.printStackTrace();
             }
         });
-        plugin.getLogger().info("Sauvegarde des données des Joueurs du Contest réussi.");
+        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Joueurs du Contest réussi.");
     }
 
     public static void clearDB() {
@@ -212,7 +209,7 @@ public class ContestManager {
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
         }
 
-        plugin.getLogger().info("[CONTEST] Ouverture des votes");
+        OMCPlugin.getInstance().getLogger().info("[CONTEST] Ouverture des votes");
     }
     //PHASE 2
     /**
@@ -245,7 +242,7 @@ public class ContestManager {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1.0F, 0.3F);
         }
 
-        plugin.getLogger().info("[CONTEST] Ouverture des trades");
+        OMCPlugin.getInstance().getLogger().info("[CONTEST] Ouverture des trades");
     }
     //PHASE 3
     /**
@@ -415,7 +412,7 @@ public class ContestManager {
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-            plugin.getLogger().info(uuid + " " + dataPlayer1.getCamp() + " " + dataPlayer1.getColor() + " " + dataPlayer1.getPoints() + " " + dataPlayer1.getName());
+            OMCPlugin.getInstance().getLogger().info(uuid + " " + dataPlayer1.getCamp() + " " + dataPlayer1.getColor() + " " + dataPlayer1.getPoints() + " " + dataPlayer1.getName());
 
             OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(uuid));
             int points = dataPlayer1.getPoints();
@@ -501,7 +498,7 @@ public class ContestManager {
         });
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                     addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
                     try {
                         TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
@@ -513,7 +510,7 @@ public class ContestManager {
                     MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
         });
 
-        plugin.getLogger().info("[CONTEST] Fermeture du Contest");
+        OMCPlugin.getInstance().getLogger().info("[CONTEST] Fermeture du Contest");
     }
 
     // TRADE METHODE
@@ -564,7 +561,7 @@ public class ContestManager {
      * Retourne une Liste contenant les ressources (ex NETHERITE_BLOCK)
      */
     public static List<String> getRessListFromConfig() {
-        FileConfiguration config = plugin.getConfig();
+        FileConfiguration config = OMCPlugin.getInstance().getConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
         List<String> ressList = new ArrayList<>();
 

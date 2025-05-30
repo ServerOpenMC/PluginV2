@@ -170,7 +170,7 @@ public class MayorManager {
 
         TableUtils.createTableIfNotExists(connectionSource, MayorConstant.class);
         constantsDao = DaoManager.createDao(connectionSource, MayorConstant.class);
-        constantsDao.create(new MayorConstant(1));
+        constantsDao.createIfNotExists(new MayorConstant(1));
     }
 
     // Load and Save Data Methods
