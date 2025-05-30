@@ -7,6 +7,9 @@ import org.bukkit.Location;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+
 @DatabaseTable(tableName = "laws")
 @Setter
 @Getter
@@ -37,4 +40,7 @@ public class CityLaw {
         this.warpWorld = warp.getWorld().getName();
     }
 
+    public City getCity() {
+        return CityManager.getCity(city);
+    }
 }

@@ -1,6 +1,9 @@
 package fr.openmc.core.features.city.models;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
+import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.UUID;
@@ -41,5 +44,9 @@ public class Mayor {
         this.idPerk2 = idPerk2;
         this.idPerk3 = idPerk3;
         this.electionType = electionType.name();
+    }
+
+    public City getCity() {
+        return CityManager.getCity(city);
     }
 }
