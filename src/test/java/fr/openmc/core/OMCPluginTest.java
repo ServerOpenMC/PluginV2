@@ -11,8 +11,8 @@ import org.mockbukkit.mockbukkit.ServerMock;
 
 public class OMCPluginTest {
 
-    public static JavaPlugin plugin;
-    public static ServerMock server;
+    public JavaPlugin plugin;
+    public ServerMock server;
 
     @BeforeEach
     public void setUp() {
