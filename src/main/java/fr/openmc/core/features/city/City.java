@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.features.city.models.Mascot;
@@ -26,6 +25,8 @@ import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import com.sk89q.worldedit.math.BlockVector2;
 
 import java.util.HashMap;
 import java.util.HashSet;

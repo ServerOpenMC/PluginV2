@@ -57,6 +57,7 @@ dependencies {
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
     compileOnly 'de.oliver:FancyNpcs:2.5.0'
 
@@ -71,6 +72,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
+    testImplementation 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
     testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
