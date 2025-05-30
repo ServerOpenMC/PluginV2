@@ -166,9 +166,7 @@ public class City {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new MemberJoinEvent(CacheOfflinePlayer.getOfflinePlayer(player), this));
         });
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.addPlayerToCity(this, player);
-        });
+        CityManager.addPlayerToCity(this, player);
     }
 
     /**

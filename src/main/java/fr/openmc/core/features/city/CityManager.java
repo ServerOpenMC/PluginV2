@@ -159,12 +159,14 @@ public class CityManager implements Listener {
      * @param player The player to add to the city
      */
     public static void addPlayerToCity(City city, UUID player) {
-        try {
-            playerCities.put(player, city);
-            membersDao.create(new DBCityMember(player, city.getUUID()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        playerCities.put(player, city);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                membersDao.create(new DBCityMember(player, city.getUUID()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**
