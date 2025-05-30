@@ -30,7 +30,6 @@ import com.j256.ormlite.table.TableUtils;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,7 +40,7 @@ public class MascotsManager {
 
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
-    public static List<Mascot> mascots = new ArrayList<>();
+    public static List<Mascot> mascots;
 
     public MascotsManager() {
         //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
@@ -57,7 +56,7 @@ public class MascotsManager {
         chestKey = new NamespacedKey(OMCPlugin.getInstance(), "mascots_chest");
         mascotsKey = new NamespacedKey(OMCPlugin.getInstance(), "mascotsKey");
 
-        mascots = loadMascots();
+        loadMascots();
 
         for (Mascot mascot : mascots){
             Entity mob = MascotUtils.loadMascot(mascot);
@@ -74,12 +73,12 @@ public class MascotsManager {
         mascotsDao = DaoManager.createDao(connectionSource, Mascot.class);
     }
 
-    public static List<Mascot> loadMascots() {
+    public static void loadMascots() {
         try {
-            return mascotsDao.queryForAll();
+            assert mascotsDao != null;
+            mascots = mascotsDao.queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
     }
 

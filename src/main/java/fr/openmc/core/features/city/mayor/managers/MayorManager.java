@@ -170,13 +170,18 @@ public class MayorManager {
 
         TableUtils.createTableIfNotExists(connectionSource, MayorConstant.class);
         constantsDao = DaoManager.createDao(connectionSource, MayorConstant.class);
-        constantsDao.createIfNotExists(new MayorConstant(1));
     }
 
     // Load and Save Data Methods
     public static void loadMayorConstant() {
         try {
-            phaseMayor = constantsDao.queryForId(1).getPhase();
+            MayorConstant constant = constantsDao.queryForFirst();
+            if (constant == null) {
+                constant = new MayorConstant(1);
+                constantsDao.create(constant);
+            }
+
+            phaseMayor = constant.getPhase();
         } catch (SQLException e) {
             e.printStackTrace();
         }

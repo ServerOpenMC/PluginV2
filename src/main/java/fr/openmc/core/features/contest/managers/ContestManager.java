@@ -51,9 +51,6 @@ public class ContestManager {
     public static File contestFile;
     public static YamlConfiguration contestConfig;
 
-    private static Dao<Contest, String> contestDao;
-    private static Dao<ContestPlayer, String> playerDao;
-
     public static Contest data;
     public static Map<String, ContestPlayer> dataPlayer = new HashMap<>();
 
@@ -89,13 +86,15 @@ public class ContestManager {
         loadContestPlayerData();
     }
 
+    private static Dao<Contest, Integer> contestDao;
+    private static Dao<ContestPlayer, String> playerDao;
+
     /**
      * Initialise la DB pour les Contests
      */
     public static void init_db(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Contest.class);
         contestDao = DaoManager.createDao(connectionSource, Contest.class);
-        contestDao.createIfNotExists(new Contest("Mayonnaise", "Ketchup", "YELLOW", "RED", 1, "ven.", 0, 0));
 
         TableUtils.createTableIfNotExists(connectionSource, ContestPlayer.class);
         playerDao = DaoManager.createDao(connectionSource, ContestPlayer.class);
@@ -132,6 +131,10 @@ public class ContestManager {
     public static void initContestData() {
         try {
             data = contestDao.queryForFirst();
+            if (data == null) {
+                data = new Contest("Mayonnaise", "Ketchup", "YELLOW", "RED", 1, "ven.", 0, 0);
+                contestDao.create(data);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
