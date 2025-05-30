@@ -40,18 +40,9 @@ public class MayorSetWarpAction {
         }
         CityLaw law = city.getLaw();
 
-        List<Component> loreItemInterraction = List.of(
-                Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
-        );
-        ItemStack itemToGive = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
-        ItemMeta itemMeta = itemToGive.getItemMeta();
-
-        itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
-        itemMeta.lore(loreItemInterraction);
-        itemToGive.setItemMeta(itemMeta);
         ItemInteraction.runLocationInteraction(
                 player,
-                itemToGive,
+                getWarpWand(),
                 "mayor:wait-set-warp",
                 300,
                 "§7Vous avez 300s pour séléctionner votre point de spawn",
@@ -72,5 +63,18 @@ public class MayorSetWarpAction {
                 },
                 null
         );
+    }
+
+    public static ItemStack getWarpWand() {
+        List<Component> loreItemInterraction = List.of(
+                Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
+        );
+        ItemStack item = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
+        ItemMeta itemMeta = item.getItemMeta();
+
+        itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
+        itemMeta.lore(loreItemInterraction);
+        item.setItemMeta(itemMeta);
+        return item;
     }
 }

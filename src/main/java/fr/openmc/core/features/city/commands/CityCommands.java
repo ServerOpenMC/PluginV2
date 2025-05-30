@@ -7,10 +7,7 @@ import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
-import fr.openmc.core.features.city.actions.CityClaimAction;
-import fr.openmc.core.features.city.actions.CityCreateAction;
-import fr.openmc.core.features.city.actions.CityDeleteAction;
-import fr.openmc.core.features.city.actions.MayorSetWarpAction;
+import fr.openmc.core.features.city.actions.*;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
@@ -214,6 +211,8 @@ public class CityCommands {
 
         if (!CityKickCondition.canCityKickPlayer(city, sender, player)) return;
 
+        if (city == null) return;
+
         if (city.removePlayer(player.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + player.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
@@ -232,7 +231,7 @@ public class CityCommands {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (!CityLeaveCondition.canCityLeave(city, player)) return;
 
-        leaveCity(player);
+        CityLeaveAction.startLeave(player);
     }
 
     @Subcommand("invite")

@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.mascots.Mascot;
@@ -467,12 +468,10 @@ public class CityMenu extends Menu {
 
                     ConfirmMenu menu = new ConfirmMenu(player,
                             () -> {
-                                CityCommands.leaveCity(player);
+                                CityLeaveAction.startLeave(player);
                                 player.closeInventory();
                             },
-                            () -> {
-                                player.closeInventory();
-                            },
+                            player::closeInventory,
                             List.of(Component.text("§7Voulez vous vraiment partir de " + city.getName() + " ?")),
                             List.of(Component.text("§7Rester dans la ville " + city.getName()))
                     );

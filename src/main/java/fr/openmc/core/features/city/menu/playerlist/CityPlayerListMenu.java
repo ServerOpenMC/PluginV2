@@ -189,7 +189,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
                             if (InputUtils.isInputPlayer(input)) {
                                 Player playerToInvite = Bukkit.getPlayer(input);
-                                CityCommands.add(player, playerToInvite);
+                                CityCommands.invite(player, playerToInvite);
                             } else {
                                 MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                             }
