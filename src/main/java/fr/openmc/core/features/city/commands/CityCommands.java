@@ -64,6 +64,20 @@ public class CityCommands {
         }
     }
 
+    @Subcommand("info")
+    @CommandPermission("omc.commands.city.info")
+    @Description("Avoir des informations sur votre ville")
+    void info(Player player) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        CityMessages.sendInfo(player, city);
+    }
+
     @Subcommand("create")
     @CommandPermission("omc.commands.city.create")
     @Description("Créer une ville")
@@ -112,23 +126,28 @@ public class CityCommands {
         CityDeleteAction.startDeleteCity(sender);
     }
 
-    @Subcommand({"mayor", "maire"})
-    @CommandPermission("omc.commands.city.mayor")
-    @Description("Ouvre le menu des maires")
-    public void mayor(Player sender) {
-        City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
+    @Subcommand("invite")
+    @CommandPermission("omc.commands.city.invite")
+    @Description("Inviter un joueur dans votre ville")
+    public static void invite(Player sender, @Named("invité") Player target) {
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (playerCity == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-        }
+        if (!CityInviteConditions.canCityInvitePlayer(city, sender, target)) return;
 
-        if (MayorManager.getInstance().phaseMayor==1) {
-            MayorElectionMenu menu = new MayorElectionMenu(sender);
-            menu.open();
+        List<Player> playerInvitations = invitations.get(target);
+        if (playerInvitations == null) {
+            List<Player> newInvitations = new ArrayList<>();
+            newInvitations.add(sender);
+            invitations.put(target, newInvitations);
         } else {
-            MayorMandateMenu menu = new MayorMandateMenu(sender);
-            menu.open();
+            playerInvitations.add(sender);
         }
+        MessagesManager.sendMessage(sender, Component.text("Tu as invité " + target.getName() + " dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(target,
+                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getName() + "\n")
+                        .append(Component.text("§8Faite §a/city accept §8pour accepter\n").clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
+                        .append(Component.text("§8Faite §c/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
+                Prefix.CITY, MessageType.INFO, false);
     }
 
     @Subcommand("accept")
@@ -220,30 +239,6 @@ public class CityCommands {
         CityLeaveAction.startLeave(player);
     }
 
-    @Subcommand("invite")
-    @CommandPermission("omc.commands.city.invite")
-    @Description("Inviter un joueur dans votre ville")
-    public static void invite(Player sender, @Named("invité") Player target) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
-
-        if (!CityInviteConditions.canCityInvitePlayer(city, sender, target)) return;
-
-        List<Player> playerInvitations = invitations.get(target);
-        if (playerInvitations == null) {
-            List<Player> newInvitations = new ArrayList<>();
-            newInvitations.add(sender);
-            invitations.put(target, newInvitations);
-        } else {
-            playerInvitations.add(sender);
-        }
-        MessagesManager.sendMessage(sender, Component.text("Tu as invité "+target.getName()+" dans ta ville"), Prefix.CITY, MessageType.SUCCESS, false);
-        MessagesManager.sendMessage(target,
-                Component.text("Tu as été invité(e) par " + sender.getName() + " dans la ville " + city.getName() + "\n")
-                        .append(Component.text("§8Faite §a/city accept §8pour accepter\n").clickEvent(ClickEvent.runCommand("/city accept " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Accepter l'invitation"))))
-                        .append(Component.text("§8Faite §c/city deny §8pour refuser\n").clickEvent(ClickEvent.runCommand("/city deny " + sender.getName())).hoverEvent(HoverEvent.showText(Component.text("Refuser l'invitation")))),
-                Prefix.CITY, MessageType.INFO, false);
-    }
-
     @Subcommand("claim")
     @CommandPermission("omc.commands.city.claim")
     @Description("Claim un chunk pour votre ville")
@@ -255,20 +250,6 @@ public class CityCommands {
         Chunk chunk = sender.getLocation().getChunk();
 
         CityClaimAction.startClaim(sender, chunk.getX(), chunk.getZ());
-    }
-
-    @Subcommand("info")
-    @CommandPermission("omc.commands.city.info")
-    @Description("Avoir des informations sur votre ville")
-    void info(Player player) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        CityMessages.sendInfo(player, city);
     }
 
     @Subcommand("list")
@@ -284,6 +265,7 @@ public class CityCommands {
         menu.open();
     }
 
+    //TODO: refaire cette commande afin qu'elle envoie un menu pour qu'on puisse choisir son type de ville (et le voir meme si on peut pas le changer)
     @Subcommand("change")
     @CommandPermission("omc.commands.city.change")
     public void change(Player sender) {
@@ -379,15 +361,61 @@ public class CityCommands {
         MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le §5type §fde votre §dville"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
-    @Subcommand({"setwarp"})
-    @Description("Déplacer le warp de votre ville")
-    public void setWarpCommand(Player player) {
-        MayorSetWarpAction.setWarp(player);
+    // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
+    @Subcommand({"bank view"})
+    @Description("Ouvre le menu de la banque de ville")
+    void bank(Player player) {
+        if (CityManager.getPlayerCity(player.getUniqueId()) == null)
+            return;
+
+        new CityBankMenu(player).open();
+    }
+
+    @Subcommand("bank deposit")
+    @Description("Met de votre argent dans la banque de ville")
+    void deposit(Player player, @Range(min=1) String input) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (!CityBankConditions.canCityDeposit(city, player)) return;
+
+        city.depositCityBank(player, input);
+    }
+
+    @Subcommand("bank withdraw")
+    @Description("Prend de l'argent de la banque de ville")
+    void withdraw(Player player, @Range(min=1) String input) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (!city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE)) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYTAKE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        city.withdrawCityBank(player, input);
+    }
+
+    @Subcommand({"mayor", "maire"})
+    @CommandPermission("omc.commands.city.mayor")
+    @Description("Ouvre le menu des maires")
+    void mayor(Player sender) {
+        City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
+
+        if (playerCity == null) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+        }
+
+        if (MayorManager.getInstance().phaseMayor == 1) {
+            MayorElectionMenu menu = new MayorElectionMenu(sender);
+            menu.open();
+        } else {
+            MayorMandateMenu menu = new MayorMandateMenu(sender);
+            menu.open();
+        }
     }
 
     @Subcommand({"warp"})
     @Description("Teleporte au warp commun de la ville")
-    public void warp(Player player) {
+    void warp(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         if (playerCity == null) return;
@@ -419,41 +447,11 @@ public class CityCommands {
         }.runTaskLater(OMCPlugin.getInstance(), 15);
     }
 
-    // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
-    @Subcommand({"bank view"})
-    @Description("Ouvre le menu de la banque de ville")
-    public void bank(Player player) {
-        if (CityManager.getPlayerCity(player.getUniqueId()) == null)
-            return;
-
-        new CityBankMenu(player).open();
+    @Subcommand({"setwarp"})
+    @Description("Déplacer le warp de votre ville")
+    void setWarpCommand(Player player) {
+        MayorSetWarpAction.setWarp(player);
     }
-
-    @Subcommand("bank deposit")
-    @Description("Met de votre argent dans la banque de ville")
-    void deposit(Player player, @Range(min=1) String input) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (!CityBankConditions.canCityDeposit(city, player)) return;
-
-        city.depositCityBank(player, input);
-    }
-
-    @Subcommand("bank withdraw")
-    @Description("Prend de l'argent de la banque de ville")
-    void withdraw(Player player, @Range(min=1) String input) {
-        City city = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (!city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE)) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYTAKE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        city.withdrawCityBank(player, input);
-    }
-
-    // ACTIONS
-
 
     public static void startBalanceCooldown(String city_uuid) {
         if (balanceCooldownTasks.containsKey(city_uuid)) {
