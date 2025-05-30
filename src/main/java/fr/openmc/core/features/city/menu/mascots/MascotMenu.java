@@ -206,7 +206,7 @@ public class MascotMenu extends Menu {
             }
 
             List<Component> requiredAmount = new ArrayList<>();
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot);
+            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
             if (mascotsLevels.equals(MascotsLevels.level10)){
                 requiredAmount.add(Component.text("§7Niveau max atteint"));

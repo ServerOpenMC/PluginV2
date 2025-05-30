@@ -78,9 +78,10 @@ public class CityManager implements Listener {
                 new AdminMayorCommands());
 
         OMCPlugin.registerEvents(
-                new ProtectionListener(),
                 new MascotsListener(),
                 new CityChatListener());
+      
+        new ProtectionsManager();
     }
 
     private static Dao<DBCity, String> citiesDao;

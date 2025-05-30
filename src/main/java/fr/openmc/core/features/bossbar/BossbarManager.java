@@ -101,8 +101,8 @@ public class BossbarManager {
 
         BossBar bossBar = BossBar.bossBar(
                 helpMessages.get(0),
-                1.0f,
-                BossBar.Color.PINK,
+                0f,
+                BossBar.Color.RED,
                 BossBar.Overlay.PROGRESS
         );
 

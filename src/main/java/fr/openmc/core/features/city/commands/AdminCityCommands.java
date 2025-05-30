@@ -228,19 +228,19 @@ public class AdminCityCommands {
     @CommandPermission("omc.admins.commands.admincity.claim.bypass")
     public void bypass(Player player) {
         UUID uuid = player.getUniqueId();
-        Boolean canBypass = ProtectionListener.playerCanBypass.get(uuid);
+        Boolean canBypass = ProtectionsManager.canBypassPlayer.contains(uuid);
 
         if (canBypass == null) {
-            ProtectionListener.playerCanBypass.put(uuid, true);
+            ProtectionsManager.canBypassPlayer.add(uuid);
             MessagesManager.sendMessage(player, Component.text("Vous pouvez bypass les claims"), Prefix.STAFF, MessageType.SUCCESS, false);
             return;
         }
 
-        if (canBypass == true) {
-            ProtectionListener.playerCanBypass.replace(uuid, false);
+        if (canBypass) {
+            ProtectionsManager.canBypassPlayer.remove(uuid);
             MessagesManager.sendMessage(player, Component.text("Vous avez désactivé le bypass des claims"), Prefix.STAFF, MessageType.SUCCESS, false);
         } else {
-            ProtectionListener.playerCanBypass.replace(uuid, true);
+            ProtectionsManager.canBypassPlayer.add(uuid);
             MessagesManager.sendMessage(player, Component.text("Vous avez activé le bypass des claims"), Prefix.STAFF, MessageType.SUCCESS, false);
 
         }
