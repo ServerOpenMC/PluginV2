@@ -84,11 +84,8 @@ public class OMCPlugin extends JavaPlugin {
         new AccountDetectionManager();
         new BossbarManager();
 
-        // TODO: enlever la condition
-        if (!OMCPlugin.isUnitTestVersion()){
-            new LeaderboardManager();
-            new CompanyManager();// laisser apres Economy Manager
-        }
+        new LeaderboardManager();
+        new CompanyManager();// laisser apres Economy Manager
 
         new MotdUtils();
         new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
