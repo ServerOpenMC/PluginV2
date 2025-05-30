@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.commands;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
@@ -9,6 +8,7 @@ import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.*;
@@ -24,11 +24,9 @@ import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -37,7 +35,10 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -48,7 +49,6 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME_WARP;
 
@@ -56,27 +56,6 @@ import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME
 public class CityCommands {
     public static HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
-    private static final ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-    private Location[] getCorners(Player player) {
-        World world = player.getWorld();
-        Location location = player.getLocation();
-        int chunkRadius = 2;
-        int chunkX = location.getChunk().getX();
-        int chunkZ = location.getChunk().getZ();
-
-        Location minLocation = new Location(world, (chunkX-chunkRadius) * 16, location.getY(), (chunkZ-chunkRadius) * 16);
-        Location maxLocation = new Location(world, (chunkX+chunkRadius+1) * 16 - 1, location.getY(), (chunkZ+chunkRadius + 1) * 16 - 1);
-
-        return new Location[]{minLocation, maxLocation};
-    }
-
-    public static int calculatePrice(int chunkCount) {
-        return 5000 + (chunkCount * 1000);
-    }
-
-    public static int calculateAywenite(int chunkCount) {
-        return 1*chunkCount;
-    }
 
     @DefaultFor("~")
     void main(Player player) {
@@ -217,7 +196,7 @@ public class CityCommands {
     @Subcommand("invite")
     @CommandPermission("omc.commands.city.invite")
     @Description("Inviter un joueur dans votre ville")
-    public static void add(Player sender, @Named("invité") Player target) {
+    public static void invite(Player sender, @Named("invité") Player target) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityInviteConditions.canCityInvitePlayer(city, sender, target)) return;
@@ -255,75 +234,7 @@ public class CityCommands {
 
         Chunk chunk = sender.getLocation().getChunk();
 
-        claim(sender, chunk.getX(), chunk.getZ());
-    }
-
-    public static void claim(Player sender, int chunkX, int chunkZ) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
-        org.bukkit.World bWorld = sender.getWorld();
-        if (!bWorld.getName().equals("world")) {
-            MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        BlockVector2 chunkVec2 = BlockVector2.at(chunkX, chunkZ);
-
-        AtomicBoolean isFar = new AtomicBoolean(true);
-        for (BlockVector2 chnk: city.getChunks()) {
-            if (chnk.distance(chunkVec2) == 1) { //Si c'est en diagonale alors ça sera sqrt(2) ≈1.41
-                isFar.set(false);
-                break;
-            }
-        }
-
-        if (isFar.get()) {
-            MessagesManager.sendMessage(sender, Component.text("Ce chunk n'est pas adjacent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        Chunk chunk = sender.getWorld().getChunkAt(chunkX, chunkZ);
-        if (WorldGuardApi.doesChunkContainWGRegion(chunk)) {
-            MessagesManager.sendMessage(sender, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, true);
-            return;
-        }
-
-        if (CityManager.isChunkClaimed(chunkX, chunkZ)) {
-            City chunkCity = CityManager.getCityFromChunk(chunkX, chunkZ);
-            String cityName = chunkCity.getName();
-            MessagesManager.sendMessage(sender, Component.text("Ce chunk est déjà claim par " + cityName + "."), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (city.getChunks().size() >= 50) {
-            MessagesManager.sendMessage(sender, Component.text("Ta ville est trop grande"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        int price = calculatePrice(city.getChunks().size());
-        int aywenite = calculateAywenite(city.getChunks().size());
-
-
-
-        if ((!CityManager.freeClaim.containsKey(city.getUUID())) || (CityManager.freeClaim.get(city.getUUID()) <= 0)) {
-            if (city.getBalance() < price) {
-                MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent ("+price+EconomyManager.getEconomyIcon()+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            if (!ItemUtils.hasEnoughItems(sender.getPlayer(), ayweniteItemStack.getType(), aywenite )) {
-                MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas assez d'§dAywenite §f("+aywenite+ " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            city.updateBalance((double) (price*-1));
-            ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
-        } else {
-            CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) - 1);
-        }
-
-        city.addChunk(chunk);
-
-        MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
+        CityClaimAction.startClaim(sender, chunk.getX(), chunk.getZ());
     }
 
     @Subcommand("info")
