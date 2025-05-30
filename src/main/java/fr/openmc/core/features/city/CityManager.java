@@ -467,9 +467,7 @@ public class CityManager implements Listener {
                 chestsDelete.where().eq("city", city.getUUID());
                 chestsDao.delete(chestsDelete.prepare());
 
-                // TODO: delete from Mayor table
-                // TODO: delete from Election table
-                // TODO: delete from Vote table
+                MayorManager.removeCity(city);
 
             } catch (SQLException e) {
                 e.printStackTrace();

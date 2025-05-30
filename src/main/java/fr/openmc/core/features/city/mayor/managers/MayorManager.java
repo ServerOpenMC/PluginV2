@@ -75,8 +75,7 @@ public class MayorManager {
     public static int phaseMayor;
     public static HashMap<City, Mayor> cityMayor = new HashMap<>();
     public static HashMap<City, CityLaw> cityLaws = new HashMap<>();
-    public static Map<City, List<MayorCandidate>> cityElections = new HashMap<>() {
-    };
+    public static Map<City, List<MayorCandidate>> cityElections = new HashMap<>();
     public static Map<City, List<MayorVote>> playerVote = new HashMap<>();
 
     private static final Random RANDOM = new Random();
@@ -272,6 +271,28 @@ public class MayorManager {
                 e.printStackTrace();
             }
         });
+    }
+
+    public static void removeCity(City city) throws SQLException {
+        DeleteBuilder<Mayor, String> mayorsDelete = mayorsDao.deleteBuilder();
+        mayorsDelete.where().eq("city", city.getUUID());
+        mayorsDao.delete(mayorsDelete.prepare());
+        cityMayor.remove(city);
+
+        DeleteBuilder<MayorCandidate, UUID> candidatesDelete = candidatesDao.deleteBuilder();
+        candidatesDelete.where().eq("city", city.getUUID());
+        candidatesDao.delete(candidatesDelete.prepare());
+        cityElections.remove(city);
+
+        DeleteBuilder<MayorVote, UUID> votesDelete = votesDao.deleteBuilder();
+        votesDelete.where().eq("city", city.getUUID());
+        votesDao.delete(votesDelete.prepare());
+        playerVote.remove(city);
+
+        DeleteBuilder<CityLaw, String> lawsDelete = lawsDao.deleteBuilder();
+        lawsDelete.where().eq("city", city.getUUID());
+        lawsDao.delete(lawsDelete.prepare());
+        cityLaws.remove(city);
     }
 
     // setup elections
