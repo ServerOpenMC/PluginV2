@@ -14,6 +14,7 @@ public class CacheOfflinePlayer {
      * Donne l'OfflinePlayer si il est déjà mis en cache, sinon il execute la méthode basique
      */
     public static OfflinePlayer getOfflinePlayer(UUID uuid) {
-         return offlinePlayerCache.computeIfAbsent(uuid, Bukkit::getOfflinePlayer);
+        offlinePlayerCache.forEach((uuid1, offlinePlayer) -> System.out.println(uuid1 + " " + offlinePlayer.getName()));
+        return offlinePlayerCache.computeIfAbsent(uuid, Bukkit::getOfflinePlayer);
     }
 }
