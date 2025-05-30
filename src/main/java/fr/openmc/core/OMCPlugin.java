@@ -84,6 +84,7 @@ public class OMCPlugin extends JavaPlugin {
         new AccountDetectionManager();
         new BossbarManager();
         new CompanyManager();// laisser apres Economy Manager
+        new ContestManager();
 
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager();
