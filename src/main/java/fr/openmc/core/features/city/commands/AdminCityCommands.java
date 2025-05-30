@@ -5,7 +5,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityMessages;
-import fr.openmc.core.features.city.listeners.ProtectionListener;
+import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsManager;
