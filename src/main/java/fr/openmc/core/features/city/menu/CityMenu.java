@@ -350,7 +350,7 @@ public class CityMenu extends Menu {
 
                 if (hasPermissionChangeType) {
                     lore.add(Component.text(""));
-                    lore.add(Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE"));
+                    lore.add(Component.text("§e§lCLIQUEZ ICI POUR LE CHANGER"));
                 }
 
                 return new ItemBuilder(CityMenu.this, Material.NETHERITE_SWORD, meta -> {
