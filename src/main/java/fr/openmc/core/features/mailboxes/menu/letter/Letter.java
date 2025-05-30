@@ -4,22 +4,11 @@ package fr.openmc.core.features.mailboxes.menu.letter;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.database.DatabaseManager;
-import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.UUID;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
@@ -52,85 +41,88 @@ public class Letter extends MailboxInv {
         }
     }
 
+    // TODO: convert here
     public static LetterHead getById(Player player, int id) {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT items_count, sent_at, sender_id, items FROM mailbox_items WHERE id = ? AND refused = false AND receiver_id = ?;")) {
-            statement.setInt(1, id);
-            statement.setString(2, player.getUniqueId().toString());
-            try (ResultSet result = statement.executeQuery()) {
-                if (result.next()) {
-                    int itemsCount = result.getInt("items_count");
-                    LocalDateTime sentAt = result.getTimestamp("sent_at").toLocalDateTime();
-                    OfflinePlayer sender = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(result.getString("sender_id")));
-                    ItemStack[] items = BukkitSerializer.deserializeItemStacks(result.getBytes("items"));
-                    return new LetterHead(sender, id, itemsCount, sentAt, items);
-                }
-                sendFailureMessage(player, "La lettre n'a pas été trouvée.");
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            sendFailureMessage(player, "Une erreur est survenue.");
-            return null;
-        }
+        // try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT items_count, sent_at, sender_id, items FROM mailbox_items WHERE id = ? AND refused = false AND receiver_id = ?;")) {
+        //     statement.setInt(1, id);
+        //     statement.setString(2, player.getUniqueId().toString());
+        //     try (ResultSet result = statement.executeQuery()) {
+        //         if (result.next()) {
+        //             int itemsCount = result.getInt("items_count");
+        //             LocalDateTime sentAt = result.getTimestamp("sent_at").toLocalDateTime();
+        //             OfflinePlayer sender = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(result.getString("sender_id")));
+        //             ItemStack[] items = BukkitSerializer.deserializeItemStacks(result.getBytes("items"));
+        //             return new LetterHead(sender, id, itemsCount, sentAt, items);
+        //         }
+        //         sendFailureMessage(player, "La lettre n'a pas été trouvée.");
+        //         return null;
+        //     }
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        //     sendFailureMessage(player, "Une erreur est survenue.");
+        //     return null;
+        // }
+        return null;
     }
 
     public static void refuseLetter(Player player, int id) {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mailbox_items SET refused = true WHERE id = ? AND receiver_id = ?;")) {
-            statement.setInt(1, id);
-            statement.setString(2, player.getUniqueId().toString());
-            if (statement.executeUpdate() == 1) {
-                sendSuccessMessage(player, "La lettre a été refusée.");
-            } else {
-                Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                                             .append(Component.text(id, NamedTextColor.RED))
-                                             .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
-                sendFailureMessage(player, message);
-            }
-        } catch (SQLException e) {
-            sendFailureMessage(player, "Une erreur est survenue.");
-            e.printStackTrace();
-        }
+        // try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE mailbox_items SET refused = true WHERE id = ? AND receiver_id = ?;")) {
+        //     statement.setInt(1, id);
+        //     statement.setString(2, player.getUniqueId().toString());
+        //     if (statement.executeUpdate() == 1) {
+        //         sendSuccessMessage(player, "La lettre a été refusée.");
+        //     } else {
+        //         Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
+        //                                      .append(Component.text(id, NamedTextColor.RED))
+        //                                      .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
+        //         sendFailureMessage(player, message);
+        //     }
+        // } catch (SQLException e) {
+        //     sendFailureMessage(player, "Une erreur est survenue.");
+        //     e.printStackTrace();
+        // }
     }
 
     private boolean getMailboxById() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT items FROM mailbox_items WHERE id = ? AND refused = false;")) {
-            statement.setInt(1, id);
-            try (ResultSet result = statement.executeQuery()) {
-                if (result.next()) {
-                    items = BukkitSerializer.deserializeItemStacks(result.getBytes("items"));
-                    return true;
-                }
-                return false;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+        // try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT items FROM mailbox_items WHERE id = ? AND refused = false;")) {
+        //     statement.setInt(1, id);
+        //     try (ResultSet result = statement.executeQuery()) {
+        //         if (result.next()) {
+        //             items = BukkitSerializer.deserializeItemStacks(result.getBytes("items"));
+        //             return true;
+        //         }
+        //         return false;
+        //     }
+        // } catch (Exception ex) {
+        //     ex.printStackTrace();
+        //     return false;
+        // }
+        return true;
     }
 
     public void accept() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM mailbox_items WHERE id = ? AND refused = false;")) {
-            statement.setInt(1, id);
-            if (statement.executeUpdate() == 1) {
-                Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
-                                             .append(Component.text(itemsCount, NamedTextColor.GREEN))
-                                             .append(Component.text(" " + getItemCount(itemsCount), NamedTextColor.DARK_GREEN));
-                sendSuccessMessage(player, message);
-                HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(items);
-                for (ItemStack item : remainingItems.values()) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), item);
-                }
-            } else {
-                Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
-                                             .append(Component.text(id, NamedTextColor.RED))
-                                             .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
-                sendFailureMessage(player, message);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            sendFailureMessage(player, "Une erreur est survenue.");
-        }
-        player.closeInventory();
+        // try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM mailbox_items WHERE id = ? AND refused = false;")) {
+        //     statement.setInt(1, id);
+        //     if (statement.executeUpdate() == 1) {
+        //         Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
+        //                                      .append(Component.text(itemsCount, NamedTextColor.GREEN))
+        //                                      .append(Component.text(" " + getItemCount(itemsCount), NamedTextColor.DARK_GREEN));
+        //         sendSuccessMessage(player, message);
+        //         HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(items);
+        //         for (ItemStack item : remainingItems.values()) {
+        //             player.getWorld().dropItemNaturally(player.getLocation(), item);
+        //         }
+        //     } else {
+        //         Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
+        //                                      .append(Component.text(id, NamedTextColor.RED))
+        //                                      .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
+        //         sendFailureMessage(player, message);
+        //     }
+        // } catch (SQLException e) {
+        //     e.printStackTrace();
+        //     sendFailureMessage(player, "Une erreur est survenue.");
+        // }
+        // player.closeInventory();
     }
 
     public void refuse() {
