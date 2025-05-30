@@ -3,7 +3,11 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.actions.CityChangeAction;
+import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -22,10 +26,8 @@ import java.util.Map;
 
 
 public class CityTypeMenu extends Menu {
-    String name;
-    public CityTypeMenu(Player owner, String name) {
+    public CityTypeMenu(Player owner) {
         super(owner);
-        this.name = name;
     }
 
     @Override
@@ -48,29 +50,38 @@ public class CityTypeMenu extends Menu {
         Map<Integer, ItemStack> map = new HashMap<>();
         Player player = getOwner();
         try {
+            City city = CityManager.getPlayerCity(player.getUniqueId());
             List<Component> peaceInfo = new ArrayList<>();
-            peaceInfo.add(Component.text("§aLa sécurité est assurée"));
-            peaceInfo.add(Component.text("§fObjectif : relaxez vous et construisez la"));
-            peaceInfo.add(Component.text("§fville de vos rêves"));
 
-            List<Component> warInfo = new ArrayList<>();
-            warInfo.add(Component.text("§cLa guerre vous attend"));
-            warInfo.add(Component.text("§fObjectif : devenir la ville la plus puissante"));
-            warInfo.add(Component.text("§cATTENTION : les autres villes en situation de guerre"));
-            warInfo.add(Component.text("§cpeuvent tuer votre mascotte et détruire les constructions"));
+            boolean enchantPeace = city.getType() == CityType.PEACE;
+            peaceInfo.add(Component.text("§7Votre sécurité est §aassurée§7!"));
+            peaceInfo.add(Component.text(""));
+            peaceInfo.add(Component.text("§6§l§oTIPS: Parfait pour build, et échanger en toute tranquilité!"));
 
             map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
                 itemMeta.displayName(Component.text("§aVille en paix"));
                 itemMeta.lore(peaceInfo);
+                itemMeta.setEnchantmentGlintOverride(enchantPeace);
             }).setOnClick(inventoryClickEvent -> {
-                runChoiceType(player, CityType.PEACE);
+                if (CityTypeConditions.canCityChangeType(city, player, true)) return;
+
+                CityChangeAction.beginChangeCity(player, CityType.PEACE);
             }));
 
-            map.put(15, new ItemBuilder(this, Material.DIAMOND_SWORD, itemMeta -> {
+            List<Component> warInfo = new ArrayList<>();
+            warInfo.add(Component.text("§7Un monde de §cguerre §7et de §cconcurrence."));
+            warInfo.add(Component.text(""));
+            warInfo.add(Component.text("§c§l ⚠ ATTENTION"));
+            warInfo.add(Component.text("§8- §cLes villes étant dans le même status que vous pourront vous §cdéclarer la guerre!"));
+            warInfo.add(Component.text("§6§l§oTIPS: Idéal pour les tryhardeurs et les compétitifs"));
+
+            boolean enchantWar = city.getType() == CityType.WAR;
+            map.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
                 itemMeta.displayName(Component.text("§cVille en guerre"));
                 itemMeta.lore(warInfo);
+                itemMeta.setEnchantmentGlintOverride(enchantWar);
             }).setOnClick(inventoryClickEvent -> {
-                runChoiceType(player, CityType.WAR);
+                CityChangeAction.beginChangeCity(player, CityType.WAR);
             }));
 
             return map;
@@ -80,11 +91,6 @@ public class CityTypeMenu extends Menu {
             e.printStackTrace();
         }
         return map;
-    }
-
-    private void runChoiceType(Player player, CityType type) {
-
-        getOwner().closeInventory();
     }
 
     @Override

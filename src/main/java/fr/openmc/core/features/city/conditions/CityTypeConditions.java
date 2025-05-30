@@ -1,7 +1,9 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -32,6 +34,12 @@ public class CityTypeConditions {
             if (reply) MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de changer le status de ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
+        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+            MessagesManager.sendMessage(player, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         return true;
     }
 

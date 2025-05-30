@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
-import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
@@ -358,35 +357,9 @@ public class CityMenu extends Menu {
                     meta.itemName(Component.text("§5Le Statut de votre Ville"));
                     meta.lore(lore);
                 }).setOnClick(inventoryClickEvent -> {
-                    try {
-                        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) return;
+                    if (!(city.hasPermission(player.getUniqueId(), CPermission.TYPE))) return;
 
-                        String cityTypeActuel;
-                        String cityTypeAfter;
-                        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
-                        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
-
-                        ConfirmMenu confirmMenu = new ConfirmMenu(player,
-                                () -> {
-                                    CityCommands.changeConfirm(player);
-                                    player.closeInventory();
-                                },
-                                () -> player.closeInventory(),
-                                List.of(
-                                        Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"),
-                                        Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter),
-                                        Component.text("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX")
-                                ),
-                                List.of(
-                                        Component.text("§7Ne pas changer le type de ta §dville")
-                                )
-                        );
-                        confirmMenu.open();
-                    } catch (Exception e) {
-                        MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"),
-                                Prefix.OPENMC, MessageType.ERROR, false);
-                        e.printStackTrace();
-                    }
+                    new CityTypeMenu(player).open();
                 });
             };
 

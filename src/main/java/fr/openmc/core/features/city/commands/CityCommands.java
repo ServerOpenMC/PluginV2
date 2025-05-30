@@ -1,17 +1,15 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.actions.*;
 import fr.openmc.core.features.city.conditions.*;
-import fr.openmc.core.features.city.mascots.Mascot;
-import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CityMenu;
@@ -20,7 +18,6 @@ import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
 import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
-import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -34,7 +31,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Optional;
@@ -271,96 +267,7 @@ public class CityCommands {
     @Subcommand("change")
     @CommandPermission("omc.commands.city.change")
     public void change(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, sender, true)){
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        String cityTypeActuel;
-        String cityTypeAfter;
-        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
-        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
-
-        ConfirmMenu menu = new ConfirmMenu(sender,
-                () -> {
-                    changeConfirm(sender);
-                    sender.closeInventory();
-                },
-                () -> {
-                    sender.closeInventory();
-                },
-                List.of(
-                        Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"),
-                        Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter),
-                        Component.text("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX")
-                ),
-                List.of(
-                        Component.text("§7Ne pas changer le type de ta §dville")
-                )
-        );
-        menu.open();
-
-    }
-
-    public static void changeConfirm(Player sender) {
-        City city = CityManager.getPlayerCity(sender.getUniqueId());
-
-        if (!CityTypeConditions.canCityChangeType(city, sender, true)){
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        Mascot mascot = city.getMascot();
-
-        if (MascotUtils.mascotsContains(city.getUUID())) {
-            if (!mascot.isAlive()) {
-                MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-        }
-        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-        city.changeType();
-        DynamicCooldownManager.use(city.getUUID(), "city:type", 5 * 24 * 60 * 60 * 1000L); // 5 jours en ms
-
-        if (mascot != null) {
-            LivingEntity mob = MascotUtils.loadMascot(mascot);
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
-
-            double lastHealth = mascotsLevels.getHealth();
-            int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", "")) - 2;
-            if (newLevel < 1) {
-                newLevel = 1;
-            }
-            MascotUtils.setMascotLevel(city.getUUID(), newLevel);
-            mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
-
-            try {
-                int maxHealth = mascotsLevels.getHealth();
-                mob.setMaxHealth(maxHealth);
-                if (mob.getHealth() >= lastHealth) {
-                    mob.setHealth(maxHealth);
-                }
-                double currentHealth = mob.getHealth();
-                mob.setCustomName("§l" + city.getName() + " §c" + currentHealth + "/" + maxHealth + "❤");
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-
-            String cityTypeActuel;
-            String cityTypeAfter;
-            cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
-            cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
-
-            MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
-
-        }
-
-        MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le §5type §fde votre §dville"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 
     // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
@@ -453,21 +360,5 @@ public class CityCommands {
     @Description("Déplacer le warp de votre ville")
     void setWarpCommand(Player player) {
         MayorSetWarpAction.setWarp(player);
-    }
-
-    public static void startBalanceCooldown(String city_uuid) {
-        if (balanceCooldownTasks.containsKey(city_uuid)) {
-            balanceCooldownTasks.get(city_uuid).cancel();
-        }
-
-        BukkitRunnable cooldownTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                balanceCooldownTasks.remove(city_uuid);
-            }
-        };
-
-        balanceCooldownTasks.put(city_uuid, cooldownTask);
-        cooldownTask.runTaskLater(OMCPlugin.getInstance(), 30 * 60 * 20L);
     }
 }
