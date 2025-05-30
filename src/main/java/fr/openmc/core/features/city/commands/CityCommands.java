@@ -213,6 +213,8 @@ public class CityCommands {
 
         if (!CityManageConditions.canCityTransfer(playerCity, sender)) return;
 
+        if (playerCity == null) return;
+
         playerCity.changeOwner(player.getUniqueId());
         MessagesManager.sendMessage(sender, Component.text("Le nouveau maire est "+player.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
