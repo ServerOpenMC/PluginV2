@@ -10,6 +10,7 @@ import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.actions.CityCreateAction;
+import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
@@ -241,46 +242,7 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.delete")
     @Description("Supprimer votre ville")
     void delete(Player sender) {
-        UUID uuid = sender.getUniqueId();
-
-        City city = CityManager.getPlayerCity(uuid);
-
-        if (!CityManageConditions.canCityDelete(city, sender)) return;
-
-        ConfirmMenu menu = new ConfirmMenu(sender,
-                () -> {
-                    deleteCity(sender);
-                    sender.closeInventory();
-                },
-                () -> {
-                    sender.closeInventory();
-                },
-                List.of(
-                        Component.text("§cEs-tu sûr de vouloir supprimer ta ville ?"),
-                        Component.text("§cCette action est §4§lIRREVERSIBLE")
-                ),
-                List.of(
-                        Component.text("§7Ne pas supprimer la ville")
-                )
-        );
-        menu.open();
-    }
-
-    public static void deleteCity(Player sender) {
-        UUID uuid = sender.getUniqueId();
-
-        City city = CityManager.getPlayerCity(uuid);
-
-        for (UUID townMember : city.getMembers()){
-            if (Bukkit.getPlayer(townMember) instanceof Player player){
-                player.clearActivePotionEffects();
-            }
-        }
-
-        city.delete();
-        MessagesManager.sendMessage(sender, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
-
-        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
+        CityDeleteAction.startDeleteCity(sender);
     }
 
     @Subcommand("claim")
