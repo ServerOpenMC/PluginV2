@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME_WARP;
+import static fr.openmc.core.features.city.mayor.menu.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 public class MayorSetWarpAction {
     public static void setWarp(Player player) {

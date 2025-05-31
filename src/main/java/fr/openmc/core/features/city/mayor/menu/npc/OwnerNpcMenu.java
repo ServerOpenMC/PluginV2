@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor.npc;
+package fr.openmc.core.features.city.mayor.menu.npc;
 
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;

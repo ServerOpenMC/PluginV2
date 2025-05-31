@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor;
+package fr.openmc.core.features.city.mayor.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.ChatInput;

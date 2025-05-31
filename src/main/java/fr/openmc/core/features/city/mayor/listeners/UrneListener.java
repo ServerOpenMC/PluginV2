@@ -11,7 +11,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.NPCManager;
-import fr.openmc.core.features.city.menu.mayor.MayorVoteMenu;
+import fr.openmc.core.features.city.mayor.menu.MayorVoteMenu;
 import fr.openmc.core.utils.api.FancyNpcApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

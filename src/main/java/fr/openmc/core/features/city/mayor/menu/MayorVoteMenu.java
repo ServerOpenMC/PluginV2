@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor;
+package fr.openmc.core.features.city.mayor.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;

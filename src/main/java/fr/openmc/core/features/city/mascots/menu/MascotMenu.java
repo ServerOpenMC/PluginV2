@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mascots;
+package fr.openmc.core.features.city.mascots.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
