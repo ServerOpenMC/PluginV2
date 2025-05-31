@@ -160,7 +160,7 @@ public class MascotsManager {
 
         MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId(), chunk);
         // Immunité persistante de 7 jours pour la mascotte
-        DynamicCooldownManager.use(city_uuid, "mascot:immunity", IMMUNITY_COOLDOWN);
+        DynamicCooldownManager.use(city_uuid, "city:immunity", IMMUNITY_COOLDOWN);
     }
 
     public static void removeMascotsFromCity(String city_uuid) {
