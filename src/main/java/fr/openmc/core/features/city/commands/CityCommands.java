@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
@@ -263,11 +264,10 @@ public class CityCommands {
         menu.open();
     }
 
-    //TODO: refaire cette commande afin qu'elle envoie un menu pour qu'on puisse choisir son type de ville (et le voir meme si on peut pas le changer)
-    @Subcommand("change")
-    @CommandPermission("omc.commands.city.change")
+    @Subcommand("type")
+    @CommandPermission("omc.commands.city.type")
     public void change(Player sender) {
-
+        new CityTypeMenu(sender).open();
     }
 
     // making the subcommand only "bank" overrides "bank deposit" and "bank withdraw"
