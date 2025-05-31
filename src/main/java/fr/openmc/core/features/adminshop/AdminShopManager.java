@@ -9,7 +9,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -23,23 +22,20 @@ import java.util.*;
  * Manages the admin shop system including items, categories, and player interactions.
  */
 public class AdminShopManager {
-    public final Map<String, ShopCategory> categories = new HashMap<>();
-    public final Map<String, Map<String, ShopItem>> items = new HashMap<>();
-    public final Map<UUID, String> currentCategory = new HashMap<>();
-    public final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
-    private final AdminShopYAML adminShopYAML;
-
-    @Getter private static AdminShopManager instance;
+    public static final Map<String, ShopCategory> categories = new HashMap<>();
+    public static final Map<String, Map<String, ShopItem>> items = new HashMap<>();
+    public static final Map<UUID, String> currentCategory = new HashMap<>();
+    public static final DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
+    private static AdminShopYAML adminShopYAML;
 
     /**
      * Constructs the AdminShopManager and loads the admin shop configuration.
      *
      * @param plugin The main plugin instance.
      */
-    public AdminShopManager(OMCPlugin plugin) {
-        instance = this;
-        this.adminShopYAML = new AdminShopYAML(plugin, this);
-        this.adminShopYAML.loadConfig();
+    public AdminShopManager() {
+        adminShopYAML = new AdminShopYAML();
+        adminShopYAML.loadConfig();
     }
 
     /**
@@ -50,11 +46,11 @@ public class AdminShopManager {
      * @param itemId       The ID of the item.
      * @param previousMenu The previous menu to return to.
      */
-    public void openBuyConfirmMenu(Player player, String categoryId, String itemId, Menu previousMenu) {
+    public static void openBuyConfirmMenu(Player player, String categoryId, String itemId, Menu previousMenu) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        new ConfirmMenu(player, this, item, true, previousMenu).open();
+        new ConfirmMenu(player, item, true, previousMenu).open();
     }
 
     /**
@@ -65,7 +61,7 @@ public class AdminShopManager {
      * @param itemId       The ID of the item.
      * @param previousMenu The previous menu to return to.
      */
-    public void openSellConfirmMenu(Player player, String categoryId, String itemId, Menu previousMenu) {
+    public static void openSellConfirmMenu(Player player, String categoryId, String itemId, Menu previousMenu) {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
@@ -74,7 +70,7 @@ public class AdminShopManager {
             return;
         }
 
-        new ConfirmMenu(player, this, item, false, previousMenu).open();
+        new ConfirmMenu(player, item, false, previousMenu).open();
     }
 
     /**
@@ -84,7 +80,7 @@ public class AdminShopManager {
      * @param itemId  The ID of the item.
      * @param amount  The quantity to purchase.
      */
-    public void buyItem(Player player, String itemId, int amount) {
+    public static void buyItem(Player player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId);
         if (item == null) return;
 
@@ -99,7 +95,7 @@ public class AdminShopManager {
         }
 
         double totalPrice = item.getActualBuyPrice() * amount;
-        if (EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), totalPrice)) {
+        if (EconomyManager.withdrawBalance(player.getUniqueId(), totalPrice)) {
             player.getInventory().addItem(new ItemStack(item.getMaterial(), amount));
             sendInfo(player, "Vous avez acheté " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
             adjustPrice(getPlayerCategory(player), itemId, amount, true);
@@ -115,7 +111,7 @@ public class AdminShopManager {
      * @param itemId  The ID of the item.
      * @param amount  The quantity to sell.
      */
-    public void sellItem(Player player, String itemId, int amount) {
+    public static void sellItem(Player player, String itemId, int amount) {
         ShopItem item = getCurrentItem(player, itemId); // Get the item from the current category
         if (item == null) return;
 
@@ -133,7 +129,7 @@ public class AdminShopManager {
 
         double totalPrice = item.getActualSellPrice() * amount; // Calculate the total price for the items
         removeItems(player, item.getMaterial(), amount); // Remove items from the player's inventory
-        EconomyManager.getInstance().addBalance(player.getUniqueId(), totalPrice); // Add money to the player's balance
+        EconomyManager.addBalance(player.getUniqueId(), totalPrice); // Add money to the player's balance
         sendInfo(player, "Vous avez vendu " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
         adjustPrice(getPlayerCategory(player), itemId, amount, false); // Adjust the price based on the transaction
     }
@@ -146,7 +142,7 @@ public class AdminShopManager {
      * @param amount     The quantity bought/sold.
      * @param isBuying   True if buying, false if selling.
      */
-    private void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
+    private static void adjustPrice(String categoryId, String itemId, int amount, boolean isBuying) {
         ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId); // Get the item from the category
         if (item == null) return;
 
@@ -159,7 +155,7 @@ public class AdminShopManager {
         item.setActualSellPrice(Math.max(newSell, item.getInitialSellPrice() * 0.5)); // Set new sell price
         item.setActualBuyPrice(Math.max(newBuy, item.getInitialBuyPrice() * 0.5)); // Set new buy price
 
-        this.adminShopYAML.saveConfig(); // Save the updated configuration
+        adminShopYAML.saveConfig(); // Save the updated configuration
     }
 
     /**
@@ -222,7 +218,7 @@ public class AdminShopManager {
      * @param amount The amount.
      * @return True if there's enough space, false otherwise.
      */
-    public boolean hasEnoughItems(Player player, Material material, int amount) {
+    public static boolean hasEnoughItems(Player player, Material material, int amount) {
         int count = 0;
         for (ItemStack item : player.getInventory().getContents()) {
             if (item != null && item.getType() == material) {
@@ -243,7 +239,7 @@ public class AdminShopManager {
      * @param amount   The required amount.
      * @return True if the player has less than the amount, false otherwise.
      */
-    private boolean playerHasItem(Player player, Material material, int amount) {
+    private static boolean playerHasItem(Player player, Material material, int amount) {
         int count = 0;
         for (ItemStack item : player.getInventory().getContents()) { // Check each item in the player's inventory
             if (item != null && item.getType() == material && (count += item.getAmount()) >= amount) return false;
@@ -258,7 +254,7 @@ public class AdminShopManager {
      * @param material The material to remove.
      * @param amount   The amount to remove.
      */
-    private void removeItems(Player player, Material material, int amount) {
+    private static void removeItems(Player player, Material material, int amount) {
         int remaining = amount;
 
         for (int i = 0; i < player.getInventory().getSize() && remaining > 0; i++) {
@@ -286,7 +282,7 @@ public class AdminShopManager {
      * @param itemId     The item ID.
      * @return The ShopItem or null if not found.
      */
-    private ShopItem getItemSafe(Player player, String categoryId, String itemId) {
+    private static ShopItem getItemSafe(Player player, String categoryId, String itemId) {
         ShopItem item = items.getOrDefault(categoryId, Map.of()).get(itemId);
         if (item == null) sendError(player, "Item introuvable !");
         return item;
@@ -299,7 +295,7 @@ public class AdminShopManager {
      * @param itemId The item ID.
      * @return The ShopItem or null if not available.
      */
-    private ShopItem getCurrentItem(Player player, String itemId) {
+    private static ShopItem getCurrentItem(Player player, String itemId) {
         String categoryId = getPlayerCategory(player);
         if (categoryId == null) {
             sendError(player, "Veuillez d'abord ouvrir une catégorie de boutique !");
@@ -314,7 +310,7 @@ public class AdminShopManager {
      * @param player The player.
      * @return The category ID or null.
      */
-    private String getPlayerCategory(Player player) {
+    private static String getPlayerCategory(Player player) {
         return currentCategory.get(player.getUniqueId());
     }
 
@@ -324,7 +320,7 @@ public class AdminShopManager {
      * @param player  The player.
      * @param message The error message.
      */
-    private void sendError(Player player, String message) {
+    private static void sendError(Player player, String message) {
         MessagesManager.sendMessage(player, Component.text(message), Prefix.ADMINSHOP, MessageType.ERROR, true);
     }
 
@@ -334,7 +330,7 @@ public class AdminShopManager {
      * @param player  The player.
      * @param message The information message.
      */
-    private void sendInfo(Player player, String message) {
+    private static void sendInfo(Player player, String message) {
         MessagesManager.sendMessage(player, Component.text(message), Prefix.ADMINSHOP, MessageType.INFO, true);
     }
 
@@ -343,8 +339,8 @@ public class AdminShopManager {
      *
      * @param player The player.
      */
-    public void openMainMenu(Player player) {
-        new AdminShopMenu(player, this).open();
+    public static void openMainMenu(Player player) {
+        new AdminShopMenu(player).open();
     }
 
     /**
@@ -355,8 +351,8 @@ public class AdminShopManager {
      * @param originalItem The original ShopItem.
      * @param previousMenu The previous menu to return to.
      */
-    public void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
-        new ColorVariantsMenu(player, this, categoryId, originalItem, previousMenu).open();
+    public static void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
+        new ColorVariantsMenu(player, categoryId, originalItem, previousMenu).open();
     }
 
     /**
@@ -366,7 +362,7 @@ public class AdminShopManager {
      * @param itemId     The item ID.
      * @param item       The ShopItem instance.
      */
-    public void registerNewItem(String categoryId, String itemId, ShopItem item) {
+    public static void registerNewItem(String categoryId, String itemId, ShopItem item) {
         items.computeIfAbsent(categoryId, k -> new HashMap<>()).put(itemId, item);
     }
 
@@ -375,7 +371,7 @@ public class AdminShopManager {
      *
      * @return A collection of ShopCategory.
      */
-    public Collection<ShopCategory> getCategories() {
+    public static Collection<ShopCategory> getCategories() {
         return categories.values();
     }
 
@@ -385,7 +381,7 @@ public class AdminShopManager {
      * @param categoryId The ID of the category.
      * @return The ShopCategory, or null if not found.
      */
-    public ShopCategory getCategory(String categoryId) {
+    public static ShopCategory getCategory(String categoryId) {
         return categories.get(categoryId);
     }
 
@@ -395,7 +391,7 @@ public class AdminShopManager {
      * @param categoryId The ID of the category.
      * @return A map of item ID to ShopItem.
      */
-    public Map<String, ShopItem> getCategoryItems(String categoryId) {
+    public static Map<String, ShopItem> getCategoryItems(String categoryId) {
         return items.getOrDefault(categoryId, Map.of());
     }
 }

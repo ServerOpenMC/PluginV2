@@ -77,7 +77,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDFirst;
-        if (companies.getFirst().getOwner().isCity()) ownerUUIDFirst = companies.getFirst().getOwner().getCity().getPlayerWith(CPermission.OWNER);
+        if (companies.getFirst().getOwner().isCity()) ownerUUIDFirst = companies.getFirst().getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
         else ownerUUIDFirst = companies.getFirst().getOwner().getPlayer();
         content.put(12, new ItemBuilder(this, companies.getFirst().getHead(), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.getFirst().getOwner().isCity() ? companies.getFirst().getOwner().getCity().getName() : Bukkit.getOfflinePlayer(ownerUUIDFirst).getName()));
@@ -115,7 +115,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDSecond;
-        if (companies.get(1).getOwner().isCity()) ownerUUIDSecond = companies.get(1).getOwner().getCity().getPlayerWith(CPermission.OWNER);
+        if (companies.get(1).getOwner().isCity()) ownerUUIDSecond = companies.get(1).getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
         else ownerUUIDSecond = companies.get(1).getOwner().getPlayer();
         content.put(21, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDSecond), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(1).getOwner().isCity() ? companies.get(1).getName() : Bukkit.getOfflinePlayer(ownerUUIDSecond).getName()));
@@ -154,7 +154,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDThird;
-        if (companies.get(2).getOwner().isCity()) ownerUUIDThird = companies.get(2).getOwner().getCity().getPlayerWith(CPermission.OWNER);
+        if (companies.get(2).getOwner().isCity()) ownerUUIDThird = companies.get(2).getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
         else ownerUUIDThird = companies.get(2).getOwner().getPlayer();
         content.put(30, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDThird), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(2).getOwner().isCity() ? companies.get(2).getName() : Bukkit.getOfflinePlayer(ownerUUIDThird).getName()));

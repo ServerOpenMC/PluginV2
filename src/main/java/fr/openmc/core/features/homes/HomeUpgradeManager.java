@@ -6,23 +6,14 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class HomeUpgradeManager {
 
-    private final HomesManager homesManager;
-    @Getter public static HomeUpgradeManager instance;
-
-    public HomeUpgradeManager(HomesManager homesManager) {
-        this.homesManager = homesManager;
-        this.instance = this;
-    }
-
-    public HomeLimits getCurrentUpgrade(Player player) {
-        int currentLimit = homesManager.getHomeLimit(player.getUniqueId());
+    public static HomeLimits getCurrentUpgrade(Player player) {
+        int currentLimit = HomesManager.getHomeLimit(player.getUniqueId());
         for (HomeLimits upgrade : HomeLimits.values()) {
             if (upgrade.getLimit() == currentLimit) {
                 return upgrade;
@@ -31,17 +22,17 @@ public class HomeUpgradeManager {
         return HomeLimits.LIMIT_0;
     }
 
-    public HomeLimits getNextUpgrade(HomeLimits current) {
+    public static HomeLimits getNextUpgrade(HomeLimits current) {
         return HomeLimits.values()[current.ordinal() + 1];
     }
 
-    public void upgradeHome(Player player) {
-        int currentHomes = homesManager.getHomes(player.getUniqueId()).size();
-        int currentUpgrade = homesManager.getHomeLimit(player.getUniqueId());
+    public static void upgradeHome(Player player) {
+        int currentHomes = HomesManager.getHomes(player.getUniqueId()).size();
+        int currentUpgrade = HomesManager.getHomeLimit(player.getUniqueId());
         HomeLimits nextUpgrade = getNextUpgrade(getCurrentUpgrade(player));
         Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
         if(nextUpgrade != null) {
-            double balance = EconomyManager.getInstance().getBalance(player.getUniqueId());
+            double balance = EconomyManager.getBalance(player.getUniqueId());
             int price = nextUpgrade.getPrice();
             int aywenite = nextUpgrade.getAyweniteCost();
 
@@ -63,10 +54,10 @@ public class HomeUpgradeManager {
                 }
 
                 ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
-                EconomyManager.getInstance().withdrawBalance(player.getUniqueId(), price);
-                homesManager.updateHomeLimit(player.getUniqueId());
+                EconomyManager.withdrawBalance(player.getUniqueId(), price);
+                HomesManager.updateHomeLimit(player.getUniqueId());
 
-                int updatedHomesLimit = homesManager.getHomeLimit(player.getUniqueId());
+                int updatedHomesLimit = HomesManager.getHomeLimit(player.getUniqueId());
 
 
                 MessagesManager.sendMessage(player, Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$ et à §d" + aywenite + " d'Aywenite"), Prefix.HOME, MessageType.SUCCESS, true);
@@ -89,5 +80,4 @@ public class HomeUpgradeManager {
             );
         }
     }
-
 }

@@ -60,7 +60,7 @@ public class ImpotCollection implements Listener {
 
             zombie.setShouldBurnInDay(false);
 
-            zombie.setMetadata("mayor:zombie", new FixedMetadataValue(OMCPlugin.getInstance(), city.getMayor().getUUID()));
+            zombie.setMetadata("mayor:zombie", new FixedMetadataValue(OMCPlugin.getInstance(), city.getMayor().getUuid()));
         }
     }
 
@@ -83,17 +83,17 @@ public class ImpotCollection implements Listener {
 
         double amount = 1000;
 
-        if (EconomyManager.getInstance().getBalance(victim.getUniqueId()) < amount) {
-            if (BankManager.getInstance().getBankBalance(victim.getUniqueId()) < amount) {
+        if (EconomyManager.getBalance(victim.getUniqueId()) < amount) {
+            if (BankManager.getBankBalance(victim.getUniqueId()) < amount) {
                 MessagesManager.sendMessage(victim, Component.text("§8§o*grr vous avez de la chance !*"), Prefix.MAYOR, MessageType.INFO, false);
                 return;
             }
 
-            BankManager.getInstance().withdrawBankBalance(victim.getUniqueId(), amount);
+            BankManager.withdrawBankBalance(victim.getUniqueId(), amount);
         } else {
-            EconomyManager.getInstance().withdrawBalance(victim.getUniqueId(), amount);
+            EconomyManager.withdrawBalance(victim.getUniqueId(), amount);
         }
-        EconomyManager.getInstance().addBalance(mayorPlayer.getUniqueId(), amount);
+        EconomyManager.addBalance(mayorPlayer.getUniqueId(), amount);
 
         double newTotal = playerWithdrawnAmount.getOrDefault(victim.getUniqueId(), 0.0) + amount;
         playerWithdrawnAmount.put(victim.getUniqueId(), newTotal);

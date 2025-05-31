@@ -68,17 +68,16 @@ public class MayorElectionMenu extends Menu {
 
         try {
             City city = CityManager.getPlayerCity(player.getUniqueId());
-            MayorManager mayorManager = MayorManager.getInstance();
             boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
             Supplier<ItemStack> electionItemSupplier = () -> {
                 List<Component> loreElection;
-                if (mayorManager.hasVoted(player)) {
+                if (MayorManager.hasVoted(player)) {
                     loreElection = List.of(
                             Component.text("§7Les Elections sont §6ouvertes§7!"),
                             Component.text("§7Vous pouvez changer votre vote !"),
                             Component.text(""),
-                            Component.text("§7Vote Actuel : ").append(Component.text(mayorManager.getPlayerVote(player).getName())).decoration(TextDecoration.ITALIC, false).color(mayorManager.getPlayerVote(player).getCandidateColor()),
+                            Component.text("§7Vote Actuel : ").append(Component.text(MayorManager.getPlayerVote(player).getName())).decoration(TextDecoration.ITALIC, false).color(MayorManager.getPlayerVote(player).getCandidateColor()),
                             Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
                             Component.text(""),
                             Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
@@ -98,7 +97,7 @@ public class MayorElectionMenu extends Menu {
                     itemMeta.itemName(Component.text("§6Les Elections"));
                     itemMeta.lore(loreElection);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (mayorManager.cityElections.get(city) == null) {
+                    if (MayorManager.cityElections.get(city) == null) {
                         MessagesManager.sendMessage(player, Component.text("Il y a aucun volontaire pour être maire"), Prefix.MAYOR, MessageType.ERROR, true);
                         return;
                     }
@@ -110,7 +109,7 @@ public class MayorElectionMenu extends Menu {
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
             List<Component> loreCandidature;
-            if (mayorManager.hasCandidated(player)) {
+            if (MayorManager.hasCandidated(player)) {
                 loreCandidature = List.of(
                         Component.text("§7Vous vous êtes déjà §3présenter §7!"),
                         Component.text("§7Modifier votre couleur et regardez §3les Réformes §7que vous avez choisis"),
@@ -128,7 +127,7 @@ public class MayorElectionMenu extends Menu {
 
             if (hasPermissionOwner) {
                 List<Component> lorePerkOwner;
-                if (mayorManager.hasChoicePerkOwner(player)) {
+                if (MayorManager.hasChoicePerkOwner(player)) {
                     Perks perk1 = PerkManager.getPerkById(city.getMayor().getIdPerk1());
                     lorePerkOwner = new ArrayList<>(List.of(
                             Component.text("§7Vous avez déjà choisis §3votre Réforme §7!"),
@@ -149,7 +148,7 @@ public class MayorElectionMenu extends Menu {
                     itemMeta.displayName(Component.text("§7Choix d'une §3Réforme"));
                     itemMeta.lore(lorePerkOwner);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (!mayorManager.hasChoicePerkOwner(player)) {
+                    if (!MayorManager.hasChoicePerkOwner(player)) {
                         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), new Runnable() {
                             @Override
                             public void run() {
@@ -164,7 +163,7 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.itemName(Component.text("§7Votre §3Candidature"));
                 itemMeta.lore(loreCandidature);
             }).setOnClick(inventoryClickEvent -> {
-                if (mayorManager.hasCandidated(player)) {
+                if (MayorManager.hasCandidated(player)) {
                     new MayorModifyMenu(player).open();
                 } else {
                    new MayorCreateMenu(player, null, null, null, MenuType.CANDIDATE).open();

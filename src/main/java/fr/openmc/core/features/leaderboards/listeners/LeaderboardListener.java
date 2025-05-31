@@ -8,6 +8,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.leaderboards.utils.PacketUtils;
 import lombok.Getter;
+
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -24,26 +25,24 @@ public class LeaderboardListener extends PacketAdapter implements Listener {
 
     @Getter
     public static LeaderboardListener instance;
-    private final LeaderboardManager manager;
     private LightChunk contributorsHologramChunk;
     private LightChunk moneyHologramChunk;
     private LightChunk villeMoneyHologramChunk;
     private LightChunk playTimeHologramChunk;
     private boolean enabled = false;
 
-    public LeaderboardListener(LeaderboardManager manager) {
+    public LeaderboardListener() {
         super(OMCPlugin.getInstance(), PacketType.Play.Server.MAP_CHUNK);
         instance = this;
-        this.manager = manager;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         reload();
     }
 
     public void reload() {
-        contributorsHologramChunk = LightChunk.fromBukkitChunk(manager.getContributorsHologramLocation().getChunk());
-        moneyHologramChunk = LightChunk.fromBukkitChunk(manager.getMoneyHologramLocation().getChunk());
-        villeMoneyHologramChunk = LightChunk.fromBukkitChunk(manager.getVilleMoneyHologramLocation().getChunk());
-        playTimeHologramChunk = LightChunk.fromBukkitChunk(manager.getPlayTimeHologramLocation().getChunk());
+        contributorsHologramChunk = LightChunk.fromBukkitChunk(LeaderboardManager.getContributorsHologramLocation().getChunk());
+        moneyHologramChunk = LightChunk.fromBukkitChunk(LeaderboardManager.getMoneyHologramLocation().getChunk());
+        villeMoneyHologramChunk = LightChunk.fromBukkitChunk(LeaderboardManager.getVilleMoneyHologramLocation().getChunk());
+        playTimeHologramChunk = LightChunk.fromBukkitChunk(LeaderboardManager.getPlayTimeHologramLocation().getChunk());
     }
 
     public void enable() {
@@ -85,16 +84,16 @@ public class LeaderboardListener extends PacketAdapter implements Listener {
 
     public void sendLeaderboard(Player player) {
         if (player.getWorld().equals(contributorsHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
-            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-610329143, manager.getContributorsHologramLocation()));
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-610329143, LeaderboardManager.getContributorsHologramLocation()));
         }
         if (player.getWorld().equals(moneyHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
-            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-102388303, manager.getMoneyHologramLocation()));
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-102388303, LeaderboardManager.getMoneyHologramLocation()));
         }
         if (player.getWorld().equals(villeMoneyHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
-            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-699947630, manager.getVilleMoneyHologramLocation()));
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-699947630, LeaderboardManager.getVilleMoneyHologramLocation()));
         }
         if (player.getWorld().equals(playTimeHologramChunk.world)) { //Vérifie si le joueur est dans le monde du leaderboard
-            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-348090140, manager.getPlayTimeHologramLocation()));
+            ((CraftPlayer) player).getHandle().connection.send(PacketUtils.getAddEntityPacket(-348090140, LeaderboardManager.getPlayTimeHologramLocation()));
         }
     }
 
@@ -104,16 +103,16 @@ public class LeaderboardListener extends PacketAdapter implements Listener {
         int x = event.getPacket().getIntegers().read(0);
         int z = event.getPacket().getIntegers().read(1);
         if (player.getWorld() == contributorsHologramChunk.world && x == contributorsHologramChunk.x && z == contributorsHologramChunk.z) {
-            manager.updateHologram(Collections.singleton(player), manager.getContributorsHologramMetadataPacket());
+            LeaderboardManager.updateHologram(Collections.singleton(player), LeaderboardManager.getContributorsHologramMetadataPacket());
         }
         if (player.getWorld() == moneyHologramChunk.world && x == moneyHologramChunk.x && z == moneyHologramChunk.z) {
-            manager.updateHologram(Collections.singleton(player), manager.getMoneyHologramMetadataPacket());
+            LeaderboardManager.updateHologram(Collections.singleton(player), LeaderboardManager.getMoneyHologramMetadataPacket());
         }
         if (player.getWorld() == villeMoneyHologramChunk.world && x == villeMoneyHologramChunk.x && z == villeMoneyHologramChunk.z) {
-            manager.updateHologram(Collections.singleton(player), manager.getVilleMoneyHologramMetadataPacket());
+            LeaderboardManager.updateHologram(Collections.singleton(player), LeaderboardManager.getVilleMoneyHologramMetadataPacket());
         }
         if (player.getWorld() == playTimeHologramChunk.world && x == playTimeHologramChunk.x && z == playTimeHologramChunk.z) {
-            manager.updateHologram(Collections.singleton(player), manager.getPlaytimeHologramMetadataPacket());
+            LeaderboardManager.updateHologram(Collections.singleton(player), LeaderboardManager.getPlaytimeHologramMetadataPacket());
         }
     }
 

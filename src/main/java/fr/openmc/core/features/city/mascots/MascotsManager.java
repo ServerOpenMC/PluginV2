@@ -4,8 +4,8 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -22,13 +22,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -39,9 +40,9 @@ public class MascotsManager {
 
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
-    public static List<Mascot> mascots = new ArrayList<>();
+    public static List<Mascot> mascots;
 
-    public MascotsManager(OMCPlugin plugin) {
+    public MascotsManager() {
         //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -52,10 +53,10 @@ public class MascotsManager {
             e.printStackTrace();
         }
 
-        chestKey = new NamespacedKey(plugin, "mascots_chest");
-        mascotsKey = new NamespacedKey(plugin, "mascotsKey");
+        chestKey = new NamespacedKey(OMCPlugin.getInstance(), "mascots_chest");
+        mascotsKey = new NamespacedKey(OMCPlugin.getInstance(), "mascotsKey");
 
-        mascots = getAllMascots();
+        loadMascots();
 
         for (Mascot mascot : mascots){
             Entity mob = MascotUtils.loadMascot(mascot);
@@ -65,73 +66,30 @@ public class MascotsManager {
         }
     }
 
-    public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS mascots (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, level INT NOT NULL, mascot_uuid VARCHAR(36) NOT NULL, immunity BOOLEAN NOT NULL, alive BOOLEAN NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();
+    private static Dao<Mascot, String> mascotsDao;
+
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, Mascot.class);
+        mascotsDao = DaoManager.createDao(connectionSource, Mascot.class);
     }
 
-    public static List<Mascot> getAllMascots() {
-        List<Mascot> mascots = new ArrayList<>();
-
-        String query = "SELECT city_uuid, mascot_uuid, level, immunity, alive, x, z FROM mascots";
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
-             ResultSet rs = statement.executeQuery()) {
-
-            while (rs.next()) {
-                World world = Bukkit.getWorld("world");
-
-                String cityUuid = rs.getString("city_uuid");
-                String mascotUuid = rs.getString("mascot_uuid");
-                int level = rs.getInt("level");
-                boolean immunity = rs.getBoolean("immunity");
-                boolean alive = rs.getBoolean("alive");
-                Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
-                mascots.add(new Mascot(cityUuid, UUID.fromString(mascotUuid), level, immunity, alive, chunk)); // Ajouter à la liste
-            }
+    public static void loadMascots() {
+        try {
+            assert mascotsDao != null;
+            mascots = mascotsDao.queryForAll();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        return mascots;
     }
 
-    public static void saveMascots(List<Mascot> mascots) {
-        String query;
-
-        if (OMCPlugin.isUnitTestVersion()) {
-            query = "MERGE INTO mascots " +
-                    "KEY(city_uuid) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        } else {
-            query = "INSERT INTO mascots (city_uuid, mascot_uuid, level, immunity, alive, x, z) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ? )" +
-                    "ON DUPLICATE KEY UPDATE mascot_uuid = ?, level = ?, immunity = ?, alive = ?, x = ?, z = ?";
-        }
-
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
-            for (Mascot mascot : mascots) {
-
-                statement.setString(1, mascot.getCityUUID());
-                statement.setString(2, mascot.getMascotUUID().toString());
-                statement.setInt(3, mascot.getLevel());
-                statement.setBoolean(4, mascot.isImmunity());
-                statement.setBoolean(5, mascot.isAlive());
-                statement.setInt(6, mascot.getChunk().getX());
-                statement.setInt(7, mascot.getChunk().getZ());
-
-
-                statement.setString(8, mascot.getMascotUUID().toString());
-                statement.setInt(9, mascot.getLevel());
-                statement.setBoolean(10, mascot.isImmunity());
-                statement.setBoolean(11, mascot.isAlive());
-                statement.setInt(12, mascot.getChunk().getX());
-                statement.setInt(13, mascot.getChunk().getZ());
-
-                statement.addBatch();
+    public static void saveMascots() {
+        mascots.forEach(mascot -> {
+            try {
+                mascotsDao.createOrUpdate(mascot);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-            statement.executeBatch();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        });
     }
 
     public static void createMascot(String city_uuid, World player_world, Location mascot_spawn) {
@@ -147,12 +105,7 @@ public class MascotsManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, true, ?, ?)");
-                statement.setString(1, city_uuid);
-                statement.setString(2, String.valueOf(mob.getUniqueId()));
-                statement.setInt(3, chunk.getX());
-                statement.setInt(4, chunk.getZ());
-                statement.executeUpdate();
+                mascotsDao.create(new Mascot(city_uuid, mob.getUniqueId(), 1, true, true, chunk.getX(), chunk.getZ()));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -171,15 +124,13 @@ public class MascotsManager {
 
         if (mascot == null) return;
 
-        LivingEntity mascots = MascotUtils.loadMascot(mascot);
+        LivingEntity mascotEntity = MascotUtils.loadMascot(mascot);
 
-        if (mascots != null) mascots.remove();
+        if (mascotEntity != null) mascotEntity.remove();
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM mascots WHERE city_uuid = ?");
-                statement.setString(1, city_uuid);
-                statement.executeUpdate();
+                mascotsDao.delete(mascot);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

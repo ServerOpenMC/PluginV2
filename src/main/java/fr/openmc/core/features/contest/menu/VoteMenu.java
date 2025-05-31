@@ -3,7 +3,7 @@ package fr.openmc.core.features.contest.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.ContestPlayer;
+import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.api.ItemAdderApi;
@@ -25,11 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class VoteMenu extends Menu {
-    private final ContestManager contestManager;
 
     public VoteMenu(Player owner) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
     }
 
     @Override
@@ -58,11 +56,11 @@ public class VoteMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
         try {
-            String camp1Name = contestManager.data.getCamp1();
-            String camp2Name = contestManager.data.getCamp2();
+            String camp1Name = ContestManager.data.getCamp1();
+            String camp2Name = ContestManager.data.getCamp2();
 
-            String camp1Color = contestManager.data.getColor1();
-            String camp2Color = contestManager.data.getColor2();
+            String camp1Color = ContestManager.data.getColor1();
+            String camp2Color = ContestManager.data.getColor2();
 
             NamedTextColor color1 = ColorUtils.getNamedTextColor(camp1Color);
             NamedTextColor color2 = ColorUtils.getNamedTextColor(camp2Color);
@@ -77,7 +75,7 @@ public class VoteMenu extends Menu {
             boolean ench1;
             boolean ench2;
 
-            ContestPlayer playerData = contestManager.dataPlayer.get(player.getUniqueId().toString());
+            ContestPlayer playerData = ContestManager.dataPlayer.get(player.getUniqueId().toString());
 
             String voteTeamMsg = "§7Votez pour la Team ";
             String winMsg="§7Faites la gagner en déposant le plus de points";

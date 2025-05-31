@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.company.Company;
+import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
@@ -48,9 +49,9 @@ public class ShopManageMenu extends PaginatedMenu {
         for (Shop shop : company.getShops()) {
 
             List<Component> loc = new ArrayList<>();
-            double x = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-            double y = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-            double z = shop.getBlocksManager().getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
 
             loc.add(Component.text("§lLocation : §r x : " + x + " y : " + y + " z : " + z));
 
