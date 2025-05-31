@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor;
+package fr.openmc.core.features.city.mayor.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.ChatInput;
@@ -9,7 +9,7 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.mayor.CityLaw;
 import fr.openmc.core.features.city.mayor.Mayor;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
@@ -166,7 +166,7 @@ public class MayorLawMenu extends Menu {
                     itemMeta.itemName(Component.text("§7Changer son §9warp"));
                     itemMeta.lore(loreLawWarp);
                 }).setOnClick(inventoryClickEvent -> {
-                    CityCommands.setWarp(player);
+                    MayorSetWarpAction.setWarp(player);
                 });
             };
 

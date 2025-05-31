@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor.npc;
+package fr.openmc.core.features.city.mayor.menu.npc;
 
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
@@ -153,7 +153,8 @@ public class MayorNpcMenu extends Menu {
                                 NPCManager.moveNPC("mayor", locationClick, city.getUUID());
                                 NPCManager.updateNPCS(city.getUUID());
                                 return true;
-                            }
+                            },
+                            null
                     );
                 }));
             }

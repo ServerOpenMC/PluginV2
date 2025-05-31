@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor.create;
+package fr.openmc.core.features.city.mayor.menu.create;
 
 public enum MenuType {
     OWNER, // donc le propriétaire qui choisis 3 Perk comme les elections sont désactivé

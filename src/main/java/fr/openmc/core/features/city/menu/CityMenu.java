@@ -12,20 +12,20 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.mascots.menu.MascotMenu;
+import fr.openmc.core.features.city.mascots.menu.MascotsDeadMenu;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.menu.MayorElectionMenu;
+import fr.openmc.core.features.city.mayor.menu.MayorMandateMenu;
+import fr.openmc.core.features.city.mayor.menu.create.MayorColorMenu;
+import fr.openmc.core.features.city.mayor.menu.create.MayorCreateMenu;
+import fr.openmc.core.features.city.mayor.menu.create.MenuType;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
-import fr.openmc.core.features.city.menu.mascots.MascotMenu;
-import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
-import fr.openmc.core.features.city.menu.mayor.MayorElectionMenu;
-import fr.openmc.core.features.city.menu.mayor.MayorMandateMenu;
-import fr.openmc.core.features.city.menu.mayor.create.MayorColorMenu;
-import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
-import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
@@ -350,42 +350,16 @@ public class CityMenu extends Menu {
 
                 if (hasPermissionChangeType) {
                     lore.add(Component.text(""));
-                    lore.add(Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE"));
+                    lore.add(Component.text("§e§lCLIQUEZ ICI POUR LE CHANGER"));
                 }
 
                 return new ItemBuilder(CityMenu.this, Material.NETHERITE_SWORD, meta -> {
                     meta.itemName(Component.text("§5Le Statut de votre Ville"));
                     meta.lore(lore);
                 }).setOnClick(inventoryClickEvent -> {
-                    try {
-                        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) return;
+                    if (!(city.hasPermission(player.getUniqueId(), CPermission.TYPE))) return;
 
-                        String cityTypeActuel;
-                        String cityTypeAfter;
-                        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
-                        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
-
-                        ConfirmMenu confirmMenu = new ConfirmMenu(player,
-                                () -> {
-                                    CityCommands.changeConfirm(player);
-                                    player.closeInventory();
-                                },
-                                () -> player.closeInventory(),
-                                List.of(
-                                        Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"),
-                                        Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter),
-                                        Component.text("§cSi tu fais cela ta mascotte §4§lPERDERA 2 NIVEAUX")
-                                ),
-                                List.of(
-                                        Component.text("§7Ne pas changer le type de ta §dville")
-                                )
-                        );
-                        confirmMenu.open();
-                    } catch (Exception e) {
-                        MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"),
-                                Prefix.OPENMC, MessageType.ERROR, false);
-                        e.printStackTrace();
-                    }
+                    new CityTypeMenu(player).open();
                 });
             };
 
@@ -467,12 +441,10 @@ public class CityMenu extends Menu {
 
                     ConfirmMenu menu = new ConfirmMenu(player,
                             () -> {
-                                CityCommands.leaveCity(player);
+                                CityLeaveAction.startLeave(player);
                                 player.closeInventory();
                             },
-                            () -> {
-                                player.closeInventory();
-                            },
+                            player::closeInventory,
                             List.of(Component.text("§7Voulez vous vraiment partir de " + city.getName() + " ?")),
                             List.of(Component.text("§7Rester dans la ville " + city.getName()))
                     );

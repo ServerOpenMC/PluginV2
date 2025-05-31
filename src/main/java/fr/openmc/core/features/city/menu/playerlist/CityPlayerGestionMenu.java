@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -98,7 +98,7 @@ public class CityPlayerGestionMenu extends Menu {
                             player,
                             () -> {
                                 player.closeInventory();
-                                CityCommands.kick(player, playerTarget);
+                                CityKickAction.startKick(player, playerTarget);
                             },
                             () -> player.closeInventory(),
                             List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
