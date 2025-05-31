@@ -39,7 +39,7 @@ public class Mayor {
     @Getter
     @Setter
     private int idPerk3;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(canBeNull = false, columnName = "election_type")
     private String electionType;
 
     Mayor() {
