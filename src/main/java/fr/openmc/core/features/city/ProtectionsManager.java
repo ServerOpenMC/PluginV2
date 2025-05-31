@@ -38,38 +38,42 @@ public class ProtectionsManager {
         );
     }
 
-    public static void verify(Player player, Cancellable event, Location loc) {
-        if (!player.getWorld().getName().equals("world")) return;
+    public static boolean canInteract(Player player, Location loc) {
+        if (!player.getWorld().getName().equals("world")) return true;
 
-        boolean canBypass = canBypassPlayer.contains(player.getUniqueId());
-        if (canBypass) return;
+        if (canBypassPlayer.contains(player.getUniqueId())) return true;
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-        if (cityAtLoc == null) return;
+        if (cityAtLoc == null) return true;
 
-        CityType cityType = cityAtLoc.getType();
-        boolean isMember = cityAtLoc.isMember(player);
+        return cityAtLoc.isMember(player);
+    }
 
-        if (cityType.equals(CityType.WAR)) {
-            return;
-        }
+    public static boolean canExplodeNaturally(Location loc) {
+        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+        if (city == null) return true;
 
-        if (!isMember) {
-            event.setCancelled(true);
+        //return city.isInCombat();
+        return false;
+    }
 
-            long now = System.currentTimeMillis();
-            long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
-            if (now - last >= ERROR_MESSAGE_COOLDOWN) {
-                lastErrorMessageTime.put(player.getUniqueId(), now);
-                MessagesManager.sendMessage(
-                        player,
-                        Component.text("Vous n'avez pas l'autorisation de faire ceci !"),
-                        Prefix.CITY,
-                        MessageType.ERROR,
-                        0.6F,
-                        true
-                );
-            }
+    public static void verify(Player player, Cancellable event, Location loc) {
+        if (canInteract(player, loc)) return;
+
+        event.setCancelled(true);
+
+        long now = System.currentTimeMillis();
+        long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
+        if (now - last >= ERROR_MESSAGE_COOLDOWN) {
+            lastErrorMessageTime.put(player.getUniqueId(), now);
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas l'autorisation de faire ceci !"),
+                    Prefix.CITY,
+                    MessageType.ERROR,
+                    0.6F,
+                    true
+            );
         }
     }
 

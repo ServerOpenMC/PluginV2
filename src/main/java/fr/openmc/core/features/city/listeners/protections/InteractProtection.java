@@ -28,6 +28,7 @@ public class InteractProtection implements Listener {
 
         ItemStack inHand = event.getItem();
 
+        if (inHand != null && inHand.getType() == Material.TNT) return;
         if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand != null && inHand.getType().isEdible()) {
             return;
         }
