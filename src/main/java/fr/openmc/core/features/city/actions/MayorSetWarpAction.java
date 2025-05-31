@@ -4,8 +4,8 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.CityLaw;
-import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.sub.mayor.CityLaw;
+import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -18,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-import static fr.openmc.core.features.city.mayor.menu.MayorLawMenu.COOLDOWN_TIME_WARP;
+import static fr.openmc.core.features.city.sub.mayor.menu.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 public class MayorSetWarpAction {
     public static void setWarp(Player player) {

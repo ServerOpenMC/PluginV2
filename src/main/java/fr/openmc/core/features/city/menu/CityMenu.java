@@ -14,19 +14,19 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
-import fr.openmc.core.features.city.mascots.Mascot;
-import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.menu.MascotMenu;
-import fr.openmc.core.features.city.mascots.menu.MascotsDeadMenu;
-import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.menu.MayorElectionMenu;
-import fr.openmc.core.features.city.mayor.menu.MayorMandateMenu;
-import fr.openmc.core.features.city.mayor.menu.create.MayorColorMenu;
-import fr.openmc.core.features.city.mayor.menu.create.MayorCreateMenu;
-import fr.openmc.core.features.city.mayor.menu.create.MenuType;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
+import fr.openmc.core.features.city.sub.mascots.Mascot;
+import fr.openmc.core.features.city.sub.mascots.MascotUtils;
+import fr.openmc.core.features.city.sub.mascots.menu.MascotMenu;
+import fr.openmc.core.features.city.sub.mascots.menu.MascotsDeadMenu;
+import fr.openmc.core.features.city.sub.mayor.ElectionType;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
+import fr.openmc.core.features.city.sub.mayor.menu.MayorMandateMenu;
+import fr.openmc.core.features.city.sub.mayor.menu.create.MayorColorMenu;
+import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
+import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -50,8 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
-import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
+import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_1_DAY;
+import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_2_DAY;
 
 public class CityMenu extends Menu {
 

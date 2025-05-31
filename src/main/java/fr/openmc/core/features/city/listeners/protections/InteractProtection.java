@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.listeners.protections;
 
 import fr.openmc.core.features.city.ProtectionsManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
