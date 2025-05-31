@@ -8,7 +8,6 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -109,8 +108,8 @@ public class BossbarManager {
 
         BossBar bossBar = BossBar.bossBar(
                 helpMessages.get(0),
-                1.0f,
-                BossBar.Color.PINK,
+                0f,
+                BossBar.Color.RED,
                 BossBar.Overlay.PROGRESS
         );
 
