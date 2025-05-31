@@ -26,12 +26,11 @@ public class CityChangeAction {
     public static void beginChangeCity(Player player, CityType typeChange) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, player, true)) return;
-
+        if (!CityTypeConditions.canCityChangeType(city, player)) return;
         String cityTypeActuel;
         String cityTypeAfter;
-        cityTypeActuel = typeChange == CityType.PEACE ? "§aen paix§7" : "§cen guerre§7";
-        cityTypeAfter = typeChange == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
         List<Component> confirmLore = new ArrayList<>();
         confirmLore.add(Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"));
@@ -42,7 +41,9 @@ public class CityChangeAction {
         }
         confirmLore.add(Component.text(""));
         confirmLore.add(Component.text("§c⚠ Ta Mascotte §4§lperdera 1 niveau !"));
-        ConfirmMenu menu = new ConfirmMenu(player,
+
+        ConfirmMenu menu = new ConfirmMenu(
+                player,
                 () -> {
                     finishChange(player);
                     player.closeInventory();
@@ -59,7 +60,7 @@ public class CityChangeAction {
     public static void finishChange(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, sender, true)) {
+        if (!CityTypeConditions.canCityChangeType(city, sender)) {
             MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

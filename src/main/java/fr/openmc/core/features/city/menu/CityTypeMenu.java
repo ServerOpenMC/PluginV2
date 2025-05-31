@@ -63,7 +63,7 @@ public class CityTypeMenu extends Menu {
                 itemMeta.lore(peaceInfo);
                 itemMeta.setEnchantmentGlintOverride(enchantPeace);
             }).setOnClick(inventoryClickEvent -> {
-                if (CityTypeConditions.canCityChangeType(city, player, true)) return;
+                if (!CityTypeConditions.canCityChangeType(city, player)) return;
 
                 CityChangeAction.beginChangeCity(player, CityType.PEACE);
             }));
@@ -81,6 +81,8 @@ public class CityTypeMenu extends Menu {
                 itemMeta.lore(warInfo);
                 itemMeta.setEnchantmentGlintOverride(enchantWar);
             }).setOnClick(inventoryClickEvent -> {
+                if (!CityTypeConditions.canCityChangeType(city, player)) return;
+
                 CityChangeAction.beginChangeCity(player, CityType.WAR);
             }));
 

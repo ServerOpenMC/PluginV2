@@ -23,15 +23,15 @@ public class CityTypeConditions {
      * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
-    public static boolean canCityChangeType(City city, Player player, boolean reply) {
+    public static boolean canCityChangeType(City city, Player player) {
 
         if (city == null) {
-            if (reply) MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CPermission.TYPE))) {
-            if (reply) MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de changer le status de ta ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de changer le status de ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
