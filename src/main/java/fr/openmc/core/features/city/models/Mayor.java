@@ -17,7 +17,7 @@ import com.j256.ormlite.table.DatabaseTable;
 public class Mayor {
     @DatabaseField(id = true)
     private String city;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     @Getter
     @Setter
     private UUID uuid;

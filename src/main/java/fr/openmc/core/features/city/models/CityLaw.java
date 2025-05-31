@@ -20,17 +20,17 @@ public class CityLaw {
     @Getter
     @Setter
     private boolean pvp;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     private double warpX;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     private double warpY;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     private double warpZ;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     private float warpYaw;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     private float warpPitch;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     private String warpWorld;
 
     CityLaw() {
