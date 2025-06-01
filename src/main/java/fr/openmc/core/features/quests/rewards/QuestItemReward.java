@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 @Getter
 public class QuestItemReward implements QuestReward {
     private final ItemStack itemStack;
+    private final int amount;
 
     /**
      * Create a new QuestItemReward.
@@ -17,7 +18,8 @@ public class QuestItemReward implements QuestReward {
      * @param amount   The amount of the item.
      */
     public QuestItemReward(Material material, int amount) {
-        this.itemStack = new ItemStack(material, amount);
+        this.itemStack = new ItemStack(material);
+        this.amount = amount;
     }
 
     /**
@@ -28,7 +30,7 @@ public class QuestItemReward implements QuestReward {
      */
     public QuestItemReward(ItemStack material, int amount) {
         this.itemStack = material;
-        this.itemStack.setAmount(amount);
+        this.amount = amount;
     }
 
     /**
@@ -39,11 +41,20 @@ public class QuestItemReward implements QuestReward {
      */
     @Override
     public void giveReward(Player player) {
-        ItemStack item = itemStack.clone();
-        if (AdminShopManager.hasEnoughSpace(player, item)) {
-            player.getInventory().addItem(item);
-        } else {
-            player.getWorld().dropItem(player.getLocation(), item);
+        int remaining = amount;
+        while (remaining > 0) {
+            int stackAmount = Math.min(remaining, itemStack.getMaxStackSize());
+
+            ItemStack item = itemStack.clone();
+            item.setAmount(stackAmount);
+
+            if (AdminShopManager.hasEnoughSpace(player, item)) {
+                player.getInventory().addItem(item);
+            } else {
+                player.getWorld().dropItem(player.getLocation(), item);
+            }
+
+            remaining -= stackAmount;
         }
     }
 }
