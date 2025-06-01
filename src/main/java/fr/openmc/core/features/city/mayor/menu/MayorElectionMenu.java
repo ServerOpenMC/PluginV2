@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor;
+package fr.openmc.core.features.city.mayor.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -11,11 +11,11 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.menu.create.MayorCreateMenu;
+import fr.openmc.core.features.city.mayor.menu.create.MayorModifyMenu;
+import fr.openmc.core.features.city.mayor.menu.create.MenuType;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.menu.CityMenu;
-import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
-import fr.openmc.core.features.city.menu.mayor.create.MayorModifyMenu;
-import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

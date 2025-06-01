@@ -11,6 +11,7 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
@@ -137,7 +138,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                                     player,
                                     () -> {
                                         player.closeInventory();
-                                        CityCommands.kick(player, playerOffline);
+                                        CityKickAction.startKick(player, playerOffline);
                                     },
                                     () -> player.closeInventory(),
                                     List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
@@ -189,7 +190,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
                             if (InputUtils.isInputPlayer(input)) {
                                 Player playerToInvite = Bukkit.getPlayer(input);
-                                CityCommands.add(player, playerToInvite);
+                                CityCommands.invite(player, playerToInvite);
                             } else {
                                 MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                             }

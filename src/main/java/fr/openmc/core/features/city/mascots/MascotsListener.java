@@ -5,12 +5,11 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.mascots.menu.MascotMenu;
+import fr.openmc.core.features.city.mascots.menu.MascotsDeadMenu;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
-import fr.openmc.core.features.city.menu.mascots.MascotMenu;
-import fr.openmc.core.features.city.menu.mascots.MascotsDeadMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -40,6 +39,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static fr.openmc.core.features.city.commands.CityCommands.balanceCooldownTasks;
 
 public class MascotsListener implements Listener {
 
@@ -223,7 +224,7 @@ public class MascotsListener implements Listener {
             }
 
             startRegenCooldown(damageEntity.getUniqueId());
-            CityCommands.startBalanceCooldown(city_uuid);
+            startBalanceCooldown(city_uuid);
 
             if (newHealth <= 0) {
                 mob.setHealth(0);
@@ -258,6 +259,22 @@ public class MascotsListener implements Listener {
                 Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> scheduleGolemDespawn(golem, mascotUUID), 200L);
             }
         }, delayInitial);
+    }
+
+    public static void startBalanceCooldown(String city_uuid) {
+        if (balanceCooldownTasks.containsKey(city_uuid)) {
+            balanceCooldownTasks.get(city_uuid).cancel();
+        }
+
+        BukkitRunnable cooldownTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                balanceCooldownTasks.remove(city_uuid);
+            }
+        };
+
+        balanceCooldownTasks.put(city_uuid, cooldownTask);
+        cooldownTask.runTaskLater(OMCPlugin.getInstance(), 30 * 60 * 20L);
     }
 
     @EventHandler

@@ -3,14 +3,12 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -18,7 +16,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -175,23 +172,7 @@ public class CityModifyMenu extends Menu {
                 itemMeta.itemName(Component.text("§7Supprimer la ville"));
                 itemMeta.lore(loreDelete);
             }).setOnClick(inventoryClickEvent -> {
-                City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-
-                if (!CityManageConditions.canCityDelete(city, player)) return;
-
-                ConfirmMenu menu = new ConfirmMenu(
-                        player,
-                        () -> {
-                            player.closeInventory();
-                            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                CityCommands.deleteCity(player);
-                            });
-                        },
-                        () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getName() + " ?")),
-                        List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getName())));
-                menu.open();
-
+                CityDeleteAction.startDeleteCity(player);
             }));
 
             inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {

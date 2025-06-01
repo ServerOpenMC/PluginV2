@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mascots;
+package fr.openmc.core.features.city.mascots.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
@@ -194,9 +194,9 @@ public class MascotMenu extends Menu {
 
                                 DynamicCooldownManager.use(mascot.getMascotUUID().toString(), "mascots:move", 5 * 3600 * 1000L);
                                 return true;
-                            }
-                            );
-                    ;
+                            },
+                            null
+                    );
                     player.closeInventory();
                 });
             };

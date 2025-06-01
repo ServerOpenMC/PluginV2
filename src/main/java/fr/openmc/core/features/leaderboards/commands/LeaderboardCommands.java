@@ -103,7 +103,8 @@ public class LeaderboardCommands {
                             );
                         }
                         return true;
-                    }
+                    },
+                    null
             );
 
         } else {

@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mascots;
+package fr.openmc.core.features.city.mascots.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;

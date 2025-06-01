@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.ChunkDataCache;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
 import fr.openmc.core.utils.ChunkPos;
@@ -32,9 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
-import static fr.openmc.core.features.city.commands.CityCommands.calculatePrice;
 
 public class CityChunkMenu extends Menu {
     public static final Map<String, ChunkDataCache> CHUNK_CACHE = new ConcurrentHashMap<>();
@@ -71,8 +68,8 @@ public class CityChunkMenu extends Menu {
             tempPlayerCityUUID = playerCity.getUUID();
 
             int nbChunk = playerCity.getChunks().size();
-            tempPrice = calculatePrice(nbChunk);
-            tempAywenite = calculateAywenite(nbChunk);
+            tempPrice = CityClaimAction.calculatePrice(nbChunk);
+            tempAywenite = CityClaimAction.calculateAywenite(nbChunk);
 
             if (CityManager.freeClaim.containsKey(tempPlayerCityUUID)) {
                 tempFreeClaims = CityManager.freeClaim.get(tempPlayerCityUUID);
@@ -337,7 +334,7 @@ public class CityChunkMenu extends Menu {
                 player,
                 () -> {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                        CityCommands.claim(player, chunkX, chunkZ);
+                        CityClaimAction.startClaim(player, chunkX, chunkZ);
                     });
                     Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                         String refreshCacheKey = player.getWorld().getName() + ":" + startX + "," + startZ;

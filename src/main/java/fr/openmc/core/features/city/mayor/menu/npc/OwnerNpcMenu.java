@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.mayor.npc;
+package fr.openmc.core.features.city.mayor.menu.npc;
 
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
@@ -197,7 +197,8 @@ public class OwnerNpcMenu extends Menu {
                                 NPCManager.moveNPC("owner", locationClick, city.getUUID());
                                 NPCManager.updateNPCS(city.getUUID());
                                 return true;
-                            }
+                            },
+                            null
                     );
                 }));
             }
