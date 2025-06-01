@@ -2,6 +2,7 @@ package fr.openmc.core.features.corporation.shops;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
@@ -105,7 +106,6 @@ public class Shop {
                     if (!possibleSuppliers.contains(UUID.fromString(supplierUUID))) {
                         continue;
                     }
-
                     boolean supplied = shop.supply(item, UUID.fromString(supplierUUID));
                     if (supplied) inventory.remove(item);
                 }
@@ -180,13 +180,23 @@ public class Shop {
     public boolean supply(ItemStack item, UUID supplier) {
         for (ShopItem shopItem : items) {
             if (shopItem.getItem().getType().equals(item.getType())) {
+                int delay = 0;
                 shopItem.setAmount(shopItem.getAmount() + item.getAmount());
-                suppliers.put(System.currentTimeMillis(), new Supply(supplier, shopItem.getItemID(), item.getAmount()));
+                while (suppliers.containsKey(System.currentTimeMillis() + delay)){
+                    delay ++;
+                }
+                suppliers.put(System.currentTimeMillis() + delay, new Supply(supplier, shopItem.getItemID(), item.getAmount()));
+                System.out.println("add supply");
                 return true;
             }
         }
         return false;
     }
+
+    public void addSupply(long time, Supply supply){
+        suppliers.put(time, supply);
+    }
+
 
     /**
      * get the shop Icon
@@ -203,9 +213,9 @@ public class Shop {
         if (amount > item.getAmount()) {
             return MethodState.WARNING;
         }
-        if (isOwner(buyer.getUniqueId())) {
-            return MethodState.FAILURE;
-        }
+//        if (isOwner(buyer.getUniqueId())) {
+//            return MethodState.FAILURE;
+//        }
         if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
         double basePrice = item.getPrice(amount);
         item.setAmount(item.getAmount() - amount);
@@ -222,23 +232,14 @@ public class Shop {
                     supplies.add(entry.getValue());
                 }
             }
+            System.out.println(supplies.size());
             if (!supplies.isEmpty()) {
                 supplied = true;
                 for (Supply supply : supplies) {
-                    if (amountToBuy == 0) break;
-                    if (amountToBuy >= supply.getAmount()) {
-                        amountToBuy -= supply.getAmount();
-                        removeLatestSupply();
-                        double supplierCut = suppliersCut * ((double) supply.getAmount() / amount);
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
-                        Player supplier = Bukkit.getPlayer(supply.getSupplier());
-                        if (supplier!=null){
-                            MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
-                        }
-                    }
-                    else {
-                        supply.setAmount(supply.getAmount() - amountToBuy);
-                        double supplierCut = suppliersCut * ((double) amountToBuy / amount);
+                    int suppliesAmount = supply.getAmount();
+                    System.out.println(amountToBuy - suppliesAmount == 0);
+                    if (amountToBuy - suppliesAmount == 0){
+                        double supplierCut = suppliersCut * ((double) suppliesAmount / amount);
                         economyManager.addBalance(supply.getSupplier(), supplierCut);
                         Player supplier = Bukkit.getPlayer(supply.getSupplier());
                         if (supplier!=null){
@@ -246,12 +247,31 @@ public class Shop {
                         }
                         break;
                     }
+                    if (amountToBuy - suppliesAmount < 0){
+                        suppliesAmount = suppliesAmount - amountToBuy;
+                        double supplierCut = suppliersCut * ((double) suppliesAmount / amount);
+                        economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        Player supplier = Bukkit.getPlayer(supply.getSupplier());
+                        if (supplier!=null){
+                            MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
+                        }
+                        break;
+                    }
+                    if (amountToBuy - suppliesAmount > 0){
+                        amountToBuy -= suppliesAmount;
+                        double supplierCut = suppliersCut * ((double) suppliesAmount / amount);
+                        economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        Player supplier = Bukkit.getPlayer(supply.getSupplier());
+                        if (supplier!=null){
+                            MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
+                        }
+                    }
                 }
             }
             if (!supplied) {
                 return MethodState.ESCAPE;
             }
-            owner.getCompany().deposit(companyCut, buyer, "Vente", getName());
+            owner.getCompany().depositWithoutWithdraw(companyCut, buyer, "Vente", getName());
         }
         else {
             economyManager.addBalance(owner.getPlayer(), item.getPrice(amount));

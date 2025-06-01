@@ -493,6 +493,14 @@ public class Company {
         return false;
     }
 
+    public void depositWithoutWithdraw(double amount, Player player, String nature, String additionalInfo){
+        balance += amount;
+        if (amount > 0) {
+            TransactionData transaction = new TransactionData(amount, nature, additionalInfo, player.getUniqueId());
+            transactions.add(System.currentTimeMillis(), transaction);
+        }
+    }
+
     public boolean deposit(double amount, Player player, String nature) {
         return deposit(amount, player, nature, "");
     }
