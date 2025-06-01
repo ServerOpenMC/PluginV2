@@ -7,7 +7,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 
-@Command({"quest"})
+@Command({"quest", "quests"})
 @Description("Commande pour les quêtes")
 public class QuestCommand {
 

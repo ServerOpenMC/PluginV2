@@ -208,7 +208,7 @@ public class QuestsMenu extends Menu {
                         if (reward instanceof QuestItemReward itemReward) {
                             ItemStack rewardItem = itemReward.getItemStack();
                             String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
-                            lore.add(Component.text("    §7- §f" + itemName + " §7x" + rewardItem.getAmount()));
+                            lore.add(Component.text("    §7- §f" + itemName + " §7x" + itemReward.getAmount()));
                         } else if (reward instanceof QuestMoneyReward moneyReward) {
                             lore.add(Component.text("    §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
                         }
@@ -223,7 +223,7 @@ public class QuestsMenu extends Menu {
                 if (reward instanceof QuestItemReward itemReward) {
                     ItemStack rewardItem = itemReward.getItemStack();
                     String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
-                    lore.add(Component.text("  §7- §f" + itemName + " §7x" + rewardItem.getAmount()));
+                    lore.add(Component.text("  §7- §f" + itemName + " §7x" + itemReward.getAmount()));
                 } else if (reward instanceof QuestMoneyReward moneyReward) {
                     lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
                 }
