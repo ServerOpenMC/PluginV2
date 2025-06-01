@@ -34,10 +34,13 @@ public class QuestItemReward implements QuestReward {
     }
 
     /**
-     * Give the reward to the player.
+     * Gives the reward to the specified player.
      * <p>
-     * If  the player's inventory is full, the item will be dropped on the ground.
-     * @param player The player to give the reward to.
+     * The reward is split into stacks no larger than the item's maximum stack size.
+     * If the player's inventory has enough space, each stack is added to the inventory.
+     * Otherwise, any stack that cannot be fully accommodated is dropped at the player's location.
+     *
+     * @param player the target player for the reward.
      */
     @Override
     public void giveReward(Player player) {
