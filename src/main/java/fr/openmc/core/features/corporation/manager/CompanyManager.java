@@ -124,6 +124,8 @@ public class CompanyManager {
                     "supplier_uuid VARCHAR(36) NOT NULL PRIMARY KEY, " + // uuid pour différencier tous les supply ( car il peut avoir plusieurs fois l'uuid d'un joueur )
                     "amount INT DEFAULT 0)");
 
+            //TODO rajouter les sales dans la db
+
             stmt.executeBatch();
         }
     }
@@ -276,7 +278,7 @@ public class CompanyManager {
 
                 for (Shop shop : allShop){
                     if (shop.getUuid().equals(shop_uuid)){
-                        shop.getSuppliers().put(time, new Supply(uuid, item_uuid, amount, supplier_uuid));
+                        shop.addSupply(time, new Supply(uuid, item_uuid, amount, supplier_uuid));
                         break;
                     }
                 }
@@ -415,6 +417,7 @@ public class CompanyManager {
                     stmtShop.setDouble(7, z);
                     stmtShop.addBatch();
 
+                    //TODO erreur ici
                     for (Map.Entry<Long, Supply> entry : shop.getSuppliers().entrySet()) {
                         Supply supply = entry.getValue();
                         Long time = entry.getKey();

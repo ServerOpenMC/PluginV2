@@ -11,8 +11,13 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -60,9 +65,9 @@ public class ShopStocksMenu extends PaginatedMenu {
 
         for (ShopItem stock : shop.getItems()) {
             items.add(new ItemBuilder(this, stock.getItem().getType(), itemMeta -> {
-                itemMeta.setDisplayName(ChatColor.YELLOW + ShopItem.getItemName(stock.getItem()));
+                itemMeta.displayName(ShopItem.getItemName(stock.getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
                 itemMeta.setLore(List.of(
-                        "§7■ Quantité restante : " + EconomyManager.getInstance().getFormattedNumber(stock.getAmount()),
+                        "§7■ Quantité restante : " + EconomyManager.getFormattedSimplifiedNumber(stock.getAmount()),
                         "§7■ Prix de vente (par item) : " + EconomyManager.getInstance().getFormattedNumber(stock.getPricePerItem()),
                         "§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
                 ));
@@ -127,16 +132,16 @@ public class ShopStocksMenu extends PaginatedMenu {
                 getOwner().getInventory().addItem(toGive);
                 stock.setAmount(stock.getAmount() - amount);
                 if (stock.getAmount()>0){
-                    getOwner().sendMessage("§6Vous avez récupéré §a" + amount + "§6 dans le stock de cet item");
+                    MessagesManager.sendMessage(getOwner(), Component.text("§6Vous avez récupéré §a" + amount + "§6 dans le stock de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
                 } else {
-                    getOwner().sendMessage("§6Vous avez récupéré le stock restant de cet item");
+                    MessagesManager.sendMessage(getOwner(), Component.text("§6Vous avez récupéré le stock restant de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
                 }
             } else {
-                getOwner().sendMessage("§cVous n'avez pas assez de place");
+                MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez de place"), Prefix.SHOP, MessageType.INFO, false);
             }
         } else {
             shop.removeItem(stock);
-            getOwner().sendMessage("§aL'item a bien été retiré du shop !");
+            MessagesManager.sendMessage(getOwner(), Component.text("§aL'item a bien été retiré du shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
         }
         getOwner().closeInventory();
     }

@@ -35,7 +35,7 @@ public class PlayerShopManager {
      * @return true if the shop has been created
      */
     public boolean createShop(UUID playerUUID, Block barrel, Block cashRegister, UUID shop_uuid) {
-        if (!economyManager.withdrawBalance(playerUUID, 500) && shop_uuid==null) {
+        if (!EconomyManager.withdrawBalance(playerUUID, 500) && shop_uuid==null) {
             return false;
         }
         Shop newShop;

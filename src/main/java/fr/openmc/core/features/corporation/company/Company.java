@@ -267,13 +267,14 @@ public class Company {
             newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
             shopCounter++;
+            shops.add(newShop);
             return true;
         }
 
-        Company company = CompanyManager.getCompany(playerUUID);
+        Company company = this;
 
         if (whoCreated != null && withdraw(100, whoCreated, "Création de shop")) {
-            if (company!=null && !company.hasPermission(playerUUID, CorpPermission.CREATESHOP)){
+            if (!company.hasPermission(playerUUID, CorpPermission.CREATESHOP)){
                 return false;
             }
 
@@ -286,7 +287,7 @@ public class Company {
                 newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
             }
 
-                shops.add(newShop);
+            shops.add(newShop);
             CompanyManager.shops.add(newShop);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
 
@@ -490,6 +491,14 @@ public class Company {
             return true;
         }
         return false;
+    }
+
+    public void depositWithoutWithdraw(double amount, Player player, String nature, String additionalInfo){
+        balance += amount;
+        if (amount > 0) {
+            TransactionData transaction = new TransactionData(amount, nature, additionalInfo, player.getUniqueId());
+            transactions.add(System.currentTimeMillis(), transaction);
+        }
     }
 
     public boolean deposit(double amount, Player player, String nature) {

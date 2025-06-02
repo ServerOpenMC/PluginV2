@@ -12,6 +12,7 @@ import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.menu.shop.ShopSearchMenu;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -82,10 +83,10 @@ public class ShopCommand {
                 return;
             }
             if (!company.createShop(player.getUniqueId(), targetBlock, aboveBlock, null)) {
-                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent dans la banque de votre entreprise pour créer un shop (100€)"), Prefix.SHOP, MessageType.INFO, false);
+                MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent dans la banque de votre entreprise pour créer un shop (100" + EconomyManager.getEconomyIcon() + ")"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            MessagesManager.sendMessage(player, Component.text("§6[Shop] §c -100€ sur la banque de l'entreprise"), Prefix.SHOP, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(player, Component.text("§6[Shop] §c -100" + EconomyManager.getEconomyIcon() + " sur la banque de l'entreprise"), Prefix.SHOP, MessageType.SUCCESS, false);
             MessagesManager.sendMessage(player, Component.text("§aUn shop a bien été crée pour votre entreprise !"), Prefix.SHOP, MessageType.SUCCESS, false);
             return;
         }
@@ -94,10 +95,10 @@ public class ShopCommand {
             return;
         }
         if (!playerShopManager.createShop(player.getUniqueId(), targetBlock, aboveBlock, null)) {
-            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent pour créer un shop (500€)"), Prefix.SHOP, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent pour créer un shop (500" + EconomyManager.getEconomyIcon() + ")"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
-        MessagesManager.sendMessage(player, Component.text("§6[Shop] §c -500€ sur votre compte personnel"), Prefix.SHOP, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§6[Shop] §c -500" + EconomyManager.getEconomyIcon() +" sur votre compte personnel"), Prefix.SHOP, MessageType.SUCCESS, false);
         MessagesManager.sendMessage(player, Component.text("§aVous avez bien crée un shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
     }
 
@@ -105,27 +106,38 @@ public class ShopCommand {
     @Description("Sell an item in your shop")
     public void sellItem(Player player, @Named("price") double price) {
         boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
+
+        if (price<=0){
+            MessagesManager.sendMessage(player, Component.text("§cVeuillez mettre un prix supérieur à zéro !"), Prefix.SHOP, MessageType.INFO, false);
+            return;
+        }
+
         if (isInCompany) {
             UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
             if (shopUUID == null) {
                 MessagesManager.sendMessage(player, Component.text("§cShop non reconnu"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
+
             Shop shop = companyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
             if (shop == null) {
                 MessagesManager.sendMessage(player, Component.text("§cCe shop n'appartient pas à votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
+
             if (!CompanyManager.getInstance().getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SELLER)) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas l'autorisation de vendre un item dans ce shop de l'entrprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
+
             ItemStack item = player.getInventory().getItemInMainHand();
             boolean itemThere = shop.addItem(item, price, 1);
+
             if (itemThere) {
                 MessagesManager.sendMessage(player, Component.text("§cCet item est déjà dans le shop"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
+
             MessagesManager.sendMessage(player, Component.text("§aL'item a bien été ajouté au shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
             return;
         }
@@ -240,7 +252,7 @@ public class ShopCommand {
                 MessagesManager.sendMessage(player, Component.text("§cCaisse introuvable (appelez un admin)"), Prefix.SHOP, MessageType.INFO, false);
             }
             MessagesManager.sendMessage(player, Component.text("§a" + shop.getName() + " supprimé !"), Prefix.SHOP, MessageType.SUCCESS, false);
-            MessagesManager.sendMessage(player, Component.text("§6[Shop] §a +75€ de remboursés sur la banque de l'entreprise"), Prefix.SHOP, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(player, Component.text("§6[Shop] §a +75" + EconomyManager.getEconomyIcon() + " de remboursés sur la banque de l'entreprise"), Prefix.SHOP, MessageType.SUCCESS, false);
         }
         if (!playerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas de shop"), Prefix.SHOP, MessageType.INFO, false);
@@ -256,7 +268,7 @@ public class ShopCommand {
             return;
         }
         MessagesManager.sendMessage(player, Component.text("§6Votre shop a bien été supprimé !"), Prefix.SHOP, MessageType.SUCCESS, false);
-        MessagesManager.sendMessage(player, Component.text("§6[Shop] §a +400€ de remboursés sur votre compte personnel"), Prefix.SHOP, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§6[Shop] §a +400" + EconomyManager.getEconomyIcon() + " de remboursés sur votre compte personnel"), Prefix.SHOP, MessageType.SUCCESS, false);
     }
 
     @Subcommand("manage")
