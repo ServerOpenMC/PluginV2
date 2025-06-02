@@ -35,7 +35,7 @@ import java.util.UUID;
 
 public class MascotsManager {
 
-    public static long IMMUNITY_COOLDOWN = 10080L * 60 * 1000; // 10080 minutes en ms
+    public static long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L; // 7 jours en millisecondes
 
     public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;

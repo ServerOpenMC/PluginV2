@@ -175,7 +175,7 @@ public class MayorCreateMenu extends Menu {
                             Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
                             Component.text(""),
                             Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
-                    );;
+                    );
                 } else {
                     lorePerk1 = new ArrayList<>(perk1.getLore());
                     lorePerk1.add(Component.text(""));

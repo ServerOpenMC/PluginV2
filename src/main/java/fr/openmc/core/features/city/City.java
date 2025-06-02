@@ -35,6 +35,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.*;
 
 public class City {
     private String name;
@@ -273,6 +276,19 @@ public class City {
             err.printStackTrace();
             return Set.of();
         }
+    }
+
+    /**
+     * Gets the list of online members (UUIDs) of a specific city.
+     *
+     * @return A list of UUIDs representing the online members of the city.
+     */
+    public Set<UUID> getOnlineMembers() {
+        Set<UUID> allMembers = getMembers();
+        return Bukkit.getOnlinePlayers().stream()
+                .map(Player::getUniqueId)
+                .filter(allMembers::contains)
+                .collect(Collectors.toSet());
     }
 
     /**
