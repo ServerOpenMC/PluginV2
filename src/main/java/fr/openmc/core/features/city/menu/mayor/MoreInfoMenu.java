@@ -40,7 +40,7 @@ public class MoreInfoMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent click) {
         //empty
     }
-
+    
     @Override
     public void onClose(InventoryCloseEvent event) {
 
@@ -108,9 +108,9 @@ public class MoreInfoMenu extends Menu {
         }
         return inventory;
     }
-
-    @Override
-    public List<Integer> getTakableSlot() {
-        return List.of();
-    }
+	
+	@Override
+	public List<Integer> getTakableSlot() {
+		return List.of();
+	}
 }
