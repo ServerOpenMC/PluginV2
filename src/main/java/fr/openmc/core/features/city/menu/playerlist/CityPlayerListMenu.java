@@ -61,10 +61,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
             boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
             boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
-            boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
             for (UUID uuid : city.getMembers()) {
                 OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+
+                boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
                 String title = "";
                 if(hasPermissionOwner) {
                     title = "Propriétaire ";

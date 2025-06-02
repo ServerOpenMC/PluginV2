@@ -47,6 +47,11 @@ public class MoreInfoMenu extends Menu {
 	}
     
     @Override
+    public void onClose(InventoryCloseEvent event) {
+
+    }
+
+    @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
