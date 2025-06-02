@@ -39,9 +39,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -479,8 +476,8 @@ public class ContestManager {
 
         baseBookMeta.addPages(leaderboard[0]);
         
-        List<OfflinePlayer> winners = new ArrayList<>();
-        List<OfflinePlayer> losers = new ArrayList<>();
+        List<UUID> winners = new ArrayList<>();
+        List<UUID> losers = new ArrayList<>();
 
         // STATS PERSO + REWARDS
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
@@ -535,7 +532,7 @@ public class ContestManager {
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Gagnant - EVENT
-                winners.add(player);
+                winners.add(player.getUniqueId());
             } else {
                 // Perdant - ARGENT
                 int moneyMin = 2000;
@@ -556,7 +553,7 @@ public class ContestManager {
                 aywenite = randomAwyenite.nextInt(ayweniteMin, ayweniteMax);
                 
                 // Perdant - EVENT
-                losers.add(player);
+                losers.add(player.getUniqueId());
             }
             // PRINT REWARDS
 

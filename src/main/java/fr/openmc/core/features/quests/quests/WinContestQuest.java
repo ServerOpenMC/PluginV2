@@ -6,9 +6,10 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+
+import java.util.UUID;
 
 public class WinContestQuest extends Quest implements Listener {
 
@@ -18,14 +19,14 @@ public class WinContestQuest extends Quest implements Listener {
                 "Gagne {target} contest",
                 Material.NAUTILUS_SHELL
         );
-
-        this.addTiers(new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(), 5)));
+        
+        this.addTier(new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(), 5)));
     }
     
     @EventHandler
     public void onEndContest(ContestEndEvent event) {
-        for (OfflinePlayer player : event.getWinners()) {
-            this.incrementProgress(player.getUniqueId());
+        for (UUID playerUUID : event.getWinners()) {
+            this.incrementProgress(playerUUID);
         }
     }
 }
