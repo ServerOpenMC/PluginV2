@@ -40,11 +40,6 @@ public class MoreInfoMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent click) {
         //empty
     }
-	
-	@Override
-	public void onClose(InventoryCloseEvent event) {
-	
-	}
     
     @Override
     public void onClose(InventoryCloseEvent event) {
