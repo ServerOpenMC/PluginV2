@@ -25,7 +25,7 @@ public class TramplingProtection implements Listener {
         if (event.getAction() == Action.PHYSICAL) {
             if (event.getClickedBlock() == null) return;
             if (event.getClickedBlock().getType() == Material.FARMLAND) {
-                ProtectionsManager.verify(event.getPlayer(), event, event.getClickedBlock().getLocation());
+                ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, event.getClickedBlock().getLocation());
             }
         }
     }

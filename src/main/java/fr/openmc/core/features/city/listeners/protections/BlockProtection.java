@@ -11,15 +11,15 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class BlockProtection implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlaceBlock(BlockPlaceEvent event) {
-        if (ProtectionsManager.verify(event.getPlayer(), event, event.getBlock().getLocation())) {
-            ProtectionsManager.verifyByPermission(event.getPlayer(), event.getBlock().getLocation(), CPermission.PLACE);
+        if (ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, event.getBlock().getLocation())) {
+            ProtectionsManager.checkPermissions(event.getPlayer(), event, event.getBlock().getLocation(), CPermission.PLACE);
         }
     }
 
     @EventHandler
     void onBlockBreak(BlockBreakEvent event) {
-        if (! ProtectionsManager.verify(event.getPlayer(), event, event.getBlock().getLocation())) {
-            ProtectionsManager.verifyByPermission(event.getPlayer(), event.getBlock().getLocation(), CPermission.BREAK);
+        if (ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, event.getBlock().getLocation())) {
+            ProtectionsManager.checkPermissions(event.getPlayer(), event, event.getBlock().getLocation(), CPermission.BREAK);
         }
     }
 }

@@ -9,12 +9,12 @@ import org.bukkit.event.player.PlayerUnleashEntityEvent;
 public class LeashProtection implements Listener {
     @EventHandler
     void onLeash(PlayerLeashEntityEvent event) {
-        ProtectionsManager.verify(event.getPlayer(), event, event.getEntity().getLocation());
+        ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, event.getEntity().getLocation());
     }
 
     @EventHandler
     void onUnleash(PlayerUnleashEntityEvent event) {
-        ProtectionsManager.verify(event.getPlayer(), event, event.getEntity().getLocation());
+        ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, event.getEntity().getLocation());
     }
 
 }

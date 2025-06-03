@@ -45,11 +45,11 @@ public class InteractProtection implements Listener {
                 if (!type.isInteractable()) return;
             }
             
-            if (! ProtectionsManager.verify(player, event, loc)) {
+            if (ProtectionsManager.checkClaimAndCheckIfIsMember(player, event, loc)) {
                 if (clickedBlock.getType().name().endsWith("_CHEST") || clickedBlock.getType().name().endsWith("_BARREL")) {
-                    ProtectionsManager.verifyByPermission(player, loc, CPermission.OPEN_CHEST);
+                    ProtectionsManager.checkPermissions(player, event, loc, CPermission.OPEN_CHEST);
                 } else {
-                    ProtectionsManager.verifyByPermission(player, loc, CPermission.INTERACT);
+                    ProtectionsManager.checkPermissions(player, event, loc, CPermission.INTERACT);
                 }
             }
         }
@@ -66,7 +66,7 @@ public class InteractProtection implements Listener {
 
         if (rightClicked instanceof Player) return;
         if (MascotUtils.isMascot(rightClicked)) return;
-
-        ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
+        
+        ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, rightClicked.getLocation());
     }
 }

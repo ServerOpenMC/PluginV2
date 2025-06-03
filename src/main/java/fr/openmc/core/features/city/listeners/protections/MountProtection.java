@@ -20,8 +20,9 @@ public class MountProtection implements Listener {
 
 
         if (!tameable.isTamed()) return;
-
-        if (!tameable.getOwnerUniqueId().equals(player.getUniqueId()))
-            ProtectionsManager.verify(player, event, mount.getLocation());
+        
+        if (! tameable.getOwnerUniqueId().equals(player.getUniqueId())) {
+            ProtectionsManager.checkClaimAndCheckIfIsMember(player, event, mount.getLocation());
+        }
     }
 }
