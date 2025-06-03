@@ -37,26 +37,28 @@ public class ProtectionsManager {
                 new TramplingProtection()
         );
     }
-
-    public static void verify(Player player, Cancellable event, Location loc) {
-        if (!player.getWorld().getName().equals("world")) return;
+    
+    public static boolean verify(Player player, Cancellable event, Location loc) {
+        if (! player.getWorld().getName().equals("world")) {
+            return true; // Pas de protection dans les mondes autres que "world"
+        }
 
         boolean canBypass = canBypassPlayer.contains(player.getUniqueId());
-        if (canBypass) return;
+        if (canBypass) return true; // Le joueur peut bypass les protections
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-        if (cityAtLoc == null) return;
+        if (cityAtLoc == null) return true; // Pas de ville à cet endroit, pas de protection
 
         CityType cityType = cityAtLoc.getType();
         boolean isMember = cityAtLoc.isMember(player);
 
         if (cityType.equals(CityType.WAR)) {
-            return;
+            return true; // En guerre, pas de protection
         }
 
         if (!isMember) {
             event.setCancelled(true);
-
+            
             long now = System.currentTimeMillis();
             long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
             if (now - last >= ERROR_MESSAGE_COOLDOWN) {
@@ -70,7 +72,9 @@ public class ProtectionsManager {
                         true
                 );
             }
+            return false; // Le joueur n'est pas membre de la ville, action annulée
         }
+        return true; // Le joueur est membre de la ville, action autorisée
     }
 
     public static void verify(Entity entity, Cancellable event, Location loc) {
@@ -81,5 +85,28 @@ public class ProtectionsManager {
             return;
 
         event.setCancelled(true);
+    }
+    
+    public static boolean verifyByPermission(Player player, Location loc, CPermission permission) {
+        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+        if (city == null) return true; // Pas de ville à cet endroit, pas de protection
+        
+        if (! city.hasPermission(player.getUniqueId(), permission)) {
+            long now = System.currentTimeMillis();
+            long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
+            if (now - last >= ERROR_MESSAGE_COOLDOWN) {
+                lastErrorMessageTime.put(player.getUniqueId(), now);
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("Vous n'avez pas l'autorisation de faire ceci !"),
+                        Prefix.CITY,
+                        MessageType.ERROR,
+                        0.6F,
+                        true
+                );
+            }
+            return false; // Le joueur n'a pas la permission, action annulée
+        }
+        return true; // Le joueur a la permission, action autorisée
     }
 }

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,11 +11,15 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class BlockProtection implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlaceBlock(BlockPlaceEvent event) {
-        ProtectionsManager.verify(event.getPlayer(), event, event.getBlock().getLocation());
+        if (ProtectionsManager.verify(event.getPlayer(), event, event.getBlock().getLocation())) {
+            ProtectionsManager.verifyByPermission(event.getPlayer(), event.getBlock().getLocation(), CPermission.PLACE);
+        }
     }
 
     @EventHandler
     void onBlockBreak(BlockBreakEvent event) {
-        ProtectionsManager.verify(event.getPlayer(), event, event.getBlock().getLocation());
+        if (! ProtectionsManager.verify(event.getPlayer(), event, event.getBlock().getLocation())) {
+            ProtectionsManager.verifyByPermission(event.getPlayer(), event.getBlock().getLocation(), CPermission.BREAK);
+        }
     }
 }

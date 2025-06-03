@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.listeners.protections;
 
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import org.bukkit.Location;
@@ -31,20 +32,26 @@ public class InteractProtection implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand != null && inHand.getType().isEdible()) {
             return;
         }
-
-        if (event.getClickedBlock() == null) return;
+        
+        Block clickedBlock = event.getClickedBlock();
+        if (clickedBlock == null) return;
 
         Location loc = event.getClickedBlock().getLocation();
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (inHand != null && inHand.getType().isEdible()) {
-                Block clicked = event.getClickedBlock();
-                Material type = clicked.getType();
+                Material type = clickedBlock.getType();
 
                 if (!type.isInteractable()) return;
             }
-
-            ProtectionsManager.verify(player, event, loc);
+            
+            if (! ProtectionsManager.verify(player, event, loc)) {
+                if (clickedBlock.getType().name().endsWith("_CHEST") || clickedBlock.getType().name().endsWith("_BARREL")) {
+                    ProtectionsManager.verifyByPermission(player, loc, CPermission.OPEN_CHEST);
+                } else {
+                    ProtectionsManager.verifyByPermission(player, loc, CPermission.INTERACT);
+                }
+            }
         }
     }
 
