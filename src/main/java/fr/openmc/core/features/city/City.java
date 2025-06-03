@@ -43,7 +43,6 @@ public class City {
     private final Set<BlockVector2> chunks; // Liste des chunks claims par la ville
     private final HashMap<UUID, Set<CPermission>> permissions;
     private final HashMap<Integer, ItemStack[]> chestContent;
-    private int chestPages;
     @Getter
     private double balance;
     @Getter
@@ -97,7 +96,6 @@ public class City {
         this.permissions = CityManager.getCityPermissions(this);
         this.chunks = CityManager.getCityChunks(this);
         this.chestContent = CityManager.getCityChestContent(this);
-        this.chestPages = chestContent.size();
     }
 
     /**
@@ -248,7 +246,7 @@ public class City {
      * @return The number of pages for the city's chest.
      */
     public @NotNull Integer getChestPages() {
-        return chestPages;
+        return chestContent.size();
     }
 
     /**
@@ -256,9 +254,8 @@ public class City {
      * asynchronously.
      */
     public void upgradeChest() {
-        chestPages += 1;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveChestPage(this, chestPages, null);
+            CityManager.saveChestPage(this, getChestPages(), null);
         });
     }
 
