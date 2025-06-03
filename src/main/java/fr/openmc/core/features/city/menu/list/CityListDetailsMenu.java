@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.menu.list;
 
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -86,7 +87,7 @@ public class CityListDetailsMenu extends Menu {
 				loreOwner.addAll(perk3.getLore());
 			}
 
-			map.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWithPermission(CPermission.OWNER)),
+			map.put(12, new ItemBuilder(this, ItemUtils.getPlayerSkull(this.city.getPlayerWithPermission(CPermission.OWNER)),
 					itemMeta -> {
 						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWithPermission(CPermission.OWNER)).getName()));
 						itemMeta.lore(loreOwner);
@@ -136,6 +137,9 @@ public class CityListDetailsMenu extends Menu {
 
 		map.put(26, new ItemBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.displayName(Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")))));
+		map.put(18, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange").getItemStack(),
+				itemMeta -> itemMeta.displayName(Component.text("§eRetour")))
+				.setOnClick(inventoryClickEvent -> new CityListMenu(getOwner()).open()));
 		return map;
 	}
 

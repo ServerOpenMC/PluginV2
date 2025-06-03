@@ -422,13 +422,12 @@ public class CityCommands {
     @Subcommand("list")
     @CommandPermission("omc.commands.city.list")
     public void list(Player player) {
-        List<City> cities = new ArrayList<>(CityManager.getCities());
-        if (cities.isEmpty()) {
+        if (CityManager.getCities().isEmpty()) {
             MessagesManager.sendMessage(player, Component.text("Aucune ville n'existe"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-
-        CityListMenu menu = new CityListMenu(player, cities);
+        
+        CityListMenu menu = new CityListMenu(player);
         menu.open();
     }
 
