@@ -176,12 +176,14 @@ public class CityManager implements Listener {
      * @param player The player to remove from the city
      */
     public static void removePlayerFromCity(City city, UUID player) {
-        try {
-            playerCities.remove(player);
-            membersDao.delete(new DBCityMember(player, city.getUUID()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        playerCities.remove(player);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                membersDao.delete(new DBCityMember(player, city.getUUID()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static HashMap<UUID, Set<CPermission>> getCityPermissions(City city) {

@@ -65,7 +65,10 @@ public class City {
         this.type = type;
         this.freeClaims = 15;
 
-        CityManager.saveCity(this);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            CityManager.saveCity(this);
+        });
+
         CityManager.registerCity(this);
 
         this.members = new HashSet<>();
@@ -119,7 +122,9 @@ public class City {
     public void rename(String newName) {
         this.name = newName;
 
-        CityManager.saveCity(this);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            CityManager.saveCity(this);
+        });
     }
 
     public void setType(String type) {
@@ -129,7 +134,9 @@ public class City {
             this.type = CityType.PEACE;
         }
 
-        CityManager.saveCity(this);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            CityManager.saveCity(this);
+        });
     }
 
     public void changeType() {
@@ -139,7 +146,9 @@ public class City {
             this.type = CityType.WAR;
         }
 
-        CityManager.saveCity(this);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            CityManager.saveCity(this);
+        });
     }
 
     // ==================== Members Methods ====================
@@ -179,9 +188,7 @@ public class City {
             Bukkit.getPluginManager()
                     .callEvent(new MemberLeaveEvent(CacheOfflinePlayer.getOfflinePlayer(player), this));
         });
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.removePlayerFromCity(this, player);
-        });
+        CityManager.removePlayerFromCity(this, player);
     }
 
     /**
