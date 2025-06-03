@@ -553,18 +553,19 @@ public class City {
         if (playerPerms == null)
             return;
 
-        if (playerPerms.contains(permission)) {
-            playerPerms.remove(permission);
-            permissions.put(player, playerPerms);
+        if (!playerPerms.contains(permission))
+            return;
 
-            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                CityManager.removePlayerPermission(this, player, permission);
-            });
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
-                        CacheOfflinePlayer.getOfflinePlayer(player), permission, false));
-            });
-        }
+        playerPerms.remove(permission);
+        permissions.put(player, playerPerms);
+
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            CityManager.removePlayerPermission(this, player, permission);
+        });
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
+                    CacheOfflinePlayer.getOfflinePlayer(player), permission, false));
+        });
     }
 
     // ==================== Mascots Methods ====================
