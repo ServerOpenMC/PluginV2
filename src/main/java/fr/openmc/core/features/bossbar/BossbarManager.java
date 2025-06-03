@@ -22,6 +22,7 @@ public class BossbarManager {
     @Getter
     private static BossbarManager instance;
     private final Map<UUID, BossBar> activeBossBars = new HashMap<>();
+    private final Map<UUID, Boolean> playerPreferences = new HashMap<>();
     @Getter
     private final List<Component> helpMessages = new ArrayList<>();
     @Getter
@@ -104,6 +105,10 @@ public class BossbarManager {
     public void addBossBar(Player player) {
         if (!bossBarEnabled || activeBossBars.containsKey(player.getUniqueId())) return;
 
+        Boolean preference = playerPreferences.get(player.getUniqueId());
+        if (preference != null && !preference) {
+            return;
+        }
         removeBossBar(player);
 
         BossBar bossBar = BossBar.bossBar(
@@ -133,11 +138,15 @@ public class BossbarManager {
      * @param player The player to toggle the bossbar for
      */
     public void toggleBossBar(Player player) {
+        UUID uuid = player.getUniqueId();
+
         if (activeBossBars.containsKey(player.getUniqueId())) {
             removeBossBar(player);
+            playerPreferences.put(uuid, false);
             MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
         } else {
             addBossBar(player);
+            playerPreferences.put(uuid, true);
             MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
         }
     }
