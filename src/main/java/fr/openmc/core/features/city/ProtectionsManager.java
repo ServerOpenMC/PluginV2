@@ -66,7 +66,8 @@ public class ProtectionsManager {
         }
         
         if (! isMember) {
-            cancelEvent(player, event);
+            event.setCancelled(true);
+            cancelMessage(player);
             return false; // Le joueur n'est pas membre de la ville, action annulée
         } else {
             return true; // Le joueur est membre de la ville, verification des permissions à faire
@@ -104,19 +105,19 @@ public class ProtectionsManager {
         if (city == null) return false; // Pas de ville à cet endroit, pas de protection
         
         if (! city.hasPermission(player.getUniqueId(), permission)) {
-            cancelEvent(player, event);
+            event.setCancelled(true);
+            cancelMessage(player);
             return false; // Le joueur n'a pas la permission, action annulée
         }
         return true; // Le joueur a la permission, action autorisée
     }
     
     /**
-     * Annule l'événement et envoie un message d'erreur au joueur.
+     * Envoie un message d'erreur au joueur si celui-ci n'a pas l'autorisation d'effectuer une action.
      *
      * @param player Le joueur à qui envoyer le message
-     * @param event L'événement à annuler
      */
-    private static void cancelEvent(Player player, Cancellable event) {
+    private static void cancelMessage(Player player) {
         long now = System.currentTimeMillis();
         long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
         if (now - last >= ERROR_MESSAGE_COOLDOWN) {
@@ -130,6 +131,5 @@ public class ProtectionsManager {
                     true
             );
         }
-        event.setCancelled(true);
     }
 }
