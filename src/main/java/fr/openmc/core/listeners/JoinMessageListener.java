@@ -68,7 +68,6 @@ public class JoinMessageListener implements Listener {
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getSpawnLocation());
 
-
         new BukkitRunnable() {
             @Override
             public void run() {
