@@ -283,9 +283,6 @@ public class City {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             CityManager.claimChunk(this, coords);
         });
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new ChunkClaimedEvent(this, chunk));
-        });
     }
 
     /**

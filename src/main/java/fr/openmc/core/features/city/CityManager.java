@@ -12,7 +12,6 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
-import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.models.Mascot;
@@ -29,7 +28,6 @@ import fr.openmc.core.utils.CacheOfflinePlayer;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
@@ -104,19 +102,6 @@ public class CityManager implements Listener {
 
         TableUtils.createTableIfNotExists(connectionSource, DBCityChest.class);
         chestsDao = DaoManager.createDao(connectionSource, DBCityChest.class);
-    }
-
-    @EventHandler
-    public void onChunkClaim(ChunkClaimedEvent event) {
-        City city = event.getCity();
-        BlockVector2 chunk = BlockVector2.at(event.getChunk().getX(), event.getChunk().getZ());
-        claimedChunks.put(chunk, city);
-
-        try {
-            claimsDao.create(new DBCityClaim(chunk, city.getUUID()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     // ==================== Database Methods ====================
