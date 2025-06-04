@@ -31,14 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.*;
 
@@ -49,6 +42,7 @@ public class City {
     private Double balance = Double.valueOf(0); // set default value cause if its null, error in updateBalance
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
     private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
+    private List<CityRanks> cityRanks = new ArrayList<>(); // Liste des grades de la ville
     private MayorManager mayorManager;
     private CityType cachedType;
     private Integer cachedPowerPoints;
@@ -940,6 +934,23 @@ public class City {
         for (Mascot mascot : MascotsManager.mascots) {
             if (mascot.getCityUUID().equals(cityUUID)) {
                 return mascot;
+            }
+        }
+        return null;
+    }
+    
+    public List<CityRanks> getRanksCache() {
+        return cityRanks;
+    }
+    
+    public boolean isRanksCacheFull() {
+        return cityRanks.size() >= 18;
+    }
+    
+    public CityRanks getRankByName(String rankName) {
+        for (CityRanks rank : cityRanks) {
+            if (rank.name().equalsIgnoreCase(rankName)) {
+                return rank;
             }
         }
         return null;

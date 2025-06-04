@@ -1,12 +1,11 @@
 package fr.openmc.core.utils.messages;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import lombok.Getter;
 
 import java.util.Map;
 
@@ -101,24 +100,32 @@ public class MessagesManager {
 
     @Getter
     public enum Message {
+        // Command messages
         NOPERMISSION(Component.text("§cVous n'avez pas la permission d'exécuter cette commande.")),
         NOPERMISSION2(Component.text("§cVous n'avez pas le droit de faire ceci")),
         MISSINGARGUMENT(Component.text("§cVous devez spécifier un argument.")),
-
+        
+        // Player messages
+        PLAYERNOTFOUND(Component.text("§cLe joueur n'a pas été trouvé.")),
+        
+        // General messages
         MONEYPLAYERMISSING(Component.text("Tu n'as pas assez d'argent")),
 
         // City messages
         PLAYERNOCITY(Component.text("Tu n'es pas dans une ville")),
         PLAYERINCITY(Component.text("Tu es déjà dans une ville")),
         CITYNOFREECLAIM(Component.text("Cette ville n'a pas de claims gratuits")),
-
-
+        
+        PLAYERNOACCESSPERMS(Component.text("Tu n'as pas la permission d'accéder aux permissions ou grades de cette ville")),
         PLAYERNOCLAIM(Component.text("Tu n'as pas la permission d'agrandir ta ville")),
         PLAYERNOOWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire")),
         PLAYERNORENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
         PLAYERNOMONEYGIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),
         PLAYERNOMONEYTAKE(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville")),
-
+        
+        CITYRANKS_NOTEXIST(Component.text("Ce grade n'existe pas.")),
+        CITYRANKS_MAX(Component.text("Le nombre maximum de grades a été atteint, tu ne peux pas en ajouter d'autres.")),
+        
         CITYNOTFOUND(Component.text("La ville n'existe pas")),
 
         ;
