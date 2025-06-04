@@ -939,11 +939,11 @@ public class City {
         return null;
     }
     
-    public List<CityRanks> getRanksCache() {
+    public List<CityRanks> getRanks() {
         return cityRanks;
     }
     
-    public boolean isRanksCacheFull() {
+    public boolean isRanksFull() {
         return cityRanks.size() >= 18;
     }
     

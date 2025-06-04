@@ -55,7 +55,7 @@ public class CityRanksMenu extends Menu {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
 		int i = 0;
-		List<CityRanks> cityRanks = city.getRanksCache();
+		List<CityRanks> cityRanks = city.getRanks();
 		for (CityRanks rank : cityRanks) {
 			if (i == 18) break; // Limit to 18 ranks displayed
 			
@@ -81,7 +81,7 @@ public class CityRanksMenu extends Menu {
 		
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest())
 				.setOnClick(inventoryClickEvent -> {
-					if (! city.isRanksCacheFull()) new CityRankDetailsMenu(getOwner()).open();
+					if (! city.isRanksFull()) new CityRankDetailsMenu(getOwner()).open();
 				})
 		);
 		
