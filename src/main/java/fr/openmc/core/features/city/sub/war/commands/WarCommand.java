@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.war.commands;
 
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
@@ -25,6 +26,13 @@ public class WarCommand {
         if (!playerCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
                     Component.text("Votre ville n'est pas dans un statut de §cgueere§f! Changez la type de votre ville avec §c/city type §fou depuis le §cMenu Princiapl des Villes"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!playerCity.hasPermission(player.getUniqueId(), CPermission.LAUNCH_WAR)) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Vous n'avez pas la permission de lancer une guerre pour la ville"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }

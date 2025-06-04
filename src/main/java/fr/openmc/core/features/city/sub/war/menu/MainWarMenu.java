@@ -14,6 +14,7 @@ import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.PlayerNameCache;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -108,7 +109,7 @@ public class MainWarMenu extends PaginatedMenu {
                     itemMeta.lore(loreCity);
                 }).setOnClick(inventoryClickEvent -> {
                     if (inventoryClickEvent.getClick() == ClickType.LEFT) {
-                        // launch war and conditions
+                        WarActions.beginLaunchWar(player, city);
                     } else if (inventoryClickEvent.getClick() == ClickType.RIGHT) {
                         new WarCityDetailsMenu(player, city).open();
                     }
