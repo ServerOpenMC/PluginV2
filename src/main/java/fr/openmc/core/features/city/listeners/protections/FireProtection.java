@@ -16,6 +16,6 @@ public class FireProtection implements Listener {
 
         if (player == null) return;
         
-        ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, loc);
+        ProtectionsManager.checkClaim(event.getPlayer(), event, loc);
     }
 }

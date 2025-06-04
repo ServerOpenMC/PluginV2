@@ -1,6 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
 import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import org.bukkit.Location;
@@ -23,15 +25,13 @@ public class InteractProtection implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (event.isCancelled()) return;
         Player player = event.getPlayer();
-
-        if (event.getHand() != EquipmentSlot.HAND)
-            return;
+        
+        if (event.getHand() != EquipmentSlot.HAND) return;
 
         ItemStack inHand = event.getItem();
-
-        if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand != null && inHand.getType().isEdible()) {
-            return;
-        }
+        
+        if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand != null && inHand.getType().isEdible()) return;
+        
         
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
@@ -45,13 +45,20 @@ public class InteractProtection implements Listener {
                 if (!type.isInteractable()) return;
             }
             
-            if (ProtectionsManager.checkClaimAndCheckIfIsMember(player, event, loc)) {
+            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+            if (city == null) return;
+            
+            if (city.isMember(player)) {
                 if (clickedBlock.getType().name().endsWith("_CHEST") || clickedBlock.getType().name().endsWith("_BARREL")) {
-                    ProtectionsManager.checkPermissions(player, event, loc, CPermission.OPEN_CHEST);
+                    ProtectionsManager.checkPermissions(player, event, city, CPermission.OPEN_CHEST);
                 } else {
-                    ProtectionsManager.checkPermissions(player, event, loc, CPermission.INTERACT);
+                    ProtectionsManager.checkPermissions(player, event, city, CPermission.INTERACT);
                 }
+                
+            } else {
+                ProtectionsManager.checkCity(player, event, city);
             }
+            
         }
     }
 
@@ -67,6 +74,6 @@ public class InteractProtection implements Listener {
         if (rightClicked instanceof Player) return;
         if (MascotUtils.isMascot(rightClicked)) return;
         
-        ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, rightClicked.getLocation());
+        ProtectionsManager.checkClaim(event.getPlayer(), event, rightClicked.getLocation());
     }
 }

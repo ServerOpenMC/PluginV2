@@ -10,13 +10,13 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 public class BowProtection implements Listener {
     @EventHandler
     void onLaunchProjectile(PlayerLaunchProjectileEvent event) {
-        ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, event.getPlayer().getLocation());
+        ProtectionsManager.checkClaim(event.getPlayer(), event, event.getPlayer().getLocation());
     }
 
     @EventHandler
     public void onEntityShootBow(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         
-        ProtectionsManager.checkClaimAndCheckIfIsMember(player, event, event.getEntity().getLocation());
+        ProtectionsManager.checkClaim(player, event, event.getEntity().getLocation());
     }
 }

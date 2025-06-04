@@ -8,6 +8,6 @@ import org.bukkit.event.player.PlayerFishEvent;
 public class FishProtection implements Listener {
     @EventHandler
     void onFish(PlayerFishEvent event) {
-        ProtectionsManager.checkClaimAndCheckIfIsMember(event.getPlayer(), event, event.getHook().getLocation());
+        ProtectionsManager.checkClaim(event.getPlayer(), event, event.getHook().getLocation());
     }
 }

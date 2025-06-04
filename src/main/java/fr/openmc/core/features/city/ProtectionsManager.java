@@ -45,32 +45,33 @@ public class ProtectionsManager {
      * @param player Le joueur à vérifier
      * @param event L'événement à annuler si le joueur n'est pas membre
      * @param loc La localisation pour vérifier la ville
-     * @return true si le joueur est membre de la ville, false autrement.
      */
-    public static boolean checkClaimAndCheckIfIsMember(Player player, Cancellable event, Location loc) {
-        if (! player.getWorld().getName().equals("world")) {
-            return false; // Pas de protection dans les mondes autres que "world"
-        }
-
+    public static void checkClaim(Player player, Cancellable event, Location loc) {
+        if (! player.getWorld().getName().equals("world")) return;
+        
         boolean canBypass = canBypassPlayer.contains(player.getUniqueId());
-        if (canBypass) return false; // Le joueur peut bypass les protections
+        if (canBypass) return; // Le joueur peut bypass les protections
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-        if (cityAtLoc == null) return false; // Pas de ville à cet endroit, pas de protection
-
-        CityType cityType = cityAtLoc.getType();
-        boolean isMember = cityAtLoc.isMember(player);
-
-        if (cityType.equals(CityType.WAR)) {
-            return false; // En guerre, pas de protection
+        
+        checkCity(player, event, cityAtLoc);
+    }
+    
+    public static void checkCity(Player player, Cancellable event, City city) {
+        if (! player.getWorld().getName().equals("world")) return;
+        
+        if (city == null) return; // Pas de ville, pas de protection
+        
+        boolean canBypass = canBypassPlayer.contains(player.getUniqueId());
+        if (canBypass) return; // Le joueur peut bypass les protections
+        
+        if (city.getType().equals(CityType.WAR)) {
+            return; // En guerre, pas de protection
         }
         
-        if (! isMember) {
+        if (! city.isMember(player)) {
             event.setCancelled(true);
             cancelMessage(player);
-            return false; // Le joueur n'est pas membre de la ville, action annulée
-        } else {
-            return true; // Le joueur est membre de la ville, verification des permissions à faire
         }
     }
     
@@ -96,20 +97,15 @@ public class ProtectionsManager {
      *
      * @param player Le joueur à vérifier
      * @param event L'événement à annuler si le joueur n'a pas la permission
-     * @param loc La localisation pour vérifier la ville
      * @param permission La permission à vérifier
-     * @return true si le joueur a la permission, false autrement.
      */
-    public static boolean checkPermissions(Player player, Cancellable event, Location loc, CPermission permission) {
-        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-        if (city == null) return false; // Pas de ville à cet endroit, pas de protection
+    public static void checkPermissions(Player player, Cancellable event, City city, CPermission permission) {
+        if (city == null) return; // Pas de ville à cet endroit, pas de protection
         
         if (! city.hasPermission(player.getUniqueId(), permission)) {
             event.setCancelled(true);
             cancelMessage(player);
-            return false; // Le joueur n'a pas la permission, action annulée
         }
-        return true; // Le joueur a la permission, action autorisée
     }
     
     /**
@@ -117,7 +113,7 @@ public class ProtectionsManager {
      *
      * @param player Le joueur à qui envoyer le message
      */
-    private static void cancelMessage(Player player) {
+    public static void cancelMessage(Player player) {
         long now = System.currentTimeMillis();
         long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
         if (now - last >= ERROR_MESSAGE_COOLDOWN) {
