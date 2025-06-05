@@ -20,8 +20,9 @@ import java.util.*;
 
 public class BossbarManager {
     private static final Map<UUID, BossBar> activeBossBars = new HashMap<>();
-    @Getter
     private static final List<Component> helpMessages = new ArrayList<>();
+    private static final Map<UUID, BossBar> activeBossBars = new HashMap<>();
+    private static final Map<UUID, Boolean> playerPreferences = new HashMap<>();
     @Getter
     private static boolean bossBarEnabled = true;
     @Getter
@@ -97,6 +98,10 @@ public class BossbarManager {
     public static void addBossBar(Player player) {
         if (!bossBarEnabled || activeBossBars.containsKey(player.getUniqueId())) return;
 
+        Boolean preference = playerPreferences.get(player.getUniqueId());
+        if (preference != null && !preference) {
+            return;
+        }
         removeBossBar(player);
 
         BossBar bossBar = BossBar.bossBar(
@@ -126,11 +131,15 @@ public class BossbarManager {
      * @param player The player to toggle the bossbar for
      */
     public static void toggleBossBar(Player player) {
+        UUID uuid = player.getUniqueId();
+
         if (activeBossBars.containsKey(player.getUniqueId())) {
             removeBossBar(player);
+            playerPreferences.put(uuid, false);
             MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
         } else {
             addBossBar(player);
+            playerPreferences.put(uuid, true);
             MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
         }
     }
