@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.*;
 
 public class BossbarManager {
-    private static final Map<UUID, BossBar> activeBossBars = new HashMap<>();
+    @Getter
     private static final List<Component> helpMessages = new ArrayList<>();
     private static final Map<UUID, BossBar> activeBossBars = new HashMap<>();
     private static final Map<UUID, Boolean> playerPreferences = new HashMap<>();
