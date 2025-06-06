@@ -49,13 +49,6 @@ public class MoreInfoMenu extends Menu {
                 Component.text("§8§oex. Si vous avez 5 joueurs de connecté et que en face ils sont 2,"),
                 Component.text("§8§oalors vous aurez le choix de faire un 1vs1 ou un 2vs2"),
                 Component.text(""),
-                Component.text(""),
-                Component.text(""),
-                Component.text(""),
-                Component.text(""),
-                Component.text(""),
-                Component.text(""),
-                Component.text(""),
                 Component.text("§7Lorsque vous venez declarer la §6guerre §7a une ville, les personnes concernées seront informé "),
                 Component.text("§7Vous aurez §6" + WarManager.TIME_PREPARATION + " min §7de préparation"),
                 Component.text("§7ce qui vous laisse le temps de s’équiper et d’aller au front !")
@@ -84,11 +77,11 @@ public class MoreInfoMenu extends Menu {
         }));
 
         inventory.put(15, new ItemBuilder(this, Material.WHITE_STAINED_GLASS_PANE, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§eLes Résultats"));
+            itemMeta.displayName(Component.text("§r§fLes Résultats"));
             itemMeta.lore(lore2);
         }));
 
-        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
+        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
 
         return inventory;
     }
