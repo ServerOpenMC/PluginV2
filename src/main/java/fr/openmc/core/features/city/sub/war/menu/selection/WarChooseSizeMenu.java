@@ -56,10 +56,7 @@ public class WarChooseSizeMenu extends PaginatedMenu {
                         Component.text("§e§lCLIQUEZ POUR CONTINUER")
                 ));
             }).setOnClick(event -> {
-                if (count == cityLaunch.getOnlineMembers().size()) {
-                    WarActions.preFinishLaunchWar(getOwner(), cityLaunch, cityAttack, cityLaunch.getOnlineMembers().stream().toList(), cityAttack.getOnlineMembers().stream().toList());
-                    return;
-                }
+                WarActions.preFinishLaunchWar(getOwner(), cityLaunch, cityAttack, count);
             }));
         }
 
