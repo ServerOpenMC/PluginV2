@@ -6,7 +6,6 @@ import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
-import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,16 +20,8 @@ import java.util.UUID;
 
 public class ShopBlocksManager {
 
-    private final Map<UUID, Shop.Multiblock> multiblocks = new HashMap<>();
-    private final Map<Location, Shop> shopsByLocation = new HashMap<>();
-
-    private final OMCPlugin plugin;
-    @Getter static ShopBlocksManager instance;
-
-    public ShopBlocksManager(OMCPlugin plugin) {
-        instance = this;
-        this.plugin = plugin;
-    }
+    private static Map<UUID, Shop.Multiblock> multiblocks = new HashMap<>();
+    private static Map<Location, Shop> shopsByLocation = new HashMap<>();
 
     /**
      * Registers a shop's multiblock structure and maps its key locations.
@@ -38,7 +29,7 @@ public class ShopBlocksManager {
      * @param shop The shop to register.
      * @param multiblock The multiblock structure associated with the shop.
      */
-    public void registerMultiblock(Shop shop, Shop.Multiblock multiblock) {
+    public static void registerMultiblock(Shop shop, Shop.Multiblock multiblock) {
         multiblocks.put(shop.getUuid(), multiblock);
         Location stockLoc = multiblock.getStockBlock();
         Location cashLoc = multiblock.getCashBlock();
@@ -52,7 +43,7 @@ public class ShopBlocksManager {
      * @param uuid The UUID of the shop.
      * @return The multiblock structure if it exists, otherwise null.
      */
-    public Shop.Multiblock getMultiblock(UUID uuid) {
+    public static Shop.Multiblock getMultiblock(UUID uuid) {
         return multiblocks.get(uuid);
     }
 
@@ -62,7 +53,7 @@ public class ShopBlocksManager {
      * @param location The location to check.
      * @return The shop found at that location, or null if none exists.
      */
-    public Shop getShop(Location location) {
+    public static Shop getShop(Location location) {
         return shopsByLocation.get(location);
     }
 
@@ -74,7 +65,7 @@ public class ShopBlocksManager {
      * @param player The player placing the shop.
      * @param isCompany Whether the shop belongs to a company (unused here but may be relevant elsewhere).
      */
-    public void placeShop(Shop shop, Player player, boolean isCompany) {
+    public static void placeShop(Shop shop, Player player, boolean isCompany) {
         Shop.Multiblock multiblock = multiblocks.get(shop.getUuid());
         if (multiblock == null) {
             return;
@@ -105,7 +96,7 @@ public class ShopBlocksManager {
      * @param shop The shop to remove.
      * @return True if successfully removed, false otherwise.
      */
-    public boolean removeShop(Shop shop) {
+    public static boolean removeShop(Shop shop) {
         Shop.Multiblock multiblock = multiblocks.get(shop.getUuid());
         if (multiblock == null) {
             return false;
@@ -136,7 +127,7 @@ public class ShopBlocksManager {
             public void run() {
                 shopsByLocation.entrySet().removeIf(entry -> entry.getValue().getUuid().equals(shop.getUuid()));
             }
-        }.runTaskAsynchronously(plugin);
+        }.runTaskAsynchronously(OMCPlugin.getInstance());
         return true;
     }
 

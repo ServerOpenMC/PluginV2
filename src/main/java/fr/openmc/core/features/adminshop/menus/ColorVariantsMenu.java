@@ -20,15 +20,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ColorVariantsMenu extends Menu {
-    private final AdminShopManager shopManager;
     private final String categoryId;
     private final ShopItem originalItem;
     private final Menu previousMenu;
     private static final Map<String, List<Material>> COLOR_VARIANTS = initColorVariants();
 
-    public ColorVariantsMenu(Player owner, AdminShopManager shopManager, String categoryId, ShopItem originalItem, Menu previousMenu) {
+    public ColorVariantsMenu(Player owner, String categoryId, ShopItem originalItem, Menu previousMenu) {
         super(owner);
-        this.shopManager = shopManager;
         this.categoryId = categoryId;
         this.originalItem = originalItem;
         this.previousMenu = previousMenu;
@@ -146,11 +144,11 @@ public class ColorVariantsMenu extends Menu {
 
 
                        if (event.isLeftClick() && originalItem.getInitialBuyPrice() > 0) {
-                           shopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                           shopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
+                           AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                           AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
                        } else if (event.isRightClick() && originalItem.getInitialSellPrice() > 0) {
-                           shopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
-                           shopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
+                           AdminShopManager.registerNewItem(categoryId, colorVariant.getId(), colorVariant);
+                           AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, colorVariant.getId(), this);
                        }
                     });
 

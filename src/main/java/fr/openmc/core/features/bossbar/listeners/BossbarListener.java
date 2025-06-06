@@ -10,10 +10,11 @@ public class BossbarListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        BossbarManager.getInstance().addBossBar(event.getPlayer());
+        BossbarManager.addBossBar(event.getPlayer());
     }
+
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        BossbarManager.getInstance().removeBossBar(event.getPlayer());
+        BossbarManager.removeBossBar(event.getPlayer());
     }
 }

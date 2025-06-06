@@ -10,7 +10,7 @@ public class AdminShopCommand {
     @Command("adminshop")
     @Description("Ouvrir le menu du shop admin")
     public void openAdminShop(Player player) {
-        AdminShopManager.getInstance().openMainMenu(player);
+        AdminShopManager.openMainMenu(player);
     }
 
 }

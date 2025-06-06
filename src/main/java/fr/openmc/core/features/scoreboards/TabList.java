@@ -5,23 +5,19 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class TabList {
-
-    @Getter private static TabList instance;
-    private ProtocolManager protocolManager = null;
+    private static ProtocolManager protocolManager = null;
 
     public TabList() {
-        instance = this;
         if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null)
-            this.protocolManager = ProtocolLibrary.getProtocolManager();
+            protocolManager = ProtocolLibrary.getProtocolManager();
     }
 
-    public void updateHeaderFooter(Player player, String header, String footer) {
+    public static void updateHeaderFooter(Player player, String header, String footer) {
         try {
             if (protocolManager == null) return;
             PacketContainer packet = protocolManager.createPacket(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER);
@@ -33,7 +29,7 @@ public class TabList {
         }
     }
 
-    public void updateTabList(Player player) {
+    public static void updateTabList(Player player) {
         int visibleOnlinePlayers = 0;
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.canSee(player)) {

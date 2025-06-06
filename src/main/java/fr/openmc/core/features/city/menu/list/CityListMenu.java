@@ -69,7 +69,7 @@ public class CityListMenu extends PaginatedMenu {
 	public @NotNull List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		cities.forEach(city -> {
-			UUID ownerUUID = city.getPlayerWith(CPermission.OWNER);
+			UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
 			String ownerName = PlayerNameCache.getName(ownerUUID);
 
 			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {

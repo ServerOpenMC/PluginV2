@@ -38,7 +38,7 @@ public class Baltop {
         for(PlayerBalance balance : balances) {
             builder.append(Component.text(index + ". ", getColor(index)))
                     .append(Component.text(CacheOfflinePlayer.getOfflinePlayer(balance.playerId).getName() + ": ", NamedTextColor.GRAY))
-                    .append(Component.text(EconomyManager.getInstance().getFormattedNumber(balance.balance) + "\n", NamedTextColor.GREEN));
+                    .append(Component.text(EconomyManager.getFormattedNumber(balance.balance) + "\n", NamedTextColor.GREEN));
             index++;
         }
 
@@ -58,7 +58,7 @@ public class Baltop {
     public static List<PlayerBalance> getBalances() {
         List<PlayerBalance> balances = new ArrayList<>();
         EconomyManager.getBalances().forEach((playerId, balance) -> {
-            balances.add(new PlayerBalance(playerId, balance));
+            balances.add(new PlayerBalance(playerId, balance.getBalance()));
         });
         return balances;
     }

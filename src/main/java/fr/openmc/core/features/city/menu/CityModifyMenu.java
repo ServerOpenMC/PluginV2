@@ -105,7 +105,7 @@ public class CityModifyMenu extends Menu {
                                 if (InputUtils.isInputCityName(input)) {
                                     City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-                                    playerCity.renameCity(input);
+                                    playerCity.rename(input);
                                     MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
 
                                 } else {
