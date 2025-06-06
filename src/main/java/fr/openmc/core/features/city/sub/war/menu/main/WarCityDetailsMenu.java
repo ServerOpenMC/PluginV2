@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.sub.war.menu;
+package fr.openmc.core.features.city.sub.war.menu.main;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -126,7 +126,7 @@ public class WarCityDetailsMenu extends Menu {
                     Component.text("§7Vous allez retourner au Menu de Guerre"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> new WarCityDetailsMenu(getOwner(), city).open()));
+        }).setOnClick(inventoryClickEvent -> new MainWarMenu(getOwner()).open()));
 
         return map;
     }

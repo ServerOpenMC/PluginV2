@@ -12,6 +12,8 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.war.War;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
@@ -575,101 +577,6 @@ public class City {
         return chunks.contains(BlockVector2.at(chunkX, chunkZ));
     }
 
-    // ==================== Power Points Methods ====================
-
-    /**
-     * Retrieves the power points of the city.
-     *
-     * @return The power points of the city, or 0 if not found.
-     */
-    public int getPowerPoints() {
-        if (cachedPowerPoints != null) return cachedPowerPoints;
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT points FROM city_power WHERE city_uuid = ?");
-            statement.setString(1, cityUUID);
-            ResultSet rs = statement.executeQuery();
-
-            if (rs.next()) {
-                cachedPowerPoints = rs.getInt("points");
-            } else {
-                cachedPowerPoints = 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            cachedPowerPoints = 0;
-        }
-
-        return cachedPowerPoints;
-    }
-
-    /**
-     * Updates the power of a City by adding or removing points.
-     *
-     * @param point The amount to be added or remove to the existing power.
-     */
-    public void updatePowerPoints(int point){
-        try {
-            int result = getPowerPoints() + point;
-            if (result < 0) result = 0;
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_power SET power_point=? WHERE city_uuid=?;");
-            statement.setInt(1, result);
-            cachedPowerPoints = result;
-            statement.setString(2, cityUUID);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // ==================== Mayor Methods ====================
-
-    /**
-     * Retrieves the mayor of the city.
-     *
-     * @return The mayor of the city, or null if not found.
-     */
-    public Mayor getMayor() {
-        MayorManager mayorManager = MayorManager.getInstance();
-
-        return mayorManager.cityMayor.get(CityManager.getCity(cityUUID));
-    }
-
-    /**
-     * Checks if the city has a mayor.
-     *
-     * @return True if the city has a mayor, false otherwise.
-     */
-    public boolean hasMayor() {
-        Mayor mayor = mayorManager.cityMayor.get(this);
-        if (mayor == null) return false;
-
-        return mayor.getUUID() != null;
-    }
-
-    /**
-     * Retrieves the election type of the city.
-     *
-     * @return The election type of the city, or null if not found.
-     */
-    public ElectionType getElectionType() {
-        Mayor mayor = mayorManager.cityMayor.get(this);
-        if (mayor == null) return null;
-
-        return mayor.getElectionType();
-    }
-
-    /**
-     * Retrieves the law of the city.
-     *
-     * @return The law of the city, or null if not found.
-     */
-    public CityLaw getLaw() {
-        MayorManager mayorManager = MayorManager.getInstance();
-
-        return mayorManager.cityLaws.get(CityManager.getCity(cityUUID));
-    }
-
     // ==================== Economy Methods ====================
 
     /**
@@ -953,5 +860,118 @@ public class City {
             }
         }
         return null;
+    }
+
+    // ==================== Mayor Methods ====================
+
+    /**
+     * Retrieves the mayor of the city.
+     *
+     * @return The mayor of the city, or null if not found.
+     */
+    public Mayor getMayor() {
+        MayorManager mayorManager = MayorManager.getInstance();
+
+        return mayorManager.cityMayor.get(CityManager.getCity(cityUUID));
+    }
+
+    /**
+     * Checks if the city has a mayor.
+     *
+     * @return True if the city has a mayor, false otherwise.
+     */
+    public boolean hasMayor() {
+        Mayor mayor = mayorManager.cityMayor.get(this);
+        if (mayor == null) return false;
+
+        return mayor.getUUID() != null;
+    }
+
+    /**
+     * Retrieves the election type of the city.
+     *
+     * @return The election type of the city, or null if not found.
+     */
+    public ElectionType getElectionType() {
+        Mayor mayor = mayorManager.cityMayor.get(this);
+        if (mayor == null) return null;
+
+        return mayor.getElectionType();
+    }
+
+    /**
+     * Retrieves the law of the city.
+     *
+     * @return The law of the city, or null if not found.
+     */
+    public CityLaw getLaw() {
+        MayorManager mayorManager = MayorManager.getInstance();
+
+        return mayorManager.cityLaws.get(CityManager.getCity(cityUUID));
+    }
+
+    // ==================== War Methods ====================
+
+    /**
+     * Retrieves the power points of the city.
+     *
+     * @return The power points of the city, or 0 if not found.
+     */
+    public boolean isInWar() {
+        return WarManager.isCityInWar(cityUUID);
+    }
+
+    /**
+     * Retrieves the power points of the city.
+     *
+     * @return The power points of the city, or 0 if not found.
+     */
+    public War getWar() {
+        return WarManager.getWarByCity(cityUUID);
+    }
+
+    /**
+     * Retrieves the power points of the city.
+     *
+     * @return The power points of the city, or 0 if not found.
+     */
+    public int getPowerPoints() {
+        if (cachedPowerPoints != null) return cachedPowerPoints;
+
+        try {
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT points FROM city_power WHERE city_uuid = ?");
+            statement.setString(1, cityUUID);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                cachedPowerPoints = rs.getInt("points");
+            } else {
+                cachedPowerPoints = 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            cachedPowerPoints = 0;
+        }
+
+        return cachedPowerPoints;
+    }
+
+    /**
+     * Updates the power of a City by adding or removing points.
+     *
+     * @param point The amount to be added or remove to the existing power.
+     */
+    public void updatePowerPoints(int point) {
+        try {
+            int result = getPowerPoints() + point;
+            if (result < 0) result = 0;
+            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_power SET power_point=? WHERE city_uuid=?;");
+            statement.setInt(1, result);
+            cachedPowerPoints = result;
+            statement.setString(2, cityUUID);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

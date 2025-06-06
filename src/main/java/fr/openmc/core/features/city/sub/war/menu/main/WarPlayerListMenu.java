@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.sub.war.menu;
+package fr.openmc.core.features.city.sub.war.menu.main;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -9,9 +9,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -50,39 +47,33 @@ public class WarPlayerListMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        try {
-            List<UUID> sortedMembers = city.getMembers().stream()
-                    .sorted(Comparator.comparing((UUID uuid) -> !Bukkit.getPlayer(uuid).isOnline())
-                            .thenComparing(uuid -> {
-                                if (city.hasPermission(uuid, CPermission.OWNER)) return 0;
-                                else if (MayorManager.getInstance().cityMayor.get(city).getUUID().equals(uuid))
-                                    return 1;
-                                else return 2;
-                            }))
-                    .toList();
+        List<UUID> sortedMembers = city.getMembers().stream()
+                .sorted(Comparator.comparing((UUID uuid) -> !Bukkit.getPlayer(uuid).isOnline())
+                        .thenComparing(uuid -> {
+                            if (city.hasPermission(uuid, CPermission.OWNER)) return 0;
+                            else if (MayorManager.getInstance().cityMayor.get(city).getUUID().equals(uuid))
+                                return 1;
+                            else return 2;
+                        }))
+                .toList();
 
-            for (UUID uuid : sortedMembers) {
-                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+        for (UUID uuid : sortedMembers) {
+            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-                boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
-                String title;
-                if (hasPermissionOwner) {
-                    title = "Propriétaire ";
-                } else if (MayorManager.getInstance().cityMayor.get(city).getUUID() == uuid) {
-                    title = "Maire ";
-                } else {
-                    title = "Membre ";
-                }
-
-                String finalTitle = title;
-                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
+            boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
+            String title;
+            if (hasPermissionOwner) {
+                title = "Propriétaire ";
+            } else if (MayorManager.getInstance().cityMayor.get(city).getUUID() == uuid) {
+                title = "Maire ";
+            } else {
+                title = "Membre ";
             }
-            return items;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
+
+            String finalTitle = title;
+            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
         }
+
         return items;
     }
 

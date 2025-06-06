@@ -63,7 +63,7 @@ public class MayorNpcMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
-        try {
+
             Mayor mayor = city.getMayor();
 
             Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
@@ -158,13 +158,7 @@ public class MayorNpcMenu extends Menu {
                     );
                 }));
             }
-            return inventory;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
-        }
-        return null;
+        return inventory;
     }
 
     @Override

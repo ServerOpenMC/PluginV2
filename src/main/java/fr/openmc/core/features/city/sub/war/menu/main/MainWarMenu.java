@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.sub.war.menu;
+package fr.openmc.core.features.city.sub.war.menu.main;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -15,12 +15,10 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
+import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.PlayerNameCache;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -58,7 +56,6 @@ public class MainWarMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        try {
             List<City> warCities = CityManager.getCities().stream()
                     .sorted((c1, c2) -> Integer.compare(c2.getOnlineMembers().size(), c1.getOnlineMembers().size()))
                     .collect(Collectors.toList());
@@ -66,6 +63,7 @@ public class MainWarMenu extends PaginatedMenu {
             for (City city : warCities) {
                 if (Objects.equals(city.getUUID(), CityManager.getPlayerCity(player.getUniqueId()).getUUID())) continue;
                 if (city.getType() != CityType.WAR) continue;
+                if (city.getMascot().isImmunity()) continue;
 
                 long onlineCount = city.getOnlineMembers().size();
 
@@ -116,12 +114,6 @@ public class MainWarMenu extends PaginatedMenu {
                 }));
             }
             return items;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
-        }
-        return items;
     }
 
     @Override
@@ -142,7 +134,7 @@ public class MainWarMenu extends PaginatedMenu {
                 Component.text("§e§lCLIQUEZ ICI POUR EN SAVOIR PLUS!")
         );
 
-        map.put(26, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+        map.put(53, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));

@@ -8,9 +8,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityChangeAction;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -49,49 +46,43 @@ public class CityTypeMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> map = new HashMap<>();
         Player player = getOwner();
-        try {
-            City city = CityManager.getPlayerCity(player.getUniqueId());
-            List<Component> peaceInfo = new ArrayList<>();
 
-            boolean enchantPeace = city.getType() == CityType.PEACE;
-            peaceInfo.add(Component.text("§7Votre sécurité est §aassurée§7!"));
-            peaceInfo.add(Component.text(""));
-            peaceInfo.add(Component.text("§6§lTIPS: Parfait pour build, et échanger en toute tranquilité!"));
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        List<Component> peaceInfo = new ArrayList<>();
 
-            map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
-                itemMeta.displayName(Component.text("§aVille en paix"));
-                itemMeta.lore(peaceInfo);
-                itemMeta.setEnchantmentGlintOverride(enchantPeace);
-            }).setOnClick(inventoryClickEvent -> {
-                if (!CityTypeConditions.canCityChangeType(city, player)) return;
+        boolean enchantPeace = city.getType() == CityType.PEACE;
+        peaceInfo.add(Component.text("§7Votre sécurité est §aassurée§7!"));
+        peaceInfo.add(Component.text(""));
+        peaceInfo.add(Component.text("§6§lTIPS: Parfait pour build, et échanger en toute tranquilité!"));
 
-                CityChangeAction.beginChangeCity(player, CityType.PEACE);
-            }));
+        map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
+            itemMeta.displayName(Component.text("§aVille en paix"));
+            itemMeta.lore(peaceInfo);
+            itemMeta.setEnchantmentGlintOverride(enchantPeace);
+        }).setOnClick(inventoryClickEvent -> {
+            if (!CityTypeConditions.canCityChangeType(city, player)) return;
 
-            List<Component> warInfo = new ArrayList<>();
-            warInfo.add(Component.text("§7Un monde de §cguerre §7et de §cconcurrence."));
-            warInfo.add(Component.text(""));
-            warInfo.add(Component.text("§c§l ⚠ ATTENTION"));
-            warInfo.add(Component.text("§8- §cLes villes étant dans le même status que vous, pourront vous §cdéclarer la guerre!"));
-            warInfo.add(Component.text("§6§lTIPS: Idéal pour les tryhardeurs et les compétitifs"));
+            CityChangeAction.beginChangeCity(player, CityType.PEACE);
+        }));
 
-            boolean enchantWar = city.getType() == CityType.WAR;
-            map.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
-                itemMeta.displayName(Component.text("§cVille en guerre"));
-                itemMeta.lore(warInfo);
-                itemMeta.setEnchantmentGlintOverride(enchantWar);
-            }).setOnClick(inventoryClickEvent -> {
-                if (!CityTypeConditions.canCityChangeType(city, player)) return;
+        List<Component> warInfo = new ArrayList<>();
+        warInfo.add(Component.text("§7Un monde de §cguerre §7et de §cconcurrence."));
+        warInfo.add(Component.text(""));
+        warInfo.add(Component.text("§c§l ⚠ ATTENTION"));
+        warInfo.add(Component.text("§8- §cLes villes étant dans le même status que vous, pourront vous §cdéclarer la guerre!"));
+        warInfo.add(Component.text("§6§lTIPS: Idéal pour les tryhardeurs et les compétitifs"));
 
-                CityChangeAction.beginChangeCity(player, CityType.WAR);
-            }));
+        boolean enchantWar = city.getType() == CityType.WAR;
+        map.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
+            itemMeta.displayName(Component.text("§cVille en guerre"));
+            itemMeta.lore(warInfo);
+            itemMeta.setEnchantmentGlintOverride(enchantWar);
+        }).setOnClick(inventoryClickEvent -> {
+            if (!CityTypeConditions.canCityChangeType(city, player)) return;
 
-            return map;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
-        }
+            CityChangeAction.beginChangeCity(player, CityType.WAR);
+        }));
+
         return map;
     }
 

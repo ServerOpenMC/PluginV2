@@ -4,9 +4,6 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.sub.war.WarManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -46,52 +43,53 @@ public class MoreInfoMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        try {
-            List<Component> lore0 = Arrays.asList(
-                    Component.text("§7Choisissez une §6ville §7a attaquer ! "),
-                    Component.text("§7Le nombre de combattant sera le même partout !"),
-                    Component.text("§8§oex. Si vous avez 5 joueurs de connecté et que en face ils sont 2,"),
-                    Component.text("§8§oalors vous aurez le choix de faire un 1vs1 ou un 2vs2"),
-                    Component.text(""),
-                    Component.text("§7Lorsque vous venez declarer la §6guerre §7a une ville, les personnes concernées seront informé "),
-                    Component.text("§7Vous aurez §6" + WarManager.TIME_PREPARATION + " min §7de préparation, ce qui vous laisse le temps de s’équiper et d’aller au front !")
-            );
+        List<Component> lore0 = Arrays.asList(
+                Component.text("§7Choisissez une §6ville §7a attaquer ! "),
+                Component.text("§7Le nombre de combattant sera le même partout !"),
+                Component.text("§8§oex. Si vous avez 5 joueurs de connecté et que en face ils sont 2,"),
+                Component.text("§8§oalors vous aurez le choix de faire un 1vs1 ou un 2vs2"),
+                Component.text(""),
+                Component.text(""),
+                Component.text(""),
+                Component.text(""),
+                Component.text(""),
+                Component.text(""),
+                Component.text(""),
+                Component.text(""),
+                Component.text("§7Lorsque vous venez declarer la §6guerre §7a une ville, les personnes concernées seront informé "),
+                Component.text("§7Vous aurez §6" + WarManager.TIME_PREPARATION + " min §7de préparation"),
+                Component.text("§7ce qui vous laisse le temps de s’équiper et d’aller au front !")
+        );
 
-            List<Component> lore1 = Arrays.asList(
-                    Component.text("§7Le §ccombat §7commence, la partie se finira §c30 min §7après le commencent."),
-                    Component.text("§7Elle peut être finie avant si la §cMascotte ennemie §7est tué. "),
-                    Component.text("§7Et pendant ce moment, vous pouvez §ctout faire §7dans la ville ennemie.")
-            );
+        List<Component> lore1 = Arrays.asList(
+                Component.text("§7Le §ccombat §7commence, la partie se finira §c30 min §7après le commencent."),
+                Component.text("§7Elle peut être finie avant si la §cMascotte ennemie §7est tué. "),
+                Component.text("§7Et pendant ce moment, vous pouvez §ctout faire §7dans la ville ennemie.")
+        );
 
-            List<Component> lore2 = Arrays.asList(
-                    Component.text("§7La fin de la guerre, la §fpaix §7s’impose entre les deux camps."),
-                    Component.text("§7Le §fvainqueur §7est désigné, la §frécompense §7est donnée."),
-                    Component.text("§7Et les deux villes obtiennent une immunité de §f2 jours §7!")
-            );
+        List<Component> lore2 = Arrays.asList(
+                Component.text("§7La fin de la guerre, la §fpaix §7s’impose entre les deux camps."),
+                Component.text("§7Le §fvainqueur §7est désigné, la §frécompense §7est donnée."),
+                Component.text("§7Et les deux villes obtiennent une immunité de §f2 jours §7!")
+        );
 
-            inventory.put(11, new ItemBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
-                itemMeta.displayName(Component.text("§r§6La Préparation - " + WarManager.TIME_PREPARATION + " min"));
-                itemMeta.lore(lore0);
-            }));
+        inventory.put(11, new ItemBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
+            itemMeta.displayName(Component.text("§r§6La Préparation - " + WarManager.TIME_PREPARATION + " min"));
+            itemMeta.lore(lore0);
+        }));
 
-            inventory.put(13, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
-                itemMeta.displayName(Component.text("§r§cLe Combat - " + WarManager.TIME_FIGHT + " min"));
-                itemMeta.lore(lore1);
-            }));
+        inventory.put(13, new ItemBuilder(this, Material.RED_STAINED_GLASS_PANE, itemMeta -> {
+            itemMeta.displayName(Component.text("§r§cLe Combat - " + WarManager.TIME_FIGHT + " min"));
+            itemMeta.lore(lore1);
+        }));
 
-            inventory.put(15, new ItemBuilder(this, Material.WHITE_STAINED_GLASS_PANE, itemMeta -> {
-                itemMeta.displayName(Component.text("§r§eLes Résultats"));
-                itemMeta.lore(lore2);
-            }));
+        inventory.put(15, new ItemBuilder(this, Material.WHITE_STAINED_GLASS_PANE, itemMeta -> {
+            itemMeta.displayName(Component.text("§r§eLes Résultats"));
+            itemMeta.lore(lore2);
+        }));
 
-            inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
+        inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
 
-            return inventory;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
-        }
         return inventory;
     }
 

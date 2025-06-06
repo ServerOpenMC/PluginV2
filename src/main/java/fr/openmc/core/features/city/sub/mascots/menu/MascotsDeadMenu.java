@@ -46,7 +46,7 @@ public class MascotsDeadMenu extends Menu {
         requiredItemsLore.add(Component.text("§bRequière :"));
 
         int level = mascot.getLevel();
-        requiredItems = MascotsLevels.valueOf("level"+level).getRequiredItems();
+        requiredItems = MascotsLevels.valueOf("level" + level).getRequiredItems();
 
         for (ItemStack item : getOwner().getInventory().getContents()) {
             if (item == null) continue;
@@ -85,42 +85,35 @@ public class MascotsDeadMenu extends Menu {
         Map<Integer, ItemStack> map = new HashMap<>();
         Player player = getOwner();
 
-        try {
-            map.put(4, new ItemBuilder(this, Material.APPLE, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Soigner votre §cMascotte"));
-                itemMeta.lore(requiredItemsLore);
-            }).setOnClick(inventoryClickEvent -> {
-                City city = CityManager.getCity(city_uuid);
-                if (city == null) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    player.closeInventory();
-                    return;
-                }
-                if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_HEAL)) {
-                    if (hasRequiredItems(player, requiredItems)) {
-                        removeRequiredItems(player, requiredItems);
-                        MascotsManager.reviveMascots(city_uuid);
-                    }
-                } else {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                }
+        map.put(4, new ItemBuilder(this, Material.APPLE, itemMeta -> {
+            itemMeta.displayName(Component.text("§7Soigner votre §cMascotte"));
+            itemMeta.lore(requiredItemsLore);
+        }).setOnClick(inventoryClickEvent -> {
+            City city = CityManager.getCity(city_uuid);
+            if (city == null) {
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 player.closeInventory();
-            }));
-
-            map.put(0, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.displayName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
-            }).setOnClick(event -> {
-                CityMenu menu = new CityMenu(player);
-                menu.open();
-            }));
-
-            return map;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                return;
+            }
+            if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_HEAL)) {
+                if (hasRequiredItems(player, requiredItems)) {
+                    removeRequiredItems(player, requiredItems);
+                    MascotsManager.reviveMascots(city_uuid);
+                }
+            } else {
+                MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            }
             player.closeInventory();
-            e.printStackTrace();
-        }
+        }));
+
+        map.put(0, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
+        }).setOnClick(event -> {
+            CityMenu menu = new CityMenu(player);
+            menu.open();
+        }));
+
         return map;
     }
 
@@ -138,7 +131,7 @@ public class MascotsDeadMenu extends Menu {
         for (Map.Entry<Material, Integer> entry : requiredItems.entrySet()) {
             Material material = entry.getKey();
             int amount = entry.getValue();
-            if (!ItemUtils.hasEnoughItems(player, material, amount)){
+            if (!ItemUtils.hasEnoughItems(player, material, amount)) {
                 return false;
             }
         }

@@ -2,6 +2,9 @@ package fr.openmc.api.menulib;
 
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -116,15 +119,21 @@ public abstract class Menu implements InventoryHolder {
 	 * the owner player.
 	 */
 	public final void open() {
-		if (getPermission() != null && ! getPermission().isEmpty()) {
-			if (! owner.hasPermission(getPermission())) {
-				owner.sendMessage(getNoPermissionMessage());
-				return;
+		try {
+			if (getPermission() != null && !getPermission().isEmpty()) {
+				if (!owner.hasPermission(getPermission())) {
+					owner.sendMessage(getNoPermissionMessage());
+					return;
+				}
 			}
+			Inventory inventory = getInventory();
+			getContent().forEach(inventory::setItem);
+			owner.openInventory(inventory);
+		} catch (Exception e) {
+			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			owner.closeInventory();
+			e.printStackTrace();
 		}
-		Inventory inventory = getInventory();
-		getContent().forEach(inventory::setItem);
-		owner.openInventory(inventory);
 	}
 	
 	/**
@@ -166,8 +175,14 @@ public abstract class Menu implements InventoryHolder {
 	 * and opens it by calling its {@code open} method.
 	 */
 	public final void back() {
-		Menu lastMenu = MenuLib.getLastMenu(owner);
-		lastMenu.open();
+		try {
+			Menu lastMenu = MenuLib.getLastMenu(owner);
+			lastMenu.open();
+		} catch (Exception e) {
+			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			owner.closeInventory();
+			e.printStackTrace();
+		}
 	}
 	
 	/**

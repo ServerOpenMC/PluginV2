@@ -37,7 +37,6 @@ public class MascotsManager {
 
     public static long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L; // 7 jours en millisecondes
 
-    public static NamespacedKey chestKey;
     public static NamespacedKey mascotsKey;
     public static List<Mascot> mascots = new ArrayList<>();
 
@@ -52,7 +51,6 @@ public class MascotsManager {
             e.printStackTrace();
         }
 
-        chestKey = new NamespacedKey(plugin, "mascots_chest");
         mascotsKey = new NamespacedKey(plugin, "mascotsKey");
 
         mascots = getAllMascots();

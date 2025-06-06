@@ -1,6 +1,10 @@
 package fr.openmc.api.menulib;
 
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -136,8 +140,10 @@ public final class MenuLib implements Listener {
 						});
 					}
 				});
-			} catch (Exception ignore) {
-			
+			} catch (Exception ex) {
+				MessagesManager.sendMessage(menu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+				menu.getOwner().closeInventory();
+				ex.printStackTrace();
 			}
 		}
 	}

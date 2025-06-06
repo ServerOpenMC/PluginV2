@@ -1,6 +1,5 @@
 package fr.openmc.core.features.homes.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.Home;
@@ -32,6 +31,7 @@ public class HomeMenu extends PaginatedMenu {
 
     private final OfflinePlayer target;
     private boolean wasTarget = false;
+
     public HomeMenu(Player player, OfflinePlayer target) {
         super(player);
         this.target = target;
@@ -68,34 +68,27 @@ public class HomeMenu extends PaginatedMenu {
     @Override
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        try {
-            for(Home home : HomesManager.getHomes(target.getUniqueId())) {
-                items.add(new ItemBuilder(this, HomeUtil.getHomeIconItem(home), itemMeta -> {
-                    itemMeta.setDisplayName("§e" + home.getName());
-                    itemMeta.setLore(List.of(
-                            ChatColor.GRAY + "■ §aClique §2gauche pour vous téléporter",
-                            ChatColor.GRAY + "■ §cCliquez §4droit §cpour configurer le home"
-                    ));
-                }).setOnClick(event -> {
-                    if(event.isLeftClick()) {
-                        this.getInventory().close();
-                        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez été téléporté à votre home §e" + home.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
-                        getOwner().teleport(home.getLocation());
-                    } else if(event.isRightClick()) {
-                        Player player = (Player) event.getWhoClicked();
-                        new HomeConfigMenu(player, home).open();
-                    }
-                }));
-            }
-
-            return items;
-            } catch (Exception e) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-                getOwner().closeInventory();
-                e.printStackTrace();
-            }
-            return items;
+        for (Home home : HomesManager.getHomes(target.getUniqueId())) {
+            items.add(new ItemBuilder(this, HomeUtil.getHomeIconItem(home), itemMeta -> {
+                itemMeta.setDisplayName("§e" + home.getName());
+                itemMeta.setLore(List.of(
+                        ChatColor.GRAY + "■ §aClique §2gauche pour vous téléporter",
+                        ChatColor.GRAY + "■ §cCliquez §4droit §cpour configurer le home"
+                ));
+            }).setOnClick(event -> {
+                if (event.isLeftClick()) {
+                    this.getInventory().close();
+                    MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez été téléporté à votre home §e" + home.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                    getOwner().teleport(home.getLocation());
+                } else if (event.isRightClick()) {
+                    Player player = (Player) event.getWhoClicked();
+                    new HomeConfigMenu(player, home).open();
+                }
+            }));
         }
+
+        return items;
+    }
 
     @Override
     public List<Integer> getTakableSlot() {
@@ -106,37 +99,38 @@ public class HomeMenu extends PaginatedMenu {
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
 
-            if(!wasTarget) {
-                map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information").getBest(),
-                        itemMeta -> {
-                            itemMeta.setDisplayName("§8(§bⓘ§8) §6Informations sur vos homes");
-                            itemMeta.setLore(List.of(
-                                    "§8→ §6Chaque icon qui représente un home est lié au nom du home, par exemple, si vous appelé votre home 'maison', l'icône sera une maison",
-                                    "§7",
-                                    "§8› §6Vous pouvez configurer le home en effectuant un clique droit sur l'icône du home.",
-                                    "§8› §6Vous pouvez vous téléporter à votre home en effectuant un clique gauche sur l'icône du home."
-                            ));
-                        }
+        if (!wasTarget) {
+            map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information").getBest(),
+                    itemMeta -> {
+                        itemMeta.setDisplayName("§8(§bⓘ§8) §6Informations sur vos homes");
+                        itemMeta.setLore(List.of(
+                                "§8→ §6Chaque icon qui représente un home est lié au nom du home, par exemple, si vous appelé votre home 'maison', l'icône sera une maison",
+                                "§7",
+                                "§8› §6Vous pouvez configurer le home en effectuant un clique droit sur l'icône du home.",
+                                "§8› §6Vous pouvez vous téléporter à votre home en effectuant un clique gauche sur l'icône du home."
+                        ));
+                    }
                     )
-                );
+            );
 
-                map.put(53, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(), itemMeta -> {
-                    itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Click ici)");
-                    itemMeta.setLore(List.of(
+            map.put(53, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(), itemMeta -> {
+                itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Click ici)");
+                itemMeta.setLore(List.of(
                         "§6Cliquez pour améliorer vos homes"
-                    ));
-                }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));
-            }
+                ));
+            }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));
+        }
 
-            map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-            map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
-            map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+        map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
+        map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         return map;
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
 
     @Override
     public void onClose(InventoryCloseEvent event) {

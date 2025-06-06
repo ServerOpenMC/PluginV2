@@ -4,7 +4,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.sub.war.menu.MainWarMenu;
+import fr.openmc.core.features.city.sub.war.menu.main.MainWarMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

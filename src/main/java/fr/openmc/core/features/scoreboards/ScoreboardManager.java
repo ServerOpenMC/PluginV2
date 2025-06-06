@@ -5,12 +5,15 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.sub.war.War;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.ContestData;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.DirectionUtils;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.LuckPermsApi;
 import fr.openmc.core.utils.api.PapiApi;
@@ -22,8 +25,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -160,13 +162,54 @@ public class ScoreboardManager implements Listener {
         }
 
         objective.getScore("§7").setScore(12);
-        
+
         objective.getScore("§8• §fNom: §7"+player.getName()).setScore(11);
 
         if (player.getWorld().getName().equalsIgnoreCase("world")) {
             City city = CityManager.getPlayerCity(player.getUniqueId());
             String cityName = city != null ? city.getName() : "Aucune";
             objective.getScore("§8• §fVille§7: "+cityName).setScore(10);
+
+            War war = city != null ? city.getWar() : null;
+
+            if (war != null && city.isInWar()) {
+                objective.getScore(" ").setScore(9);
+                objective.getScore("§c§l⚔ GUERRE EN COURS ⚔").setScore(8);
+
+                String ennemyName = war.getCityAttacker().equals(city) ?
+                        war.getCityDefender().getName() : war.getCityAttacker().getName();
+                objective.getScore("§8• §cEnnemi§7: " + ennemyName).setScore(7);
+
+                War.WarPhase phase = war.getPhase();
+                objective.getScore("§8• §6Phase§7: " + WarManager.getFormattedPhase(phase)).setScore(6);
+
+                Chunk chunk = city.getMascot().getChunk();
+                World world = chunk.getWorld();
+                int x = (chunk.getX() << 4) + 8;
+                int z = (chunk.getZ() << 4) + 8;
+                int y = world.getHighestBlockYAt(x, z);
+                Location centerChunkLocation = new Location(world, x, y, z);
+                String direction = DirectionUtils.getDirectionEmoji(player.getLocation(), centerChunkLocation);
+                double distance = centerChunkLocation.distance(player.getLocation());
+                int rounded = (int) Math.round(distance);
+                objective.getScore("§8• §cMascotte: " + direction + " (" + rounded + "m)").setScore(6);
+
+                switch (war.getPhase()) {
+                    case PREPARATION:
+                        int secondsPreparationRemaining = war.getPreparationTimeRemaining();
+                        String timePreparationFormatted = DateUtils.convertSecondToTime(secondsPreparationRemaining);
+                        objective.getScore("§8• §eDébut dans§7: " + timePreparationFormatted).setScore(5);
+                        break;
+                    case COMBAT:
+                        int secondsCombatRemaining = war.getCombatTimeRemaining();
+                        String timeCombatFormatted = DateUtils.convertSecondToTime(secondsCombatRemaining);
+                        objective.getScore("§8• §eFin dans§7: " + timeCombatFormatted).setScore(5);
+                        break;
+                    case ENDED:
+                        break;
+                }
+
+            }
         }
 
         if (CompanyManager.getInstance().isInCompany(player.getUniqueId())){

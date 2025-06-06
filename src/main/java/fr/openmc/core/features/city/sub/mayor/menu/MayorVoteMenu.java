@@ -48,75 +48,70 @@ public class MayorVoteMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        try {
-            MayorManager mayorManager = MayorManager.getInstance();
+        MayorManager mayorManager = MayorManager.getInstance();
 
-            City city = CityManager.getPlayerCity(player.getUniqueId());
-            assert city != null;
-
-
-            int totalVotes = city.getMembers().size();
-            for (MayorCandidate candidate : mayorManager.cityElections.get(city)) {
-                Perks perk2 = PerkManager.getPerkById(candidate.getIdChoicePerk2());
-                Perks perk3 = PerkManager.getPerkById(candidate.getIdChoicePerk3());
-                NamedTextColor color = candidate.getCandidateColor();
-                int vote = candidate.getVote();
-                MayorCandidate playerVote = mayorManager.getPlayerVote(player);
-
-                List<Component> loreMayor = new ArrayList<>(List.of(
-                        Component.text("§8Candidat pour le Maire de " + city.getName())
-                ));
-                loreMayor.add(Component.text(""));
-                loreMayor.add(Component.text("§7Votes : ").append(Component.text(vote).color(color).decoration(TextDecoration.ITALIC, false)));
-                loreMayor.add(Component.text(" §8[" + getProgressBar(vote, totalVotes, color) + "§8] §7(" + getVotePercentage(vote, totalVotes) + "%)"));
-                loreMayor.add(Component.text(""));
-                loreMayor.add(Component.text(perk2.getName()));
-                loreMayor.addAll(perk2.getLore());
-                loreMayor.add(Component.text(""));
-                loreMayor.add(Component.text(perk3.getName()));
-                loreMayor.addAll(perk3.getLore());
-                loreMayor.add(Component.text(""));
-                loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
-
-                boolean ench;
-                if (candidate == playerVote) {
-                    ench = true;
-                } else {
-                    ench = false;
-                }
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        assert city != null;
 
 
-                ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getUUID()), itemMeta -> {
-                    itemMeta.displayName(Component.text("Maire " + candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false));
-                    itemMeta.lore(loreMayor);
-                    itemMeta.setEnchantmentGlintOverride(ench);
-                }).setOnClick(inventoryClickEvent -> {
-                    if (mayorManager.hasVoted(player)) {
-                        if (candidate == playerVote) {
-                            MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6Maire"), Prefix.MAYOR, MessageType.ERROR, false);
-                            return;
-                        };
+        int totalVotes = city.getMembers().size();
+        for (MayorCandidate candidate : mayorManager.cityElections.get(city)) {
+            Perks perk2 = PerkManager.getPerkById(candidate.getIdChoicePerk2());
+            Perks perk3 = PerkManager.getPerkById(candidate.getIdChoicePerk3());
+            NamedTextColor color = candidate.getCandidateColor();
+            int vote = candidate.getVote();
+            MayorCandidate playerVote = mayorManager.getPlayerVote(player);
 
-                        playerVote.setVote(playerVote.getVote()-1);
-                        mayorManager.removeVotePlayer(player);
-                        mayorManager.voteCandidate(city, player, candidate);
-                    } else {
-                       mayorManager.voteCandidate(city, player, candidate);
-                    }
-                    MessagesManager.sendMessage(player, Component.text("§7Vous avez voté pour le ").append(Component.text("Maire " + candidate.getName()).color(color)), Prefix.MAYOR, MessageType.SUCCESS, true);
+            List<Component> loreMayor = new ArrayList<>(List.of(
+                    Component.text("§8Candidat pour le Maire de " + city.getName())
+            ));
+            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.text("§7Votes : ").append(Component.text(vote).color(color).decoration(TextDecoration.ITALIC, false)));
+            loreMayor.add(Component.text(" §8[" + getProgressBar(vote, totalVotes, color) + "§8] §7(" + getVotePercentage(vote, totalVotes) + "%)"));
+            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.text(perk2.getName()));
+            loreMayor.addAll(perk2.getLore());
+            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.text(perk3.getName()));
+            loreMayor.addAll(perk3.getLore());
+            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
 
-                    new MayorVoteMenu(player).open();
-                });
-
-                items.add(mayorItem);
-
+            boolean ench;
+            if (candidate == playerVote) {
+                ench = true;
+            } else {
+                ench = false;
             }
-            return items;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
+
+
+            ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getUUID()), itemMeta -> {
+                itemMeta.displayName(Component.text("Maire " + candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false));
+                itemMeta.lore(loreMayor);
+                itemMeta.setEnchantmentGlintOverride(ench);
+            }).setOnClick(inventoryClickEvent -> {
+                if (mayorManager.hasVoted(player)) {
+                    if (candidate == playerVote) {
+                        MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6Maire"), Prefix.MAYOR, MessageType.ERROR, false);
+                        return;
+                    }
+                    ;
+
+                    playerVote.setVote(playerVote.getVote() - 1);
+                    mayorManager.removeVotePlayer(player);
+                    mayorManager.voteCandidate(city, player, candidate);
+                } else {
+                    mayorManager.voteCandidate(city, player, candidate);
+                }
+                MessagesManager.sendMessage(player, Component.text("§7Vous avez voté pour le ").append(Component.text("Maire " + candidate.getName()).color(color)), Prefix.MAYOR, MessageType.SUCCESS, true);
+
+                new MayorVoteMenu(player).open();
+            });
+
+            items.add(mayorItem);
+
         }
+
         return items;
     }
 
