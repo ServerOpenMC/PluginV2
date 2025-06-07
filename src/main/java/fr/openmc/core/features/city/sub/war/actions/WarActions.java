@@ -1,21 +1,29 @@
 package fr.openmc.core.features.city.sub.war.actions;
 
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.war.WarManager;
+import fr.openmc.core.features.city.sub.war.WarPendingDefense;
 import fr.openmc.core.features.city.sub.war.menu.selection.WarChooseParticipantsMenu;
 import fr.openmc.core.features.city.sub.war.menu.selection.WarChooseSizeMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WarActions {
 
@@ -119,8 +127,7 @@ public class WarActions {
 
         ConfirmMenu menu = new ConfirmMenu(player,
                 () -> {
-                    // OUI
-                    //lancer message en face et prévenir cityLaunch que tata et bidule
+                    finishLaunchWar(player, cityLaunch, cityAttack, attackers);
                 },
                 () -> {
                     player.closeInventory();
@@ -136,6 +143,93 @@ public class WarActions {
                 )
         );
         menu.open();
+
+    }
+
+    public static void finishLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
+        if (cityLaunch.isInWar() || cityAttack.isInWar()) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Une des villes est déjà en guerre!"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        int requiredParticipants = attackers.size();
+        Set<UUID> allDefenders = new HashSet<>(cityAttack.getMembers());
+
+        TextComponent info = Component.text("§c⚔ Votre ville est attaquée par §e" + cityLaunch.getName() + "§c, il vous faut §4" + requiredParticipants + " §c!");
+        TextComponent clickToJoin = Component.text("§aCliquez ici pour rejoindre la défense !")
+                .clickEvent(ClickEvent.runCommand("/war acceptdefense"))
+                .hoverEvent(HoverEvent.showText(Component.text("§aCliquez pour participer à la guerre")));
+
+        for (UUID uuid : allDefenders) {
+            Player defender = Bukkit.getPlayer(uuid);
+            if (defender != null && defender.isOnline()) {
+                MessagesManager.sendMessage(defender, info, Prefix.CITY, MessageType.WARNING, false);
+                defender.sendMessage(clickToJoin);
+            }
+        }
+
+        TextComponent infoAttackers = Component.text("§c⚔ Vous avez été choisi pour se battre contre §e" + cityLaunch.getName());
+
+        for (UUID uuid : attackers) {
+            Player attacker = Bukkit.getPlayer(uuid);
+            if (attacker != null && attacker.isOnline()) {
+                MessagesManager.sendMessage(attacker, infoAttackers, Prefix.CITY, MessageType.INFO, false);
+            }
+        }
+
+        WarPendingDefense pending = new WarPendingDefense(cityLaunch, requiredParticipants);
+        WarManager.addPendingDefense(pending);
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            List<UUID> chosenDefenders = new ArrayList<>(pending.getAcceptedDefenders());
+
+            if (chosenDefenders.size() < requiredParticipants) {
+                List<UUID> available = allDefenders.stream()
+                        .filter(uuid -> !chosenDefenders.contains(uuid))
+                        .filter(uuid -> Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).isOnline())
+                        .collect(Collectors.toList());
+
+                Collections.shuffle(available);
+
+                for (UUID uuid : available) {
+                    if (chosenDefenders.size() >= requiredParticipants) break;
+                    chosenDefenders.add(uuid);
+                }
+            }
+
+            if (chosenDefenders.size() < requiredParticipants) {
+                for (UUID uuid : cityLaunch.getMembers()) {
+                    Player pl = Bukkit.getPlayer(uuid);
+                    if (pl != null) {
+                        MessagesManager.sendMessage(pl,
+                                Component.text("La guerre a été annulée car la ville ennemie n'avait pas assez de défenseurs."),
+                                Prefix.CITY, MessageType.ERROR, false);
+                        return;
+                    }
+                }
+                return;
+            }
+
+            Sound sound = Sound.EVENT_RAID_HORN;
+
+            for (UUID uuid : cityLaunch.getMembers()) {
+                Player p = Bukkit.getPlayer(uuid);
+                if (p != null && p.isOnline()) {
+                    p.playSound(p.getLocation(), sound, SoundCategory.MASTER, 1f, 1f);
+                }
+            }
+
+            for (UUID uuid : cityAttack.getMembers()) {
+                Player p = Bukkit.getPlayer(uuid);
+                if (p != null && p.isOnline()) {
+                    p.playSound(p.getLocation(), sound, SoundCategory.MASTER, 1f, 1f);
+                }
+            }
+
+            WarManager.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
+        }, 20 * 120L); // 2 minutes
 
     }
 }

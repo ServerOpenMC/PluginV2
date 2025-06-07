@@ -4,6 +4,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.war.WarManager;
+import fr.openmc.core.features.city.sub.war.WarPendingDefense;
 import fr.openmc.core.features.city.sub.war.menu.main.MainWarMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -12,8 +14,12 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"guerre", "war"})
+@CommandPermission("omc.commands.city.war")
 public class WarCommand {
     @DefaultFor("~")
     void main(Player player) {
@@ -38,5 +44,36 @@ public class WarCommand {
         }
 
         new MainWarMenu(player).open();
+    }
+
+    @Subcommand("acceptdefense")
+    @CommandPermission("omc.commands.city.war.acceptdefense")
+    @Description("Avoir des informations sur votre ville")
+    public void acceptDefense(Player player) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        if (city == null) {
+            player.sendMessage("§cVous n'avez pas de ville.");
+            return;
+        }
+
+        WarPendingDefense pending = WarManager.getPendingDefenseFor(city);
+        if (pending == null) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Aucune guerre en cours de préparation."),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        boolean accepted = pending.accept(player.getUniqueId());
+        if (!accepted) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Le nombre maximal de défenseurs est atteint."),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        MessagesManager.sendMessage(player,
+                Component.text("Vous participez désormais à la défense ! Plus aucun retour en arrière possible."),
+                Prefix.CITY, MessageType.ERROR, false);
     }
 }

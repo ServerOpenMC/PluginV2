@@ -17,6 +17,8 @@ public class WarManager {
     public static final Map<String, War> warsByAttacker = new HashMap<>();
     public static final Map<String, War> warsByDefender = new HashMap<>();
 
+    private static final Map<String, WarPendingDefense> pendingDefenses = new HashMap<>();
+
     public WarManager() {
 
     }
@@ -54,5 +56,17 @@ public class WarManager {
             case COMBAT -> "Combat";
             case ENDED -> "Fin";
         };
+    }
+
+    public static void addPendingDefense(WarPendingDefense defense) {
+        pendingDefenses.put(defense.getDefender().getUUID(), defense);
+    }
+
+    public static WarPendingDefense getPendingDefenseFor(City city) {
+        return pendingDefenses.get(city.getUUID());
+    }
+
+    public static void removePendingDefense(City city) {
+        pendingDefenses.remove(city.getUUID());
     }
 }
