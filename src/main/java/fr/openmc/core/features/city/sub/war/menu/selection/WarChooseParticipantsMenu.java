@@ -123,10 +123,9 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         }).setNextPageButton());
 
         map.put(53, new ItemBuilder(this, selected.size() == count ? Material.LIME_CONCRETE : Material.RED_CONCRETE, itemMeta -> {
-            itemMeta.displayName(Component.text(selected.size() == count ? "§a" : "§c" + "Valider la sélection"));
+            itemMeta.displayName(Component.text((selected.size() == count ? "§a" : "§c") + "Valider la sélection"));
             itemMeta.lore(List.of(
-                    Component.text("§7Participants sélectionnés : §a" + selected.size() + "/" + count),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                    Component.text("§7Participants sélectionnés : §a" + selected.size() + "/" + count)
             ));
         }).setOnClick(e -> {
             if (selected.size() != count) {
@@ -139,7 +138,6 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
             List<UUID> attackers = selected.stream().toList();
 
             WarActions.confirmLaunchWar(player, cityLaunch, cityAttack, attackers);
-            player.closeInventory();
         }));
 
 

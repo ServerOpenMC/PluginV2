@@ -48,7 +48,7 @@ public class WarCommand {
 
     @Subcommand("acceptdefense")
     @CommandPermission("omc.commands.city.war.acceptdefense")
-    @Description("Avoir des informations sur votre ville")
+    @Description("Accepter de participer a une guerre")
     public void acceptDefense(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {

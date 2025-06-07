@@ -59,7 +59,19 @@ public class ScoreboardManager implements Listener {
 
         OMCPlugin.registerEvents(this);
         CommandsManager.getHandler().register(this);
+
         Bukkit.getScheduler().runTaskTimer(plugin, this::updateAllScoreboards, 0L, 20L * 5); //20x5 = 5s
+
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (disabledPlayers.contains(player.getUniqueId())) continue;
+
+                City city = CityManager.getPlayerCity(player.getUniqueId());
+                if (city == null || !city.isInWar()) continue;
+
+                updateScoreboard(player);
+            }
+        }, 0L, 20L); // 1s
         if (LuckPermsApi.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
     }
 
@@ -161,27 +173,27 @@ public class ScoreboardManager implements Listener {
             return;
         }
 
-        objective.getScore("§7").setScore(12);
+        objective.getScore("§7").setScore(19);
 
-        objective.getScore("§8• §fNom: §7"+player.getName()).setScore(11);
+        objective.getScore("§8• §fNom: §7" + player.getName()).setScore(18);
 
         if (player.getWorld().getName().equalsIgnoreCase("world")) {
             City city = CityManager.getPlayerCity(player.getUniqueId());
             String cityName = city != null ? city.getName() : "Aucune";
-            objective.getScore("§8• §fVille§7: "+cityName).setScore(10);
+            objective.getScore("§8• §fVille§7: " + cityName).setScore(17);
 
             War war = city != null ? city.getWar() : null;
 
             if (war != null && city.isInWar()) {
-                objective.getScore(" ").setScore(9);
-                objective.getScore("§c§l⚔ GUERRE EN COURS ⚔").setScore(8);
+                objective.getScore("  ").setScore(16);
+                objective.getScore("§c§l⚔ GUERRE EN COURS ⚔").setScore(15);
 
                 String ennemyName = war.getCityAttacker().equals(city) ?
                         war.getCityDefender().getName() : war.getCityAttacker().getName();
-                objective.getScore("§8• §cEnnemi§7: " + ennemyName).setScore(7);
+                objective.getScore("§8• §cEnnemi§7: " + ennemyName).setScore(14);
 
                 War.WarPhase phase = war.getPhase();
-                objective.getScore("§8• §6Phase§7: " + WarManager.getFormattedPhase(phase)).setScore(6);
+                objective.getScore("§8• §6Phase§7: " + WarManager.getFormattedPhase(phase)).setScore(13);
 
                 Chunk chunk = city.getMascot().getChunk();
                 World world = chunk.getWorld();
@@ -189,26 +201,27 @@ public class ScoreboardManager implements Listener {
                 int z = (chunk.getZ() << 4) + 8;
                 int y = world.getHighestBlockYAt(x, z);
                 Location centerChunkLocation = new Location(world, x, y, z);
-                String direction = DirectionUtils.getDirectionEmoji(player.getLocation(), centerChunkLocation);
+                String direction = DirectionUtils.getDirectionEmoji(player.getEyeLocation(), centerChunkLocation);
                 double distance = centerChunkLocation.distance(player.getLocation());
                 int rounded = (int) Math.round(distance);
-                objective.getScore("§8• §cMascotte: " + direction + " (" + rounded + "m)").setScore(6);
+                objective.getScore("§8• §cMascotte: " + direction + " (" + rounded + "m)").setScore(12);
 
                 switch (war.getPhase()) {
                     case PREPARATION:
                         int secondsPreparationRemaining = war.getPreparationTimeRemaining();
                         String timePreparationFormatted = DateUtils.convertSecondToTime(secondsPreparationRemaining);
-                        objective.getScore("§8• §eDébut dans§7: " + timePreparationFormatted).setScore(5);
+                        objective.getScore("§8• §eDébut dans§7: " + timePreparationFormatted).setScore(11);
                         break;
                     case COMBAT:
                         int secondsCombatRemaining = war.getCombatTimeRemaining();
                         String timeCombatFormatted = DateUtils.convertSecondToTime(secondsCombatRemaining);
-                        objective.getScore("§8• §eFin dans§7: " + timeCombatFormatted).setScore(5);
+                        objective.getScore("§8• §eFin dans§7: " + timeCombatFormatted).setScore(11);
                         break;
                     case ENDED:
                         break;
                 }
 
+                objective.getScore("  ").setScore(10);
             }
         }
 
