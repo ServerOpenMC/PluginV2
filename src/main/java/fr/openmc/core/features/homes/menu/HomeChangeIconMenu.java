@@ -10,7 +10,6 @@ import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.icons.IconCategory;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -19,9 +18,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
@@ -155,21 +152,21 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         Map<Integer, ItemStack> map = new HashMap<>();
 
         map.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:previous_page")).getBest(),
-                itemMeta -> itemMeta.setDisplayName("§7Retour")).setBackButton());
+                itemMeta -> itemMeta.displayName(Component.text("§7Retour"))).setBackButton());
 
         ItemStack customFilter = new ItemStack(Material.EMERALD);
         ItemMeta customMeta = customFilter.getItemMeta();
-        customMeta.setDisplayName("§aIcônes Custom");
-        List<String> customLore = new ArrayList<>();
-        customLore.add("§7Affiche uniquement les icônes custom");
+        customMeta.displayName(Component.text("§aIcônes Custom"));
+        List<Component> customLore = new ArrayList<>();
+        customLore.add(Component.text("§7Affiche uniquement les icônes custom"));
         if (currentCategory == IconCategory.CUSTOM) {
-            customLore.add("§a✓ Actif");
+            customLore.add(Component.text("§a✓ Actif"));
             customMeta.addEnchant(Enchantment.SHARPNESS, 1, true);
             customMeta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
         } else {
-            customLore.add("§7Cliquez pour activer");
+            customLore.add(Component.text("§7Cliquez pour activer"));
         }
-        customMeta.setLore(customLore);
+        customMeta.lore(customLore);
         customFilter.setItemMeta(customMeta);
 
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
@@ -177,13 +174,13 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         map.put(51, new ItemBuilder(this, Material.OAK_SIGN, meta -> {
-            meta.setDisplayName("§eRecherche");
-            List<String> lore = new ArrayList<>();
-            if (!searchQuery.isEmpty()) lore.add("§7Recherche actuelle: §f" + searchQuery);
-            lore.add("");
-            lore.add("§7■ §aCliquez §2gauche §apour rechercher");
-            lore.add("§7■ §cCliquez §4droit §cpour réinitialiser");
-            meta.setLore(lore);
+            meta.displayName(Component.text("§eRecherche"));
+            List<Component> lore = new ArrayList<>();
+            if (!searchQuery.isEmpty()) lore.add(Component.text("§7Recherche actuelle: §f" + searchQuery));
+            lore.add(Component.empty());
+            lore.add(Component.text("§7■ §aCliquez §2gauche §apour rechercher"));
+            lore.add(Component.text("§7■ §cCliquez §4droit §cpour réinitialiser"));
+            meta.lore(lore);
         }).setOnClick(event -> {
             if (event.getClick().isLeftClick()) {
                 getOwner().closeInventory();
@@ -222,7 +219,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
         for (int slot : List.of(46, 47, 52, 53)) {
             map.put(slot, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_invisible")).getBest(),
-                    itemMeta -> itemMeta.setDisplayName("§7")));
+                    itemMeta -> itemMeta.displayName(Component.empty())));
         }
 
         map.put(53, new ItemBuilder(this, Material.COMPASS, meta -> {
@@ -297,19 +294,19 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         ItemMeta meta = iconItem.getItemMeta();
 
         if (meta != null) {
-            meta.setDisplayName("§a" + homeIcon.getVanillaName());
+            meta.displayName(Component.text("§a" + homeIcon.getVanillaName()));
 
-            List<String> lore = new ArrayList<>();
+            List<Component> lore = new ArrayList<>();
 
             if (home.getIcon().equals(homeIcon)) {
                 meta.addEnchant(Enchantment.SHARPNESS, 5, true);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                lore.add(ChatColor.GRAY + "§8[§a✔§8] §7Icône actuelle");
+                lore.add(Component.text("§8[§a✔§8] §7Icône actuelle"));
             } else {
-                lore.add(ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône");
+                lore.add(Component.text("§7■ §aClique §2gauche §apour changer l'icône"));
             }
 
-            meta.setLore(lore);
+            meta.lore(lore);
             iconItem.setItemMeta(meta);
         }
 

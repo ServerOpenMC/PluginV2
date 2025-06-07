@@ -22,7 +22,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,10 +29,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HomeConfigMenu extends Menu {
 
@@ -63,8 +59,8 @@ public class HomeConfigMenu extends Menu {
             content.put(4, home.getIconItem());
 
             content.put(20, new ItemBuilder(this, HomeIconRegistry.getRandomIcon().getItemStack(), itemMeta -> {
-                itemMeta.setDisplayName("§aChanger l'icône");
-                itemMeta.setLore(List.of(ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône de votre home"));
+                itemMeta.displayName(Component.text("§aChanger l'icône"));
+                itemMeta.lore(List.of(Component.text("§7■ §aClique §2gauche §apour changer l'icône de votre home")));
             }).setNextMenu(new HomeChangeIconMenu(player, home)));
 
             content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
@@ -124,9 +120,9 @@ public class HomeConfigMenu extends Menu {
                 gui.open(player);
             }));
 
-            content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
-                itemMeta.setDisplayName(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home");
-                itemMeta.setLore(List.of(ChatColor.GRAY + "■ §cClique §4gauche §cpour supprimer votre home"));
+            content.put(24, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
+                itemMeta.displayName(Component.text(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home"));
+                itemMeta.lore(List.of(Component.text("§7■ §cClique §4gauche §cpour supprimer votre home")));
             }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
 
             content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setNextMenu(new HomeMenu(player)));
@@ -136,9 +132,8 @@ public class HomeConfigMenu extends Menu {
         } catch (Exception e) {
             MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
             player.closeInventory();
-            e.printStackTrace();
+            throw new RuntimeException("Failed to load HomeConfigMenu content", e);
         }
-        return content;
     }
 
     @Override

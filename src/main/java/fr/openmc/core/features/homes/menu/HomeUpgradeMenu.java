@@ -1,6 +1,5 @@
 package fr.openmc.core.features.homes.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -20,10 +19,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HomeUpgradeMenu extends Menu {
 
@@ -51,25 +47,24 @@ public class HomeUpgradeMenu extends Menu {
             int homeMaxLimit = HomeLimits.values().length - 1;
 
             HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
-            HomeLimits nextUpgrade = homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer())) != null
-                    ? homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer()))
+            HomeLimits nextUpgrade = homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner())) != null
+                    ? homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner()))
                     : lastUpgrade;
 
-            int finalCurrentHome = currentHome;
-            items.put(4, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(), itemMeta -> {
-                itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Clique gauche)");
-                List<String> lore = new ArrayList<>();
-                lore.add("§6Nombre de home actuel: §e" + finalCurrentHome);
+            items.put(4, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+                itemMeta.displayName(Component.text("§8● §6Améliorer les homes §8(Clique gauche)"));
+                List<Component> lore = new ArrayList<>();
+                lore.add(Component.text("§6Nombre de home actuel: §e" + currentHome));
                 if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
-                    lore.add("§cVous avez atteint le nombre maximum de homes");
+                    lore.add(Component.text("§cVous avez atteint le nombre maximum de homes"));
                 } else {
-                    lore.add("§bPrix: §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon());
-                    lore.add("§bAywenite: §d" + nextUpgrade.getAyweniteCost());
-                    lore.add("§6Nombre de home au prochain niveau: §e" + nextUpgrade.getLimit());
-                    lore.add("§7→ Clique gauche pour améliorer");
+                    lore.add(Component.text("§bPrix: §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon()));
+                    lore.add(Component.text("§bAywenite: §d" + nextUpgrade.getAyweniteCost()));
+                    lore.add(Component.text("§6Nombre de home au prochain niveau: §e" + nextUpgrade.getLimit()));
+                    lore.add(Component.text("§7→ Clique gauche pour améliorer"));
                 }
 
-                itemMeta.setLore(lore);
+                itemMeta.lore(lore);
             }).setOnClick(event -> {
                 homeUpgradeManager.upgradeHome(getOwner());
                 getOwner().closeInventory();
@@ -79,9 +74,8 @@ public class HomeUpgradeMenu extends Menu {
         } catch (Exception e) {
             MessagesManager.sendMessage(getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
             getOwner().closeInventory();
-            e.printStackTrace();
+            throw new RuntimeException("Failed to load HomeUpgradeMenu content", e);
         }
-        return items;
     }
 
     @Override
@@ -93,9 +87,7 @@ public class HomeUpgradeMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
-    public void onClose(InventoryCloseEvent event) {
-        //empty
-    }
+    public void onClose(InventoryCloseEvent event) {}
 
     @Override
     public List<Integer> getTakableSlot() {
