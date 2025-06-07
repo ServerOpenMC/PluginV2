@@ -64,9 +64,12 @@ public class HomeUtil {
                 name == null ||
                 name.trim().isEmpty() ||
                 name.length() < 3 ||
-                name.length() > 32 ||
-                name.matches(".*[a-zA-Z0-9].*")
+                name.length() > 32
         ) return false;
+
+        long alphanumericCount = name.chars().filter(Character::isLetterOrDigit).count();
+        System.out.println("Alphanumeric count: " + alphanumericCount + " for name: " + name);
+        if (alphanumericCount < 3) return false;
 
         return name.matches("^[a-zA-Z0-9_-]+$");
     }
@@ -79,7 +82,6 @@ public class HomeUtil {
         String sanitized = name.replaceAll("[^a-zA-Z0-9_-]", "_");
 
         if (sanitized.length() > 32) sanitized = sanitized.substring(0, 32);
-
         if (sanitized.trim().isEmpty()) sanitized = "home";
 
         return sanitized;

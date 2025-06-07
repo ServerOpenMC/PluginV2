@@ -28,7 +28,6 @@ public class RenameHome {
     @CommandPermission("omc.commands.home.rename")
     @AutoComplete("@homes")
     public void renameHome(Player player, String home, String newName) {
-
         if(player.hasPermission("omc.admin.homes.rename.other") && home.contains(":")) {
             String[] split = home.split(":");
             String targetName = split[0];
@@ -41,7 +40,7 @@ public class RenameHome {
                 return;
             }
 
-            if (!HomeUtil.isValidHomeName(homeName)) {
+            if (!HomeUtil.isValidHomeName(newName)) {
                 MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
                 return;
             }
@@ -65,7 +64,7 @@ public class RenameHome {
             return;
         }
 
-        if (!HomeUtil.isValidHomeName(home)) {
+        if (!HomeUtil.isValidHomeName(newName)) {
             MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
