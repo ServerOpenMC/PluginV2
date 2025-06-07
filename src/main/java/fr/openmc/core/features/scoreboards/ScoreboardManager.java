@@ -213,11 +213,13 @@ public class ScoreboardManager implements Listener {
 
                 switch (war.getPhase()) {
                     case PREPARATION:
+                        objective.getScore("   ").setScore(6);
                         int secondsPreparationRemaining = war.getPreparationTimeRemaining();
                         String timePreparationFormatted = DateUtils.convertSecondToTime(secondsPreparationRemaining);
-                        objective.getScore("§8• §eDébut dans§7: " + timePreparationFormatted).setScore(6);
+                        objective.getScore("§8• §eDébut dans§7: " + timePreparationFormatted).setScore(5);
                         break;
                     case COMBAT:
+                        objective.getScore("   ").setScore(6);
                         LivingEntity mobMascot = MascotUtils.loadMascot(city.getMascot());
                         if (mobMascot != null) {
                             objective.getScore("§8• §6Votre Mascotte§7: §c" + mobMascot.getHealth() + "§4/§c" + mobMascot.getMaxHealth()).setScore(5);
@@ -230,7 +232,8 @@ public class ScoreboardManager implements Listener {
 
                         int secondsCombatRemaining = war.getCombatTimeRemaining();
                         String timeCombatFormatted = DateUtils.convertSecondToTime(secondsCombatRemaining);
-                        objective.getScore("§8• §eFin dans§7: " + timeCombatFormatted).setScore(3);
+                        objective.getScore("   ").setScore(3);
+                        objective.getScore("§8• §eFin dans§7: " + timeCombatFormatted).setScore(2);
                         break;
                     case ENDED:
                         break;
