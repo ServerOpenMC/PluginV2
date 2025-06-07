@@ -122,6 +122,7 @@ public class MascotUtils {
 	public static void changeMascotState(String city_uuid, boolean alive) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUUID().equals(city_uuid)) {
+				System.out.println("mascot" + mascot);
 				mascot.setAlive(alive);
 				return;
 			}
@@ -131,6 +132,7 @@ public class MascotUtils {
 	public static void changeMascotImmunity(String city_uuid, boolean immunity) {
 		for (Mascot mascot : MascotsManager.mascots) {
 			if (mascot.getCityUUID().equals(city_uuid)) {
+				System.out.println("mascot" + mascot);
 				mascot.setImmunity(immunity);
 				return;
 			}

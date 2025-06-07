@@ -207,8 +207,7 @@ public class MascotsManager {
     }
 
     public static void reviveMascots(String city_uuid) {
-        if (MascotUtils.mascotsContains(city_uuid)) return;
-
+        if (!MascotUtils.mascotsContains(city_uuid)) return;
         City city = CityManager.getCity(city_uuid);
 
         MascotUtils.changeMascotState(city_uuid, true);
