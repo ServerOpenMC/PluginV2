@@ -6,6 +6,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
+import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.main.MainWarMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -17,6 +18,10 @@ import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Command({"guerre", "war"})
 @CommandPermission("omc.commands.city.war")
@@ -75,5 +80,16 @@ public class WarCommand {
         MessagesManager.sendMessage(player,
                 Component.text("Vous participez désormais à la défense ! Plus aucun retour en arrière possible."),
                 Prefix.CITY, MessageType.ERROR, false);
+
+        if (pending.getAcceptedDefenders().size() >= pending.getRequired() && !pending.isAlreadyExecuted()) {
+            pending.setAlreadyExecuted(true);
+
+            City defendingCity = pending.getDefender();
+            City attackingCity = pending.getAttacker();
+            List<UUID> attackers = pending.getAttackers();
+
+            WarActions.launchWar(attackingCity, defendingCity, attackers,
+                    new ArrayList<>(defendingCity.getMembers()), pending.getRequired(), pending);
+        }
     }
 }

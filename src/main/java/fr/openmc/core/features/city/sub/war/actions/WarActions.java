@@ -146,6 +146,7 @@ public class WarActions {
 
     }
 
+
     public static void finishLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
@@ -170,7 +171,7 @@ public class WarActions {
             }
         }
 
-        TextComponent infoAttackers = Component.text("§c⚔ Vous avez été choisi pour se battre contre §e" + cityLaunch.getName());
+        TextComponent infoAttackers = Component.text("§c⚔ Vous avez été choisi pour se battre contre §e" + cityAttack.getName());
 
         for (UUID uuid : attackers) {
             Player attacker = Bukkit.getPlayer(uuid);
@@ -179,57 +180,65 @@ public class WarActions {
             }
         }
 
-        WarPendingDefense pending = new WarPendingDefense(cityAttack, requiredParticipants);
+        MessagesManager.sendMessage(player, Component.text("§8§oveuillez attendre que " + cityAttack.getName() + " réagissent, la partie sera tout de même lancer dans 2 min"), Prefix.CITY, MessageType.INFO, false);
+
+        WarPendingDefense pending = new WarPendingDefense(cityLaunch, cityAttack, attackers, requiredParticipants);
         WarManager.addPendingDefense(pending);
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            List<UUID> chosenDefenders = new ArrayList<>(pending.getAcceptedDefenders());
+            if (pending.isAlreadyExecuted()) return;
 
-            if (chosenDefenders.size() < requiredParticipants) {
-                List<UUID> available = allDefenders.stream()
-                        .filter(uuid -> !chosenDefenders.contains(uuid))
-                        .filter(uuid -> Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).isOnline())
-                        .collect(Collectors.toList());
-
-                Collections.shuffle(available);
-
-                for (UUID uuid : available) {
-                    if (chosenDefenders.size() >= requiredParticipants) break;
-                    chosenDefenders.add(uuid);
-                }
-            }
-
-            if (chosenDefenders.size() < requiredParticipants) {
-                for (UUID uuid : cityLaunch.getMembers()) {
-                    Player pl = Bukkit.getPlayer(uuid);
-                    if (pl != null) {
-                        MessagesManager.sendMessage(pl,
-                                Component.text("La guerre a été annulée car la ville ennemie n'avait pas assez de défenseurs."),
-                                Prefix.CITY, MessageType.ERROR, false);
-                        return;
-                    }
-                }
-                return;
-            }
-
-            Sound sound = Sound.EVENT_RAID_HORN;
-
-            for (UUID uuid : cityLaunch.getMembers()) {
-                Player p = Bukkit.getPlayer(uuid);
-                if (p != null && p.isOnline()) {
-                    p.playSound(p.getLocation(), sound, SoundCategory.MASTER, 1f, 1f);
-                }
-            }
-
-            for (UUID uuid : cityAttack.getMembers()) {
-                Player p = Bukkit.getPlayer(uuid);
-                if (p != null && p.isOnline()) {
-                    p.playSound(p.getLocation(), sound, SoundCategory.MASTER, 1f, 1f);
-                }
-            }
-
-            WarManager.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
+            launchWar(cityLaunch, cityAttack, attackers, new ArrayList<>(allDefenders), requiredParticipants, pending);
         }, 20 * 120L); // 2 minutes
 
+    }
+
+    public static void launchWar(City cityLaunch, City cityAttack, List<UUID> attackers, List<UUID> allDefenders, int requiredParticipants, WarPendingDefense pending) {
+        List<UUID> chosenDefenders = new ArrayList<>(pending.getAcceptedDefenders());
+
+        if (chosenDefenders.size() < requiredParticipants) {
+            List<UUID> available = allDefenders.stream()
+                    .filter(uuid -> !chosenDefenders.contains(uuid))
+                    .filter(uuid -> Bukkit.getPlayer(uuid) != null && Bukkit.getPlayer(uuid).isOnline())
+                    .collect(Collectors.toList());
+
+            Collections.shuffle(available);
+
+            for (UUID uuid : available) {
+                if (chosenDefenders.size() >= requiredParticipants) break;
+                chosenDefenders.add(uuid);
+            }
+        }
+
+        if (chosenDefenders.size() < requiredParticipants) {
+            for (UUID uuid : cityLaunch.getMembers()) {
+                Player pl = Bukkit.getPlayer(uuid);
+                if (pl != null) {
+                    MessagesManager.sendMessage(pl,
+                            Component.text("La guerre a été annulée car la ville ennemie n'avait pas assez de défenseurs."),
+                            Prefix.CITY, MessageType.ERROR, false);
+                    return;
+                }
+            }
+            return;
+        }
+
+        Sound sound = Sound.EVENT_RAID_HORN;
+
+        for (UUID uuid : cityLaunch.getMembers()) {
+            Player p = Bukkit.getPlayer(uuid);
+            if (p != null && p.isOnline()) {
+                p.playSound(p.getLocation(), sound, SoundCategory.MASTER, 1f, 1f);
+            }
+        }
+
+        for (UUID uuid : cityAttack.getMembers()) {
+            Player p = Bukkit.getPlayer(uuid);
+            if (p != null && p.isOnline()) {
+                p.playSound(p.getLocation(), sound, SoundCategory.MASTER, 1f, 1f);
+            }
+        }
+
+        WarManager.startWar(cityLaunch, cityAttack, attackers, chosenDefenders);
     }
 }
