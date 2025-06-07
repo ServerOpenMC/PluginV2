@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.ItemUtils;
@@ -61,7 +62,7 @@ public class HomeConfigMenu extends Menu {
         try {
             content.put(4, home.getIconItem());
 
-            content.put(20, new ItemBuilder(this, HomeUtil.getRandomsIcons(), itemMeta -> {
+            content.put(20, new ItemBuilder(this, HomeIconRegistry.getRandomIcon().getItemStack(), itemMeta -> {
                 itemMeta.setDisplayName("§aChanger l'icône");
                 itemMeta.setLore(List.of(ChatColor.GRAY + "■ §aClique §2gauche §apour changer l'icône de votre home"));
             }).setNextMenu(new HomeChangeIconMenu(player, home)));
@@ -93,7 +94,7 @@ public class HomeConfigMenu extends Menu {
                             .setHandler((p, result) -> {
                                 String input = result.getLine(0);
 
-                                if (HomeUtil.checkName(player, input))
+                                if (!HomeUtil.isValidHomeName(input))
                                     return Collections.emptyList();
 
                                 if (HomesManager.getHomesNames(p.getUniqueId()).contains(input)) {
@@ -141,13 +142,10 @@ public class HomeConfigMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
-    }
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
-    public void onClose(InventoryCloseEvent event) {
-        //empty
-    }
+    public void onClose(InventoryCloseEvent event) {}
 
     @Override
     public List<Integer> getTakableSlot() {

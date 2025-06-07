@@ -20,6 +20,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
@@ -109,6 +110,7 @@ public class OMCPlugin extends JavaPlugin {
 
         /* LOAD */
         DynamicCooldownManager.loadCooldowns();
+        HomeIconRegistry.initializeIcons();
 
 
         getLogger().info("Plugin activé");

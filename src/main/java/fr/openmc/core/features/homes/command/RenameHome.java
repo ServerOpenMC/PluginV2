@@ -41,7 +41,10 @@ public class RenameHome {
                 return;
             }
 
-            if (HomeUtil.checkName(player, newName)) return;
+            if (!HomeUtil.isValidHomeName(homeName)) {
+                MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+                return;
+            }
 
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home h : homes) {
@@ -62,7 +65,10 @@ public class RenameHome {
             return;
         }
 
-        if(HomeUtil.checkName(player, newName)) return;
+        if (!HomeUtil.isValidHomeName(home)) {
+            MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+            return;
+        }
 
         List<Home> homes = HomesManager.getHomes(player.getUniqueId());
 

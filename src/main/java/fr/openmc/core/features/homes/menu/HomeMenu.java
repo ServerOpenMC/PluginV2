@@ -5,6 +5,8 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.icons.HomeIcon;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -68,9 +70,14 @@ public class HomeMenu extends PaginatedMenu {
     @Override
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        try {
-            for(Home home : HomesManager.getHomes(target.getUniqueId())) {
-                items.add(new ItemBuilder(this, HomeUtil.getHomeIconItem(home), itemMeta -> {
+        for(Home home : HomesManager.getHomes(target.getUniqueId())) {
+            HomeIcon homeIcon = home.getIcon();
+            if (homeIcon == null) {
+                homeIcon = HomeIconRegistry.getDefaultIcon();
+                home.setIcon(homeIcon);
+            }
+            try {
+                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().getId()).getItemStack(), itemMeta -> {
                     itemMeta.setDisplayName("§e" + home.getName());
                     itemMeta.setLore(List.of(
                             ChatColor.GRAY + "■ §aClique §2gauche pour vous téléporter",
@@ -86,16 +93,14 @@ public class HomeMenu extends PaginatedMenu {
                         new HomeConfigMenu(player, home).open();
                     }
                 }));
-            }
-
-            return items;
             } catch (Exception e) {
                 MessagesManager.sendMessage(getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
                 getOwner().closeInventory();
                 e.printStackTrace();
             }
-            return items;
         }
+        return items;
+    }
 
     @Override
     public List<Integer> getTakableSlot() {

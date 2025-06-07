@@ -3,6 +3,9 @@ package fr.openmc.core.features.homes;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.homes.command.*;
+import fr.openmc.core.features.homes.icons.HomeIcon;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.icons.OldHomeIcon;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.utils.database.DatabaseManager;
@@ -211,7 +214,7 @@ public class HomesManager {
                 "yaw FLOAT, " +
                 "pitch FLOAT, " +
                 "world VARCHAR(32), " +
-                "icon VARCHAR(32))";
+                "icon VARCHAR(64))";
         conn.prepareStatement(createHomesTable).executeUpdate();
 
         String createHomesLimitsTable = "CREATE TABLE IF NOT EXISTS homes_limits (" +
@@ -270,15 +273,31 @@ public class HomesManager {
                 float yaw = rs.getFloat("yaw");
                 float pitch = rs.getFloat("pitch");
                 String world = rs.getString("world");
-                String icon = rs.getString("icon");
+                String iconId = rs.getString("icon");
 
                 Location location = new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
-                Home home = new Home(owner, name, location, HomeUtil.getHomeIcon(icon));
+                HomeIcon homeIcon = loadHomeIcon(iconId);
+                Home home = new Home(owner, name, location, homeIcon);
 
                 homes.add(home);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static HomeIcon loadHomeIcon(String iconId) {
+        if (iconId == null || iconId.isEmpty())
+            return HomeIconRegistry.getDefaultIcon();
+
+        HomeIcon icon = HomeIconRegistry.getIcon(iconId);
+        if (icon != null) return icon;
+
+        try {
+            OldHomeIcon legacyIcon = OldHomeIcon.valueOf(iconId.toUpperCase());
+            return HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
+        } catch (IllegalArgumentException e) {
+            return HomeUtil.mapLegacyCustomId(iconId);
         }
     }
 
@@ -297,7 +316,7 @@ public class HomesManager {
                 statement.setFloat(6, home.getLocation().getYaw());
                 statement.setFloat(7, home.getLocation().getPitch());
                 statement.setString(8, home.getLocation().getWorld().getName());
-                statement.setString(9, home.getIcon().getId());
+                statement.setString(9, home.getIconSaveId());
 
                 statement.executeUpdate();
             }

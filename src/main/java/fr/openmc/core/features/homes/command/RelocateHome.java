@@ -52,7 +52,10 @@ public class RelocateHome {
                 return;
             }
 
-            if (HomeUtil.checkName(player, homeName)) return;
+            if (!HomeUtil.isValidHomeName(homeName)) {
+                MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.OPENMC, MessageType.ERROR, true);
+                return;
+            }
 
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home h : homes) {
