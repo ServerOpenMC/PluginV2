@@ -200,13 +200,13 @@ public class ScoreboardManager implements Listener {
                 War.WarPhase phase = war.getPhase();
                 objective.getScore("§8• §6Phase§7: " + WarManager.getFormattedPhase(phase)).setScore(8);
 
-                Chunk chunk = city.getMascot().getChunk();
+                Chunk chunk = cityEnemy.getMascot().getChunk();
                 World world = chunk.getWorld();
                 int x = (chunk.getX() << 4) + 8;
                 int z = (chunk.getZ() << 4) + 8;
                 int y = world.getHighestBlockYAt(x, z);
                 Location centerChunkLocation = new Location(world, x, y, z);
-                String direction = DirectionUtils.getDirectionEmoji(player.getEyeLocation(), centerChunkLocation);
+                String direction = DirectionUtils.getDirectionArrow(player, centerChunkLocation);
                 double distance = centerChunkLocation.distance(player.getLocation());
                 int rounded = (int) Math.round(distance);
                 objective.getScore("§8• §cMascotte: " + direction + " (" + rounded + "m)").setScore(7);
