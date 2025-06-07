@@ -65,7 +65,7 @@ public class HomeUtil {
                 name.trim().isEmpty() ||
                 name.length() < 3 ||
                 name.length() > 32 ||
-                !name.matches(".*[a-zA-Z0-9].*")
+                name.matches(".*[a-zA-Z0-9].*")
         ) return false;
 
         return name.matches("^[a-zA-Z0-9_-]+$");
