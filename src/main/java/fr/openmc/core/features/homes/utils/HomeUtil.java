@@ -68,7 +68,6 @@ public class HomeUtil {
         ) return false;
 
         long alphanumericCount = name.chars().filter(Character::isLetterOrDigit).count();
-        System.out.println("Alphanumeric count: " + alphanumericCount + " for name: " + name);
         if (alphanumericCount < 3) return false;
 
         return name.matches("^[a-zA-Z0-9_-]+$");
