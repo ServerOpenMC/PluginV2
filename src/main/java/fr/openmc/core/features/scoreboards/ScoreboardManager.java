@@ -189,16 +189,20 @@ public class ScoreboardManager implements Listener {
                 String cityName = city != null ? city.getName() : "Aucune";
                 objective.getScore("§8• §fVille§7: " + cityName).setScore(12);
 
-                objective.getScore("  ").setScore(11);
-                objective.getScore("§c§l⚔ GUERRE EN COURS ⚔").setScore(10);
+                City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
+                String chunkCityName = (chunkCity != null) ? chunkCity.getName() : "Nature";
+                objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(11);
+
+                objective.getScore("  ").setScore(10);
+                objective.getScore("§c§l⚔ GUERRE EN COURS ⚔").setScore(9);
 
                 City cityEnemy = war.getCityAttacker().equals(city) ?
                         war.getCityDefender() : war.getCityAttacker();
                 String ennemyName = cityEnemy.getName();
-                objective.getScore("§8• §cEnnemi§7: " + ennemyName).setScore(9);
+                objective.getScore("§8• §cEnnemi§7: " + ennemyName).setScore(8);
 
                 War.WarPhase phase = war.getPhase();
-                objective.getScore("§8• §6Phase§7: " + WarManager.getFormattedPhase(phase)).setScore(8);
+                objective.getScore("§8• §6Phase§7: " + WarManager.getFormattedPhase(phase)).setScore(7);
 
                 Chunk chunk = cityEnemy.getMascot().getChunk();
                 World world = chunk.getWorld();
@@ -209,30 +213,29 @@ public class ScoreboardManager implements Listener {
                 String direction = DirectionUtils.getDirectionArrow(player, centerChunkLocation);
                 double distance = centerChunkLocation.distance(player.getLocation());
                 int rounded = (int) Math.round(distance);
-                objective.getScore("§8• §cMascotte: " + direction + " (" + rounded + "m)").setScore(7);
+                objective.getScore("§8• §cMascotte: " + direction + " (" + rounded + "m)").setScore(6);
 
                 switch (war.getPhase()) {
                     case PREPARATION:
-                        objective.getScore("   ").setScore(6);
+                        objective.getScore("   ").setScore(5);
                         int secondsPreparationRemaining = war.getPreparationTimeRemaining();
                         String timePreparationFormatted = DateUtils.convertSecondToTime(secondsPreparationRemaining);
-                        objective.getScore("§8• §eDébut dans§7: " + timePreparationFormatted).setScore(5);
+                        objective.getScore("§8• §eDébut dans§7: " + timePreparationFormatted).setScore(4);
                         break;
                     case COMBAT:
-                        objective.getScore("   ").setScore(6);
+                        objective.getScore("   ").setScore(5);
                         LivingEntity mobMascot = MascotUtils.loadMascot(city.getMascot());
                         if (mobMascot != null) {
-                            objective.getScore("§8• §6Votre Mascotte§7: §c" + mobMascot.getHealth() + "§4/§c" + mobMascot.getMaxHealth()).setScore(5);
+                            objective.getScore("§8• §6Votre Mascotte§7: §c" + Math.floor(mobMascot.getHealth()) + "§4/§c" + mobMascot.getMaxHealth() + " ❤").setScore(4);
                         }
 
                         LivingEntity mobMascotEnemy = MascotUtils.loadMascot(cityEnemy.getMascot());
                         if (mobMascotEnemy != null) {
-                            objective.getScore("§8• §4Mascotte Enemnie§7: §c" + mobMascotEnemy.getHealth() + "§4/§c" + mobMascotEnemy.getMaxHealth()).setScore(4);
+                            objective.getScore("§8• §4Mascotte Enemnie§7: §c" + Math.floor(mobMascotEnemy.getHealth()) + "§4/§c" + mobMascotEnemy.getMaxHealth() + " ❤").setScore(3);
                         }
 
                         int secondsCombatRemaining = war.getCombatTimeRemaining();
                         String timeCombatFormatted = DateUtils.convertSecondToTime(secondsCombatRemaining);
-                        objective.getScore("   ").setScore(3);
                         objective.getScore("§8• §eFin dans§7: " + timeCombatFormatted).setScore(2);
                         break;
                     case ENDED:

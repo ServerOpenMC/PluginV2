@@ -101,7 +101,7 @@ public class War {
                                 §7
                                 §c§lGUERRE!§r §7Le comabt est imminent!§7
                                 §8§oBattez vous contre §c%s!
-                                §8§oVous avez §c§l%d minutes §8de combat.
+                                §8§oVous avez §c§l%d minutes §8§ode combat.
                                 §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.
                                 §7
                                 §8§m                                                     §r""",
@@ -120,7 +120,7 @@ public class War {
                                 §7
                                 §c§lGUERRE!§r §7Le comabt est imminent!§7
                                 §8§oBattez vous contre §c%s!
-                                §8§oVous avez §c§l%d minutes §8de combat.
+                                §8§oVous avez §c§l%d minutes §8§ode combat.
                                 §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.
                                 §7
                                 §8§m                                                     §r""",

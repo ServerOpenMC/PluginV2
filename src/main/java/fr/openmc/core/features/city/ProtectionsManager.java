@@ -2,6 +2,7 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.listeners.protections.*;
+import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -46,15 +47,29 @@ public class ProtectionsManager {
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
         if (cityAtLoc == null) return true;
 
-        return cityAtLoc.isMember(player);
+        if (cityAtLoc.isMember(player)) return true;
+
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (playerCity == null) return true;
+
+        if (cityAtLoc.isInWar() && playerCity.isInWar()) {
+            if (cityAtLoc.getWar().equals(playerCity.getWar())) {
+                if (cityAtLoc.getWar().getPhase() == War.WarPhase.COMBAT) {
+                    return true;
+                }
+            }
+            ;
+        }
+
+        return false;
     }
 
     public static boolean canExplodeNaturally(Location loc) {
         City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
         if (city == null) return true;
 
-        //return city.isInCombat();
-        return false;
+        return city.isInWar() && city.getWar().getPhase() == War.WarPhase.COMBAT;
     }
 
     public static void verify(Player player, Cancellable event, Location loc) {
