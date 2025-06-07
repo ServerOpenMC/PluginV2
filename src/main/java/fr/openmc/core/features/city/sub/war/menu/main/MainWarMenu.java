@@ -78,7 +78,7 @@ public class MainWarMenu extends PaginatedMenu {
                 List<Component> loreCity = new ArrayList<>(List.of(
                         Component.text(""),
                         Component.text("§7Propriétaire : §d" + ownerName),
-                        Component.text("§7Population  : §a" + onlineCount),
+                        Component.text("§7Population (en ligne) : §a" + onlineCount),
                         Component.text("§7Mascotte  : §4niv. " + city.getMascot().getLevel()),
                         Component.text("§7Location : §c" + mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ())
                 ));

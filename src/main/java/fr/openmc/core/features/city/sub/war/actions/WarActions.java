@@ -128,6 +128,7 @@ public class WarActions {
         ConfirmMenu menu = new ConfirmMenu(player,
                 () -> {
                     finishLaunchWar(player, cityLaunch, cityAttack, attackers);
+                    player.closeInventory();
                 },
                 () -> {
                     player.closeInventory();
@@ -135,8 +136,7 @@ public class WarActions {
                 List.of(
                         Component.text("§c§lATTENTION"),
                         Component.text("§7Vous êtes sur le point de lancer une guerre contre §c" + cityAttack.getName()),
-                        Component.text("§7avec §c" + attackers.size() + " §7joueurs de votre ville."),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                        Component.text("§7avec §c" + attackers.size() + " §7joueurs de votre ville.")
                 ),
                 List.of(
                         Component.text("§7Ne pas lancer une guerre contre §c" + cityAttack.getName())
@@ -157,7 +157,7 @@ public class WarActions {
         int requiredParticipants = attackers.size();
         Set<UUID> allDefenders = new HashSet<>(cityAttack.getMembers());
 
-        TextComponent info = Component.text("§c⚔ Votre ville est attaquée par §e" + cityLaunch.getName() + "§c, il vous faut §4" + requiredParticipants + " §c!");
+        TextComponent info = Component.text("§c⚔ Votre ville est attaquée par §e" + cityLaunch.getName() + "§c, il vous faut §4" + requiredParticipants + " §c joueur(s)!");
         TextComponent clickToJoin = Component.text("§aCliquez ici pour rejoindre la défense !")
                 .clickEvent(ClickEvent.runCommand("/war acceptdefense"))
                 .hoverEvent(HoverEvent.showText(Component.text("§aCliquez pour participer à la guerre")));
@@ -179,7 +179,7 @@ public class WarActions {
             }
         }
 
-        WarPendingDefense pending = new WarPendingDefense(cityLaunch, requiredParticipants);
+        WarPendingDefense pending = new WarPendingDefense(cityAttack, requiredParticipants);
         WarManager.addPendingDefense(pending);
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
