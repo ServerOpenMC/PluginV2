@@ -81,10 +81,13 @@ public class MascotsListener implements Listener {
         Mascot mascot = city.getMascot();
         if (mascot == null) return;
 
+        double healthAfterDamage = Math.floor(mob.getHealth() - e.getFinalDamage());
+        if (healthAfterDamage < 0) healthAfterDamage = 0;
+
         if (!mascot.isAlive()) {
             mob.setCustomName("§lMascotte en attente de §csoins");
         } else {
-            mob.setCustomName("§l" + city.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
+            mob.setCustomName("§l" + city.getName() + " §c" + healthAfterDamage + "/" + maxHealth + "❤");
         }
     }
 
@@ -256,8 +259,6 @@ public class MascotsListener implements Listener {
         try {
             double newHealth = Math.floor(mob.getHealth());
             mob.setHealth(newHealth);
-            double maxHealth = mob.getMaxHealth();
-            mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
             if (newHealth <= 0) {
                 mob.setHealth(0);
             }
@@ -586,7 +587,7 @@ public class MascotsListener implements Listener {
 
                 double newHealth = Math.min(mascots.getHealth() + 1, mascots.getMaxHealth());
                 mascots.setHealth(newHealth);
-                mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
+                mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + Math.floor(mascots.getHealth()) + "/" + mascots.getMaxHealth() + "❤");
             }
         };
 
