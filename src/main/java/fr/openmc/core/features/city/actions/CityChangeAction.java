@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mascots.MascotsLevels;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -97,13 +98,17 @@ public class CityChangeAction {
             mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
             try {
-                int maxHealth = mascotsLevels.getHealth();
+                double maxHealth = mascotsLevels.getHealth();
                 mob.setMaxHealth(maxHealth);
                 if (mob.getHealth() >= lastHealth) {
                     mob.setHealth(maxHealth);
                 }
-                double currentHealth = Math.floor(mob.getHealth());
-                mob.setCustomName("§l" + city.getName() + " §c" + currentHealth + "/" + maxHealth + "❤");
+
+                mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                        city.getName(),
+                        Math.floor(mob.getHealth()),
+                        maxHealth
+                )));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }

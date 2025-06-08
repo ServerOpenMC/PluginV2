@@ -42,6 +42,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.city.commands.CityCommands.balanceCooldownTasks;
+import static fr.openmc.core.features.city.sub.mascots.MascotsManager.DEAD_MASCOT_NAME;
 
 public class MascotsListener implements Listener {
 
@@ -51,7 +52,7 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     public MascotsListener() {
-        for (Mascot mascot : MascotsManager.mascots) {
+        for (Mascot mascot : MascotsManager.mascots.values()) {
             mascotsRegeneration(mascot.getMascotUUID());
         }
     }
@@ -85,9 +86,13 @@ public class MascotsListener implements Listener {
         if (healthAfterDamage < 0) healthAfterDamage = 0;
 
         if (!mascot.isAlive()) {
-            mob.setCustomName("§l☠ Mascotte en attente de §csoins");
+            mob.customName(Component.text(DEAD_MASCOT_NAME));
         } else {
-            mob.setCustomName("§l" + city.getName() + " §c" + healthAfterDamage + "/" + maxHealth + "❤");
+            mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                    city.getName(),
+                    healthAfterDamage,
+                    maxHealth
+            )));
         }
     }
 
@@ -365,6 +370,54 @@ public class MascotsListener implements Listener {
     }
 
     @EventHandler
+    void onMascotDied(EntityDeathEvent e) {
+        Entity entity = e.getEntity();
+        Player killer = e.getEntity().getKiller();
+
+        if (!MascotUtils.isMascot(entity)) return;
+
+        PersistentDataContainer data = entity.getPersistentDataContainer();
+        String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+
+        City city = CityManager.getCity(city_uuid);
+
+        if (city == null) return;
+
+        Mascot mascot = city.getMascot();
+
+        if (mascot == null) return;
+
+        int level = mascot.getLevel();
+
+        MascotUtils.changeMascotImmunity(city_uuid, true);
+        MascotUtils.changeMascotState(city_uuid, false);
+
+        entity.customName(Component.text(DEAD_MASCOT_NAME));
+        entity.setGlowing(true);
+        e.setCancelled(true);
+
+        for (UUID townMember : city.getMembers()) {
+            if (!(Bukkit.getEntity(townMember) instanceof Player player)) continue;
+            for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
+                player.removePotionEffect(potionEffect.getType());
+            }
+            MascotsManager.giveMascotsEffect(townMember);
+        }
+
+        if (killer == null) return;
+
+        City cityEnemy = CityManager.getPlayerCity(killer.getUniqueId());
+
+        if (cityEnemy == null) return;
+
+        cityEnemy.updatePowerPoints(level);
+        city.updatePowerPoints(-level);
+
+        cityEnemy.updateBalance(0.15 * city.getBalance() / 100);
+        city.updateBalance(-(0.15 * city.getBalance() / 100));
+    }
+
+    @EventHandler
     public void onEntityPickupItem(EntityPickupItemEvent event) {
         if (!MascotUtils.isMascot(event.getEntity())) return;
 
@@ -445,54 +498,6 @@ public class MascotsListener implements Listener {
         if (!MascotUtils.isMascot(entity)) return;
 
         e.setCancelled(true);
-    }
-
-    @EventHandler
-    void onMascotDied(EntityDeathEvent e) {
-        Entity entity = e.getEntity();
-        Player killer = e.getEntity().getKiller();
-
-        if (!MascotUtils.isMascot(entity)) return;
-
-        PersistentDataContainer data = entity.getPersistentDataContainer();
-        String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
-
-        City city = CityManager.getCity(city_uuid);
-
-        if (city == null) return;
-
-        Mascot mascot = city.getMascot();
-
-        if (mascot == null) return;
-
-        int level = mascot.getLevel();
-
-        MascotUtils.changeMascotImmunity(city_uuid, true);
-        MascotUtils.changeMascotState(city_uuid, false);
-
-        entity.setCustomName("§lMascotte en attente de §csoins");
-        entity.setGlowing(true);
-        e.setCancelled(true);
-
-        for (UUID townMember : city.getMembers()) {
-            if (!(Bukkit.getEntity(townMember) instanceof Player player)) continue;
-            for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
-                player.removePotionEffect(potionEffect.getType());
-            }
-            MascotsManager.giveMascotsEffect(townMember);
-        }
-
-        if (killer == null) return;
-
-        City cityEnemy = CityManager.getPlayerCity(killer.getUniqueId());
-
-        if (cityEnemy == null) return;
-
-        cityEnemy.updatePowerPoints(level);
-        city.updatePowerPoints(-level);
-
-        cityEnemy.updateBalance(0.15 * city.getBalance() / 100);
-        city.updateBalance(-(0.15 * city.getBalance() / 100));
     }
 
     @EventHandler
@@ -579,7 +584,12 @@ public class MascotsListener implements Listener {
                 }
 
                 if (mascots.getHealth() >= mascots.getMaxHealth()) {
-                    mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + Math.floor(mascots.getHealth()) + "/" + mascots.getMaxHealth() + "❤");
+
+                    mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                            MascotUtils.getCityFromMascot(mascotsUUID).getName(),
+                            Math.floor(mascots.getHealth()),
+                            mascots.getMaxHealth()
+                    )));
                     regenTasks.remove(mascotsUUID);
                     this.cancel();
                     return;
@@ -587,7 +597,11 @@ public class MascotsListener implements Listener {
 
                 double newHealth = Math.min(mascots.getHealth() + 1, mascots.getMaxHealth());
                 mascots.setHealth(newHealth);
-                mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + Math.floor(mascots.getHealth()) + "/" + mascots.getMaxHealth() + "❤");
+                mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                        MascotUtils.getCityFromMascot(mascotsUUID).getName(),
+                        Math.floor(mascots.getHealth()),
+                        mascots.getMaxHealth()
+                )));
             }
         };
 
