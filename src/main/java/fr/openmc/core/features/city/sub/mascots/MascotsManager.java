@@ -264,7 +264,7 @@ public class MascotsManager {
                 mob.setHealth(maxHealth);
             }
 
-            double currentHealth = mob.getHealth();
+            double currentHealth = Math.floor(mob.getHealth());
             mob.setCustomName("§l" + MascotUtils.getCityFromMascot(mascot.getMascotUUID()).getName() + " §c" + currentHealth + "/" + maxHealth + "❤");
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -344,7 +344,7 @@ public class MascotsManager {
         mob.setPersistent(true);
         mob.setRemoveWhenFarAway(false);
 
-        mob.setCustomName(Objects.requireNonNullElseGet(customName, () -> "§lMascotte §c" + mob.getHealth() + "/300❤"));
+        mob.setCustomName(Objects.requireNonNullElseGet(customName, () -> "§lMascotte §c" + Math.floor(mob.getHealth()) + "/300❤"));
         mob.setCustomNameVisible(true);
 
         mob.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, Integer.MAX_VALUE, 0, true, true));

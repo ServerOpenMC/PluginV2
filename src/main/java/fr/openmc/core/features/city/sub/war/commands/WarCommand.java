@@ -48,6 +48,13 @@ public class WarCommand {
             return;
         }
 
+        if (playerCity.isInWar()) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Vous êtes déjà en guerre !"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         new MainWarMenu(player).open();
     }
 

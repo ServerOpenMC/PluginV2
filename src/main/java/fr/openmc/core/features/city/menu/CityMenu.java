@@ -135,7 +135,7 @@ public class CityMenu extends Menu {
 
             if (!mascot.isAlive()) {
                 loreMascots = List.of(
-                        Component.text("§7Vie : §c" + mob.getHealth() + "§4/§c" + mob.getMaxHealth()),
+                        Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
                         Component.text("§7Status : §cEn Attente de Soins"),
                         Component.text("§7Niveau : §c" + mascot.getLevel()),
                         Component.text(""),
@@ -143,7 +143,7 @@ public class CityMenu extends Menu {
                 );
             } else {
                 loreMascots = List.of(
-                        Component.text("§7Vie : §c" + mob.getHealth() + "§4/§c" + mob.getMaxHealth()),
+                        Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
                         Component.text("§7Status : §aEn Vie"),
                         Component.text("§7Niveau : §c" + mascot.getLevel()),
                         Component.text(""),

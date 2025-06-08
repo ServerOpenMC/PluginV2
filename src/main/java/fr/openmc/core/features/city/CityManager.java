@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.city.sub.mascots.MascotsListener;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
@@ -70,8 +69,7 @@ public class CityManager implements Listener {
                 new CityPermsCommands(),
                 new CityChatCommand(),
                 new CityChestCommand(),
-                new AdminMayorCommands(),
-                new WarCommand()
+                new AdminMayorCommands()
         );
 
         OMCPlugin.registerEvents(

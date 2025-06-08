@@ -55,11 +55,12 @@ public class ProtectionsManager {
 
         if (cityAtLoc.isInWar() && playerCity.isInWar()) {
             if (cityAtLoc.getWar().equals(playerCity.getWar())) {
-                if (cityAtLoc.getWar().getPhase() == War.WarPhase.COMBAT) {
-                    return true;
+                War citiesWar = cityAtLoc.getWar();
+                if (citiesWar.getPhase() == War.WarPhase.COMBAT) {
+                    return citiesWar.getAttackers().contains(player.getUniqueId()) ||
+                            citiesWar.getDefenders().contains(player.getUniqueId());
                 }
             }
-            ;
         }
 
         return false;

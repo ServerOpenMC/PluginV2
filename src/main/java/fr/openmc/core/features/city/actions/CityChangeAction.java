@@ -102,7 +102,7 @@ public class CityChangeAction {
                 if (mob.getHealth() >= lastHealth) {
                     mob.setHealth(maxHealth);
                 }
-                double currentHealth = mob.getHealth();
+                double currentHealth = Math.floor(mob.getHealth());
                 mob.setCustomName("§l" + city.getName() + " §c" + currentHealth + "/" + maxHealth + "❤");
             } catch (Exception exception) {
                 exception.printStackTrace();

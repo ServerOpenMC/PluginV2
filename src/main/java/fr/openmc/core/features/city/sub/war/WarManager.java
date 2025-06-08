@@ -1,6 +1,9 @@
 package fr.openmc.core.features.city.sub.war;
 
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
+import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +23,10 @@ public class WarManager {
     private static final Map<String, WarPendingDefense> pendingDefenses = new HashMap<>();
 
     public WarManager() {
-
+        CommandsManager.getHandler().register(
+                new WarCommand(),
+                new AdminWarCommand()
+        );
     }
 
     public static boolean isCityInWar(String cityUUID) {
@@ -47,7 +53,6 @@ public class WarManager {
     public static void endWar(War war) {
         warsByAttacker.remove(war.getCityAttacker().getUUID());
         warsByDefender.remove(war.getCityDefender().getUUID());
-        war.end();
     }
 
     public static String getFormattedPhase(War.WarPhase phase) {
@@ -64,9 +69,5 @@ public class WarManager {
 
     public static WarPendingDefense getPendingDefenseFor(City city) {
         return pendingDefenses.get(city.getUUID());
-    }
-
-    public static void removePendingDefense(City city) {
-        pendingDefenses.remove(city.getUUID());
     }
 }

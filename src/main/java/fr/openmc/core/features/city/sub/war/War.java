@@ -95,6 +95,8 @@ public class War {
 
         for (UUID uuid : attackers) {
             Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+
             if (player.isOnline()) {
                 String message = String.format("""
                                 §8§m                                                     §r
@@ -114,6 +116,8 @@ public class War {
 
         for (UUID uuid : defenders) {
             Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+
             if (player.isOnline()) {
                 String message = String.format("""
                                 §8§m                                                     §r

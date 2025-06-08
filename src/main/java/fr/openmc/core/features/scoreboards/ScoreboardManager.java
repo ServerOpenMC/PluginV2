@@ -209,9 +209,12 @@ public class ScoreboardManager implements Listener {
                 int x = (chunk.getX() << 4) + 8;
                 int z = (chunk.getZ() << 4) + 8;
                 int y = world.getHighestBlockYAt(x, z);
-                Location centerChunkLocation = new Location(world, x, y, z);
-                String direction = DirectionUtils.getDirectionArrow(player, centerChunkLocation);
-                double distance = centerChunkLocation.distance(player.getLocation());
+
+                LivingEntity mob = MascotUtils.loadMascot(cityEnemy.getMascot());
+
+                Location mascotLocation = mob != null ? mob.getLocation() : new Location(world, x, y, z);
+                String direction = DirectionUtils.getDirectionArrow(player, mascotLocation);
+                double distance = mascotLocation.distance(player.getLocation());
                 int rounded = (int) Math.round(distance);
                 objective.getScore("§8• §cMascotte: " + direction + " (" + rounded + "m)").setScore(6);
 

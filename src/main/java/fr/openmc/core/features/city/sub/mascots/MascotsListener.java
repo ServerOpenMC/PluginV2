@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.sub.mascots.menu.MascotsDeadMenu;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -58,11 +59,14 @@ public class MascotsListener implements Listener {
     @EventHandler
     void onMascotDamageCaused(EntityDamageEvent e){
         Entity entity = e.getEntity();
-        if (!(entity instanceof Player)) return;
 
         if (!MascotUtils.isMascot(entity)) return;
 
-        if (e.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION)) {
+        EntityDamageEvent.DamageCause cause = e.getCause();
+
+        if (cause.equals(EntityDamageEvent.DamageCause.SUFFOCATION) || cause.equals(EntityDamageEvent.DamageCause.FALLING_BLOCK) ||
+                cause.equals(EntityDamageEvent.DamageCause.LIGHTNING) || cause.equals(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) ||
+                cause.equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) || cause.equals(EntityDamageEvent.DamageCause.FIRE_TICK)) {
             e.setCancelled(true);
         }
 
@@ -103,6 +107,17 @@ public class MascotsListener implements Listener {
         String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
 
         if (mascotsUUID == null) return;
+
+        Set<EntityDamageEvent.DamageCause> allowedCauses = Set.of(
+                EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+                EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK,
+                EntityDamageEvent.DamageCause.PROJECTILE
+        );
+
+        if (!allowedCauses.contains(e.getCause())) {
+            e.setCancelled(true);
+            return;
+        }
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
         City cityEnemy = MascotUtils.getCityFromMascot(damageEntity.getUniqueId());
@@ -159,17 +174,35 @@ public class MascotsListener implements Listener {
             return;
         }
 
+        if (!city.isInWar() || !cityEnemy.isInWar() || !city.getWar().equals(cityEnemy.getWar())) {
+            MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas en guerre contre " + cityEnemy.getName()), Prefix.CITY, MessageType.INFO, false);
+            e.setCancelled(true);
+            return;
+        }
+
+        War citiesWar = city.getWar();
+
+        if (citiesWar.getPhase() != War.WarPhase.COMBAT) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez attaquer la mascotte que pendant la phase de combat"), Prefix.CITY, MessageType.INFO, false);
+            e.setCancelled(true);
+            return;
+        }
+
+        if (!citiesWar.getAttackers().contains(player.getUniqueId()) &&
+                !citiesWar.getDefenders().contains(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer la mascotte car vous n'avez pas été séléctionné pour la guerre"), Prefix.CITY, MessageType.INFO, false);
+            e.setCancelled(true);
+            return;
+        }
+
         if (!player.getEquipment().getItemInMainHand().getEnchantments().isEmpty()) {
             baseDamage = e.getDamage(EntityDamageByEntityEvent.DamageModifier.BASE);
             e.setDamage(baseDamage);
         }
 
+
         LivingEntity mob = (LivingEntity) damageEntity;
         try {
-            double newHealth = Math.floor(mob.getHealth());
-            mob.setHealth(newHealth);
-            double maxHealth = mob.getMaxHealth();
-            mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
 
             if (MayorManager.getInstance().phaseMayor != 2) return;
 
@@ -216,7 +249,18 @@ public class MascotsListener implements Listener {
             scheduleGolemDespawn(golem, mob.getUniqueId());
 
             MessagesManager.sendMessage(player, Component.text("§8§o*tremblement* Quelque chose semble arriver..."), Prefix.MAYOR, MessageType.INFO, false);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
 
+        try {
+            double newHealth = Math.floor(mob.getHealth());
+            mob.setHealth(newHealth);
+            double maxHealth = mob.getMaxHealth();
+            mob.setCustomName("§l" + cityEnemy.getName() + " §c" + newHealth + "/" + maxHealth + "❤");
+            if (newHealth <= 0) {
+                mob.setHealth(0);
+            }
 
             if (regenTasks.containsKey(damageEntity.getUniqueId())) {
                 regenTasks.get(damageEntity.getUniqueId()).cancel();
@@ -225,15 +269,9 @@ public class MascotsListener implements Listener {
 
             startRegenCooldown(damageEntity.getUniqueId());
             startBalanceCooldown(city_uuid);
-
-            if (newHealth <= 0) {
-                mob.setHealth(0);
-            }
-
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-
         e.setCancelled(true);
     }
 
@@ -540,7 +578,7 @@ public class MascotsListener implements Listener {
                 }
 
                 if (mascots.getHealth() >= mascots.getMaxHealth()) {
-                    mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + mascots.getHealth() + "/" + mascots.getMaxHealth() + "❤");
+                    mascots.setCustomName("§l" + MascotUtils.getCityFromMascot(mascotsUUID).getName() + " §c" + Math.floor(mascots.getHealth()) + "/" + mascots.getMaxHealth() + "❤");
                     regenTasks.remove(mascotsUUID);
                     this.cancel();
                     return;
