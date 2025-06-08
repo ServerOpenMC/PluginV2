@@ -229,12 +229,20 @@ public class ScoreboardManager implements Listener {
                         objective.getScore("   ").setScore(5);
                         LivingEntity mobMascot = MascotUtils.loadMascot(city.getMascot());
                         if (mobMascot != null) {
-                            objective.getScore("§8• §6Votre Mascotte§7: §c" + Math.floor(mobMascot.getHealth()) + "§4/§c" + mobMascot.getMaxHealth() + " ❤").setScore(4);
+                            if (city.getMascot().isAlive()) {
+                                objective.getScore("§8• §fVotre Mascotte§7: §c" + Math.floor(mobMascot.getHealth()) + "§4/§c" + mobMascot.getMaxHealth() + " ❤").setScore(4);
+                            } else {
+                                objective.getScore("§8• §fVotre Mascotte§7: §4☠ MORT").setScore(4);
+                            }
                         }
 
                         LivingEntity mobMascotEnemy = MascotUtils.loadMascot(cityEnemy.getMascot());
                         if (mobMascotEnemy != null) {
-                            objective.getScore("§8• §4Mascotte Enemnie§7: §c" + Math.floor(mobMascotEnemy.getHealth()) + "§4/§c" + mobMascotEnemy.getMaxHealth() + " ❤").setScore(3);
+                            if (cityEnemy.getMascot().isAlive()) {
+                                objective.getScore("§8• §4Mascotte Enemnie§7: §c" + Math.floor(mobMascotEnemy.getHealth()) + "§4/§c" + mobMascotEnemy.getMaxHealth() + " ❤").setScore(3);
+                            } else {
+                                objective.getScore("§8• §4Mascotte Enemnie§7: §4☠ MORT").setScore(3);
+                            }
                         }
 
                         int secondsCombatRemaining = war.getCombatTimeRemaining();

@@ -85,7 +85,7 @@ public class MascotsListener implements Listener {
         if (healthAfterDamage < 0) healthAfterDamage = 0;
 
         if (!mascot.isAlive()) {
-            mob.setCustomName("§lMascotte en attente de §csoins");
+            mob.setCustomName("§l☠ Mascotte en attente de §csoins");
         } else {
             mob.setCustomName("§l" + city.getName() + " §c" + healthAfterDamage + "/" + maxHealth + "❤");
         }
