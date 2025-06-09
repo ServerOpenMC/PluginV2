@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.commands;
+package fr.openmc.core.features.city.sub.mayor.commands;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;

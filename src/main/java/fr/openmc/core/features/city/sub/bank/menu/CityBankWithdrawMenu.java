@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.bank;
+package fr.openmc.core.features.city.sub.bank.menu;
 
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
@@ -8,6 +8,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -81,10 +82,8 @@ public class CityBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre l'§6Argent de votre Ville"));
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
-            if (!hasPermissionMoneyTake) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYTAKE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+            if (!CityBankConditions.canCityWithdraw(city, player)) return;
+
             if (halfMoneyBankCity != 0) {
                 city.updateBalance(moneyBankCity * -1);
                 EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyBankCity);
@@ -115,10 +114,7 @@ public class CityBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6Argent de la Ville"));
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
-            if (!hasPermissionMoneyTake) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYTAKE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+            if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
             if (halfMoneyBankCity != 0) {
                 city.updateBalance(halfMoneyBankCity * -1);
@@ -149,10 +145,7 @@ public class CityBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre un §6montant précis"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
-            if (!hasPermissionMoneyTake) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOMONEYTAKE.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+            if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
             String[] lines = new String[4];
             lines[0] = "";

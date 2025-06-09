@@ -46,7 +46,9 @@ public class MascotsManager {
     public static final String PLACEHOLDER_MASCOT_NAME = "§l%s §c%a/%a❤";
     public static final String DEAD_MASCOT_NAME = "☠ §cMascotte Morte";
 
-    public MascotsManager(OMCPlugin plugin) {
+    public MascotsManager() {
+        OMCPlugin plugin = OMCPlugin.getInstance();
+
         //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -67,6 +69,10 @@ public class MascotsManager {
                 if (mob != null) mob.setGlowing(true);
             } else if (mob != null) mob.setGlowing(false);
         }
+
+        OMCPlugin.registerEvents(
+                new MascotsListener()
+        );
 
         CommandsManager.getHandler().register(
                 new AdminMascotsCommands()
@@ -195,24 +201,6 @@ public class MascotsManager {
         });
 
         MascotUtils.removeMascotOfCity(city);
-    }
-
-    public static void giveMascotsEffect(UUID playerUUID) {
-        if (!(Bukkit.getPlayer(playerUUID) instanceof Player player)) return;
-
-        City city = CityManager.getPlayerCity(playerUUID);
-        if (city == null) return;
-
-        Mascot mascot = city.getMascot();
-        if (mascot == null) return;
-
-        if (mascot.isAlive()) return;
-
-        int level = mascot.getLevel();
-
-        for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getMalus()) {
-            player.addPotionEffect(potionEffect);
-        }
     }
 
     public static void reviveMascots(String city_uuid) {

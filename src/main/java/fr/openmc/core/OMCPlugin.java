@@ -10,7 +10,6 @@ import fr.openmc.core.features.bossbar.BossbarManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
@@ -77,12 +76,9 @@ public class OMCPlugin extends JavaPlugin {
         ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
         new UpdateManager();
-        new MascotsManager(this); // laisser avant CityManager
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MayorManager(this);
-        new WarManager();
         new BankManager();
         new ScoreboardManager();
         new HomesManager();

@@ -9,10 +9,12 @@ import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
+import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotsListener;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mayor.commands.AdminMayorCommands;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
@@ -73,10 +75,15 @@ public class CityManager implements Listener {
         );
 
         OMCPlugin.registerEvents(
-                new MascotsListener(),
                 new CityChatListener()
         );
         new ProtectionsManager();
+
+        // SUB-FEATURE
+        new MascotsManager();
+        new MayorManager();
+        new WarManager();
+        new CityBankManager();
 
         freeClaim = loadFreeClaims();
     }

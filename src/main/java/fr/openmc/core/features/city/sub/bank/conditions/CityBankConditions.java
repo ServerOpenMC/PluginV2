@@ -1,14 +1,14 @@
-package fr.openmc.core.features.city.conditions;
+package fr.openmc.core.features.city.sub.bank.conditions;
 
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
-import static fr.openmc.core.features.city.commands.CityCommands.balanceCooldownTasks;
 
 /**
  * Le but de cette classe est de regrouper toutes les conditions necessaires
@@ -34,10 +34,6 @@ public class CityBankConditions {
             return false;
         }
 
-        if (balanceCooldownTasks.containsKey(city.getUUID())){
-            MessagesManager.sendMessage(player, Component.text("Ta ville a été attaquer tu n'as donc pas accès à la banque de ville"), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
         return true;
     }
 
@@ -78,8 +74,8 @@ public class CityBankConditions {
             return false;
         }
 
-        if (balanceCooldownTasks.containsKey(city.getUUID())){
-            MessagesManager.sendMessage(player, Component.text("Ta ville a été attaquer tu n'as donc pas accès à la banque de ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (city.getType().equals(CityType.WAR)) {
+            MessagesManager.sendMessage(player, Component.text("Votre ville est dans un status de guerre, vous ne pouvez faire cela"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

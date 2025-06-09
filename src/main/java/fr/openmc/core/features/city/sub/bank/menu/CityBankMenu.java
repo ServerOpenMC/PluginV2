@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.bank;
+package fr.openmc.core.features.city.sub.bank.menu;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;

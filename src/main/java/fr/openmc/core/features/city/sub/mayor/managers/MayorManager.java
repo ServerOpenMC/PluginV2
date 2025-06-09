@@ -1,11 +1,14 @@
 package fr.openmc.core.features.city.sub.mayor.managers;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.*;
+import fr.openmc.core.features.city.sub.mayor.commands.AdminMayorCommands;
+import fr.openmc.core.features.city.sub.mayor.commands.MayorCommands;
 import fr.openmc.core.features.city.sub.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.sub.mayor.listeners.PhaseListener;
 import fr.openmc.core.features.city.sub.mayor.listeners.UrneListener;
@@ -76,10 +79,10 @@ public class MayorManager {
     private static final Random RANDOM = new Random();
 
 
-    public MayorManager(OMCPlugin plugin) {
+    public MayorManager() {
         instance = this;
 
-        this.plugin = plugin;
+        this.plugin = OMCPlugin.getInstance();
 
         // LISTENERS
         new PhaseListener(plugin);
@@ -109,6 +112,11 @@ public class MayorManager {
                     new NPCManager()
             );
         }
+
+        CommandsManager.getHandler().register(
+                new MayorCommands(),
+                new AdminMayorCommands()
+        );
 
         loadMayorConstant();
         loadCityMayors();
