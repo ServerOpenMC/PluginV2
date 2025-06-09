@@ -309,21 +309,6 @@ public class CityManager implements Listener {
     }
 
     /**
-     * Apply all city interests
-     * WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY CITIES SAVED IN THE DB
-     */
-    public static void applyAllCityInterests() {
-        try {
-            List<String> cityUUIDs = getAllCityUUIDs();
-            for (String cityUUID : cityUUIDs) {
-                getCity(cityUUID).applyCityInterest();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * Cache a player with its city
      *
      * @param playerUUID The UUID of the player
