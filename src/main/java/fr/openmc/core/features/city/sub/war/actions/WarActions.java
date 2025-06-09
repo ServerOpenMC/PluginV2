@@ -71,14 +71,14 @@ public class WarActions {
             return;
         }
 
-        if (cityAttack.getMascot().isImmunity()) {
+        if (cityAttack.isImmune()) {
             MessagesManager.sendMessage(player,
                     Component.text("La ville que vous essayez d'attaquer est en période d'immunité!"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        if (launchCity.getMascot().isImmunity()) {
+        if (launchCity.isImmune()) {
             MessagesManager.sendMessage(player,
                     Component.text("Votre ville est en période d'immunité!"),
                     Prefix.CITY, MessageType.ERROR, false);

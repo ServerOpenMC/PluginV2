@@ -41,11 +41,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class MascotsManager {
-
-    //TODO: bouger la varibable dans un bon endroit
-    // 7 jours en millisecondes
-
-    public static NamespacedKey mascotsKey;
+    public static NamespacedKey mascotsKey = new NamespacedKey(OMCPlugin.getInstance(), "mascotsKey");
 
     public static List<String> movingMascots = new ArrayList<>();
 
@@ -67,8 +63,6 @@ public class MascotsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        mascotsKey = new NamespacedKey(plugin, "mascotsKey");
 
         loadAllMascots();
 
@@ -172,11 +166,14 @@ public class MascotsManager {
         String cityUUID = city.getUUID();
 
         Chunk chunk = mascot_spawn.getChunk();
-        setMascotsData(mob, null, 300, 300);
+        setMascotsData(mob, Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
+                city.getName(),
+                300.0,
+                300.0
+        )), 300, 300);
         mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
-        // L'uuid de la ville lui est approprié pour l'identifier
         data.set(mascotsKey, PersistentDataType.STRING, cityUUID);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -239,6 +236,7 @@ public class MascotsManager {
                 entity.getMaxHealth()
         )));
         entity.setGlowing(false);
+
         MascotRegenerationUtils.mascotsRegeneration(mascot);
 
         for (UUID townMember : city.getMembers()) {

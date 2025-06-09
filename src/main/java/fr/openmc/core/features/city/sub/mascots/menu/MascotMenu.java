@@ -258,7 +258,7 @@ public class MascotMenu extends Menu {
             menu.open();
         }));
 
-        if (mascot.isImmunity()) {
+        if (city.isImmune()) {
             Supplier<ItemStack> immunityItemSupplier = () -> {
                 List<Component> lore = List.of(
                         Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city;
 
 import com.sk89q.worldedit.math.BlockVector2;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
@@ -924,6 +925,15 @@ public class City {
      */
     public War getWar() {
         return WarManager.getWarByCity(cityUUID);
+    }
+
+    /**
+     * Checks if the city is immune to attacks.
+     *
+     * @return True if the city is immune, false otherwise.
+     */
+    public boolean isImmune() {
+        return getMascot().isImmunity() && DynamicCooldownManager.isReady(cityUUID, "city:immunity");
     }
 
     /**

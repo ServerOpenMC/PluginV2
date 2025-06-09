@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.war.commands;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -8,6 +9,7 @@ import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.main.MainWarMenu;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -37,6 +39,13 @@ public class WarCommand {
         if (!playerCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
                     Component.text("Votre ville n'est pas dans un statut de §cgueere§f! Changez la type de votre ville avec §c/city type §fou depuis le §cMenu Princiapl des Villes"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (playerCity.isImmune()) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Votre ville est actuellement en période d'immunité, vous ne pouvez pas lancer de guerre pour le moment. \nTemps restant : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(playerCity.getUUID(), "city:immunity"))),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }

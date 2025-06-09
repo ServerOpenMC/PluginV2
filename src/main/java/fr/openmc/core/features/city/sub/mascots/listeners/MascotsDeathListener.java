@@ -55,5 +55,7 @@ public class MascotsDeathListener implements Listener {
 
         cityEnemy.updateBalance(0.15 * city.getBalance() / 100);
         city.updateBalance(-(0.15 * city.getBalance() / 100));
+
+        // run methods end war
     }
 }

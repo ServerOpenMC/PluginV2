@@ -148,7 +148,7 @@ public class MascotsDamageListener implements Listener {
             return;
         }
 
-        if (cityEnemy.getMascot().isImmunity()) {
+        if (cityEnemy.isImmune()) {
             MessagesManager.sendMessage(player, Component.text("§cCette mascotte est immunisée pour le moment"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
