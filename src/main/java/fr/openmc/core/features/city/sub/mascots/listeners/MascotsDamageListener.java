@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.sub.mascots.listeners;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
@@ -200,13 +201,12 @@ public class MascotsDamageListener implements Listener {
                 mob.setHealth(0);
             }
 
-            if (regenTasks.containsKey(damageEntity.getUniqueId())) {
-                regenTasks.get(damageEntity.getUniqueId()).cancel();
-                regenTasks.remove(damageEntity.getUniqueId());
+            if (MascotRegenerationUtils.regenTasks.containsKey(damageEntity.getUniqueId())) {
+                MascotRegenerationUtils.regenTasks.get(damageEntity.getUniqueId()).cancel();
+                MascotRegenerationUtils.regenTasks.remove(damageEntity.getUniqueId());
             }
 
-            startRegenCooldown(cityMob.getMascot());
-            startBalanceCooldown(city_uuid);
+            MascotRegenerationUtils.startRegenCooldown(cityMob.getMascot());
         } catch (Exception exception) {
             exception.printStackTrace();
         }

@@ -5,7 +5,12 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.sub.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
+import fr.openmc.core.features.city.sub.mascots.listeners.MascotsDamageListener;
+import fr.openmc.core.features.city.sub.mascots.listeners.MascotsDeathListener;
+import fr.openmc.core.features.city.sub.mascots.listeners.MascotsInteractionListener;
+import fr.openmc.core.features.city.sub.mascots.listeners.MascotsProtectionsListener;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -30,15 +35,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class MascotsManager {
 
     //TODO: bouger la varibable dans un bon endroit
-    public static long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L; // 7 jours en millisecondes
+    // 7 jours en millisecondes
 
     public static NamespacedKey mascotsKey;
+
+    public static List<String> movingMascots = new ArrayList<>();
 
     public static HashMap<String, Mascot> mascotsByCityUUID = new HashMap<>();
     public static HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
@@ -71,12 +80,19 @@ public class MascotsManager {
         }
 
         OMCPlugin.registerEvents(
-                new MascotsListener()
+                new MascotsProtectionsListener(),
+                new MascotsInteractionListener(),
+                new MascotsDamageListener(),
+                new MascotsDeathListener()
         );
 
         CommandsManager.getHandler().register(
                 new AdminMascotsCommands()
         );
+
+        for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
+            MascotRegenerationUtils.mascotsRegeneration(mascot);
+        }
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -177,8 +193,6 @@ public class MascotsManager {
         });
 
         MascotUtils.addMascotForCity(city, mob.getUniqueId(), chunk);
-        // Immunité persistante de 7 jours pour la mascotte
-        DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
     }
 
     public static void removeMascotsFromCity(City city) {
@@ -225,7 +239,7 @@ public class MascotsManager {
                 entity.getMaxHealth()
         )));
         entity.setGlowing(false);
-        MascotsListener.mascotsRegeneration(mascot);
+        MascotRegenerationUtils.mascotsRegeneration(mascot);
 
         for (UUID townMember : city.getMembers()) {
             if (!(Bukkit.getEntity(townMember) instanceof Player player)) return;

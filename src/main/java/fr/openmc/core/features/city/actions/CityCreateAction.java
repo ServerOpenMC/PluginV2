@@ -44,6 +44,8 @@ import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE
 
 public class CityCreateAction {
 
+    public static long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L;
+
     private static final Map<UUID, String> pendingCities = new HashMap<>();
 
     public static void beginCreateCity(Player player, String cityName) {
@@ -100,8 +102,8 @@ public class CityCreateAction {
     public static void finalizeCreation(Player player, Location mascotLocation) {
         ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
 
-        UUID uuid = player.getUniqueId();
-        String pendingCityName = pendingCities.remove(uuid);
+        UUID playerUUID = player.getUniqueId();
+        String pendingCityName = pendingCities.remove(playerUUID);
         if (pendingCityName == null) return;
 
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
@@ -138,8 +140,8 @@ public class CityCreateAction {
 
 
         City city = CityManager.createCity(player, cityUUID, pendingCityName, CityType.PEACE);
-        city.addPlayer(uuid);
-        city.addPermission(uuid, CPermission.OWNER);
+        city.addPlayer(playerUUID);
+        city.addPermission(playerUUID, CPermission.OWNER);
 
         CityManager.claimedChunks.put(BlockVector2.at(chunk.getX(), chunk.getZ()), city);
         CityManager.freeClaim.put(cityUUID, 15);
@@ -166,6 +168,7 @@ public class CityCreateAction {
         MessagesManager.sendMessage(player, Component.text("§aVotre ville a été crée : " + pendingCityName), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("§7+ §615 chunks gratuits"), Prefix.CITY, MessageType.INFO, false);
 
-        DynamicCooldownManager.use(uuid.toString(), "city:big", 60000);
+        DynamicCooldownManager.use(playerUUID.toString(), "city:big", 60000);
+        DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
     }
 }

@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.city.sub.mascots.MascotsLevels;
-import fr.openmc.core.features.city.sub.mascots.MascotsListener;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -39,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static fr.openmc.core.features.city.sub.mascots.MascotsManager.movingMascots;
 import static fr.openmc.core.features.city.sub.mascots.MascotsManager.upgradeMascots;
 
 public class MascotMenu extends Menu {
@@ -145,9 +145,9 @@ public class MascotMenu extends Menu {
                 }
 
                 String city_uuid = city.getUUID();
-                if (MascotsListener.movingMascots.contains(city_uuid)) return;
+                if (movingMascots.contains(city_uuid)) return;
 
-                MascotsListener.movingMascots.add(city_uuid);
+                movingMascots.add(city_uuid);
 
                 ItemStack mascotsMoveItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
                 ItemMeta meta = mascotsMoveItem.getItemMeta();
@@ -170,7 +170,7 @@ public class MascotMenu extends Menu {
                         "§cDéplacement de la Mascotte annulée",
                         mascotMove -> {
                             if (mascotMove == null) return true;
-                            if (!MascotsListener.movingMascots.contains(city_uuid)) return false;
+                            if (!movingMascots.contains(city_uuid)) return false;
 
                             if (mascot == null) return false;
 
@@ -187,7 +187,7 @@ public class MascotMenu extends Menu {
                             }
 
                             mob.teleport(mascotMove);
-                            MascotsListener.movingMascots.remove(city_uuid);
+                            movingMascots.remove(city_uuid);
                             mascot.setChunk(mascotMove.getChunk());
 
                             DynamicCooldownManager.use(mascot.getMascotUUID().toString(), "mascots:move", 5 * 3600 * 1000L);
