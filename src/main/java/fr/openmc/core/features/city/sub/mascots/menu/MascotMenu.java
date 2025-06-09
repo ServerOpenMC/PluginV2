@@ -12,7 +12,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mascots.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.MascotsListener;
 import fr.openmc.core.utils.DateUtils;
@@ -44,10 +43,10 @@ import static fr.openmc.core.features.city.sub.mascots.MascotsManager.upgradeMas
 
 public class MascotMenu extends Menu {
 
-    private final Entity mascots;
+    private final Mascot mascots;
     private City city;
 
-    public MascotMenu(Player owner, Entity mascots) {
+    public MascotMenu(Player owner, Mascot mascots) {
         super(owner);
         this.mascots = mascots;
         this.city = CityManager.getPlayerCity(owner.getUniqueId());
@@ -86,7 +85,7 @@ public class MascotMenu extends Menu {
                 Component.text("§e§lCLIQUEZ ICI POUR CHANGER DE SKIN")
         );
 
-        map.put(11, new ItemBuilder(this, getSpawnEgg(mascots), itemMeta -> {
+        map.put(11, new ItemBuilder(this, mascots.getMascotEgg(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Le Skin de la §cMascotte"));
             itemMeta.lore(loreSkinMascot);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
@@ -98,17 +97,17 @@ public class MascotMenu extends Menu {
                 player.closeInventory();
                 return;
             }
-            new MascotsSkinMenu(player, getSpawnEgg(mascots), mascots).open();
+            new MascotsSkinMenu(player, mascots.getMascotEgg(), mascots).open();
         }));
 
         Supplier<ItemStack> moveMascotItemSupplier = () -> {
             List<Component> lorePosMascot;
 
-            if (!DynamicCooldownManager.isReady(mascots.getUniqueId().toString(), "mascots:move")) {
+            if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
                 lorePosMascot = List.of(
                         Component.text("§7Vous ne pouvez pas changer la position de votre §cMascotte"),
                         Component.text(""),
-                        Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mascots.getUniqueId().toString(), "mascots:move")))
+                        Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mascots.getMascotUUID().toString(), "mascots:move")))
                 );
             } else {
                 lorePosMascot = List.of(
@@ -125,7 +124,7 @@ public class MascotMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
-                if (!DynamicCooldownManager.isReady(mascots.getUniqueId().toString(), "mascots:move")) {
+                if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
                     return;
                 }
                 if (!city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)) {
@@ -175,7 +174,7 @@ public class MascotMenu extends Menu {
 
                             if (mascot == null) return false;
 
-                            Entity mob = MascotUtils.loadMascot(mascot);
+                            Entity mob = mascot.getEntity();
                             if (mob == null) return false;
 
                             Chunk chunk = mascotMove.getChunk();
@@ -199,7 +198,7 @@ public class MascotMenu extends Menu {
                 player.closeInventory();
             });
         };
-        if (!DynamicCooldownManager.isReady(mascots.getUniqueId().toString(), "mascots:move")) {
+        if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
             MenuUtils.runDynamicItem(player, this, 13, moveMascotItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
@@ -282,14 +281,6 @@ public class MascotMenu extends Menu {
     @Override
     public void onClose(InventoryCloseEvent event) {
         //empty
-    }
-
-    public static Material getSpawnEgg(Entity entity) {
-        String eggName = entity.getType().name() + "_SPAWN_EGG";
-        if (Material.matchMaterial(eggName) == null) {
-            return Material.ZOMBIE_SPAWN_EGG;
-        }
-        return Material.matchMaterial(eggName);
     }
 
     @Override

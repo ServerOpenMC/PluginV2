@@ -6,7 +6,6 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
@@ -28,8 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static fr.openmc.core.features.city.sub.mascots.MascotUtils.getEntityByMascotUUID;
 
 public class WarCityDetailsMenu extends Menu {
 
@@ -97,10 +94,10 @@ public class WarCityDetailsMenu extends Menu {
             }));
         }
         Mascot mascot = city.getMascot();
-        LivingEntity mascotMob = MascotUtils.loadMascot(mascot);
+        LivingEntity mascotMob = (LivingEntity) mascot.getEntity();
         Location mascotLocation = mascotMob == null ? new Location(Bukkit.getWorld("world"), 0, 0, 0) : mascotMob.getLocation();
 
-        map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(mascot.getMascotUUID()).getType())),
+        map.put(8, new ItemBuilder(this, city.getMascot().getMascotEgg(),
                 itemMeta -> {
                     itemMeta.displayName(Component.text("§7Niveau de la Mascotte : §4" + mascot.getLevel()));
                     itemMeta.lore(List.of(Component.text("§7Location de la Mascotte : §c" + mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ())));

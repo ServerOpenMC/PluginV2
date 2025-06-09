@@ -160,7 +160,7 @@ public class CityCreateAction {
 
         // Mascotte
         player.getWorld().getBlockAt(mascotLocation).setType(Material.AIR);
-        MascotsManager.createMascot(city.getUUID(), player.getWorld(), mascotLocation);
+        MascotsManager.createMascot(city, player.getWorld(), mascotLocation);
 
         // Feedback
         MessagesManager.sendMessage(player, Component.text("§aVotre ville a été crée : " + pendingCityName), Prefix.CITY, MessageType.SUCCESS, true);

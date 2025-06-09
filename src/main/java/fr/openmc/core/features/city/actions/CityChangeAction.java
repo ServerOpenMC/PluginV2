@@ -7,7 +7,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mascots.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.utils.DateUtils;
@@ -70,11 +69,14 @@ public class CityChangeAction {
 
         Mascot mascot = city.getMascot();
 
-        if (MascotUtils.mascotsContains(city.getUUID())) {
-            if (!mascot.isAlive()) {
-                MessagesManager.sendMessage(sender, Component.text("Vous devez soigner votre mascotte avant"), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
+        if (mascot == null) {
+            MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas de Mascotte pour changer le type de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!mascot.isAlive()) {
+            MessagesManager.sendMessage(sender, Component.text("Votre Mascotte doit être soigné à 100%"), Prefix.CITY, MessageType.ERROR, false);
+            return;
         }
 
         if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
@@ -85,43 +87,39 @@ public class CityChangeAction {
         city.changeType();
         DynamicCooldownManager.use(city.getUUID(), "city:type", COOLDOWN_CHANGE_TYPE);
 
-        if (mascot != null) {
-            LivingEntity mob = MascotUtils.loadMascot(mascot);
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
+        LivingEntity mob = (LivingEntity) mascot.getEntity();
+        MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
-            double lastHealth = mascotsLevels.getHealth();
-            int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", "")) - 1;
-            if (newLevel < 1) {
-                newLevel = 1;
-            }
-            MascotUtils.setMascotLevel(city.getUUID(), newLevel);
-            mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
-
-            try {
-                double maxHealth = mascotsLevels.getHealth();
-                mob.setMaxHealth(maxHealth);
-                if (mob.getHealth() >= lastHealth) {
-                    mob.setHealth(maxHealth);
-                }
-
-                mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
-                        city.getName(),
-                        Math.floor(mob.getHealth()),
-                        maxHealth
-                )));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-
-            String cityTypeActuel;
-            String cityTypeAfter;
-            cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
-            cityTypeAfter = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
-
-            MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
-
+        double lastHealth = mascotsLevels.getHealth();
+        int newLevel = Integer.parseInt(String.valueOf(mascotsLevels).replaceAll("[^0-9]", "")) - 1;
+        if (newLevel < 1) {
+            newLevel = 1;
         }
 
-        MessagesManager.sendMessage(sender, Component.text("Vous avez bien changé le §5type §fde votre §dville"), Prefix.CITY, MessageType.SUCCESS, false);
+        mascot.setLevel(newLevel);
+        mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
+
+        try {
+            double maxHealth = mascotsLevels.getHealth();
+            mob.setMaxHealth(maxHealth);
+            if (mob.getHealth() >= lastHealth) {
+                mob.setHealth(maxHealth);
+            }
+
+            mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                    city.getName(),
+                    Math.floor(mob.getHealth()),
+                    maxHealth
+            )));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+        String cityTypeActuel;
+        String cityTypeAfter;
+        cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
+        cityTypeAfter = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+
+        MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

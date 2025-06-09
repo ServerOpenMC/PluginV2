@@ -854,11 +854,7 @@ public class City {
     // ==================== Mascots Methods ====================
 
     public Mascot getMascot() {
-        for (Mascot mascot : MascotsManager.mascots) {
-            if (mascot.getCityUUID().equals(cityUUID)) {
-                return mascot;
-            }
-        }
+        MascotsManager.mascotsByCityUUID.get(cityUUID);
         return null;
     }
 

@@ -16,7 +16,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -28,8 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static fr.openmc.core.features.city.sub.mascots.MascotUtils.getEntityByMascotUUID;
 
 public class CityListDetailsMenu extends Menu {
 	
@@ -122,7 +119,7 @@ public class CityListDetailsMenu extends Menu {
 		}
 
 
-		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(city.getMascot().getMascotUUID()).getType())),
+		map.put(8, new ItemBuilder(this, city.getMascot().getMascotEgg(),
 				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + city.getMascot().getLevel()))));
 		
 		map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),

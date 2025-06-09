@@ -1,9 +1,11 @@
 package fr.openmc.core.features.city.sub.mascots;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -29,7 +31,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class MascotsManager {
@@ -38,7 +39,9 @@ public class MascotsManager {
     public static long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L; // 7 jours en millisecondes
 
     public static NamespacedKey mascotsKey;
-    public static HashMap<String, Mascot> mascots = new HashMap<>();
+
+    public static HashMap<String, Mascot> mascotsByCityUUID = new HashMap<>();
+    public static HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
 
     public static final String PLACEHOLDER_MASCOT_NAME = "§l%s §c%a/%a❤";
     public static final String DEAD_MASCOT_NAME = "☠ §cMascotte Morte";
@@ -58,12 +61,16 @@ public class MascotsManager {
 
         loadAllMascots();
 
-        for (Mascot mascot : mascots.values()) {
-            Entity mob = MascotUtils.loadMascot(mascot);
+        for (Mascot mascot : mascotsByEntityUUID.values()) {
+            Entity mob = mascot.getEntity();
             if (mascot.isImmunity()) {
                 if (mob != null) mob.setGlowing(true);
             } else if (mob != null) mob.setGlowing(false);
         }
+
+        CommandsManager.getHandler().register(
+                new AdminMascotsCommands()
+        );
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -80,20 +87,23 @@ public class MascotsManager {
 
                 String cityUUID = rs.getString("city_uuid");
                 City city = CityManager.getCity(cityUUID);
-                String mascotUuid = rs.getString("mascot_uuid");
+                if (city == null) continue;
+
+                UUID entityUUID = UUID.fromString(rs.getString("mascot_uuid"));
                 int level = rs.getInt("level");
                 boolean immunity = rs.getBoolean("immunity");
                 boolean alive = rs.getBoolean("alive");
                 Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
 
-                mascots.put(cityUUID, new Mascot(city, UUID.fromString(mascotUuid), level, immunity, alive, chunk));
+                mascotsByEntityUUID.put(entityUUID, new Mascot(city, entityUUID, level, immunity, alive, chunk));
+                mascotsByCityUUID.put(city.getUUID(), new Mascot(city, entityUUID, level, immunity, alive, chunk));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void saveMascots(List<Mascot> mascots) {
+    public static void saveMascots() {
         String query;
 
         if (OMCPlugin.isUnitTestVersion()) {
@@ -107,7 +117,7 @@ public class MascotsManager {
         }
 
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
-            for (Mascot mascot : mascots) {
+            for (Mascot mascot : mascotsByCityUUID.values()) {
 
                 statement.setString(1, mascot.getCity().getUUID());
                 statement.setString(2, mascot.getMascotUUID().toString());
@@ -134,8 +144,10 @@ public class MascotsManager {
         }
     }
 
-    public static void createMascot(String city_uuid, World player_world, Location mascot_spawn) {
+    public static void createMascot(City city, World player_world, Location mascot_spawn) {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn, EntityType.ZOMBIE);
+
+        String cityUUID = city.getUUID();
 
         Chunk chunk = mascot_spawn.getChunk();
         setMascotsData(mob, null, 300, 300);
@@ -143,12 +155,12 @@ public class MascotsManager {
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
         // L'uuid de la ville lui est approprié pour l'identifier
-        data.set(mascotsKey, PersistentDataType.STRING, city_uuid);
+        data.set(mascotsKey, PersistentDataType.STRING, cityUUID);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO mascots VALUE (?, 1, ?, true, true, ?, ?)");
-                statement.setString(1, city_uuid);
+                statement.setString(1, cityUUID);
                 statement.setString(2, String.valueOf(mob.getUniqueId()));
                 statement.setInt(3, chunk.getX());
                 statement.setInt(4, chunk.getZ());
@@ -158,34 +170,31 @@ public class MascotsManager {
             }
         });
 
-        MascotUtils.addMascotForCity(city_uuid, mob.getUniqueId(), chunk);
+        MascotUtils.addMascotForCity(city, mob.getUniqueId(), chunk);
         // Immunité persistante de 7 jours pour la mascotte
-        DynamicCooldownManager.use(city_uuid, "city:immunity", IMMUNITY_COOLDOWN);
+        DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
     }
 
-    public static void removeMascotsFromCity(String city_uuid) {
-        City city = CityManager.getCity(city_uuid);
-        if (city == null) return;
-
+    public static void removeMascotsFromCity(City city) {
         Mascot mascot = city.getMascot();
 
         if (mascot == null) return;
 
-        LivingEntity mascots = MascotUtils.loadMascot(mascot);
+        LivingEntity mascots = (LivingEntity) mascot.getEntity();
 
         if (mascots != null) mascots.remove();
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM mascots WHERE city_uuid = ?");
-                statement.setString(1, city_uuid);
+                statement.setString(1, city.getUUID());
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
 
-        MascotUtils.removeMascotOfCity(city_uuid);
+        MascotUtils.removeMascotOfCity(city);
     }
 
     public static void giveMascotsEffect(UUID playerUUID) {
@@ -197,8 +206,6 @@ public class MascotsManager {
         Mascot mascot = city.getMascot();
         if (mascot == null) return;
 
-        if (!MascotUtils.mascotsContains(city.getUUID())) return;
-
         if (mascot.isAlive()) return;
 
         int level = mascot.getLevel();
@@ -209,29 +216,28 @@ public class MascotsManager {
     }
 
     public static void reviveMascots(String city_uuid) {
-        if (!MascotUtils.mascotsContains(city_uuid)) return;
         City city = CityManager.getCity(city_uuid);
-
-        MascotUtils.changeMascotState(city_uuid, true);
-        MascotUtils.changeMascotImmunity(city_uuid, false);
 
         Mascot mascot = city.getMascot();
         if (mascot == null) return;
 
+        mascot.setAlive(true);
+        mascot.setImmunity(false);
+
         int level = mascot.getLevel();
 
-        LivingEntity entity = MascotUtils.loadMascot(mascot);
+        LivingEntity entity = (LivingEntity) mascot.getEntity();
 
         if (entity == null) return;
 
         entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
         entity.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
-                MascotUtils.getCityFromMascot(mascot.getMascotUUID()).getName(),
+                city.getName(),
                 Math.floor(0.10 * entity.getMaxHealth()),
                 entity.getMaxHealth()
         )));
         entity.setGlowing(false);
-        MascotsListener.mascotsRegeneration(mascot.getMascotUUID());
+        MascotsListener.mascotsRegeneration(mascot);
 
         for (UUID townMember : city.getMembers()) {
             if (!(Bukkit.getEntity(townMember) instanceof Player player)) return;
@@ -252,7 +258,7 @@ public class MascotsManager {
 
         int level = mascot.getLevel();
 
-        LivingEntity mob = MascotUtils.loadMascot(mascot);
+        LivingEntity mob = (LivingEntity) mascot.getEntity();
         if (mob == null) return;
 
         if (!MascotUtils.isMascot(mob)) return;
@@ -261,7 +267,7 @@ public class MascotsManager {
         double lastHealth = mascotsLevels.getHealth();
         if (mascotsLevels == MascotsLevels.level10) return;
 
-        MascotUtils.setMascotLevel(city_uuid, level + 1);
+        mascot.setLevel(level + 1);
         mascotsLevels = MascotsLevels.valueOf("level" + level);
 
         try {
@@ -282,22 +288,17 @@ public class MascotsManager {
         }
     }
 
-    public static void changeMascotsSkin(Entity mascots, EntityType skin, Player player, Material matAywenite, int aywenite) {
+    public static void changeMascotsSkin(Mascot mascots, EntityType skin, Player player, Material matAywenite, int aywenite) {
         World world = Bukkit.getWorld("world");
-        Location mascotsLoc = mascots.getLocation();
+        LivingEntity entityMascot = (LivingEntity) mascots.getEntity();
+        Location mascotsLoc = entityMascot.getLocation();
 
-        Mascot mascot = MascotUtils.getMascotByEntity(mascots);
-        if (mascot == null) {
-            return;
-        }
-
-        LivingEntity mob = MascotUtils.loadMascot(mascot);
-        boolean glowing = mascots.isGlowing();
+        boolean glowing = entityMascot.isGlowing();
         long cooldown = 0;
         boolean hasCooldown = false;
 
         // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
-        if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && mob.getHeight() <= 1.0) {
+        if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && entityMascot.getHeight() <= 1.0) {
             MessagesManager.sendMessage(player, Component.text("Libérez de l'espace au dessus de la macotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
             return;
         }
@@ -314,18 +315,18 @@ public class MascotsManager {
             }
         }
 
-        double baseHealth = mob.getHealth();
-        double maxHealth = mob.getMaxHealth();
-        Component name = mob.customName();
-        String mascotsCustomUUID = mob.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
+        double baseHealth = entityMascot.getHealth();
+        double maxHealth = entityMascot.getMaxHealth();
+        Component name = entityMascot.customName();
+        String mascotsCustomUUID = entityMascot.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
 
-        if (!DynamicCooldownManager.isReady(mascots.getUniqueId().toString(), "mascots:move")) {
-            cooldown = DynamicCooldownManager.getRemaining(mascots.getUniqueId().toString(), "mascots:move");
+        if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
+            cooldown = DynamicCooldownManager.getRemaining(mascots.getMascotUUID().toString(), "mascots:move");
             hasCooldown = true;
-            DynamicCooldownManager.clear(mob.getUniqueId().toString(), "mascots:move");
+            DynamicCooldownManager.clear(entityMascot.getUniqueId().toString(), "mascots:move");
         }
 
-        mob.remove();
+        entityMascot.remove();
 
         if (world == null) return;
 
@@ -341,7 +342,7 @@ public class MascotsManager {
 
         if (mascotsCustomUUID != null) {
             newData.set(mascotsKey, PersistentDataType.STRING, mascotsCustomUUID);
-            MascotUtils.setMascotUUID(mascotsCustomUUID, newMascots.getUniqueId());
+            mascots.setMascotUUID(newMascots.getUniqueId());
         }
 
         ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);

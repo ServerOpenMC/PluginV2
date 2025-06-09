@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -13,7 +14,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -31,11 +31,11 @@ import static fr.openmc.core.features.city.sub.mascots.MascotsManager.changeMasc
 public class MascotsSkinMenu extends Menu {
 
     private final Material egg;
-    private final Entity mascots;
+    private final Mascot mascots;
     Sound selectSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
     Sound deniedSound = Sound.BLOCK_NOTE_BLOCK_BASS;
 
-    public MascotsSkinMenu(Player owner, Material egg, Entity mascots) {
+    public MascotsSkinMenu(Player owner, Material egg, Mascot mascots) {
         super(owner);
         this.egg = egg;
         this.mascots = mascots;

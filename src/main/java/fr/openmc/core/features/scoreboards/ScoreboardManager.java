@@ -5,7 +5,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.ContestData;
@@ -210,9 +209,10 @@ public class ScoreboardManager implements Listener {
                 int z = (chunk.getZ() << 4) + 8;
                 int y = world.getHighestBlockYAt(x, z);
 
-                LivingEntity mob = MascotUtils.loadMascot(cityEnemy.getMascot());
+                LivingEntity mobMascotEnemy = (LivingEntity) cityEnemy.getMascot().getEntity();
+                LivingEntity mobMascot = (LivingEntity) city.getMascot().getEntity();
 
-                Location mascotLocation = mob != null ? mob.getLocation() : new Location(world, x, y, z);
+                Location mascotLocation = mobMascotEnemy != null ? mobMascotEnemy.getLocation() : new Location(world, x, y, z);
                 String direction = DirectionUtils.getDirectionArrow(player, mascotLocation);
                 double distance = mascotLocation.distance(player.getLocation());
                 int rounded = (int) Math.round(distance);
@@ -227,7 +227,6 @@ public class ScoreboardManager implements Listener {
                         break;
                     case COMBAT:
                         objective.getScore("   ").setScore(5);
-                        LivingEntity mobMascot = MascotUtils.loadMascot(city.getMascot());
                         if (mobMascot != null) {
                             if (city.getMascot().isAlive()) {
                                 objective.getScore("§8• §fVotre Mascotte§7: §c" + Math.floor(mobMascot.getHealth()) + "§4/§c" + mobMascot.getMaxHealth() + " ❤").setScore(4);
@@ -236,7 +235,6 @@ public class ScoreboardManager implements Listener {
                             }
                         }
 
-                        LivingEntity mobMascotEnemy = MascotUtils.loadMascot(cityEnemy.getMascot());
                         if (mobMascotEnemy != null) {
                             if (cityEnemy.getMascot().isAlive()) {
                                 objective.getScore("§8• §4Mascotte Enemnie§7: §c" + Math.floor(mobMascotEnemy.getHealth()) + "§4/§c" + mobMascotEnemy.getMaxHealth() + " ❤").setScore(3);

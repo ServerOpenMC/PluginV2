@@ -380,19 +380,19 @@ public class CityManager implements Listener {
     /**
      * Delete a city
      *
-     * @param city The UUID of the city
+     * @param cityUUID The UUID of the city
      */
-    public static void forgetCity(String city) {
+    public static void forgetCity(String cityUUID) {
         try {
-            City cityz = cities.remove(city);
-            if (cityz == null) return;
+            City city = cities.remove(cityUUID);
+            if (city == null) return;
 
             MayorManager mayorManager = MayorManager.getInstance();
-            mayorManager.cityMayor.remove(cityz);
-            mayorManager.cityElections.remove(cityz);
-            mayorManager.playerVote.remove(cityz);
+            mayorManager.cityMayor.remove(city);
+            mayorManager.cityElections.remove(city);
+            mayorManager.playerVote.remove(city);
 
-            List<UUID> membersCopy = new ArrayList<>(cityz.getMembers());
+            List<UUID> membersCopy = new ArrayList<>(city.getMembers());
             for (UUID members : membersCopy) {
                 Player member = Bukkit.getPlayer(members);
                 if (member == null) {
@@ -407,7 +407,7 @@ public class CityManager implements Listener {
                         }
                     }
 
-                    Mascot mascot = cityz.getMascot();
+                    Mascot mascot = city.getMascot();
                     if (mascot != null) {
 
                         if (!DynamicCooldownManager.isReady(mascot.getMascotUUID().toString(), "mascots:move")) {
@@ -417,14 +417,14 @@ public class CityManager implements Listener {
                         }
                     }
                 }
-                cityz.removePlayer(members);
+                city.removePlayer(members);
             }
 
             Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
             while (iterator.hasNext()) {
                 BlockVector2 vector = iterator.next();
                 City claimedCity = claimedChunks.get(vector);
-                if (claimedCity != null && claimedCity.equals(cityz)) {
+                if (claimedCity != null && claimedCity.equals(city)) {
                     iterator.remove();
                 }
             }
@@ -438,16 +438,15 @@ public class CityManager implements Listener {
                 }
             }
 
-            if (DynamicCooldownManager.isReady(cityz.getUUID(), "city:type")) {
-                DynamicCooldownManager.clear(cityz.getUUID(), "city:type");
+            if (DynamicCooldownManager.isReady(cityUUID, "city:type")) {
+                DynamicCooldownManager.clear(cityUUID, "city:type");
             }
 
+            freeClaim.remove(cityUUID);
+
+            MascotsManager.removeMascotsFromCity(city);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        freeClaim.remove(city);
-
-        MascotsManager.removeMascotsFromCity(city);
     }
 }

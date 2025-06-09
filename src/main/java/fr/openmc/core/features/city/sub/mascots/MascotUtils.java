@@ -1,159 +1,57 @@
 package fr.openmc.core.features.city.sub.mascots;
 
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class MascotUtils {
 
-	public static boolean addMascotForCity(String city_uuid, UUID mascotUUID, Chunk chunk) {
-		City city = CityManager.getCity(city_uuid);
-		if (city == null) {
-			return false;
-		}
-
-		if (city.getMascot() != null) {
-			return false;
-		}
-
-		Mascot newMascot = new Mascot(city_uuid, mascotUUID, 1, true, true, chunk);
-		return MascotsManager.mascots.add(newMascot);
-	}
-
-	public static boolean removeMascotOfCity(String city_uuid) {
-		City city = CityManager.getCity(city_uuid);
-
-		if (city == null) {
-			return false;
-		}
-
-		return MascotsManager.mascots.remove(city.getMascot());
-	}
-
-	public static Mascot getMascotByUUID(UUID uuid) {
-		for (Mascot mascot : MascotsManager.mascots) {
-			if (mascot.getMascotUUID().equals(uuid)) {
-				return mascot;
-			}
-		}
-		return null;
+	/**
+	 * Adds a mascot for a given city.
+	 *
+	 * @param city       The city for which the mascot is being added.
+	 * @param mascotUUID The UUID of the mascot entity.
+	 * @param chunk      The chunk where the mascot is located.
+	 *                   This method creates a new Mascot object and adds it to the mascotsByCityUUID and mascotsByEntityUUID maps.
+	 */
+	public static void addMascotForCity(City city, UUID mascotUUID, Chunk chunk) {
+		Mascot newMascot = new Mascot(city, mascotUUID, 1, true, true, chunk);
+		MascotsManager.mascotsByCityUUID.put(city.getUUID(), newMascot);
+		MascotsManager.mascotsByEntityUUID.put(mascotUUID, newMascot);
 	}
 
 	/**
-	 * Get the mascot of a city by its entity.
-	 *
-	 * @param entity The entity to check.
-	 * @return The mascot if found, null otherwise.
+	 * Removes the mascot associated with a given city.
+	 * @param city The city whose mascot is to be removed.
+	 * This method will also remove the mascot from the mascotsByCityUUID and mascotsByEntityUUID maps.
 	 */
-	public static Mascot getMascotByEntity(Entity entity) {
-		if (entity != null) {
-			for (Mascot mascot : MascotsManager.mascots) {
-				if (mascot.getMascotUUID().equals(entity.getUniqueId())) {
-					return mascot;
-				}
-			}
-		}
-		return null;
+	public static void removeMascotOfCity(City city) {
+		Mascot mascot = city.getMascot();
+		MascotsManager.mascotsByCityUUID.remove(city.getUUID());
+		MascotsManager.mascotsByEntityUUID.remove(mascot.getMascotUUID());
 	}
 
-	public static @Nullable Entity getEntityByMascotUUID(UUID mascotUUID) {
-		if (mascotUUID != null) {
-			if (getMascotByUUID(mascotUUID) != null) {
-				return Bukkit.getEntity(mascotUUID);
-			}
-		}
-		return null;
-	}
-
-	public static LivingEntity loadMascot(Mascot mascot) {
-		boolean toUnload = false;
-		Chunk chunk = mascot.getChunk();
-		if (! chunk.isLoaded()) {
-			chunk.load();
-			toUnload = true;
-		}
-		UUID mascot_uuid = mascot.getMascotUUID();
-		if (mascot_uuid == null) {
-			return null;
-		}
-		Entity mob = Bukkit.getEntity(mascot_uuid);
-		if (mob == null) {
-			return null;
-		}
-		if (toUnload) chunk.unload();
-		return (LivingEntity) mob;
-	}
-
-	public static boolean mascotsContains(String city_uuid) {
-		for (Mascot mascot : MascotsManager.mascots) {
-			if (mascot.getCityUUID().equals(city_uuid)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-
-	public static void setMascotLevel(String city_uuid, int level) {
-		for (Mascot mascot : MascotsManager.mascots) {
-			if (mascot.getCityUUID().equals(city_uuid)) {
-				mascot.setLevel(level);
-				return;
-			}
-		}
-	}
-
-	public static void setMascotUUID(String city_uuid, UUID uuid) {
-		for (Mascot mascot : MascotsManager.mascots) {
-			if (mascot.getCityUUID().equals(city_uuid)) {
-				mascot.setMascotUUID(uuid);
-				return;
-			}
-		}
-	}
-
-	public static void changeMascotState(String city_uuid, boolean alive) {
-		for (Mascot mascot : MascotsManager.mascots) {
-			if (mascot.getCityUUID().equals(city_uuid)) {
-				System.out.println("mascot" + mascot);
-				mascot.setAlive(alive);
-				return;
-			}
-		}
-	}
-
-	public static void changeMascotImmunity(String city_uuid, boolean immunity) {
-		for (Mascot mascot : MascotsManager.mascots) {
-			if (mascot.getCityUUID().equals(city_uuid)) {
-				System.out.println("mascot" + mascot);
-				mascot.setImmunity(immunity);
-				return;
-			}
-		}
-	}
-
-	public static City getCityFromMascot(UUID mascotUUID) {
-		City city = null;
-		if (mascotUUID != null) {
-			for (Mascot mascot : MascotsManager.mascots) {
-				if (mascot.getMascotUUID().equals(mascotUUID)) {
-					city = CityManager.getCity(mascot.getCityUUID());
-					break;
-				}
-			}
-		}
-		return city;
-	}
-
+	/**
+	 * Checks if an entity is a mascot.
+	 * @param entity The entity to check.
+	 * @return true if the entity is a mascot, false otherwise.
+	 */
 	public static boolean isMascot(Entity entity) {
 		return entity.getPersistentDataContainer().has(MascotsManager.mascotsKey, PersistentDataType.STRING);
+	}
+
+	public static City getCityFromEntity(UUID entityUUID) {
+		City city = null;
+
+		if (MascotsManager.mascotsByEntityUUID.containsKey(entityUUID)) {
+			Mascot mascot = MascotsManager.mascotsByEntityUUID.get(entityUUID);
+			city = mascot.getCity();
+		}
+
+		return city;
 	}
 }
 

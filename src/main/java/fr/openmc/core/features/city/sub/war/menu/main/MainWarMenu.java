@@ -9,7 +9,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
@@ -72,7 +71,7 @@ public class MainWarMenu extends PaginatedMenu {
 
                 Mascot mascot = city.getMascot();
 
-                LivingEntity mascotMob = MascotUtils.loadMascot(mascot);
+                LivingEntity mascotMob = (LivingEntity) mascot.getEntity();
                 Location mascotLocation = mascotMob == null ? new Location(Bukkit.getWorld("world"), 0, 0, 0) : mascotMob.getLocation();
 
                 List<Component> loreCity = new ArrayList<>(List.of(

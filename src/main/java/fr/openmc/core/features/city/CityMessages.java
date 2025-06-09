@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city;
 
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.audience.Audience;
@@ -40,7 +39,7 @@ public class CityMessages {
         }
         Mascot mascot = city.getMascot();
         if (mascot!=null){
-            LivingEntity mob = MascotUtils.loadMascot(mascot);
+            LivingEntity mob = (LivingEntity) mascot.getEntity();
             if (mascot.isAlive()) {
                 mascotLife = String.valueOf(mob.getHealth());
             }

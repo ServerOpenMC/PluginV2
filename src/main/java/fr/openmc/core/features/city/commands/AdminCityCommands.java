@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.commands;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -286,19 +285,15 @@ public class AdminCityCommands {
     @Subcommand("mascots remove")
     @CommandPermission("omc.admins.commands.admcity.mascots.remove")
     public void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {
-        List<String> uuidList = CityManager.getAllCityUUIDs();
         City city = CityManager.getPlayerCity(target.getUniqueId());
 
-        if (city != null){
-            String city_uuid = city.getUUID();
-
-            if (uuidList.contains(city_uuid)){
-                MascotsManager.removeMascotsFromCity(city_uuid);
-                return;
-            }
-
+        if (city == null) {
             MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
         }
+
+
+        MascotsManager.removeMascotsFromCity(city);
+        MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
     }
 
     @Subcommand("mascots immunityoff")
@@ -319,7 +314,7 @@ public class AdminCityCommands {
         }
 
         if (mascot.isImmunity()) {
-            MascotUtils.changeMascotImmunity(city.getUUID(), false);
+            mascot.setImmunity(false);
         }
         DynamicCooldownManager.clear(city.getUUID(), "city:immunity");
         UUID mascotUUID = mascot.getMascotUUID();

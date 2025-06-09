@@ -17,7 +17,6 @@ import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.bank.CityBankMenu;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotMenu;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotsDeadMenu;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -131,7 +130,7 @@ public class CityMenu extends Menu {
         List<Component> loreMascots;
 
         if (mascot != null) {
-            mob = MascotUtils.loadMascot(mascot);
+            mob = (LivingEntity) mascot.getEntity();
 
             if (!mascot.isAlive()) {
                 loreMascots = List.of(
@@ -158,7 +157,7 @@ public class CityMenu extends Menu {
         }
 
         if (mob != null) {
-            inventory.put(8, new ItemBuilder(this, MascotMenu.getSpawnEgg(mob), itemMeta -> {
+            inventory.put(8, new ItemBuilder(this, mascot.getMascotEgg(), itemMeta -> {
                 itemMeta.itemName(Component.text("§cVotre Mascotte"));
                 itemMeta.lore(loreMascots);
             }).setOnClick(inventoryClickEvent -> {
@@ -168,7 +167,7 @@ public class CityMenu extends Menu {
                     return;
                 }
 
-                MascotMenu menu = new MascotMenu(player, mob);
+                MascotMenu menu = new MascotMenu(player, mascot);
                 menu.open();
             }));
         } else {

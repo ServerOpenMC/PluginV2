@@ -52,8 +52,8 @@ public class MascotsListener implements Listener {
 
     @SneakyThrows
     public MascotsListener() {
-        for (Mascot mascot : MascotsManager.mascots.values()) {
-            mascotsRegeneration(mascot.getMascotUUID());
+        for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
+            mascotsRegeneration(mascot);
         }
     }
 
@@ -71,7 +71,7 @@ public class MascotsListener implements Listener {
             e.setCancelled(true);
         }
 
-        City city = MascotUtils.getCityFromMascot(entity.getUniqueId());
+        City city = MascotUtils.getCityFromEntity(entity.getUniqueId());
         if (city == null) return;
         LivingEntity mob = (LivingEntity) entity;
 
@@ -112,9 +112,9 @@ public class MascotsListener implements Listener {
         if (!(damager instanceof Player player)) return;
 
         PersistentDataContainer data = damageEntity.getPersistentDataContainer();
-        String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        String pdcCityUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
 
-        if (mascotsUUID == null) return;
+        if (pdcCityUUID == null) return;
 
         Set<EntityDamageEvent.DamageCause> allowedCauses = Set.of(
                 EntityDamageEvent.DamageCause.ENTITY_ATTACK,
@@ -128,7 +128,7 @@ public class MascotsListener implements Listener {
         }
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        City cityEnemy = MascotUtils.getCityFromMascot(damageEntity.getUniqueId());
+        City cityEnemy = MascotUtils.getCityFromEntity(damageEntity.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
@@ -158,7 +158,7 @@ public class MascotsListener implements Listener {
             return;
         }
 
-        if (mascotsUUID.equals(city_uuid)) {
+        if (pdcCityUUID.equals(city_uuid)) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer votre mascotte"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
@@ -210,11 +210,12 @@ public class MascotsListener implements Listener {
 
 
         LivingEntity mob = (LivingEntity) damageEntity;
+        City cityMob = MascotUtils.getCityFromEntity(mob.getUniqueId());
         try {
 
             if (MayorManager.getInstance().phaseMayor != 2) return;
 
-            if (!PerkManager.hasPerk(MascotUtils.getCityFromMascot(mob.getUniqueId()).getMayor(), Perks.IRON_BLOOD.getId()))
+            if (!PerkManager.hasPerk(cityMob.getMayor(), Perks.IRON_BLOOD.getId()))
                 return;
             long currentTime = System.currentTimeMillis();
             if (perkIronBloodCooldown.containsKey(city) && currentTime - perkIronBloodCooldown.get(city) < COOLDOWN_TIME) {
@@ -239,7 +240,7 @@ public class MascotsListener implements Listener {
                         .map(ent -> (Player) ent)
                         .filter(nearbyPlayer -> {
                             City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
-                            return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromMascot(mob.getUniqueId()).getUUID());
+                            return enemyCity != null && !enemyCity.getUUID().equals(cityMob.getUUID());
                         })
                         .collect(Collectors.toList());
 
@@ -273,7 +274,7 @@ public class MascotsListener implements Listener {
                 regenTasks.remove(damageEntity.getUniqueId());
             }
 
-            startRegenCooldown(damageEntity.getUniqueId());
+            startRegenCooldown(cityMob.getMascot());
             startBalanceCooldown(city_uuid);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -293,7 +294,7 @@ public class MascotsListener implements Listener {
                     .map(ent -> (Player) ent)
                     .filter(nearbyPlayer -> {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
-                        return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromMascot(mascotUUID).getUUID());
+                        return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromEntity(mascotUUID).getUUID());
                     })
                     .collect(Collectors.toList());
 
@@ -359,10 +360,11 @@ public class MascotsListener implements Listener {
 
         String city_uuid = city.getUUID();
         if (mascotsUUID.equals(city_uuid)) {
-            if (!city.getMascot().isAlive()) {
+            Mascot mascot = city.getMascot();
+            if (!mascot.isAlive()) {
                 new MascotsDeadMenu(player, city_uuid).open();
             } else {
-                new MascotMenu(player, clickEntity).open();
+                new MascotMenu(player, mascot).open();
             }
         } else {
             MessagesManager.sendMessage(player, Component.text("§cCette mascotte ne vous appartient pas"), Prefix.CITY, MessageType.ERROR, false);
@@ -389,8 +391,8 @@ public class MascotsListener implements Listener {
 
         int level = mascot.getLevel();
 
-        MascotUtils.changeMascotImmunity(city_uuid, true);
-        MascotUtils.changeMascotState(city_uuid, false);
+        mascot.setImmunity(true);
+        mascot.setAlive(false);
 
         entity.customName(Component.text(DEAD_MASCOT_NAME));
         entity.setGlowing(true);
@@ -531,7 +533,8 @@ public class MascotsListener implements Listener {
         MascotsManager.giveMascotsEffect(player.getUniqueId());
     }
 
-    private void startRegenCooldown(UUID mascotsUUID) {
+    private void startRegenCooldown(Mascot mascots) {
+        UUID mascotsUUID = mascots.getMascotUUID();
         if (cooldownTasks.containsKey(mascotsUUID)) {
             cooldownTasks.get(mascotsUUID).cancel();
         }
@@ -539,7 +542,7 @@ public class MascotsListener implements Listener {
         BukkitRunnable cooldownTask = new BukkitRunnable() {
             @Override
             public void run() {
-                mascotsRegeneration(mascotsUUID);
+                mascotsRegeneration(mascots);
                 cooldownTasks.remove(mascotsUUID);
             }
         };
@@ -548,22 +551,15 @@ public class MascotsListener implements Listener {
         cooldownTask.runTaskLater(OMCPlugin.getInstance(), 10 * 60 * 20L);
     }
 
-    public static void mascotsRegeneration(UUID mascotsUUID) {
-        if (regenTasks.containsKey(mascotsUUID)) return;
+    public static void mascotsRegeneration(Mascot mascot) {
+        if (regenTasks.containsKey(mascot.getMascotUUID())) return;
 
-        Mascot mascot = MascotUtils.getMascotByUUID(mascotsUUID);
-        if (mascot == null) return;
-
-        Entity mob = MascotUtils.loadMascot(mascot);
-        if (mob == null) return;
-
+        LivingEntity mob = (LivingEntity) mascot.getEntity();
         PersistentDataContainer data = mob.getPersistentDataContainer();
         if (!data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)) return;
 
-        String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
-
-        if (!MascotUtils.mascotsContains(city_uuid)) {
-            regenTasks.remove(mascotsUUID);
+        if (mascot == null) {
+            regenTasks.remove(mascot.getMascotUUID());
             return;
         }
 
@@ -576,21 +572,22 @@ public class MascotsListener implements Listener {
                     this.cancel();
                     return;
                 }
-                LivingEntity mascots = MascotUtils.loadMascot(mascot);
+                LivingEntity mascots = (LivingEntity) mascot.getEntity();
                 if (mascots == null || mascots.isDead()) {
-                    regenTasks.remove(mascotsUUID);
+                    regenTasks.remove(mascot.getMascotUUID());
                     this.cancel();
                     return;
                 }
 
+
                 if (mascots.getHealth() >= mascots.getMaxHealth()) {
 
                     mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
-                            MascotUtils.getCityFromMascot(mascotsUUID).getName(),
+                            mascot.getCity().getName(),
                             Math.floor(mascots.getHealth()),
                             mascots.getMaxHealth()
                     )));
-                    regenTasks.remove(mascotsUUID);
+                    regenTasks.remove(mascot.getMascotUUID());
                     this.cancel();
                     return;
                 }
@@ -598,14 +595,14 @@ public class MascotsListener implements Listener {
                 double newHealth = Math.min(mascots.getHealth() + 1, mascots.getMaxHealth());
                 mascots.setHealth(newHealth);
                 mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
-                        MascotUtils.getCityFromMascot(mascotsUUID).getName(),
+                        mascot.getCity().getName(),
                         Math.floor(mascots.getHealth()),
                         mascots.getMaxHealth()
                 )));
             }
         };
 
-        regenTasks.put(mascotsUUID, task);
+        regenTasks.put(mascot.getMascotUUID(), task);
         task.runTaskTimer(OMCPlugin.getInstance(), 0L, 60L);
     }
 }

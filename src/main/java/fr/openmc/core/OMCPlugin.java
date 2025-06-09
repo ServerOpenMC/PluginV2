@@ -143,7 +143,7 @@ public class OMCPlugin extends JavaPlugin {
         QuestsManager.getInstance().saveQuests();
 
         // - Mascottes
-        MascotsManager.saveMascots(MascotsManager.mascots);
+        MascotsManager.saveMascots();
         CityManager.saveFreeClaims(CityManager.freeClaim);
 
         // - Cube
