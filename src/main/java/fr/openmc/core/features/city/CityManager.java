@@ -465,7 +465,6 @@ public class CityManager implements Listener {
                 chestsDao.delete(chestsDelete.prepare());
 
                 MayorManager.removeCity(city);
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -158,10 +158,7 @@ public class ContestManager {
      */
     public static void loadContestPlayerData() {
         try {
-            List<ContestPlayer> players = playerDao.queryForAll();
-            for (ContestPlayer player : players) {
-                dataPlayer.put(player.getName(), player);
-            }
+            playerDao.queryForAll().forEach(player -> dataPlayer.put(player.getName(), player));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

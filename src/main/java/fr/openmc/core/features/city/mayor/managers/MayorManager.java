@@ -240,9 +240,7 @@ public class MayorManager {
 
     public static void loadPlayersVote() {
         try {
-            List<MayorVote> votes = votesDao.queryForAll();
-
-            votes.forEach(vote -> playerVote.computeIfAbsent(vote.getCity(), k -> new ArrayList<>()).add(vote));
+            votesDao.queryForAll().forEach(vote -> playerVote.computeIfAbsent(vote.getCity(), k -> new ArrayList<>()).add(vote));
         } catch (SQLException e) {
             e.printStackTrace();
         }
