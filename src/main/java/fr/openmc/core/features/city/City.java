@@ -256,16 +256,6 @@ public class City {
         return chestContent.size();
     }
 
-    /**
-     * Upgrades the city's chest by adding a new page and updating the database
-     * asynchronously.
-     */
-    public void upgradeChest() {
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveChestPage(this, getChestPages(), null);
-        });
-    }
-
     // ==================== Chunk Methods ====================
 
     /**
