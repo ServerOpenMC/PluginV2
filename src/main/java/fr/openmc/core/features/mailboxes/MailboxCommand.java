@@ -91,7 +91,6 @@ public class MailboxCommand {
 
     @DefaultFor("~")
     public void mailbox(Player player) {
-        PlayerMailbox playerMailbox = new PlayerMailbox(player);
-        playerMailbox.openInventory();
+        new PlayerMailbox(player).openInventory();
     }
 }

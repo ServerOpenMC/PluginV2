@@ -168,10 +168,22 @@ public class MailboxManager {
         }
     }
 
-    public static List<Letter> getLetters(Player player) {
+    public static List<Letter> getSentLetters(Player player) {
         try {
             QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
-            query.where().eq("sender", player.getUniqueId().toString());
+            query.where().eq("sender", player.getUniqueId());
+            query.orderBy("sent", false);
+            return letterDao.query(query.prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<Letter> getReceivedLetters(Player player) {
+        try {
+            QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
+            query.where().eq("receiver", player.getUniqueId());
             query.orderBy("sent", false);
             return letterDao.query(query.prepare());
         } catch (SQLException e) {

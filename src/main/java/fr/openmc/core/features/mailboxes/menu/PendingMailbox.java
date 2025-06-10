@@ -8,18 +8,10 @@ import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.j256.ormlite.stmt.QueryBuilder;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 
@@ -64,9 +56,11 @@ public class PendingMailbox extends PaginatedMailbox<SenderLetter> {
     }
 
     public boolean fetchMailbox() {
-        List<Letter> letters = MailboxManager.getLetters(player);
-        if (letters.size() < 1)
+        List<Letter> letters = MailboxManager.getSentLetters(player);
+        if (letters.size() < 1) {
+            sendFailureMessage(player, "Vous n'avez aucune lettre.");
             return false;
+        }
 
         letters.forEach((letter) -> pageItems.add(letter.toSenderLetter()));
         return true;

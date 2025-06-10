@@ -4,21 +4,12 @@ import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
-import org.bukkit.Bukkit;
+import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import org.bukkit.entity.Player;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public class PlayerMailbox extends PaginatedMailbox<LetterHead> {
-
-    static {
-        invErrorMessage = "Erreur lors de la récupération de votre boite aux lettres.";
-    }
 
     public PlayerMailbox(Player player) {
         super(player);
@@ -50,9 +41,11 @@ public class PlayerMailbox extends PaginatedMailbox<LetterHead> {
     }
 
     public boolean fetchMailbox() {
-        List<Letter> letters = MailboxManager.getLetters(player);
-        if (letters.size() < 1)
+        List<Letter> letters = MailboxManager.getReceivedLetters(player);
+        if (letters.size() < 1) {
+            MailboxUtils.sendFailureMessage(player, "Vous n'avez aucune lettre.");
             return false;
+        }
 
         letters.forEach((letter) -> pageItems.add(letter.toLetterHead()));
         return true;
