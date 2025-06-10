@@ -271,9 +271,7 @@ public class City {
             return;
         chunks.add(coords);
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.claimChunk(this, coords);
-        });
+        CityManager.claimChunk(this, coords);
     }
 
     /**
@@ -289,9 +287,7 @@ public class City {
         if (!chunks.contains(coords))
             chunks.remove(coords);
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.unclaimChunk(this, coords);
-        });
+        CityManager.unclaimChunk(this, coords);
     }
 
     /**

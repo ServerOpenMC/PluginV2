@@ -239,21 +239,25 @@ public class CityManager implements Listener {
     public static void claimChunk(City city, BlockVector2 chunk) {
         claimedChunks.put(chunk, city);
 
-        try {
-            claimsDao.create(new DBCityClaim(chunk, city.getUUID()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                claimsDao.create(new DBCityClaim(chunk, city.getUUID()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public static void unclaimChunk(City city, BlockVector2 chunk) {
         claimedChunks.remove(chunk);
 
-        try {
-            claimsDao.delete(new DBCityClaim(chunk, city.getUUID()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try {
+                claimsDao.delete(new DBCityClaim(chunk, city.getUUID()));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     // ==================== General helper methods ====================

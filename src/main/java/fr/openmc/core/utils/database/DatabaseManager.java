@@ -29,7 +29,6 @@ public class DatabaseManager {
 
     public DatabaseManager() {
         try {
-            
             if (OMCPlugin.isUnitTestVersion()) {
                 Class.forName("org.h2.Driver");
             } else {
