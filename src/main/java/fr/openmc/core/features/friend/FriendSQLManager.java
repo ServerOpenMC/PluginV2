@@ -2,6 +2,7 @@ package fr.openmc.core.features.friend;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -10,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -25,9 +27,17 @@ public class FriendSQLManager {
     private static Friend getFriendObject(UUID first, UUID second) {
         try {
             QueryBuilder<Friend, UUID> query = friendsDao.queryBuilder();
-            query.where().or(query.where().eq("first", first).and().eq("second", second),
-                    query.where().eq("first", second).and().eq("second", first));
-            return friendsDao.query(query.prepare()).get(0);
+            Where<Friend, UUID> where = query.where();
+            where.eq("first", first).and().eq("second", second);
+            where.or();
+            where.eq("first", second).and().eq("second", first);
+
+            List<Friend> objs = friendsDao.query(query.prepare());
+            if (objs.size() == 0) {
+                return null;
+            } else {
+                return objs.get(0);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -36,7 +46,7 @@ public class FriendSQLManager {
 
     public static boolean addInDatabase(UUID first, UUID second) {
         try {
-            return friendsDao.create(new Friend(first, second)) != 0;
+            return friendsDao.create(new Friend(first, second, Timestamp.valueOf(LocalDateTime.now()))) != 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

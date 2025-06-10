@@ -26,9 +26,10 @@ public class Friend {
         // required for ORMLite
     }
 
-    Friend(UUID first, UUID second) {
+    Friend(UUID first, UUID second, Timestamp time) {
         this.first = first;
         this.second = second;
+        this.date = time;
     }
 
     public boolean isBestFriend() {
