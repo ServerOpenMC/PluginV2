@@ -646,13 +646,12 @@ public class CityCommands {
         EconomyManager.withdrawBalance(player.getUniqueId(), MONEY_CREATE);
         ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), AYWENITE_CREATE);
 
-        City city = new City(cityUUID, name, player.getUniqueId(), type);
+        City city = new City(cityUUID, name, player.getUniqueId(), type, origin);
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, player));
         });
 
-        city.addChunk(origin);
         player.closeInventory();
 
         // SETUP MAIRE
