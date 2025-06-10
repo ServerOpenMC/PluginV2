@@ -359,9 +359,13 @@ public class City {
      * @param value The new balance value to be set.
      */
     public void setBalance(double value) {
+        double before = balance;
         balance = value;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             CityManager.saveCity(this);
+        });
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, before, balance));
         });
     }
 
@@ -372,9 +376,6 @@ public class City {
      * @param diff The amount to be added to the existing balance.
      */
     public void updateBalance(double diff) {
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, balance, balance + diff));
-        });
         setBalance(balance + diff);
     }
 
