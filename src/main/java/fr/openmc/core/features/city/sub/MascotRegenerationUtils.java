@@ -40,13 +40,13 @@ public class MascotRegenerationUtils {
         if (regenTasks.containsKey(mascot.getMascotUUID())) return;
 
         LivingEntity mob = (LivingEntity) mascot.getEntity();
-        PersistentDataContainer data = mob.getPersistentDataContainer();
-        if (!data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)) return;
-
-        if (mascot == null) {
+        if (mob == null) {
             regenTasks.remove(mascot.getMascotUUID());
             return;
         }
+
+        PersistentDataContainer data = mob.getPersistentDataContainer();
+        if (!data.has(MascotsManager.mascotsKey, PersistentDataType.STRING)) return;
 
         if (!mascot.isAlive()) return;
 
