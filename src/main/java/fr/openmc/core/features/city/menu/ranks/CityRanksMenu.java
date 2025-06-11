@@ -5,7 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityRanks;
+import fr.openmc.core.features.city.CityRank;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -55,33 +55,31 @@ public class CityRanksMenu extends Menu {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
 		int i = 0;
-		List<CityRanks> cityRanks = city.getRanks();
-		for (CityRanks rank : cityRanks) {
-			if (i == 18) break; // Limit to 18 ranks displayed
-			
-			String rankName = rank.name();
-			Set<CPermission> permissions = rank.permissions();
-			byte priority = rank.priority();
-			Material icon = rank.icon() != null ? rank.icon() : Material.PAPER;
-			
-			map.put(i, new ItemBuilder(this, icon,
-					itemMeta -> {
-						itemMeta.displayName(Component.text(rankName));
-						itemMeta.lore(List.of(
-								Component.text("Priorité : " + priority).decoration(TextDecoration.ITALIC, false)
-						));
-					}
-			).setOnClick(inventoryClickEvent -> {
-				if (city.hasPermission(getOwner().getUniqueId(), CPermission.PERMS)) {
-					new CityRankDetailsMenu(getOwner(), rank).open();
-				}
-			}));
-			i++;
+		List<CityRank> cityRanks = city.getRanks();
+		if (! cityRanks.isEmpty()) {
+			for (CityRank rank : cityRanks) {
+				if (i == 18) break; // Limit to 18 ranks displayed
+				
+				String rankName = rank.getName();
+				Set<CPermission> permissions = rank.getPermissions();
+				int priority = rank.getPriority();
+				Material icon = rank.getIcon() != null ? rank.getIcon() : Material.PAPER;
+				
+				map.put(i, new ItemBuilder(this, icon,
+						itemMeta -> {
+							itemMeta.displayName(Component.text(rankName));
+							itemMeta.lore(List.of(
+									Component.text("Priorité : " + priority).decoration(TextDecoration.ITALIC, false)
+							));
+						}
+				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, rank).open()));
+				i++;
+			}
 		}
 		
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest())
 				.setOnClick(inventoryClickEvent -> {
-					if (! city.isRanksFull()) new CityRankDetailsMenu(getOwner()).open();
+					if (! city.isRanksFull()) new CityRankDetailsMenu(getOwner(), city).open();
 				})
 		);
 		

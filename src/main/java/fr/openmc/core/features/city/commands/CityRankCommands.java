@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.commands;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityRanks;
+import fr.openmc.core.features.city.CityRank;
 import fr.openmc.core.features.city.menu.ranks.CityRankDetailsMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRankMemberMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
@@ -11,16 +11,13 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Named;
-import revxrsal.commands.annotation.Optional;
-import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({"city rank", "ville rank"})
 public class CityRankCommands {
 	
-	@Subcommand("~")
+	@DefaultFor("~")
 	@CommandPermission("omc.commands.city.rank")
 	public void rank(Player player) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -51,7 +48,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		new CityRankDetailsMenu(player).open();
+		new CityRankDetailsMenu(player, city).open();
 	}
 	
 	@Subcommand("edit")
@@ -66,12 +63,12 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		CityRanks rank = city.getRankByName(rankName);
+		CityRank rank = city.getRankByName(rankName);
 		if (rank == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		new CityRankDetailsMenu(player, rank).open();
+		new CityRankDetailsMenu(player, city, rank).open();
 	}
 	
 	@Subcommand("delete")
@@ -86,7 +83,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		CityRanks rank = city.getRankByName(rankName);
+		CityRank rank = city.getRankByName(rankName);
 		if (rank == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
@@ -110,10 +107,10 @@ public class CityRankCommands {
 		if (target == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOTFOUND.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 		}
-		CityRanks rank = city.getRankByName(rankName);
+		CityRank rank = city.getRankByName(rankName);
 		if (rank == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 		}
-		new CityRankMemberMenu(); //TODO implement assign rank logic
+		new CityRankMemberMenu(player).open(); //TODO implement assign rank logic
 	}
 }
