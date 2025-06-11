@@ -164,11 +164,7 @@ public class MascotsManager {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn, EntityType.ZOMBIE);
 
         Chunk chunk = mascot_spawn.getChunk();
-        setMascotsData(mob, Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
-                cityName,
-                (double) 300,
-                (double) 300
-        )), 300, 300);
+        setMascotsData(mob, cityName, 300, 300);
         mob.setGlowing(true);
 
         PersistentDataContainer data = mob.getPersistentDataContainer();
@@ -315,7 +311,6 @@ public class MascotsManager {
 
         double baseHealth = entityMascot.getHealth();
         double maxHealth = entityMascot.getMaxHealth();
-        Component name = entityMascot.customName();
         String mascotsCustomUUID = entityMascot.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
 
         if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
@@ -335,7 +330,7 @@ public class MascotsManager {
             DynamicCooldownManager.use(newMascots.getUniqueId().toString(), "mascots:move", cooldown);
         }
 
-        setMascotsData(newMascots, name, maxHealth, baseHealth);
+        setMascotsData(newMascots, mascots.getCity().getName(), maxHealth, baseHealth);
         PersistentDataContainer newData = newMascots.getPersistentDataContainer();
 
         if (mascotsCustomUUID != null) {
@@ -347,15 +342,15 @@ public class MascotsManager {
     }
 
 
-    private static void setMascotsData(LivingEntity mob, Component customName, double maxHealth, double baseHealth) {
+    private static void setMascotsData(LivingEntity mob, String cityName, double maxHealth, double baseHealth) {
         mob.setAI(false);
         mob.setMaxHealth(maxHealth);
         mob.setHealth(baseHealth);
         mob.setPersistent(true);
         mob.setRemoveWhenFarAway(false);
 
-        mob.customName(customName != null ? customName : Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
-                "Mascotte",
+        mob.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
+                cityName,
                 Math.floor(baseHealth),
                 maxHealth
         )));

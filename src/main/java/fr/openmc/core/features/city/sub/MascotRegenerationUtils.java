@@ -36,6 +36,7 @@ public class MascotRegenerationUtils {
     }
 
     public static void mascotsRegeneration(Mascot mascot) {
+        if (mascot == null) return;
         if (regenTasks.containsKey(mascot.getMascotUUID())) return;
 
         LivingEntity mob = (LivingEntity) mascot.getEntity();
