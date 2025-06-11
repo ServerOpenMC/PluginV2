@@ -855,8 +855,6 @@ public class City {
     // ==================== Mascots Methods ====================
 
     public Mascot getMascot() {
-        System.out.println("getMascot()");
-        MascotsManager.mascotsByCityUUID.forEach((uuid, mascot) -> System.out.println(mascot + " " + mascot.getCity().getName() + " " + mascot.isAlive()));
         MascotsManager.mascotsByCityUUID.get(cityUUID);
         return null;
     }
@@ -930,12 +928,12 @@ public class City {
     }
 
     /**
-     * Checks if the city is immune to attacks.
+     * Checks if the city is immune.
      *
      * @return True if the city is immune, false otherwise.
      */
     public boolean isImmune() {
-        return getMascot().isImmunity() && DynamicCooldownManager.isReady(cityUUID, "city:immunity");
+        return getMascot().isImmunity() && !DynamicCooldownManager.isReady(cityUUID, "city:immunity");
     }
 
     /**
