@@ -7,10 +7,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
-import fr.openmc.core.features.city.sub.mascots.listeners.MascotsDamageListener;
-import fr.openmc.core.features.city.sub.mascots.listeners.MascotsDeathListener;
-import fr.openmc.core.features.city.sub.mascots.listeners.MascotsInteractionListener;
-import fr.openmc.core.features.city.sub.mascots.listeners.MascotsProtectionsListener;
+import fr.openmc.core.features.city.sub.mascots.listeners.*;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -77,7 +74,8 @@ public class MascotsManager {
                 new MascotsProtectionsListener(),
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
-                new MascotsDeathListener()
+                new MascotsDeathListener(),
+                new MascotImmuneListener()
         );
 
         CommandsManager.getHandler().register(
@@ -111,8 +109,10 @@ public class MascotsManager {
                 boolean alive = rs.getBoolean("alive");
                 Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
 
-                mascotsByEntityUUID.put(entityUUID, new Mascot(city, entityUUID, level, immunity, alive, chunk));
-                mascotsByCityUUID.put(city.getUUID(), new Mascot(city, entityUUID, level, immunity, alive, chunk));
+                Mascot mascot = new Mascot(city, entityUUID, level, immunity, alive, chunk);
+
+                mascotsByEntityUUID.put(entityUUID, mascot);
+                mascotsByCityUUID.put(city.getUUID(), mascot);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -160,16 +160,14 @@ public class MascotsManager {
         }
     }
 
-    public static void createMascot(City city, World player_world, Location mascot_spawn) {
+    public static void createMascot(City city, String cityUUID, String cityName, World player_world, Location mascot_spawn) {
         LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn, EntityType.ZOMBIE);
-
-        String cityUUID = city.getUUID();
 
         Chunk chunk = mascot_spawn.getChunk();
         setMascotsData(mob, Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
-                city.getName(),
-                300.0,
-                300.0
+                cityName,
+                (double) 300,
+                (double) 300
         )), 300, 300);
         mob.setGlowing(true);
 

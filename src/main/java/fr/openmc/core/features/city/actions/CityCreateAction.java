@@ -44,7 +44,8 @@ import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE
 
 public class CityCreateAction {
 
-    public static long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L;
+    public static long IMMUNITY_COOLDOWN = 60 * 1000L; // 1 minute
+    //7 * 24 * 60 * 60 * 1000L;
 
     private static final Map<UUID, String> pendingCities = new HashMap<>();
 
@@ -162,7 +163,7 @@ public class CityCreateAction {
 
         // Mascotte
         player.getWorld().getBlockAt(mascotLocation).setType(Material.AIR);
-        MascotsManager.createMascot(city, player.getWorld(), mascotLocation);
+        MascotsManager.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
 
         // Feedback
         MessagesManager.sendMessage(player, Component.text("§aVotre ville a été crée : " + pendingCityName), Prefix.CITY, MessageType.SUCCESS, true);

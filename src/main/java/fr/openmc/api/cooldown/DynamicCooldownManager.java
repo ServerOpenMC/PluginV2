@@ -2,6 +2,8 @@ package fr.openmc.api.cooldown;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.database.DatabaseManager;
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,13 +21,28 @@ public class DynamicCooldownManager {
     public static class Cooldown {
         private final long duration;
         private long lastUse;
+        private final String uuid;
+        private final String group;
+        private final BukkitTask scheduledTask;
 
         /**
          * @param duration Cooldown duration in ms
          */
-        public Cooldown(long duration, long lastUse) {
+        public Cooldown(String uuid, String group, long duration, long lastUse) {
             this.duration = duration;
             this.lastUse = lastUse;
+            this.uuid = uuid;
+            this.group = group;
+
+            long delayTicks = duration / 50; //ticks
+            this.scheduledTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uuid, this.group));
+                DynamicCooldownManager.clear(uuid, group);
+            }, delayTicks);
+        }
+
+        public void cancelTask() {
+            if (scheduledTask != null) scheduledTask.cancel();
         }
 
         /**
@@ -45,8 +62,6 @@ public class DynamicCooldownManager {
 
     // Map structure: UUID -> (Group -> Cooldown)
     private static final HashMap<String, HashMap<String, Cooldown>> cooldowns = new HashMap<>();
-
-
 
     public static void init_db(Connection conn) throws SQLException {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS cooldowns (uuid VARCHAR(36) PRIMARY KEY, `group` VARCHAR(36), cooldown_time BIGINT, last_used BIGINT);").executeUpdate();
@@ -82,9 +97,14 @@ public class DynamicCooldownManager {
                 long lastUsed = result.getLong("last_used");
                 long duration = result.getLong("cooldown_time");
 
+
+                Cooldown cooldown = new Cooldown(uuid, group, duration, lastUsed);
+
+                if (cooldown.isReady()) continue;
+
                 HashMap<String, Cooldown> groupCooldowns = cooldowns.getOrDefault(uuid, new HashMap<>());
 
-                groupCooldowns.put(group, new Cooldown(duration, lastUsed));
+                groupCooldowns.put(group, cooldown);
 
                 cooldowns.put(uuid, groupCooldowns);
             }
@@ -95,31 +115,37 @@ public class DynamicCooldownManager {
     }
 
     public static void saveCooldowns() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(
-                "INSERT INTO cooldowns (`uuid`, `group`, `cooldown_time`, `last_used`) " +
-                        "VALUES (?, ?, ?, ?) " +
-                        "ON DUPLICATE KEY UPDATE " +
-                "`uuid` = VALUES(`uuid`), `group` = VALUES(`group`), `cooldown_time` = VALUES(`cooldown_time`), `last_used` = VALUES(`last_used`)"
-        )) {
-            OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns...");
-            cooldowns.forEach((uuid, groupCooldowns) -> {
-                groupCooldowns.forEach((group, cooldown) -> {
-                    try {
-                        statement.setString(1, uuid);
-                        statement.setString(2, group);
-                        statement.setLong(3, cooldown.duration);
-                        statement.setLong(4, cooldown.lastUse);
+        try (Connection conn = DatabaseManager.getConnection()) {
+            conn.prepareStatement("DELETE FROM cooldowns").executeUpdate();
 
-                        statement.addBatch();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+            try (PreparedStatement statement = conn.prepareStatement(
+                    "INSERT INTO cooldowns (`uuid`, `group`, `cooldown_time`, `last_used`) " +
+                            "VALUES (?, ?, ?, ?) " +
+                            "ON DUPLICATE KEY UPDATE " +
+                            "`cooldown_time` = VALUES(`cooldown_time`), `last_used` = VALUES(`last_used`)"
+            )) {
+                OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns actifs...");
+
+                cooldowns.forEach((uuid, groupCooldowns) -> {
+                    groupCooldowns.forEach((group, cooldown) -> {
+                        if (cooldown.isReady()) return;
+                        try {
+                            statement.setString(1, uuid);
+                            statement.setString(2, group);
+                            statement.setLong(3, cooldown.duration);
+                            statement.setLong(4, cooldown.lastUse);
+                            statement.addBatch();
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                 });
-            });
 
-            statement.executeBatch();
+                statement.executeBatch();
 
-            OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns réussie.");
+                OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns réussie.");
+            }
+
         } catch (SQLException e) {
             OMCPlugin.getInstance().getLogger().severe("Echec de la sauvegarde des cooldowns.");
             e.printStackTrace();
@@ -148,7 +174,7 @@ public class DynamicCooldownManager {
      */
     public static void use(String uuid, String group, long duration) {
         cooldowns.computeIfAbsent(uuid, k -> new HashMap<>())
-                .put(group, new Cooldown(duration, System.currentTimeMillis()));
+                .put(group, new Cooldown(uuid, group, duration, System.currentTimeMillis()));
     }
 
     /**
@@ -180,7 +206,10 @@ public class DynamicCooldownManager {
      * @param uuid Entity UUID
      */
     public static void clear(String uuid) {
-        cooldowns.remove(uuid);
+        var userCooldowns = cooldowns.remove(uuid);
+        if (userCooldowns != null) {
+            userCooldowns.values().forEach(Cooldown::cancelTask);
+        }
     }
 
     /**
@@ -191,10 +220,9 @@ public class DynamicCooldownManager {
     public static void clear(String uuid, String group) {
         var userCooldowns = cooldowns.get(uuid);
         if (userCooldowns != null) {
-            userCooldowns.remove(group);
-            if (userCooldowns.isEmpty()) {
-                cooldowns.remove(uuid);
-            }
+            Cooldown removed = userCooldowns.remove(group);
+            if (removed != null) removed.cancelTask();
+            if (userCooldowns.isEmpty()) cooldowns.remove(uuid);
         }
     }
 }

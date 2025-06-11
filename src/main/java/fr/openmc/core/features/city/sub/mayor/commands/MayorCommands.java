@@ -16,12 +16,12 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class MayorCommands {
-    @Subcommand({"city mayor", "ville maire"})
+    @Command({"city mayor", "ville maire"})
     @CommandPermission("omc.commands.city.mayor")
     @Description("Ouvre le menu des maires")
     void mayor(Player sender) {
@@ -40,7 +40,7 @@ public class MayorCommands {
         }
     }
 
-    @Subcommand({"city warp", "ville warp"})
+    @Command({"city warp", "ville warp"})
     @Description("Teleporte au warp commun de la ville")
     void warp(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
@@ -74,7 +74,7 @@ public class MayorCommands {
         }.runTaskLater(OMCPlugin.getInstance(), 15);
     }
 
-    @Subcommand({"city setwarp", "ville setwarp"})
+    @Command({"city setwarp", "ville setwarp"})
     @Description("Déplacer le warp de votre ville")
     void setWarpCommand(Player player) {
         MayorSetWarpAction.setWarp(player);

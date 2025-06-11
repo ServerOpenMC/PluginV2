@@ -855,6 +855,8 @@ public class City {
     // ==================== Mascots Methods ====================
 
     public Mascot getMascot() {
+        System.out.println("getMascot()");
+        MascotsManager.mascotsByCityUUID.forEach((uuid, mascot) -> System.out.println(mascot + " " + mascot.getCity().getName() + " " + mascot.isAlive()));
         MascotsManager.mascotsByCityUUID.get(cityUUID);
         return null;
     }

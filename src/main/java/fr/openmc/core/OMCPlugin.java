@@ -76,6 +76,7 @@ public class OMCPlugin extends JavaPlugin {
         ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
         new UpdateManager();
+        new MayorManager();
         new CityManager();
         new ListenersManager();
         new EconomyManager();
@@ -107,7 +108,6 @@ public class OMCPlugin extends JavaPlugin {
 
         /* LOAD */
         DynamicCooldownManager.loadCooldowns();
-
 
         getLogger().info("Plugin activé");
     }

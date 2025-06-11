@@ -5,12 +5,13 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
 import org.bukkit.entity.Player;
+import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Range;
-import revxrsal.commands.annotation.Subcommand;
+
 
 public class CityBankCommand {
-    @Subcommand({"city bank view", "ville bank view"})
+    @Command({"city bank view", "ville bank view"})
     @Description("Ouvre le menu de la banque de ville")
     void bank(Player player) {
         if (CityManager.getPlayerCity(player.getUniqueId()) == null)
@@ -19,7 +20,7 @@ public class CityBankCommand {
         new CityBankMenu(player).open();
     }
 
-    @Subcommand({"city bank deposit", "ville bank deposit"})
+    @Command({"city bank deposit", "ville bank deposit"})
     @Description("Met de votre argent dans la banque de ville")
     void deposit(Player player, @Range(min = 1) String input) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -29,7 +30,7 @@ public class CityBankCommand {
         city.depositCityBank(player, input);
     }
 
-    @Subcommand({"city bank withdraw", "ville bank withdraw"})
+    @Command({"city bank withdraw", "ville bank withdraw"})
     @Description("Prend de l'argent de la banque de ville")
     void withdraw(Player player, @Range(min = 1) String input) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
