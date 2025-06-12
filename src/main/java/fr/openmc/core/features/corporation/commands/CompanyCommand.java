@@ -280,7 +280,7 @@ public class CompanyCommand {
     @Description("Retirer de l'argent de l'entreprise")
     public void withdraw(Player player, @Named("amount") double amount) {
         if (amount<=0){
-            MessagesManager.sendMessage(player, Component.text("§cVeuillez indiquer une valeur supérieur à zéro !"), Prefix.SHOP, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("§cVeuillez indiquer une valeur supérieure à zéro !"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
 
@@ -303,7 +303,7 @@ public class CompanyCommand {
     @Description("Déposer de l'argent dans l'entreprise")
     public void deposit(Player player, @Named("amount") double amount) {
         if (amount<=0){
-            MessagesManager.sendMessage(player, Component.text("§cVeuillez indiquer une valeur supérieur à zéro !"), Prefix.SHOP, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("§cVeuillez indiquer une valeur supérieure à zéro !"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
 
