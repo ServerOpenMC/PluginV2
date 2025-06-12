@@ -256,21 +256,11 @@ public class Company {
      * @param playerUUID the uuid of the player who create the shop
      * @param barrel the stockage of the shop
      * @param cash the "cash register" use to open the shop menu
-     * @param shopUUID the uuid of a shop use at the start of the server
      * @return true or false
      */
-    public boolean createShop(UUID playerUUID, Block barrel, Block cash, UUID shopUUID) {
+
+    public boolean createShop(UUID playerUUID, Block barrel, Block cash) {
         Player whoCreated = Bukkit.getPlayer(playerUUID);
-
-        if (whoCreated==null && shopUUID != null){
-            Shop newShop;
-            newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
-            shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
-            shopCounter++;
-            shops.add(newShop);
-            return true;
-        }
-
         Company company = this;
 
         if (whoCreated != null && withdraw(100, whoCreated, "Création de shop")) {
@@ -278,23 +268,13 @@ public class Company {
                 return false;
             }
 
-            Shop newShop;
-
-            if (shopUUID==null){
-                newShop = new Shop(new ShopOwner(this), shopCounter);
-                economyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
-            } else {
-                newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
-            }
+            Shop newShop = new Shop(new ShopOwner(this), shopCounter);
+            economyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
 
             shops.add(newShop);
             CompanyManager.shops.add(newShop);
             shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
-
-            if (shopUUID==null){
-                shopBlocksManager.placeShop(newShop, whoCreated, true);
-            }
-
+            shopBlocksManager.placeShop(newShop, whoCreated, true);
             shopCounter++;
             return true;
         }
@@ -302,12 +282,28 @@ public class Company {
     }
 
     /**
-     * delete a shop in the company
+     * create a shop in the company without player ( use during database load )
      *
-     * @param player the player who earn the money
-     * @param uuid the shop uuid
-     * @return true or false
+     * @param barrel the stockage of the shop
+     * @param cash the "cash register" use to open the shop menu
+     * @param shopUUID the uuid of the shop
      */
+
+    public void createShop(Block barrel, Block cash, UUID shopUUID) {
+        Shop newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
+        shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
+        shopCounter++;
+        shops.add(newShop);
+        CompanyManager.shops.add(newShop);
+    }
+
+        /**
+         * delete a shop in the company
+         *
+         * @param player the player who earn the money
+         * @param uuid the shop uuid
+         * @return true or false
+         */
     public MethodState deleteShop(Player player, UUID uuid) {
         for (Shop shop : shops) {
             if (shop.getUuid().equals(uuid)) {

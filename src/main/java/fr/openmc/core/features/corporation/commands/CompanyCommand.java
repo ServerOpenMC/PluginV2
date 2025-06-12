@@ -352,6 +352,12 @@ public class CompanyCommand {
             MessagesManager.sendMessage(sender, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
+
+        if (CorpPermission.valueOf(perms).equals(CorpPermission.OWNER)){
+            MessagesManager.sendMessage(sender, Component.text("§cCette permission n'est pas donnable ! Utiliser plutôt : /company owner"), Prefix.ENTREPRISE, MessageType.INFO, false);
+            return;
+        }
+
         if (company != manager.getCompany(sender.getUniqueId())){
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
@@ -380,6 +386,12 @@ public class CompanyCommand {
             MessagesManager.sendMessage(sender, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
+
+        if (CorpPermission.valueOf(perms).equals(CorpPermission.OWNER)){
+            MessagesManager.sendMessage(sender, Component.text("§cCette permission n'est pas retirable ! Utiliser plutôt : /company owner"), Prefix.ENTREPRISE, MessageType.INFO, false);
+            return;
+        }
+
         if (company != manager.getCompany(sender.getUniqueId())){
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;

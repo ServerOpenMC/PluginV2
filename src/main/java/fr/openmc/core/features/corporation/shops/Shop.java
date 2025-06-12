@@ -142,8 +142,9 @@ public class Shop {
      * @param price the price
      * @param amount the amount of it
      */
-    public boolean addItem(ItemStack itemStack, double price, int amount) {
-        ShopItem item = new ShopItem(itemStack, price);
+    public boolean addItem(ItemStack itemStack, double price, int amount, UUID itemID) {
+        System.out.println(amount);
+        ShopItem item = itemID == null ? new ShopItem(itemStack, price) : new ShopItem(itemStack, price, itemID);
         for (ShopItem shopItem : items) {
             if (shopItem.getItem().isSimilar(itemStack)) {
                 return true;
@@ -154,6 +155,10 @@ public class Shop {
         }
         items.add(item);
         return false;
+    }
+
+    public void addItem(ShopItem item){
+        items.add(item);
     }
 
     /**
@@ -172,6 +177,51 @@ public class Shop {
      */
     public void removeItem(ShopItem item) {
         items.remove(item);
+
+        Iterator<Map.Entry<Long, Supply>> iterator = suppliers.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Long, Supply> entry = iterator.next();
+            if (entry.getValue().getItemId().equals(item.getItemID())) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public int recoverItemOf(ShopItem item, Player supplier) {
+        int amount = item.getAmount();
+
+        if (ItemUtils.getFreePlacesForItem(supplier,item.getItem()) < amount){
+            MessagesManager.sendMessage(supplier, Component.text("§cVous n'avez pas assez de place"), Prefix.SHOP, MessageType.INFO, false);
+            return 0;
+        }
+
+        int toRemove = 0;
+
+        Iterator<Map.Entry<Long, Supply>> iterator = suppliers.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Long, Supply> entry = iterator.next();
+            if (entry.getValue().getSupplierUUID().equals(supplier.getUniqueId())) {
+                if (entry.getValue().getItemId().equals(item.getItemID())){
+                    amount -= entry.getValue().getAmount();
+                    toRemove += entry.getValue().getAmount();
+                    if (amount >= 0){
+                        iterator.remove();
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (amount == 0){
+            items.remove(item);
+            MessagesManager.sendMessage(supplier, Component.text("§aL'item a bien été retiré du shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
+        } else {
+            item.setAmount(amount);
+        }
+
+        return toRemove;
     }
 
     /**
@@ -186,7 +236,6 @@ public class Shop {
                     delay ++;
                 }
                 suppliers.put(System.currentTimeMillis() + delay, new Supply(supplier, shopItem.getItemID(), item.getAmount()));
-                System.out.println("add supply");
                 return true;
             }
         }
@@ -199,94 +248,134 @@ public class Shop {
 
 
     /**
-     * get the shop Icon
+     * buy an item in the shop
      *
      * @param item the item to buy
-     * @param amount the amount of it
+     * @param amountToBuy the amount of it
      * @param buyer the player who buy
      * @return a MethodState
      */
-    public MethodState buy(ShopItem item, int amount, Player buyer) {
+    public MethodState buy(ShopItem item, int amountToBuy, Player buyer) {
         if (!ItemUtils.hasAvailableSlot(buyer)) {
             return MethodState.SPECIAL;
         }
-        if (amount > item.getAmount()) {
+        if (amountToBuy > item.getAmount()) {
             return MethodState.WARNING;
         }
 //        if (isOwner(buyer.getUniqueId())) {
 //            return MethodState.FAILURE;
 //        }
-        if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amount))) return MethodState.ERROR;
-        double basePrice = item.getPrice(amount);
-        item.setAmount(item.getAmount() - amount);
-        turnover += item.getPrice(amount);
+        if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amountToBuy))) return MethodState.ERROR;
+
+        double basePrice = item.getPrice(amountToBuy);
+        turnover += item.getPrice(amountToBuy);
+
         if (owner.isCompany()) {
-            int amountToBuy = amount;
-            double price = item.getPrice(amount);
-            double companyCut = price * owner.getCompany().getCut();
-            double suppliersCut = price - companyCut;
+
+            double price = item.getPrice(amountToBuy);// prix total
+
+            double companyCut = price * owner.getCompany().getCut();// prix après cut
+
+            double suppliersCut = price - companyCut;// prix restant
+
             boolean supplied = false;
+
             List<Supply> supplies = new ArrayList<>();
             for (Map.Entry<Long, Supply> entry : suppliers.entrySet()) {
                 if (entry.getValue().getItemId().equals(item.getItemID())) {
                     supplies.add(entry.getValue());
                 }
             }
-            System.out.println(supplies.size());
+
+            Map<UUID, Double> forSupplies = new HashMap<>();
+
             if (!supplies.isEmpty()) {
+
                 supplied = true;
+
                 for (Supply supply : supplies) {
                     int suppliesAmount = supply.getAmount();
-                    System.out.println(amountToBuy - suppliesAmount == 0);
-                    if (amountToBuy - suppliesAmount == 0){
-                        double supplierCut = suppliersCut * ((double) suppliesAmount / amount);
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
-                        Player supplier = Bukkit.getPlayer(supply.getSupplier());
-                        if (supplier!=null){
-                            MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
+
+                    if (amountToBuy == suppliesAmount){// si la quantité achetée correspond au suppliesAmount ( ex : 32 = 32 )
+                        economyManager.addBalance(supply.getSupplier(), suppliersCut);// ajoutez prix restant
+
+                        if (forSupplies.containsKey(supply.getSupplier())){
+                            double supCut = forSupplies.get(supply.getSupplier());
+                            forSupplies.replace(supply.getSupplier(), supCut + suppliersCut);
+                        } else {
+                            forSupplies.put(supply.getSupplier(), suppliersCut);
+                        }
+                        removeLatestSupply();// retirer le supplier
+                        break;// arrêter la boucle
+                    }
+
+                    if (amountToBuy < suppliesAmount){// si la quantité achetée est inférieure au suppliesAmount ( ex : 32 < 64 )
+                        economyManager.addBalance(supply.getSupplier(), suppliersCut);
+                        suppliesAmount -= amountToBuy;
+                        supply.setAmount(suppliesAmount);
+
+                        if (forSupplies.containsKey(supply.getSupplier())){
+                            double supCut = forSupplies.get(supply.getSupplier());
+                            forSupplies.replace(supply.getSupplier(), supCut + suppliersCut);
+                        } else {
+                            forSupplies.put(supply.getSupplier(), suppliersCut);
                         }
                         break;
                     }
-                    if (amountToBuy - suppliesAmount < 0){
-                        suppliesAmount = suppliesAmount - amountToBuy;
-                        double supplierCut = suppliersCut * ((double) suppliesAmount / amount);
+
+                    else {// si la quantité achetée est supérieur au suppliesAmount ( ex : 64 > 32 )
+                        double supplierCut = (suppliesAmount * suppliersCut) / amountToBuy;
+                        suppliersCut -= supplierCut;
                         economyManager.addBalance(supply.getSupplier(), supplierCut);
-                        Player supplier = Bukkit.getPlayer(supply.getSupplier());
-                        if (supplier!=null){
-                            MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
+
+                        if (forSupplies.containsKey(supply.getSupplier())){
+                            double supCut = forSupplies.get(supply.getSupplier());
+                            forSupplies.replace(supply.getSupplier(), supCut + supplierCut);
+                        } else {
+                            forSupplies.put(supply.getSupplier(), supplierCut);
                         }
-                        break;
+                        removeLatestSupply();
                     }
-                    if (amountToBuy - suppliesAmount > 0){
-                        amountToBuy -= suppliesAmount;
-                        double supplierCut = suppliersCut * ((double) suppliesAmount / amount);
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
-                        Player supplier = Bukkit.getPlayer(supply.getSupplier());
-                        if (supplier!=null){
-                            MessagesManager.sendMessage(supplier, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
-                        }
-                    }
+
                 }
             }
+
             if (!supplied) {
                 return MethodState.ESCAPE;
             }
+
+            for (Map.Entry<UUID, Double> entry : forSupplies.entrySet()) {
+                UUID supplier = entry.getKey();
+                double supplierCut = entry.getValue();
+
+                Player player = Bukkit.getPlayer(supplier);
+                if (player!=null){
+                    MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amountToBuy + " " + item.getItem().getType() + " pour " + basePrice + EconomyManager.getEconomyIcon() + ", vous avez reçu : " + supplierCut + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.SUCCESS, false);
+                }
+            }
+
             owner.getCompany().depositWithoutWithdraw(companyCut, buyer, "Vente", getName());
         }
+
         else {
-            economyManager.addBalance(owner.getPlayer(), item.getPrice(amount));
+            economyManager.addBalance(owner.getPlayer(), item.getPrice(amountToBuy));
             Player player = Bukkit.getPlayer(owner.getPlayer());
             if (player!=null){
-                MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amount + " " + item.getItem().getType() + " pour " + item.getPrice(amount) + EconomyManager.getEconomyIcon() + ", l'argent vous a été transféré !"), Prefix.SHOP, MessageType.SUCCESS, false);
+                MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amountToBuy + " " + item.getItem().getType() + " pour " + item.getPrice(amountToBuy) + EconomyManager.getEconomyIcon() + ", l'argent vous a été transféré !"), Prefix.SHOP, MessageType.SUCCESS, false);
             }
         }
+
         ItemStack toGive = item.getItem().clone();
-        toGive.setAmount(amount);
+        toGive.setAmount(amountToBuy);
+
         List<ItemStack> stacks = ItemUtils.splitAmountIntoStack(toGive);
         for (ItemStack stack : stacks) {
             buyer.getInventory().addItem(stack);
         }
-        sales.add(item.copy().setAmount(amount));
+
+        sales.add(item.copy().setAmount(amountToBuy));
+        item.setAmount(item.getAmount() - amountToBuy);
+
         return MethodState.SUCCESS;
     }
 
@@ -302,6 +391,15 @@ public class Shop {
         if (supply != null) {
             suppliers.remove(latest);
         }
+    }
+
+    public boolean isSupplier(UUID playerUUID){
+        for (Map.Entry<Long, Supply> entry : suppliers.entrySet()) {
+            if (entry.getValue().getSupplierUUID().equals(playerUUID)){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

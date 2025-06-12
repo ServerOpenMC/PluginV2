@@ -347,7 +347,7 @@ public class ShopMenu extends Menu {
             getOwner().closeInventory();
             return;
         }
-        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez bien acheté " + amountToBuy + " " + ShopItem.getItemName(getCurrentItem().getItem()) + " pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.INFO, false);
+        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez bien acheté " + amountToBuy + " ").append( ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD)).append(Component.text(" pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon())), Prefix.SHOP, MessageType.INFO, false);
         getOwner().closeInventory();
     }
 

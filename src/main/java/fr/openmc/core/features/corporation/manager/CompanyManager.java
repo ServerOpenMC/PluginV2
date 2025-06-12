@@ -96,6 +96,7 @@ public class CompanyManager {
                     "item LONGBLOB NOT NULL, " +
                     "shop_uuid VARCHAR(36) NOT NULL, " +
                     "price DOUBLE NOT NULL, " +
+                    "item_uuid VARCHAR(36) NOT NULL, " +
                     "amount INT NOT NULL, " +
                     "PRIMARY KEY (shop_uuid, item(255)))");
 
@@ -187,20 +188,22 @@ public class CompanyManager {
         OMCPlugin.getInstance().getLogger().info("Chargement des Shops...");
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
         List<Shop> allShop = new ArrayList<>();
+        Connection conn = DatabaseManager.getConnection();
 
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement("SELECT item, shop_uuid, price, amount FROM shops_item");
+        try (
+             PreparedStatement statement = conn.prepareStatement("SELECT item, shop_uuid, item_uuid, price, amount FROM shops_item");
              ResultSet rs = statement.executeQuery()) {
 
             while (rs.next()) {
                 UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
                 double price = rs.getDouble("price");
                 int amount = rs.getInt("amount");
+                UUID item_uuid = UUID.fromString(rs.getString("item_uuid"));
                 byte[] itemBytes = rs.getBytes("item");
 
                 if (itemBytes != null) {
                     ItemStack itemStack = ItemStack.deserializeBytes(itemBytes);
-                    ShopItem shopItem = new ShopItem(itemStack, price);
+                    ShopItem shopItem = new ShopItem(itemStack, price, item_uuid);
                     shopItem.setAmount(amount);
 
                     shopItems.computeIfAbsent(shopUuid, k -> new ArrayList<>()).add(shopItem);
@@ -210,7 +213,7 @@ public class CompanyManager {
             e.printStackTrace();
         }
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (
              PreparedStatement statement = conn.prepareStatement("SELECT shop_uuid, owner, city_uuid, company_uuid, x, y, z FROM shops");
              ResultSet rs = statement.executeQuery()) {
 
@@ -240,11 +243,11 @@ public class CompanyManager {
                         } else {
                             Company company = getCompany(owner);
                             if (cityUuid==null){
-                                company.createShop(owner, barrel, cashRegister, shopUuid);
+                                company.createShop(barrel, cashRegister, shopUuid);
                             } else {
                                 City city = CityManager.getCity(cityUuid);
                                 if (city != null) {
-                                    company.createShop(owner, barrel, cashRegister, shopUuid);
+                                    company.createShop(barrel, cashRegister, shopUuid);
                                 }
                             }
                             shop = company.getShop(shopUuid);
@@ -253,7 +256,7 @@ public class CompanyManager {
                             continue;
                         }
                         for (ShopItem shopItem : shopItems.get(shopUuid)) {
-                            shop.addItem(shopItem.getItem(), shopItem.getPricePerItem(), shopItem.getAmount());
+                            shop.addItem(shopItem);
                         }
 
                         allShop.add(shop);
@@ -264,7 +267,7 @@ public class CompanyManager {
             e.printStackTrace();
         }
 
-        try (Connection conn = DatabaseManager.getConnection();
+        try (
              PreparedStatement statement = conn.prepareStatement("SELECT time, uuid, item_uuid, shop_uuid, supplier_uuid, amount FROM shop_supplier");
              ResultSet rs = statement.executeQuery()) {
 
@@ -372,7 +375,7 @@ public class CompanyManager {
         Connection conn = DatabaseManager.getConnection();
 
         String queryShop = "INSERT INTO shops (shop_uuid, owner, city_uuid, company_uuid, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        String queryShopItem = "INSERT INTO shops_item (item, shop_uuid, price, amount) VALUES (?, ?, ?, ?)";
+        String queryShopItem = "INSERT INTO shops_item (item, shop_uuid, item_uuid, price, amount) VALUES (?, ?, ?, ?, ?)";
         String queryShopSupplier = "INSERT INTO shop_supplier (time, uuid, item_uuid, shop_uuid, supplier_uuid, amount) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (
@@ -400,11 +403,13 @@ public class CompanyManager {
                         byte[] item = shopItem.getItem().serializeAsBytes();
                         double price = shopItem.getPricePerItem();
                         int amount = shopItem.getAmount();
+                        UUID itemID = shopItem.getItemID();
 
                         stmtShopItem.setBytes(1, item);
                         stmtShopItem.setString(2, shopUuid.toString());
-                        stmtShopItem.setDouble(3, price);
-                        stmtShopItem.setInt(4, amount);
+                        stmtShopItem.setString(3, itemID.toString());
+                        stmtShopItem.setDouble(4, price);
+                        stmtShopItem.setInt(5, amount);
                         stmtShopItem.addBatch();
                     }
 
@@ -417,7 +422,6 @@ public class CompanyManager {
                     stmtShop.setDouble(7, z);
                     stmtShop.addBatch();
 
-                    //TODO erreur ici
                     for (Map.Entry<Long, Supply> entry : shop.getSuppliers().entrySet()) {
                         Supply supply = entry.getValue();
                         Long time = entry.getKey();

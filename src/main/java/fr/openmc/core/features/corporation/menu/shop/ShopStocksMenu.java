@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
+import fr.openmc.core.features.corporation.shops.Supply;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemAdderApi;
@@ -26,10 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ShopStocksMenu extends PaginatedMenu {
 
@@ -111,29 +109,58 @@ public class ShopStocksMenu extends PaginatedMenu {
     }
 
     private void accept() {
-        if (stock.getAmount() > 0) {
-            int maxPlace = ItemUtils.getFreePlacesForItem(getOwner(), stock.getItem());
-            if (maxPlace>0){
-                ItemStack toGive = stock.getItem().clone();
-                toGive.setAmount(Math.min(maxPlace, stock.getAmount()));
-                int amount = Math.min(maxPlace, stock.getAmount());
+        Player owner = getOwner();
 
-                getOwner().getInventory().addItem(toGive);
-                stock.setAmount(stock.getAmount() - amount);
-                if (stock.getAmount()>0){
-                    MessagesManager.sendMessage(getOwner(), Component.text("§6Vous avez récupéré §a" + amount + "§6 dans le stock de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
-                } else {
-                    MessagesManager.sendMessage(getOwner(), Component.text("§6Vous avez récupéré le stock restant de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
-                }
-            } else {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez de place"), Prefix.SHOP, MessageType.INFO, false);
-            }
-        } else {
+        if (stock.getAmount() <= 0) {
             shop.removeItem(stock);
-            MessagesManager.sendMessage(getOwner(), Component.text("§aL'item a bien été retiré du shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
+            MessagesManager.sendMessage(owner, Component.text("§aL'item a bien été retiré du shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
+            owner.closeInventory();
+            return;
         }
-        getOwner().closeInventory();
+
+        int maxPlace = ItemUtils.getFreePlacesForItem(owner, stock.getItem());
+        if (maxPlace <= 0) {
+            MessagesManager.sendMessage(owner, Component.text("§cVous n'avez pas assez de place"), Prefix.SHOP, MessageType.INFO, false);
+            owner.closeInventory();
+            return;
+        }
+
+        int toTake = Math.min(stock.getAmount(), maxPlace);
+
+        ItemStack toGive = stock.getItem().clone();
+        toGive.setAmount(toTake);
+        owner.getInventory().addItem(toGive);
+        stock.setAmount(stock.getAmount() - toTake);
+
+        if (stock.getAmount() > 0) {
+            MessagesManager.sendMessage(owner, Component.text("§6Vous avez récupéré §a" + toTake + "§6 dans le stock de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
+        } else {
+            MessagesManager.sendMessage(owner, Component.text("§6Vous avez récupéré le stock restant de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
+        }
+
+        // Mise à jour des suppliers
+        int toRemove = toTake;
+        Iterator<Map.Entry<Long, Supply>> iterator = shop.getSuppliers().entrySet().iterator();
+        while (iterator.hasNext() && toRemove > 0) {
+            Map.Entry<Long, Supply> entry = iterator.next();
+            Supply supply = entry.getValue();
+
+            if (!supply.getItemId().equals(stock.getItemID())) continue;
+
+            int supplyAmount = supply.getAmount();
+
+            if (supplyAmount <= toRemove) {
+                toRemove -= supplyAmount;
+                iterator.remove();
+            } else {
+                supply.setAmount(supplyAmount - toRemove);
+                break;
+            }
+        }
+
+        owner.closeInventory();
     }
+
 
     private void refuse() {
         getOwner().closeInventory();

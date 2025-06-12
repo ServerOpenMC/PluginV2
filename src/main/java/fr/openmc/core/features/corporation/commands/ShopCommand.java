@@ -12,7 +12,9 @@ import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.menu.shop.ShopSearchMenu;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
+import fr.openmc.core.features.corporation.shops.Supply;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -24,6 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -82,7 +86,7 @@ public class ShopCommand {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas la permission pour créer un shop dans l'entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            if (!company.createShop(player.getUniqueId(), targetBlock, aboveBlock, null)) {
+            if (!company.createShop(player.getUniqueId(), targetBlock, aboveBlock)) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent dans la banque de votre entreprise pour créer un shop (100" + EconomyManager.getEconomyIcon() + ")"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
@@ -131,7 +135,7 @@ public class ShopCommand {
             }
 
             ItemStack item = player.getInventory().getItemInMainHand();
-            boolean itemThere = shop.addItem(item, price, 1);
+            boolean itemThere = shop.addItem(item, price, 1, null);
 
             if (itemThere) {
                 MessagesManager.sendMessage(player, Component.text("§cCet item est déjà dans le shop"), Prefix.SHOP, MessageType.INFO, false);
@@ -151,7 +155,7 @@ public class ShopCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous devez tenir un item dans votre main"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
-        boolean itemThere = shop.addItem(item, price, 1);
+        boolean itemThere = shop.addItem(item, price, 1, null);
         if (itemThere) {
             MessagesManager.sendMessage(player, Component.text("§cCet item est déjà dans le shop"), Prefix.SHOP, MessageType.INFO, false);
             return;
@@ -164,50 +168,75 @@ public class ShopCommand {
     public void unsellItem(Player player, @Named("item number") int itemIndex) {
         boolean isInCompany = companyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
+
             UUID shopUUID = Shop.getShopPlayerLookingAt(player, shopBlocksManager, false);
             if (shopUUID == null) {
                 MessagesManager.sendMessage(player, Component.text("§cShop non reconnu"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
+
             Shop shop = companyManager.getCompany(player.getUniqueId()).getShop(shopUUID);
             if (shop == null) {
                 MessagesManager.sendMessage(player, Component.text("§cCe shop n'appartient pas à votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
+
             if (!CompanyManager.getInstance().getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.SELLER)) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas l'autorisation de retirer un item en vente dans ce shop de l'entrprise"), Prefix.SHOP, MessageType.INFO, false);
             }
+
             if (itemIndex < 1 || itemIndex >= shop.getItems().size() + 1) {
                 MessagesManager.sendMessage(player, Component.text("§cCet item n'est pas dans le shop"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
+
             ShopItem item = shop.getItem(itemIndex - 1);
             if (item == null) {
                 MessagesManager.sendMessage(player, Component.text("§cCet item n'est pas dans le shop"), Prefix.SHOP, MessageType.INFO, false);
                 return;
             }
-            shop.removeItem(item);
-            MessagesManager.sendMessage(player, Component.text("§aL'item a bien été retiré du shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
-            if (item.getAmount() > 0) {
-                ItemStack toGive = item.getItem().clone();
-                toGive.setAmount(item.getAmount());
-                player.getInventory().addItem(toGive);
-                MessagesManager.sendMessage(player, Component.text("§6Vous avez récupéré le stock restant de cet item"), Prefix.SHOP, MessageType.INFO, false);
+
+            if (CompanyManager.getCompany(player.getUniqueId()).hasPermission(player.getUniqueId(), CorpPermission.OWNER)){
+                recoverStock(player, item, shop);
+                return;
             }
+
+            if (shop.isSupplier(player.getUniqueId()) ){
+                int toTake = shop.recoverItemOf(item, player);
+
+                if (toTake == 0) return;
+
+                if (item.getAmount() >= 0) {
+                    ItemStack toGive = item.getItem().clone();
+                    toGive.setAmount(toTake);
+                    player.getInventory().addItem(toGive);
+                    if (item.getAmount() > 0){
+                        MessagesManager.sendMessage(player, Component.text("§6Vous avez récupéré §a" + toTake + "§6 dans le stock de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
+                    } else {
+                        MessagesManager.sendMessage(player, Component.text("§6Vous avez récupéré le stock restant de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
+                    }
+                    return;
+                }
+            }
+
             return;
         }
         if (!playerShopManager.hasShop(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas de shop"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
+
         Shop shop = playerShopManager.getPlayerShop(player.getUniqueId());
         ShopItem item = shop.getItem(itemIndex - 1);
+
         if (item == null) {
             MessagesManager.sendMessage(player, Component.text("§cCet item n'est pas dans le shop"), Prefix.SHOP, MessageType.INFO, false);
             return;
         }
+
         shop.removeItem(item);
         MessagesManager.sendMessage(player, Component.text("§aL'item a bien été retiré du shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
+
         if (item.getAmount() > 0) {
             ItemStack toGive = item.getItem().clone();
             toGive.setAmount(item.getAmount());
@@ -292,5 +321,54 @@ public class ShopCommand {
     @Description("Recherche un shop")
     public void searchShop(Player player){
         new ShopSearchMenu(player).open();
+    }
+
+    private void recoverStock(Player owner, ShopItem stock, Shop shop){
+        if (stock.getAmount() <= 0) {
+            shop.removeItem(stock);
+            MessagesManager.sendMessage(owner, Component.text("§aL'item a bien été retiré du shop !"), Prefix.SHOP, MessageType.SUCCESS, false);
+            owner.closeInventory();
+            return;
+        }
+
+        int maxPlace = ItemUtils.getFreePlacesForItem(owner, stock.getItem());
+        if (maxPlace <= 0) {
+            MessagesManager.sendMessage(owner, Component.text("§cVous n'avez pas assez de place"), Prefix.SHOP, MessageType.INFO, false);
+            owner.closeInventory();
+            return;
+        }
+
+        int toTake = Math.min(stock.getAmount(), maxPlace);
+
+        ItemStack toGive = stock.getItem().clone();
+        toGive.setAmount(toTake);
+        owner.getInventory().addItem(toGive);
+        stock.setAmount(stock.getAmount() - toTake);
+
+        if (stock.getAmount() > 0) {
+            MessagesManager.sendMessage(owner, Component.text("§6Vous avez récupéré §a" + toTake + "§6 dans le stock de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
+        } else {
+            MessagesManager.sendMessage(owner, Component.text("§6Vous avez récupéré le stock restant de cet item"), Prefix.SHOP, MessageType.SUCCESS, false);
+        }
+
+        // Mise à jour des suppliers
+        int toRemove = toTake;
+        Iterator<Map.Entry<Long, Supply>> iterator = shop.getSuppliers().entrySet().iterator();
+        while (iterator.hasNext() && toRemove > 0) {
+            Map.Entry<Long, Supply> entry = iterator.next();
+            Supply supply = entry.getValue();
+
+            if (!supply.getItemId().equals(stock.getItemID())) continue;
+
+            int supplyAmount = supply.getAmount();
+
+            if (supplyAmount <= toRemove) {
+                toRemove -= supplyAmount;
+                iterator.remove();
+            } else {
+                supply.setAmount(supplyAmount - toRemove);
+                break;
+            }
+        }
     }
 }

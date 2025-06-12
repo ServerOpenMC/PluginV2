@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter
 public class ShopItem {
 
-    private final UUID itemID = UUID.randomUUID();
+    private final UUID itemID;
     private final ItemStack item;
     private final double pricePerItem;
     private double price;
@@ -25,6 +25,16 @@ public class ShopItem {
         this.item.setAmount(1);
         this.price = pricePerItem * amount;
         this.amount = 0;
+        this.itemID = UUID.randomUUID();
+    }
+
+    public ShopItem(ItemStack item, double pricePerItem, UUID itemID) {
+        this.item = item.clone();
+        this.pricePerItem = pricePerItem;
+        this.item.setAmount(1);
+        this.price = pricePerItem * amount;
+        this.amount = 0;
+        this.itemID = itemID;
     }
 
     /**
