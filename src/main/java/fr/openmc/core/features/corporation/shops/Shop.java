@@ -7,6 +7,7 @@ import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -115,8 +116,7 @@ public class Shop {
 
 
     public String getName() {
-        //TODO CacheOfflinePlayer
-        return owner.isCompany() ? ("Shop #" + index) : Bukkit.getOfflinePlayer(owner.getPlayer()).getName() + "'s Shop";
+        return owner.isCompany() ? ("Shop #" + index) : CacheOfflinePlayer.getOfflinePlayer(owner.getPlayer()).getName() + "'s Shop";
     }
 
     public UUID getSupremeOwner() {

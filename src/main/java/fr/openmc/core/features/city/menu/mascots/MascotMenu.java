@@ -27,6 +27,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -54,7 +55,7 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§cMascotte (niv. " + MascotUtils.getMascotOfCity(city.getUUID()).getLevel() + ")";
+        return "§cMascotte (niv. " + city.getMascot().getLevel() + ")";
     }
 
     @Override
@@ -71,6 +72,13 @@ public class MascotMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> map = new HashMap<>();
         Player player = getOwner();
+
+        Mascot mascot = city.getMascot();
+        if (mascot == null) {
+            MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+            player.closeInventory();
+            return map;
+        }
 
         try {
             List<Component> loreSkinMascot = List.of(
@@ -166,7 +174,6 @@ public class MascotMenu extends Menu {
                                 if (mascotMove == null) return true;
                                 if (!movingMascots.contains(city_uuid)) return false;
 
-                                Mascot mascot = MascotUtils.getMascotOfCity(city_uuid);
                                 if (mascot==null) return false;
 
                                 Entity mob = MascotUtils.loadMascot(mascot);
@@ -185,7 +192,7 @@ public class MascotMenu extends Menu {
                                 movingMascots.remove(city_uuid);
                                 mascot.setChunk(mascotMove.getChunk());
 
-                                DynamicCooldownManager.use(mascot.getMascotUuid().toString(), "mascots:move", 5*3600*1000L);
+                                DynamicCooldownManager.use(mascot.getMascotUUID().toString(), "mascots:move", 5 * 3600 * 1000L);
                                 return true;
                             }
                             );
@@ -201,7 +208,7 @@ public class MascotMenu extends Menu {
             }
 
             List<Component> requiredAmount = new ArrayList<>();
-            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + MascotUtils.getMascotLevel(city.getUUID()));
+            MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
             if (mascotsLevels.equals(MascotsLevels.level10)){
                 requiredAmount.add(Component.text("§7Niveau max atteint"));
@@ -233,7 +240,7 @@ public class MascotMenu extends Menu {
                     if (ItemUtils.hasEnoughItems(player, matAywenite, aywenite)) {
                         ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
                         upgradeMascots(city_uuid);
-                        MessagesManager.sendMessage(player, Component.text("Vous avez amélioré votre mascotte au §cNiveau " + MascotUtils.getMascotLevel(city_uuid)), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, Component.text("Vous avez amélioré votre mascotte au §cNiveau " + mascot.getLevel()), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;
                     }
@@ -253,7 +260,7 @@ public class MascotMenu extends Menu {
                 menu.open();
             }));
 
-            if (MascotUtils.getMascotImmunity(city.getUUID())) {
+            if (mascot.isImmunity()) {
                 Supplier<ItemStack> immunityItemSupplier = () -> {
                     List<Component> lore = List.of(
                             Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),
@@ -279,11 +286,21 @@ public class MascotMenu extends Menu {
         return map;
     }
 
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
     public static Material getSpawnEgg(Entity entity) {
         String eggName = entity.getType().name() + "_SPAWN_EGG";
         if (Material.matchMaterial(eggName) == null){
             return Material.ZOMBIE_SPAWN_EGG;
         }
         return Material.matchMaterial(eggName);
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

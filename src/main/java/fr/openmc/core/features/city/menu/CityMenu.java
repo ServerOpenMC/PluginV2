@@ -11,6 +11,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.mascots.Mascot;
@@ -39,6 +40,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static fr.openmc.core.features.city.CityManager.getCityType;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_2_DAY;
 
@@ -111,7 +112,7 @@ public class CityMenu extends Menu {
             }
 
             inventory.put(4, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
-                itemMeta.itemName(Component.text("§d" + city.getCityName()));
+                itemMeta.itemName(Component.text("§d" + city.getName()));
                 itemMeta.lore(loreModifyCity);
             }).setOnClick(inventoryClickEvent -> {
                 City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
@@ -126,14 +127,14 @@ public class CityMenu extends Menu {
                 }
             }));
 
-            Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+            Mascot mascot = city.getMascot();
             LivingEntity mob;
             List<Component> loreMascots;
 
             if (mascot!=null){
                 mob = MascotUtils.loadMascot(mascot);
 
-                if (!MascotUtils.getMascotState(city.getUUID())) {
+                if (!mascot.isAlive()) {
                     loreMascots = List.of(
                             Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
                             Component.text("§7Status : §cEn Attente de Soins"),
@@ -162,7 +163,7 @@ public class CityMenu extends Menu {
                     itemMeta.itemName(Component.text("§cVotre Mascotte"));
                     itemMeta.lore(loreMascots);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (!MascotUtils.getMascotState(city.getUUID())){
+                    if (!mascot.isAlive()) {
                         MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
                         menu.open();
                         return;
@@ -325,28 +326,16 @@ public class CityMenu extends Menu {
             MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L*60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
 
-            String type = getCityType(city.getUUID());
-            if (type.equals("war")) {
-                type = "guerre";
-            } else if (type.equals("peace")) {
-                type = "paix";
+            CityType type = city.getType();
+            String typeStr;
+            if (type.equals(CityType.WAR)) {
+                typeStr = "guerre";
+            } else if (type.equals(CityType.PEACE)) {
+                typeStr = "paix";
             } else {
-                type = "inconnu";
+                typeStr = "inconnu";
             }
-            String finalType = type;
-
-            List<Component> updatedLore = new ArrayList<>();
-            updatedLore.add(Component.text("§7Votre ville est en §5" + finalType));
-
-            if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
-                updatedLore.add(Component.text(""));
-                updatedLore.add(Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type"))));
-            }
-
-            if (hasPermissionChangeType) {
-                updatedLore.add(Component.text(""));
-                updatedLore.add(Component.text("§e§lCLIQUEZ ICI POUR INVERSER LE TYPE"));
-            }
+            String finalType = typeStr;
 
             Supplier<ItemStack> typeItemSupplier = () -> {
 
@@ -371,13 +360,10 @@ public class CityMenu extends Menu {
                     try {
                         if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) return;
 
-                        String cityTypeActuel = getCityType(city.getUUID());
-                        String cityTypeAfter = "";
-                        if (cityTypeActuel != null) {
-                            boolean war = cityTypeActuel.equals("war");
-                            cityTypeActuel = war ? "§cen guerre§7" : "§aen paix§7";
-                            cityTypeAfter = war ? "§aen paix§7" : "§cen guerre§7";
-                        }
+                        String cityTypeActuel;
+                        String cityTypeAfter;
+                        cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+                        cityTypeAfter = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
 
                         ConfirmMenu confirmMenu = new ConfirmMenu(player,
                                 () -> {
@@ -445,7 +431,7 @@ public class CityMenu extends Menu {
                     return;
                 }
 
-                new ChestMenu(city, 1).open(player);
+				new CityChestMenu(player, city, 1).open();
             }));
 
             inventory.put(40, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
@@ -471,7 +457,7 @@ public class CityMenu extends Menu {
                 inventory.put(44, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
                     itemMeta.itemName(Component.text("§cPartir de la Ville"));
                     itemMeta.lore(List.of(
-                            Component.text("§7Vous allez §cquitter §7" + city.getCityName()),
+                            Component.text("§7Vous allez §cquitter §7" + city.getName()),
                             Component.text(""),
                             Component.text("§e§lCLIQUEZ ICI POUR PARTIR")
                     ));
@@ -487,8 +473,8 @@ public class CityMenu extends Menu {
                             () -> {
                                 player.closeInventory();
                             },
-                            List.of(Component.text("§7Voulez vous vraiment partir de " + city.getCityName() + " ?")),
-                            List.of(Component.text("§7Rester dans la ville " + city.getCityName()))
+                            List.of(Component.text("§7Voulez vous vraiment partir de " + city.getName() + " ?")),
+                            List.of(Component.text("§7Rester dans la ville " + city.getName()))
                     );
                     menu.open();
                 }));
@@ -501,5 +487,15 @@ public class CityMenu extends Menu {
             e.printStackTrace();
         }
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

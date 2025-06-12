@@ -20,8 +20,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class RelocateHome {
-
-    private MessagesManager msg;
     private final HomesManager homeManager;
 
     public RelocateHome(HomesManager homeManager) {
@@ -54,7 +52,7 @@ public class RelocateHome {
                 return;
             }
 
-            if (HomeUtil.checkName(player, msg, homeName)) return;
+            if (HomeUtil.checkName(player, homeName)) return;
 
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home h : homes) {

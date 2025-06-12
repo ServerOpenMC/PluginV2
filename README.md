@@ -13,6 +13,8 @@ Nouveau plugin collaboratif pour un serveur : VOTRE serveur !
 
 Serveur de test : `dev.openmc.fr` (1.21.5 Java Edition)
 
+Serveur de la beta : `beta.openmc.fr` (1.21.5 Java Edition)
+
 Serveur de jeu : `play.openmc.fr` (1.21.5 Java Edition)
 
 ## 📘 En apprendre plus.

@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.commands;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.menu.ChestMenu;
+import fr.openmc.core.features.city.menu.CityChestMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -37,7 +37,7 @@ public class CityChestCommand {
         if (page < 1) page = 1;
         if (page > city.getChestPages()) page = city.getChestPages();
 
-        new ChestMenu(city, page).open(player);
+        new CityChestMenu(player, city, page).open();
     }
 
     @Command({"city upgradechest", "ville upgradecoffre"})

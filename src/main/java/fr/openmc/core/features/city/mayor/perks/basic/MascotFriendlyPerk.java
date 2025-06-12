@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.mayor.perks.basic;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
@@ -30,11 +29,11 @@ public class MascotFriendlyPerk implements Listener {
         int phase = MayorManager.getInstance().phaseMayor;
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) return;
+        if (playerCity.getMascot() == null) return;
 
-        int level = MascotUtils.getMascotLevel(playerCity.getUUID());
+        int level = playerCity.getMascot().getLevel();
         if (phase == 2) {
             if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) return;
-
 
             for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
                 player.addPotionEffect(potionEffect);
@@ -65,8 +64,9 @@ public class MascotFriendlyPerk implements Listener {
         Player player = event.getPlayer();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) return;
+        if (playerCity.getMascot() == null) return;
 
-        int level = MascotUtils.getMascotLevel(playerCity.getUUID());
+        int level = playerCity.getMascot().getLevel();
         for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
             player.removePotionEffect(potionEffect.getType());
         }

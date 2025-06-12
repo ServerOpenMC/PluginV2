@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -96,9 +97,14 @@ public class HomeMenu extends PaginatedMenu {
             return items;
         }
 
-        @Override
-        public Map<Integer, ItemStack> getButtons() {
-            Map<Integer, ItemStack> map = new HashMap<>();
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
+    @Override
+    public Map<Integer, ItemStack> getButtons() {
+        Map<Integer, ItemStack> map = new HashMap<>();
 
             if(!wasTarget) {
                 map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information").getBest(),
@@ -126,9 +132,14 @@ public class HomeMenu extends PaginatedMenu {
             map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
             map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
-            return map;
+        return map;
     }
 
     @Override
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
 }

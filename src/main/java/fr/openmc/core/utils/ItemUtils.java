@@ -106,7 +106,6 @@ public class ItemUtils {
      * Dire si le joueur a assez d'un objet
      * @param player Joueur pour acceder a son inventaire
      * @param item Objet concerné
-     * @param amount Quantité nécessaire
      */
     public static int getFreePlacesForItem(Player player, ItemStack item){
         int stackSize = item.getMaxStackSize();

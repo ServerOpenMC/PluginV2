@@ -24,6 +24,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -196,6 +197,16 @@ public class CityChunkMenu extends Menu {
         return inventory;
     }
 
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
     private void addNavigationButtons(Map<Integer, ItemStack> inventory) {
         inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(Component.text("§aRetour"));
@@ -264,7 +275,7 @@ public class CityChunkMenu extends Menu {
         return new ItemBuilder(this, material, itemMeta -> {
             itemMeta.displayName(Component.text("§9Claim de votre ville"));
             itemMeta.lore(List.of(
-                    Component.text("§7Ville : §d" + city.getCityName()),
+                    Component.text("§7Ville : §d" + city.getName()),
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
             ));
         });
@@ -274,7 +285,7 @@ public class CityChunkMenu extends Menu {
         return new ItemBuilder(this, material, itemMeta -> {
             itemMeta.displayName(Component.text("§cClaim d'une ville adverse"));
             itemMeta.lore(List.of(
-                    Component.text("§7Ville : §d" + city.getCityName()),
+                    Component.text("§7Ville : §d" + city.getName()),
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
             ));
         });
