@@ -54,8 +54,16 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {// sell_shop_menu
+            if (shop.getOwner().isCompany()){
+                Company company = shop.getOwner().getCompany();
+                if (company.getAllMembers().contains(getOwner().getUniqueId())){
+                    return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+                }
+            }
+            if (!shop.isOwner(getOwner().getUniqueId()))
+                return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_sell_shop_menu%");
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_sell_shop_menu%");
         } else {
             return shop.getName();
         }

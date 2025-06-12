@@ -143,7 +143,7 @@ public class Shop {
      * @param amount the amount of it
      */
     public boolean addItem(ItemStack itemStack, double price, int amount, UUID itemID) {
-        System.out.println(amount);
+
         ShopItem item = itemID == null ? new ShopItem(itemStack, price) : new ShopItem(itemStack, price, itemID);
         for (ShopItem shopItem : items) {
             if (shopItem.getItem().isSimilar(itemStack)) {
@@ -159,6 +159,10 @@ public class Shop {
 
     public void addItem(ShopItem item){
         items.add(item);
+    }
+
+    public void addSales(ShopItem item){
+        sales.add(item);
     }
 
     /**
@@ -262,9 +266,9 @@ public class Shop {
         if (amountToBuy > item.getAmount()) {
             return MethodState.WARNING;
         }
-//        if (isOwner(buyer.getUniqueId())) {
-//            return MethodState.FAILURE;
-//        }
+        if (isOwner(buyer.getUniqueId())) {
+            return MethodState.FAILURE;
+        }
         if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amountToBuy))) return MethodState.ERROR;
 
         double basePrice = item.getPrice(amountToBuy);
@@ -326,6 +330,7 @@ public class Shop {
                     else {// si la quantité achetée est supérieur au suppliesAmount ( ex : 64 > 32 )
                         double supplierCut = (suppliesAmount * suppliersCut) / amountToBuy;
                         suppliersCut -= supplierCut;
+                        amountToBuy -= suppliesAmount;
                         economyManager.addBalance(supply.getSupplier(), supplierCut);
 
                         if (forSupplies.containsKey(supply.getSupplier())){
