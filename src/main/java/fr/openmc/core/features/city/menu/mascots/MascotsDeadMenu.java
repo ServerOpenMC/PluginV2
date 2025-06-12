@@ -6,7 +6,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.mascots.Mascot;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.menu.CityMenu;
@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,10 +38,14 @@ public class MascotsDeadMenu extends Menu {
         this.city_uuid = city_uuid;
 
 
+        City city = CityManager.getCity(city_uuid);
+
+        Mascot mascot = city.getMascot();
+
         Map<Material, Integer> itemCount = new HashMap<>();
         requiredItemsLore.add(Component.text("§bRequière :"));
 
-        int level = MascotUtils.getMascotLevel(city_uuid);
+        int level = mascot.getLevel();
         requiredItems = MascotsLevels.valueOf("level"+level).getRequiredItems();
 
         for (ItemStack item : getOwner().getInventory().getContents()) {
@@ -117,6 +122,16 @@ public class MascotsDeadMenu extends Menu {
             e.printStackTrace();
         }
         return map;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 
     private boolean hasRequiredItems(Player player, Map<Material, Integer> requiredItems) {

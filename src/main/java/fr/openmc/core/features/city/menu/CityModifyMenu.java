@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,7 +71,7 @@ public class CityModifyMenu extends Menu {
                 loreRename = List.of(
                         Component.text("§7Vous pouvez renommer votre §dville§7."),
                         Component.text(""),
-                        Component.text("§7Nom actuel : §d" + city.getCityName()),
+                        Component.text("§7Nom actuel : §d" + city.getName()),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR LE MODIFIER")
                 );
@@ -187,8 +188,8 @@ public class CityModifyMenu extends Menu {
                             });
                         },
                         () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getCityName() + " ?")),
-                        List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getCityName())));
+                        List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getName() + " ?")),
+                        List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getName())));
                 menu.open();
 
             }));
@@ -218,5 +219,15 @@ public class CityModifyMenu extends Menu {
             e.printStackTrace();
         }
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

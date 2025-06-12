@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +48,11 @@ public class CompanyBaltopMenu extends Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
 
     }
 
@@ -180,5 +186,10 @@ public class CompanyBaltopMenu extends Menu {
             }));
         }
         return content;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

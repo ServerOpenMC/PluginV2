@@ -13,6 +13,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,6 +65,11 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
+    public void onClose(InventoryCloseEvent event) {
+
+    }
+
+    @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
@@ -110,5 +116,10 @@ public class ConfirmMenu extends Menu {
             e.printStackTrace();
         }
         return inventory;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }
