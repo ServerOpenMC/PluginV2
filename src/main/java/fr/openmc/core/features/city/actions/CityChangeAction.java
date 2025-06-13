@@ -108,7 +108,7 @@ public class CityChangeAction {
 
             mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
                     city.getName(),
-                    Math.floor(mob.getHealth()),
+                    mob.getHealth(),
                     maxHealth
             )));
         } catch (Exception exception) {

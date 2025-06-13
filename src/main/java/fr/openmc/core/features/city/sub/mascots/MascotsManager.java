@@ -45,12 +45,10 @@ public class MascotsManager {
     public static HashMap<String, Mascot> mascotsByCityUUID = new HashMap<>();
     public static HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
 
-    public static final String PLACEHOLDER_MASCOT_NAME = "§l%s §c%a/%a❤";
+    public static final String PLACEHOLDER_MASCOT_NAME = "§l%s §c%.0f/%.0f❤";
     public static final String DEAD_MASCOT_NAME = "☠ §cMascotte Morte";
 
     public MascotsManager() {
-        OMCPlugin plugin = OMCPlugin.getInstance();
-
         //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);
@@ -85,6 +83,14 @@ public class MascotsManager {
         for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
             MascotRegenerationUtils.mascotsRegeneration(mascot);
         }
+
+        for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
+            System.out.println("mascot " + mascot);
+        }
+
+        for (Mascot mascot : MascotsManager.mascotsByEntityUUID.values()) {
+            System.out.println("mascot " + mascot);
+        }
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -110,6 +116,9 @@ public class MascotsManager {
                 Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
 
                 Mascot mascot = new Mascot(city, entityUUID, level, immunity, alive, chunk);
+
+                System.out.println("city " + city + city.getName());
+                System.out.println("mascot " + mascot);
 
                 mascotsByEntityUUID.put(entityUUID, mascot);
                 mascotsByCityUUID.put(city.getUUID(), mascot);
@@ -226,7 +235,7 @@ public class MascotsManager {
         entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
         entity.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
                 city.getName(),
-                Math.floor(0.10 * entity.getMaxHealth()),
+                0.10 * entity.getMaxHealth(),
                 entity.getMaxHealth()
         )));
         entity.setGlowing(false);
@@ -274,7 +283,7 @@ public class MascotsManager {
 
             mob.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
                     city.getName(),
-                    Math.floor(mob.getHealth()),
+                    mob.getHealth(),
                     maxHealth
             )));
         } catch (Exception exception) {
@@ -351,7 +360,7 @@ public class MascotsManager {
 
         mob.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
                 cityName,
-                Math.floor(baseHealth),
+                baseHealth,
                 maxHealth
         )));
         mob.setCustomNameVisible(true);

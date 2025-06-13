@@ -855,8 +855,7 @@ public class City {
     // ==================== Mascots Methods ====================
 
     public Mascot getMascot() {
-        MascotsManager.mascotsByCityUUID.get(cityUUID);
-        return null;
+        return MascotsManager.mascotsByCityUUID.get(cityUUID);
     }
 
     // ==================== Mayor Methods ====================

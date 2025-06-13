@@ -69,7 +69,7 @@ public class MascotRegenerationUtils {
 
                     mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
                             mascot.getCity().getName(),
-                            Math.floor(mascots.getHealth()),
+                            mascots.getHealth(),
                             mascots.getMaxHealth()
                     )));
                     regenTasks.remove(mascot.getMascotUUID());
@@ -81,7 +81,7 @@ public class MascotRegenerationUtils {
                 mascots.setHealth(newHealth);
                 mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
                         mascot.getCity().getName(),
-                        Math.floor(mascots.getHealth()),
+                        mascots.getHealth(),
                         mascots.getMaxHealth()
                 )));
             }

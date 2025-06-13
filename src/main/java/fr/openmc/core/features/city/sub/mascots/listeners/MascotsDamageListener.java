@@ -36,6 +36,8 @@ public class MascotsDamageListener implements Listener {
     void onMascotDamageCaused(EntityDamageEvent e) {
         Entity entity = e.getEntity();
 
+        if (!(entity instanceof Player)) return;
+
         if (!MascotUtils.isMascot(entity)) return;
 
         EntityDamageEvent.DamageCause cause = e.getCause();
@@ -57,7 +59,7 @@ public class MascotsDamageListener implements Listener {
         Mascot mascot = city.getMascot();
         if (mascot == null) return;
 
-        double healthAfterDamage = Math.floor(mob.getHealth() - e.getFinalDamage());
+        double healthAfterDamage = mob.getHealth() - e.getFinalDamage();
         if (healthAfterDamage < 0) healthAfterDamage = 0;
 
         if (!mascot.isAlive()) {
@@ -69,6 +71,8 @@ public class MascotsDamageListener implements Listener {
                     maxHealth
             )));
         }
+
+        e.setCancelled(true);
     }
 
 

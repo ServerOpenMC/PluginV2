@@ -76,7 +76,7 @@ public class OMCPlugin extends JavaPlugin {
         ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
         new SpawnManager(this);
         new UpdateManager();
-        new MayorManager();
+        new MayorManager(); //todo: quand PR ORM passé mettre ça dans citymanegr
         new CityManager();
         new ListenersManager();
         new EconomyManager();
