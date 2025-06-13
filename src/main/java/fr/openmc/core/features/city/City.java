@@ -491,7 +491,7 @@ public class City {
      * @return True if the player has the permission, false otherwise.
      */
     public boolean hasPermission(UUID uuid, CPermission permission) {
-        Set<CPermission> playerPerms = permissions.get(uuid);
+        Set<CPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
 
         if (playerPerms.contains(CPermission.OWNER))
             return true;
