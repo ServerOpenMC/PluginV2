@@ -28,10 +28,10 @@ public class DatabaseManager {
         connect();
         try {
             // Déclencher au début du plugin pour créer les tables nécessaires
+            MayorManager.init_db(connection);
             TransactionsManager.init_db(connection);
             AnalyticsManager.init_db(connection);
             CityManager.init_db(connection);
-            MayorManager.init_db(connection);
             ContestManager.init_db(connection);
             MailboxManager.init_db(connection);
             EconomyData.init_db(connection);
