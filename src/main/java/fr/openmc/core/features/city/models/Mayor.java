@@ -13,14 +13,14 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "mayors")
 public class Mayor {
-    @Getter
     @DatabaseField(id = true)
+    @Getter
     private String city;
     @DatabaseField
     @Getter
     @Setter
     private UUID uuid;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField
     @Getter
     @Setter
     private String name;

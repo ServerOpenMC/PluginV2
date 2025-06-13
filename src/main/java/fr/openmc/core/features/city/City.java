@@ -346,7 +346,7 @@ public class City {
      * @return The mayor of the city, or null if not found.
      */
     public Mayor getMayor() {
-        return MayorManager.cityMayor.get(CityManager.getCity(cityUUID));
+        return MayorManager.cityMayor.get(this.getUUID());
     }
 
     /**
@@ -355,7 +355,7 @@ public class City {
      * @return True if the city has a mayor, false otherwise.
      */
     public boolean hasMayor() {
-        Mayor mayor = MayorManager.cityMayor.get(this);
+        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
         if (mayor == null)
             return false;
 
@@ -368,7 +368,7 @@ public class City {
      * @return The election type of the city, or null if not found.
      */
     public ElectionType getElectionType() {
-        Mayor mayor = MayorManager.cityMayor.get(this);
+        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
         if (mayor == null)
             return null;
 
@@ -381,7 +381,7 @@ public class City {
      * @return The law of the city, or null if not found.
      */
     public CityLaw getLaw() {
-        return MayorManager.cityLaws.get(CityManager.getCity(cityUUID));
+        return MayorManager.cityLaws.get(this.getUUID());
     }
 
     // ==================== Economy Methods ====================
