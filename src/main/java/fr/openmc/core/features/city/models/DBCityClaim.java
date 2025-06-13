@@ -4,12 +4,12 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import com.sk89q.worldedit.math.BlockVector2;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import lombok.Getter;
 
 @DatabaseTable(tableName = "city_regions")
 public class DBCityClaim {
     @DatabaseField(canBeNull = false)
+    @Getter
     private String city;
     @DatabaseField(canBeNull = false)
     private int x;
@@ -24,10 +24,6 @@ public class DBCityClaim {
         this.city = city;
         this.x = chunk.getX();
         this.z = chunk.getZ();
-    }
-
-    public City getCity() {
-        return CityManager.getCity(city);
     }
 
     public BlockVector2 getBlockVector() {

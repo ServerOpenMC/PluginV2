@@ -73,10 +73,10 @@ public class MayorManager {
     public static final DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
 
     public static int phaseMayor;
-    public static HashMap<City, Mayor> cityMayor = new HashMap<>();
-    public static HashMap<City, CityLaw> cityLaws = new HashMap<>();
-    public static Map<City, List<MayorCandidate>> cityElections = new HashMap<>();
-    public static Map<City, List<MayorVote>> playerVote = new HashMap<>();
+    public static HashMap<String, Mayor> cityMayor = new HashMap<>();
+    public static HashMap<String, CityLaw> cityLaws = new HashMap<>();
+    public static Map<String, List<MayorCandidate>> cityElections = new HashMap<>();
+    public static Map<String, List<MayorVote>> playerVote = new HashMap<>();
 
     private static final Random RANDOM = new Random();
 
@@ -240,7 +240,8 @@ public class MayorManager {
 
     public static void loadPlayersVote() {
         try {
-            votesDao.queryForAll().forEach(vote -> playerVote.computeIfAbsent(vote.getCity(), k -> new ArrayList<>()).add(vote));
+            votesDao.queryForAll().forEach(
+                    vote -> playerVote.computeIfAbsent(vote.getCity().getUUID(), k -> new ArrayList<>()).add(vote));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -280,22 +281,22 @@ public class MayorManager {
         DeleteBuilder<Mayor, String> mayorsDelete = mayorsDao.deleteBuilder();
         mayorsDelete.where().eq("city", city.getUUID());
         mayorsDao.delete(mayorsDelete.prepare());
-        cityMayor.remove(city);
+        cityMayor.remove(city.getUUID());
 
         DeleteBuilder<MayorCandidate, UUID> candidatesDelete = candidatesDao.deleteBuilder();
         candidatesDelete.where().eq("city", city.getUUID());
         candidatesDao.delete(candidatesDelete.prepare());
-        cityElections.remove(city);
+        cityElections.remove(city.getUUID());
 
         DeleteBuilder<MayorVote, UUID> votesDelete = votesDao.deleteBuilder();
         votesDelete.where().eq("city", city.getUUID());
         votesDao.delete(votesDelete.prepare());
-        playerVote.remove(city);
+        playerVote.remove(city.getUUID());
 
         DeleteBuilder<CityLaw, String> lawsDelete = lawsDao.deleteBuilder();
         lawsDelete.where().eq("city", city.getUUID());
         lawsDao.delete(lawsDelete.prepare());
-        cityLaws.remove(city);
+        cityLaws.remove(city.getUUID());
     }
 
     // setup elections
@@ -316,7 +317,7 @@ public class MayorManager {
                 e.printStackTrace();
             }
         });
-        HashMap<City, Mayor> copyCityMayor = cityMayor;
+        HashMap<String, Mayor> copyCityMayor = cityMayor;
         cityMayor = new HashMap<>();
         cityElections = new HashMap<>();
         playerVote = new HashMap<>();
@@ -327,23 +328,23 @@ public class MayorManager {
                 if (offlinePlayer.isOnline()) {
                     Player player = offlinePlayer.getPlayer();
                     // Fou de Rage
-                    if (PerkManager.hasPerk(copyCityMayor.get(city), Perks.FOU_DE_RAGE.getId())) {
+                    if (PerkManager.hasPerk(copyCityMayor.get(city.getUUID()), Perks.FOU_DE_RAGE.getId())) {
                         player.removePotionEffect(PotionEffectType.STRENGTH);
                         player.removePotionEffect(PotionEffectType.RESISTANCE);
                     }
 
                     // Mineur Dévoué
-                    if (PerkManager.hasPerk(copyCityMayor.get(city), Perks.MINER.getId())) {
+                    if (PerkManager.hasPerk(copyCityMayor.get(city.getUUID()), Perks.MINER.getId())) {
                         MinerPerk.updatePlayerEffects(player);
                     }
 
                     // Mascotte de Compagnie
-                    if (PerkManager.hasPerk(copyCityMayor.get(city), Perks.MASCOTS_FRIENDLY.getId())) {
+                    if (PerkManager.hasPerk(copyCityMayor.get(city.getUUID()), Perks.MASCOTS_FRIENDLY.getId())) {
                         MascotFriendlyPerk.updatePlayerEffects(player);
                     }
 
                     // Fruit du Démon
-                    if (PerkManager.hasPerk(copyCityMayor.get(city), Perks.FRUIT_DEMON.getId())) {
+                    if (PerkManager.hasPerk(copyCityMayor.get(city.getUUID()), Perks.FRUIT_DEMON.getId())) {
                         DemonFruitPerk.removeReachBonus(player);
                     }
                 }
@@ -434,8 +435,8 @@ public class MayorManager {
                 mayor.setIdPerk1(PerkManager.getRandomPerkEvent().getId());
             }
 
-            if (cityElections.containsKey(city)) { // si y'a des maires qui se sont présenter
-                List<MayorCandidate> candidates = cityElections.get(city);
+            if (cityElections.containsKey(city.getUUID())) { // si y'a des maires qui se sont présenter
+                List<MayorCandidate> candidates = cityElections.get(city.getUUID());
 
                 // Code fait avec ChatGPT pour avoir une complexité de O(n log(n)) au lieu de
                 // 0(n²)
@@ -476,9 +477,9 @@ public class MayorManager {
         });
 
         // on supprime donc les elections de la ville ou le maire a été élu
-        cityElections.remove(city);
+        cityElections.remove(city.getUUID());
         // on supprime donc les votes de la ville ou le maire a été élu
-        playerVote.remove(city);
+        playerVote.remove(city.getUUID());
     }
 
     /**
@@ -488,7 +489,7 @@ public class MayorManager {
      * @param candidate The candidate to add
      */
     public static void createCandidate(City city, MayorCandidate candidate) {
-        List<MayorCandidate> candidates = cityElections.computeIfAbsent(city, key -> new ArrayList<>());
+        List<MayorCandidate> candidates = cityElections.computeIfAbsent(city.getUUID(), key -> new ArrayList<>());
 
         candidates.add(candidate);
     }
@@ -518,10 +519,10 @@ public class MayorManager {
     public static boolean hasCandidated(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (cityElections.get(playerCity) == null)
+        if (cityElections.get(playerCity.getUUID()) == null)
             return false;
 
-        return cityElections.get(playerCity)
+        return cityElections.get(playerCity.getUUID())
                 .stream()
                 .anyMatch(candidate -> candidate.getId().equals(player.getUniqueId()));
     }
@@ -544,7 +545,7 @@ public class MayorManager {
      */
     public static void voteCandidate(City playerCity, Player player, MayorCandidate candidate) {
         candidate.setVote(candidate.getVote() + 1);
-        List<MayorVote> votes = playerVote.computeIfAbsent(playerCity, key -> new ArrayList<>());
+        List<MayorVote> votes = playerVote.computeIfAbsent(playerCity.getUUID(), key -> new ArrayList<>());
 
         votes.add(new MayorVote(playerCity.getUUID(), player.getUniqueId(), candidate));
     }
@@ -557,10 +558,10 @@ public class MayorManager {
     public static boolean hasVoted(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (playerVote.get(playerCity) == null)
+        if (playerVote.get(playerCity.getUUID()) == null)
             return false;
 
-        return playerVote.get(playerCity)
+        return playerVote.get(playerCity.getUUID())
                 .stream()
                 .anyMatch(mayorVote -> mayorVote.getVoter().equals(player.getUniqueId()));
     }
@@ -590,7 +591,7 @@ public class MayorManager {
     public static boolean hasChoicePerkOwner(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-        Mayor mayor = cityMayor.get(playerCity);
+        Mayor mayor = cityMayor.get(playerCity.getUUID());
         if (mayor == null)
             return false;
 
@@ -604,11 +605,11 @@ public class MayorManager {
      * @param perk1 The perk to set
      */
     public static void put1Perk(City city, Perks perk1) {
-        Mayor mayor = cityMayor.get(city);
+        Mayor mayor = cityMayor.get(city.getUUID());
         if (mayor != null) {
             mayor.setIdPerk1(perk1.getId());
         } else { // au cas ou meme si théoriquement c impossible
-            cityMayor.put(city,
+            cityMayor.put(city.getUUID(),
                     new Mayor(city.getUUID(), null, null, null, perk1.getId(), 0, 0, city.getElectionType()));
         }
     }
@@ -627,7 +628,7 @@ public class MayorManager {
      */
     public static void createMayor(String playerName, UUID playerUUID, City city, Perks perk1, Perks perk2, Perks perk3,
             NamedTextColor color, ElectionType type) {
-        Mayor mayor = cityMayor.get(city);
+        Mayor mayor = cityMayor.get(city.getUUID());
         int idPerk1 = perk1 != null ? perk1.getId() : 0;
         int idPerk2 = perk2 != null ? perk2.getId() : 0;
         int idPerk3 = perk3 != null ? perk3.getId() : 0;
@@ -641,7 +642,7 @@ public class MayorManager {
             mayor.setElectionType(city.getElectionType());
         } else { // au cas ou meme si c théoriquement impossible (on défini tous les maires a la
                  // phase 1 et on le crée quand on crée la ville)
-            cityMayor.put(city,
+            cityMayor.put(city.getUUID(),
                     new Mayor(city.getUUID(), playerName, playerUUID, color, idPerk1, idPerk2, idPerk3, type));
         }
     }
@@ -668,7 +669,7 @@ public class MayorManager {
 
         } else { // au cas ou meme si c théoriquement impossible (on défini tous les maires a la
                  // phase 1 et on le crée quand on crée la ville)
-            cityLaws.put(city, new CityLaw(city.getUUID(), pvp, locationWarp));
+            cityLaws.put(city.getUUID(), new CityLaw(city.getUUID(), pvp, locationWarp));
         }
     }
 }

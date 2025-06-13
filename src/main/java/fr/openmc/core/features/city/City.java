@@ -37,12 +37,10 @@ public class City {
     @Getter
     private String name;
     private final String cityUUID;
-    @Getter
-    private final Set<UUID> members;
-    @Getter
-    private final Set<BlockVector2> chunks; // Liste des chunks claims par la ville
-    private final HashMap<UUID, Set<CPermission>> permissions;
-    private final HashMap<Integer, ItemStack[]> chestContent;
+    private Set<UUID> members;
+    private Set<BlockVector2> chunks; // Liste des chunks claims par la ville
+    private HashMap<UUID, Set<CPermission>> permissions;
+    private HashMap<Integer, ItemStack[]> chestContent;
     @Getter
     private double balance;
     @Getter
@@ -95,11 +93,6 @@ public class City {
         setType(type);
 
         CityManager.registerCity(this);
-
-        this.members = CityManager.getCityMembers(this);
-        this.permissions = CityManager.getCityPermissions(this);
-        this.chunks = CityManager.getCityChunks(this);
-        this.chestContent = CityManager.getCityChestContent(this);
     }
 
     /**
@@ -110,6 +103,26 @@ public class City {
     }
 
     // ==================== Global Methods ====================
+
+    /**
+     * Gets all the member of this city
+     */
+    public Set<UUID> getMembers() {
+        if (this.members == null)
+            this.members = CityManager.getCityMembers(this);
+
+        return this.members;
+    }
+
+    /**
+     * Gets all the member of this city
+     */
+    public Set<BlockVector2> getChunks() {
+        if (this.chunks == null)
+            this.chunks = CityManager.getCityChunks(this);
+
+        return this.chunks;
+    }
 
     /**
      * Retrieves the UUID of a city.
@@ -170,6 +183,9 @@ public class City {
      * @param player The UUID of the player to add.
      */
     public void addPlayer(UUID player) {
+        if (this.members == null)
+            this.members = CityManager.getCityMembers(this);
+
         members.add(player);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new MemberJoinEvent(CacheOfflinePlayer.getOfflinePlayer(player), this));
@@ -184,6 +200,9 @@ public class City {
      * @param player The UUID of the player leaving the city.
      */
     public void removePlayer(UUID player) {
+        if (this.members == null)
+            this.members = CityManager.getCityMembers(this);
+
         members.remove(player);
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager()
@@ -231,6 +250,9 @@ public class City {
      * @return The content of the chest page as an array of ItemStack.
      */
     public ItemStack[] getChestContent(int page) {
+        if (this.chestContent == null)
+            this.chestContent = CityManager.getCityChestContent(this);
+
         return chestContent.get(page);
     }
 
@@ -241,6 +263,9 @@ public class City {
      * @param content The content to save as an array of ItemStack.
      */
     public void saveChestContent(int page, ItemStack[] content) {
+        if (this.chestContent == null)
+            this.chestContent = CityManager.getCityChestContent(this);
+
         chestContent.put(page, content);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -254,6 +279,9 @@ public class City {
      * @return The number of pages for the city's chest.
      */
     public @NotNull Integer getChestPages() {
+        if (this.chestContent == null)
+            this.chestContent = CityManager.getCityChestContent(this);
+
         return chestContent.size();
     }
 
@@ -266,6 +294,9 @@ public class City {
      * @param chunk The chunk to be added.
      */
     public void addChunk(Chunk chunk) {
+        if (this.chunks == null)
+            this.chunks = CityManager.getCityChunks(this);
+
         BlockVector2 coords = BlockVector2.at(chunk.getX(), chunk.getZ());
         if (chunks.contains(coords))
             return;
@@ -283,6 +314,9 @@ public class City {
      * @return True if the chunk was successfully removed, false otherwise.
      */
     public void removeChunk(Chunk chunk) {
+        if (this.chunks == null)
+            this.chunks = CityManager.getCityChunks(this);
+
         BlockVector2 coords = BlockVector2.at(chunk.getX(), chunk.getZ());
         if (!chunks.contains(coords))
             chunks.remove(coords);
@@ -298,6 +332,9 @@ public class City {
      * @return True if the chunk is claimed, false otherwise.
      */
     public boolean hasChunk(Chunk chunk) {
+        if (this.chunks == null)
+            this.chunks = CityManager.getCityChunks(this);
+
         return chunks.contains(BlockVector2.at(chunk.getX(), chunk.getZ()));
     }
 
@@ -465,6 +502,9 @@ public class City {
      * @return The UUID of the player with the permission, or null if not found.
      */
     public UUID getPlayerWithPermission(CPermission permission) {
+        if (this.permissions == null)
+            this.permissions = CityManager.getCityPermissions(this);
+
         for (UUID player : permissions.keySet()) {
             if (permissions.get(player).contains(permission)) {
                 return player;
@@ -480,6 +520,9 @@ public class City {
      * @return A set of permissions for the player.
      */
     public Set<CPermission> getPermissions(UUID player) {
+        if (this.permissions == null)
+            this.permissions = CityManager.getCityPermissions(this);
+
         return permissions.get(player);
     }
 
@@ -491,6 +534,9 @@ public class City {
      * @return True if the player has the permission, false otherwise.
      */
     public boolean hasPermission(UUID uuid, CPermission permission) {
+        if (this.permissions == null)
+            this.permissions = CityManager.getCityPermissions(this);
+
         Set<CPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
 
         if (playerPerms.contains(CPermission.OWNER))
@@ -507,6 +553,9 @@ public class City {
      * @param permission The permission to add.
      */
     public void addPermission(UUID player, CPermission permission) {
+        if (this.permissions == null)
+            this.permissions = CityManager.getCityPermissions(this);
+
         Set<CPermission> playerPerms = permissions.getOrDefault(player, new HashSet<>());
 
         if (playerPerms.contains(permission))
@@ -533,6 +582,9 @@ public class City {
      * @param permission The permission to remove.
      */
     public void removePermission(UUID player, CPermission permission) {
+        if (this.permissions == null)
+            this.permissions = CityManager.getCityPermissions(this);
+
         Set<CPermission> playerPerms = permissions.get(player);
 
         if (playerPerms == null)

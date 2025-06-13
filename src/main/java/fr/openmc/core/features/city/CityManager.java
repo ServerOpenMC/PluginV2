@@ -116,14 +116,15 @@ public class CityManager implements Listener {
 
         try {
             playerCities.clear();
-            membersDao.queryForAll().forEach(member -> playerCities.put(member.getPlayer(), member.getCity()));
+            membersDao.queryForAll().forEach(member -> playerCities.put(member.getPlayer(), getCity(member.getCity())));
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         try {
             claimedChunks.clear();
-            claimsDao.queryForAll().forEach(claim -> claimedChunks.put(claim.getBlockVector(), claim.getCity()));
+            claimsDao.queryForAll()
+                    .forEach(claim -> claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity())));
         } catch (SQLException e) {
             e.printStackTrace();
         }

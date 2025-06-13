@@ -71,7 +71,7 @@ public class OMCPlugin extends JavaPlugin {
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MayorManager();
+        new MayorManager(); // laisser apres CityManager
         new BankManager();
         new ScoreboardManager();
         new HomesManager();

@@ -5,8 +5,6 @@ import java.util.UUID;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import lombok.Getter;
 
 @DatabaseTable(tableName = "city_members")
@@ -15,6 +13,7 @@ public class DBCityMember {
     @Getter
     private UUID player;
     @DatabaseField(canBeNull = false)
+    @Getter
     private String city;
 
     DBCityMember() {
@@ -24,9 +23,5 @@ public class DBCityMember {
     public DBCityMember(UUID player, String city) {
         this.player = player;
         this.city = city;
-    }
-
-    public City getCity() {
-        return CityManager.getCity(city);
     }
 }

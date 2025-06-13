@@ -1,7 +1,5 @@
 package fr.openmc.core.features.city.models;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.utils.ColorUtils;
 import lombok.Getter;
@@ -15,6 +13,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "mayors")
 public class Mayor {
+    @Getter
     @DatabaseField(id = true)
     private String city;
     @DatabaseField
@@ -56,10 +55,6 @@ public class Mayor {
         this.idPerk2 = idPerk2;
         this.idPerk3 = idPerk3;
         setElectionType(electionType);
-    }
-
-    public City getCity() {
-        return CityManager.getCity(city);
     }
 
     public NamedTextColor getMayorColor() {

@@ -9,12 +9,10 @@ import org.bukkit.Location;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-
 @DatabaseTable(tableName = "laws")
 public class CityLaw {
     @DatabaseField(id = true)
+    @Getter
     private String city;
     @DatabaseField(canBeNull = false)
     @Getter
@@ -41,10 +39,6 @@ public class CityLaw {
         this.city = city;
         this.pvp = pvp;
         setWarp(warp);
-    }
-
-    public City getCity() {
-        return CityManager.getCity(city);
     }
 
     public Location getWarp() {
