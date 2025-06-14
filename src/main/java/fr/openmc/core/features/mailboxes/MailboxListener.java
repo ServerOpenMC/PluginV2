@@ -6,15 +6,14 @@ import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayersList;
-import fr.openmc.core.features.mailboxes.menu.letter.Letter;
+import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
-import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -98,43 +97,7 @@ public class MailboxListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            Player player = event.getPlayer();
-            try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT COUNT(*) AS affected_rows, sender_id, items_count, id FROM mailbox_items WHERE receiver_id = ? AND refused = false;")) {
-                statement.setString(1, player.getUniqueId().toString());
-                try (ResultSet result = statement.executeQuery()) {
-                    if (result.next()) {
-                        Component message = null;
-                        int affectedRows = result.getInt("affected_rows");
-                        if (affectedRows > 1) {
-                                message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
-                                        .append(Component.text(affectedRows, NamedTextColor.GREEN))
-                                        .append(Component.text(" lettres.", NamedTextColor.DARK_GREEN))
-                                        .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
-                                        .clickEvent(ClickEvent.runCommand("/mailbox"))
-                                        .hoverEvent(getHoverEvent("Ouvrir ma boîte aux lettres"))
-                                        .append(Component.text(" pour ouvrir les lettres", NamedTextColor.GOLD));
-                        } else if (affectedRows == 1) {
-                            int itemsCount = result.getInt("items_count");
-                            int letterId = result.getInt("id");
-                            UUID senderUUID = UUID.fromString(result.getString("sender_id"));
-                            OfflinePlayer sender = CacheOfflinePlayer.getOfflinePlayer(senderUUID);
-                            String senderName = sender.getName();
-                            message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
-                                    .append(Component.text(itemsCount, NamedTextColor.GREEN))
-                                    .append(Component.text(" " + getItemCount(itemsCount) + " de la part de ", NamedTextColor.DARK_GREEN))
-                                    .append(Component.text(senderName == null ? "Unknown" : senderName, NamedTextColor.GREEN))
-                                    .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
-                                    .clickEvent(getRunCommand("open " + letterId))
-                                    .hoverEvent(getHoverEvent("Ouvrir la lettre #" + letterId))
-                                    .append(Component.text(" pour ouvrir la lettre", NamedTextColor.GOLD));
-                        }
-                        if (message != null) sendSuccessMessage(player, message);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                sendFailureMessage(event.getPlayer(), "Une erreur est survenue.");
-            }
+            MailboxManager.sendMailNotification(event.getPlayer());
         });
     }
 
@@ -214,7 +177,7 @@ public class MailboxListener implements Listener {
                 if (letterHead == null) return;
                 runTask(() -> letterHead.openLetter(player));
             }
-        } else if (holder instanceof Letter letter) {
+        } else if (holder instanceof LetterMenu letter) {
             if (acceptBtn(item)) {
                 runTask(letter::accept);
             } else if (refuseBtn(item)) {

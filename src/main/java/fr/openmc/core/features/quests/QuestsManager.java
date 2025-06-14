@@ -3,7 +3,6 @@ package fr.openmc.core.features.quests;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
@@ -19,10 +18,7 @@ import java.util.UUID;
  * and saving quest progress for players.
  */
 public class QuestsManager {
-    final Map<String, Quest> quests = new HashMap<>();
-    final OMCPlugin plugin = OMCPlugin.getInstance();
-    @Getter static QuestsManager instance;
-    QuestProgressSaveManager progressSaveManager;
+    static final Map<String, Quest> quests = new HashMap<>();
 
     /**
      * Constructor for QuestsManager.
@@ -30,10 +26,8 @@ public class QuestsManager {
      * loads default quests, and loads all quest progress.
      */
     public QuestsManager() {
-        instance = this;
-        this.progressSaveManager = new QuestProgressSaveManager(this.plugin, this);
-        this.loadDefaultQuests();
-        this.progressSaveManager.loadAllQuestProgress();
+        loadDefaultQuests();
+        QuestProgressSaveManager.loadAllQuestProgress();
     }
 
     /**
@@ -42,14 +36,14 @@ public class QuestsManager {
      *
      * @param quest the quest to register
      */
-    public void registerQuest(Quest quest) {
-        if (!this.quests.containsKey(quest.getName())) {
-            this.quests.put(quest.getName(), quest);
+    public static void registerQuest(Quest quest) {
+        if (!quests.containsKey(quest.getName())) {
+            quests.put(quest.getName(), quest);
             if (quest instanceof Listener questL) {
-                Bukkit.getPluginManager().registerEvents(questL, this.plugin);
+                Bukkit.getPluginManager().registerEvents(questL, OMCPlugin.getInstance());
             }
         } else {
-            this.plugin.getLogger().warning("Quest " + quest.getName() + " is already registered.");
+            OMCPlugin.getInstance().getLogger().warning("Quest " + quest.getName() + " is already registered.");
         }
     }
 
@@ -58,9 +52,9 @@ public class QuestsManager {
      *
      * @param quests the quests to register
      */
-    public void registerQuests(Quest... quests) {
+    public static void registerQuests(Quest... quests) {
         for (Quest quest : quests) {
-            this.registerQuest(quest);
+            registerQuest(quest);
         }
     }
 
@@ -68,8 +62,8 @@ public class QuestsManager {
      * Load default quests.
      * This method is called in the constructor of QuestsManager.
      */
-    public void loadDefaultQuests() {
-        this.registerQuests(
+    public static void loadDefaultQuests() {
+        registerQuests(
                 new BreakStoneQuest(),
                 new WalkQuests(),
                 new CraftDiamondArmorQuest(),
@@ -99,8 +93,8 @@ public class QuestsManager {
      *
      * @return the quest if found, null otherwise
      */
-    public List<Quest> getAllQuests() {
-        return this.quests.values().stream().toList();
+    public static List<Quest> getAllQuests() {
+        return quests.values().stream().toList();
     }
 
     /**
@@ -108,8 +102,8 @@ public class QuestsManager {
      * <p>
      * This method is called when the server is shutting down.
      */
-    public void saveQuests() {
-        this.progressSaveManager.saveAllQuestProgress();
+    public static void saveQuests() {
+        QuestProgressSaveManager.saveAllQuestProgress();
     }
 
     /**
@@ -119,7 +113,7 @@ public class QuestsManager {
      *
      * @param playerUUID the UUID of the player
      */
-    public void saveQuests(UUID playerUUID) {
-        this.progressSaveManager.savePlayerQuestProgress(playerUUID);
+    public static void saveQuests(UUID playerUUID) {
+        QuestProgressSaveManager.savePlayerQuestProgress(playerUUID);
     }
 }

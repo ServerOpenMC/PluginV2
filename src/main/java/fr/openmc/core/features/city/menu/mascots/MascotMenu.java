@@ -10,7 +10,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.Mascot;
+import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mascots.MascotsLevels;
 import fr.openmc.core.features.city.menu.CityMenu;
@@ -180,10 +180,8 @@ public class MascotMenu extends Menu {
                                 if (mob==null) return false;
 
                                 Chunk chunk = mascotMove.getChunk();
-                                int chunkX = chunk.getX();
-                                int chunkZ = chunk.getZ();
 
-                                if (!city.hasChunk(chunkX, chunkZ)) {
+                                if (!city.hasChunk(chunk)) {
                                     MessagesManager.sendMessage(player, Component.text("§cImpossible de déplacer la mascotte ici car ce chunk ne vous appartient pas ou est adjacent à une autre ville"), Prefix.CITY, MessageType.INFO, false);
                                     return false;
                                 }

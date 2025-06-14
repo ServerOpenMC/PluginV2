@@ -64,7 +64,7 @@ public class CompanyBankTransactionsMenu extends PaginatedMenu {
                 if (transaction.place() != null && !transaction.place().isEmpty()) {
                     lore.add("§7■ Lieu: §f" + transaction.place());
                 }
-                lore.add("§7■ Montant: " + EconomyManager.getInstance().getFormattedNumber(transaction.value()));
+                lore.add("§7■ Montant: " + EconomyManager.getFormattedNumber(transaction.value()));
                 itemMeta.setLore(lore);
             }));
         }

@@ -5,22 +5,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 
 public class UpdateManager {
     @Getter
-    static UpdateManager instance;
-    @Getter
-    Component message;
+    static Component message;
 
     public UpdateManager() {
-        instance = this;
-
         String version = OMCPlugin.getInstance().getDescription().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 
@@ -40,11 +33,11 @@ public class UpdateManager {
         }.runTaskTimer(OMCPlugin.getInstance(), 0, period);
     }
 
-    public void sendUpdateMessage(Player player) {
+    public static void sendUpdateMessage(Player player) {
         player.sendMessage(message);
     }
 
-    public void sendUpdateBroadcast() {
+    public static void sendUpdateBroadcast() {
         Bukkit.broadcast(message);
     }
 }

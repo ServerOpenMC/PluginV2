@@ -2,8 +2,9 @@ package fr.openmc.core.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import fr.openmc.core.OMCPlugin;
 import net.kyori.adventure.text.Component;
 
 import java.io.File;
@@ -15,12 +16,12 @@ public class MotdUtils {
     private final YamlConfiguration motdConfig;
     private static Component motd;
 
-    public MotdUtils(JavaPlugin plugin) {
-        File motdFile = new File(plugin.getDataFolder() + "/data", "motd.yml");
+    public MotdUtils() {
+        File motdFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "motd.yml");
 
         if(!motdFile.exists()) {
             motdFile.getParentFile().mkdirs();
-            plugin.saveResource("data/motd.yml", false);
+            OMCPlugin.getInstance().saveResource("data/motd.yml", false);
         }
 
         motdConfig = YamlConfiguration.loadConfiguration(motdFile);
@@ -40,6 +41,6 @@ public class MotdUtils {
                 motd=Component.text(line1 + "\n" + line2);
                 Bukkit.getServer().motd(motd);
             }
-        }.runTaskTimer(plugin, 0L, 12000L); // 12000 ticks = 10 minutes
+        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 12000L); // 12000 ticks = 10 minutes
     }
 }
