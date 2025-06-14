@@ -9,6 +9,8 @@ import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -48,7 +50,7 @@ public class ShopCatalogueMenu extends PaginatedMenu {
 
         for (ShopItem shopItem : shop.getItems()){
             items.add(new ItemBuilder(this, shopItem.getItem().getType(), itemMeta -> {
-
+                itemMeta.displayName(ShopItem.getItemName(shopItem.getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
             }).setOnClick(inventoryClickEvent -> {
                 new ShopMenu(getOwner(), shop, getIndex(shopItem)).open();
             }));
