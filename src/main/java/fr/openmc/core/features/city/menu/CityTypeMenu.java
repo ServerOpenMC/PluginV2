@@ -15,10 +15,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -26,10 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -129,6 +122,11 @@ public class CityTypeMenu extends Menu {
 
                     World world = Bukkit.getWorld("world");
                     World player_world = player.getWorld();
+                    
+                    if (player_world.getDifficulty() == Difficulty.PEACEFUL) {
+                        MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre en mode peaceful"), Prefix.CITY, MessageType.INFO, false);
+                        return false;
+                    }
 
                     if (player_world!=world){
                         MessagesManager.sendMessage(player, Component.text("§cImpossible de poser le coffre dans ce monde"), Prefix.CITY, MessageType.INFO, false);
@@ -159,7 +157,7 @@ public class CityTypeMenu extends Menu {
                     City city = CityManager.getPlayerCity(player.getUniqueId());
 
                     if (city==null){
-                        MessagesManager.sendMessage(player, Component.text("§cErreur : la ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, Component.text("§cErreur : la ville n'a pas été reconnue"), Prefix.CITY, MessageType.ERROR, false);
                         return true;
                     }
 

@@ -133,22 +133,28 @@ public class CityMenu extends Menu {
 
             if (mascot!=null){
                 mob = MascotUtils.loadMascot(mascot);
-
-                if (!mascot.isAlive()) {
-                    loreMascots = List.of(
-                            Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
-                            Component.text("§7Status : §cEn Attente de Soins"),
-                            Component.text("§7Niveau : §c" + mascot.getLevel()),
-                            Component.text(""),
-                            Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
-                    );
+                
+                if (mob != null) {
+                    if (! mascot.isAlive()) {
+                        loreMascots = List.of(
+                                Component.text("§7Vie : §c" + mob.getHealth() + "§4/§c" + mob.getMaxHealth()),
+                                Component.text("§7Status : §cEn Attente de Soins"),
+                                Component.text("§7Niveau : §c" + mascot.getLevel()),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                        );
+                    } else {
+                        loreMascots = List.of(
+                                Component.text("§7Vie : §c" + mob.getHealth() + "§4/§c" + mob.getMaxHealth()),
+                                Component.text("§7Status : §aEn Vie"),
+                                Component.text("§7Niveau : §c" + mascot.getLevel()),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                        );
+                    }
                 } else {
                     loreMascots = List.of(
-                            Component.text("§7Vie : §c" + mob.getHealth() +  "§4/§c" + mob.getMaxHealth()),
-                            Component.text("§7Status : §aEn Vie"),
-                            Component.text("§7Niveau : §c" + mascot.getLevel()),
-                            Component.text(""),
-                            Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                            Component.text("§cMascotte Inexistante")
                     );
                 }
             } else {

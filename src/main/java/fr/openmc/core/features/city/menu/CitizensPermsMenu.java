@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class CitizensPermsMenu {
     public static void openBookFor(Player sender, UUID player) {
-        City hisCity = CityManager.getPlayerCity(sender.getUniqueId());
+        City hisCity = CityManager.getPlayerCity(player);
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (hisCity == null) {

@@ -24,6 +24,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -31,14 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.city.mayor.managers.MayorManager.*;
 
@@ -49,6 +44,7 @@ public class City {
     private Double balance = Double.valueOf(0); // set default value cause if its null, error in updateBalance
     private Set<BlockVector2> chunks = new HashSet<>(); // Liste des chunks claims par la ville
     private HashMap<UUID, Set<CPermission>> permsCache = new HashMap<>();
+    private List<CityRank> cityRanks = new ArrayList<>(); // Liste des grades de la ville
     private MayorManager mayorManager;
     private CityType cachedType;
     private Integer cachedPowerPoints;
@@ -98,8 +94,10 @@ public class City {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        this.mayorManager = MayorManager.getInstance();
+        
+        this.mayorManager = getInstance();
+        
+        loadRanks();
     }
 
     // ==================== Global Methods ====================
@@ -237,7 +235,8 @@ public class City {
                         "DELETE FROM city_power WHERE city_uuid=?",
                         "DELETE FROM " + TABLE_MAYOR + " WHERE city_uuid = ?",
                         "DELETE FROM " + TABLE_ELECTION + " WHERE city_uuid = ?",
-                        "DELETE FROM " + TABLE_VOTE + " WHERE city_uuid = ?"
+                        "DELETE FROM " + TABLE_VOTE + " WHERE city_uuid = ?",
+                        "DELETE FROM city_ranks WHERE city_uuid = ?",
                 };
 
                 for (String sql : queries) {
@@ -620,7 +619,7 @@ public class City {
      * @return The mayor of the city, or null if not found.
      */
     public Mayor getMayor() {
-        MayorManager mayorManager = MayorManager.getInstance();
+        MayorManager mayorManager = getInstance();
 
         return mayorManager.cityMayor.get(CityManager.getCity(cityUUID));
     }
@@ -655,7 +654,7 @@ public class City {
      * @return The law of the city, or null if not found.
      */
     public CityLaw getLaw() {
-        MayorManager mayorManager = MayorManager.getInstance();
+        MayorManager mayorManager = getInstance();
 
         return mayorManager.cityLaws.get(CityManager.getCity(cityUUID));
     }
@@ -769,8 +768,8 @@ public class City {
      */
     public double calculateCityInterest() {
         double interest = .01; // base interest is 1%
-
-        if (MayorManager.getInstance().phaseMayor == 2) {
+        
+        if (getInstance().phaseMayor == 2) {
             if (PerkManager.hasPerk(getMayor(), Perks.BUISNESS_MAN.getId())) {
                 interest = .03; // interest is 3% when perk Buisness Man actived
             }
@@ -943,5 +942,116 @@ public class City {
             }
         }
         return null;
+    }
+    
+    public List<CityRank> getRanks() {
+        return cityRanks;
+    }
+    
+    public boolean isRanksFull() {
+        return cityRanks.size() >= 18;
+    }
+    
+    public CityRank getRankByName(String rankName) {
+        for (CityRank rank : cityRanks) {
+            if (rank.getName().equalsIgnoreCase(rankName)) {
+                return rank;
+            }
+        }
+        return null;
+    }
+    
+    public boolean isRankExists(CityRank rank) {
+        return cityRanks.contains(rank);
+    }
+    
+    public boolean isRankExists(String rankName) {
+        for (CityRank rank : cityRanks) {
+            if (rank.getName().equalsIgnoreCase(rankName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public void createRank(CityRank rank) {
+        if (cityRanks.size() >= 18) {
+            throw new IllegalStateException("Cannot add more than 18 ranks to a city.");
+        }
+        cityRanks.add(rank);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_ranks (city_uuid, name, permissions, priority, icon) VALUES (?, ?, ?, ?, ?)")) {
+                statement.setString(1, cityUUID);
+                statement.setString(2, rank.getName());
+                statement.setString(3, rank.getPermissions().stream().map(Enum::name).collect(Collectors.joining(",")));
+                statement.setInt(4, rank.getPriority());
+                statement.setString(5, rank.getIcon() != null ? rank.getIcon().name() : Material.GOLD_BLOCK.name());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    public void deleteRank(CityRank rank) {
+        if (! cityRanks.contains(rank)) {
+            throw new IllegalArgumentException("Rank not found in the city's ranks.");
+        }
+        if (rank.getPriority() == 0) {
+            throw new IllegalArgumentException("Cannot delete the default rank (priority 0).");
+        }
+        cityRanks.remove(rank);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_ranks WHERE city_uuid = ? AND name = ?")) {
+                statement.setString(1, cityUUID);
+                statement.setString(2, rank.getName());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    public void loadRanks() {
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT name, permissions, priority, icon FROM city_ranks WHERE city_uuid = ?")) {
+            statement.setString(1, cityUUID);
+            ResultSet rs = statement.executeQuery();
+            
+            while (rs.next()) {
+                String name = rs.getString("name");
+                Set<CPermission> permissions = Arrays.stream(rs.getString("permissions").split(","))
+                        .map(CPermission::valueOf)
+                        .collect(Collectors.toSet());
+                byte priority = rs.getByte("priority");
+                Material icon = rs.getString("icon") != null ? Material.valueOf(rs.getString("icon")) : Material.GOLD_BLOCK;
+                
+                CityRank rank = new CityRank(name, priority, permissions, icon);
+                cityRanks.add(rank);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void updateRank(CityRank oldRank, CityRank newRank) {
+        if (cityRanks.contains(oldRank)) {
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_ranks SET name = ?, permissions = ?, priority = ?, icon = ? WHERE city_uuid = ? AND name = ?")) {
+                    statement.setString(1, newRank.getName());
+                    statement.setString(2, newRank.getPermissions().stream().map(Enum::name).collect(Collectors.joining(",")));
+                    statement.setInt(3, newRank.getPriority());
+                    statement.setString(4, newRank.getIcon() != null ? newRank.getIcon().name() : Material.GOLD_BLOCK.name());
+                    statement.setString(5, cityUUID);
+                    statement.setString(6, oldRank.getName());
+                    statement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+            cityRanks.remove(oldRank);
+            cityRanks.add(newRank);
+        } else {
+            throw new IllegalArgumentException("Old rank not found in the city's ranks.");
+        }
     }
 }
