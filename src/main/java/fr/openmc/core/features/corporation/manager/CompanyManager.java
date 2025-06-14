@@ -20,6 +20,7 @@ import fr.openmc.core.features.corporation.models.DBShop;
 import fr.openmc.core.features.corporation.models.Merchant;
 import fr.openmc.core.features.corporation.models.ShopSupplier;
 import fr.openmc.core.features.corporation.models.DBShopItem;
+import fr.openmc.core.features.corporation.models.DBShopSale;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.corporation.shops.Supply;
@@ -87,6 +88,7 @@ public class CompanyManager {
     private static Dao<CompanyPermission, UUID> permissionsDao;
     private static Dao<DBShop, UUID> shopsDao;
     private static Dao<DBShopItem, UUID> itemsDao;
+    private static Dao<DBShopSale, UUID> salesDao;
     private static Dao<DBCompany, UUID> companiesDao;
     private static Dao<CompanyMerchant, UUID> companyMerchantsDao;
     private static Dao<Merchant, UUID> merchantsDao;
@@ -98,6 +100,9 @@ public class CompanyManager {
 
         TableUtils.createTableIfNotExists(connectionSource, DBShop.class);
         shopsDao = DaoManager.createDao(connectionSource, DBShop.class);
+
+        TableUtils.createTableIfNotExists(connectionSource, DBShopSale.class);
+        salesDao = DaoManager.createDao(connectionSource, DBShopSale.class);
 
         TableUtils.createTableIfNotExists(connectionSource, DBShopItem.class);
         itemsDao = DaoManager.createDao(connectionSource, DBShopItem.class);
@@ -167,7 +172,19 @@ public class CompanyManager {
             e.printStackTrace();
         }
 
-        // TODO: get shop sales
+        try {
+            List<DBShopSale> dbShopSales = salesDao.queryForAll();
+            for (DBShopSale dbShopSale : dbShopSales) {
+                byte[] itemBytes = dbShopSale.getItems();
+
+                if (itemBytes == null)
+                    continue;
+
+                shopSales.computeIfAbsent(dbShopSale.getShop(), k -> new ArrayList<>()).add(dbShopSale.deserialize());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         try {
             List<DBShop> dbShops = shopsDao.queryForAll();
@@ -289,7 +306,7 @@ public class CompanyManager {
             ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
             TableUtils.clearTable(connectionSource, DBShop.class);
             TableUtils.clearTable(connectionSource, DBShopItem.class);
-            // TODO: clear shop sales
+            TableUtils.clearTable(connectionSource, DBShopSale.class);
             TableUtils.clearTable(connectionSource, ShopSupplier.class);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -298,7 +315,7 @@ public class CompanyManager {
         List<DBShop> dbShops = new ArrayList<>();
         List<DBShopItem> dbShopItems = new ArrayList<>();
         List<ShopSupplier> dbShopSuppliers = new ArrayList<>();
-        // TODO: shop sales
+        List<DBShopSale> dbShopSales = new ArrayList<>();
 
         for (Company company : companies) {
             for (Shop shop : company.getShops()) {
@@ -333,7 +350,13 @@ public class CompanyManager {
                     dbShopSuppliers.add(new ShopSupplier(uuid, shop.getUuid(), item_uuid, supplier_uuid, amount, time));
                 }
 
-                // TODO: shop sales
+                for (ShopItem shopItem : shop.getSales()) {
+                    byte[] item = shopItem.getItem().serializeAsBytes();
+                    double price = shopItem.getPricePerItem();
+                    int amount = shopItem.getAmount();
+
+                    dbShopSales.add(new DBShopSale(item, shop.getUuid(), price, amount, shopItem.getItemID()));
+                }
             }
         }
 
@@ -363,7 +386,7 @@ public class CompanyManager {
             shopsDao.create(dbShops);
             itemsDao.create(dbShopItems);
             suppliersDao.create(dbShopSuppliers);
-            // TODO: save shop sales
+            salesDao.create(dbShopSales);
         } catch (SQLException e) {
             e.printStackTrace();
         }
