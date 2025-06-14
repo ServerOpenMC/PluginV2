@@ -319,7 +319,7 @@ public class CompanyManager {
                     double price = shopItem.getPricePerItem();
                     int amount = shopItem.getAmount();
 
-                    dbShopItems.add(new DBShopItem(item, shop.getUuid(), price, amount));
+                    dbShopItems.add(new DBShopItem(item, shop.getUuid(), price, amount, shopItem.getItemID()));
                 }
 
                 for (Map.Entry<Long, Supply> entry : shop.getSuppliers().entrySet()) {
