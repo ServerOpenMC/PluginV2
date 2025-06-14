@@ -57,7 +57,7 @@ public class City {
     /**
      * Constructor used for City creation
      */
-    public City(String id, String name, UUID owner, CityType type, Chunk chunk) {
+    public City(String id, String name, Player owner, CityType type, Chunk chunk) {
         this.cityUUID = id;
         this.name = name;
         this.type = type;
@@ -75,9 +75,13 @@ public class City {
         this.chestContent = new HashMap<>();
 
         addChunk(chunk);
-        addPlayer(owner);
-        addPermission(owner, CPermission.OWNER);
+        addPlayer(owner.getUniqueId());
+        addPermission(owner.getUniqueId(), CPermission.OWNER);
         saveChestContent(1, null);
+
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new CityCreationEvent(this, owner));
+        });
     }
 
     /**
