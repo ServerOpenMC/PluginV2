@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -72,7 +73,7 @@ public class CompanyBaltopMenu extends Menu {
         content.put(10, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§61. §e" + companies.getFirst().getName());
             itemMeta.lore(List.of(
-                    Component.text("§7■ Chiffre d'affaire : §a" + companies.getFirst().getTurnover() + "€"),
+                    Component.text("§7■ Chiffre d'affaire : §a" + companies.getFirst().getTurnover() + EconomyManager.getEconomyIcon()),
                             Component.text("§7■ Marchants : §a" + companies.getFirst().getMerchants().size())
             ));
         }));
@@ -102,7 +103,7 @@ public class CompanyBaltopMenu extends Menu {
                 MerchantData merchantData = companies.getFirst().getMerchants().get(merchantUUID);
                 itemMeta.lore(List.of(
                         Component.text("§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items"),
-                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + "€")
+                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + EconomyManager.getEconomyIcon())
                 ));
             }));
         }
@@ -110,7 +111,7 @@ public class CompanyBaltopMenu extends Menu {
         content.put(19, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§62. §e" + companies.get(1).getName());
             itemMeta.lore(List.of(
-                    Component.text("§7■ Chiffre d'affaire : §a" + companies.get(1).getTurnover() + "€"),
+                    Component.text("§7■ Chiffre d'affaire : §a" + companies.get(1).getTurnover() + EconomyManager.getEconomyIcon()),
                     Component.text("§7■ Marchants : §a" + companies.get(1).getMerchants().size())
             ));
         }));
@@ -141,7 +142,7 @@ public class CompanyBaltopMenu extends Menu {
                 MerchantData merchantData = companies.get(1).getMerchants().get(merchantUUID);
                 itemMeta.lore(List.of(
                         Component.text("§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items"),
-                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + "€")
+                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + EconomyManager.getEconomyIcon())
                 ));
             }));
         }
@@ -149,7 +150,7 @@ public class CompanyBaltopMenu extends Menu {
         content.put(28, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§63. §e"+ companies.get(2).getName());
             itemMeta.lore(List.of(
-                    Component.text("§7■ Chiffre d'affaire : §a" + companies.get(2).getTurnover() + "€"),
+                    Component.text("§7■ Chiffre d'affaire : §a" + companies.get(2).getTurnover() + EconomyManager.getEconomyIcon()),
                     Component.text("§7■ Marchants : §a" + companies.get(2).getMerchants().size())
             ));
         }));
@@ -180,7 +181,7 @@ public class CompanyBaltopMenu extends Menu {
                 MerchantData merchantData = companies.get(2).getMerchants().get(merchantUUID);
                 itemMeta.lore(List.of(
                         Component.text("§7■ A déposé §a" + merchantData.getAllDepositedItemsAmount() + " items"),
-                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + "€")
+                        Component.text("§7■ A gagné §a" + merchantData.getMoneyWon() + EconomyManager.getEconomyIcon())
                 ));
             }));
         }

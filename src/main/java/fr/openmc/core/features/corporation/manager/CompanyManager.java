@@ -150,7 +150,9 @@ public class CompanyManager {
     public static List<Shop> loadAllShops() {
         OMCPlugin.getInstance().getLogger().info("Chargement des Shops...");
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
+        Map<UUID, List<ShopItem>> shopSales = new HashMap<>();
         List<Shop> allShop = new ArrayList<>();
+        Connection conn = DatabaseManager.getConnection();
 
         try {
             List<DBShopItem> dbShopItems = itemsDao.queryForAll();
@@ -165,6 +167,8 @@ public class CompanyManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+      
+        // TODO: get shop sales
 
         try {
             List<DBShop> dbShops = shopsDao.queryForAll();
@@ -188,11 +192,11 @@ public class CompanyManager {
                 } else {
                     Company company = getCompany(dbShop.getOwner());
                     if (dbShop.getCity() == null) {
-                        company.createShop(dbShop.getOwner(), barrel, cashRegister, dbShop.getId());
+                        company.createShop(barrel, cashRegister, dbShop.getId());
                     } else {
                         City city = CityManager.getCity(dbShop.getCity().toString());
                         if (city != null) {
-                            company.createShop(dbShop.getOwner(), barrel, cashRegister, dbShop.getId());
+                            company.createShop(barrel, cashRegister, dbShop.getId());
                         }
                     }
                     shop = company.getShop(dbShop.getId());
@@ -201,8 +205,17 @@ public class CompanyManager {
                     continue;
                 }
 
-                for (ShopItem shopItem : shopItems.get(dbShop.getId())) {
-                    shop.addItem(shopItem.getItem(), shopItem.getPricePerItem(), shopItem.getAmount());
+              
+                if (!shopItems.isEmpty()){
+                    for (ShopItem shopItem : shopItems.get(shopUuid)) {
+                        shop.addItem(shopItem);
+                    }
+                }
+
+                if (!shopSales.isEmpty()){
+                    for (ShopItem shopItem : shopSales.get(shopUuid)) {
+                        shop.addSales(shopItem);
+                    }
                 }
 
                 allShop.add(shop);
@@ -216,7 +229,7 @@ public class CompanyManager {
             for (ShopSupplier supplier : suppliers) {
                 for (Shop shop : allShop) {
                     if (shop.getUuid().equals(supplier.getShop())) {
-                        shop.getSuppliers().put(supplier.getTime(), new Supply(supplier.getPlayer(), supplier.getItem(),
+                        shop.addSupply(supplier.getTime(), new Supply(supplier.getPlayer(), supplier.getItem(),
                                 supplier.getAmount(), supplier.getId()));
                         break;
                     }
@@ -278,6 +291,7 @@ public class CompanyManager {
             ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
             TableUtils.clearTable(connectionSource, DBShop.class);
             TableUtils.clearTable(connectionSource, DBShopItem.class);
+            // TODO: clear shop sales
             TableUtils.clearTable(connectionSource, ShopSupplier.class);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -286,6 +300,7 @@ public class CompanyManager {
         List<DBShop> dbShops = new ArrayList<>();
         List<DBShopItem> dbShopItems = new ArrayList<>();
         List<ShopSupplier> dbShopSuppliers = new ArrayList<>();
+        // TODO: shop sales
 
         for (Company company : companies) {
             for (Shop shop : company.getShops()) {
@@ -347,6 +362,7 @@ public class CompanyManager {
             shopsDao.create(dbShops);
             itemsDao.create(dbShopItems);
             suppliersDao.create(dbShopSuppliers);
+            //TODO: save shop sales
         } catch (SQLException e) {
             e.printStackTrace();
         }

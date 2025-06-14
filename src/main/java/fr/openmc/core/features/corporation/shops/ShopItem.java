@@ -2,6 +2,9 @@ package fr.openmc.core.features.corporation.shops;
 
 import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -10,7 +13,7 @@ import java.util.UUID;
 @Getter
 public class ShopItem {
 
-    private final UUID itemID = UUID.randomUUID();
+    private final UUID itemID;
     private final ItemStack item;
     private final double pricePerItem;
     private double price;
@@ -22,6 +25,16 @@ public class ShopItem {
         this.item.setAmount(1);
         this.price = pricePerItem * amount;
         this.amount = 0;
+        this.itemID = UUID.randomUUID();
+    }
+
+    public ShopItem(ItemStack item, double pricePerItem, UUID itemID) {
+        this.item = item.clone();
+        this.pricePerItem = pricePerItem;
+        this.item.setAmount(1);
+        this.price = pricePerItem * amount;
+        this.amount = 0;
+        this.itemID = itemID;
     }
 
     /**
@@ -61,14 +74,14 @@ public class ShopItem {
      * @param itemStack the item
      * @return default name if the item has no custom name
      */
-    public static String getItemName(ItemStack itemStack) {
+    public static Component getItemName(ItemStack itemStack) {
         if (itemStack.hasItemMeta()) {
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta.hasDisplayName()) {
-                return itemMeta.getDisplayName();
+                return Component.text(itemMeta.getDisplayName());
             }
         }
         // If no custom name, return default name
-        return String.valueOf(ItemUtils.getDefaultItemName(itemStack));
+        return ItemUtils.getItemTranslation(itemStack).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD);
     }
 }

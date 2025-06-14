@@ -20,6 +20,8 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -51,8 +53,16 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {// sell_shop_menu
+            if (shop.getOwner().isCompany()){
+                Company company = shop.getOwner().getCompany();
+                if (company.getAllMembers().contains(getOwner().getUniqueId())){
+                    return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+                }
+            }
+            if (!shop.isOwner(getOwner().getUniqueId()))
+                return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_sell_shop_menu%");
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_sell_shop_menu%");
         } else {
             return shop.getName();
         }
@@ -193,11 +203,11 @@ public class ShopMenu extends Menu {
         if (getCurrentItem() != null)
 
             content.put(itemSlot, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
-                itemMeta.setDisplayName("§l§f" + ItemUtils.getItemTranslation(getCurrentItem().getItem()));
+                itemMeta.displayName(ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
                 List<String> lore = new ArrayList<>();
-                lore.add("§7■ Prix: §c" + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon());
-                lore.add("§7■ En stock: " + EconomyManager.getFormattedNumber(getCurrentItem().getAmount()));
-                lore.add("§7■ Cliquez pour en acheter §f" + amountToBuy);
+                lore.add("§7■ Prix: §c" + EconomyManager.getFormattedNumber(getCurrentItem().getPricePerItem() * amountToBuy));
+                lore.add("§7■ En stock: " + EconomyManager.getFormattedSimplifiedNumber(getCurrentItem().getAmount()));
+                lore.add("§7■ Cliquez pour en acheter §f" + EconomyManager.getFormattedSimplifiedNumber(amountToBuy));
                 itemMeta.setLore(lore);
             }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat")))));
 
@@ -291,7 +301,7 @@ public class ShopMenu extends Menu {
                 meta.addPage(
                         "3. Ouvrez une fois le shop pour renouveler son stock\n\n" +
                                 "Et voilà comment utiliser votre shops\n\n" +
-                                "§e▪ Pour plus d'info : /shop help§r"
+                                "§6▪ Pour plus d'info : /shop help§r"
                 );
 
                 book.setItemMeta(meta);
@@ -334,11 +344,11 @@ public class ShopMenu extends Menu {
             getOwner().closeInventory();
             return;
         }
-        if (buyState == MethodState.FAILURE) {
-            MessagesManager.sendMessage(getOwner(), Component.text("§cVous ne pouvez pas acheter vos propres items"), Prefix.SHOP, MessageType.INFO, false);
-            getOwner().closeInventory();
-            return;
-        }
+//        if (buyState == MethodState.FAILURE) {
+//            MessagesManager.sendMessage(getOwner(), Component.text("§cVous ne pouvez pas acheter vos propres items"), Prefix.SHOP, MessageType.INFO, false);
+//            getOwner().closeInventory();
+//            return;
+//        }
         if (buyState == MethodState.WARNING) {
             MessagesManager.sendMessage(getOwner(), Component.text("§cIl n'y a pas assez de stock pour acheter cet item"), Prefix.SHOP, MessageType.INFO, false);
             getOwner().closeInventory();
@@ -354,7 +364,7 @@ public class ShopMenu extends Menu {
             getOwner().closeInventory();
             return;
         }
-        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez bien acheté " + amountToBuy + " " + ShopItem.getItemName(getCurrentItem().getItem()) + " pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon()), Prefix.SHOP, MessageType.INFO, false);
+        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez bien acheté " + amountToBuy + " ").append( ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GREEN).decorate(TextDecoration.BOLD)).append(Component.text(" pour " + (getCurrentItem().getPricePerItem() * amountToBuy) + EconomyManager.getEconomyIcon())), Prefix.SHOP, MessageType.INFO, false);
         getOwner().closeInventory();
     }
 

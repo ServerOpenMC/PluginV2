@@ -276,6 +276,11 @@ public class CompanyCommand {
     @Subcommand("withdraw")
     @Description("Retirer de l'argent de l'entreprise")
     public void withdraw(Player player, @Named("amount") double amount) {
+        if (amount<=0){
+            MessagesManager.sendMessage(player, Component.text("§cVeuillez indiquer une valeur supérieure à zéro !"), Prefix.SHOP, MessageType.INFO, false);
+            return;
+        }
+
         if (!CompanyManager.isInCompany(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
@@ -288,12 +293,17 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent dans la banque d'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        MessagesManager.sendMessage(player, Component.text("§aVous avez retiré " + amount + "€ de l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez retiré " + amount + "" + EconomyManager.getEconomyIcon() + " de l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("deposit")
     @Description("Déposer de l'argent dans l'entreprise")
     public void deposit(Player player, @Named("amount") double amount) {
+        if (amount<=0){
+            MessagesManager.sendMessage(player, Component.text("§cVeuillez indiquer une valeur supérieure à zéro !"), Prefix.SHOP, MessageType.INFO, false);
+            return;
+        }
+
         if (!CompanyManager.isInCompany(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
@@ -307,7 +317,7 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent sur vous !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        MessagesManager.sendMessage(player, Component.text("§aVous avez déposé " + amount + "€ dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez déposé " + amount + "" + EconomyManager.getEconomyIcon() + " dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("owner")
@@ -339,6 +349,12 @@ public class CompanyCommand {
             MessagesManager.sendMessage(sender, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
+
+        if (CorpPermission.valueOf(perms).equals(CorpPermission.OWNER)){
+            MessagesManager.sendMessage(sender, Component.text("§cCette permission n'est pas donnable ! Utiliser plutôt : /company owner"), Prefix.ENTREPRISE, MessageType.INFO, false);
+            return;
+        }
+
         if (company != CompanyManager.getCompany(sender.getUniqueId())){
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
@@ -367,6 +383,12 @@ public class CompanyCommand {
             MessagesManager.sendMessage(sender, Component.text("§cVous n'êtes pas dans une entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
+
+        if (CorpPermission.valueOf(perms).equals(CorpPermission.OWNER)){
+            MessagesManager.sendMessage(sender, Component.text("§cCette permission n'est pas retirable ! Utiliser plutôt : /company owner"), Prefix.ENTREPRISE, MessageType.INFO, false);
+            return;
+        }
+
         if (company != CompanyManager.getCompany(sender.getUniqueId())){
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'est pas dans votre entreprise."), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;

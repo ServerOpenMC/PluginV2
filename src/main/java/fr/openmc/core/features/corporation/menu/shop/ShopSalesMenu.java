@@ -5,10 +5,13 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.api.ItemAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -47,9 +50,9 @@ public class ShopSalesMenu extends PaginatedMenu {
         List<ItemStack> items = new java.util.ArrayList<>();
         for (ShopItem sale : shop.getSales()) {
             items.add(new ItemBuilder(this, sale.getItem().getType(), itemMeta -> {
-                itemMeta.setDisplayName("§e" + ShopItem.getItemName(sale.getItem()));
+                itemMeta.displayName(ShopItem.getItemName(sale.getItem()).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
                 itemMeta.setLore(List.of(
-                        "§7■ Prix : §a" + sale.getPrice() + "€",
+                        "§7■ Prix : §a" + sale.getPrice() + EconomyManager.getEconomyIcon(),
                         "§7■ Quantité : §a" + sale.getAmount()
                 ));
             }));

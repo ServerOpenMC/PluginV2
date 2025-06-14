@@ -47,6 +47,7 @@ public class DatabaseManager {
             String password = config.getString("database.password");
             connectionSource = new JdbcConnectionSource(databaseUrl, username, password);
 
+            MayorManager.init_db(connectionSource);
             BankManager.init_db(connectionSource);
             TransactionsManager.init_db(connectionSource);
             AnalyticsManager.init_db(connectionSource);
@@ -59,7 +60,6 @@ public class DatabaseManager {
             CompanyManager.init_db(connectionSource);
             CityManager.init_db(connectionSource);
             MascotsManager.init_db(connectionSource);
-            MayorManager.init_db(connectionSource);
         } catch (SQLException e) {
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
             throw new RuntimeException(e);
