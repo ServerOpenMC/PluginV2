@@ -327,7 +327,7 @@ public class Shop {
                         double supplierCut = (suppliesAmount * suppliersCut) / amountToBuy;
                         suppliersCut -= supplierCut;
                         amountToBuy -= suppliesAmount;
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        EconomyManager.addBalance(supply.getSupplier(), supplierCut);
 
                         if (forSupplies.containsKey(supply.getSupplier())){
                             double supCut = forSupplies.get(supply.getSupplier());
@@ -359,7 +359,7 @@ public class Shop {
         }
 
         else {
-            EconomyManager.addBalance(owner.getPlayer(), item.getPrice(amount));
+            EconomyManager.addBalance(owner.getPlayer(), item.getPrice(amountToBuy));
             Player player = Bukkit.getPlayer(owner.getPlayer());
             if (player!=null){
                 MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amountToBuy + " " + item.getItem().getType() + " pour " + item.getPrice(amountToBuy) + EconomyManager.getEconomyIcon() + ", l'argent vous a été transféré !"), Prefix.SHOP, MessageType.SUCCESS, false);

@@ -278,7 +278,7 @@ public class Company {
 
     public void createShop(Block barrel, Block cash, UUID shopUUID) {
         Shop newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
-        shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
+        ShopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
         shopCounter++;
         shops.add(newShop);
         CompanyManager.shops.add(newShop);

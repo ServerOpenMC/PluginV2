@@ -152,7 +152,6 @@ public class CompanyManager {
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
         Map<UUID, List<ShopItem>> shopSales = new HashMap<>();
         List<Shop> allShop = new ArrayList<>();
-        Connection conn = DatabaseManager.getConnection();
 
         try {
             List<DBShopItem> dbShopItems = itemsDao.queryForAll();
@@ -167,7 +166,7 @@ public class CompanyManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-      
+
         // TODO: get shop sales
 
         try {
@@ -205,15 +204,14 @@ public class CompanyManager {
                     continue;
                 }
 
-              
-                if (!shopItems.isEmpty()){
-                    for (ShopItem shopItem : shopItems.get(shopUuid)) {
+                if (!shopItems.isEmpty()) {
+                    for (ShopItem shopItem : shopItems.get(shop.getUuid())) {
                         shop.addItem(shopItem);
                     }
                 }
 
-                if (!shopSales.isEmpty()){
-                    for (ShopItem shopItem : shopSales.get(shopUuid)) {
+                if (!shopSales.isEmpty()) {
+                    for (ShopItem shopItem : shopSales.get(shop.getUuid())) {
                         shop.addSales(shopItem);
                     }
                 }
@@ -338,8 +336,9 @@ public class CompanyManager {
         }
 
         Map<UUID, Shop> playerShops = PlayerShopManager.getPlayerShops();
-        if (playerShops == null) return;
-      
+        if (playerShops == null)
+            return;
+
         for (Map.Entry<UUID, Shop> entry : playerShops.entrySet()) {
             Shop shop = entry.getValue();
             UUID owner = entry.getKey();
@@ -362,7 +361,7 @@ public class CompanyManager {
             shopsDao.create(dbShops);
             itemsDao.create(dbShopItems);
             suppliersDao.create(dbShopSuppliers);
-            //TODO: save shop sales
+            // TODO: save shop sales
         } catch (SQLException e) {
             e.printStackTrace();
         }
