@@ -6,8 +6,7 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
-import fr.openmc.core.features.homes.icons.HomeIcon;
-import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.icons.IconCategory;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.ItemUtils;
@@ -21,13 +20,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,51 +33,20 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HomeChangeIconMenu extends PaginatedMenu {
 
     private final Home home;
-    private final Map<IconCategory, List<ItemStack>> CACHED_ITEMS = new ConcurrentHashMap<>();
-    private final List<ItemStack> CACHED_SEARCH_ITEMS = new ArrayList<>();
     private IconCategory currentCategory = IconCategory.ALL;
-    private String lastSearchQuery = "";
-    private String searchQuery;
+    private String searchQuery = "";
+
+    private static final Map<UUID, Long> CATEGORY_COOLDOWNS = new ConcurrentHashMap<>();
+    private static final long CATEGORY_COOLDOWN_TIME = 500; // 2 seconds cooldown
 
     public HomeChangeIconMenu(Player owner, Home home, String searchQuery) {
         super(owner);
         this.home = home;
-        this.searchQuery = searchQuery;
-
-        preloadVanillaItems();
+        this.searchQuery = searchQuery != null ? searchQuery : "";
     }
 
     public HomeChangeIconMenu(Player owner, Home home) {
         this(owner, home, "");
-    }
-
-    private void preloadVanillaItems() {
-        if (!CACHED_ITEMS.containsKey(IconCategory.VANILLA)) {
-            List<ItemStack> vanillaItems = createItemsForCategory(IconCategory.VANILLA);
-            CACHED_ITEMS.put(IconCategory.VANILLA, vanillaItems);
-        }
-    }
-
-    private List<ItemStack> createItemsForCategory(IconCategory category) {
-        List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
-
-        List<HomeIcon> iconsToShow = HomeIconRegistry.getIconsByCategory(category);
-
-        for (HomeIcon homeIcon : iconsToShow) {
-            items.add(new ItemBuilder(this, createItems(homeIcon))
-                .setOnClick(event -> {
-                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                        home.setIcon(homeIcon);
-                        MessagesManager.sendMessage(player,
-                                Component.text("§aL'icône de votre home §2" + home.getName() + " §aa été changée avec succès !"),
-                                Prefix.HOME, MessageType.SUCCESS, true);
-                    });
-                    player.closeInventory();
-                }));
-        }
-
-        return items;
     }
 
     @Override
@@ -104,35 +69,8 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         Player player = getOwner();
 
         try {
-            if (!searchQuery.isEmpty()) {
-                if (!searchQuery.equals(lastSearchQuery)) {
-                    List<HomeIcon> iconsToShow = HomeIconRegistry.searchIcons(searchQuery);
-                    CACHED_SEARCH_ITEMS.clear();
-
-                    for (HomeIcon homeIcon : iconsToShow) {
-                        CACHED_SEARCH_ITEMS.add(
-                                new ItemBuilder(this, createItems(homeIcon))
-                                    .setOnClick(event -> {
-                                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                            home.setIcon(homeIcon);
-                                            MessagesManager.sendMessage(player,
-                                                    Component.text("§aL'icône de votre home §2" + home.getName() + " §aa été changée avec succès !"),
-                                                    Prefix.HOME, MessageType.SUCCESS, true);
-                                        });
-                                        player.closeInventory();
-                                }));
-                    }
-                    lastSearchQuery = searchQuery;
-                }
-
-                return new ArrayList<>(CACHED_SEARCH_ITEMS);
-            }
-
-            if (!CACHED_ITEMS.containsKey(currentCategory)) {
-                CACHED_ITEMS.put(currentCategory, createItemsForCategory(currentCategory));
-            }
-
-            return new ArrayList<>(CACHED_ITEMS.get(currentCategory));
+            if (!searchQuery.isEmpty()) return HomeIconCacheManager.searchIcons(searchQuery, this, home, player);
+            else return HomeIconCacheManager.getItemsForCategory(currentCategory, this, home, player);
         } catch (Exception e) {
             MessagesManager.sendMessage(player,
                     Component.text("§cUne erreur est survenue, veuillez contacter le Staff"),
@@ -154,25 +92,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         map.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:previous_page")).getBest(),
                 itemMeta -> itemMeta.displayName(Component.text("§7Retour"))).setBackButton());
 
-        ItemStack customFilter = new ItemStack(Material.EMERALD);
-        ItemMeta customMeta = customFilter.getItemMeta();
-        customMeta.displayName(Component.text("§aIcônes Custom"));
-        List<Component> customLore = new ArrayList<>();
-        customLore.add(Component.text("§7Affiche uniquement les icônes custom"));
-        if (currentCategory == IconCategory.CUSTOM) {
-            customLore.add(Component.text("§a✓ Actif"));
-            customMeta.addEnchant(Enchantment.SHARPNESS, 1, true);
-            customMeta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
-        } else {
-            customLore.add(Component.text("§7Cliquez pour activer"));
-        }
-        customMeta.lore(customLore);
-        customFilter.setItemMeta(customMeta);
-
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
         map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
+        // Search button
         map.put(51, new ItemBuilder(this, Material.OAK_SIGN, meta -> {
             meta.displayName(Component.text("§eRecherche"));
             List<Component> lore = new ArrayList<>();
@@ -217,11 +141,13 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             }
         }));
 
-        for (int slot : List.of(46, 47, 52, 53)) {
+        // Invisible items
+        for (int slot : List.of(46, 47, 52)) {
             map.put(slot, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_invisible")).getBest(),
                     itemMeta -> itemMeta.displayName(Component.empty())));
         }
 
+        // Category selector
         map.put(53, new ItemBuilder(this, Material.COMPASS, meta -> {
             meta.displayName(Component.text("§aCatégorie"));
 
@@ -240,34 +166,26 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
             meta.lore(lore);
         }).setOnClick(event -> {
-            getOwner().playSound(getOwner().getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+            // Cooldown to prevent spamming category changes
+            long now = System.currentTimeMillis();
+            long last = CATEGORY_COOLDOWNS.getOrDefault(getOwner().getUniqueId(), 0L);
+            if (now - last < CATEGORY_COOLDOWN_TIME) {
+                MessagesManager.sendMessage(getOwner(),
+                        Component.text("§cMerci de ne pas spammer le changement de catégorie."),
+                        Prefix.OPENMC, MessageType.ERROR, true);
+                return;
+            }
+            CATEGORY_COOLDOWNS.put(getOwner().getUniqueId(), now);
 
+            getOwner().playSound(getOwner().getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
+            IconCategory[] CATEGORIES = IconCategory.values();
             if (event.getClick().isLeftClick()) {
-                switch(currentCategory) {
-                    case ALL:
-                        currentCategory = IconCategory.CUSTOM;
-                        break;
-                    case CUSTOM:
-                        currentCategory = IconCategory.VANILLA;
-                        break;
-                    case VANILLA:
-                        currentCategory = IconCategory.ALL;
-                        break;
-                }
+                currentCategory = CATEGORIES[(currentCategory.ordinal() + 1) % CATEGORIES.length];
             } else if (event.getClick().isRightClick()) {
-                switch(currentCategory) {
-                    case ALL:
-                        currentCategory = IconCategory.VANILLA;
-                        break;
-                    case VANILLA:
-                        currentCategory = IconCategory.CUSTOM;
-                        break;
-                    case CUSTOM:
-                        currentCategory = IconCategory.ALL;
-                        break;
-                }
+                currentCategory = CATEGORIES[(currentCategory.ordinal() - 1 + CATEGORIES.length) % CATEGORIES.length];
             }
 
+            searchQuery = "";
             refresh();
         }));
 
@@ -287,29 +205,5 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     private void refresh() {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), this::open);
-    }
-
-    private ItemStack createItems(HomeIcon homeIcon) {
-        ItemStack iconItem = homeIcon.getItemStack().clone();
-        ItemMeta meta = iconItem.getItemMeta();
-
-        if (meta != null) {
-            meta.displayName(Component.text("§a" + homeIcon.getVanillaName()));
-
-            List<Component> lore = new ArrayList<>();
-
-            if (home.getIcon().equals(homeIcon)) {
-                meta.addEnchant(Enchantment.SHARPNESS, 5, true);
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                lore.add(Component.text("§8[§a✔§8] §7Icône actuelle"));
-            } else {
-                lore.add(Component.text("§7■ §aClique §2gauche §apour changer l'icône"));
-            }
-
-            meta.lore(lore);
-            iconItem.setItemMeta(meta);
-        }
-
-        return iconItem;
     }
 }
