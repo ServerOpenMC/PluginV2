@@ -64,4 +64,13 @@ public class CityRank {
 		this.icon = icon;
 		return this;
 	}
+	
+	public CityRank swapPermission(CPermission permission) {
+		if (permissions.contains(permission)) {
+			permissions.remove(permission);
+		} else {
+			permissions.add(permission);
+		}
+		return this;
+	}
 }

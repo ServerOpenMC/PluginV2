@@ -77,11 +77,11 @@ public class CityRanksMenu extends Menu {
 			}
 		}
 		
-		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest())
-				.setOnClick(inventoryClickEvent -> {
-					if (! city.isRanksFull()) new CityRankDetailsMenu(getOwner(), city).open();
-				})
-		);
+		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(),
+				itemMeta -> {
+					itemMeta.displayName(Component.text("§aAjouter un grade"));
+					itemMeta.lore(List.of(Component.text("§7Pour ajouter un nouveau grade, faites /city rank add <nom>")));
+				}));
 		
 		return map;
 	}

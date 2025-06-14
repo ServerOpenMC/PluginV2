@@ -1,13 +1,10 @@
 package fr.openmc.core.features.city.menu.ranks;
 
-import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityRank;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -20,7 +17,10 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class CityRankDetailsMenu extends Menu {
 	
@@ -33,13 +33,13 @@ public class CityRankDetailsMenu extends Menu {
 		this.city = city;
 	}
 	
-	public CityRankDetailsMenu(Player owner, City city) {
-		this(owner, city, new CityRank("", 0, Set.of(), Material.GOLD_BLOCK));
+	public CityRankDetailsMenu(Player owner, City city, String rankName) {
+		this(owner, city, new CityRank(rankName, 0, new HashSet<>(), Material.GOLD_BLOCK));
 	}
 	
 	@Override
 	public @NotNull String getName() {
-		return ! isRankNull() ? "Détails du grade " + rank.getName() : "Créer un grade";
+		return city.isRankExists(rank) ? "Créer le grade  " + rank.getName() : "Détails du grade " + rank.getName();
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class CityRankDetailsMenu extends Menu {
 	
 	@Override
 	public @NotNull Map<Integer, ItemStack> getContent() {
-		return isRankNull() ? createRank() : editRank();
+		return city.isRankExists(rank) ? editRank() : createRank();
 	}
 	
 	@Override
@@ -82,8 +82,8 @@ public class CityRankDetailsMenu extends Menu {
 		map.put(4, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
 			itemMeta.displayName(Component.text("Changer le nom du grade"));
 			itemMeta.lore(List.of(
-					Component.text("Le nom du grade sera donné lors de sa création"),
-					Component.text("Il sera toujours possible de le modifier plus tard"),
+					Component.text("Le nom du grade est donné lors de sa création"),
+					Component.text("Il ne sera pas possible de le modifier plus tard"),
 					Component.text("Nom actuel : " + (this.rank.getName().isEmpty() ? "Non défini" : this.rank.getName()))
 			));
 		}));
@@ -103,7 +103,7 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("Il sera toujours possible de les modifier plus tard")
 			));
 		}).setOnClick(inventoryClickEvent -> {
-			//TODO Logic to handle permissions selection
+			CityRankPermsMenu.openBook(getOwner(), rank);
 		}));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
@@ -120,7 +120,6 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("Vous devrez entrer un nom pour le grade")
 			));
 		}).setOnClick(inventoryClickEvent -> {
-			setRankName();
 			city.createRank(rank.validate(getOwner()));
 			getOwner().closeInventory();
 			MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.rank.getName() + " créé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
@@ -141,9 +140,9 @@ public class CityRankDetailsMenu extends Menu {
 		}).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, rank.withPriority((rank.getPriority() + 1) % 18)).open()));
 		
 		map.put(4, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-			itemMeta.displayName(Component.text("Modifier le nom du grade"));
+			itemMeta.displayName(Component.text("Nom du grade"));
 			itemMeta.lore(List.of(
-					Component.text("Vous pouvez modifier le nom du grade lors de l'acceptation"),
+					Component.text("Vous ne pouvez plus modifier le nom du grade après sa création"),
 					Component.text("Nom actuel : " + this.rank.getName())
 			));
 		}));
@@ -162,7 +161,7 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("Permissions actuelles : " + this.rank.getPermissions().toString())
 			));
 		}).setOnClick(inventoryClickEvent -> {
-			//TODO Logic to handle permissions modification
+			CityRankPermsMenu.openBook(getOwner(), rank);
 		}));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
@@ -180,9 +179,13 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("Cette action est irréversible")
 			));
 		}).setOnClick(inventoryClickEvent -> {
-			city.deleteRank(this.rank);
-			getOwner().closeInventory();
-			MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.rank.getName() + " supprimé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
+			try {
+				city.deleteRank(rank);
+				getOwner().closeInventory();
+				MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.rank.getName() + " supprimé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
+			} catch (IllegalArgumentException e) {
+				MessagesManager.sendMessage(getOwner(), Component.text("Impossible de supprimer le grade : " + e.getMessage()), Prefix.CITY, MessageType.ERROR, false);
+			}
 		}));
 		
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
@@ -192,46 +195,11 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("Vous pouvez modifier le nom avec un clic droit")
 			));
 		}).setOnClick(inventoryClickEvent -> {
-			if (inventoryClickEvent.isRightClick()) {
-				setRankName();
-				
-			}
 			city.updateRank(this.rank, rank.validate(getOwner()));
 			getOwner().closeInventory();
 			MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.rank.getName() + " modifié avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
 		}));
 		
 		return map;
-	}
-	
-	private void setRankName() {
-		String[] lines = new String[4];
-		lines[0] = "";
-		lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-		lines[2] = "Entrez le nom";
-		lines[3] = "du grade ci dessus";
-		
-		SignGUI gui;
-		try {
-			gui = SignGUI.builder()
-					.setLines(lines)
-					.setType(ItemUtils.getSignType(getOwner()))
-					.setHandler((player, result) -> {
-						String input = result.getLine(0);
-						if (input.isEmpty()) {
-							MessagesManager.sendMessage(player, Component.text("Le nom du grade ne peut pas être vide !"), Prefix.CITY, MessageType.ERROR, false);
-						}
-						new CityRankDetailsMenu(player, city, rank.withName(input)).open();
-						return Collections.emptyList();
-					}).build();
-		} catch (SignGUIVersionException e) {
-			throw new RuntimeException(e);
-		}
-		
-		gui.open(getOwner());
-	}
-	
-	private boolean isRankNull() {
-		return this.rank == null || this.rank.getName().isEmpty() || this.rank.getPriority() < 0 || this.rank.getPermissions().isEmpty() || this.rank.getIcon() == null;
 	}
 }
