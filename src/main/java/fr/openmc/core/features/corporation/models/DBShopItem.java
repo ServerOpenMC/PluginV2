@@ -22,21 +22,24 @@ public class DBShopItem {
     private double price;
     @DatabaseField(canBeNull = false)
     private int amount;
+    @DatabaseField(canBeNull = false, columnName = "item_uuid")
+    private UUID itemUuid;
 
     DBShopItem() {
         // required for ORMLite
     }
 
-    public DBShopItem(byte[] items, UUID shop, double price, int amount) {
+    public DBShopItem(byte[] items, UUID shop, double price, int amount, UUID itemUuid) {
         this.items = items;
         this.shop = shop;
         this.price = price;
         this.amount = amount;
+        this.itemUuid = itemUuid;
     }
 
     public ShopItem deserialize() {
         ItemStack item = ItemStack.deserializeBytes(items);
-        ShopItem shopItem = new ShopItem(item, price);
+        ShopItem shopItem = new ShopItem(item, price, itemUuid);
         shopItem.setAmount(amount);
         return shopItem;
     }

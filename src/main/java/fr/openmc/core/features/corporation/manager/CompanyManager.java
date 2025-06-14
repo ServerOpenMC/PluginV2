@@ -332,6 +332,8 @@ public class CompanyManager {
 
                     dbShopSuppliers.add(new ShopSupplier(uuid, shop.getUuid(), item_uuid, supplier_uuid, amount, time));
                 }
+
+                // TODO: shop sales
             }
         }
 
@@ -351,7 +353,7 @@ public class CompanyManager {
                 double price = shopItem.getPricePerItem();
                 int amount = shopItem.getAmount();
 
-                dbShopItems.add(new DBShopItem(item, shop.getUuid(), price, amount));
+                dbShopItems.add(new DBShopItem(item, shop.getUuid(), price, amount, shopItem.getItemID()));
             }
 
             dbShops.add(new DBShop(shop.getUuid(), owner, null, null, x, y, z));
