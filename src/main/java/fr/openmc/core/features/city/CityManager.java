@@ -21,6 +21,7 @@ import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;
@@ -82,7 +83,19 @@ public class CityManager implements Listener {
         new WarManager();
         new CityBankManager();
 
-        freeClaim = loadFreeClaims();
+        loadFreeClaims();
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.getLogger().info("===== MayorManager Debug =====");
+
+                Bukkit.getLogger().info("City Mayors:");
+                for (Map.Entry<String, Integer> entry : freeClaim.entrySet()) {
+                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
+                }
+            }
+        }.runTaskTimer(OMCPlugin.getInstance(), 0, 600L); // 600 ticks = 30 secondes
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -138,8 +151,7 @@ public class CityManager implements Listener {
      *
      * @return A map of city UUIDs and their claim
      */
-    public static HashMap<String, Integer> loadFreeClaims() {
-        HashMap<String, Integer> freeClaims = new HashMap<>();
+    public static void loadFreeClaims() {
 
         String query = "SELECT city_uuid, claim FROM free_claim";
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query);
@@ -149,33 +161,36 @@ public class CityManager implements Listener {
                 String cityUuid = rs.getString("city_uuid");
                 int claim = rs.getInt("claim");
                 if (claim > 0) {
-                    freeClaims.put(cityUuid, claim);
+                    freeClaim.put(cityUuid, claim);
                 }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return freeClaims;
     }
 
     /**
      * Save free claims to the database
      * @param freeClaims A map of city UUIDs and their claim
      */
-    public static void saveFreeClaims(HashMap<String, Integer> freeClaims){
+    public static void saveFreeClaims(HashMap<String, Integer> freeClaims) {
         String query;
+        boolean isUnitTest = OMCPlugin.isUnitTestVersion();
 
-        if (OMCPlugin.isUnitTestVersion()) {
+        if (isUnitTest) {
             query = "MERGE INTO free_claim KEY(city_uuid) VALUES (?, ?)";
         } else {
             query = "INSERT INTO free_claim (city_uuid, claim) VALUES (?, ?) ON DUPLICATE KEY UPDATE claim = ?";
         }
+
         try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(query)) {
             for (Map.Entry<String, Integer> entry : freeClaims.entrySet()) {
                 if (entry.getValue() > 0) {
                     statement.setString(1, entry.getKey());
                     statement.setInt(2, entry.getValue());
-                    statement.setInt(3, entry.getValue());
+                    if (!isUnitTest) {
+                        statement.setInt(3, entry.getValue());
+                    }
                     statement.addBatch();
                 } else {
                     try (PreparedStatement deleteStatement = DatabaseManager.getConnection().prepareStatement(
@@ -184,7 +199,6 @@ public class CityManager implements Listener {
                         deleteStatement.executeUpdate();
                     }
                 }
-
             }
             statement.executeBatch();
         } catch (SQLException e) {
