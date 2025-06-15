@@ -18,7 +18,7 @@ import lombok.Getter;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.jdbc.JdbcPooledConnectionSource;
 import com.j256.ormlite.support.ConnectionSource;
 
 import java.sql.SQLException;
@@ -45,7 +45,7 @@ public class DatabaseManager {
             String databaseUrl = config.getString("database.url");
             String username = config.getString("database.username");
             String password = config.getString("database.password");
-            connectionSource = new JdbcConnectionSource(databaseUrl, username, password);
+            connectionSource = new JdbcPooledConnectionSource(databaseUrl, username, password);
 
             MayorManager.init_db(connectionSource);
             BankManager.init_db(connectionSource);
