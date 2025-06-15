@@ -38,8 +38,6 @@ import java.util.Map;
 public class ShopMenu extends Menu {
 
     private final List<ShopItem> items = new ArrayList<>();
-    private final CompanyManager companyManager = CompanyManager.getInstance();
-    private final PlayerShopManager playerShopManager = PlayerShopManager.getInstance();
     private final Shop shop;
     private final int itemIndex;
 
@@ -207,7 +205,7 @@ public class ShopMenu extends Menu {
             content.put(itemSlot, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
                 itemMeta.displayName(ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
                 List<String> lore = new ArrayList<>();
-                lore.add("§7■ Prix: §c" + EconomyManager.getInstance().getFormattedNumber(getCurrentItem().getPricePerItem() * amountToBuy));
+                lore.add("§7■ Prix: §c" + EconomyManager.getFormattedNumber(getCurrentItem().getPricePerItem() * amountToBuy));
                 lore.add("§7■ En stock: " + EconomyManager.getFormattedSimplifiedNumber(getCurrentItem().getAmount()));
                 lore.add("§7■ Cliquez pour en acheter §f" + EconomyManager.getFormattedSimplifiedNumber(amountToBuy));
                 itemMeta.setLore(lore);
@@ -371,9 +369,9 @@ public class ShopMenu extends Menu {
     }
 
     private void accept () {
-        boolean isInCompany = companyManager.isInCompany(getOwner().getUniqueId());
+        boolean isInCompany = CompanyManager.isInCompany(getOwner().getUniqueId());
         if (isInCompany) {
-            MethodState deleteState = companyManager.getCompany(getOwner().getUniqueId()).deleteShop(getOwner(), shop.getUuid());
+            MethodState deleteState = CompanyManager.getCompany(getOwner().getUniqueId()).deleteShop(getOwner(), shop.getUuid());
             if (deleteState == MethodState.ERROR) {
                 MessagesManager.sendMessage(getOwner(), Component.text("§cCe shop n'existe pas dans votre entreprise"), Prefix.SHOP, MessageType.INFO, false);
                 return;
@@ -393,7 +391,7 @@ public class ShopMenu extends Menu {
             MessagesManager.sendMessage(getOwner(), Component.text("§6[Shop]§a +75" + EconomyManager.getEconomyIcon() + " de remboursés sur la banque de l'entreprise"), Prefix.SHOP, MessageType.INFO, false);
         }
         else {
-            MethodState methodState = playerShopManager.deleteShop(getOwner().getUniqueId());
+            MethodState methodState = PlayerShopManager.deleteShop(getOwner().getUniqueId());
             if (methodState == MethodState.WARNING) {
                 MessagesManager.sendMessage(getOwner(), Component.text("§cVotre shop n'est pas vide"), Prefix.SHOP, MessageType.INFO, false);
                 return;

@@ -30,24 +30,21 @@ public class QuestsMenu extends Menu {
     private static final ItemStack LEFT_ARROW;
     private static final ItemStack RIGHT_ARROW;
     private final int totalPages;
-    private final QuestsManager questsManager;
     private Player target;
     private final Map<Integer, Integer> slotToQuestIndex = new HashMap<>();
 
     public QuestsMenu(Player player, int currentPage) {
         super(player);
-        this.questsManager = QuestsManager.getInstance();
         this.currentPage = currentPage;
-        this.totalPages = (int) Math.ceil(this.questsManager.getAllQuests().size() / 9.0F);
+        this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
         TITLE = "Quests (" + currentPage + 1 + "/" + this.totalPages + ")";
         this.target = player;
     }
 
     public QuestsMenu(Player player, Player target, int currentPage) {
         super(player);
-        this.questsManager = QuestsManager.getInstance();
         this.currentPage = currentPage;
-        this.totalPages = (int) Math.ceil(this.questsManager.getAllQuests().size() / 9.0F);
+        this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
         TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
         this.target = target;
     }
@@ -82,8 +79,8 @@ public class QuestsMenu extends Menu {
             this.refresh();
         } else if (slot >= 9 && slot <= 17) {
             Integer questIndex = this.slotToQuestIndex.get(slot);
-            if (questIndex != null && questIndex < questsManager.getAllQuests().size()) {
-                Quest quest = questsManager.getAllQuests().get(questIndex);
+            if (questIndex != null && questIndex < QuestsManager.getAllQuests().size()) {
+                Quest quest = QuestsManager.getAllQuests().get(questIndex);
                 UUID playerUUID = this.target.getUniqueId();
 
                 Set<Integer> pendingQuestIndexes = quest.getPendingRewardTiers(playerUUID);
@@ -104,11 +101,11 @@ public class QuestsMenu extends Menu {
         slotToQuestIndex.clear();
 
         int startIndex = this.currentPage * 9;
-        int endIndex = Math.min(startIndex + 9, this.questsManager.getAllQuests().size());
+        int endIndex = Math.min(startIndex + 9, QuestsManager.getAllQuests().size());
         int slotIndex = 9;
 
         for(int i = startIndex; i < endIndex; ++i) {
-            Quest quest = this.questsManager.getAllQuests().get(i);
+            Quest quest = QuestsManager.getAllQuests().get(i);
             ItemStack item = this.createQuestItem(quest);
             content.put(slotIndex, item);
             this.slotToQuestIndex.put(slotIndex, i);

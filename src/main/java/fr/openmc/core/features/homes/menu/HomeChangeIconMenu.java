@@ -5,7 +5,7 @@ import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.homes.Home;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.icons.IconCategory;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;

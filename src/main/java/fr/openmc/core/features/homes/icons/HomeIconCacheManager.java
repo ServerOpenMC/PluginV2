@@ -1,7 +1,7 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.homes.Home;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

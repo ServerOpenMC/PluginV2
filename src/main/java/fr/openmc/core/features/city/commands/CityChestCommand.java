@@ -68,7 +68,7 @@ public class CityChestCommand {
 
         city.updateBalance((double) -price);
 
-        city.upgradeChest();
+        city.saveChestContent(city.getChestPages(), null);
         MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

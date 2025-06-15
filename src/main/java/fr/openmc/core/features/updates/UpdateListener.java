@@ -11,6 +11,6 @@ public class UpdateListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
-        UpdateManager.getInstance().sendUpdateMessage(player);
+        UpdateManager.sendUpdateMessage(player);
     }
 }

@@ -23,13 +23,8 @@ import java.util.*;
 
 public class HomeUpgradeMenu extends Menu {
 
-    private final HomeUpgradeManager homeUpgradeManager;
-    private final HomesManager homesManager;
-
     public HomeUpgradeMenu(Player owner) {
         super(owner);
-        this.homeUpgradeManager = HomeUpgradeManager.getInstance();
-        this.homesManager = HomesManager.getInstance();
     }
 
     @Override
@@ -42,13 +37,13 @@ public class HomeUpgradeMenu extends Menu {
         Map<Integer, ItemStack> items = new HashMap<>();
 
         try {
-            int currentHome = homesManager.getHomeLimit(getOwner().getUniqueId());
+            int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId());
 
             int homeMaxLimit = HomeLimits.values().length - 1;
 
             HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
-            HomeLimits nextUpgrade = homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner())) != null
-                    ? homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner()))
+            HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner())) != null
+                    ? HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()))
                     : lastUpgrade;
 
             items.put(4, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
@@ -66,7 +61,7 @@ public class HomeUpgradeMenu extends Menu {
 
                 itemMeta.lore(lore);
             }).setOnClick(event -> {
-                homeUpgradeManager.upgradeHome(getOwner());
+                HomeUpgradeManager.upgradeHome(getOwner());
                 getOwner().closeInventory();
             }));
 
