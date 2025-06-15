@@ -57,8 +57,6 @@ public class PlayerSettings {
             loadDefaultSettings();
             return (T) settingType.getDefaultValue();
         }
-        System.out.println("Getting setting " + settingType + " for player " + playerUUID);
-        System.out.println("Current settings: " + settings);
         return (T) settings.getOrDefault(settingType, settingType.getDefaultValue());
     }
 
@@ -68,8 +66,6 @@ public class PlayerSettings {
                 throw new IllegalArgumentException("Invalid value for setting: " + settingType);
             }
             settings.put(settingType, value);
-            System.out.println("Setting " + settingType + " for player " + playerUUID + " to " + value);
-            System.out.println("Current settings: " + settings);
         } catch (Exception e) {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player != null) {
