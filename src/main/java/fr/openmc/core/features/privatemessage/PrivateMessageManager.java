@@ -23,6 +23,13 @@ public class PrivateMessageManager {
         this.spyManager = new SocialSpyManager();
     }
 
+    /**
+     * Send a private message from sender to receiver.
+     *
+     * @param sender The player sending the message.
+     * @param receiver The player receiving the message.
+     * @param message The message to send.
+     */
     public void sendPrivateMessage(Player sender, Player receiver, String message) {
         if (sender.equals(receiver)) {
             MessagesManager.sendMessage(sender, Component.text("§cVous ne pouvez pas vous envoyer de message privé à " +
@@ -38,6 +45,12 @@ public class PrivateMessageManager {
         lastMessageFrom.put(sender.getUniqueId(), receiver.getUniqueId());
     }
 
+    /**
+     * Reply to the last private message received by the sender.
+     *
+     * @param sender The player sending the message.
+     * @param message The message to send.
+     */
     public void replyToLastMessage(Player sender, String message) {
         UUID lastReceiverId = lastMessageFrom.get(sender.getUniqueId());
         if (lastReceiverId == null) {

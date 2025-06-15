@@ -21,6 +21,11 @@ public class SocialSpyManager {
         instance = this;
     }
 
+    /**
+     * Toggles the social spy feature for the player.
+     *
+     * @param player The player whose social spy status is being toggled.
+     */
     public void toggleSocialSpy(Player player) {
         UUID playerUUID = player.getUniqueId();
 
@@ -37,10 +42,23 @@ public class SocialSpyManager {
         }
     }
 
+    /**
+     * Checks if the social spy feature is enabled for the player.
+     *
+     * @param player The player to check.
+     * @return true if social spy is enabled, false otherwise.
+     */
     public boolean hasSocialSpyEnabled(Player player) {
         return socialSpyEnabled.contains(player.getUniqueId());
     }
 
+    /**
+     * Broadcasts a private message to all players with social spy enabled.
+     *
+     * @param sender The player sending the message.
+     * @param receiver The player receiving the message.
+     * @param message The message being sent.
+     */
     public void broadcastToSocialSpy(Player sender, Player receiver, String message) {
         String socialSpyMessage =
                 "§8[§6SPY§8] §7" + sender.getName() + " §6→ §7" + receiver.getName() + "§8: §7" + message;
@@ -54,13 +72,5 @@ public class SocialSpyManager {
                 onlinePlayer.sendMessage(socialSpyMessage);
             }
         }
-    }
-
-    public void removeSocialSpy(Player player) {
-        socialSpyEnabled.removeIf(uuid -> uuid.equals(player.getUniqueId()));
-    }
-
-    public int getSocialSpyCount() {
-        return socialSpyEnabled.size();
     }
 }
