@@ -22,6 +22,7 @@ import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
@@ -96,6 +97,7 @@ public class OMCPlugin extends JavaPlugin {
         new AdminShopManager(this);
         new AccountDetectionManager(this);
         new BossbarManager(this);
+        new PrivateMessageManager();
 
         if (!OMCPlugin.isUnitTestVersion()){
             new ShopBlocksManager(this);
