@@ -16,9 +16,11 @@ public class PrivateMessageManager {
 
     private final Map<UUID, UUID> lastMessageFrom = new HashMap<>();
     @Getter private static PrivateMessageManager instance;
+    @Getter private final SocialSpyManager spyManager;
 
     public PrivateMessageManager() {
         instance = this;
+        this.spyManager = new SocialSpyManager();
     }
 
     public void sendPrivateMessage(Player sender, Player receiver, String message) {
@@ -29,8 +31,8 @@ public class PrivateMessageManager {
         }
 
         sender.sendMessage("§7[§eToi §6§l→ §r§9" + receiver.getName() + "§7] §f" + message);
-        receiver.sendMessage("§7[§a" + sender.getName() + " §7→ §9Toi§7] §f" + message);
         receiver.sendMessage("§7[§e" + sender.getName() + " §6§l→ §r§9Toi§7] §f" + message);
+        spyManager.broadcastToSocialSpy(sender, receiver, message);
 
         lastMessageFrom.put(receiver.getUniqueId(), sender.getUniqueId());
         lastMessageFrom.put(sender.getUniqueId(), receiver.getUniqueId());
