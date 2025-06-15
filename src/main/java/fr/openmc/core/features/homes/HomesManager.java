@@ -42,89 +42,88 @@ public class HomesManager {
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("homes",
                 (args, sender, command) -> {
-            Player player = Bukkit.getPlayer(sender.getUniqueId());
-            List<String> suggestions = new ArrayList<>();
-            if (player == null) return suggestions;
+                    Player player = Bukkit.getPlayer(sender.getUniqueId());
+                    List<String> suggestions = new ArrayList<>();
+                    if (player == null)
+                        return suggestions;
 
-            if (args.isEmpty()) {
-                if (player.hasPermission("omc.admin.homes.teleport.others")) {
-                    suggestions.addAll(
-                            Bukkit.getOnlinePlayers().stream()
-                                    .map(OfflinePlayer::getName)
-                                    .map(name -> name + ":")
-                                    .toList()
-                    );
-                    if (command.getName().equalsIgnoreCase("home") ||
-                        command.getName().equalsIgnoreCase("delhome") ||
-                        command.getName().equalsIgnoreCase("relocatehome") ||
-                        command.getName().equalsIgnoreCase("renamehome")) {
-                        suggestions.addAll(getHomes(player.getUniqueId()).stream()
-                                .map(Home::getName)
-                                .toList());
-                    }
-                }
-            } else {
-                String arg = args.getFirst();
-
-                if(arg.contains(":") && player.hasPermission("omc.admin.homes.teleport.others")) {
-                    if (command.getName().equalsIgnoreCase("home") ||
-                        command.getName().equalsIgnoreCase("delhome") ||
-                        command.getName().equalsIgnoreCase("relocatehome") ||
-                        command.getName().equalsIgnoreCase("renamehome")) {
-                        String[] split = arg.split(":", 2);
-                        OfflinePlayer target = Bukkit.getOfflinePlayer(split[0]);
-
-                        if(target != null && target.hasPlayedBefore()) {
-                            String prefix = split[0] + ":";
-                            suggestions.addAll(getHomesNames(target.getUniqueId())
-                                    .stream()
-                                    .map(home -> prefix + home)
-                                    .toList());
+                    if (args.isEmpty()) {
+                        if (player.hasPermission("omc.admin.homes.teleport.others")) {
+                            suggestions.addAll(
+                                    Bukkit.getOnlinePlayers().stream()
+                                            .map(OfflinePlayer::getName)
+                                            .map(name -> name + ":")
+                                            .toList());
+                            if (command.getName().equalsIgnoreCase("home") ||
+                                    command.getName().equalsIgnoreCase("delhome") ||
+                                    command.getName().equalsIgnoreCase("relocatehome") ||
+                                    command.getName().equalsIgnoreCase("renamehome")) {
+                                suggestions.addAll(getHomes(player.getUniqueId()).stream()
+                                        .map(Home::getName)
+                                        .toList());
+                            }
                         }
-                    }
-                } else {
-                    if (player.hasPermission("omc.admin.homes.teleport.others")) {
-                        suggestions.addAll(Bukkit.getOnlinePlayers().stream()
-                                .map(OfflinePlayer::getName)
-                                .filter(name -> name.toLowerCase().startsWith(arg.toLowerCase()))
-                                .map(name -> name + ":")
-                                .toList());
+                    } else {
+                        String arg = args.getFirst();
+
+                        if (arg.contains(":") && player.hasPermission("omc.admin.homes.teleport.others")) {
+                            if (command.getName().equalsIgnoreCase("home") ||
+                                    command.getName().equalsIgnoreCase("delhome") ||
+                                    command.getName().equalsIgnoreCase("relocatehome") ||
+                                    command.getName().equalsIgnoreCase("renamehome")) {
+                                String[] split = arg.split(":", 2);
+                                OfflinePlayer target = Bukkit.getOfflinePlayer(split[0]);
+
+                                if (target != null && target.hasPlayedBefore()) {
+                                    String prefix = split[0] + ":";
+                                    suggestions.addAll(getHomesNames(target.getUniqueId())
+                                            .stream()
+                                            .map(home -> prefix + home)
+                                            .toList());
+                                }
+                            }
+                        } else {
+                            if (player.hasPermission("omc.admin.homes.teleport.others")) {
+                                suggestions.addAll(Bukkit.getOnlinePlayers().stream()
+                                        .map(OfflinePlayer::getName)
+                                        .filter(name -> name.toLowerCase().startsWith(arg.toLowerCase()))
+                                        .map(name -> name + ":")
+                                        .toList());
+                            }
+
+                            if (command.getName().equalsIgnoreCase("home") ||
+                                    command.getName().equalsIgnoreCase("delhome") ||
+                                    command.getName().equalsIgnoreCase("relocatehome") ||
+                                    command.getName().equalsIgnoreCase("renamehome")) {
+                                suggestions.addAll(getHomes(player.getUniqueId()).stream()
+                                        .map(Home::getName)
+                                        .filter(name -> name.toLowerCase().startsWith(arg.toLowerCase()))
+                                        .toList());
+                            }
+                        }
+
+                        return suggestions;
                     }
 
                     if (command.getName().equalsIgnoreCase("home") ||
-                        command.getName().equalsIgnoreCase("delhome") ||
-                        command.getName().equalsIgnoreCase("relocatehome") ||
-                        command.getName().equalsIgnoreCase("renamehome")) {
-                        suggestions.addAll(getHomes(player.getUniqueId()).stream()
-                                .map(Home::getName)
-                                .filter(name -> name.toLowerCase().startsWith(arg.toLowerCase()))
-                                .toList());
+                            command.getName().equalsIgnoreCase("delhome") ||
+                            command.getName().equalsIgnoreCase("relocatehome") ||
+                            command.getName().equalsIgnoreCase("renamehome")) {
+                        suggestions.addAll(getHomesNames(player.getUniqueId()));
                     }
-                }
-
-                return suggestions;
-            }
-
-            if(command.getName().equalsIgnoreCase("home") ||
-                command.getName().equalsIgnoreCase("delhome") ||
-                command.getName().equalsIgnoreCase("relocatehome") ||
-                command.getName().equalsIgnoreCase("renamehome")) {
-                suggestions.addAll(getHomesNames(player.getUniqueId()));
-            }
-            return suggestions;
-        });
+                    return suggestions;
+                });
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("homeWorldsAdd",
                 (args, sender, command) -> {
-            List<String> suggestions = new ArrayList<>(Bukkit.getWorlds().stream().map(WorldInfo::getName).toList());
-            suggestions.removeAll(disabledWorldHome.getDisabledWorlds());
-            return suggestions;
-        });
+                    List<String> suggestions = new ArrayList<>(
+                            Bukkit.getWorlds().stream().map(WorldInfo::getName).toList());
+                    suggestions.removeAll(disabledWorldHome.getDisabledWorlds());
+                    return suggestions;
+                });
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("homeWorldsRemove",
-                (args, sender, command) ->
-                new ArrayList<>(disabledWorldHome.getDisabledWorlds())
-        );
+                (args, sender, command) -> new ArrayList<>(disabledWorldHome.getDisabledWorlds()));
 
         CommandsManager.getHandler().register(
                 new SetHome(this),
@@ -132,8 +131,7 @@ public class HomesManager {
                 new DelHome(this),
                 new RelocateHome(this),
                 new TpHome(this),
-                new HomeWorld(disabledWorldHome)
-        );
+                new HomeWorld(disabledWorldHome));
 
         loadHomeLimit();
         loadHomes();

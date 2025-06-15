@@ -11,6 +11,9 @@ import fr.openmc.core.features.adminshop.AdminShopCommand;
 import fr.openmc.core.features.friend.FriendCommand;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
+import fr.openmc.core.features.privatemessage.SocialSpyManager;
+import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
+import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.updates.UpdateCommand;
 import lombok.Getter;
@@ -45,7 +48,9 @@ public class CommandsManager {
                 new FriendCommand(),
                 new QuestCommand(),
                 new Restart(),
-                new AdminShopCommand());
+                new AdminShopCommand(),
+                new PrivateMessageCommand(),
+                new SocialSpyCommand());
     }
 
     private static void registerSuggestions() {

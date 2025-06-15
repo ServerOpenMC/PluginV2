@@ -15,8 +15,10 @@ import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
+import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
@@ -85,6 +87,7 @@ public class OMCPlugin extends JavaPlugin {
         new BossbarManager();
         new CompanyManager();// laisser apres Economy Manager
         new ContestManager();
+        new PrivateMessageManager();
 
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager();
@@ -92,6 +95,7 @@ public class OMCPlugin extends JavaPlugin {
         new MotdUtils();
         new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
         new DynamicCooldownManager();
+        HomeIconCacheManager.initialize();
 
         getLogger().info("Plugin activé");
     }
@@ -112,6 +116,7 @@ public class OMCPlugin extends JavaPlugin {
         CompanyManager.saveAllShop();
 
         HomesManager.saveHomesData();
+        HomeIconCacheManager.clearCache();
 
         // - Contest
         ContestManager.saveContestData();

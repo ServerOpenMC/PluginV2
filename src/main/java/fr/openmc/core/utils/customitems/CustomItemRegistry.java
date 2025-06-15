@@ -3,10 +3,7 @@ package fr.openmc.core.utils.customitems;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.utils.customitems.buttons.*;
 import fr.openmc.core.utils.customitems.items.company.CompanyBox;
-import fr.openmc.core.utils.customitems.items.homes.Bin;
-import fr.openmc.core.utils.customitems.items.homes.BinRed;
-import fr.openmc.core.utils.customitems.items.homes.Information;
-import fr.openmc.core.utils.customitems.items.homes.Upgrade;
+import fr.openmc.core.utils.customitems.items.homes.*;
 import fr.openmc.core.utils.customitems.items.homes.icons.*;
 import fr.openmc.core.utils.customitems.armors.SuitBoots;
 import fr.openmc.core.utils.customitems.armors.SuitChestplate;
@@ -72,6 +69,7 @@ public class CustomItemRegistry {
         new Sandblock();
         new Shop();
         new Xernas();
+        new Invisible();
     }
 
     public static void register(String name, CustomItem item) {

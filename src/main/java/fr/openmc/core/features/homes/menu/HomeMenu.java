@@ -1,11 +1,11 @@
 package fr.openmc.core.features.homes.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.utils.HomeUtil;
+import fr.openmc.core.features.homes.icons.HomeIcon;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -13,7 +13,6 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -23,10 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HomeMenu extends PaginatedMenu {
 
@@ -68,13 +64,18 @@ public class HomeMenu extends PaginatedMenu {
     @Override
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        try {
-            for(Home home : HomesManager.getHomes(target.getUniqueId())) {
-                items.add(new ItemBuilder(this, HomeUtil.getHomeIconItem(home), itemMeta -> {
-                    itemMeta.setDisplayName("§e" + home.getName());
-                    itemMeta.setLore(List.of(
-                            ChatColor.GRAY + "■ §aClique §2gauche pour vous téléporter",
-                            ChatColor.GRAY + "■ §cCliquez §4droit §cpour configurer le home"
+        for(Home home : HomesManager.getHomes(target.getUniqueId())) {
+            HomeIcon homeIcon = home.getIcon();
+            if (homeIcon == null) {
+                homeIcon = HomeIconRegistry.getDefaultIcon();
+                home.setIcon(homeIcon);
+            }
+            try {
+                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().getId()).getItemStack(), itemMeta -> {
+                    itemMeta.displayName(Component.text("§e" + home.getName()));
+                    itemMeta.lore(List.of(
+                            Component.text("§7■ §aClique §2gauche pour vous téléporter"),
+                            Component.text("§7■ §cCliquez §4droit §cpour configurer le home")
                     ));
                 }).setOnClick(event -> {
                     if(event.isLeftClick()) {
@@ -86,16 +87,14 @@ public class HomeMenu extends PaginatedMenu {
                         new HomeConfigMenu(player, home).open();
                     }
                 }));
-            }
-
-            return items;
             } catch (Exception e) {
                 MessagesManager.sendMessage(getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
                 getOwner().closeInventory();
-                e.printStackTrace();
+                throw new RuntimeException("Failed to create HomeMenu item for home: " + home.getName(), e);
             }
-            return items;
         }
+        return items;
+    }
 
     @Override
     public List<Integer> getTakableSlot() {
@@ -107,23 +106,23 @@ public class HomeMenu extends PaginatedMenu {
         Map<Integer, ItemStack> map = new HashMap<>();
 
             if(!wasTarget) {
-                map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information").getBest(),
+                map.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information")).getBest(),
                         itemMeta -> {
-                            itemMeta.setDisplayName("§8(§bⓘ§8) §6Informations sur vos homes");
-                            itemMeta.setLore(List.of(
-                                    "§8→ §6Chaque icon qui représente un home est lié au nom du home, par exemple, si vous appelé votre home 'maison', l'icône sera une maison",
-                                    "§7",
-                                    "§8› §6Vous pouvez configurer le home en effectuant un clique droit sur l'icône du home.",
-                                    "§8› §6Vous pouvez vous téléporter à votre home en effectuant un clique gauche sur l'icône du home."
+                            itemMeta.displayName(Component.text("§8(§bⓘ§8) §6Informations sur vos homes"));
+                            itemMeta.lore(List.of(
+                                    Component.text("§8→ §6Chaque icon qui représente un home est lié au nom du home, par exemple, si vous appelé votre home 'maison', l'icône sera une maison"),
+                                    Component.empty(),
+                                    Component.text("§8› §6Vous pouvez configurer le home en effectuant un clique droit sur l'icône du home."),
+                                    Component.text("§8› §6Vous pouvez vous téléporter à votre home en effectuant un clique gauche sur l'icône du home.")
                             ));
                         }
                     )
                 );
 
-                map.put(53, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest(), itemMeta -> {
-                    itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Click ici)");
-                    itemMeta.setLore(List.of(
-                        "§6Cliquez pour améliorer vos homes"
+                map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+                    itemMeta.displayName(Component.text("§8● §6Améliorer les homes §8(Click ici)"));
+                    itemMeta.lore(List.of(
+                        Component.text("§6Cliquez pour améliorer vos homes")
                     ));
                 }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));
             }

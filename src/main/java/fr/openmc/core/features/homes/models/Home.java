@@ -1,6 +1,8 @@
 package fr.openmc.core.features.homes.models;
 
-import fr.openmc.core.features.homes.HomeIcons;
+import fr.openmc.core.features.homes.icons.HomeIcon;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.icons.OldHomeIcon;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +30,7 @@ public class Home {
     private String name;
     @Setter
     @DatabaseField(canBeNull = false)
-    private HomeIcons icon;
+    private String iconId;
 
     // Location
     @DatabaseField(canBeNull = false)
@@ -48,11 +50,15 @@ public class Home {
         // required for ORMLite
     }
 
-    public Home(UUID owner, String name, Location location, HomeIcons icon) {
+    public Home(UUID owner, String name, Location location, HomeIcon icon) {
         this.owner = owner;
         this.name = name;
         setLocation(location);
-        this.icon = icon;
+        this.iconId = icon.getSaveId();
+    }
+
+    public Home(UUID owner, String name, Location location, OldHomeIcon legacyIcon) {
+        this(owner, name, location, HomeIconRegistry.fromLegacyHomeIcon(legacyIcon));
     }
 
     public Location getLocation() {
@@ -90,7 +96,7 @@ public class Home {
     }
 
     public ItemStack getIconItem() {
-        ItemStack item = HomeUtil.getHomeIconItem(this);
+        ItemStack item = getIcon().getItemStack().clone();
         ItemMeta meta = item.getItemMeta();
         Location location = getLocation();
         meta.displayName(Component.text("§a" + name));
@@ -102,5 +108,45 @@ public class Home {
                 Component.text("§6  Z: §e" + location.getBlockZ())));
         item.setItemMeta(meta);
         return item;
+    }
+
+    @Deprecated
+    public OldHomeIcon getLegacyIcon() {
+        return HomeIconRegistry.toLegacyHomeIcon(this.icon);
+    }
+
+    @Deprecated
+    public void setLegacyIcon(OldHomeIcon legacyIcon) {
+        this.iconId = HomeIconRegistry.fromLegacyHomeIcon(legacyIcon).getSaveId();
+    }
+
+    public String getIconSaveId() {
+        return iconId;
+    }
+
+    @Override
+    public String toString() {
+        return "Home{" +
+                "owner=" + owner +
+                ", name='" + name + '\'' +
+                ", location=" + serializeLocation() +
+                ", icon=" + iconId +
+                '}';
+    }
+
+    public HomeIcon getIcon() {
+        if (iconId == null || iconId.isEmpty())
+            return HomeIconRegistry.getDefaultIcon();
+
+        HomeIcon icon = HomeIconRegistry.getIcon(iconId);
+        if (icon != null)
+            return icon;
+
+        try {
+            OldHomeIcon legacyIcon = OldHomeIcon.valueOf(iconId.toUpperCase());
+            return HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
+        } catch (IllegalArgumentException e) {
+            return HomeUtil.mapLegacyCustomId(iconId);
+        }
     }
 }
