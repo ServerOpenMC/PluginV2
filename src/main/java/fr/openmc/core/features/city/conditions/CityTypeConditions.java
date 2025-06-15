@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.conditions;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -37,6 +38,11 @@ public class CityTypeConditions {
 
         if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
             MessagesManager.sendMessage(player, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (city.getBalance() < 20000) {
+            MessagesManager.sendMessage(player, Component.text("Vous devez avoir au moins 20000" + EconomyManager.getEconomyIcon() + " pour changer le type de votre ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

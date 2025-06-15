@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.war;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -7,15 +8,16 @@ import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
 import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
+import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class WarManager {
 
@@ -120,18 +122,35 @@ public class WarManager {
             }
         }
 
-        int powerChange = (war.getAttackers().size() + war.getDefenders().size()) / 2;
-        winner.updatePowerPoints(powerChange);
-        loser.updatePowerPoints(-powerChange);
+        int baseClaims = -1;
+        double amountStolen = -1;
+        int powerChange = -1;
+        if (!winReason.equals(WinReason.DRAW)) {
+            powerChange = (war.getAttackers().size() + war.getDefenders().size()) / 2;
+            winner.updatePowerPoints(powerChange);
+            loser.updatePowerPoints(-powerChange);
 
-        double amountStolen = loser.getBalance() * 0.15;
-        winner.updateBalance(amountStolen);
-        loser.updateBalance(-amountStolen);
+            amountStolen = loser.getBalance() * 0.15;
+            winner.updateBalance(amountStolen);
+            loser.updateBalance(-amountStolen);
 
-        broadcastWarResult(war, winner, loser, winReason);
+            boolean mascotKilled = winReason.equals(WinReason.MASCOT_DEATH);
+            int level = loser.getMascot().getLevel();
+
+            int totalClaims = loser.getChunks().size();
+
+            double percent = mascotKilled ? 0.10 : 0.05;
+
+            int claimsWon = (int) Math.ceil(totalClaims * percent * (1 + (level / 10.0)));
+
+            transferChunksAfterWar(winner, loser, claimsWon);
+        }
+
+
+        broadcastWarResult(war, winner, loser, winReason, powerChange, Math.abs(amountStolen), baseClaims);
     }
 
-    public static void broadcastWarResult(War war, City winner, City loser, WinReason reason) {
+    public static void broadcastWarResult(War war, City winner, City loser, WinReason reason, int powerChange, double amountStolen, int claimNumber) {
         int killsWinner = war.getCityAttacker().equals(winner) ? war.getAttackersKill() : war.getDefendersKill();
         int killsLoser = war.getCityAttacker().equals(loser) ? war.getAttackersKill() : war.getDefendersKill();
 
@@ -176,6 +195,11 @@ public class WarManager {
                 §7 - §cKills de %s : §f%d
                 §7 - §9Kills de %s : §f%d
                 §7
+                %s:
+                §7 %s
+                §7 %s
+                §7 %s
+                §7
                 §8§m                                                     §r""";
 
 
@@ -188,7 +212,11 @@ public class WarManager {
                     case MASCOT_HP -> "Votre Mascotte a eu le plus de points de vie!";
                     case KILLS -> "Votre ville a tué le plus d'adversaires!";
                     case DRAW -> "C'est une égalité!";
-                }, winner.getName(), killsWinner, loser.getName(), killsLoser
+                }, winner.getName(), killsWinner, loser.getName(), killsLoser,
+                "§6§lRécompenses",
+                "+ " + powerChange + " points de puissance",
+                "+ " + amountStolen + EconomyManager.getEconomyIcon() + " volés à l'adversaire",
+                "+ " + claimNumber + " territoire(s) conquis"
         );
         for (UUID uuid : winner.getMembers()) {
             Player player = Bukkit.getPlayer(uuid);
@@ -206,14 +234,75 @@ public class WarManager {
                     case MASCOT_HP -> "Votre Mascotte a eu le moins de points de vie!";
                     case KILLS -> "L'adversaire a tué le plus de monde!";
                     case DRAW -> "C'est une égalité!";
-                }, winner.getName(), killsWinner, loser.getName(), killsLoser
+                }, winner.getName(), killsWinner, loser.getName(), killsLoser,
+                "§c§lPertes",
+                "- " + powerChange + " points de puissance",
+                "- " + amountStolen + EconomyManager.getEconomyIcon() + " perdu",
+                "- " + claimNumber + " territoire(s) perdus"
         );
+
         for (UUID uuid : loser.getMembers()) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
             if (player.isOnline()) player.sendMessage(Component.text(loserMessage));
         }
+    }
+
+    public static void transferChunksAfterWar(City winner, City loser, int claimAmount) {
+        Chunk mascotChunk = loser.getMascot().getChunk();
+        BlockVector2 mascotVec = BlockVector2.at(mascotChunk.getX(), mascotChunk.getZ());
+
+        Set<BlockVector2> losableChunks = loser.getChunks().stream()
+                .filter(chunk -> !chunk.equals(mascotVec))
+                .collect(Collectors.toSet());
+
+        if (losableChunks.isEmpty()) return;
+
+        Set<BlockVector2> winnerChunks = winner.getChunks();
+        Set<BlockVector2> neighborChunks = new HashSet<>();
+
+        for (BlockVector2 winnerChunk : winnerChunks) {
+            for (BlockFace face : BlockFace.values()) {
+                BlockVector2 adjacent = winnerChunk.add(face.getModX(), face.getModZ());
+                if (losableChunks.contains(adjacent)) {
+                    neighborChunks.add(adjacent);
+                }
+            }
+        }
+
+        List<BlockVector2> claimsToTake = new ArrayList<>();
+
+        if (!neighborChunks.isEmpty()) {
+            List<BlockVector2> neighbors = new ArrayList<>(neighborChunks);
+            Collections.shuffle(neighbors);
+
+            for (BlockVector2 vec : neighbors) {
+                if (claimsToTake.size() >= claimAmount) break;
+                claimsToTake.add(vec);
+            }
+        }
+
+        if (claimsToTake.size() < claimAmount) {
+            List<BlockVector2> randomChunks = new ArrayList<>(losableChunks);
+            randomChunks.removeAll(claimsToTake);
+            Collections.shuffle(randomChunks);
+
+            for (BlockVector2 vec : randomChunks) {
+                if (claimsToTake.size() >= claimAmount) break;
+                claimsToTake.add(vec);
+            }
+        }
+
+        for (BlockVector2 vec : claimsToTake) {
+            boolean removed = loser.removeChunk(vec.getBlockX(), vec.getBlockZ());
+            if (removed) {
+                Chunk chunk = Bukkit.getWorld("world").getChunkAt(vec.getBlockX(), vec.getBlockZ());
+                winner.addChunk(chunk);
+            }
+        }
+
+        Bukkit.getLogger().info(winner.getName() + " a volé " + claimsToTake.size() + " chunks à " + loser.getName());
     }
 
     public static String getFormattedPhase(War.WarPhase phase) {

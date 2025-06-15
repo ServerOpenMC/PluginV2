@@ -98,13 +98,13 @@ public class War {
         this.phase = WarPhase.COMBAT;
 
         String message = """
-                                §8§m                                                     §r
-                                §7
+                §8§m                                                     §r
+                §7
                 §c§lGUERRE!§r §7Le comabat est imminent!§7
-                                §8§oBattez vous contre §c%s!
-                                §8§oVous avez §c§l%d minutes §8§ode combat.
-                                §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.
-                                §7
+                §8§oBattez vous contre §c%s!
+                §8§oVous avez §c§l%d minutes §8§ode combat.
+                §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.
+                §7
                 §8§m                                                     §r""";
 
         for (UUID uuid : attackers) {
