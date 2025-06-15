@@ -1,19 +1,16 @@
 package fr.openmc.core.features.homes.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -23,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class HomeDeleteConfirmMenu extends Menu {
 
@@ -53,11 +51,11 @@ public class HomeDeleteConfirmMenu extends Menu {
         try {
             content.put(2, new ItemBuilder(
                             this,
-                            CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(),
+                            Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(),
                             itemMeta -> {
-                                itemMeta.setDisplayName("§cConfirmer la suppression");
-                                itemMeta.setLore(List.of(
-                                        ChatColor.GRAY + "■ §cClique §4gauche §cpour confirmer la suppression"
+                                itemMeta.displayName(Component.text("§cConfirmer la suppression"));
+                                itemMeta.lore(List.of(
+                                        Component.text("§7■ §cClique §4gauche §cpour confirmer la suppression")
                                 ));
                             }
                     ).setOnClick(event -> {
@@ -69,24 +67,23 @@ public class HomeDeleteConfirmMenu extends Menu {
 
             content.put(4, new ItemBuilder(
                     this,
-                    HomeUtil.getHomeIconItem(home),
-                    itemMeta -> itemMeta.setDisplayName("§a" + home.getName())
+                    home.getIconItem(),
+                    itemMeta -> itemMeta.displayName(Component.text("§a" + home.getName()))
             ));
 
             content.put(6, new ItemBuilder(
                     this,
-                    CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin").getBest(),
+                    Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin")).getBest(),
                     itemMeta ->
-                    itemMeta.setDisplayName("§aAnnuler la suppression")).setBackButton()
+                    itemMeta.displayName(Component.text("§aAnnuler la suppression"))).setBackButton()
             );
 
             return content;
         } catch (Exception e) {
             MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
             player.closeInventory();
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return content;
     }
 
     @Override
