@@ -30,6 +30,7 @@ public class PrivateMessageManager {
 
         sender.sendMessage("§7[§eToi §6§l→ §r§9" + receiver.getName() + "§7] §f" + message);
         receiver.sendMessage("§7[§a" + sender.getName() + " §7→ §9Toi§7] §f" + message);
+        receiver.sendMessage("§7[§e" + sender.getName() + " §6§l→ §r§9Toi§7] §f" + message);
 
         lastMessageFrom.put(receiver.getUniqueId(), sender.getUniqueId());
         lastMessageFrom.put(sender.getUniqueId(), receiver.getUniqueId());
