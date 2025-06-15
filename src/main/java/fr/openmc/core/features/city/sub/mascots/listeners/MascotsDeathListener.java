@@ -3,8 +3,10 @@ package fr.openmc.core.features.city.sub.mascots.listeners;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import fr.openmc.core.features.city.sub.war.War;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -50,12 +52,15 @@ public class MascotsDeathListener implements Listener {
 
         if (cityEnemy == null) return;
 
-        cityEnemy.updatePowerPoints(level);
-        city.updatePowerPoints(-level);
+        if (cityEnemy.isInWar() && city.isInWar()) {
+            War warEnemy = cityEnemy.getWar();
+            War war = city.getWar();
 
-        cityEnemy.updateBalance(0.15 * city.getBalance() / 100);
-        city.updateBalance(-(0.15 * city.getBalance() / 100));
+            if (!war.equals(warEnemy)) return;
 
-        // run methods end war
+            WarManager.endWar(war);
+        } else {
+            // todo: systeme de vulnerabilité d'une ville, check si la ville attaqué est vulnérable, si oui la ville attaqué est supprimé
+        }
     }
 }

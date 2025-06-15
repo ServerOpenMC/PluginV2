@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.listeners.protections;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.ProtectionsManager;
-import fr.openmc.core.features.city.sub.mascots.MascotUtils;
+import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

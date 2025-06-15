@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.sub;
+package fr.openmc.core.features.city.sub.mascots.utils;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
@@ -57,6 +57,9 @@ public class MascotRegenerationUtils {
                     this.cancel();
                     return;
                 }
+
+                if (mascot.getCity().isInWar()) return;
+
                 LivingEntity mascots = (LivingEntity) mascot.getEntity();
                 if (mascots == null || mascots.isDead()) {
                     regenTasks.remove(mascot.getMascotUUID());

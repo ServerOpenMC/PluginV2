@@ -1,6 +1,8 @@
-package fr.openmc.core.features.city.sub.mascots;
+package fr.openmc.core.features.city.sub.mascots.utils;
 
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.sub.mascots.Mascot;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataType;

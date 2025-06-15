@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.sub.war;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,21 +14,21 @@ import java.util.UUID;
 import static fr.openmc.core.features.city.sub.war.WarManager.TIME_FIGHT;
 import static fr.openmc.core.features.city.sub.war.WarManager.TIME_PREPARATION;
 
+@Getter
 public class War {
 
     public enum WarPhase {PREPARATION, COMBAT, ENDED}
 
-    @Getter
     private final City cityAttacker;
-    @Getter
     private final City cityDefender;
-    @Getter
     private final List<UUID> attackers;
-    @Getter
     private final List<UUID> defenders;
-    @Getter
+    @Setter
     private WarPhase phase = WarPhase.PREPARATION;
-    @Getter
+
+    private int attackersKill;
+    private int defendersKill;
+
     private long startTime;
 
     public War(City cityAttacker, City cityDefender, List<UUID> attackers, List<UUID> defenders) {
@@ -35,6 +36,9 @@ public class War {
         this.cityDefender = cityDefender;
         this.attackers = attackers;
         this.defenders = defenders;
+
+        this.attackersKill = 0;
+        this.defendersKill = 0;
 
         startPreparation();
     }
@@ -45,6 +49,7 @@ public class War {
 
         for (UUID uuid : attackers) {
             Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
             if (player.isOnline()) {
                 String message = String.format("""
                                 §8§m                                                     §r
@@ -59,11 +64,11 @@ public class War {
 
                 player.sendMessage(Component.text(message));
             }
-            ;
         }
 
         for (UUID uuid : defenders) {
             Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
             if (player.isOnline()) {
                 String message = String.format("""
                                 §8§m                                                     §r
@@ -78,7 +83,6 @@ public class War {
 
                 player.sendMessage(Component.text(message));
             }
-            ;
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::startCombat, (long) TIME_PREPARATION * 60 * 20);
@@ -93,46 +97,30 @@ public class War {
     public void startCombat() {
         this.phase = WarPhase.COMBAT;
 
-        for (UUID uuid : attackers) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-
-            if (player.isOnline()) {
-                String message = String.format("""
+        String message = """
                                 §8§m                                                     §r
                                 §7
-                                §c§lGUERRE!§r §7Le comabt est imminent!§7
+                §c§lGUERRE!§r §7Le comabat est imminent!§7
                                 §8§oBattez vous contre §c%s!
                                 §8§oVous avez §c§l%d minutes §8§ode combat.
                                 §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.
                                 §7
-                                §8§m                                                     §r""",
-                        cityDefender.getName(), TIME_FIGHT);
+                §8§m                                                     §r""";
 
-                player.sendMessage(Component.text(message));
-            }
-            ;
+        for (UUID uuid : attackers) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+
+            if (player.isOnline())
+                player.sendMessage(Component.text(String.format(message, cityDefender.getName(), TIME_FIGHT)));
         }
 
         for (UUID uuid : defenders) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            if (player.isOnline()) {
-                String message = String.format("""
-                                §8§m                                                     §r
-                                §7
-                                §c§lGUERRE!§r §7Le comabt est imminent!§7
-                                §8§oBattez vous contre §c%s!
-                                §8§oVous avez §c§l%d minutes §8§ode combat.
-                                §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.
-                                §7
-                                §8§m                                                     §r""",
-                        cityAttacker.getName(), TIME_FIGHT);
-
-                player.sendMessage(Component.text(message));
-            }
-            ;
+            if (player.isOnline())
+                player.sendMessage(Component.text(String.format(message, cityAttacker.getName(), TIME_FIGHT)));
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::end, (long) TIME_FIGHT * 60 * 20);
@@ -148,5 +136,25 @@ public class War {
         this.phase = WarPhase.ENDED;
 
         WarManager.endWar(this);
+    }
+
+    public boolean isParticipant(UUID uuid) {
+        return attackers.contains(uuid) || defenders.contains(uuid);
+    }
+
+    public boolean isAttacker(UUID uuid) {
+        return attackers.contains(uuid);
+    }
+
+    public boolean isDefender(UUID uuid) {
+        return defenders.contains(uuid);
+    }
+
+    public void incrementAttackerKills() {
+        attackersKill++;
+    }
+
+    public void incrementDefenderKills() {
+        defendersKill++;
     }
 }
