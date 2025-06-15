@@ -112,7 +112,7 @@ public class Home {
 
     @Deprecated
     public OldHomeIcon getLegacyIcon() {
-        return HomeIconRegistry.toLegacyHomeIcon(this.icon);
+        return HomeIconRegistry.toLegacyHomeIcon(getIcon());
     }
 
     @Deprecated
@@ -148,5 +148,9 @@ public class Home {
         } catch (IllegalArgumentException e) {
             return HomeUtil.mapLegacyCustomId(iconId);
         }
+    }
+
+    public void setIcon(HomeIcon icon) {
+        this.iconId = icon.getSaveId();
     }
 }
