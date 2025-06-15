@@ -594,11 +594,6 @@ public class MayorManager {
                 createMayor(ownerName, ownerUUID, city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
             }
         } else {
-            // si owner a pas choisi perk event
-            if (mayor.getIdPerk1() == 0) {
-                mayor.setIdPerk1(PerkManager.getRandomPerkEvent().getId());
-            }
-
             if (cityElections.containsKey(city)) { // si y'a des maires qui se sont présenter
                 List<MayorCandidate> candidates = cityElections.get(city);
 
@@ -609,6 +604,12 @@ public class MayorManager {
                 candidateQueue.addAll(candidates);
 
                 MayorCandidate mayorWinner = candidateQueue.peek();
+
+                // si owner a pas choisi perk event
+                if (mayor.getIdPerk1() == 0) {
+                    mayor.setIdPerk1(PerkManager.getRandomPerkEvent().getId());
+                }
+
                 Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
                 Perks perk2 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk2());
                 Perks perk3 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk3());

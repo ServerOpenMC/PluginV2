@@ -24,6 +24,11 @@ public class JoinListener implements Listener  {
         }
 
         if (mayorManager.phaseMayor == 2 && mayorManager.cityMayor.get(playerCity)==null) {
+            if (playerCity.getMembers().size() >= mayorManager.MEMBER_REQ_ELECTION) {
+                mayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.ELECTION);
+            }
+            mayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
+
             mayorManager.runSetupMayor(playerCity);
         } else if (mayorManager.phaseMayor == 1 && mayorManager.cityMayor.get(playerCity)==null) {
             if (playerCity.getMembers().size()>=mayorManager.MEMBER_REQ_ELECTION) {
