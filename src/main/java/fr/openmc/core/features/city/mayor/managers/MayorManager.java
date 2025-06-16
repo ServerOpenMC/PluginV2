@@ -449,7 +449,7 @@ public class MayorManager {
                 Perks perk2 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk2());
                 Perks perk3 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk3());
 
-                createMayor(mayorWinner.getName(), mayorWinner.getId(), city, perk1, perk2, perk3,
+                createMayor(mayorWinner.getName(), mayorWinner.getUUID(), city, perk1, perk2, perk3,
                         mayorWinner.getCandidateColor(), ElectionType.ELECTION);
 
             } else {
@@ -502,7 +502,7 @@ public class MayorManager {
     public static MayorCandidate getCandidate(UUID player) {
         for (List<MayorCandidate> candidates : cityElections.values()) {
             for (MayorCandidate candidate : candidates) {
-                if (candidate.getId().equals(player)) {
+                if (candidate.getUUID().equals(player)) {
                     return candidate;
                 }
             }
@@ -524,7 +524,7 @@ public class MayorManager {
 
         return cityElections.get(playerCity.getUUID())
                 .stream()
-                .anyMatch(candidate -> candidate.getId().equals(player.getUniqueId()));
+                .anyMatch(candidate -> candidate.getUUID().equals(player.getUniqueId()));
     }
 
     /**
@@ -634,7 +634,7 @@ public class MayorManager {
         int idPerk3 = perk3 != null ? perk3.getId() : 0;
         if (mayor != null) {
             mayor.setName(playerName);
-            mayor.setUuid(playerUUID);
+            mayor.setUUID(playerUUID);
             mayor.setMayorColor(color);
             mayor.setIdPerk1(idPerk1);
             mayor.setIdPerk2(idPerk2);

@@ -104,7 +104,7 @@ public class MayorNpcMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }));
 
-            if (mayor.getUuid().equals(player.getUniqueId())) {
+            if (mayor.getUUID().equals(player.getUniqueId())) {
                 inventory.put(18, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                     itemMeta.itemName(Component.text("§aDéplacer ce NPC"));
                     itemMeta.lore(List.of(

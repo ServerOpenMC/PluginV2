@@ -42,6 +42,9 @@ public class City {
     private HashMap<UUID, Set<CPermission>> permissions;
     private HashMap<Integer, ItemStack[]> chestContent;
     @Getter
+    @Setter
+    private UUID chestWatcher;
+    @Getter
     private double balance;
     @Getter
     private CityType type;
@@ -49,10 +52,6 @@ public class City {
     private int powerPoints;
     @Getter
     private int freeClaims;
-
-    @Getter
-    @Setter
-    private UUID chestWatcher;
 
     /**
      * Constructor used for City creation
@@ -335,6 +334,19 @@ public class City {
      * @param chunkZ The Z coordinate of the chunk to check.
      * @return True if the chunk is claimed, false otherwise.
      */
+    public boolean hasChunk(double x, double z) {
+        if (this.chunks == null)
+            this.chunks = CityManager.getCityChunks(this);
+
+        return chunks.contains(BlockVector2.at(x, z));
+    }
+
+    /**
+     * Checks if a specific chunk is claimed by the city.
+     *
+     * @param chunk The chunk
+     * @return True if the chunk is claimed, false otherwise.
+     */
     public boolean hasChunk(Chunk chunk) {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
@@ -363,7 +375,7 @@ public class City {
         if (mayor == null)
             return false;
 
-        return mayor.getUuid() != null;
+        return mayor.getUUID() != null;
     }
 
     /**

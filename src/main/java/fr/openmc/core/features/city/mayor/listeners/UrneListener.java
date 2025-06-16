@@ -57,7 +57,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (MayorManager.cityElections.get(playerCity) == null) {
+        if (MayorManager.cityElections.get(playerCity.getUUID()) == null) {
             MessagesManager.sendMessage(player, Component.text("§8§o*personne ne s'est présenté ! Présenter vous ! /city*"), Prefix.MAYOR, MessageType.INFO, true);
             return;
         }
@@ -145,7 +145,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (playerCity.getMayor().getUuid() == null) {
+        if (playerCity.getMayor().getUUID() == null) {
             event.setCancelled(true);
             return;
         }

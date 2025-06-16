@@ -28,7 +28,7 @@ public class MayorVote {
     public MayorVote(String city, UUID voterUUID, MayorCandidate candidate) {
         this.city = city;
         this.voter = voterUUID;
-        this.candidate = candidate.getId();
+        this.candidate = candidate.getUUID();
     }
 
     public City getCity() {

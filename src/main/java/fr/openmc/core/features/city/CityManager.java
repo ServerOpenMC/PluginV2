@@ -72,11 +72,13 @@ public class CityManager implements Listener {
                 new CityPermsCommands(),
                 new CityChatCommand(),
                 new CityChestCommand(),
-                new AdminMayorCommands());
+                new AdminMayorCommands()
+            );
 
         OMCPlugin.registerEvents(
                 new MascotsListener(),
-                new CityChatListener());
+                new CityChatListener()
+            );
 
         new ProtectionsManager();
     }

@@ -15,7 +15,7 @@ import fr.openmc.core.utils.ColorUtils;
 public class MayorCandidate {
     @DatabaseField(id = true)
     @Getter
-    private UUID id;
+    private UUID UUID;
     @DatabaseField(canBeNull = false)
     @Getter
     private String city;
@@ -43,7 +43,7 @@ public class MayorCandidate {
             int idChoicePerk2, int idChoicePerk3, int vote) {
         this.city = city;
         this.name = candidateName;
-        this.id = candidateUUID;
+        this.UUID = candidateUUID;
         this.candidateColor = candidateColor.toString();
         this.idChoicePerk2 = idChoicePerk2;
         this.idChoicePerk3 = idChoicePerk3;

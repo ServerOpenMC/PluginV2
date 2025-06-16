@@ -76,7 +76,7 @@ public class MayorMandateMenu extends Menu {
             loreMayor.addAll(perk3.getLore());
 
 
-            inventory.put(3, new ItemBuilder(this, ItemUtils.getPlayerSkull(mayor.getUuid()),itemMeta -> {
+            inventory.put(3, new ItemBuilder(this, ItemUtils.getPlayerSkull(mayor.getUUID()),itemMeta -> {
                 itemMeta.displayName(Component.text("Maire " + mayor.getName()).color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(loreMayor);
             }));
@@ -89,7 +89,7 @@ public class MayorMandateMenu extends Menu {
 
             // si le joueur est maire
 
-            if (player.getUniqueId().equals(mayor.getUuid())) {
+            if (player.getUniqueId().equals(mayor.getUUID())) {
                 List<Component> loreLaw = List.of(
                         Component.text("§7Vous êtes le ").append(Component.text("Maire").color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false).append(Component.text("§7!"))),
                         Component.text(""),

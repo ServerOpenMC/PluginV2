@@ -11,9 +11,9 @@ import lombok.Getter;
 
 @DatabaseTable(tableName = "city_chests")
 public class DBCityChest {
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false)
     private String city;
-    @DatabaseField(canBeNull = false, uniqueCombo = true)
+    @DatabaseField(canBeNull = false)
     @Getter
     private int page;
     @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)

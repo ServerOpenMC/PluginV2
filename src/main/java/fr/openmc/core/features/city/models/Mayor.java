@@ -19,7 +19,7 @@ public class Mayor {
     @DatabaseField
     @Getter
     @Setter
-    private UUID uuid;
+    private UUID UUID;
     @DatabaseField
     @Getter
     @Setter
@@ -49,7 +49,7 @@ public class Mayor {
             int idPerk3, ElectionType electionType) {
         this.city = city;
         this.name = mayorName;
-        this.uuid = mayorUUID;
+        this.UUID = mayorUUID;
         setMayorColor(mayorColor);
         this.idPerk1 = idPerk1;
         this.idPerk2 = idPerk2;

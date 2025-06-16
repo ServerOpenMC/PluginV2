@@ -68,6 +68,8 @@ public class CityMessages {
         } else {
             sendLine(sender, "Banque", money);
         }
-        sendLine(sender, "Claim gratuit", String.valueOf(city.getFreeClaims()));
+
+        if (city.getFreeClaims() > 0)
+            sendLine(sender, "Claim gratuit", String.valueOf(city.getFreeClaims()));
     }
 }

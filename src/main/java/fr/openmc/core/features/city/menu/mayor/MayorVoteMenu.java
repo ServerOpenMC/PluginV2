@@ -84,7 +84,7 @@ public class MayorVoteMenu extends PaginatedMenu {
                 }
 
 
-                ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getId()), itemMeta -> {
+                ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getUUID()), itemMeta -> {
                     itemMeta.displayName(Component.text("Maire " + candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(loreMayor);
                     itemMeta.setEnchantmentGlintOverride(ench);
