@@ -15,7 +15,6 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -71,12 +70,8 @@ public class MascotsDamageListener implements Listener {
                     maxHealth
             )));
         }
-
-        e.setCancelled(true);
     }
 
-
-    @SneakyThrows
     @EventHandler
     void onMascotTakeDamage(EntityDamageByEntityEvent e) {
         Entity damageEntity = e.getEntity();
@@ -188,6 +183,19 @@ public class MascotsDamageListener implements Listener {
         LivingEntity mob = (LivingEntity) damageEntity;
         City cityMob = MascotUtils.getCityFromEntity(mob.getUniqueId());
 
+        double newHealth = Math.floor(mob.getHealth());
+
+        mob.setHealth(newHealth);
+        if (newHealth <= 0) {
+            mob.setHealth(0);
+        }
+
+        mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                cityMob.getName(),
+                mob.getHealth() - e.getFinalDamage(),
+                mob.getMaxHealth()
+        )));
+
         try {
             if (MayorManager.getInstance().phaseMayor != 2) return;
 
@@ -198,29 +206,14 @@ public class MascotsDamageListener implements Listener {
             exception.printStackTrace();
         }
 
-        try {
-            double newHealth = Math.floor(mob.getHealth());
-            mob.setHealth(newHealth);
-            if (newHealth <= 0) {
-                mob.setHealth(0);
-            }
 
-            if (MascotRegenerationUtils.regenTasks.containsKey(damageEntity.getUniqueId())) {
-                MascotRegenerationUtils.regenTasks.get(damageEntity.getUniqueId()).cancel();
-                MascotRegenerationUtils.regenTasks.remove(damageEntity.getUniqueId());
-            }
-
-            MascotRegenerationUtils.startRegenCooldown(cityMob.getMascot());
-
-            mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
-                    city.getName(),
-                    newHealth,
-                    mob.getMaxHealth()
-            )));
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        if (MascotRegenerationUtils.regenTasks.containsKey(damageEntity.getUniqueId())) {
+            MascotRegenerationUtils.regenTasks.get(damageEntity.getUniqueId()).cancel();
+            MascotRegenerationUtils.regenTasks.remove(damageEntity.getUniqueId());
         }
-        e.setCancelled(true);
+
+        MascotRegenerationUtils.startRegenCooldown(cityMob.getMascot());
+
     }
 
 }
