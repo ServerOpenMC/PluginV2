@@ -37,8 +37,6 @@ public class MascotsDeathListener implements Listener {
 
         if (mascot == null) return;
 
-        int level = mascot.getLevel();
-
         mascot.setImmunity(true);
         mascot.setAlive(false);
 

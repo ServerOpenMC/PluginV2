@@ -127,7 +127,12 @@ public class WarManager {
         int powerChange = -1;
         double bonusMoney = 0;
         if (!winReason.equals(WinReason.DRAW)) {
-            powerChange = (war.getAttackers().size() + war.getDefenders().size()) / 2;
+            double ratio = winner.getPowerPoints() / (double) loser.getPowerPoints();
+            ratio = Math.max(0.2, Math.min(2.5, ratio));
+
+            int base = (war.getAttackers().size() + war.getDefenders().size()) / 2;
+            powerChange = (int) Math.ceil(base * (1 / ratio));
+
             winner.updatePowerPoints(powerChange);
             loser.updatePowerPoints(-powerChange);
 

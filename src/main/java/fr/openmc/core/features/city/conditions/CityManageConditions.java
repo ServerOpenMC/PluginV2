@@ -79,6 +79,11 @@ public class CityManageConditions {
             return false;
         }
 
+        if (city.isInWar()) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas supprimer votre ville pendant une guerre"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         if (!city.getPlayerWith(CPermission.OWNER).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
