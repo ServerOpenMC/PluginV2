@@ -38,7 +38,7 @@ public class WarActions {
 
         if (!launchCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville n'est pas dans un statut de §cgueere§f! Changez la type de votre ville avec §c/city type §fou depuis le §cMenu Princiapl des Villes"),
+                    Component.text("Votre ville n'est pas dans un statut de §cgueere§f! Changez la type de votre ville avec §c/city type §fou depuis le §cMenu Principales des Villes"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }

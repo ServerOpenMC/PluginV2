@@ -211,6 +211,12 @@ public class MascotsDamageListener implements Listener {
             }
 
             MascotRegenerationUtils.startRegenCooldown(cityMob.getMascot());
+
+            mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+                    city.getName(),
+                    newHealth,
+                    mob.getMaxHealth()
+            )));
         } catch (Exception exception) {
             exception.printStackTrace();
         }

@@ -516,30 +516,41 @@ public class City {
     }
 
     /**
+     * Adds a chunk to the city's claimed chunks by specifying its coordinates and updates the database asynchronously.
+     *
+     * @param x The X coordinate of the chunk to be added.
+     * @param z The Z coordinate of the chunk to be added.
+     */
+    public void addChunk(int x, int z) {
+        Chunk chunk = Bukkit.getWorld("world").getChunkAt(x, z);
+        addChunk(chunk);
+    }
+
+    /**
      * Removes a chunk from the city's claimed chunks and updates the database asynchronously.
      *
      * @param chunkX The X coordinate of the chunk to be removed.
      * @param chunkZ The Z coordinate of the chunk to be removed.
-     * @return True if the chunk was successfully removed, false otherwise.
      */
-    public boolean removeChunk(int chunkX, int chunkZ) {
+    public void removeChunk(int chunkX, int chunkZ) {
         getChunks(); // Load chunks
 
-        if (!chunks.contains(BlockVector2.at(chunkX, chunkZ))) return false;
+
+        System.out.println(chunks.contains(BlockVector2.at(chunkX, chunkZ)));
+        if (!chunks.contains(BlockVector2.at(chunkX, chunkZ))) return;
         chunks.remove(BlockVector2.at(chunkX, chunkZ));
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)");
-                statement.setString(1, cityUUID);
-                statement.setInt(2, chunkX);
-                statement.setInt(3, chunkZ);
+                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_regions WHERE x = ? AND z = ? AND city_uuid = ?");
+                statement.setInt(1, chunkX);
+                statement.setInt(2, chunkZ);
+                statement.setString(3, cityUUID);
                 statement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
-        return true;
     }
 
     /**

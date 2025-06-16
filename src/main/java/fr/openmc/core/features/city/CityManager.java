@@ -21,7 +21,6 @@ import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;
@@ -84,18 +83,6 @@ public class CityManager implements Listener {
         new CityBankManager();
 
         loadFreeClaims();
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getLogger().info("===== MayorManager Debug =====");
-
-                Bukkit.getLogger().info("City Mayors:");
-                for (Map.Entry<String, Integer> entry : freeClaim.entrySet()) {
-                    Bukkit.getLogger().info(entry.getKey() + " -> " + entry.getValue());
-                }
-            }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0, 600L); // 600 ticks = 30 secondes
     }
 
     public static void init_db(Connection conn) throws SQLException {

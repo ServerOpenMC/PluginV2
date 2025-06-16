@@ -42,7 +42,7 @@ public class CityTypeConditions {
         }
 
         if (city.getBalance() < 20000) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez avoir au moins 20000" + EconomyManager.getEconomyIcon() + " pour changer le type de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Vous devez avoir au moins 20000" + EconomyManager.getEconomyIcon() + " dans votre banque pour changer le type de votre ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

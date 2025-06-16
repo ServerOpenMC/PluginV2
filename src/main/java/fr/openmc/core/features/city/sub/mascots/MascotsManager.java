@@ -84,14 +84,6 @@ public class MascotsManager {
         for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
             MascotRegenerationUtils.mascotsRegeneration(mascot);
         }
-
-        for (Mascot mascot : MascotsManager.mascotsByCityUUID.values()) {
-            System.out.println("mascot " + mascot);
-        }
-
-        for (Mascot mascot : MascotsManager.mascotsByEntityUUID.values()) {
-            System.out.println("mascot " + mascot);
-        }
     }
 
     public static void init_db(Connection conn) throws SQLException {
@@ -117,9 +109,6 @@ public class MascotsManager {
                 Chunk chunk = world.getChunkAt(rs.getInt("x"), rs.getInt("z"));
 
                 Mascot mascot = new Mascot(city, entityUUID, level, immunity, alive, chunk);
-
-                System.out.println("city " + city + city.getName());
-                System.out.println("mascot " + mascot);
 
                 mascotsByEntityUUID.put(entityUUID, mascot);
                 mascotsByCityUUID.put(city.getUUID(), mascot);
