@@ -25,7 +25,7 @@ public class CityRank {
 		this.icon = icon;
 	}
 	
-	public CityRank validate(Player player) {
+	public CityRank validate(Player player) throws IllegalArgumentException {
 		if (name == null || name.isEmpty()) {
 			MessagesManager.sendMessage(player, Component.text("Le nom du grade ne peut pas être vide"), Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank name cannot be null or empty");
@@ -34,12 +34,12 @@ public class CityRank {
 			MessagesManager.sendMessage(player, Component.text("La priorité doit être contenue entre 0 et 17"), Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank priority cannot be negative");
 		}
-		if (permissions == null || permissions.isEmpty()) {
-			MessagesManager.sendMessage(player, Component.text("Les permissions du grade ne peuvent pas être vides"), Prefix.CITY, MessageType.ERROR, false);
+		if (permissions == null) {
+			MessagesManager.sendMessage(player, Component.text("Les permissions du grade ne peuvent pas être nulles (prévenir le staff)"), Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank must have at least one permission");
 		}
 		if (icon == null) {
-			MessagesManager.sendMessage(player, Component.text("L'icône du grade ne peut pas être nulle"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, Component.text("L'icône du grade ne peut pas être nulle (prévenir le staff)"), Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank icon cannot be null");
 		}
 		return this;
@@ -65,12 +65,11 @@ public class CityRank {
 		return this;
 	}
 	
-	public CityRank swapPermission(CPermission permission) {
+	public void swapPermission(CPermission permission) {
 		if (permissions.contains(permission)) {
 			permissions.remove(permission);
 		} else {
 			permissions.add(permission);
 		}
-		return this;
 	}
 }

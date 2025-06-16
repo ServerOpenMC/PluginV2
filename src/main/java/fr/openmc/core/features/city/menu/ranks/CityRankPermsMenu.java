@@ -34,15 +34,10 @@ public class CityRankPermsMenu {
 		
 		ArrayList<Component> pages = new ArrayList<>();
 		
-		Component firstPage = Component.text("⬅ Permissions grade").append(
+		Component firstPage = Component.text("  Permissions grade").append(
 						Component.text("\n\n")
 								.decorate(TextDecoration.UNDERLINED)
-								.decorate(TextDecoration.BOLD))
-				.clickEvent(ClickEvent.callback((plr1) -> {
-					sender.closeInventory();
-					new CityRankDetailsMenu(sender, city, rank).open();
-				}))
-				.color(NamedTextColor.BLACK);
+								.decorate(TextDecoration.BOLD));
 		
 		ArrayList<Component> perms = new ArrayList<>();
 		
@@ -65,12 +60,19 @@ public class CityRankPermsMenu {
 			firstPage = firstPage.append(perms.removeFirst());
 		}
 		
+		firstPage = firstPage.append(Component.text("⬅ Retour")
+				.clickEvent(ClickEvent.callback((plr1) -> {
+					sender.closeInventory();
+					new CityRankDetailsMenu(sender, city, rank).open();
+				}))
+				.color(NamedTextColor.BLACK));
+		
 		pages.add(firstPage);
 		
 		while (! perms.isEmpty()) {
 			Component page = Component.text("");
 			
-			for (int i = 0; i < 14 && ! perms.isEmpty(); i++) {
+			for (int i = 0; i < 9 && ! perms.isEmpty(); i++) {
 				page = page.append(perms.removeFirst());
 			}
 			

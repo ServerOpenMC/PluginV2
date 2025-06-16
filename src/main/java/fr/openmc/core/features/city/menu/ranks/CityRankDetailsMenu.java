@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityRank;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -54,7 +55,7 @@ public class CityRankDetailsMenu extends Menu {
 	
 	@Override
 	public void onClose(InventoryCloseEvent event) {
-	
+		city.updateRank(this.rank, this.rank.validate(getOwner()));
 	}
 	
 	@Override
@@ -71,53 +72,58 @@ public class CityRankDetailsMenu extends Menu {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
 		map.put(0, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-			itemMeta.displayName(Component.text("Insérer la priorité du grade"));
+			itemMeta.displayName(Component.text("§dInsérer la priorité du grade"));
 			itemMeta.lore(List.of(
-					Component.text("La priorité détermine l'ordre des grades"),
-					Component.text("Il sera toujours possible de le modifier plus tard"),
-					Component.text("Priorité actuelle : " + this.rank.getPriority())
+					Component.text("§7La priorité détermine l'ordre des grades"),
+					Component.text("§6§lUne priorité plus basse signifie un grade plus élevé"),
+					Component.text("§7Modifiable plus tard"),
+					Component.text("§7Priorité actuelle : §d" + this.rank.getPriority())
 			));
-		}).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, rank.withPriority((rank.getPriority() + 1) % 18)).open()));
+		}).setOnClick(inventoryClickEvent -> {
+			if (inventoryClickEvent.isLeftClick()) {
+				new CityRankDetailsMenu(getOwner(), city, rank.withPriority((rank.getPriority() + 1) % 18)).open();
+			} else if (inventoryClickEvent.isRightClick()) {
+				new CityRankDetailsMenu(getOwner(), city, rank.withPriority((rank.getPriority() - 1 + 18) % 18)).open();
+			}
+		}));
 		
 		map.put(4, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-			itemMeta.displayName(Component.text("Changer le nom du grade"));
+			itemMeta.displayName(Component.text("§3Changer le nom du grade"));
 			itemMeta.lore(List.of(
-					Component.text("Le nom du grade est donné lors de sa création"),
-					Component.text("Il ne sera pas possible de le modifier plus tard"),
-					Component.text("Nom actuel : " + (this.rank.getName().isEmpty() ? "Non défini" : this.rank.getName()))
+					Component.text("§7Le nom du grade est donné lors de sa création"),
+					Component.text("§7Modifiable plus tard"),
+					Component.text("§7Nom actuel : §3" + (this.rank.getName().isEmpty() ? "§oNon défini" : this.rank.getName()))
 			));
 		}));
 		
 		map.put(8, new ItemBuilder(this, this.rank.getIcon(), itemMeta -> {
-			itemMeta.displayName(Component.text("Changer l'icône du grade"));
+			itemMeta.displayName(Component.text("§9Changer l'icône du grade"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour changer une icône"),
-					Component.text("Il sera toujours possible de la modifier plus tard")
+					Component.text("§7Cliquez pour changer une icône"),
+					Component.text("§7Modifiable plus tard")
 			));
 		}).setOnClick(inventoryClickEvent -> new CityRankIconMenu(getOwner(), city, rank).open()));
 		
 		map.put(13, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
-			itemMeta.displayName(Component.text("Insérer les permissions du grade"));
+			itemMeta.displayName(Component.text("§bInsérer les permissions du grade"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour sélectionner les permissions"),
-					Component.text("Il sera toujours possible de les modifier plus tard")
+					Component.text("§7Cliquez pour sélectionner les permissions"),
+					Component.text("§7Modifiables plus tard"),
+					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissions().isEmpty() ? "§oAucune" : this.rank.getPermissions().size()))
 			));
-		}).setOnClick(inventoryClickEvent -> {
-			CityRankPermsMenu.openBook(getOwner(), rank);
-		}));
+		}).setOnClick(inventoryClickEvent -> CityRankPermsMenu.openBook(getOwner(), rank)));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("Annuler"));
+			itemMeta.displayName(Component.text("§cAnnuler et supprimer"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour annuler la création du grade")
+					Component.text("§7Cliquez pour annuler la création du grade")
 			));
 		}).setOnClick(inventoryClickEvent -> getOwner().closeInventory()));
 		
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("Créer le grade"));
+			itemMeta.displayName(Component.text("§aCréer le grade"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour créer le grade avec les paramètres définis"),
-					Component.text("Vous devrez entrer un nom pour le grade")
+					Component.text("§7Cliquez pour créer le grade avec les paramètres définis")
 			));
 		}).setOnClick(inventoryClickEvent -> {
 			city.createRank(rank.validate(getOwner()));
@@ -132,53 +138,60 @@ public class CityRankDetailsMenu extends Menu {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
 		map.put(0, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-			itemMeta.displayName(Component.text("Priorité "));
+			itemMeta.displayName(Component.text("§dPriorité"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour modifier la priorité du grade"),
-					Component.text("Priorité actuelle : " + this.rank.getPriority())
+					Component.text("§7Cliquez pour modifier la priorité du grade"),
+					Component.text("§7Priorité actuelle : §d" + this.rank.getPriority())
 			));
-		}).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, rank.withPriority((rank.getPriority() + 1) % 18)).open()));
+		}).setOnClick(inventoryClickEvent -> {
+			if (inventoryClickEvent.isLeftClick()) {
+				new CityRankDetailsMenu(getOwner(), city, rank.withPriority((rank.getPriority() + 1) % 18)).open();
+			} else if (inventoryClickEvent.isRightClick()) {
+				new CityRankDetailsMenu(getOwner(), city, rank.withPriority((rank.getPriority() - 1 + 18) % 18)).open();
+			}
+		}));
 		
 		map.put(4, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
-			itemMeta.displayName(Component.text("Nom du grade"));
+			itemMeta.displayName(Component.text("§3Nom du grade"));
 			itemMeta.lore(List.of(
-					Component.text("Vous ne pouvez plus modifier le nom du grade après sa création"),
-					Component.text("Nom actuel : " + this.rank.getName())
+					Component.text("§7Vous pouvez modifier le nom du grade avec"),
+					Component.text("§6/city rank rename <ancien nom> <nouveau nom>"),
+					Component.text("§7Nom actuel : §3" + this.rank.getName())
 			));
 		}));
 		
 		map.put(8, new ItemBuilder(this, this.rank.getIcon(), itemMeta -> {
-			itemMeta.displayName(Component.text("Changer l'icône du grade"));
+			itemMeta.displayName(Component.text("§9Changer l'icône du grade"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour changer l'icône du grade")
+					Component.text("§7Cliquez pour changer l'icône du grade")
 			));
 		}).setOnClick(inventoryClickEvent -> new CityRankIconMenu(getOwner(), city, rank).open()));
 		
 		map.put(13, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
-			itemMeta.displayName(Component.text("Modifier les permissions du grade"));
+			itemMeta.displayName(Component.text("§bModifier les permissions du grade"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour modifier les permissions du grade"),
-					Component.text("Permissions actuelles : " + this.rank.getPermissions().toString())
+					Component.text("§7Cliquez pour modifier les permissions du grade"),
+					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissions().isEmpty() ? "§oAucune" : this.rank.getPermissions().size()))
 			));
 		}).setOnClick(inventoryClickEvent -> {
 			CityRankPermsMenu.openBook(getOwner(), rank);
 		}));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("Annuler"));
+			itemMeta.displayName(Component.text("§cAnnuler"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour annuler les modifications"),
-					Component.text("Aucune modification ne sera enregistrée")
+					Component.text("§7Cliquez pour annuler les modifications"),
+					Component.text("§4Aucune modification ne sera enregistrée")
 			));
-		}).setOnClick(inventoryClickEvent -> getOwner().closeInventory()));
+		}).setOnClick(inventoryClickEvent -> new CityRanksMenu(getOwner(), city).open()));
 		
 		map.put(22, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("Supprimer le grade"));
+			itemMeta.displayName(Component.text("§cSupprimer le grade"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour supprimer ce grade"),
-					Component.text("Cette action est irréversible")
+					Component.text("§7Cliquez pour supprimer ce grade"),
+					Component.text("§4Cette action est irréversible")
 			));
-		}).setOnClick(inventoryClickEvent -> {
+		}).setOnClick(inventoryClickEvent -> new ConfirmMenu(getOwner(), () -> {
 			try {
 				city.deleteRank(rank);
 				getOwner().closeInventory();
@@ -186,13 +199,13 @@ public class CityRankDetailsMenu extends Menu {
 			} catch (IllegalArgumentException e) {
 				MessagesManager.sendMessage(getOwner(), Component.text("Impossible de supprimer le grade : " + e.getMessage()), Prefix.CITY, MessageType.ERROR, false);
 			}
-		}));
+		}, () -> new CityRankDetailsMenu(getOwner(), city, rank).open(),
+				List.of(Component.text("§cCette action est irréversible")), List.of()).open()));
 		
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("Enregistrer les modifications"));
+			itemMeta.displayName(Component.text("§aEnregistrer les modifications"));
 			itemMeta.lore(List.of(
-					Component.text("Cliquez pour enregistrer les modifications du grade"),
-					Component.text("Vous pouvez modifier le nom avec un clic droit")
+					Component.text("§7Cliquez pour enregistrer les modifications du grade")
 			));
 		}).setOnClick(inventoryClickEvent -> {
 			city.updateRank(this.rank, rank.validate(getOwner()));
