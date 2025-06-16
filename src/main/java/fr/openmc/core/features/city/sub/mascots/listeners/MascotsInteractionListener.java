@@ -43,6 +43,8 @@ public class MascotsInteractionListener implements Listener {
             return;
         }
 
+        if (city.isInWar()) return;
+
         String city_uuid = city.getUUID();
         if (mascotsUUID.equals(city_uuid)) {
             Mascot mascot = city.getMascot();
