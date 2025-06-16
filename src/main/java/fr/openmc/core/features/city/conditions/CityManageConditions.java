@@ -33,6 +33,7 @@ public class CityManageConditions {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de renommer ta ville."), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
         return true;
     }
 

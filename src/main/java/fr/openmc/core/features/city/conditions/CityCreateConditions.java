@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.InputUtils;
@@ -55,14 +54,6 @@ public class CityCreateConditions {
         if (cityName != null && !InputUtils.isInputCityName(cityName)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
             return false;
-        }
-
-        for (City city : CityManager.getCities()) {
-            String testCityName = city.getName();
-            if (testCityName.equalsIgnoreCase(cityName)) {
-                MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
-                return false;
-            }
         }
 
         return true;
