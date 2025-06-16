@@ -1,5 +1,6 @@
 package fr.openmc.core.features.corporation.models;
 
+import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.corporation.company.Company;
 
 import java.util.UUID;
@@ -16,7 +17,7 @@ public class DBCompany {
     @DatabaseField(canBeNull = false)
     private UUID owner;
     @DatabaseField
-    private UUID city;
+    private String city;
     @DatabaseField(canBeNull = false)
     private double cut;
     @DatabaseField(canBeNull = false)
@@ -26,11 +27,11 @@ public class DBCompany {
         // required for ORMLite
     }
 
-    public DBCompany(UUID id, String name, UUID owner, UUID city, double cut, double balance) {
+    public DBCompany(UUID id, String name, UUID owner, City city, double cut, double balance) {
         this.id = id;
         this.name = name;
         this.owner = owner;
-        this.city = city;
+        this.city = city == null ? null : city.getUUID();
         this.cut = cut;
         this.balance = balance;
     }

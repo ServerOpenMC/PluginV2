@@ -385,8 +385,8 @@ public class CompanyManager {
         try {
             shopsDao.create(dbShops);
             itemsDao.create(dbShopItems);
-            suppliersDao.create(dbShopSuppliers);
             salesDao.create(dbShopSales);
+            suppliersDao.create(dbShopSuppliers);
         } catch (SQLException e) {
             e.printStackTrace();
         }

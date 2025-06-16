@@ -82,15 +82,15 @@ public class Company {
     }
 
     /**
-     * create a company object (use to serliaze to DBCompany)
+     * create a company object (use to deserliaze to DBCompany)
      *
      * @param name the name of the company
      * @param owner the owner
      * @param company_uuid the uuid of the company if it has one
      */
-    public Company(UUID id, String name, UUID player, UUID city, double cut, double balance) {
+    public Company(UUID id, String name, UUID player, String city, double cut, double balance) {
         this.name = name;
-        this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city.toString()));
+        this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city));
         assert id != null;
         this.company_uuid = id;
         this.cut = cut;
@@ -105,7 +105,7 @@ public class Company {
      * @return the company to be saved to the DB
      */
     public DBCompany serialize() {
-        return new DBCompany(company_uuid, name, owner.getPlayer(), UUID.fromString(owner.getCity().getUUID()), cut, balance);
+        return new DBCompany(company_uuid, name, owner.getPlayer(), owner.getCity(), cut, balance);
     }
 
     /**
