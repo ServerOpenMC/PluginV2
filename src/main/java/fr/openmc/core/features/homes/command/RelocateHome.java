@@ -52,8 +52,6 @@ public class RelocateHome {
                 return;
             }
 
-            if (HomeUtil.checkName(player, homeName)) return;
-
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home h : homes) {
                 if (!h.getName().equalsIgnoreCase(homeName)) {

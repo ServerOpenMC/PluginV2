@@ -1,6 +1,8 @@
 package fr.openmc.core.features.homes;
 
-import fr.openmc.core.features.homes.utils.HomeUtil;
+import fr.openmc.core.features.homes.icons.HomeIcon;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.icons.OldHomeIcon;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -16,13 +18,17 @@ public class Home {
     private final UUID owner;
     @Setter private String name;
     @Setter private Location location;
-    @Setter private HomeIcons icon;
+    @Setter private HomeIcon icon;
 
-    public Home(UUID owner, String name, Location location, HomeIcons icon) {
+    public Home(UUID owner, String name, Location location, HomeIcon icon) {
         this.owner = owner;
         this.name = name;
         this.location = location;
-        this.icon = icon;
+        this.icon = icon != null ? icon : HomeIconRegistry.getDefaultIcon();
+    }
+
+    public Home(UUID owner, String name, Location location, OldHomeIcon legacyIcon) {
+        this(owner, name, location, HomeIconRegistry.fromLegacyHomeIcon(legacyIcon));
     }
 
     public String serializeLocation() {
@@ -47,7 +53,7 @@ public class Home {
     }
 
     public ItemStack getIconItem() {
-        ItemStack item = HomeUtil.getHomeIconItem(this);
+        ItemStack item = icon.getItemStack().clone();
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§a" + name);
         item.setLore(List.of(
@@ -59,5 +65,29 @@ public class Home {
         ));
         item.setItemMeta(meta);
         return item;
+    }
+
+    @Deprecated
+    public OldHomeIcon getLegacyIcon() {
+        return HomeIconRegistry.toLegacyHomeIcon(this.icon);
+    }
+
+    @Deprecated
+    public void setLegacyIcon(OldHomeIcon legacyIcon) {
+        this.icon = HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
+    }
+
+    public String getIconSaveId() {
+        return icon.getSaveId();
+    }
+
+    @Override
+    public String toString() {
+        return "Home{" +
+                "owner=" + owner +
+                ", name='" + name + '\'' +
+                ", location=" + serializeLocation() +
+                ", icon=" + icon.getId() +
+                '}';
     }
 }
