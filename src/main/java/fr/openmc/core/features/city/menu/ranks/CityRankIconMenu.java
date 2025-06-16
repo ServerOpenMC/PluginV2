@@ -75,7 +75,9 @@ public class CityRankIconMenu extends PaginatedMenu {
 	@Override
 	public void onInventoryClick(InventoryClickEvent e) {
 		ItemStack clickedItem = e.getCurrentItem();
-		if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
+		if (clickedItem == null || clickedItem.getType() == Material.AIR || clickedItem.getType() == getBorderMaterial()) {
+			return;
+		}
 		new CityRankDetailsMenu(getOwner(), city, rank.withIcon(clickedItem.getType())).open();
 	}
 	

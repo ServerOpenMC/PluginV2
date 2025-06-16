@@ -64,7 +64,6 @@ public class ConfirmMenu extends Menu {
     @Override
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
-        Player player = getOwner();
 
         List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);
         loreAccept.add(Component.text("§e§lCLIQUEZ ICI POUR VALIDER"));
@@ -78,16 +77,12 @@ public class ConfirmMenu extends Menu {
         inventory.put(3, new ItemBuilder(this, refuseBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§cRefuser"));
             itemMeta.lore(loreDeny);
-        }).setOnClick(event -> {
-            deny.run();
-        }));
+        }).setOnClick(event -> deny.run()));
 
         inventory.put(5, new ItemBuilder(this, acceptBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§aAccepter"));
             itemMeta.lore(loreAccept);
-        }).setOnClick(event -> {
-            accept.run();
-        }));
+        }).setOnClick(event -> accept.run()));
 
         return inventory;
     }

@@ -46,8 +46,8 @@ public class CitizensPermsMenu {
         }
 
         ArrayList<Component> pages = new ArrayList<>();
-
-        Component firstPage = Component.text("        Permissions").append(
+        
+        Component firstPage = Component.text("       Permissions").append(
                 Component.text("\n\n")
                         .decorate(TextDecoration.UNDERLINED)
                         .decorate(TextDecoration.BOLD));
@@ -72,7 +72,7 @@ public class CitizensPermsMenu {
         for (int i = 0; i < 9 && !perms.isEmpty(); i++) {
             firstPage = firstPage.append(perms.removeFirst());
         }
-        firstPage = firstPage.append(Component.text("\n\n\n⬅ Retour")
+        firstPage = firstPage.append(Component.text("⬅ Retour")
                 .clickEvent(ClickEvent.callback((plr1) -> {
                     sender.closeInventory();
                     openBook(sender);
@@ -83,8 +83,8 @@ public class CitizensPermsMenu {
 
         while (!perms.isEmpty()) {
             Component page = Component.text("");
-
-            for (int i = 0; i < 14 && !perms.isEmpty(); i++) {
+            
+            for (int i = 0; i < 9 && ! perms.isEmpty(); i++) {
                 page = page.append(perms.removeFirst());
             }
 

@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.CityRank;
 import fr.openmc.core.features.city.menu.ranks.CityRankDetailsMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRankMemberMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
+import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -14,6 +15,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+import java.util.List;
 
 @Command({"city ranks", "ville grades"})
 public class CityRankCommands {
@@ -31,24 +34,6 @@ public class CityRankCommands {
 			return;
 		}
 		new CityRanksMenu(player, city).open();
-	}
-	
-	public static void swapPermission(Player player, CityRank rank, CPermission permission) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
-		if (city == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		if (rank == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		
-		rank.swapPermission(permission);
 	}
 	
 	@Subcommand("add")
@@ -96,10 +81,7 @@ public class CityRankCommands {
 		new CityRankDetailsMenu(player, city, rank).open();
 	}
 	
-	@Subcommand("delete")
-	@CommandPermission("omc.commands.city.rank.delete")
-	@AutoComplete("@city_ranks")
-	public void delete(Player player, @Named("rank") String rankName) {
+	public static void swapPermission(Player player, CityRank rank, CPermission permission) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -109,18 +91,12 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		CityRank rank = city.getRankByName(rankName);
 		if (rank == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		
-		try {
-			city.deleteRank(rank);
-			MessagesManager.sendMessage(player, Component.text("Grade " + rankName + " supprimé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
-		} catch (IllegalArgumentException e) {
-			MessagesManager.sendMessage(player, Component.text("Impossible de supprimer le grade : " + e.getMessage()), Prefix.CITY, MessageType.ERROR, false);
-		}
+		rank.swapPermission(permission);
 	}
 	
 	@Subcommand("assign")
@@ -167,5 +143,36 @@ public class CityRankCommands {
 		
 		city.updateRank(rank, new CityRank(newName, rank.getPriority(), rank.getPermissions(), rank.getIcon()));
 		MessagesManager.sendMessage(player, Component.text("Le nom du grade a été mis à jour : " + rankName + " → " + newName), Prefix.CITY, MessageType.SUCCESS, false);
+	}
+	
+	@Subcommand("delete")
+	@CommandPermission("omc.commands.city.rank.delete")
+	@AutoComplete("@city_ranks")
+	public void delete(Player player, @Named("rank") String rankName) {
+		City city = CityManager.getPlayerCity(player.getUniqueId());
+		if (city == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		CityRank rank = city.getRankByName(rankName);
+		if (rank == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		}
+		
+		new ConfirmMenu(player, () -> {
+			try {
+				city.deleteRank(rank);
+				player.closeInventory();
+				MessagesManager.sendMessage(player, Component.text("Grade " + rank.getName() + " supprimé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
+			} catch (IllegalArgumentException e) {
+				MessagesManager.sendMessage(player, Component.text("Impossible de supprimer le grade : " + e.getMessage()), Prefix.CITY, MessageType.ERROR, false);
+			}
+		}, () -> new CityRankDetailsMenu(player, city, rank).open(),
+				List.of(Component.text("§cCette action est irréversible")), List.of()).open();
 	}
 }

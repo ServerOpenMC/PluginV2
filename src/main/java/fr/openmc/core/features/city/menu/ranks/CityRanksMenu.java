@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.menu.ranks;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityRank;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class CityRanksMenu extends Menu {
 	
@@ -61,7 +59,6 @@ public class CityRanksMenu extends Menu {
 				if (i == 18) break; // Limit to 18 ranks displayed
 				
 				String rankName = rank.getName();
-				Set<CPermission> permissions = rank.getPermissions();
 				int priority = rank.getPriority();
 				Material icon = rank.getIcon() != null ? rank.getIcon() : Material.PAPER;
 				
