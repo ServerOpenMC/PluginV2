@@ -386,7 +386,14 @@ public class CompanyManager {
             shopsDao.create(dbShops);
             itemsDao.create(dbShopItems);
             salesDao.create(dbShopSales);
-            suppliersDao.create(dbShopSuppliers);
+
+            dbShopSuppliers.forEach(supplier -> {
+                try {
+                    suppliersDao.createOrUpdate(supplier);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
