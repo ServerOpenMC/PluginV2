@@ -59,42 +59,31 @@ public class War {
         this.startTime = System.currentTimeMillis();
         this.phase = WarPhase.PREPARATION;
 
+        String message = String.format("""
+                        §8§m                                                     §r
+                        §7
+                        §c§lGUERRE!§r §7La préparation de la guerre commence§7
+                        §8§oPréparez vous pour le combat contre %s
+                        §8§oVous avez §c§l%d minutes §8pour vous équiper.
+                        §8§oVous serez en §4%d §8VS §4%d
+                        §7
+                        §8§m                                                     §r""",
+                cityAttacker.getName(), TIME_PREPARATION, attackers.size(), defenders.size());
+
         for (UUID uuid : attackers) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
-            if (player.isOnline()) {
-                String message = String.format("""
-                                §8§m                                                     §r
-                                §7
-                                §c§lGUERRE!§r §7La préparation de la guerre commence§7
-                                §8§oPréparez vous pour le combat contre %s
-                                §8§oVous avez §c§l%d minutes §8pour vous équiper.
-                                §8§oVous serez en §4%d §8VS §4%d
-                                §7
-                                §8§m                                                     §r""",
-                        cityDefender.getName(), TIME_PREPARATION, attackers.size(), defenders.size());
+            if (!player.isOnline()) continue;
 
-                player.sendMessage(Component.text(message));
-            }
+            player.sendMessage(Component.text(message));
         }
 
         for (UUID uuid : defenders) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
-            if (player.isOnline()) {
-                String message = String.format("""
-                                §8§m                                                     §r
-                                §7
-                                §c§lGUERRE!§r §7La préparation de la guerre commence§7
-                                §8§oPréparez vous pour le combat contre %s
-                                §8§oVous avez §c§l%d minutes §8pour vous équiper.
-                                §8§oVous serez en §4%d §8VS §4%d
-                                §7
-                                §8§m                                                     §r""",
-                        cityAttacker.getName(), TIME_PREPARATION, attackers.size(), defenders.size());
+            if (!player.isOnline()) continue;
 
-                player.sendMessage(Component.text(message));
-            }
+            player.sendMessage(Component.text(message));
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::startCombat, (long) TIME_PREPARATION * 60 * 20);
