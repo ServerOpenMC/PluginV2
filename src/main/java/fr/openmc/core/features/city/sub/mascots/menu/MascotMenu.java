@@ -43,6 +43,9 @@ import static fr.openmc.core.features.city.sub.mascots.MascotsManager.upgradeMas
 
 public class MascotMenu extends Menu {
 
+    private static final int AYWENITE_REDUCE = 15;
+    private static final long COOLDOWN_REDUCE = 3600000L;
+
     private final Mascot mascots;
     private City city;
 
@@ -262,12 +265,34 @@ public class MascotMenu extends Menu {
             Supplier<ItemStack> immunityItemSupplier = () -> {
                 List<Component> lore = List.of(
                         Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),
-                        Component.text("§cTemps restant §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity")))
+                        Component.text("§cTemps restant §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity"))),
+                        Component.text("§7Pour réduire le temps de 1 heure, vous devez posséder de :"),
+                        Component.text("§8- §d" + AYWENITE_REDUCE + " d'Aywenite"),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR REDUIRE LE TEMPS D'IMMUNITÉ")
                 );
 
                 return new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
                     itemMeta.displayName(Component.text("§7Votre §cMascotte §7est §bimmunisée§7!"));
                     itemMeta.lore(lore);
+                }).setOnClick(inventoryClickEvent -> {
+                    if (city == null) {
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        player.closeInventory();
+                        return;
+                    }
+
+                    ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+
+                    if (!ItemUtils.hasEnoughItems(player, aywenite.getType(), AYWENITE_REDUCE)) {
+                        MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour reduire le cooldown de 1 heure (" + AYWENITE_REDUCE + " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+                        return;
+                    }
+
+                    ItemUtils.removeItemsFromInventory(player, aywenite.getType(), AYWENITE_REDUCE);
+                    DynamicCooldownManager.reduceCooldown(player, city.getUUID(), "city:immunity", COOLDOWN_REDUCE);
+
+                    MessagesManager.sendMessage(player, Component.text("Vous venez de dépenser §d" + AYWENITE_REDUCE + " d'Aywenite §fpour §bréduire §fle cooldown d'une heure"), Prefix.CITY, MessageType.SUCCESS, false);
                 });
             };
 

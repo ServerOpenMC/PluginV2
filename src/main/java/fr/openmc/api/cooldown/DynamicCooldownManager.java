@@ -3,7 +3,7 @@ package fr.openmc.api.cooldown;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.Connection;
@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Main class for managing cooldowns
@@ -70,23 +69,23 @@ public class DynamicCooldownManager {
     public static void init_db(Connection conn) throws SQLException {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS cooldowns (uuid VARCHAR(36) PRIMARY KEY, `group` VARCHAR(36), cooldown_time BIGINT, last_used BIGINT);").executeUpdate();
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.getLogger().info("===== cooldowns Debug =====");
-
-                Bukkit.getLogger().info("cooldowns:");
-                System.out.println(cooldowns);
-                for (Map.Entry<String, HashMap<String, Cooldown>> entry1 : cooldowns.entrySet()) {
-                    for (Map.Entry<String, Cooldown> entry2 : entry1.getValue().entrySet()) {
-                        Bukkit.getLogger().info(entry1.getKey() + " -> group " + entry2.getKey() + " -> cooldown time " + entry2.getValue().duration + " lastUse " + entry2.getValue().lastUse);
-                    }
-                }
-
-
-                Bukkit.getLogger().info("================================");
-            }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0, 600L); // 600 ticks = 30 secondes
+//        new BukkitRunnable() {
+//            @Override
+//            public void run() {
+//                Bukkit.getLogger().info("===== cooldowns Debug =====");
+//
+//                Bukkit.getLogger().info("cooldowns:");
+//                System.out.println(cooldowns);
+//                for (Map.Entry<String, HashMap<String, Cooldown>> entry1 : cooldowns.entrySet()) {
+//                    for (Map.Entry<String, Cooldown> entry2 : entry1.getValue().entrySet()) {
+//                        Bukkit.getLogger().info(entry1.getKey() + " -> group " + entry2.getKey() + " -> cooldown time " + entry2.getValue().duration + " lastUse " + entry2.getValue().lastUse);
+//                    }
+//                }
+//
+//
+//                Bukkit.getLogger().info("================================");
+//            }
+//        }.runTaskTimer(OMCPlugin.getInstance(), 0, 600L); // 600 ticks = 30 secondes
     }
 
     public static void loadCooldowns() {
@@ -193,6 +192,47 @@ public class DynamicCooldownManager {
 
         Cooldown cooldown = userCooldowns.get(group);
         return cooldown == null ? 0 : cooldown.getRemaining();
+    }
+
+    /**
+     * Réduit la durée restante d'un cooldown en cours.
+     *
+     * @param uuid            UUID de l'entité
+     * @param group           Nom du groupe de cooldown
+     * @param reductionMillis Réduction en millisecondes
+     */
+    public static void reduceCooldown(Player player, String uuid, String group, long reductionMillis) {
+        var userCooldowns = cooldowns.get(uuid);
+
+        if (userCooldowns == null) {
+            return;
+        }
+
+        Cooldown cooldown = userCooldowns.get(group);
+        if (cooldown == null) {
+            return;
+        }
+
+        if (cooldown.isReady()) {
+            return;
+        }
+
+        long remaining = cooldown.getRemaining();
+        long newRemaining = Math.max(0, remaining - reductionMillis);
+
+        cooldown.cancelTask();
+
+        if (newRemaining == 0) {
+            userCooldowns.remove(group);
+            Bukkit.getPluginManager().callEvent(new CooldownEndEvent(uuid, group));
+            if (userCooldowns.isEmpty()) cooldowns.remove(uuid);
+            player.closeInventory();
+            return;
+        }
+
+        long newLastUse = System.currentTimeMillis() - (cooldown.duration - newRemaining);
+        Cooldown newCooldown = new Cooldown(uuid, group, cooldown.duration, newLastUse);
+        userCooldowns.put(group, newCooldown);
     }
 
     /**

@@ -126,41 +126,42 @@ public class CityMenu extends Menu {
         }));
 
         Mascot mascot = city.getMascot();
-        LivingEntity mob;
-        List<Component> loreMascots;
 
-        if (mascot != null) {
-            mob = (LivingEntity) mascot.getEntity();
+        Supplier<ItemStack> mascotItemSupplier = () -> {
+            LivingEntity mob;
+            List<Component> loreMascots;
+            if (mascot != null) {
+                mob = (LivingEntity) mascot.getEntity();
 
-            if (!mascot.isAlive()) {
-                loreMascots = List.of(
-                        Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
-                        Component.text("§7Status : §cEn Attente de Soins"),
-                        Component.text("§7Niveau : §c" + mascot.getLevel()),
-                        Component.text(""),
-                        Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
-                );
+                if (!mascot.isAlive()) {
+                    loreMascots = List.of(
+                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
+                            Component.text("§7Status : §cMorte"),
+                            Component.text("§7Réapparition dans : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity"))),
+                            Component.text("§7Niveau : §c" + mascot.getLevel()),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                    );
+                } else {
+                    loreMascots = List.of(
+                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
+                            Component.text("§7Status : §aEn Vie"),
+                            Component.text("§7Niveau : §c" + mascot.getLevel()),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                    );
+                }
             } else {
                 loreMascots = List.of(
-                        Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
-                        Component.text("§7Status : §aEn Vie"),
-                        Component.text("§7Niveau : §c" + mascot.getLevel()),
-                        Component.text(""),
-                        Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
+                        Component.text("§cMascotte Inexistante")
                 );
             }
-        } else {
-            mob = null;
-            loreMascots = List.of(
-                    Component.text("§cMascotte Inexistante")
-            );
-        }
-
-        if (mob != null) {
-            inventory.put(8, new ItemBuilder(this, mascot.getMascotEgg(), itemMeta -> {
+            return new ItemBuilder(this, mascot != null ? mascot.getMascotEgg() : Material.BARRIER, itemMeta -> {
                 itemMeta.itemName(Component.text("§cVotre Mascotte"));
                 itemMeta.lore(loreMascots);
             }).setOnClick(inventoryClickEvent -> {
+                if (mascot == null) return;
+
                 if (!mascot.isAlive()) {
                     MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
                     menu.open();
@@ -169,12 +170,14 @@ public class CityMenu extends Menu {
 
                 MascotMenu menu = new MascotMenu(player, mascot);
                 menu.open();
-            }));
+            });
+        };
+
+        if (!mascot.isAlive()) {
+            MenuUtils.runDynamicItem(player, this, 8, mascotItemSupplier)
+                    .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
-            inventory.put(8, new ItemBuilder(this, Material.ZOMBIE_SPAWN_EGG, itemMeta -> {
-                itemMeta.itemName(Component.text("§cVotre Mascotte"));
-                itemMeta.lore(loreMascots);
-            }));
+            inventory.put(8, mascotItemSupplier.get());
         }
 
         List<Component> loreChunkCity;

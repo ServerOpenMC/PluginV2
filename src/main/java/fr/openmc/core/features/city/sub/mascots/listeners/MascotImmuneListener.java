@@ -30,6 +30,8 @@ public class MascotImmuneListener implements Listener {
     void onEndMascotImmune(CooldownEndEvent event) {
         if (!event.getGroup().equals("city:immunity")) return;
 
+        System.out.println("End Mascot Immune for " + event.getUUID());
+
         City cityImmune = CityManager.getCity(event.getUUID());
 
         if (cityImmune == null) return;
