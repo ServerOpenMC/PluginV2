@@ -29,6 +29,13 @@ public class WarPendingDefense {
         this.required = required;
     }
 
+    /**
+     * Accepts a defender's participation in the war.
+     * If the number of accepted defenders reaches the required amount, it returns false.
+     *
+     * @param uuid The UUID of the defender.
+     * @return true if the defender was accepted, false if the required number of defenders has already been reached.
+     */
     public boolean accept(UUID uuid) {
         if (acceptedDefenders.size() >= required) return false;
         return acceptedDefenders.add(uuid);

@@ -27,6 +27,12 @@ import java.util.stream.Collectors;
 
 public class WarActions {
 
+    /**
+     * Begins the process of launching a war against another city.
+     *
+     * @param player     The player initiating the war.
+     * @param cityAttack The city that is being attacked.
+     */
     public static void beginLaunchWar(Player player, City cityAttack) {
         UUID launcherUUID = player.getUniqueId();
         City launchCity = CityManager.getPlayerCity(launcherUUID);
@@ -106,6 +112,14 @@ public class WarActions {
         new WarChooseSizeMenu(player, launchCity, cityAttack, maxSize).open();
     }
 
+    /**
+     * Prepares the war launch by selecting participants.
+     *
+     * @param player     The player initiating the war.
+     * @param cityLaunch The city launching the war.
+     * @param cityAttack The city being attacked.
+     * @param count      The number of participants for each side.
+     */
     public static void preFinishLaunchWar(Player player, City cityLaunch, City cityAttack, int count) {
         List<UUID> available = cityLaunch.getOnlineMembers().stream().toList();
 
@@ -117,6 +131,14 @@ public class WarActions {
         new WarChooseParticipantsMenu(player, cityLaunch, cityAttack, count, new HashSet<>()).open();
     }
 
+    /**
+     * Confirms the launch of a war between two cities.
+     *
+     * @param player       The player initiating the war.
+     * @param cityLaunch   The city launching the war.
+     * @param cityAttack   The city being attacked.
+     * @param attackers    The list of UUIDs of players from the launching city who will participate in the war.
+     */
     public static void confirmLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
@@ -146,7 +168,14 @@ public class WarActions {
 
     }
 
-
+    /**
+     * Finalizes the war launch by notifying participants and starting the war.
+     *
+     * @param player       The player initiating the war.
+     * @param cityLaunch   The city launching the war.
+     * @param cityAttack   The city being attacked.
+     * @param attackers    The list of UUIDs of players from the launching city who will participate in the war.
+     */
     public static void finishLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
@@ -193,6 +222,16 @@ public class WarActions {
 
     }
 
+    /**
+     * Launches the war between two cities with the selected participants.
+     *
+     * @param cityLaunch        The city launching the war.
+     * @param cityAttack        The city being attacked.
+     * @param attackers         The list of UUIDs of players from the launching city who will participate in the war.
+     * @param allDefenders      The list of UUIDs of all potential defenders from the defending city.
+     * @param requiredParticipants The number of defenders required to start the war.
+     * @param pending           The pending defense object containing information about the war.
+     */
     public static void launchWar(City cityLaunch, City cityAttack, List<UUID> attackers, List<UUID> allDefenders, int requiredParticipants, WarPendingDefense pending) {
         List<UUID> chosenDefenders = new ArrayList<>(pending.getAcceptedDefenders());
 

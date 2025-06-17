@@ -32,6 +32,9 @@ public class WarManager {
 
     private static final Map<String, WarPendingDefense> pendingDefenses = new HashMap<>();
 
+    /**
+     * Initializes the WarManager by registering commands and listeners.
+     */
     public WarManager() {
         CommandsManager.getHandler().register(
                 new WarCommand(),
@@ -43,10 +46,21 @@ public class WarManager {
         );
     }
 
+    /**
+     * Checks if a city is currently in war.
+     *
+     * @param cityUUID The UUID of the city to check.
+     * @return true if the city is in war, false otherwise.
+     */
     public static boolean isCityInWar(String cityUUID) {
         return warsByAttacker.containsKey(cityUUID) || warsByDefender.containsKey(cityUUID);
     }
 
+    /**
+     * Retrieves the war associated with a given city UUID.
+     * @param cityUUID The UUID of the city.
+     * @return The War object if found, null otherwise.
+     */
     public static War getWarByCity(String cityUUID) {
         War war = warsByAttacker.get(cityUUID);
         if (war != null) return war;
@@ -57,6 +71,13 @@ public class WarManager {
         return null;
     }
 
+    /**
+     * Starts a war between two cities.
+     * @param attacker The city that is attacking.
+     * @param defender The city that is defending.
+     * @param attackers The list of UUIDs of the players in the attacking city.
+     * @param defenders The list of UUIDs of the players in the defending city.
+     */
     public static void startWar(City attacker, City defender, List<UUID> attackers, List<UUID> defenders) {
         War war = new War(attacker, defender, attackers, defenders);
 
@@ -64,6 +85,13 @@ public class WarManager {
         warsByDefender.put(defender.getUUID(), war);
     }
 
+    /**
+     * Ends a war between two cities.
+     * This method will determine the winner and loser based on various criteria such as mascot death, HP, and kills.
+     * It will also handle the transfer of claims and update the power points and balances of the cities involved.
+     *
+     * @param war The War object representing the war to be ended.
+     */
     public static void endWar(War war) {
         War warRemoved;
         warRemoved = warsByAttacker.remove(war.getCityAttacker().getUUID());
@@ -176,6 +204,18 @@ public class WarManager {
         broadcastWarResult(war, winner, loser, winReason, powerChange, amountStolen, bonusMoney, Math.abs(claimsWon));
     }
 
+    /**
+     * Broadcasts the result of a war to the members of the winning and losing cities.
+     *
+     * @param war        The War object containing details about the war.
+     * @param winner     The city that won the war.
+     * @param loser      The city that lost the war.
+     * @param reason     The reason for the win (e.g., mascot death, HP, kills, draw).
+     * @param powerChange The change in power points for the winning city.
+     * @param amountStolen The amount of money stolen from the losing city.
+     * @param bonusMoney Additional bonus money awarded to the winning city.
+     * @param claimNumber The number of claims transferred to the winning city.
+     */
     public static void broadcastWarResult(War war, City winner, City loser, WinReason reason, int powerChange, double amountStolen, double bonusMoney, int claimNumber) {
         int killsWinner = war.getCityAttacker().equals(winner) ? war.getAttackersKill() : war.getDefendersKill();
         int killsLoser = war.getCityAttacker().equals(loser) ? war.getAttackersKill() : war.getDefendersKill();
@@ -276,6 +316,15 @@ public class WarManager {
         }
     }
 
+    /**
+     * Transfers chunks from the loser city to the winner city after a war.
+     * The transfer is done based on adjacency to the winner's chunks and the mascot's chunk.
+     *
+     * @param winner      The winning city.
+     * @param loser       The losing city.
+     * @param claimAmount The number of chunks to transfer.
+     * @return The number of chunks actually transferred.
+     */
     public static int transferChunksAfterWar(City winner, City loser, int claimAmount) {
         if (claimAmount <= 0) return 0;
 
@@ -384,6 +433,12 @@ public class WarManager {
         return transferred[0];
     }
 
+    /**
+     * Gets a formatted string representation of the war phase.
+     *
+     * @param phase The war phase to format.
+     * @return A string representing the formatted phase.
+     */
     public static String getFormattedPhase(War.WarPhase phase) {
         return switch (phase) {
             case PREPARATION -> "Préparation";
@@ -392,10 +447,20 @@ public class WarManager {
         };
     }
 
+    /**
+     * Adds a pending defense request for a city.
+     *
+     * @param defense The WarPendingDefense object containing the defense details.
+     */
     public static void addPendingDefense(WarPendingDefense defense) {
         pendingDefenses.put(defense.getDefender().getUUID(), defense);
     }
 
+    /**
+     * Removes a pending defense request for a city.
+     *
+     * @param city The city for which the pending defense is to be removed.
+     */
     public static WarPendingDefense getPendingDefenseFor(City city) {
         return pendingDefenses.get(city.getUUID());
     }

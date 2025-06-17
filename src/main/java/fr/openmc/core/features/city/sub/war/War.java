@@ -31,6 +31,14 @@ public class War {
 
     private long startTime;
 
+    /**
+     * Creates a new war between two cities.
+     *
+     * @param cityAttacker The city that is attacking.
+     * @param cityDefender The city that is defending.
+     * @param attackers    The list of UUIDs of the players in the attacking city.
+     * @param defenders    The list of UUIDs of the players in the defending city.
+     */
     public War(City cityAttacker, City cityDefender, List<UUID> attackers, List<UUID> defenders) {
         this.cityAttacker = cityAttacker;
         this.cityDefender = cityDefender;
@@ -43,6 +51,10 @@ public class War {
         startPreparation();
     }
 
+    /**
+     * Starts the preparation phase of the war.
+     * This method sends messages to both teams and schedules the start of the combat phase.
+     */
     public void startPreparation() {
         this.startTime = System.currentTimeMillis();
         this.phase = WarPhase.PREPARATION;
@@ -88,12 +100,21 @@ public class War {
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::startCombat, (long) TIME_PREPARATION * 60 * 20);
     }
 
+    /**
+     * Gets the remaining time in seconds for the preparation phase.
+     *
+     * @return The remaining time in seconds, or 0 if not in preparation phase.
+     */
     public int getPreparationTimeRemaining() {
         if (phase != WarPhase.PREPARATION) return 0;
         long elapsed = (System.currentTimeMillis() - startTime) / 1000L;
         return Math.max(0, TIME_PREPARATION * 60 - (int) elapsed);
     }
 
+    /**
+     * Starts the combat phase of the war.
+     * This method sends messages to both teams and schedules the end of the war.
+     */
     public void startCombat() {
         this.phase = WarPhase.COMBAT;
 
@@ -126,34 +147,67 @@ public class War {
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::end, (long) TIME_FIGHT * 60 * 20);
     }
 
+    /**
+     * Gets the remaining time in seconds for the combat phase.
+     *
+     * @return The remaining time in seconds, or 0 if not in combat phase.
+     */
     public int getCombatTimeRemaining() {
         if (phase != WarPhase.COMBAT) return 0;
         long elapsed = (System.currentTimeMillis() - startTime) / 1000L;
         return Math.max(0, TIME_FIGHT * 60 - (int) elapsed);
     }
 
+    /**
+     * Ends the war and notifies the WarManager.
+     * This method sets the phase to ENDED and calls the endWar method in WarManager.
+     */
     public void end() {
         this.phase = WarPhase.ENDED;
 
         WarManager.endWar(this);
     }
 
+    /**
+     * Checks if a player is a participant in the war.
+     *
+     * @param uuid The UUID of the player.
+     * @return true if the player is an attacker or defender, false otherwise.
+     */
     public boolean isParticipant(UUID uuid) {
         return attackers.contains(uuid) || defenders.contains(uuid);
     }
 
+    /**
+     * Checks if a player is an attacker in the war.
+     *
+     * @param uuid The UUID of the player.
+     * @return true if the player is an attacker, false otherwise.
+     */
     public boolean isAttacker(UUID uuid) {
         return attackers.contains(uuid);
     }
 
+    /**
+     * Checks if a player is a defender in the war.
+     *
+     * @param uuid The UUID of the player.
+     * @return true if the player is a defender, false otherwise.
+     */
     public boolean isDefender(UUID uuid) {
         return defenders.contains(uuid);
     }
 
+    /**
+     * Increments the number of kills for the attackers.
+     */
     public void incrementAttackerKills() {
         attackersKill++;
     }
 
+    /**
+     * Increments the number of kills for the defenders.
+     */
     public void incrementDefenderKills() {
         defendersKill++;
     }
