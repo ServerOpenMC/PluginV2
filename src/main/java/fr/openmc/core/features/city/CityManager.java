@@ -106,7 +106,7 @@ public class CityManager implements Listener {
     }
 
     /**
-     * Get all City
+     * Get all cities
      *
      * @return A collection of all cities
      */
@@ -115,7 +115,7 @@ public class CityManager implements Listener {
     }
 
     /**
-     * Get all UUIDs of cities
+     * Get all city UUIDs
      *
      * @return A list of all city UUIDs
      */
