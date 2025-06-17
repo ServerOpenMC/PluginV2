@@ -61,14 +61,14 @@ public class CompanyBaltopMenu extends Menu {
         List<Company> companies = CompanyManager.companies;
         companies.sort((company1, company2) -> Double.compare(company2.getTurnover(), company1.getTurnover()));
         Map<Integer, ItemStack> content = new HashMap<>();
-        content.put(46, new ItemBuilder(this, Material.BARREL, itemMeta -> {
+        content.put(37, new ItemBuilder(this, Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§6§l" + "Baltop des entreprises");
             itemMeta.lore(List.of(
                     Component.text("§7■ Voici les 3 entreprises les plus riches du serveur"),
                     Component.text("§7■ Les entreprises sont classées en fonction de leur chiffre d'affaires")
             ));
         }));
-        content.put(50, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§cFermer")).setCloseButton());
+        content.put(41, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§cFermer")).setCloseButton());
         if (companies.isEmpty()) return content;
         content.put(10, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§61. §e" + companies.getFirst().getName());
