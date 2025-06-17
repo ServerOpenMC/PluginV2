@@ -17,7 +17,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -62,12 +61,12 @@ public class MascotsManager {
 
         loadAllMascots();
 
-        for (Mascot mascot : mascotsByEntityUUID.values()) {
-            Entity mob = mascot.getEntity();
-            if (mascot.isImmunity()) {
-                if (mob != null) mob.setGlowing(true);
-            } else if (mob != null) mob.setGlowing(false);
-        }
+//        for (Mascot mascot : mascotsByEntityUUID.values()) {
+//            Entity mob = mascot.getEntity();
+//            if (mob == null) continue;
+//
+//            mob.setGlowing(mascot.isImmunity());
+//        }
 
         OMCPlugin.registerEvents(
                 new MascotsProtectionsListener(),

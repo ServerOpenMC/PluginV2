@@ -46,11 +46,9 @@ public class MascotsDeathListener implements Listener {
 
         if (mascot == null) return;
 
-        mascot.setImmunity(true);
         mascot.setAlive(false);
-
         entity.customName(Component.text(DEAD_MASCOT_NAME));
-        entity.setGlowing(true);
+
         e.setCancelled(true);
 
         if (killer == null) return;
@@ -77,7 +75,6 @@ public class MascotsDeathListener implements Listener {
                 direction.setY(1);
                 player.setVelocity(direction);
             }
-
 
             WarManager.endWar(war);
         } else {
