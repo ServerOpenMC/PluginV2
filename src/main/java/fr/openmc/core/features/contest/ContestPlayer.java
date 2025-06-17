@@ -1,12 +1,14 @@
 package fr.openmc.core.features.contest;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 @Getter
+@Setter
 public class ContestPlayer {
     private final String name;
-    private final int points;
+    private int points;
     private final int camp;
     private final NamedTextColor color;
 

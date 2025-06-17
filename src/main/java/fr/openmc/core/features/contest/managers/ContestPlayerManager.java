@@ -71,9 +71,12 @@ public class ContestPlayerManager  {
      */
     public void setPointsPlayer(Player player, int points) {
         ContestManager manager = ContestManager.getInstance();
-        ContestPlayer data = manager.dataPlayer.get(player.getUniqueId().toString());
+        String uuid = player.getUniqueId().toString();
 
-        manager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(data.getName(), points, data.getCamp(), data.getColor()));
+        ContestPlayer data = manager.dataPlayer.get(uuid);
+        if (data != null) {
+            data.setPoints(points);
+        }
     }
 
     /**
