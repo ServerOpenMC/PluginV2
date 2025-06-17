@@ -19,6 +19,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -121,10 +122,11 @@ public class CityListDetailsMenu extends Menu {
 					})
 			);
 		}
-
-
-		map.put(8, new ItemBuilder(this, new ItemStack(Bukkit.getItemFactory().getSpawnEgg(getEntityByMascotUUID(city.getMascot().getMascotUUID()).getType())),
-				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + city.getMascot().getLevel()))));
+		
+		Entity entity = getEntityByMascotUUID(city.getMascot().getMascotUUID());
+		
+		map.put(8, new ItemBuilder(this, new ItemStack(entity != null ? Bukkit.getItemFactory().getSpawnEgg(entity.getType()) : Material.BARRIER),
+				itemMeta -> itemMeta.displayName(Component.text(entity != null ? "§dNiveau de la Mascotte : " + city.getMascot().getLevel() : "§cAucune mascotte trouvée (bug)"))));
 		
 		map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
 				itemMeta -> itemMeta.displayName(Component.text("§bTaille : " + city.getChunks().size() + " chunks"))));
