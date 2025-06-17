@@ -193,7 +193,7 @@ contestList:
   - camp1: "Thé"
     color1: "GREEN"
     camp2: "Café"
-    color2: "BROWN"
+    color2: "GOLD"
     selected: 0
   - camp1: "Chocolat Noir"
     color1: "DARK_PURPLE"

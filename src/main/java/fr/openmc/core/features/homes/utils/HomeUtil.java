@@ -1,99 +1,121 @@
 package fr.openmc.core.features.homes.utils;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.Home;
-import fr.openmc.core.features.homes.HomeIcons;
-import fr.openmc.core.utils.api.WorldGuardApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import fr.openmc.core.features.homes.icons.OldHomeIcon;
+import fr.openmc.core.features.homes.icons.HomeIcon;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class HomeUtil {
 
-    private static final List<HomeIcons> HOME_ICONS = Arrays.stream(HomeIcons.values()).toList();
+    @Deprecated
+    public static HomeIcon getHomeIcon(String iconId) {
+        if (iconId == null || iconId.isEmpty())
+            return HomeIconRegistry.getDefaultIcon();
 
-    public static HomeIcons getHomeIcon(Home home) {
+        HomeIcon icon = HomeIconRegistry.getIcon(iconId);
+        if (icon != null) return icon;
+
         try {
-            String homeName = home.getName();
-            if(home.getIcon() == null) {
-                return HomeIcons.DEFAULT;
-            }
-            if (home.getIcon() != HomeIcons.DEFAULT) {
-                return home.getIcon();
-            }
-
-            for (HomeIcons icon : HOME_ICONS) {
-                String[] usages = icon.getUsage().split("\\|");
-                for (String usage : usages) {
-                    if (homeName.contains(usage)) {
-                        return icon;
-                    }
-                }
-            }
-            return HomeIcons.DEFAULT;
-        } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().severe("Error while getting home icon for home " + home.getName());
-            return HomeIcons.DEFAULT;
+            OldHomeIcon legacyIcon = OldHomeIcon.valueOf(iconId.toUpperCase());
+            return HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
+        } catch (IllegalArgumentException e) {
+            return mapLegacyCustomId(iconId);
         }
     }
 
-    public static ItemStack getRandomsIcons() {
-        String iconKey = String.valueOf(HOME_ICONS.get((int) (Math.random() * HOME_ICONS.size())).getId());
-        return CustomItemRegistry.getByName(iconKey).getBest();
-    }
-
-    public static HomeIcons getDefaultHomeIcon(String name) {
-        return HOME_ICONS.stream()
-                .filter(entry -> name.matches(".*" + entry.getUsage() + ".*"))
-                .findFirst()
-                .orElse(HomeIcons.DEFAULT);
-    }
-
-    public static HomeIcons getHomeIcon(String iconId) {
-        return HOME_ICONS.stream()
-                .filter(entry -> entry.getId().equals(iconId))
-                .findFirst()
-                .orElse(HomeIcons.DEFAULT);
-    }
-
+    @Deprecated
     public static ItemStack getHomeIconItem(Home home) {
-        String iconKey = getHomeIcon(home).getId();
-        if(iconKey == null) {
-            OMCPlugin.getInstance().getLogger().severe("Error while getting home icon for home " + home.getName());
-            return new ItemStack(Material.GRASS_BLOCK);
-        }
-        return CustomItemRegistry.getByName(iconKey).getBest();
+        return home.getIcon().getItemStack();
     }
 
-    public static boolean checkName(Player player, String name) {
-        if(WorldGuardApi.isRegionConflict(player.getLocation())) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas ajouter un home dans une région protégée !"), Prefix.HOME, MessageType.ERROR, true);
-            return true;
+    @Deprecated
+    public static ItemStack getHomeIconItem(OldHomeIcon legacyIcon) {
+        HomeIcon icon = HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
+        return icon.getItemStack();
+    }
+
+    /**
+     * Maps legacy custom icon IDs to the new HomeIcon system.
+     * This method is used to maintain compatibility with older icon IDs.
+     *
+     * @param iconId The legacy custom icon ID.
+     * @return The corresponding HomeIcon, or the default icon if not found.
+     */
+    public static HomeIcon mapLegacyCustomId(String iconId) {
+        return switch (iconId.toLowerCase()) {
+            case "omc_homes:omc_homes_icon_axenq" -> HomeIconRegistry.getIcon("custom:axenq");
+            case "omc_homes:omc_homes_icon_bank" -> HomeIconRegistry.getIcon("custom:bank");
+            case "omc_homes:omc_homes_icon_chateau" -> HomeIconRegistry.getIcon("custom:chateau");
+            case "omc_homes:omc_homes_icon_chest" -> HomeIconRegistry.getIcon("custom:chest");
+            case "omc_homes:omc_homes_icon_maison" -> HomeIconRegistry.getIcon("custom:home");
+            case "omc_homes:omc_homes_icon_sandblock" -> HomeIconRegistry.getIcon("custom:sandblock");
+            case "omc_homes:omc_homes_icon_shop" -> HomeIconRegistry.getIcon("custom:shop");
+            case "omc_homes:omc_homes_icon_xernas" -> HomeIconRegistry.getIcon("custom:xernas");
+            case "omc_homes:omc_homes_icon_zombie" -> HomeIconRegistry.getIcon("custom:farm");
+            case "omc_homes:omc_homes_icon_grass" -> HomeIconRegistry.getIcon("custom:default");
+            default -> HomeIconRegistry.getDefaultIcon();
+        };
+    }
+
+    public static boolean isValidHomeName(String name) {
+        if (
+                name == null ||
+                name.trim().isEmpty() ||
+                name.length() < 3 ||
+                name.length() > 32
+        ) return false;
+
+        long alphanumericCount = name.chars().filter(Character::isLetterOrDigit).count();
+        if (alphanumericCount < 3) return false;
+
+        return name.matches("^[a-zA-Z0-9_-]+$");
+    }
+
+    public static String sanitizeHomeName(String name) {
+        if (name == null) {
+            return "home";
         }
 
-        if(name.length() < 3) {
-            MessagesManager.sendMessage(player, Component.text("§cLe nom de votre home doit contenir au moins 3 caractères !"), Prefix.HOME, MessageType.ERROR, true);
-            return true;
+        String sanitized = name.replaceAll("[^a-zA-Z0-9_-]", "_");
+
+        if (sanitized.length() > 32) sanitized = sanitized.substring(0, 32);
+        if (sanitized.trim().isEmpty()) sanitized = "home";
+
+        return sanitized;
+    }
+
+    public static String formatLocation(org.bukkit.Location location) {
+        if (location == null || location.getWorld() == null) {
+            return "§cLocation invalide";
         }
 
-        if(name.length() > 16) {
-            MessagesManager.sendMessage(player, Component.text("§cLe nom de votre home ne doit pas dépasser 16 caractères !"), Prefix.HOME, MessageType.ERROR, true);
-            return true;
+        return String.format("§e%s §7(§6%d§7, §6%d§7, §6%d§7)",
+                location.getWorld().getName(),
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ()
+        );
+    }
+
+    public static boolean isSafeLocation(org.bukkit.Location location) {
+        if (location == null || location.getWorld() == null) {
+            return false;
         }
 
-        if(!name.matches("[a-zA-Z0-9]+")) {
-            MessagesManager.sendMessage(player, Component.text("§cLe nom de votre home ne doit contenir que des caractères alphanumériques !"), Prefix.HOME, MessageType.ERROR, true);
-            return true;
-        }
+        Block headBlock = location.getWorld().getBlockAt(
+                location.getBlockX(),
+                location.getBlockY() + 1,
+                location.getBlockZ()
+        );
 
-        return false;
+        Block feetBlock = location.getWorld().getBlockAt(
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ()
+        );
+
+        return feetBlock.getType().isAir() && headBlock.getType().isAir();
     }
 }
