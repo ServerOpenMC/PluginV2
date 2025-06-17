@@ -26,14 +26,13 @@ public class CubeListener implements Listener {
     private BossBar bossBar;
     static double currentX = -171.0;
     static double currentZ = -117.0;
-    static double currentY = Bukkit.getWorld("world").getHighestBlockYAt((int) currentX, (int) currentZ);
-    public static Location currentLocation = new Location(Bukkit.getWorld("world"), currentX, currentY, currentZ);
+    public static Location currentLocation;
 
 
     public CubeListener(OMCPlugin plugin) {
         this.plugin = plugin;
 
-        currentY = Bukkit.getWorld("world").getHighestBlockYAt((int) currentX, (int) currentZ);
+        double currentY = Bukkit.getWorld("world").getHighestBlockYAt((int) currentX, (int) currentZ);
         currentLocation = new Location(Bukkit.getWorld("world"), currentX, currentY, currentZ);
 
         clearCube(currentLocation);
@@ -68,6 +67,31 @@ public class CubeListener implements Listener {
 
 
     private void createCube(Location location) {
+        try {
+            World world = location.getWorld();
+            int baseX = location.getBlockX();
+            int baseY = location.getBlockY(); // yGround : au sol
+            int baseZ = location.getBlockZ();
+
+            for (int x = 0; x < CUBE_SIZE; x++) {
+                for (int y = 0; y < CUBE_SIZE; y++) {
+                    for (int z = 0; z < CUBE_SIZE; z++) {
+                        Block block = world.getBlockAt(baseX + x, baseY + y, baseZ + z);
+                        if (block.getType() != CUBE_MATERIAL) {
+                            block.setType(CUBE_MATERIAL);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Bukkit.getLogger().severe("Failed to create the cube at " + location);
+        }
+    }
+
+
+    public static void clearCube(Location location) {
+        location.subtract(0, 4, 0);
         World world = location.getWorld();
         int baseX = location.getBlockX();
         int baseY = location.getBlockY();
@@ -77,19 +101,6 @@ public class CubeListener implements Listener {
             for (int y = 0; y < CUBE_SIZE; y++) {
                 for (int z = 0; z < CUBE_SIZE; z++) {
                     Block block = world.getBlockAt(baseX + x, baseY + y, baseZ + z);
-                    if (block.getType() != CUBE_MATERIAL) {
-                        block.setType(CUBE_MATERIAL);
-                    }
-                }
-            }
-        }
-    }
-
-    public static void clearCube(Location location) {
-        for (int x = 0; x < CUBE_SIZE; x++) {
-            for (int y = 0; y < CUBE_SIZE; y++) {
-                for (int z = 0; z < CUBE_SIZE; z++) {
-                    Block block = location.clone().add(x, y, z).getBlock();
                     if (block.getType() == CUBE_MATERIAL) {
                         block.setType(Material.AIR);
                     }

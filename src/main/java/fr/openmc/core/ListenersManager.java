@@ -23,7 +23,6 @@ public class ListenersManager {
                 new CubeListener(OMCPlugin.getInstance()),
                 new ItemInteraction(),
                 new ChatInput(),
-                new CubeListener(OMCPlugin.getInstance()),
                 new RespawnListener(),
                 new SleepListener(),
                 new PlayerDeathListener(),
