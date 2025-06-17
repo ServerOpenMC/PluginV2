@@ -162,14 +162,6 @@ public class CityChunkMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         long startTime = System.currentTimeMillis();
 
-        if (playerCity == null) {
-            inventory.put(22, new ItemBuilder(this, Material.BARRIER, itemMeta -> {
-                itemMeta.displayName(Component.text("§cAucune ville"));
-                itemMeta.lore(List.of(Component.text("§7Vous n'avez pas de ville")));
-            }));
-            return inventory;
-        }
-
         addNavigationButtons(inventory);
 
         if (chunkInfoMap == null || chunkInfoMap.isEmpty()) {
@@ -206,19 +198,21 @@ public class CityChunkMenu extends Menu {
     }
 
     private void addNavigationButtons(Map<Integer, ItemStack> inventory) {
-        inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
-        }).setOnClick(event -> {
-            CityMenu menu = new CityMenu(player);
-            menu.open();
-        }));
-
-        if (hasFreeClaimAvailable) {
-            inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-                itemMeta.displayName(Component.text("§6Claim Gratuit"));
-                itemMeta.lore(List.of(Component.text("§7Vous avez §6" + freeClaims + " claim gratuit !")));
+        if (playerCity != null) {
+            inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.displayName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
+            }).setOnClick(event -> {
+                CityMenu menu = new CityMenu(player);
+                menu.open();
             }));
+
+            if (hasFreeClaimAvailable) {
+                inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+                    itemMeta.displayName(Component.text("§6Claim Gratuit"));
+                    itemMeta.lore(List.of(Component.text("§7Vous avez §6" + freeClaims + " claim gratuit !")));
+                }));
+            }
         }
 
         inventory.put(53, new ItemBuilder(this, Material.MAP, itemMeta -> {

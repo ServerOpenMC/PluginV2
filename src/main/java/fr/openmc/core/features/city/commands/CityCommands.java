@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.actions.*;
 import fr.openmc.core.features.city.conditions.*;
+import fr.openmc.core.features.city.menu.CityChunkMenu;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
@@ -254,6 +255,13 @@ public class CityCommands {
         Chunk chunk = sender.getLocation().getChunk();
 
         CityUnclaimAction.startUnclaim(sender, chunk.getX(), chunk.getZ());
+    }
+
+    @Subcommand("map")
+    @CommandPermission("omc.commands.city.map")
+    @Description("Affiche la map des claims.")
+    void map(Player sender) {
+        new CityChunkMenu(sender).open();
     }
 
     @Subcommand("list")
