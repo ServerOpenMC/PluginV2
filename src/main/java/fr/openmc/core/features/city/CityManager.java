@@ -7,6 +7,7 @@ import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.ChunkClaimedEvent;
+import fr.openmc.core.features.city.events.ChunkUnclaimedEvent;
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
@@ -98,6 +99,11 @@ public class CityManager implements Listener {
     @EventHandler
     public void onChunkClaim(ChunkClaimedEvent event) {
         claimedChunks.put(BlockVector2.at(event.getChunk().getX(), event.getChunk().getZ()), event.getCity());
+    }
+
+    @EventHandler
+    public void onChunkUnclaim(ChunkUnclaimedEvent event) {
+        claimedChunks.remove(BlockVector2.at(event.getChunkX(), event.getChunkZ()));
     }
 
     /**

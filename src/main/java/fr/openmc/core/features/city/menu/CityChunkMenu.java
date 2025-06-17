@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.ChunkDataCache;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityClaimAction;
+import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
 import fr.openmc.core.utils.ChunkPos;
@@ -273,9 +274,15 @@ public class CityChunkMenu extends Menu {
             itemMeta.displayName(Component.text("§9Claim de votre ville"));
             itemMeta.lore(List.of(
                     Component.text("§7Ville : §d" + city.getName()),
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
+                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                    Component.text(""),
+                    Component.text("§cVous rapporte :"),
+                    Component.text("§8- §6" + CityUnclaimAction.calculatePrice(playerCity.getChunks().size())).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
+                    Component.text("§8- §d" + CityUnclaimAction.calculateAywenite(playerCity.getChunks().size()) + " d'Aywenite"),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ POUR UNCLAIM")
             ));
-        });
+        }).setOnClick(event -> handleChunkUnclaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
 
     private ItemStack createOtherCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
@@ -350,6 +357,42 @@ public class CityChunkMenu extends Menu {
                 },
                 List.of(Component.text("§7Voulez vous vraiment claim ce chunk ?")),
                 List.of(Component.text("§7Annuler la procédure de claim")));
+        menu.open();
+    }
+
+    private void handleChunkUnclaimClick(Player player, int chunkX, int chunkZ, boolean hasPermissionClaim) {
+        City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (cityCheck == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!hasPermissionClaim) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        ConfirmMenu menu = new ConfirmMenu(
+                player,
+                () -> {
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                        CityUnclaimAction.startUnclaim(player, chunkX, chunkZ);
+                    });
+                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                        String refreshCacheKey = player.getWorld().getName() + ":" + startX + "," + startZ;
+                        CHUNK_CACHE.remove(refreshCacheKey);
+
+                        new CityChunkMenu(player).open();
+                    }, 2);
+                },
+                () -> {
+                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                        new CityChunkMenu(player).open();
+                    }, 2);
+                },
+                List.of(Component.text("§7Voulez vous vraiment unclaim ce chunk ?")),
+                List.of(Component.text("§7Annuler la procédure de unclaim")));
         menu.open();
     }
 }

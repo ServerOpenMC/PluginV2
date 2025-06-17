@@ -535,8 +535,6 @@ public class City {
     public void removeChunk(int chunkX, int chunkZ) {
         getChunks(); // Load chunks
 
-
-        System.out.println(chunks.contains(BlockVector2.at(chunkX, chunkZ)));
         if (!chunks.contains(BlockVector2.at(chunkX, chunkZ))) return;
         chunks.remove(BlockVector2.at(chunkX, chunkZ));
 
@@ -550,6 +548,9 @@ public class City {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        });
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new ChunkUnclaimedEvent(this, chunkX, chunkZ));
         });
     }
 

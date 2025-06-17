@@ -243,6 +243,19 @@ public class CityCommands {
         CityClaimAction.startClaim(sender, chunk.getX(), chunk.getZ());
     }
 
+    @Subcommand("unclaim")
+    @CommandPermission("omc.commands.city.unclaim")
+    @Description("Unclaim un chunk pour votre ville")
+    void unclaim(Player sender) {
+        City city = CityManager.getPlayerCity(sender.getUniqueId());
+
+        if (!CityUnclaimCondition.canCityUnclaim(city, sender)) return;
+
+        Chunk chunk = sender.getLocation().getChunk();
+
+        CityUnclaimAction.startUnclaim(sender, chunk.getX(), chunk.getZ());
+    }
+
     @Subcommand("list")
     @CommandPermission("omc.commands.city.list")
     public void list(Player player) {
