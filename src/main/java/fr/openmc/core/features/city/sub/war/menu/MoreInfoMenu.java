@@ -45,18 +45,18 @@ public class MoreInfoMenu extends Menu {
 
         List<Component> lore0 = Arrays.asList(
                 Component.text("§7Choisissez une §6ville §7a attaquer ! "),
-                Component.text("§7Le nombre de combattant sera le même partout !"),
-                Component.text("§8§oex. Si vous avez 5 joueurs de connecté et que en face ils sont 2,"),
+                Component.text("§7Le nombre de combattants sera le même partout !"),
+                Component.text("§8§oex. Si vous êtes 5 joueurs de connectés et 2 en face,"),
                 Component.text("§8§oalors vous aurez le choix de faire un 1vs1 ou un 2vs2"),
                 Component.text(""),
-                Component.text("§7Lorsque vous venez declarer la §6guerre §7a une ville, les personnes concernées seront informé "),
+                Component.text("§7Lorsque vous venez déclarer la §6guerre §7à une ville, les personnes concernées seront informées "),
                 Component.text("§7Vous aurez §6" + WarManager.TIME_PREPARATION + " min §7de préparation"),
                 Component.text("§7ce qui vous laisse le temps de s’équiper et d’aller au front !")
         );
 
         List<Component> lore1 = Arrays.asList(
                 Component.text("§7Le §ccombat §7commence, la partie se finira §c30 min §7après le commencent."),
-                Component.text("§7Elle peut être finie avant si la §cMascotte ennemie §7est tué. "),
+                Component.text("§7Elle peut être finie avant si la §cMascotte ennemie §7est tuée. "),
                 Component.text("§7Et pendant ce moment, vous pouvez §ctout faire §7dans la ville ennemie.")
         );
 

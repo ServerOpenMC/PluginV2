@@ -44,7 +44,7 @@ public class WarActions {
 
         if (!launchCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville n'est pas dans un statut de §cgueere§f! Changez la type de votre ville avec §c/city type §fou depuis le §cMenu Principales des Villes"),
+                    Component.text("Votre ville n'est pas dans un statut de §cgueere §f! Changez la type de votre ville avec §c/city type §fou dans le §cMenu Principal des Villes"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -93,7 +93,7 @@ public class WarActions {
 
         if (cityAttack.getOnlineMembers().isEmpty()) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer a aucun membre de connecté!"),
+                    Component.text("La ville que vous essayez d'attaquer n'a aucun membre de connecté !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -200,7 +200,7 @@ public class WarActions {
             }
         }
 
-        TextComponent infoAttackers = Component.text("§c⚔ Vous avez été choisi pour se battre contre §e" + cityAttack.getName());
+        TextComponent infoAttackers = Component.text("§c⚔ Vous avez été choisi pour vous battre contre §e" + cityAttack.getName());
 
         for (UUID uuid : attackers) {
             Player attacker = Bukkit.getPlayer(uuid);
@@ -209,7 +209,7 @@ public class WarActions {
             }
         }
 
-        MessagesManager.sendMessage(player, Component.text("§8§oveuillez attendre que " + cityAttack.getName() + " réagissent, la partie sera tout de même lancer dans 2 min"), Prefix.CITY, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("§8§oVeuillez attendre que " + cityAttack.getName() + " réagisse, la partie sera tout de même lancée dans 2 min"), Prefix.CITY, MessageType.INFO, false);
 
         WarPendingDefense pending = new WarPendingDefense(cityLaunch, cityAttack, attackers, requiredParticipants);
         WarManager.addPendingDefense(pending);
