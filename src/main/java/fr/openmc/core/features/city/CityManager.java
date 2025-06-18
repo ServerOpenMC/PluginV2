@@ -15,6 +15,10 @@ import fr.openmc.core.features.city.mascots.MascotsManager;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,12 +32,13 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 public class CityManager implements Listener {
-    private static HashMap<String, City> cities = new HashMap<>();
-    private static HashMap<UUID, City> playerCities = new HashMap<>();
-    public static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
+    private static final HashMap<String, City> citiesByName = new HashMap<>();
+    private static final HashMap<String, City> citiesByUUID = new HashMap<>();
+    private static final HashMap<UUID, City> playerCities = new HashMap<>();
+    public static final HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
     public static HashMap<String, Integer> freeClaim = new HashMap<>();
+    private static HashMap<City, City> requestedAllies = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
@@ -49,7 +54,7 @@ public class CityManager implements Listener {
                     ResultSet rs = statement.executeQuery();
 
                     while (rs.next()) {
-                        claimedChunks.put(BlockVector2.at(rs.getInt("x"), rs.getInt("z")), getCity(rs.getString("city_uuid")));
+                        claimedChunks.put(BlockVector2.at(rs.getInt("x"), rs.getInt("z")), getCityByUUID(rs.getString("city_uuid")));
                     }
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
@@ -100,8 +105,8 @@ public class CityManager implements Listener {
      *
      * @return A collection of all cities
      */
-    public static Collection<City> getCities() {
-        return cities.values();
+    public static Collection<City> getCitiesByUUID() {
+        return citiesByUUID.values();
     }
 
     /**
@@ -202,25 +207,33 @@ public class CityManager implements Listener {
      * @param cityUUID The UUID of the city
      * @return The city object, or null if not found
      */
-    public static City getCity(String cityUUID) {
-        if (!cities.containsKey(cityUUID)) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
-                statement.setString(1, cityUUID);
-                ResultSet rs = statement.executeQuery();
-                if (rs.next()) {
-                    City c = new City(cityUUID);
-                    cities.put(c.getUUID(), c);
-                    return c;
-                }
-
-                return null;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return cities.get(cityUUID);
+    public static City getCityByUUID(String cityUUID) {
+	    return citiesByUUID.computeIfAbsent(cityUUID, v -> {
+	        try {
+	            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT uuid FROM city WHERE uuid = ? LIMIT 1");
+	            statement.setString(1, cityUUID);
+	            ResultSet rs = statement.executeQuery();
+	            if (rs.next()) {
+	                City c = new City(cityUUID);
+	                citiesByUUID.put(c.getUUID(), c);
+	                return c;
+	            }
+	            
+	            return null;
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return null;
+	        }
+	    });
+    }
+    
+    /**
+     * Get a city by its name
+     * @param cityName The name of the city
+     * @return The city object, or null if not found
+     */
+    public static City getCityByName(String cityName) {
+        return citiesByName.get(cityName);
     }
 
     /**
@@ -240,8 +253,8 @@ public class CityManager implements Listener {
                 }
 
                 String city = rs.getString(1);
-                cachePlayer(playerUUID, getCity(city));
-                return getCity(city);
+                cachePlayer(playerUUID, getCityByUUID(city));
+                return getCityByUUID(city);
             } catch (SQLException e) {
                 e.printStackTrace();
                 return null;
@@ -274,7 +287,7 @@ public class CityManager implements Listener {
                 return null;
             }
 
-            claimedChunks.put(BlockVector2.at(x, z), CityManager.getCity(rs.getString("city_uuid")));
+            claimedChunks.put(BlockVector2.at(x, z), CityManager.getCityByUUID(rs.getString("city_uuid")));
             return claimedChunks.get(BlockVector2.at(x, z));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -290,7 +303,7 @@ public class CityManager implements Listener {
         try {
             List<String> cityUUIDs = getAllCityUUIDs();
             for (String cityUUID : cityUUIDs) {
-                getCity(cityUUID).applyCityInterest();
+                getCityByUUID(cityUUID).applyCityInterest();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -355,7 +368,8 @@ public class CityManager implements Listener {
      * @param city The city object
      */
     public static void registerCity(City city) {
-        cities.put(city.getUUID(), city);
+        citiesByUUID.put(city.getUUID(), city);
+        citiesByName.put(city.getName(), city);
     }
 
     /**
@@ -365,8 +379,10 @@ public class CityManager implements Listener {
      */
     public static void forgetCity(String city) {
         try {
-            City cityz = cities.remove(city);
+            City cityz = citiesByUUID.remove(city);
             if (cityz == null) return;
+            
+            citiesByName.remove(cityz.getName());
 
             MayorManager mayorManager = MayorManager.getInstance();
             mayorManager.cityMayor.remove(cityz);
@@ -430,5 +446,18 @@ public class CityManager implements Listener {
         freeClaim.remove(city);
 
         MascotsManager.removeMascotsFromCity(city);
+    }
+    
+    public static void requestAllie(City resquesterCity, City targetCity) {
+        requestedAllies.put(resquesterCity, targetCity);
+	    for (UUID m : targetCity.getMembers()) {
+		    if (targetCity.hasPermission(m, CPermission.OWNER) || targetCity.hasPermission(m, CPermission.MANAGE_ALLIANCE)) {
+			    Player player = Bukkit.getServer().getPlayer(m);
+			    if (player == null) continue;
+			    if (player.isOnline()) {
+				    MessagesManager.sendMessage(player, Component.text("La ville " + resquesterCity.getName() + " vous demande en allié !"), Prefix.CITY, MessageType.INFO, true);
+			    }
+		    }
+	    }
     }
 }

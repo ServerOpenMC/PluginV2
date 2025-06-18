@@ -475,7 +475,7 @@ public class MayorManager {
         cityMayor = new HashMap<>();
         cityElections = new HashMap<>(){};
         playerVote = new HashMap<>();
-        for (City city : CityManager.getCities()) {
+        for (City city : CityManager.getCitiesByUUID()) {
             // PERKS INIT
             for (UUID uuid : city.getMembers()) {
                 OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
@@ -530,7 +530,7 @@ public class MayorManager {
         phaseMayor = 2;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
-        for (City city : CityManager.getCities()) {
+        for (City city : CityManager.getCitiesByUUID()) {
             Bukkit.getLogger().info("- City : " + city.getName());
             runSetupMayor(city);
 

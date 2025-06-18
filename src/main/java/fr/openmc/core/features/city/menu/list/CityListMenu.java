@@ -51,7 +51,7 @@ public class CityListMenu extends PaginatedMenu {
 	 */
 	public CityListMenu(Player owner, SortType sortType) {
 		super(owner);
-		this.cities = CityManager.getCities().stream().toList();
+		this.cities = CityManager.getCitiesByUUID().stream().toList();
 		setSortType(sortType);
 	}
 	
