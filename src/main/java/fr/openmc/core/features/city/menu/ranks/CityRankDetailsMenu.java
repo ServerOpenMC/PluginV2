@@ -55,7 +55,7 @@ public class CityRankDetailsMenu extends Menu {
 	
 	@Override
 	public void onClose(InventoryCloseEvent event) {
-		city.updateRank(this.rank, this.rank.validate(getOwner()));
+	
 	}
 	
 	@Override
