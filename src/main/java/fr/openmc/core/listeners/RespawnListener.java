@@ -12,7 +12,7 @@ public class RespawnListener implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         final Player player = event.getPlayer();
         if (player.getRespawnLocation() != null) return;
-        event.setRespawnLocation(SpawnManager.getInstance().getSpawnLocation());
+        event.setRespawnLocation(SpawnManager.getSpawnLocation());
     }
 
 }

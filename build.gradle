@@ -57,23 +57,26 @@ dependencies {
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
-    compileOnly "de.oliver:FancyNpcs:2.5.0"
+    compileOnly 'de.oliver:FancyNpcs:2.5.0'
 
     implementation 'org.jetbrains:annotations:24.1.0'
     implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
     implementation 'net.raidstone:wgevents:1.18.1'
+    implementation 'com.j256.ormlite:ormlite-jdbc:6.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.34'
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
+    testImplementation 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
     testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.46.4'
+    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.50.0'
     testImplementation 'com.h2database:h2:2.3.232'
 }
 

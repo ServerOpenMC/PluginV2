@@ -102,7 +102,7 @@ public class DemonFruitPerk implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        int phase = MayorManager.getInstance().phaseMayor;
+        int phase = MayorManager.phaseMayor;
 
         if (phase == 2) {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());

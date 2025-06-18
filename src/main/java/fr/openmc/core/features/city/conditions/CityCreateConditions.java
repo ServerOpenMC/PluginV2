@@ -40,7 +40,7 @@ public class CityCreateConditions {
             return false;
         }
 
-        if (EconomyManager.getInstance().getBalance(player.getUniqueId()) < MONEY_CREATE) {
+        if (EconomyManager.getBalance(player.getUniqueId()) < MONEY_CREATE) {
             MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour créer ta ville (" + MONEY_CREATE).append(Component.text(EconomyManager.getEconomyIcon() +" §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

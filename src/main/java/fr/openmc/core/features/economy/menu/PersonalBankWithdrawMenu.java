@@ -51,13 +51,13 @@ public class PersonalBankWithdrawMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        double moneyBankPlayer = BankManager.getInstance().getBankBalance(player.getUniqueId());
+        double moneyBankPlayer = BankManager.getBankBalance(player.getUniqueId());
         double halfMoneyBankPlayer = moneyBankPlayer/2;
 
         List<Component> loreBankWithdrawAll = List.of(
                 Component.text("§7Tout l'argent placé dans §6Votre Banque §7vous sera donné"),
                 Component.text(""),
-                Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                 Component.text(""),
                 Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
         );
@@ -67,9 +67,9 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
             if (halfMoneyBankPlayer != 0) {
-                BankManager.getInstance().withdrawBankBalance(player.getUniqueId(), moneyBankPlayer);
-                EconomyManager.getInstance().addBalance(player.getUniqueId(), moneyBankPlayer);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(moneyBankPlayer)
+                BankManager.withdrawBankBalance(player.getUniqueId(), moneyBankPlayer);
+                EconomyManager.addBalance(player.getUniqueId(), moneyBankPlayer);
+                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer)
                             + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
             } else {
                 MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.BANK, MessageType.ERROR, false);
@@ -80,7 +80,7 @@ public class PersonalBankWithdrawMenu extends Menu {
         List<Component> loreBankWithdrawHalf = List.of(
             Component.text("§7La Moitié de l'Argent sera pris de §6Votre Banque §7pour vous le donner"),
             Component.text(""),
-            Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+            Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
             Component.text(""),
             Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
         );
@@ -90,9 +90,9 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
             if (halfMoneyBankPlayer != 0) {
-                BankManager.getInstance().withdrawBankBalance(player.getUniqueId(), halfMoneyBankPlayer);
-                EconomyManager.getInstance().addBalance(player.getUniqueId(), halfMoneyBankPlayer);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getInstance().getFormattedSimplifiedNumber(halfMoneyBankPlayer) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
+                BankManager.withdrawBankBalance(player.getUniqueId(), halfMoneyBankPlayer);
+                EconomyManager.addBalance(player.getUniqueId(), halfMoneyBankPlayer);
+                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
             } else {
                 MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.BANK, MessageType.ERROR, false);
             }
@@ -124,7 +124,7 @@ public class PersonalBankWithdrawMenu extends Menu {
                         .setType(ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
-                            BankManager.getInstance().withdrawBankBalance(player, input);
+                            BankManager.withdrawBankBalance(player, input);
                             return Collections.emptyList();
                         })
                         .build();

@@ -14,7 +14,6 @@ public class JoinListener implements Listener  {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        MayorManager mayorManager = MayorManager.getInstance();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         if (playerCity == null) return;
@@ -23,13 +22,13 @@ public class JoinListener implements Listener  {
             MayorManager.createCityLaws(playerCity, false, null);
         }
 
-        if (mayorManager.phaseMayor == 2 && mayorManager.cityMayor.get(playerCity)==null) {
-            mayorManager.runSetupMayor(playerCity);
-        } else if (mayorManager.phaseMayor == 1 && mayorManager.cityMayor.get(playerCity)==null) {
-            if (playerCity.getMembers().size()>=mayorManager.MEMBER_REQ_ELECTION) {
-                mayorManager.createMayor(null,null, playerCity, null, null, null, null, ElectionType.ELECTION);
+        if (MayorManager.phaseMayor == 2 && MayorManager.cityMayor.get(playerCity)==null) {
+            MayorManager.runSetupMayor(playerCity);
+        } else if (MayorManager.phaseMayor == 1 && MayorManager.cityMayor.get(playerCity)==null) {
+            if (playerCity.getMembers().size()>=MayorManager.MEMBER_REQ_ELECTION) {
+                MayorManager.createMayor(null,null, playerCity, null, null, null, null, ElectionType.ELECTION);
             }
-            mayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
+            MayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
 
         }
     }

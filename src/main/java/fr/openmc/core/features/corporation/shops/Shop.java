@@ -32,8 +32,6 @@ import java.util.*;
 public class Shop {
 
     private final ShopOwner owner;
-    private final EconomyManager economyManager = EconomyManager.getInstance();
-    private final ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
     private final List<ShopItem> items = new ArrayList<>();
     private final List<ShopItem> sales = new ArrayList<>();
     private final Map<Long, Supply> suppliers = new HashMap<>();
@@ -61,8 +59,7 @@ public class Shop {
      * @param shop the shop we want to check the stock
      */
     public static void checkStock(Shop shop) {
-        ShopBlocksManager blocksManager = ShopBlocksManager.getInstance();
-        Multiblock multiblock = blocksManager.getMultiblock(shop.getUuid());
+        Multiblock multiblock = ShopBlocksManager.getMultiblock(shop.getUuid());
 
         if (multiblock == null) {
             return;
@@ -70,7 +67,7 @@ public class Shop {
 
         Block stockBlock = multiblock.getStockBlock().getBlock();
         if (stockBlock.getType() != Material.BARREL) {
-            blocksManager.removeShop(shop);
+            ShopBlocksManager.removeShop(shop);
             return;
         }
 
@@ -269,8 +266,7 @@ public class Shop {
         if (isOwner(buyer.getUniqueId())) {
             return MethodState.FAILURE;
         }
-        if (!economyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amountToBuy))) return MethodState.ERROR;
-
+        if (!EconomyManager.withdrawBalance(buyer.getUniqueId(), item.getPrice(amountToBuy))) return MethodState.ERROR;
         double basePrice = item.getPrice(amountToBuy);
         turnover += item.getPrice(amountToBuy);
 
@@ -301,7 +297,7 @@ public class Shop {
                     int suppliesAmount = supply.getAmount();
 
                     if (amountToBuy == suppliesAmount){// si la quantité achetée correspond au suppliesAmount ( ex : 32 = 32 )
-                        economyManager.addBalance(supply.getSupplier(), suppliersCut);// ajoutez prix restant
+                        EconomyManager.addBalance(supply.getSupplier(), suppliersCut);// ajoutez prix restant
 
                         if (forSupplies.containsKey(supply.getSupplier())){
                             double supCut = forSupplies.get(supply.getSupplier());
@@ -314,7 +310,7 @@ public class Shop {
                     }
 
                     if (amountToBuy < suppliesAmount){// si la quantité achetée est inférieure au suppliesAmount ( ex : 32 < 64 )
-                        economyManager.addBalance(supply.getSupplier(), suppliersCut);
+                        EconomyManager.addBalance(supply.getSupplier(), suppliersCut);
                         suppliesAmount -= amountToBuy;
                         supply.setAmount(suppliesAmount);
 
@@ -331,7 +327,7 @@ public class Shop {
                         double supplierCut = (suppliesAmount * suppliersCut) / amountToBuy;
                         suppliersCut -= supplierCut;
                         amountToBuy -= suppliesAmount;
-                        economyManager.addBalance(supply.getSupplier(), supplierCut);
+                        EconomyManager.addBalance(supply.getSupplier(), supplierCut);
 
                         if (forSupplies.containsKey(supply.getSupplier())){
                             double supCut = forSupplies.get(supply.getSupplier());
@@ -363,7 +359,7 @@ public class Shop {
         }
 
         else {
-            economyManager.addBalance(owner.getPlayer(), item.getPrice(amountToBuy));
+            EconomyManager.addBalance(owner.getPlayer(), item.getPrice(amountToBuy));
             Player player = Bukkit.getPlayer(owner.getPlayer());
             if (player!=null){
                 MessagesManager.sendMessage(player, Component.text(buyer.getName() + " a acheté " + amountToBuy + " " + item.getItem().getType() + " pour " + item.getPrice(amountToBuy) + EconomyManager.getEconomyIcon() + ", l'argent vous a été transféré !"), Prefix.SHOP, MessageType.SUCCESS, false);
@@ -417,7 +413,7 @@ public class Shop {
         return new ItemBuilder(menu, fromShopMenu ? Material.GOLD_INGOT : Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§e§l" + (fromShopMenu ? "Informations" : getName()));
             List<String> lore = new ArrayList<>();
-            lore.add("§7■ Chiffre d'affaire : " + EconomyManager.getInstance().getFormattedNumber(turnover));
+            lore.add("§7■ Chiffre d'affaire : " + EconomyManager.getFormattedNumber(turnover));
             lore.add("§7■ Ventes : §f" + sales.size());
             if (!fromShopMenu)
                 lore.add("§7■ Cliquez pour accéder au shop");
@@ -437,10 +433,9 @@ public class Shop {
      * get the shop with what player looking
      *
      * @param player the player we check
-     * @param shopBlocksManager the permission
      * @param onlyCash if we only check the cach register
      */
-    public static UUID getShopPlayerLookingAt(Player player, ShopBlocksManager shopBlocksManager, boolean onlyCash) {
+    public static UUID getShopPlayerLookingAt(Player player, boolean onlyCash) {
         Block targetBlock = player.getTargetBlockExact(5);
 
         if (targetBlock == null) return null;
@@ -449,7 +444,7 @@ public class Shop {
         if (onlyCash) {
             if (targetBlock.getType() != Material.OAK_SIGN && targetBlock.getType() != Material.BARRIER) return null;
         }
-        Shop shop = shopBlocksManager.getShop(targetBlock.getLocation());
+        Shop shop = ShopBlocksManager.getShop(targetBlock.getLocation());
         if (shop == null) return null;
         return shop.getUuid();
     }
