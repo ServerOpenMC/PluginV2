@@ -37,10 +37,6 @@ public class CityUnclaimAction {
             return;
         }
 
-        System.out.println("Unclaiming chunk at: " + chunkX + ", " + chunkZ);
-
-        System.out.println("Unclaiming chunk at: " + city.getMascot().getChunk().getX() + ", " + city.getMascot().getChunk().getZ());
-
         if (city.getMascot().getChunk().getX() == chunkX && city.getMascot().getChunk().getZ() == chunkZ) {
             MessagesManager.sendMessage(sender, Component.text("Vous ne pouvez pas unclaim le claim de la mascotte"), Prefix.CITY, MessageType.ERROR, false);
             return;

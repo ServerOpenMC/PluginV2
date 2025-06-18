@@ -185,21 +185,11 @@ public class WarManager {
                 double missingRatio = (claimsWon - actualClaims) / (double) claimsWon;
                 bonusMoney = Math.ceil(amountStolen * 0.5 * missingRatio);
                 winner.updateBalance(bonusMoney);
-
-                System.out.println("Bonus accordé à " + winner.getName() + " pour claims manquants: " + bonusMoney);
             }
         } else {
             DynamicCooldownManager.use(war.getCityDefender().getUUID(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
             DynamicCooldownManager.use(war.getCityAttacker().getUUID(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
         }
-
-        System.out.println("War ended between " + war.getCityAttacker().getName() + " and " + war.getCityDefender().getName() +
-                " with winner: " + (winner != null ? winner.getName() : "none") +
-                ", loser: " + (loser != null ? loser.getName() : "none") +
-                ", reason: " + winReason);
-        System.out.println("Power change: " + powerChange +
-                ", Amount stolen: " + amountStolen +
-                ", Base claims: " + claimsWon);
 
         broadcastWarResult(war, winner, loser, winReason, powerChange, amountStolen, bonusMoney, Math.abs(claimsWon));
     }
