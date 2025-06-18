@@ -61,14 +61,14 @@ public class CompanyBaltopMenu extends Menu {
         List<Company> companies = CompanyManager.companies;
         companies.sort((company1, company2) -> Double.compare(company2.getTurnover(), company1.getTurnover()));
         Map<Integer, ItemStack> content = new HashMap<>();
-        content.put(46, new ItemBuilder(this, Material.BARREL, itemMeta -> {
+        content.put(37, new ItemBuilder(this, Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§6§l" + "Baltop des entreprises");
             itemMeta.lore(List.of(
                     Component.text("§7■ Voici les 3 entreprises les plus riches du serveur"),
                     Component.text("§7■ Les entreprises sont classées en fonction de leur chiffre d'affaires")
             ));
         }));
-        content.put(50, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§cFermer")).setCloseButton());
+        content.put(41, new ItemBuilder(this, Material.BARRIER, itemMeta -> itemMeta.setDisplayName("§cFermer")).setCloseButton());
         if (companies.isEmpty()) return content;
         content.put(10, new ItemBuilder(this, Material.GOLD_INGOT, itemMeta -> {
             itemMeta.setDisplayName("§61. §e" + companies.getFirst().getName());
@@ -78,7 +78,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDFirst;
-        if (companies.getFirst().getOwner().isCity()) ownerUUIDFirst = companies.getFirst().getOwner().getCity().getPlayerWith(CPermission.OWNER);
+        if (companies.getFirst().getOwner().isCity()) ownerUUIDFirst = companies.getFirst().getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
         else ownerUUIDFirst = companies.getFirst().getOwner().getPlayer();
         content.put(12, new ItemBuilder(this, companies.getFirst().getHead(), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.getFirst().getOwner().isCity() ? companies.getFirst().getOwner().getCity().getName() : Bukkit.getOfflinePlayer(ownerUUIDFirst).getName()));
@@ -116,7 +116,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDSecond;
-        if (companies.get(1).getOwner().isCity()) ownerUUIDSecond = companies.get(1).getOwner().getCity().getPlayerWith(CPermission.OWNER);
+        if (companies.get(1).getOwner().isCity()) ownerUUIDSecond = companies.get(1).getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
         else ownerUUIDSecond = companies.get(1).getOwner().getPlayer();
         content.put(21, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDSecond), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(1).getOwner().isCity() ? companies.get(1).getName() : Bukkit.getOfflinePlayer(ownerUUIDSecond).getName()));
@@ -155,7 +155,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDThird;
-        if (companies.get(2).getOwner().isCity()) ownerUUIDThird = companies.get(2).getOwner().getCity().getPlayerWith(CPermission.OWNER);
+        if (companies.get(2).getOwner().isCity()) ownerUUIDThird = companies.get(2).getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
         else ownerUUIDThird = companies.get(2).getOwner().getPlayer();
         content.put(30, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDThird), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(2).getOwner().isCity() ? companies.get(2).getName() : Bukkit.getOfflinePlayer(ownerUUIDThird).getName()));

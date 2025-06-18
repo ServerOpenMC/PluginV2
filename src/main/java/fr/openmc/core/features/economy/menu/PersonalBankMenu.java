@@ -65,9 +65,9 @@ public class PersonalBankMenu extends Menu {
             itemMeta.itemName(Component.text("§6Votre argent"));
             itemMeta.lore(List.of(
                 Component.text("§7Vous avez actuellement §d" +
-                        EconomyManager.getInstance().getFormattedSimplifiedNumber(BankManager.getInstance().getBankBalance(player.getUniqueId())) + " ")
+                        EconomyManager.getFormattedSimplifiedNumber(BankManager.getBankBalance(player.getUniqueId())) + " ")
                     .append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text("§7Votre prochain intéret est de §b" + BankManager.getInstance().calculatePlayerInterest(player.getUniqueId())*100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getInstance().getSecondsUntilInterest()))
+                Component.text("§7Votre prochain intéret est de §b" + BankManager.calculatePlayerInterest(player.getUniqueId())*100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
                 )
             );
             });

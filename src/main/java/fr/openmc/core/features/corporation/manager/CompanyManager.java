@@ -2,7 +2,6 @@ package fr.openmc.core.features.corporation.manager;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corporation.CorpPermission;
@@ -14,6 +13,14 @@ import fr.openmc.core.features.corporation.company.CompanyOwner;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.listener.CustomItemsCompanyListener;
 import fr.openmc.core.features.corporation.listener.ShopListener;
+import fr.openmc.core.features.corporation.models.CompanyMerchant;
+import fr.openmc.core.features.corporation.models.CompanyPermission;
+import fr.openmc.core.features.corporation.models.DBCompany;
+import fr.openmc.core.features.corporation.models.DBShop;
+import fr.openmc.core.features.corporation.models.Merchant;
+import fr.openmc.core.features.corporation.models.ShopSupplier;
+import fr.openmc.core.features.corporation.models.DBShopItem;
+import fr.openmc.core.features.corporation.models.DBShopSale;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.corporation.shops.Supply;
@@ -30,168 +37,118 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.*;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
 public class CompanyManager {
 
-    @Getter static CompanyManager instance;
-
     // Liste de toutes les entreprises créées
-    @Getter public static List<Company> companies = new ArrayList<>();
-    @Getter public static List<Shop> shops = new ArrayList<>();
+    @Getter
+    public static List<Company> companies = new ArrayList<>();
+    @Getter
+    public static List<Shop> shops = new ArrayList<>();
 
-    public static NamespacedKey SUPPLIER_KEY;
+    public static NamespacedKey SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
 
     // File d'attente des candidatures en attente, avec une limite de 100
-    private final Queue<UUID, Company> pendingApplications = new Queue<>(100);
+    private static Queue<UUID, Company> pendingApplications = new Queue<>(100);
 
-    public CompanyManager () {
-        instance = this;
-
-        /* KEY */
-        SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
-
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms", ((args, sender, command) -> {
-            return Arrays.stream(CorpPermission.values())
-                    .map(Enum::name)
-                    .collect(Collectors.toList());
-        }));
+    public CompanyManager() {
+        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms",
+                ((args, sender, command) -> {
+                    return Arrays.stream(CorpPermission.values())
+                            .map(Enum::name)
+                            .collect(Collectors.toList());
+                }));
 
         CommandsManager.getHandler().register(
                 new CompanyCommand(),
-                new ShopCommand()
-        );
+                new ShopCommand());
 
         OMCPlugin.registerEvents(
-                new ShopListener()
-        );
+                new ShopListener());
 
         if (ItemAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
-                    new CustomItemsCompanyListener()
-            );
+                    new CustomItemsCompanyListener());
         }
 
         companies = getAllCompany();
         shops = loadAllShops();
     }
 
-    public static void init_db(Connection conn) throws SQLException {
-        try (Statement stmt = conn.createStatement()) {
-            conn.prepareStatement("CREATE TABLE IF NOT EXISTS company_perms (company_uuid VARCHAR(36) NOT NULL, player VARCHAR(36) NOT NULL, permission VARCHAR(255) NOT NULL);").executeUpdate();
+    private static Dao<CompanyPermission, UUID> permissionsDao;
+    private static Dao<DBShop, UUID> shopsDao;
+    private static Dao<DBShopItem, UUID> itemsDao;
+    private static Dao<DBShopSale, UUID> salesDao;
+    private static Dao<DBCompany, UUID> companiesDao;
+    private static Dao<CompanyMerchant, UUID> companyMerchantsDao;
+    private static Dao<Merchant, UUID> merchantsDao;
+    private static Dao<ShopSupplier, UUID> suppliersDao;
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS shops (" +
-                    "shop_uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
-                    "owner VARCHAR(36), " +
-                    "city_uuid VARCHAR(36), " +
-                    "company_uuid VARCHAR(36), " +
-                    "x MEDIUMINT NOT NULL, " +
-                    "y MEDIUMINT NOT NULL, " +
-                    "z MEDIUMINT NOT NULL)");
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, CompanyPermission.class);
+        permissionsDao = DaoManager.createDao(connectionSource, CompanyPermission.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS shops_item (" +
-                    "item LONGBLOB NOT NULL, " +
-                    "shop_uuid VARCHAR(36) NOT NULL, " +
-                    "price DOUBLE NOT NULL, " +
-                    "item_uuid VARCHAR(36) NOT NULL, " +
-                    "amount INT NOT NULL, " +
-                    "PRIMARY KEY (shop_uuid, item(255)))");
+        TableUtils.createTableIfNotExists(connectionSource, DBShop.class);
+        shopsDao = DaoManager.createDao(connectionSource, DBShop.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS company (" +
-                    "company_uuid VARCHAR(36) PRIMARY KEY, " +
-                    "name VARCHAR(255) NOT NULL, " +
-                    "owner VARCHAR(36), " +
-                    "cut DOUBLE NOT NULL, " +
-                    "balance DOUBLE NOT NULL, " +
-                    "city_uuid VARCHAR(36))");
+        TableUtils.createTableIfNotExists(connectionSource, DBShopSale.class);
+        salesDao = DaoManager.createDao(connectionSource, DBShopSale.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS company_merchants (" +
-                    "company_uuid VARCHAR(36), " +
-                    "player VARCHAR(36) NOT NULL PRIMARY KEY, " +
-                    "moneyWon DOUBLE NOT NULL DEFAULT 0)");
+        TableUtils.createTableIfNotExists(connectionSource, DBShopItem.class);
+        itemsDao = DaoManager.createDao(connectionSource, DBShopItem.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS merchants_data (" +
-                    "uuid VARCHAR(36) NOT NULL PRIMARY KEY, " +
-                    "content LONGBLOB)");
+        TableUtils.createTableIfNotExists(connectionSource, DBCompany.class);
+        companiesDao = DaoManager.createDao(connectionSource, DBCompany.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS shop_supplier (" +
-                    "time LONG DEFAULT 0, " +
-                    "uuid VARCHAR(36) NOT NULL , " + // uuid du joueur
-                    "item_uuid VARCHAR(36) NOT NULL, " + // uuid de l'item qu'il a mis en stock
-                    "shop_uuid VARCHAR(36) NOT NULL, " + // uuid du shop pour retrouver son shop
-                    "supplier_uuid VARCHAR(36) NOT NULL PRIMARY KEY, " + // uuid pour différencier tous les supply ( car il peut avoir plusieurs fois l'uuid d'un joueur )
-                    "amount INT DEFAULT 0)");
+        TableUtils.createTableIfNotExists(connectionSource, CompanyMerchant.class);
+        companyMerchantsDao = DaoManager.createDao(connectionSource, CompanyMerchant.class);
 
-            stmt.addBatch("CREATE TABLE IF NOT EXISTS shop_sales (" +
-                    "item LONGBLOB NOT NULL, " +
-                    "shop_uuid VARCHAR(36) NOT NULL, " +
-                    "sale_uuid VARCHAR(36) NOT NULL, " +
-                    "price DOUBLE NOT NULL, " +
-                    "amount INT NOT NULL, " +
-                    "PRIMARY KEY (shop_uuid, sale_uuid))");
+        TableUtils.createTableIfNotExists(connectionSource, Merchant.class);
+        merchantsDao = DaoManager.createDao(connectionSource, Merchant.class);
 
-            try{
-                stmt.executeBatch();
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-
-        }
+        TableUtils.createTableIfNotExists(connectionSource, ShopSupplier.class);
+        suppliersDao = DaoManager.createDao(connectionSource, ShopSupplier.class);
     }
 
     public static List<Company> getAllCompany() {
         OMCPlugin.getInstance().getLogger().info("Chargement des Companies...");
         List<Company> companies = new ArrayList<>();
 
-        String query = "SELECT company_uuid, name, owner, cut, balance, city_uuid FROM company";
-        try (Connection conn = DatabaseManager.getConnection();
-             PreparedStatement statement = conn.prepareStatement(query);
-             ResultSet rs = statement.executeQuery()) {
+        try {
+            List<DBCompany> dbCompanies = companiesDao.queryForAll();
+            for (DBCompany dbCompany : dbCompanies) {
+                Company company = dbCompany.deserialize();
 
-            while (rs.next()) {
-                String company_uuid = rs.getString("company_uuid");
-                String cityUuid = rs.getString("city_uuid");
-                UUID owner = UUID.fromString(rs.getString("owner"));
-                String name = rs.getString("name");
-                double cut = rs.getDouble("cut");
-                double balance = rs.getDouble("balance");
+                QueryBuilder<CompanyMerchant, UUID> query = companyMerchantsDao.queryBuilder();
+                query.where().eq("company", company.getCompany_uuid());
+                List<CompanyMerchant> merchants = companyMerchantsDao.query(query.prepare());
+                for (CompanyMerchant merchant : merchants) {
+                    MerchantData merchantData = new MerchantData();
+                    merchantData.addMoneyWon(merchant.getMoneyWon());
 
-                Company company = (cityUuid == null)
-                        ? new Company(name, new CompanyOwner(owner), UUID.fromString(company_uuid))
-                        : new Company(name, new CompanyOwner(CityManager.getCity(cityUuid)), UUID.fromString(company_uuid));
-
-                company.setCut(cut);
-                company.setBalance(balance);
-
-                String merchantQuery = "SELECT player, moneyWon FROM company_merchants WHERE company_uuid = ?";
-                try (PreparedStatement merchantStmt = conn.prepareStatement(merchantQuery)) {
-
-                    merchantStmt.setString(1, company_uuid);
-                    ResultSet merchantRs = merchantStmt.executeQuery();
-
-                    while (merchantRs.next()) {
-                        UUID playerUuid = UUID.fromString(merchantRs.getString("player"));
-                        double moneyWon = merchantRs.getDouble("moneyWon");
-
-                        MerchantData merchantData = new MerchantData();
-                        merchantData.addMoneyWon(moneyWon);
-
-                        for (ItemStack item : getMerchantItem(playerUuid, conn)) {
-                            merchantData.depositItem(item);
-                        }
-
-                        company.addMerchant(playerUuid, merchantData);
+                    for (ItemStack item : getMerchantItem(merchant.getPlayer())) {
+                        merchantData.depositItem(item);
                     }
+
+                    company.addMerchant(merchant.getPlayer(), merchantData);
                 }
                 companies.add(company);
             }
+            OMCPlugin.getInstance().getLogger().info("Chargement terminé avec succes");
         } catch (SQLException e) {
             e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().info("Erreur lors du chargement");
         }
-        OMCPlugin.getInstance().getLogger().info("Chargement terminé avec succes");
         return companies;
     }
 
@@ -200,135 +157,99 @@ public class CompanyManager {
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
         Map<UUID, List<ShopItem>> shopSales = new HashMap<>();
         List<Shop> allShop = new ArrayList<>();
-        Connection conn = DatabaseManager.getConnection();
 
-        try (
-             PreparedStatement statement = conn.prepareStatement("SELECT item, shop_uuid, item_uuid, price, amount FROM shops_item");
-             ResultSet rs = statement.executeQuery()) {
+        try {
+            List<DBShopItem> dbShopItems = itemsDao.queryForAll();
+            for (DBShopItem dbShopItem : dbShopItems) {
+                byte[] itemBytes = dbShopItem.getItems();
 
-            while (rs.next()) {
-                UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
-                double price = rs.getDouble("price");
-                int amount = rs.getInt("amount");
-                UUID item_uuid = UUID.fromString(rs.getString("item_uuid"));
-                byte[] itemBytes = rs.getBytes("item");
+                if (itemBytes == null)
+                    continue;
 
-                if (itemBytes != null) {
-                    ItemStack itemStack = ItemStack.deserializeBytes(itemBytes);
-                    ShopItem shopItem = new ShopItem(itemStack, price, item_uuid);
-                    shopItem.setAmount(amount);
-
-                    shopItems.computeIfAbsent(shopUuid, k -> new ArrayList<>()).add(shopItem);
-                }
+                shopItems.computeIfAbsent(dbShopItem.getShop(), k -> new ArrayList<>()).add(dbShopItem.deserialize());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        try (
-                PreparedStatement statement = conn.prepareStatement("SELECT item, shop_uuid, sale_uuid, price, amount FROM shop_sales");
-                ResultSet rs = statement.executeQuery()) {
+        try {
+            List<DBShopSale> dbShopSales = salesDao.queryForAll();
+            for (DBShopSale dbShopSale : dbShopSales) {
+                byte[] itemBytes = dbShopSale.getItems();
 
-            while (rs.next()) {
-                UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
-                double price = rs.getDouble("price");
-                int amount = rs.getInt("amount");
-                byte[] itemBytes = rs.getBytes("item");
+                if (itemBytes == null)
+                    continue;
 
-                if (itemBytes != null) {
-                    ItemStack itemStack = ItemStack.deserializeBytes(itemBytes);
-                    ShopItem shopItem = new ShopItem(itemStack, price);
-                    shopItem.setAmount(amount);
-
-                    shopSales.computeIfAbsent(shopUuid, k -> new ArrayList<>()).add(shopItem);
-                }
+                shopSales.computeIfAbsent(dbShopSale.getShop(), k -> new ArrayList<>()).add(dbShopSale.deserialize());
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        try (
-             PreparedStatement statement = conn.prepareStatement("SELECT shop_uuid, owner, city_uuid, company_uuid, x, y, z FROM shops");
-             ResultSet rs = statement.executeQuery()) {
+        try {
+            List<DBShop> dbShops = shopsDao.queryForAll();
+            for (DBShop dbShop : dbShops) {
+                Block barrel = new Location(Bukkit.getWorld("world"), dbShop.getX(), dbShop.getY(), dbShop.getZ())
+                        .getBlock();
+                Block cashRegister = new Location(Bukkit.getWorld("world"), dbShop.getX(), dbShop.getY() + 1,
+                        dbShop.getZ()).getBlock();
 
-            while (rs.next()) {
-                UUID shopUuid = UUID.fromString(rs.getString("shop_uuid"));
-                UUID owner = UUID.fromString(rs.getString("owner"));
-                String cityUuid = rs.getString("city_uuid");
-                String uuid = rs.getString("company_uuid");
-                UUID company_uuid = null;
-                if (uuid!=null){
-                    company_uuid = UUID.fromString(uuid);
+                if (barrel.getType() != Material.BARREL)
+                    continue;
+
+                if (!cashRegister.getType().toString().contains("SIGN")
+                        && !cashRegister.getType().equals(Material.BARRIER))
+                    continue;
+
+                Shop shop;
+                if (dbShop.getCompany() == null) {
+                    PlayerShopManager.createShop(dbShop.getOwner(), barrel, cashRegister, dbShop.getId());
+                    shop = PlayerShopManager.getShopByUUID(dbShop.getId());
+                } else {
+                    Company company = getCompany(dbShop.getOwner());
+                    if (dbShop.getCity() == null) {
+                        company.createShop(barrel, cashRegister, dbShop.getId());
+                    } else {
+                        City city = CityManager.getCity(dbShop.getCity().toString());
+                        if (city != null) {
+                            company.createShop(barrel, cashRegister, dbShop.getId());
+                        }
+                    }
+                    shop = company.getShop(dbShop.getId());
                 }
-                double x = rs.getDouble("x");
-                double y = rs.getDouble("y");
-                double z = rs.getDouble("z");
+                if (shop == null || shopItems.get(dbShop.getId()) == null) {
+                    continue;
+                }
 
-
-                Block barrel = new Location(Bukkit.getWorld("world"), x, y, z).getBlock();
-                Block cashRegister = new Location(Bukkit.getWorld("world"), x, y + 1, z).getBlock();
-
-                if (barrel.getType() == Material.BARREL) {
-                    if (cashRegister.getType().toString().contains("SIGN") || cashRegister.getType().equals(Material.BARRIER)){
-                        Shop shop;
-                        if (company_uuid == null) {
-                            PlayerShopManager.getInstance().createShop(owner, barrel, cashRegister, shopUuid);
-                            shop = PlayerShopManager.getInstance().getShopByUUID(shopUuid);
-                        } else {
-                            Company company = getCompany(owner);
-                            if (cityUuid==null){
-                                company.createShop(barrel, cashRegister, shopUuid);
-                            } else {
-                                City city = CityManager.getCity(cityUuid);
-                                if (city != null) {
-                                    company.createShop(barrel, cashRegister, shopUuid);
-                                }
-                            }
-                            shop = company.getShop(shopUuid);
-                        }
-                        if (shop == null || shopItems.get(shopUuid)==null) {
-                            continue;
-                        }
-                        if (!shopItems.isEmpty()){
-                            for (ShopItem shopItem : shopItems.get(shopUuid)) {
-                                shop.addItem(shopItem);
-                            }
-                        }
-
-                        if (!shopSales.isEmpty()){
-                            for (ShopItem shopItem : shopSales.get(shopUuid)) {
-                                shop.addSales(shopItem);
-                            }
-                        }
-
-                        allShop.add(shop);
+                if (!shopItems.isEmpty()) {
+                    for (ShopItem shopItem : shopItems.get(shop.getUuid())) {
+                        shop.addItem(shopItem);
                     }
                 }
+
+                if (!shopSales.isEmpty()) {
+                    for (ShopItem shopItem : shopSales.get(shop.getUuid())) {
+                        shop.addSales(shopItem);
+                    }
+                }
+
+                allShop.add(shop);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        try (
-             PreparedStatement statement = conn.prepareStatement("SELECT time, uuid, item_uuid, shop_uuid, supplier_uuid, amount FROM shop_supplier");
-             ResultSet rs = statement.executeQuery()) {
-
-            while (rs.next()) {
-                long time = rs.getLong("time");
-                UUID uuid = UUID.fromString(rs.getString("uuid"));
-                UUID item_uuid = UUID.fromString(rs.getString("item_uuid"));
-                UUID shop_uuid = UUID.fromString(rs.getString("shop_uuid"));
-                UUID supplier_uuid = UUID.fromString(rs.getString("supplier_uuid"));
-                int amount = rs.getInt("amount");
-
-                for (Shop shop : allShop){
-                    if (shop.getUuid().equals(shop_uuid)){
-                        shop.addSupply(time, new Supply(uuid, item_uuid, amount, supplier_uuid));
+        try {
+            List<ShopSupplier> suppliers = suppliersDao.queryForAll();
+            for (ShopSupplier supplier : suppliers) {
+                for (Shop shop : allShop) {
+                    if (shop.getUuid().equals(supplier.getShop())) {
+                        shop.addSupply(supplier.getTime(), new Supply(supplier.getPlayer(), supplier.getItem(),
+                                supplier.getAmount(), supplier.getId()));
                         break;
                     }
                 }
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -341,256 +262,203 @@ public class CompanyManager {
     public static void saveAllCompanies() {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Companies...");
 
-        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
-
-            stmt.executeUpdate("TRUNCATE TABLE company;");
-            stmt.executeUpdate("TRUNCATE TABLE company_merchants;");
-            stmt.executeUpdate("TRUNCATE TABLE merchants_data;");
-
+        try {
+            ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
+            TableUtils.clearTable(connectionSource, DBCompany.class);
+            TableUtils.clearTable(connectionSource, CompanyMerchant.class);
+            TableUtils.clearTable(connectionSource, Merchant.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        String queryCompany = "INSERT INTO company (company_uuid, name, owner, cut, balance, city_uuid) VALUES (?, ?, ?, ?, ?, ?)";
-        String queryMerchant = "INSERT INTO company_merchants (company_uuid, player, moneyWon) VALUES (?, ?, ?)";
-        String queryMerchantData = "INSERT INTO merchants_data (uuid, content) VALUES (?, ?)";
+        List<DBCompany> dbCompanies = new ArrayList<>();
+        List<CompanyMerchant> dbCompanyMerchants = new ArrayList<>();
+        List<Merchant> dbMerchants = new ArrayList<>();
 
-        try (
-                Connection conn = DatabaseManager.getConnection();
-                PreparedStatement stmtCompany = conn.prepareStatement(queryCompany);
-                PreparedStatement stmtMerchant = conn.prepareStatement(queryMerchant);
-                PreparedStatement stmtMerchantData = conn.prepareStatement(queryMerchantData)
-        ) {
-            for (Company company : companies) {
-                City city = company.getOwner().getCity();
-                String cityUuid = city == null ? null : city.getUUID();
-                String company_uuid = company.getCompany_uuid().toString();
-                String name = company.getName();
-                UUID owner = city == null ? company.getOwner().getPlayer() : city.getPlayerWith(CPermission.OWNER);
-                double cut = company.getCut();
-                double balance = company.getBalance();
+        for (Company company : companies) {
+            dbCompanies.add(company.serialize());
+            for (UUID merchantUuid : company.getMerchantsUUID()) {
+                double moneyWon = company.getMerchant(merchantUuid).getMoneyWon();
+                dbCompanyMerchants.add(new CompanyMerchant(merchantUuid, company.getCompany_uuid(), moneyWon));
 
-                stmtCompany.setString(1, company_uuid);
-                stmtCompany.setString(2, name);
-                stmtCompany.setString(3, owner.toString());
-                stmtCompany.setDouble(4, cut);
-                stmtCompany.setDouble(5, balance);
-                stmtCompany.setString(6, cityUuid);
-                stmtCompany.addBatch(); // Adding the company to batch
-
-                for (UUID merchantUUID : company.getMerchantsUUID()) {
-                    double moneyWon = company.getMerchant(merchantUUID).getMoneyWon();
-                    stmtMerchant.setString(1, company_uuid);
-                    stmtMerchant.setString(2, merchantUUID.toString());
-                    stmtMerchant.setDouble(3, moneyWon);
-                    stmtMerchant.addBatch(); // Adding merchant info to batch
-
-                    ItemStack[] items = company.getMerchants().get(merchantUUID).getDepositedItems().toArray(new ItemStack[0]);
-                    byte[] content = BukkitSerializer.serializeItemStacks(items);
-                    stmtMerchantData.setString(1, merchantUUID.toString());
-                    stmtMerchantData.setBytes(2, content);
-                    stmtMerchantData.addBatch(); // Adding merchant data to batch
-                }
+                ItemStack[] items = company.getMerchants().get(merchantUuid).getDepositedItems()
+                        .toArray(new ItemStack[0]);
+                byte[] content = BukkitSerializer.serializeItemStacks(items);
+                dbMerchants.add(new Merchant(merchantUuid, content));
             }
-            stmtCompany.executeBatch();  // Execute batch for companies
-            stmtMerchant.executeBatch();  // Execute batch for merchants
-            stmtMerchantData.executeBatch();  // Execute batch for merchant data
+        }
+
+        try {
+            companiesDao.create(dbCompanies);
+            companyMerchantsDao.create(dbCompanyMerchants);
+            merchantsDao.create(dbMerchants);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Companies finie.");
     }
 
     public static void saveAllShop() {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Shops...");
 
-        try (Statement stmt = DatabaseManager.getConnection().createStatement()) {
-
-            stmt.executeUpdate("TRUNCATE TABLE shops;");
-            stmt.executeUpdate("TRUNCATE TABLE shops_item;");
-            stmt.executeUpdate("TRUNCATE TABLE shop_sales;");
-            stmt.executeUpdate("TRUNCATE TABLE shop_supplier;");
-
+        try {
+            ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
+            TableUtils.clearTable(connectionSource, DBShop.class);
+            TableUtils.clearTable(connectionSource, DBShopItem.class);
+            TableUtils.clearTable(connectionSource, DBShopSale.class);
+            TableUtils.clearTable(connectionSource, ShopSupplier.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        Connection conn = DatabaseManager.getConnection();
+        List<DBShop> dbShops = new ArrayList<>();
+        List<DBShopItem> dbShopItems = new ArrayList<>();
+        List<ShopSupplier> dbShopSuppliers = new ArrayList<>();
+        List<DBShopSale> dbShopSales = new ArrayList<>();
 
-        String queryShop = "INSERT INTO shops (shop_uuid, owner, city_uuid, company_uuid, x, y, z) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        String queryShopItem = "INSERT INTO shops_item (item, shop_uuid, item_uuid, price, amount) VALUES (?, ?, ?, ?, ?)";
-        String queryShopSales = "INSERT INTO shop_sales (item, shop_uuid, sale_uuid, price, amount) VALUES (?, ?, ?, ?, ?)";
-        String queryShopSupplier = "INSERT INTO shop_supplier (time, uuid, item_uuid, shop_uuid, supplier_uuid, amount) VALUES (?, ?, ?, ?, ?, ?)";
+        for (Company company : companies) {
+            for (Shop shop : company.getShops()) {
+                UUID companyId = company.getCompany_uuid();
+                UUID cityUuid = null;
+                if (company.getOwner().isCity()) {
+                    cityUuid = UUID.fromString(company.getOwner().getCity().getUUID());
+                }
 
-        try (
-                PreparedStatement stmtShop = conn.prepareStatement(queryShop);
-                PreparedStatement stmtShopItem = conn.prepareStatement(queryShopItem);
-                PreparedStatement stmtShopSales = conn.prepareStatement(queryShopSales);
-                PreparedStatement stmtShopSupplier = conn.prepareStatement(queryShopSupplier)
-        ) {
+                double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
+                double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
+                double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
 
-            for (Company company : companies) {
-                for (Shop shop : company.getShops()) {
-                    UUID shopUuid = shop.getUuid();
-                    UUID owner = shop.getSupremeOwner();
-                    String cityUuid = null;
-                    UUID company_uuid = company.getCompany_uuid();
+                dbShops.add(new DBShop(shop.getUuid(), shop.getSupremeOwner(), cityUuid, companyId, x, y, z));
 
-                    if (company.getOwner().isCity()) {
-                        cityUuid = company.getOwner().getCity().getUUID();
-                    }
+                for (ShopItem shopItem : shop.getItems()) {
+                    byte[] item = shopItem.getItem().serializeAsBytes();
+                    double price = shopItem.getPricePerItem();
+                    int amount = shopItem.getAmount();
 
-                    double x = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockX();
-                    double y = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockY();
-                    double z = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockZ();
+                    dbShopItems.add(new DBShopItem(item, shop.getUuid(), price, amount, shopItem.getItemID()));
+                }
 
-                    for (ShopItem shopItem : shop.getItems()) {
-                        byte[] item = shopItem.getItem().serializeAsBytes();
-                        double price = shopItem.getPricePerItem();
-                        int amount = shopItem.getAmount();
-                        UUID itemID = shopItem.getItemID();
+                for (Map.Entry<Long, Supply> entry : shop.getSuppliers().entrySet()) {
+                    Supply supply = entry.getValue();
+                    Long time = entry.getKey();
+                    UUID uuid = supply.getSupplier();
+                    UUID item_uuid = supply.getItemId();
+                    UUID supplier_uuid = supply.getSupplierUUID();
+                    int amount = supply.getAmount();
 
-                        stmtShopItem.setBytes(1, item);
-                        stmtShopItem.setString(2, shopUuid.toString());
-                        stmtShopItem.setString(3, itemID.toString());
-                        stmtShopItem.setDouble(4, price);
-                        stmtShopItem.setInt(5, amount);
-                        stmtShopItem.addBatch();
-                    }
+                    dbShopSuppliers.add(new ShopSupplier(uuid, shop.getUuid(), item_uuid, supplier_uuid, amount, time));
+                }
 
-                    for (ShopItem shopItem : shop.getSales()) {
-                        byte[] item = shopItem.getItem().serializeAsBytes();
-                        double price = shopItem.getPricePerItem();
-                        int amount = shopItem.getAmount();
+                for (ShopItem shopItem : shop.getSales()) {
+                    byte[] item = shopItem.getItem().serializeAsBytes();
+                    double price = shopItem.getPricePerItem();
+                    int amount = shopItem.getAmount();
 
-                        stmtShopSales.setBytes(1, item);
-                        stmtShopSales.setString(2, shopUuid.toString());
-                        stmtShopSales.setString(3, UUID.randomUUID().toString());
-                        stmtShopSales.setDouble(4, price);
-                        stmtShopSales.setInt(5, amount);
-                        stmtShopSales.addBatch();
-                    }
-
-                    stmtShop.setString(1, shopUuid.toString());
-                    stmtShop.setString(2, owner.toString());
-                    stmtShop.setString(3, cityUuid);
-                    stmtShop.setString(4, company_uuid.toString());
-                    stmtShop.setDouble(5, x);
-                    stmtShop.setDouble(6, y);
-                    stmtShop.setDouble(7, z);
-                    stmtShop.addBatch();
-
-                    for (Map.Entry<Long, Supply> entry : shop.getSuppliers().entrySet()) {
-                        Supply supply = entry.getValue();
-                        Long time = entry.getKey();
-                        UUID uuid = supply.getSupplier();
-                        UUID item_uuid = supply.getItemId();
-                        UUID supplier_uuid = supply.getSupplierUUID();
-                        int amount = supply.getAmount();
-
-                        stmtShopSupplier.setLong(1, time);
-                        stmtShopSupplier.setString(2, uuid.toString());
-                        stmtShopSupplier.setString(3, item_uuid.toString());
-                        stmtShopSupplier.setString(4, shopUuid.toString());
-                        stmtShopSupplier.setString(5, supplier_uuid.toString());
-                        stmtShopSupplier.setInt(6, amount);
-                        stmtShopSupplier.addBatch();
-                    }
+                    dbShopSales.add(new DBShopSale(item, shop.getUuid(), price, amount, shopItem.getItemID()));
                 }
             }
+        }
 
-            stmtShop.executeBatch();
-            stmtShopItem.executeBatch();
-            stmtShopSales.executeBatch();
-            stmtShopSupplier.executeBatch();
+        Map<UUID, Shop> playerShops = PlayerShopManager.getPlayerShops();
+        if (playerShops == null)
+            return;
 
+        for (Map.Entry<UUID, Shop> entry : playerShops.entrySet()) {
+            Shop shop = entry.getValue();
+            UUID owner = entry.getKey();
+            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+
+            for (ShopItem shopItem : shop.getItems()) {
+                byte[] item = shopItem.getItem().serializeAsBytes();
+                double price = shopItem.getPricePerItem();
+                int amount = shopItem.getAmount();
+
+                dbShopItems.add(new DBShopItem(item, shop.getUuid(), price, amount, shopItem.getItemID()));
+            }
+
+            dbShops.add(new DBShop(shop.getUuid(), owner, null, null, x, y, z));
+        }
+
+        try {
+            shopsDao.create(dbShops);
+            itemsDao.create(dbShopItems);
+            salesDao.create(dbShopSales);
+
+            dbShopSuppliers.forEach(supplier -> {
+                try {
+                    suppliersDao.createOrUpdate(supplier);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        try (
-                PreparedStatement stmtShop = conn.prepareStatement(queryShop);
-                PreparedStatement stmtShopSales = conn.prepareStatement(queryShopSales);
-                PreparedStatement stmtShopItem = conn.prepareStatement(queryShopItem)
-        ) {
-            PlayerShopManager manager = PlayerShopManager.getInstance();
-            if (manager != null) {
-                for (Map.Entry<UUID, Shop> entry : manager.getPlayerShops().entrySet()) {
-                    Shop shop = entry.getValue();
-                    UUID shopUuid = shop.getUuid();
-                    UUID owner = entry.getKey();
-                    double x = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockX();
-                    double y = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockY();
-                    double z = shop.getBlocksManager().getMultiblock(shopUuid).getStockBlock().getBlockZ();
-
-                    for (ShopItem shopItem : shop.getItems()) {
-                        byte[] item = shopItem.getItem().serializeAsBytes();
-                        double price = shopItem.getPricePerItem();
-                        int amount = shopItem.getAmount();
-                        UUID itemID = shopItem.getItemID();
-
-                        stmtShopItem.setBytes(1, item);
-                        stmtShopItem.setString(2, shopUuid.toString());
-                        stmtShopItem.setString(3, itemID.toString());
-                        stmtShopItem.setDouble(4, price);
-                        stmtShopItem.setInt(5, amount);
-                        stmtShopItem.addBatch();
-                    }
-
-                    for (ShopItem shopItem : shop.getSales()) {
-                        byte[] item = shopItem.getItem().serializeAsBytes();
-                        double price = shopItem.getPricePerItem();
-                        int amount = shopItem.getAmount();
-
-                        stmtShopSales.setBytes(1, item);
-                        stmtShopSales.setString(2, shopUuid.toString());
-                        stmtShopSales.setString(3, UUID.randomUUID().toString());
-                        stmtShopSales.setDouble(4, price);
-                        stmtShopSales.setInt(5, amount);
-                        stmtShopSales.addBatch();
-                    }
-
-                    stmtShop.setString(1, shopUuid.toString());
-                    stmtShop.setString(2, owner.toString());
-                    stmtShop.setString(3, null);
-                    stmtShop.setString(4, null);
-                    stmtShop.setDouble(5, x);
-                    stmtShop.setDouble(6, y);
-                    stmtShop.setDouble(7, z);
-                    stmtShop.addBatch();  // Adding shop to batch
-                }
-            }
-
-            stmtShop.executeBatch(); // Execute batch for shops
-            stmtShopSales.executeBatch();
-            stmtShopItem.executeBatch();
-        } catch (SQLException e) {
-           e.printStackTrace();
-        }
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Shops finie.");
+    }
+
+    public static Set<CorpPermission> getPermissions(Company company, UUID player) {
+        Set<CorpPermission> permissions = new HashSet<>();
+        try {
+            UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
+                    : UUID.fromString(company.getOwner().getCity().getUUID());
+            QueryBuilder<CompanyPermission, UUID> query = permissionsDao.queryBuilder();
+            query.where().eq("company", companyUuid).and().eq("player", player);
+
+            List<CompanyPermission> perms = permissionsDao.query(query.prepare());
+            for (CompanyPermission perm : perms) {
+                try {
+                    permissions.add(CorpPermission.valueOf(perm.getPermission()));
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Invalid permission found in databse: " + perm.getPermission());
+                }
+            }
+
+            return permissions;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void removePermissions(Company company, UUID player, CorpPermission permission) {
+        try {
+            UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
+                    : UUID.fromString(company.getOwner().getCity().getUUID());
+
+            permissionsDao.delete(new CompanyPermission(companyUuid, player, permission.toString()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addPermissions(Company company, UUID player, CorpPermission permission) {
+        try {
+            UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
+                    : UUID.fromString(company.getOwner().getCity().getUUID());
+
+            permissionsDao.create(new CompanyPermission(companyUuid, player, permission.toString()));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * get the items of a marchant from the database
      *
      * @param playerUUID the uuid of the player we check
-     * @param conn use to have the same connection
+     * @param conn       use to have the same connection
      * @return A ItemStack[] from bytes stock in the database
      */
-    public static ItemStack[] getMerchantItem(UUID playerUUID, Connection conn) {
-        String query = "SELECT content FROM merchants_data WHERE uuid = ?";
-        try (PreparedStatement statement = conn.prepareStatement(query)) {
-
-            statement.setString(1, playerUUID.toString());
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    byte[] content = rs.getBytes("content");
-                    return content != null ? BukkitSerializer.deserializeItemStacks(content) : new ItemStack[54];
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SQLException e) {
+    public static ItemStack[] getMerchantItem(UUID player) {
+        try {
+            byte[] content = merchantsDao.queryForId(player).getContent();
+            return content != null ? BukkitSerializer.deserializeItemStacks(content) : new ItemStack[54];
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new ItemStack[54];
@@ -599,12 +467,13 @@ public class CompanyManager {
     /**
      * create a new company
      *
-     * @param name the name of the company
-     * @param owner the owner of the company
-     * @param newMember use for the city company ( not working for now )
-     * @param company_uuid use to set the company uuid if it's create at the load of the server
+     * @param name         the name of the company
+     * @param owner        the owner of the company
+     * @param newMember    use for the city company ( not working for now )
+     * @param company_uuid use to set the company uuid if it's create at the load of
+     *                     the server
      */
-    public void createCompany(String name, CompanyOwner owner, boolean newMember, UUID company_uuid) {
+    public static void createCompany(String name, CompanyOwner owner, boolean newMember, UUID company_uuid) {
         companies.add(new Company(name, owner, company_uuid, newMember));
     }
 
@@ -612,14 +481,15 @@ public class CompanyManager {
      * appling for a company
      *
      * @param playerUUID the uuid of the applier
-     * @param company the company where he wants to apply
+     * @param company    the company where he wants to apply
      */
-    public void applyToCompany(UUID playerUUID, Company company) {
+    public static void applyToCompany(UUID playerUUID, Company company) {
         Company playerCompany = getCompany(playerUUID);
 
-        if (playerCompany!=null) return;
+        if (playerCompany != null)
+            return;
 
-        if (!pendingApplications.getQueue().containsKey(playerUUID)){
+        if (!pendingApplications.getQueue().containsKey(playerUUID)) {
             pendingApplications.add(playerUUID, company);
         }
     }
@@ -628,9 +498,9 @@ public class CompanyManager {
      * accept the application of a player
      *
      * @param playerUUID the uuid of the applier
-     * @param company the company which accept the player
+     * @param company    the company which accept the player
      */
-    public void acceptApplication(UUID playerUUID, Company company) {
+    public static void acceptApplication(UUID playerUUID, Company company) {
         company.addMerchant(playerUUID, new MerchantData());
         pendingApplications.remove(playerUUID);
     }
@@ -639,10 +509,10 @@ public class CompanyManager {
      * know if a player has a pending application for a company
      *
      * @param playerUUID the uuid of the player
-     * @param company the company
+     * @param company    the company
      * @return true if it has one
      */
-    public boolean hasPendingApplicationFor(UUID playerUUID, Company company) {
+    public static boolean hasPendingApplicationFor(UUID playerUUID, Company company) {
         return pendingApplications.get(playerUUID) == company;
     }
 
@@ -651,7 +521,7 @@ public class CompanyManager {
      *
      * @param playerUUID the uuid of the applier
      */
-    public void denyApplication(UUID playerUUID) {
+    public static void denyApplication(UUID playerUUID) {
         if (pendingApplications.getQueue().containsKey(playerUUID)) {
             pendingApplications.remove(playerUUID);
         }
@@ -663,7 +533,7 @@ public class CompanyManager {
      * @param company the company we check
      * @return A list of all the application
      */
-    public List<UUID> getPendingApplications(Company company) {
+    public static List<UUID> getPendingApplications(Company company) {
         List<UUID> players = new ArrayList<>();
         for (UUID player : pendingApplications.getQueue().keySet()) {
             if (hasPendingApplicationFor(player, company)) {
@@ -679,7 +549,7 @@ public class CompanyManager {
      * @param company the company we check
      * @return true or false
      */
-    public boolean liquidateCompany(Company company) {
+    public static boolean liquidateCompany(Company company) {
         // L'entreprise ne peut pas être liquidée si elle a encore des marchands
         if (!company.getMerchants().isEmpty()) {
             fireAllMerchants(company);
@@ -703,7 +573,7 @@ public class CompanyManager {
      *
      * @param company the company we check
      */
-    public void fireAllMerchants(Company company) {
+    public static void fireAllMerchants(Company company) {
         for (UUID uuid : company.getMerchants().keySet()) {
             company.fireMerchant(uuid);
         }
@@ -715,7 +585,7 @@ public class CompanyManager {
      * @param playerUUID the uuid of the player who want to leave the company
      * @return A different MethodeState
      */
-    public MethodState leaveCompany(UUID playerUUID) {
+    public static MethodState leaveCompany(UUID playerUUID) {
         Company company = getCompany(playerUUID);
 
         if (company.isOwner(playerUUID)) {
@@ -752,7 +622,7 @@ public class CompanyManager {
      * @param name the name we check
      * @return A company if found
      */
-    public Company getCompany(String name) {
+    public static Company getCompany(String name) {
         for (Company company : companies) {
             if (company.getName().equals(name)) {
                 return company;
@@ -767,7 +637,7 @@ public class CompanyManager {
      * @param shopUUID the shop uuid use for the check
      * @return A shop if found
      */
-    public Shop getAnyShop(UUID shopUUID) {
+    public static Shop getAnyShop(UUID shopUUID) {
         for (Company company : companies) {
             Shop shop = company.getShop(shopUUID);
             if (shop != null) {
@@ -820,7 +690,7 @@ public class CompanyManager {
      * @param playerUUID the uuid of the player we check
      * @return true or false
      */
-    public boolean isInCompany(UUID playerUUID) {
+    public static boolean isInCompany(UUID playerUUID) {
         return getCompany(playerUUID) != null;
     }
 
@@ -828,10 +698,10 @@ public class CompanyManager {
      * know if a player is a merchant in a company
      *
      * @param playerUUID the uuid of the player we check
-     * @param company the company we check
+     * @param company    the company we check
      * @return true or false
      */
-    public boolean isMerchantOfCompany(UUID playerUUID, Company company) {
+    public static boolean isMerchantOfCompany(UUID playerUUID, Company company) {
         return company.getMerchants().containsKey(playerUUID);
     }
 
@@ -841,7 +711,7 @@ public class CompanyManager {
      * @param name the name use for the check
      * @return true or false
      */
-    public boolean companyExists(String name) {
+    public static boolean companyExists(String name) {
         return getCompany(name) != null;
     }
 }

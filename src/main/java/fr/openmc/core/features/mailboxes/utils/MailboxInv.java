@@ -1,6 +1,5 @@
 package fr.openmc.core.features.mailboxes.utils;
 
-
 import fr.openmc.core.OMCPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

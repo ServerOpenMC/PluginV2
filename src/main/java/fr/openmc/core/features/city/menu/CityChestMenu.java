@@ -50,6 +50,8 @@ public class CityChestMenu extends PaginatedMenu {
         if (this.page > this.city.getChestPages()) {
             throw new IllegalArgumentException("Page must be less than or equal to " + this.city.getChestPages());
         }
+
+        city.setChestWatcher(getOwner().getUniqueId());
     }
 
     @Override
@@ -65,7 +67,6 @@ public class CityChestMenu extends PaginatedMenu {
     @Override
     public @NotNull List<ItemStack> getItems() {
         ItemStack[] contents = city.getChestContent(this.page);
-        city.setChestWatcher(getOwner().getUniqueId());
 
         if (contents == null) {
             return Collections.emptyList();
@@ -111,7 +112,9 @@ public class CityChestMenu extends PaginatedMenu {
                     Inventory inv = inventoryClickEvent.getInventory();
 
                     exit(city, inv);
+
                     new CityChestMenu(player, city, this.getPage() - 1).open();
+                    city.setChestWatcher(getOwner().getUniqueId());
                 }
             }));
         }
@@ -123,7 +126,9 @@ public class CityChestMenu extends PaginatedMenu {
                     Inventory inv = inventoryClickEvent.getInventory();
 
                     exit(city, inv);
+
                     new CityChestMenu(player, city, this.getPage() + 1).open();
+                    city.setChestWatcher(getOwner().getUniqueId());
                 }
             }));
         }
@@ -154,7 +159,7 @@ public class CityChestMenu extends PaginatedMenu {
                 city.updateBalance((double) -price);
                 ItemUtils.removeItemsFromInventory(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), aywenite);
 
-                city.upgradeChest();
+                city.saveChestContent(city.getChestPages() + 1, null);
                 MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
                 exit(city, getInventory());
                 player.closeInventory();

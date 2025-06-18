@@ -1,21 +1,21 @@
 package fr.openmc.core.features.corporation.company;
 
-
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.corporation.CorpPermission;
 import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.data.TransactionData;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
+import fr.openmc.core.features.corporation.models.DBCompany;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopOwner;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.Queue;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -27,17 +27,12 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 @Getter
 public class Company {
 
     private final String name;
-    private final EconomyManager economyManager = EconomyManager.getInstance();
-    private final ShopBlocksManager shopBlocksManager = ShopBlocksManager.getInstance();
     private final HashMap<UUID, Set<CorpPermission>> permsCache = new HashMap<>();
     private final Map<UUID, MerchantData> merchants = new HashMap<>();
     private final List<Shop> shops = new ArrayList<>();
@@ -86,34 +81,41 @@ public class Company {
         addPermission(owner.getPlayer(), CorpPermission.OWNER);
     }
 
+    /**
+     * create a company object (use to deserliaze to DBCompany)
+     *
+     * @param name the name of the company
+     * @param owner the owner
+     * @param company_uuid the uuid of the company if it has one
+     */
+    public Company(UUID id, String name, UUID player, String city, double cut, double balance) {
+        this.name = name;
+        this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city));
+        assert id != null;
+        this.company_uuid = id;
+        this.cut = cut;
+        this.balance = balance;
+
+        addPermission(owner.getPlayer(), CorpPermission.OWNER);
+    }
+
+    /**
+     * convert {@link Company} to {@link fr.openmc.core.features.corporation.models.DBCompany} for database
+     *
+     * @return the company to be saved to the DB
+     */
+    public DBCompany serialize() {
+        return new DBCompany(company_uuid, name, owner.getPlayer(), owner.getCity(), cut, balance);
+    }
 
     /**
      * load permission in permsCache
      *
      * @param playerUUID the uuid of the player
      */
-    private void loadPermission(UUID playerUUID) {
-        if (!permsCache.containsKey(playerUUID)) {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT * FROM company_perms WHERE company_uuid = ? AND player = ?");
-                statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
-                statement.setString(2, playerUUID.toString());
-                ResultSet rs = statement.executeQuery();
-
-                Set<CorpPermission> plrPerms = permsCache.getOrDefault(playerUUID, new HashSet<>());
-
-                while (rs.next()) {
-                    try {
-                        plrPerms.add(CorpPermission.valueOf(rs.getString("permission")));
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Invalid permission: " + rs.getString("permission"));
-                    }
-                }
-
-                permsCache.put(playerUUID, plrPerms);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    private void loadPermission(UUID player) {
+        if (!permsCache.containsKey(player)) {
+            permsCache.put(player, CompanyManager.getPermissions(this, player));
         }
     }
 
@@ -143,12 +145,12 @@ public class Company {
     /**
      * remove permission in permsCache and in db
      *
-     * @param uuid the uuid of the player
+     * @param player the uuid of the player
      * @param permission the permission
      */
-    public void removePermission(UUID uuid, CorpPermission permission) {
-        loadPermission(uuid);
-        Set<CorpPermission> playerPerms = permsCache.get(uuid);
+    public void removePermission(UUID player, CorpPermission permission) {
+        loadPermission(player);
+        Set<CorpPermission> playerPerms = permsCache.get(player);
 
         if (playerPerms == null) {
             return;
@@ -156,18 +158,10 @@ public class Company {
 
         if (playerPerms.contains(permission)) {
             playerPerms.remove(permission);
-            permsCache.put(uuid, playerPerms);
+            permsCache.put(player, playerPerms);
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM company_perms WHERE company_uuid = ? AND player = ? AND permission = ?");
-                    statement.setString(1, owner.getCity() == null ? owner.getPlayer().toString() : owner.getCity().getUUID());
-                    statement.setString(2, uuid.toString());
-                    statement.setString(3, permission.toString());
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                CompanyManager.removePermissions(this, player, permission);
             });
         }
     }
@@ -175,26 +169,18 @@ public class Company {
     /**
      * add permission in permsCache and in db
      *
-     * @param uuid the uuid of the player
+     * @param player the uuid of the player
      * @param permission the permission
      */
-    public void addPermission(UUID uuid, CorpPermission permission) {
-        Set<CorpPermission> playerPerms = permsCache.getOrDefault(uuid, new HashSet<>());
+    public void addPermission(UUID player, CorpPermission permission) {
+        Set<CorpPermission> playerPerms = permsCache.getOrDefault(player, new HashSet<>());
 
         if (!playerPerms.contains(permission)) {
             playerPerms.add(permission);
-            permsCache.put(uuid, playerPerms);
+            permsCache.put(player, playerPerms);
 
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                try {
-                    PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO company_perms (company_uuid, player, permission) VALUES (?, ?, ?)");
-                    statement.setString(1, company_uuid.toString());
-                    statement.setString(2, uuid.toString());
-                    statement.setString(3, permission.toString());
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                CompanyManager.addPermissions(this, player, permission);
             });
         }
     }
@@ -258,7 +244,6 @@ public class Company {
      * @param cash the "cash register" use to open the shop menu
      * @return true or false
      */
-
     public boolean createShop(UUID playerUUID, Block barrel, Block cash) {
         Player whoCreated = Bukkit.getPlayer(playerUUID);
         Company company = this;
@@ -269,12 +254,14 @@ public class Company {
             }
 
             Shop newShop = new Shop(new ShopOwner(this), shopCounter);
-            economyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
+            EconomyManager.withdrawBalance(whoCreated.getUniqueId(), 100);
 
             shops.add(newShop);
             CompanyManager.shops.add(newShop);
-            shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
-            shopBlocksManager.placeShop(newShop, whoCreated, true);
+
+            ShopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
+            ShopBlocksManager.placeShop(newShop, whoCreated, true);
+
             shopCounter++;
             return true;
         }
@@ -291,7 +278,7 @@ public class Company {
 
     public void createShop(Block barrel, Block cash, UUID shopUUID) {
         Shop newShop = new Shop(new ShopOwner(this), shopCounter, shopUUID);
-        shopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
+        ShopBlocksManager.registerMultiblock(newShop, new Shop.Multiblock(barrel.getLocation(), cash.getLocation()));
         shopCounter++;
         shops.add(newShop);
         CompanyManager.shops.add(newShop);
@@ -313,12 +300,12 @@ public class Company {
                 if (!deposit(75, player, "Suppression de shop")) {
                     return MethodState.SPECIAL;
                 }
-                if (!shopBlocksManager.removeShop(shop)) {
+                if (!ShopBlocksManager.removeShop(shop)) {
                     return MethodState.ESCAPE;
                 }
                 shops.remove(shop);
                 CompanyManager.shops.remove(shop);
-                economyManager.addBalance(player.getUniqueId(), 75);
+                EconomyManager.addBalance(player.getUniqueId(), 75);
                 return MethodState.SUCCESS;
             }
         }
@@ -435,7 +422,7 @@ public class Company {
             return owner.getPlayer().equals(uuid);
         }
         else {
-            return owner.getCity().getPlayerWith(CPermission.OWNER).equals(uuid);
+            return owner.getCity().getPlayerWithPermission(CPermission.OWNER).equals(uuid);
         }
     }
 
@@ -468,7 +455,7 @@ public class Company {
             return ItemUtils.getPlayerSkull(owner.getPlayer());
         }
         else {
-            return ItemUtils.getPlayerSkull(owner.getCity().getPlayerWith(CPermission.OWNER));
+            return ItemUtils.getPlayerSkull(owner.getCity().getPlayerWithPermission(CPermission.OWNER));
         }
     }
 
@@ -482,7 +469,7 @@ public class Company {
             if (amount > 0) {
                 TransactionData transaction = new TransactionData(-amount, nature, additionalInfo, player.getUniqueId());
                 transactions.add(System.currentTimeMillis(), transaction);
-                economyManager.addBalance(player.getUniqueId(), amount);
+                EconomyManager.addBalance(player.getUniqueId(), amount);
             }
             return true;
         }
@@ -502,7 +489,7 @@ public class Company {
     }
 
     public boolean deposit(double amount, Player player, String nature, String additionalInfo) {
-        if (economyManager.withdrawBalance(player.getUniqueId(), amount)) {
+        if (EconomyManager.withdrawBalance(player.getUniqueId(), amount)) {
             balance += amount;
             if (amount > 0) {
                 TransactionData transaction = new TransactionData(amount, nature, additionalInfo, player.getUniqueId());

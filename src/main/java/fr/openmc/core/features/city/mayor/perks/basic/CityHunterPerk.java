@@ -28,7 +28,7 @@ public class CityHunterPerk implements Listener {
 
         if (attackerCity.getMayor() == null) return;
 
-        if (MayorManager.getInstance().phaseMayor != 2) return;
+        if (MayorManager.phaseMayor != 2) return;
 
         if (!PerkManager.hasPerk(attackerCity.getMayor(), Perks.CITY_HUNTER.getId())) {
             return;

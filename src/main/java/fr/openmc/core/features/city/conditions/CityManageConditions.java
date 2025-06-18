@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
  */
 public class CityManageConditions {
 
-
     /**
      * Retourne un booleen pour dire si la ville peut etre rename
      *
@@ -79,7 +78,7 @@ public class CityManageConditions {
             return false;
         }
 
-        if (!city.getPlayerWith(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (!city.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

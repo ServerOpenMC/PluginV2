@@ -1,17 +1,20 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -30,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class CityModifyMenu extends Menu {
 
@@ -105,7 +109,7 @@ public class CityModifyMenu extends Menu {
                                 if (InputUtils.isInputCityName(input)) {
                                     City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-                                    playerCity.renameCity(input);
+                                    playerCity.rename(input);
                                     MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
 
                                 } else {
@@ -156,43 +160,57 @@ public class CityModifyMenu extends Menu {
 
             }));
 
+            Supplier<ItemStack> deleteItemSupplier = () -> {
+                List<Component> loreDelete;
+                if (hasPermissionOwner) {
+                    if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+                        loreDelete = List.of(
+                                Component.text("§7Vous allez définitivement §csupprimer la ville!"),
+                                Component.text(""),
+                                Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")) + " §7avant de pouvoir delete votre ville")
+                        );
+                    } else {
+                        loreDelete = List.of(
+                                Component.text("§7Vous allez définitivement §csupprimer la ville!"),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                        );
+                    }
+                } else {
+                    loreDelete = List.of(
+                            MessagesManager.Message.NOPERMISSION2.getMessage()
+                    );
+                }
+                return new ItemBuilder(this, Material.TNT, itemMeta -> {
+                    itemMeta.itemName(Component.text("§7Supprimer la ville"));
+                    itemMeta.lore(loreDelete);
+                }).setOnClick(inventoryClickEvent -> {
+                    City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
-            List<Component> loreDelete;
+                    if (!CityManageConditions.canCityDelete(city, player)) return;
 
-            if (hasPermissionOwner) {
-                loreDelete = List.of(
-                        Component.text("§7Vous allez définitivement §csupprimer la ville!"),
-                        Component.text(""),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                );
+                    ConfirmMenu menu = new ConfirmMenu(
+                            player,
+                            () -> {
+                                player.closeInventory();
+                                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                    CityCommands.deleteCity(player);
+                                });
+                            },
+                            () -> player.closeInventory(),
+                            List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getName() + " ?")),
+                            List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getName())));
+                    menu.open();
+
+                });
+            };
+
+            if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+                MenuUtils.runDynamicItem(player, this, 15, deleteItemSupplier)
+                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             } else {
-                loreDelete = List.of(
-                        MessagesManager.Message.NOPERMISSION2.getMessage()
-                );
+                inventory.put(15, deleteItemSupplier.get());
             }
-
-            inventory.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
-                itemMeta.itemName(Component.text("§7Supprimer la ville"));
-                itemMeta.lore(loreDelete);
-            }).setOnClick(inventoryClickEvent -> {
-                City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-
-                if (!CityManageConditions.canCityDelete(city, player)) return;
-
-                ConfirmMenu menu = new ConfirmMenu(
-                        player,
-                        () -> {
-                            player.closeInventory();
-                            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                CityCommands.deleteCity(player);
-                            });
-                        },
-                        () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getName() + " ?")),
-                        List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getName())));
-                menu.open();
-
-            }));
 
             inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
