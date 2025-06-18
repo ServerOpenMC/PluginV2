@@ -2,6 +2,7 @@ package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
@@ -66,7 +67,10 @@ public class JoinMessageListener implements Listener {
         event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName()));
 
         // Adjust player's spawn location
-        if (!player.hasPlayedBefore()) player.teleport(SpawnManager.getSpawnLocation());
+        if (!player.hasPlayedBefore()) {
+            player.teleport(SpawnManager.getSpawnLocation());
+            EconomyManager.setBalance(player.getUniqueId(), 500D);
+        }
 
         new BukkitRunnable() {
             @Override
