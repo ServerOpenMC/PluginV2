@@ -9,7 +9,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.UUID;
 
-@DatabaseTable(tableName = "candidates")
+@DatabaseTable(tableName = "mayor_candidates")
 public class MayorCandidate {
     @DatabaseField(id = true)
     @Getter

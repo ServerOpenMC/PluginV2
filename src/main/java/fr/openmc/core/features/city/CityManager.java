@@ -69,6 +69,7 @@ public class CityManager implements Listener {
 
         new ProtectionsManager();
         // SUB-FEATURE
+        new MayorManager();
         new MascotsManager();
         new WarManager();
         new CityBankManager();
@@ -102,7 +103,7 @@ public class CityManager implements Listener {
     private static void loadCities() {
         try {
             cities.clear();
-            citiesDao.queryForAll().forEach(city -> cities.put(city.getId(), city.deserialize()));
+            citiesDao.queryForAll().forEach(city -> cities.put(city.getUUID(), city.deserialize()));
         } catch (SQLException e) {
             e.printStackTrace();
         }

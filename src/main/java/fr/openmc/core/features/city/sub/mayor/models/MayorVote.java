@@ -9,7 +9,7 @@ import lombok.Getter;
 
 import java.util.UUID;
 
-@DatabaseTable(tableName = "votes")
+@DatabaseTable(tableName = "mayor_votes")
 public class MayorVote {
     @DatabaseField(id = true)
     @Getter
