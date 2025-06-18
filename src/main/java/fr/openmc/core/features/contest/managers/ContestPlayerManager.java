@@ -61,9 +61,12 @@ public class ContestPlayerManager  {
      * Met a jour le nombre de points du joueur, cela écrase les points précédents
      */
     public static void setPointsPlayer(Player player, int points) {
-        ContestPlayer data = ContestManager.dataPlayer.get(player.getUniqueId().toString());
+        String uuid = player.getUniqueId().toString();
 
-        ContestManager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(data.getName(), points, data.getCamp(), data.getColor()));
+        ContestPlayer data = ContestManager.dataPlayer.get(uuid);
+        if (data != null) {
+            data.setPoints(points);
+        }
     }
 
     /**

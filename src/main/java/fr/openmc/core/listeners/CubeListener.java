@@ -22,18 +22,24 @@ import org.bukkit.util.Vector;
 public class CubeListener implements Listener {
     private OMCPlugin plugin;
     private static final int CUBE_SIZE = 5;
-    private final Material CUBE_MATERIAL = Material.LAPIS_BLOCK;
+    private static final Material CUBE_MATERIAL = Material.LAPIS_BLOCK;
     private BossBar bossBar;
     static double currentX = -171.0;
     static double currentZ = -117.0;
-    static double currentY = Bukkit.getWorld("world").getHighestBlockYAt((int) currentX, (int) currentZ);
-    public static Location currentLocation = new Location(Bukkit.getWorld("world"), currentX, currentY, currentZ);
+    public static Location currentLocation;
 
 
     public CubeListener(OMCPlugin plugin) {
         this.plugin = plugin;
+
+        double currentY = Bukkit.getWorld("world").getHighestBlockYAt((int) currentX, (int) currentZ);
+        currentLocation = new Location(Bukkit.getWorld("world"), currentX, currentY, currentZ);
+
+        clearCube(currentLocation);
+
         bossBar = Bukkit.createBossBar("Le Cube", BarColor.BLUE, BarStyle.SOLID, BarFlag.CREATE_FOG, BarFlag.DARKEN_SKY);
         bossBar.setVisible(true);
+
         startBossBarUpdater();
         createCube(currentLocation);
     }
@@ -61,6 +67,31 @@ public class CubeListener implements Listener {
 
 
     private void createCube(Location location) {
+        try {
+            World world = location.getWorld();
+            int baseX = location.getBlockX();
+            int baseY = location.getBlockY(); // yGround : au sol
+            int baseZ = location.getBlockZ();
+
+            for (int x = 0; x < CUBE_SIZE; x++) {
+                for (int y = 0; y < CUBE_SIZE; y++) {
+                    for (int z = 0; z < CUBE_SIZE; z++) {
+                        Block block = world.getBlockAt(baseX + x, baseY + y, baseZ + z);
+                        if (block.getType() != CUBE_MATERIAL) {
+                            block.setType(CUBE_MATERIAL);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Bukkit.getLogger().severe("Failed to create the cube at " + location);
+        }
+    }
+
+
+    public static void clearCube(Location location) {
+        location.subtract(0, 4, 0);
         World world = location.getWorld();
         int baseX = location.getBlockX();
         int baseY = location.getBlockY();
@@ -70,19 +101,9 @@ public class CubeListener implements Listener {
             for (int y = 0; y < CUBE_SIZE; y++) {
                 for (int z = 0; z < CUBE_SIZE; z++) {
                     Block block = world.getBlockAt(baseX + x, baseY + y, baseZ + z);
-                    if (block.getType() != CUBE_MATERIAL) {
-                        block.setType(CUBE_MATERIAL);
+                    if (block.getType() == CUBE_MATERIAL) {
+                        block.setType(Material.AIR);
                     }
-                }
-            }
-        }
-    }
-
-    public static void clearCube(Location location) {
-        for (int x = 0; x < CUBE_SIZE; x++) {
-            for (int y = 0; y < CUBE_SIZE; y++) {
-                for (int z = 0; z < CUBE_SIZE; z++) {
-                    location.clone().add(x, y, z).getBlock().setType(Material.AIR);
                 }
             }
         }
