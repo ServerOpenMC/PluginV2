@@ -9,7 +9,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.ChunkDataCache;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.CityClaimAction;
+import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
 import fr.openmc.core.utils.ChunkPos;
@@ -32,9 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static fr.openmc.core.features.city.commands.CityCommands.calculateAywenite;
-import static fr.openmc.core.features.city.commands.CityCommands.calculatePrice;
 
 public class CityChunkMenu extends Menu {
     public static final Map<String, ChunkDataCache> CHUNK_CACHE = new ConcurrentHashMap<>();
@@ -71,8 +69,8 @@ public class CityChunkMenu extends Menu {
             tempPlayerCityUUID = playerCity.getUUID();
 
             int nbChunk = playerCity.getChunks().size();
-            tempPrice = calculatePrice(nbChunk);
-            tempAywenite = calculateAywenite(nbChunk);
+            tempPrice = CityClaimAction.calculatePrice(nbChunk);
+            tempAywenite = CityClaimAction.calculateAywenite(nbChunk);
 
             tempFreeClaims = playerCity.getFreeClaims();
             tempHasFreeClaimAvailable = tempFreeClaims > 0;
@@ -162,14 +160,6 @@ public class CityChunkMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         long startTime = System.currentTimeMillis();
 
-        if (playerCity == null) {
-            inventory.put(22, new ItemBuilder(this, Material.BARRIER, itemMeta -> {
-                itemMeta.displayName(Component.text("§cAucune ville"));
-                itemMeta.lore(List.of(Component.text("§7Vous n'avez pas de ville")));
-            }));
-            return inventory;
-        }
-
         addNavigationButtons(inventory);
 
         if (chunkInfoMap == null || chunkInfoMap.isEmpty()) {
@@ -206,19 +196,21 @@ public class CityChunkMenu extends Menu {
     }
 
     private void addNavigationButtons(Map<Integer, ItemStack> inventory) {
-        inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
-        }).setOnClick(event -> {
-            CityMenu menu = new CityMenu(player);
-            menu.open();
-        }));
-
-        if (hasFreeClaimAvailable) {
-            inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-                itemMeta.displayName(Component.text("§6Claim Gratuit"));
-                itemMeta.lore(List.of(Component.text("§7Vous avez §6" + freeClaims + " claim gratuit !")));
+        if (playerCity != null) {
+            inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+                itemMeta.displayName(Component.text("§aRetour"));
+                itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
+            }).setOnClick(event -> {
+                CityMenu menu = new CityMenu(player);
+                menu.open();
             }));
+
+            if (hasFreeClaimAvailable) {
+                inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+                    itemMeta.displayName(Component.text("§6Claim Gratuit"));
+                    itemMeta.lore(List.of(Component.text("§7Vous avez §6" + freeClaims + " claim gratuit !")));
+                }));
+            }
         }
 
         inventory.put(53, new ItemBuilder(this, Material.MAP, itemMeta -> {
@@ -274,9 +266,15 @@ public class CityChunkMenu extends Menu {
             itemMeta.displayName(Component.text("§9Claim de votre ville"));
             itemMeta.lore(List.of(
                     Component.text("§7Ville : §d" + city.getName()),
-                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ)
+                    Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
+                    Component.text(""),
+                    Component.text("§cVous rapporte :"),
+                    Component.text("§8- §6" + CityUnclaimAction.calculatePrice(playerCity.getChunks().size())).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
+                    Component.text("§8- §d" + CityUnclaimAction.calculateAywenite(playerCity.getChunks().size()) + " d'Aywenite"),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ POUR UNCLAIM")
             ));
-        });
+        }).setOnClick(event -> handleChunkUnclaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
 
     private ItemStack createOtherCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
@@ -335,7 +333,7 @@ public class CityChunkMenu extends Menu {
                 player,
                 () -> {
                     Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                        CityCommands.claim(player, chunkX, chunkZ);
+                        CityClaimAction.startClaim(player, chunkX, chunkZ);
                     });
                     Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                         String refreshCacheKey = player.getWorld().getName() + ":" + startX + "," + startZ;
@@ -351,6 +349,42 @@ public class CityChunkMenu extends Menu {
                 },
                 List.of(Component.text("§7Voulez vous vraiment claim ce chunk ?")),
                 List.of(Component.text("§7Annuler la procédure de claim")));
+        menu.open();
+    }
+
+    private void handleChunkUnclaimClick(Player player, int chunkX, int chunkZ, boolean hasPermissionClaim) {
+        City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (cityCheck == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!hasPermissionClaim) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        ConfirmMenu menu = new ConfirmMenu(
+                player,
+                () -> {
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                        CityUnclaimAction.startUnclaim(player, chunkX, chunkZ);
+                    });
+                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                        String refreshCacheKey = player.getWorld().getName() + ":" + startX + "," + startZ;
+                        CHUNK_CACHE.remove(refreshCacheKey);
+
+                        new CityChunkMenu(player).open();
+                    }, 2);
+                },
+                () -> {
+                    Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                        new CityChunkMenu(player).open();
+                    }, 2);
+                },
+                List.of(Component.text("§7Voulez vous vraiment unclaim ce chunk ?")),
+                List.of(Component.text("§7Annuler la procédure de unclaim")));
         menu.open();
     }
 }

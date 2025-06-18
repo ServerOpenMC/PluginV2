@@ -19,7 +19,8 @@ public enum CPermission {
     MASCOT_MOVE("Déplacer la mascotte"),
     MASCOT_SKIN("Changer le skin de la mascotte"),
     MASCOT_UPGRADE("Améliorer la mascotte"),
-    MASCOT_HEAL("Soigner la mascotte")
+    MASCOT_HEAL("Soigner la mascotte"),
+    LAUNCH_WAR("Lancer des guerres")
     ;
 
     @Getter

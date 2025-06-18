@@ -55,85 +55,79 @@ public class HomeConfigMenu extends Menu {
         Map<Integer, ItemStack> content = new HashMap<>();
         Player player = getOwner();
 
-        try {
-            content.put(4, home.getIconItem());
+        content.put(4, home.getIconItem());
 
-            content.put(20, new ItemBuilder(this, HomeIconRegistry.getRandomIcon().getItemStack(), itemMeta -> {
-                itemMeta.displayName(Component.text("§aChanger l'icône"));
-                itemMeta.lore(List.of(Component.text("§7■ §aClique §2gauche §apour changer l'icône de votre home")));
-            }).setNextMenu(new HomeChangeIconMenu(player, home)));
+        content.put(20, new ItemBuilder(this, HomeIconRegistry.getRandomIcon().getItemStack(), itemMeta -> {
+            itemMeta.displayName(Component.text("§aChanger l'icône"));
+            itemMeta.lore(List.of(Component.text("§7■ §aClique §2gauche §apour changer l'icône de votre home")));
+        }).setNextMenu(new HomeChangeIconMenu(player, home)));
 
-            content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
-                itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+        content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
+            itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
 
-                TextComponent lore = Component.text()
-                        .append(Component.text("■ ", NamedTextColor.GRAY))
-                        .append(Component.text("Clique ", NamedTextColor.GREEN))
-                        .append(Component.text("gauche ", NamedTextColor.DARK_GREEN))
-                        .append(Component.text("pour changer le nom de votre home", NamedTextColor.GREEN))
-                        .style(Style.style(TextDecoration.ITALIC.withState(false)))
-                        .build();
-                itemMeta.lore(Collections.singletonList(lore));
-            }).setOnClick(e -> {
-                String[] lines = {
-                        "",
-                        " ᐱᐱᐱᐱᐱᐱᐱ ",
-                        "Entrez votre",
-                        "nom ci dessus"
-                };
+            TextComponent lore = Component.text()
+                    .append(Component.text("■ ", NamedTextColor.GRAY))
+                    .append(Component.text("Clique ", NamedTextColor.GREEN))
+                    .append(Component.text("gauche ", NamedTextColor.DARK_GREEN))
+                    .append(Component.text("pour changer le nom de votre home", NamedTextColor.GREEN))
+                    .style(Style.style(TextDecoration.ITALIC.withState(false)))
+                    .build();
+            itemMeta.lore(Collections.singletonList(lore));
+        }).setOnClick(e -> {
+            String[] lines = {
+                    "",
+                    " ᐱᐱᐱᐱᐱᐱᐱ ",
+                    "Entrez votre",
+                    "nom ci dessus"
+            };
 
-                SignGUI gui;
-                try {
-                    gui = SignGUI.builder()
-                            .setLines(lines)
-                            .setType(ItemUtils.getSignType(player))
-                            .setHandler((p, result) -> {
-                                String input = result.getLine(0);
+            SignGUI gui;
+            try {
+                gui = SignGUI.builder()
+                        .setLines(lines)
+                        .setType(ItemUtils.getSignType(player))
+                        .setHandler((p, result) -> {
+                            String input = result.getLine(0);
 
                                 if (!HomeUtil.isValidHomeName(input))
                                     return Collections.emptyList();
 
-                                if (HomesManager.getHomesNames(p.getUniqueId()).contains(input)) {
-                                    TextComponent message = Component.text("Tu as déjà un home avec ce nom.", NamedTextColor.RED);
-                                    MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.ERROR, true);
-                                    return Collections.emptyList();
-                                }
+                            if (HomesManager.getHomesNames(p.getUniqueId()).contains(input)) {
+                                TextComponent message = Component.text("Tu as déjà un home avec ce nom.", NamedTextColor.RED);
+                                MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.ERROR, true);
+                                return Collections.emptyList();
+                            }
 
-                                TextComponent message = Component.text()
-                                        .append(Component.text("Ton home ", NamedTextColor.GREEN))
-                                        .append(Component.text(home.getName(), NamedTextColor.YELLOW))
-                                        .append(Component.text(" a été renommé en ", NamedTextColor.GREEN))
-                                        .append(Component.text(input, NamedTextColor.YELLOW))
-                                        .append(Component.text(".", NamedTextColor.GREEN))
-                                        .build();
+                            TextComponent message = Component.text()
+                                    .append(Component.text("Ton home ", NamedTextColor.GREEN))
+                                    .append(Component.text(home.getName(), NamedTextColor.YELLOW))
+                                    .append(Component.text(" a été renommé en ", NamedTextColor.GREEN))
+                                    .append(Component.text(input, NamedTextColor.YELLOW))
+                                    .append(Component.text(".", NamedTextColor.GREEN))
+                                    .build();
 
                                 MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
                                 HomesManager.renameHome(home, input);
 
-                                return Collections.emptyList();
-                            })
-                            .build();
-                } catch (SignGUIVersionException ex) {
-                    throw new RuntimeException(ex);
-                }
+                            return Collections.emptyList();
+                        })
+                        .build();
+            } catch (SignGUIVersionException ex) {
+                throw new RuntimeException(ex);
+            }
 
-                gui.open(player);
-            }));
+            gui.open(player);
+        }));
 
             content.put(24, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
                 itemMeta.displayName(Component.text(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home"));
                 itemMeta.lore(List.of(Component.text("§7■ §cClique §4gauche §cpour supprimer votre home")));
             }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
 
-            content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setNextMenu(new HomeMenu(player)));
-            content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setNextMenu(new HomeMenu(player)));
+        content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
 
-            return content;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            throw new RuntimeException("Failed to load HomeConfigMenu content", e);
-        }
+        return content;
     }
 
     @Override
