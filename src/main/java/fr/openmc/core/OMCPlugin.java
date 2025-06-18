@@ -57,8 +57,8 @@ public class OMCPlugin extends JavaPlugin {
         new LuckPermsApi();
         new PapiApi();
         new WorldGuardApi();
-        new ItemAdderApi();
-        new FancyNpcApi();
+        new ItemsAdderApi();
+        new FancyNpcsApi();
 
         logLoadMessage();
 

@@ -16,7 +16,7 @@ import fr.openmc.core.features.city.sub.mayor.menu.npc.OwnerNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.npcs.MayorNPC;
 import fr.openmc.core.features.city.sub.mayor.npcs.OwnerNPC;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.api.FancyNpcApi;
+import fr.openmc.core.utils.api.FancyNpcsApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -56,7 +56,7 @@ public class NPCManager implements Listener {
     }
 
     public static void createNPCS(String cityUUID, Location locationMayor, Location locationOwner, UUID creatorUUID) {
-        if (!FancyNpcApi.hasFancyNpc()) return;
+        if (!FancyNpcsApi.hasFancyNpc()) return;
 
 
         City city = CityManager.getCity(cityUUID);
@@ -99,7 +99,7 @@ public class NPCManager implements Listener {
     }
 
     public static void removeNPCS(String cityUUID) {
-        if (!FancyNpcApi.hasFancyNpc()) return;
+        if (!FancyNpcsApi.hasFancyNpc()) return;
         if (!ownerNpcMap.containsKey(cityUUID) || !mayorNpcMap.containsKey(cityUUID)) return;
 
         Npc ownerNpc = ownerNpcMap.remove(cityUUID).getNpc();
@@ -113,7 +113,7 @@ public class NPCManager implements Listener {
     }
 
     public static void updateNPCS(String cityUUID) {
-        if (!FancyNpcApi.hasFancyNpc()) return;
+        if (!FancyNpcsApi.hasFancyNpc()) return;
 
         OwnerNPC ownerNPC = ownerNpcMap.get(cityUUID);
         MayorNPC mayorNPC = mayorNpcMap.get(cityUUID);
@@ -128,7 +128,7 @@ public class NPCManager implements Listener {
     }
 
     public static void updateAllNPCS() {
-        if (!FancyNpcApi.hasFancyNpc()) return;
+        if (!FancyNpcsApi.hasFancyNpc()) return;
 
         Set<String> cityUUIDs = new HashSet<>(ownerNpcMap.keySet()); // Copie
 
@@ -147,7 +147,7 @@ public class NPCManager implements Listener {
     }
 
     public static void moveNPC(String type, Location location, String city_uuid) {
-        if (!FancyNpcApi.hasFancyNpc()) return;
+        if (!FancyNpcsApi.hasFancyNpc()) return;
 
         if (type.equalsIgnoreCase("owner")) {
             OwnerNPC ownerNPC = ownerNpcMap.get(city_uuid);
@@ -165,14 +165,14 @@ public class NPCManager implements Listener {
     }
 
     public static boolean hasNPCS(String cityUUID) {
-        if (!FancyNpcApi.hasFancyNpc()) return false;
+        if (!FancyNpcsApi.hasFancyNpc()) return false;
 
         return ownerNpcMap.containsKey(cityUUID) && mayorNpcMap.containsKey(cityUUID);
     }
 
     @EventHandler
     public void onInteractWithMayorNPC(NpcInteractEvent event) {
-        if (!FancyNpcApi.hasFancyNpc()) return;
+        if (!FancyNpcsApi.hasFancyNpc()) return;
 
         Player player = event.getPlayer();
 

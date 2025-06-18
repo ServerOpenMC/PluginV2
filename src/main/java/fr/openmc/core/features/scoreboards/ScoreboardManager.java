@@ -14,7 +14,7 @@ import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.LuckPermsApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
@@ -51,7 +51,7 @@ public class ScoreboardManager implements Listener {
 
     public Set<UUID> disabledPlayers = new HashSet<>();
     public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder();
+    private final boolean canShowLogo = PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder();
     OMCPlugin plugin = OMCPlugin.getInstance();
     private GlobalTeamManager globalTeamManager = null;
 

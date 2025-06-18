@@ -1,19 +1,23 @@
 package fr.openmc.core.features.contest.managers;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.contest.models.Contest;
-import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.contest.ContestEndEvent;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
 import fr.openmc.core.features.contest.listeners.ContestListener;
+import fr.openmc.core.features.contest.models.Contest;
+import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
@@ -28,12 +32,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-
 import revxrsal.commands.autocomplete.SuggestionProvider;
 
 import java.io.File;
@@ -64,7 +62,7 @@ public class ContestManager {
     public ContestManager() {
         // LISTENERS
         OMCPlugin.registerEvents(new ContestListener(OMCPlugin.getInstance()));
-        if (ItemAdderApi.hasItemAdder()) {
+        if (ItemsAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );

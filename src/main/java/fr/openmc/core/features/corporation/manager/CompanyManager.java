@@ -1,5 +1,10 @@
 package fr.openmc.core.features.corporation.manager;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -13,19 +18,12 @@ import fr.openmc.core.features.corporation.company.CompanyOwner;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.listener.CustomItemsCompanyListener;
 import fr.openmc.core.features.corporation.listener.ShopListener;
-import fr.openmc.core.features.corporation.models.CompanyMerchant;
-import fr.openmc.core.features.corporation.models.CompanyPermission;
-import fr.openmc.core.features.corporation.models.DBCompany;
-import fr.openmc.core.features.corporation.models.DBShop;
-import fr.openmc.core.features.corporation.models.Merchant;
-import fr.openmc.core.features.corporation.models.ShopSupplier;
-import fr.openmc.core.features.corporation.models.DBShopItem;
-import fr.openmc.core.features.corporation.models.DBShopSale;
+import fr.openmc.core.features.corporation.models.*;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.corporation.shops.Supply;
 import fr.openmc.core.utils.Queue;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
@@ -36,12 +34,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -76,7 +68,7 @@ public class CompanyManager {
         OMCPlugin.registerEvents(
                 new ShopListener());
 
-        if (ItemAdderApi.hasItemAdder()) {
+        if (ItemsAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new CustomItemsCompanyListener());
         }

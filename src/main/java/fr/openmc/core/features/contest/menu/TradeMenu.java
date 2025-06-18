@@ -8,7 +8,7 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -36,7 +36,7 @@ public class TradeMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
         } else {
             return "Menu des Contests - Trades";
@@ -100,7 +100,7 @@ public class TradeMenu extends Menu {
             );
 
             inventory.put(slot, new ItemBuilder(this, m, itemMeta -> itemMeta.lore(loreTrades)).setOnClick(inventoryClickEvent -> {
-                if (!ItemAdderApi.hasItemAdder()) {
+                if (!ItemsAdderApi.hasItemAdder()) {
                     MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                     return;
                 }
