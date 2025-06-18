@@ -22,8 +22,8 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.api.FancyNpcApi;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.FancyNpcsApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -83,11 +83,11 @@ public class MayorManager {
                 new MineralRushPerk(),
                 new MilitaryDissuasion(),
                 new IdyllicRain());
-        if (ItemAdderApi.hasItemAdder()) {
+        if (ItemsAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new UrneListener());
         }
-        if (FancyNpcApi.hasFancyNpc()) {
+        if (FancyNpcsApi.hasFancyNpc()) {
             OMCPlugin.registerEvents(
                     new NPCManager());
         }

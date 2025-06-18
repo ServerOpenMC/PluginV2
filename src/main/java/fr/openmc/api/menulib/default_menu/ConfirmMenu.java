@@ -3,7 +3,7 @@ package fr.openmc.api.menulib.default_menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -50,7 +50,7 @@ public class ConfirmMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_confirm_menu%");
         } else {
             return "Confirmation";

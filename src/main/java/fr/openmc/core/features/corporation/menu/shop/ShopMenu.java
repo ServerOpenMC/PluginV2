@@ -12,7 +12,7 @@ import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -53,7 +53,7 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {// sell_shop_menu
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {// sell_shop_menu
             if (shop.getOwner().isCompany()){
                 Company company = shop.getOwner().getCompany();
                 if (company.getAllMembers().contains(getOwner().getUniqueId())){
