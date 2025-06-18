@@ -216,7 +216,7 @@ public class MayorManager {
         try {
             List<CityLaw> laws = lawsDao.queryForAll();
 
-            laws.forEach(law -> cityLaws.put(law.getCity(), law));
+            laws.forEach(law -> cityLaws.put(law.getCityUUID(), law));
         } catch (SQLException e) {
             e.printStackTrace();
         }
