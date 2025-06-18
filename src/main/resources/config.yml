@@ -14,6 +14,9 @@ chat:
   # {prefix}, {suffix}, {name}, {message}
   message: "&r{prefix} {name}&8: &f{message}"
 
+# Montant d'argent donné à un joueur lors de sa première connexion
+money-on-first-join: 500
+
 #####
 # Paramètres pour un environnement de production
 #####
