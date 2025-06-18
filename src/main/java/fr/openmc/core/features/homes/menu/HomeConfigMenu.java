@@ -5,8 +5,8 @@ import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.homes.Home;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
@@ -106,8 +106,8 @@ public class HomeConfigMenu extends Menu {
                                     .append(Component.text(".", NamedTextColor.GREEN))
                                     .build();
 
-                            MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
-                            HomesManager.getInstance().renameHome(home, input);
+                                MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
+                                HomesManager.renameHome(home, input);
 
                             return Collections.emptyList();
                         })

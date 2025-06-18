@@ -26,7 +26,7 @@ public class MinerPerk implements Listener {
      * @param player The player to update.
      */
     public static void updatePlayerEffects(Player player) {
-        int phase = MayorManager.getInstance().phaseMayor;
+        int phase = MayorManager.phaseMayor;
 
         if (phase == 2) {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());

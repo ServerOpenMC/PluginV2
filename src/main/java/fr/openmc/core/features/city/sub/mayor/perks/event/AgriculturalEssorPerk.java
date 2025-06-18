@@ -28,7 +28,7 @@ import java.util.UUID;
 public class AgriculturalEssorPerk implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (MayorManager.getInstance().phaseMayor !=2) return;
+        if (MayorManager.phaseMayor !=2) return;
 
         Player player = event.getPlayer();
 
@@ -45,7 +45,7 @@ public class AgriculturalEssorPerk implements Listener {
 
     @EventHandler
     void onTimeEnd(Chronometer.ChronometerEndEvent e) {
-        if (MayorManager.getInstance().phaseMayor !=2) return;
+        if (MayorManager.phaseMayor !=2) return;
 
         String chronometerGroup = e.getGroup();
         if (!chronometerGroup.equals("city:agricultural_essor")) return;
@@ -67,7 +67,7 @@ public class AgriculturalEssorPerk implements Listener {
 
     @EventHandler
     public void onCropBreak(BlockBreakEvent event) {
-        if (MayorManager.getInstance().phaseMayor !=2) return;
+        if (MayorManager.phaseMayor !=2) return;
 
         Player player = event.getPlayer();
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -97,7 +97,7 @@ public class AgriculturalEssorPerk implements Listener {
     // probleme avec item adder, il ne detecte pas quand on casse une CustomCrop
 //    @EventHandler
 //    public void onCustomCropBreak(CustomBlockBreakEvent event) {
-//        if (MayorManager.getInstance().phaseMayor != 2) return;
+//        if (MayorManager.phaseMayor != 2) return;
 //
 //        Player player = event.getPlayer();
 //        City city = CityManager.getPlayerCity(player.getUniqueId());

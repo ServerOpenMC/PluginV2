@@ -85,7 +85,7 @@ public class LeaderboardCommands {
                     leaderboardMove -> {
                         if (leaderboardMove == null) return true;
                         try {
-                            LeaderboardManager.getInstance().setHologramLocation(leaderboard, leaderboardMove);
+                            LeaderboardManager.setHologramLocation(leaderboard, leaderboardMove);
                             MessagesManager.sendMessage(
                                     player,
                                     Component.text("§aPosition du leaderboard " + leaderboard + " mise à jour."),
@@ -122,14 +122,14 @@ public class LeaderboardCommands {
     @CommandPermission("op")
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
-        LeaderboardManager.getInstance().disable();
+        LeaderboardManager.disable();
     }
 
     @Subcommand("enable")
     @CommandPermission("op")
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
-        LeaderboardManager.getInstance().enable();
+        LeaderboardManager.enable();
     }
 
     @Subcommand("setScale")
@@ -138,7 +138,7 @@ public class LeaderboardCommands {
     void setScaleCommand(Player player, float scale) {
         player.sendMessage("§aTaille des Holograms modifiée à " + scale);
         try {
-            LeaderboardManager.getInstance().setScale(scale);
+            LeaderboardManager.setScale(scale);
             player.sendMessage("§aTaille des Holograms modifiée à " + scale);
         } catch (IOException e) {
             player.sendMessage("§cErreur lors de la mise à jour de la taille des holograms: " + e.getMessage());

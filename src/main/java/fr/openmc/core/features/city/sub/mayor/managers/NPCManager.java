@@ -80,7 +80,7 @@ public class NPCManager implements Listener {
         Npc npcMayor = FancyNpcsPlugin.get().getNpcAdapter().apply(dataMayor);
 
         NpcData dataOwner = new NpcData("owner-" + cityUUID, creatorUUID, locationOwner);
-        String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
         dataOwner.setSkin(ownerName);
         dataOwner.setDisplayName("<yellow>Propriétaire " + ownerName + "</yellow>");
 
@@ -179,7 +179,7 @@ public class NPCManager implements Listener {
         Npc npc = event.getNpc();
 
         if (npc.getData().getName().startsWith("mayor-")) {
-            if (MayorManager.getInstance().phaseMayor == 1) {
+            if (MayorManager.phaseMayor == 1) {
                 MessagesManager.sendMessage(player, Component.text("§8§o*les elections sont en cours... on ne sait pas ce qu'il décide de prendre*"), Prefix.MAYOR, MessageType.INFO, true);
                 event.setCancelled(true);
                 return;
@@ -200,7 +200,7 @@ public class NPCManager implements Listener {
             City city = CityManager.getCity(cityUUID);
             if (city == null) return;
 
-            if (MayorManager.getInstance().phaseMayor == 1) {
+            if (MayorManager.phaseMayor == 1) {
                 Component message = Component.text("§8§o*Bonjour ? Tu veux me bouger ? Clique ici !*")
                         .clickEvent(ClickEvent.callback(audience -> {
                             List<Component> loreItemNPC = List.of(
@@ -258,6 +258,5 @@ public class NPCManager implements Listener {
 
             new OwnerNpcMenu(player, city, city.getElectionType()).open();
         }
-
     }
 }

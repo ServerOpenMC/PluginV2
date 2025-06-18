@@ -11,17 +11,13 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.contest.managers.ContestPlayerManager;
-import fr.openmc.core.features.corporation.manager.CompanyManager;
-import fr.openmc.core.features.corporation.manager.PlayerShopManager;
-import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.economy.BankManager;
+import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.friend.FriendManager;
-import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
@@ -42,14 +38,11 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
-    @Getter static TranslationManager translationManager;
-    private DatabaseManager dbManager;
 
     @Override
     public void onEnable() {
@@ -61,7 +54,7 @@ public class OMCPlugin extends JavaPlugin {
 
         /* EXTERNALS */
         MenuLib.init(this);
-        // TODO: faire des messages a envoyer dans la console disant, la version du plugin, version de minecraft, si chaque api sont bien connecté ou manquant, et les versions des plugins lié a OpenMC ?
+
         new LuckPermsApi();
         new PapiApi();
         new WorldGuardApi();
@@ -71,13 +64,12 @@ public class OMCPlugin extends JavaPlugin {
         logLoadMessage();
 
         /* MANAGERS */
-        dbManager = new DatabaseManager();
+        new DatabaseManager();
         new CommandsManager();
-        CustomItemRegistry.init();
-        ContestManager contestManager = new ContestManager(this);
-        ContestPlayerManager contestPlayerManager = new ContestPlayerManager();
-        new SpawnManager(this);
+        new CustomItemRegistry();
+        new SpawnManager();
         new UpdateManager();
+        new MascotsManager(); // laisser avant CityManager
         new MayorManager(); //todo: quand PR ORM passé mettre ça dans citymanegr
         new CityManager();
         new ListenersManager();
@@ -85,32 +77,24 @@ public class OMCPlugin extends JavaPlugin {
         new BankManager();
         new ScoreboardManager();
         new HomesManager();
-        new HomeUpgradeManager(HomesManager.getInstance());
         new TPAManager();
         new FreezeManager();
-        new FriendManager();
         new QuestsManager();
+        new QuestProgressSaveManager();
         new TabList();
-        if (!OMCPlugin.isUnitTestVersion())
-            new LeaderboardManager(this);
-        new AdminShopManager(this);
-        new AccountDetectionManager(this);
-        new BossbarManager(this);
+        new AdminShopManager();
+        new AccountDetectionManager();
+        new BossbarManager();
+        new CompanyManager();// laisser apres Economy Manager
+        new ContestManager();
         new PrivateMessageManager();
 
-        if (!OMCPlugin.isUnitTestVersion()){
-            new ShopBlocksManager(this);
-            new PlayerShopManager();
-            new CompanyManager();// laisser apres Economy Manager
-        }
-        contestPlayerManager.setContestManager(contestManager); // else ContestPlayerManager crash because ContestManager is null
-        contestManager.setContestPlayerManager(contestPlayerManager);
-        new MotdUtils(this);
-        translationManager = new TranslationManager(this, new File(this.getDataFolder(), "translations"), "fr");
-        translationManager.loadAllLanguages();
+        if (!OMCPlugin.isUnitTestVersion())
+            new LeaderboardManager();
 
-        /* LOAD */
-        DynamicCooldownManager.loadCooldowns();
+        new MotdUtils();
+        new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
+        new DynamicCooldownManager();
         HomeIconCacheManager.initialize();
 
         getLogger().info("Plugin activé");
@@ -121,45 +105,32 @@ public class OMCPlugin extends JavaPlugin {
         // SAUVEGARDE
 
         // - Maires
-        MayorManager mayorManager = MayorManager.getInstance();
-        mayorManager.saveMayorConstant();
-        mayorManager.savePlayersVote();
-        mayorManager.saveMayorCandidates();
-        mayorManager.saveCityMayors();
-        mayorManager.saveCityLaws();
+        MayorManager.saveMayorConstant();
+        MayorManager.savePlayersVote();
+        MayorManager.saveMayorCandidates();
+        MayorManager.saveCityMayors();
+        MayorManager.saveCityLaws();
 
         // - Companies & Shop
         CompanyManager.saveAllCompanies();
         CompanyManager.saveAllShop();
 
-        // - Home
-        HomesManager.getInstance().saveHomesData();
+        HomesManager.saveHomesData();
         HomeIconCacheManager.clearCache();
 
         // - Contest
-        ContestManager.getInstance().saveContestData();
-        ContestManager.getInstance().saveContestPlayerData();
-
-        // - Quetes
-        QuestsManager.getInstance().saveQuests();
+        ContestManager.saveContestData();
+        ContestManager.saveContestPlayerData();
+        QuestsManager.saveQuests();
 
         // - Mascottes
         MascotsManager.saveMascots();
-        CityManager.saveFreeClaims(CityManager.freeClaim);
 
         // - Cube
         CubeListener.clearCube(CubeListener.currentLocation);
 
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();
-
-        if (dbManager != null) {
-            try {
-                dbManager.close();
-            } catch (SQLException e) {
-                getLogger().severe("Impossible de fermer la connexion à la base de données");
-            }
-        }
 
         getLogger().info("Plugin désactivé");
     }
@@ -175,7 +146,7 @@ public class OMCPlugin extends JavaPlugin {
     }
 
     private void logLoadMessage() {
-        Logger log = OMCPlugin.getInstance().getLogger();
+        Logger log = getLogger();
 
         String pluginVersion = getDescription().getVersion();
         String javaVersion = System.getProperty("java.version");

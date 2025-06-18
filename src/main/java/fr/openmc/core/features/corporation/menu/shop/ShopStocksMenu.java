@@ -66,7 +66,7 @@ public class ShopStocksMenu extends PaginatedMenu {
                 itemMeta.displayName(ShopItem.getItemName(stock.getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
                 itemMeta.setLore(List.of(
                         "§7■ Quantité restante : " + EconomyManager.getFormattedSimplifiedNumber(stock.getAmount()),
-                        "§7■ Prix de vente (par item) : " + EconomyManager.getInstance().getFormattedNumber(stock.getPricePerItem()),
+                        "§7■ Prix de vente (par item) : " + EconomyManager.getFormattedNumber(stock.getPricePerItem()),
                         "§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
                 ));
             }).setOnClick(inventoryClickEvent -> {

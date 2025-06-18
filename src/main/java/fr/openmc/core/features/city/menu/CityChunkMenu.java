@@ -72,10 +72,8 @@ public class CityChunkMenu extends Menu {
             tempPrice = CityClaimAction.calculatePrice(nbChunk);
             tempAywenite = CityClaimAction.calculateAywenite(nbChunk);
 
-            if (CityManager.freeClaim.containsKey(tempPlayerCityUUID)) {
-                tempFreeClaims = CityManager.freeClaim.get(tempPlayerCityUUID);
-                tempHasFreeClaimAvailable = tempFreeClaims > 0;
-            }
+            tempFreeClaims = playerCity.getFreeClaims();
+            tempHasFreeClaimAvailable = tempFreeClaims > 0;
         }
 
         this.playerCityUUID = tempPlayerCityUUID;

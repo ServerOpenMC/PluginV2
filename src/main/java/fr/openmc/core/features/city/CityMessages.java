@@ -1,5 +1,7 @@
 package fr.openmc.core.features.city;
 
+import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -22,7 +24,7 @@ public class CityMessages {
     public static void sendInfo(CommandSender sender, City city) {
         String mascotLife = "dead";
         String cityName = city.getName();
-        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
@@ -67,8 +69,8 @@ public class CityMessages {
         } else {
             sendLine(sender, "Banque", money);
         }
-        if (CityManager.freeClaim.containsKey(city.getUUID())){
-            sendLine(sender, "Claim gratuit", String.valueOf(CityManager.freeClaim.get(city.getUUID())));
-        }
+
+        if (city.getFreeClaims() > 0)
+            sendLine(sender, "Claim gratuit", String.valueOf(city.getFreeClaims()));
     }
 }

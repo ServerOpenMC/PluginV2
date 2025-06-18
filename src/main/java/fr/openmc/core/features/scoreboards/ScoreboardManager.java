@@ -5,6 +5,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.ContestData;
@@ -277,17 +278,17 @@ public class ScoreboardManager implements Listener {
             objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(6);
         }
 
-        if (CompanyManager.getInstance().isInCompany(player.getUniqueId())){
+        if (CompanyManager.isInCompany(player.getUniqueId())){
             Company company = CompanyManager.getCompany(player.getUniqueId());
             String compName = company != null ? company.getName() : "Introuvable";
             objective.getScore("§8• §fEntreprise§7: "+compName).setScore(9);
         }
 
-        String balance = EconomyManager.getInstance().getMiniBalance(player.getUniqueId());
+        String balance = EconomyManager.getMiniBalance(player.getUniqueId());
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
 
 
-        ContestData data = ContestManager.getInstance().data;
+        Contest data = ContestManager.data;
         int phase = data.getPhase();
         if(phase != 1) {
             objective.getScore(" ").setScore(5);

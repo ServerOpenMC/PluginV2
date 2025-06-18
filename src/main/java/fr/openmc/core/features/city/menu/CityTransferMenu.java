@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.menu;
 
-
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -53,10 +52,10 @@ public class CityTransferMenu extends PaginatedMenu {
 
         boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
-        for (UUID uuid : city.getMembers()) {
-            if (uuid.equals(city.getPlayerWith(CPermission.OWNER))) {
-                continue;
-            }
+            for (UUID uuid : city.getMembers()) {
+                if (uuid.equals(city.getPlayerWithPermission(CPermission.OWNER))) {
+                    continue;
+                }
 
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 

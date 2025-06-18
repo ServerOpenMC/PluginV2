@@ -29,13 +29,9 @@ import java.util.*;
 
 
 public class TradeMenu extends Menu {
-    private final ContestManager contestManager;
-    private final ContestPlayerManager contestPlayerManager;
 
     public TradeMenu(Player owner) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
-        this.contestPlayerManager = ContestPlayerManager.getInstance();
     }
 
     @Override
@@ -62,8 +58,8 @@ public class TradeMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-        String campName = contestPlayerManager.getPlayerCampName(player);
-        NamedTextColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+            String campName = ContestPlayerManager.getPlayerCampName(player);
+            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
 
         // ITEM ADDER
         String namespaceShellContest = "omc_contest:contest_shell";
@@ -87,8 +83,8 @@ public class TradeMenu extends Menu {
             itemMeta.lore(loreTrade);
         }));
 
-        List<Map<String, Object>> selectedTrades = contestManager.getTradeSelected(true).stream()
-                .sorted(Comparator.comparing(trade -> (String) trade.get("ress"))).toList();
+            List<Map<String, Object>> selectedTrades = ContestManager.getTradeSelected(true).stream()
+                    .sorted(Comparator.comparing(trade -> (String) trade.get("ress"))).toList();
 
         List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
 

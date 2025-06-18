@@ -101,8 +101,8 @@ public class CityModifyMenu extends Menu {
                             if (InputUtils.isInputCityName(input)) {
                                 City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-                                playerCity.renameCity(input);
-                                MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
+                                    playerCity.rename(input);
+                                    MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
 
                             } else {
                                 MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);

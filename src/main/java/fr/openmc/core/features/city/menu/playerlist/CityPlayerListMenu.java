@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.PaginatedMenu;
@@ -65,15 +64,15 @@ public class CityPlayerListMenu extends PaginatedMenu {
         for (UUID uuid : city.getMembers()) {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-            boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
-            String title = "";
-            if (hasPermissionOwner) {
-                title = "Propriétaire ";
-            } else if (MayorManager.getInstance().cityMayor.get(city).getUUID() == uuid) {
-                title = "Maire ";
-            } else {
-                title = "Membre ";
-            }
+                boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
+                String title = "";
+                if(hasPermissionOwner) {
+                    title = "Propriétaire ";
+                } else if (MayorManager.cityMayor.get(city.getUUID()).getUUID() == uuid) {
+                    title = "Maire ";
+                } else {
+                    title = "Membre ";
+                }
 
             List<Component> lorePlayer = List.of();
             if (hasPermissionPerms && hasPermissionKick) {

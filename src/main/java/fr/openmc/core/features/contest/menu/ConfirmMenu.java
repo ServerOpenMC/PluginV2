@@ -3,7 +3,7 @@ package fr.openmc.core.features.contest.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.ContestPlayer;
+import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.api.ItemAdderApi;
@@ -31,11 +31,9 @@ import java.util.Map;
 public class ConfirmMenu extends Menu {
     private final String getCampName;
     private final String getColor;
-    private final ContestManager contestManager;
 
     public ConfirmMenu(Player owner, String camp, String color) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
         this.getCampName = camp;
         this.getColor = color;
     }
@@ -67,8 +65,8 @@ public class ConfirmMenu extends Menu {
 
         String messageTeam = "La Team ";
 
-        String campName = contestManager.data.get(getCampName);
-        String campColor = contestManager.data.get(getColor);
+            String campName = ContestManager.data.get(getCampName);
+            String campColor = ContestManager.data.get(getColor);
 
         NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
         List<Component> lore1 = Arrays.asList(
@@ -90,17 +88,17 @@ public class ConfirmMenu extends Menu {
             menu.open();
         }));
 
-        inventory.put(15, new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aConfirmer"));
-            itemMeta.lore(lore1);
-        }).setOnClick(inventoryClickEvent -> {
-            String substring = this.getCampName.substring(this.getCampName.length() - 1);
-            String color = contestManager.data.get("color" + Integer.valueOf(substring));
-            NamedTextColor campColorF = ColorUtils.getNamedTextColor(color);
+            inventory.put(15, new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> {
+                itemMeta.displayName(Component.text("§r§aConfirmer"));
+                itemMeta.lore(lore1);
+            }).setOnClick(inventoryClickEvent -> {
+                String substring = this.getCampName.substring(this.getCampName.length() - 1);
+                String color = ContestManager.data.get("color" + Integer.valueOf(substring));
+                NamedTextColor campColorF = ColorUtils.getNamedTextColor(color);
 
-            contestManager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(player.getName(), 0, Integer.valueOf(substring), campColorF));
-            player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
-            MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
+                ContestManager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(player.getName(), 0, Integer.valueOf(substring), campColorF));
+                player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
+                MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
 
             player.closeInventory();
         }));

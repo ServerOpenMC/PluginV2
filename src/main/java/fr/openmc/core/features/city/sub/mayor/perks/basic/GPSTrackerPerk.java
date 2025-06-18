@@ -2,6 +2,10 @@ package fr.openmc.core.features.city.sub.mayor.perks.basic;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.models.Mayor;
+import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
@@ -29,7 +33,7 @@ public class GPSTrackerPerk implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        if (MayorManager.getInstance().phaseMayor != 2) return;
+        if (MayorManager.phaseMayor != 2) return;
 
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();

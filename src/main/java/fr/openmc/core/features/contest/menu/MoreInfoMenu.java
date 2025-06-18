@@ -21,11 +21,9 @@ import java.util.List;
 import java.util.Map;
 
 public class MoreInfoMenu extends Menu {
-    private final ContestManager contestManager;
 
     public MoreInfoMenu(Player owner) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
     }
 
     @Override
@@ -73,7 +71,7 @@ public class MoreInfoMenu extends Menu {
         );
 
 
-        int phase = contestManager.data.getPhase();
+            int phase = ContestManager.data.getPhase();
 
         boolean ench0;
         boolean ench1;

@@ -12,6 +12,10 @@ import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.models.Mayor;
+import fr.openmc.core.features.city.mayor.managers.NPCManager;
+import fr.openmc.core.features.city.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -79,7 +83,7 @@ public class MayorNpcMenu extends Menu {
             loreMayor.add(Component.text(perk3.getName()));
             loreMayor.addAll(perk3.getLore());
 
-            inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
+            inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWithPermission(CPermission.OWNER)), itemMeta -> {
                 itemMeta.displayName(Component.text("§eMaire " + city.getMayor().getName()));
                 itemMeta.lore(loreMayor);
             }));

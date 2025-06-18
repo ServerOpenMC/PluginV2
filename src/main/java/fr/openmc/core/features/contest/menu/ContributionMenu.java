@@ -27,15 +27,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-
 public class ContributionMenu extends Menu {
-    private final ContestManager contestManager;
-    private final ContestPlayerManager contestPlayerManager;
 
     public ContributionMenu(Player owner) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
-        this.contestPlayerManager = ContestPlayerManager.getInstance();
     }
 
     @Override
@@ -62,9 +57,9 @@ public class ContributionMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-        String campName = contestPlayerManager.getPlayerCampName(player);
-        NamedTextColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
-        Material m = ColorUtils.getMaterialFromColor(campColor);
+            String campName = ContestPlayerManager.getPlayerCampName(player);
+            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+            Material m = ColorUtils.getMaterialFromColor(campColor);
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
@@ -86,14 +81,14 @@ public class ContributionMenu extends Menu {
                 Component.text("§e§lCliquez pour acceder au Menu des trades")
         );
 
-        List<Component> loreRang = Arrays.asList(
-                Component.text(contestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
-                Component.text("§7Progression §8: ")
-                        .append(Component.text(contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
-                        .append(Component.text("§8/"))
-                        .append(Component.text(contestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
-                Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
-        );
+            List<Component> loreRang = Arrays.asList(
+                    Component.text(ContestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
+                    Component.text("§7Progression §8: ")
+                            .append(Component.text(ContestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
+                            .append(Component.text("§8/"))
+                            .append(Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
+                    Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
+            );
 
         //ITEMADDER
         String namespaceShellContest = "omc_contest:contest_shell";
@@ -125,16 +120,16 @@ public class ContributionMenu extends Menu {
                 if (ItemUtils.hasEnoughItems(player, shellContestItem.getType(), shellCount)) {
                     ItemUtils.removeItemsFromInventory(player, shellContestItem.getType(), shellCount);
 
-                    int newPlayerPoints = shellCount + contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
-                    int updatedCampPoints = shellCount + contestManager.data.getInteger("points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp());
+                        int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
+                        int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp());
 
-                    contestPlayerManager.setPointsPlayer(player, newPlayerPoints);
-                    String pointCamp = "points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
-                    if (Objects.equals(pointCamp, "points1")) {
-                        contestManager.data.setPointsCamp1(updatedCampPoints);
-                    } else if (Objects.equals(pointCamp, "points2")) {
-                        contestManager.data.setPointsCamp2(updatedCampPoints);
-                    }
+                        ContestPlayerManager.setPointsPlayer(player, newPlayerPoints);
+                        String pointCamp = "points" + ContestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
+                        if (Objects.equals(pointCamp, "points1")) {
+                            ContestManager.data.setPoints1(updatedCampPoints);
+                        } else if (Objects.equals(pointCamp, "points2")) {
+                            ContestManager.data.setPoints2(updatedCampPoints);
+                        }
 
                     MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
                 } else {
