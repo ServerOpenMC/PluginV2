@@ -3,9 +3,9 @@ package fr.openmc.core.features.settings;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.friend.FriendManager;
-import fr.openmc.core.features.settings.policy.CityJoinPolicy;
-import fr.openmc.core.features.settings.policy.FriendRequestPolicy;
-import fr.openmc.core.features.settings.policy.VisibilityLevel;
+import fr.openmc.core.features.settings.policy.CityPolicy;
+import fr.openmc.core.features.settings.policy.FriendPolicy;
+import fr.openmc.core.features.settings.policy.GlobalPolicy;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -32,25 +32,6 @@ public class PlayerSettings {
         loaded = true;
     }
 
-    private Object parseValue(SettingType settingType, String value) {
-        return switch (settingType.getValueType()) {
-            case BOOLEAN -> Boolean.parseBoolean(value);
-            case INTEGER -> Integer.parseInt(value);
-            case STRING -> value;
-            case ENUM -> {
-                if (settingType == SettingType.FRIEND_REQUESTS_POLICY) {
-                    yield FriendRequestPolicy.valueOf(value);
-                } else if (settingType == SettingType.CITY_JOIN_REQUESTS_POLICY) {
-                    yield CityJoinPolicy.valueOf(value);
-                } else if (settingType == SettingType.FRIEND_VISIBILITY_MONEY ||
-                        settingType == SettingType.FRIEND_VISIBILITY_CITY) {
-                    yield VisibilityLevel.valueOf(value);
-                }
-                yield value;
-            }
-        };
-    }
-
     @SuppressWarnings("unchecked")
     public <T> T getSetting(SettingType settingType) {
         if (!loaded) {
@@ -63,7 +44,7 @@ public class PlayerSettings {
     public void setSetting(SettingType settingType, Object value) {
         try {
             if (!settingType.isValidValue(value)) {
-                throw new IllegalArgumentException("Invalid value for setting: " + settingType);
+                throw new IllegalArgumentException("Invalid value for setting: " + settingType + ". Expected type: " + settingType.getValueType() + ", but got: " + value);
             }
             settings.put(settingType, value);
         } catch (Exception e) {
@@ -71,7 +52,20 @@ public class PlayerSettings {
             if (player != null) {
                 player.sendMessage("§cErreur: " + e.getMessage());
             }
-            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setSettingFromString(SettingType settingType, String value) {
+        try {
+            Object parsedValue = settingType.parseValue(value);
+            setSetting(settingType, parsedValue);
+        } catch (Exception e) {
+            Player player = Bukkit.getPlayer(playerUUID);
+            if (player != null) {
+                player.sendMessage("§cErreur lors du parsing: " + e.getMessage());
+            }
+            throw new RuntimeException(e);
         }
     }
 
@@ -85,42 +79,68 @@ public class PlayerSettings {
         }
     }
 
-    public boolean canReceiveFriendRequest(UUID senderUUID) {
-        FriendRequestPolicy policy = getSetting(SettingType.FRIEND_REQUESTS_POLICY);
+    public boolean canPerformAction(SettingType settingType, UUID targetUUID) {
+        Object policy = getSetting(settingType);
 
-        return switch (policy) {
-            case EVERYONE -> true;
-            case CITY_MEMBERS_ONLY -> {
-                yield areSameCityMembers(playerUUID, senderUUID);
-            }
-            case NOBODY -> false;
-        };
+        if (policy instanceof FriendPolicy friendPolicy) {
+            return switch (friendPolicy) {
+                case EVERYONE -> true;
+                case CITY_MEMBERS_ONLY -> areSameCityMembers(playerUUID, targetUUID);
+                case NOBODY -> false;
+            };
+        }
+
+        if (policy instanceof CityPolicy cityPolicy) {
+            return switch (cityPolicy) {
+                case EVERYONE -> true;
+                case FRIENDS -> areFriends(playerUUID, targetUUID);
+                case NOBODY -> false;
+            };
+        }
+
+        if (policy instanceof GlobalPolicy globalPolicy) {
+            return switch (globalPolicy) {
+                case EVERYONE -> true;
+                case FRIENDS -> areFriends(playerUUID, targetUUID);
+                case CITY_MEMBERS -> areSameCityMembers(playerUUID, targetUUID);
+                case NOBODY -> false;
+            };
+        }
+
+        throw new IllegalArgumentException("Unsupported policy: " + policy);
+    }
+
+    public boolean canReceiveFriendRequest(UUID senderUUID) {
+        return canPerformAction(SettingType.FRIEND_REQUESTS_POLICY, senderUUID);
     }
 
     public boolean canReceiveCityJoinRequest(UUID senderUUID) {
-        CityJoinPolicy policy = getSetting(SettingType.CITY_JOIN_REQUESTS_POLICY);
+        return canPerformAction(SettingType.CITY_JOIN_REQUESTS_POLICY, senderUUID);
+    }
 
-        return switch (policy) {
+    public boolean canReceivePrivateMessage(UUID senderUUID) {
+        return canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, senderUUID);
+    }
+
+    public boolean isVisibleTo(SettingType visibilitySetting, UUID friendUUID) {
+        GlobalPolicy level = getSetting(visibilitySetting);
+
+        return switch (level) {
             case EVERYONE -> true;
-            case FRIENDS_ONLY -> {
-                yield areFriends(playerUUID, senderUUID);
-            }
+            case FRIENDS -> areFriends(friendUUID, playerUUID);
+            case CITY_MEMBERS -> areSameCityMembers(playerUUID, friendUUID);
             case NOBODY -> false;
         };
     }
 
     public boolean isVisibleToFriend(SettingType visibilitySetting, UUID friendUUID) {
-        if (!areFriends(playerUUID, friendUUID)) {
-            return false;
-        }
-
-        VisibilityLevel level = getSetting(visibilitySetting);
-        return level == VisibilityLevel.FRIENDS || level == VisibilityLevel.EVERYONE;
+        if (!areFriends(playerUUID, friendUUID)) return false;
+        return isVisibleTo(visibilitySetting, friendUUID);
     }
 
     public boolean isVisibleToEveryone(SettingType visibilitySetting) {
-        VisibilityLevel level = getSetting(visibilitySetting);
-        return level == VisibilityLevel.EVERYONE;
+        GlobalPolicy level = getSetting(visibilitySetting);
+        return level == GlobalPolicy.EVERYONE;
     }
 
     private boolean areSameCityMembers(UUID player1UUID, UUID player2UUID) {

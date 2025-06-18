@@ -12,9 +12,8 @@ public class SettingsCommand {
     @Description("Affiche les paramètres de votre compte")
     @CommandPermission("omc.commands.settings")
     public void settings(Player player) {
-        PlayerSettingsMenu menu = new PlayerSettingsMenu(player);
         try {
-            menu.open();
+            new PlayerSettingsMenu(player).open();
         } catch (Exception e) {
             player.sendMessage("§cUne erreur est survenue lors de l'ouverture du menu des paramètres.");
             e.printStackTrace();
