@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
@@ -396,12 +397,21 @@ public class CityMenu extends Menu {
             List<Component> loreChestCity;
 
             if (hasPermissionChest) {
-                loreChestCity = List.of(
-                        Component.text("§7Acceder au Coffre de votre Ville pour"),
-                        Component.text("§7stocker des items en commun"),
-                        Component.text(""),
-                        Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
-                );
+                if (city.getChestWatcher() != null) {
+                    loreChestCity = List.of(
+                            Component.text("§7Acceder au Coffre de votre Ville pour"),
+                            Component.text("§7stocker des items en commun"),
+                            Component.text(""),
+                            Component.text("§7Ce coffre est déjà ouvert par §c" + Bukkit.getPlayer(city.getChestWatcher()).getName())
+                    );
+                } else {
+                    loreChestCity = List.of(
+                            Component.text("§7Acceder au Coffre de votre Ville pour"),
+                            Component.text("§7stocker des items en commun"),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
+                    );
+                }
             } else {
                 loreChestCity = List.of(
                         Component.text("§7Vous n'avez pas le §cdroit de visionner le coffre !")
@@ -413,20 +423,8 @@ public class CityMenu extends Menu {
                 itemMeta.lore(loreChestCity);
             }).setOnClick(inventoryClickEvent -> {
                 City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-                if (cityCheck == null) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
 
-                if (!hasPermissionChest) {
-                    MessagesManager.sendMessage(player, Component.text("Vous n'avez pas les permissions de voir le coffre"), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
-
-                if (city.getChestWatcher() != null) {
-                    MessagesManager.sendMessage(player, Component.text("Le coffre est déjà ouvert"), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
+                if (!CityChestConditions.canCityChestOpen(cityCheck, player)) return;
 
 				new CityChestMenu(player, city, 1).open();
             }));
