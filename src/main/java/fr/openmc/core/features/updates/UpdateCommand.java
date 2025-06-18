@@ -12,6 +12,6 @@ public class UpdateCommand {
     @CommandPermission("omc.commands.version")
     @Description("Vous donne de l'information sur le version du plugin")
     private void version(Player player) {
-        UpdateManager.getInstance().sendUpdateMessage(player);
+        UpdateManager.sendUpdateMessage(player);
     }
 }

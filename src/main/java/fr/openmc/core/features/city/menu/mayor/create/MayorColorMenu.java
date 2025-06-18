@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.mayor.MayorCandidate;
+import fr.openmc.core.features.city.models.MayorCandidate;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -70,7 +70,6 @@ public class MayorColorMenu extends Menu {
 
         try {
             City city = CityManager.getPlayerCity(player.getUniqueId());
-            MayorManager mayorManager = MayorManager.getInstance();
             Map<NamedTextColor, Integer> colorSlot = new HashMap<>();
             {
                 colorSlot.put(NamedTextColor.RED, 3);
@@ -121,8 +120,8 @@ public class MayorColorMenu extends Menu {
                                 () -> {
                             try {
                                 if (menuType == MenuType.CANDIDATE) {
-                                    MayorCandidate candidate = new MayorCandidate(city, player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
-                                    MayorManager.getInstance().createCandidate(city, candidate);
+                                    MayorCandidate candidate = new MayorCandidate(city.getUUID(), player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
+                                    MayorManager.createCandidate(city, candidate);
 
                                     for (UUID uuid : city.getMembers()) {
                                         OfflinePlayer playerMember = CacheOfflinePlayer.getOfflinePlayer(uuid);
@@ -133,7 +132,7 @@ public class MayorColorMenu extends Menu {
                                         }
                                     }
                                 } else { // donc si c MenuType.OWNER
-                                    mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
+                                    MayorManager.createMayor(player.getName(), player.getUniqueId(), city, perk1, perk2, perk3, color, city.getElectionType());
                                 }
                                 MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
                                 player.closeInventory();
@@ -175,7 +174,7 @@ public class MayorColorMenu extends Menu {
                             );
                             menu.open();
                         } else {
-                            MayorCandidate mayorCandidate = MayorManager.getInstance().getCandidate(player);
+                            MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
                             NamedTextColor thisColor = mayorCandidate.getCandidateColor();
                             ConfirmMenu menu = new ConfirmMenu(player,
                                     () -> {

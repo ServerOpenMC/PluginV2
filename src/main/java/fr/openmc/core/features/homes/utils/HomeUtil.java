@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes.utils;
 
-import fr.openmc.core.features.homes.Home;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.icons.OldHomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
