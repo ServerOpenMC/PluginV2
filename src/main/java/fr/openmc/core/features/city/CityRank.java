@@ -8,7 +8,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 public class CityRank {
@@ -17,12 +19,18 @@ public class CityRank {
 	private int priority;
 	private Set<CPermission> permissions;
 	private Material icon;
+	private final Set<UUID> members; // Optional, if you want to track members with this rank
 	
 	public CityRank(String name, int priority, Set<CPermission> permissions, Material icon) {
+		this(name, priority, permissions, icon, null);
+	}
+	
+	public CityRank(String name, int priority, Set<CPermission> permissions, Material icon, Set<UUID> members) {
 		this.name = name;
 		this.priority = priority;
 		this.permissions = permissions;
 		this.icon = icon;
+		this.members = members != null ? members : new HashSet<>();
 	}
 	
 	public CityRank validate(Player player) throws IllegalArgumentException {
@@ -71,5 +79,13 @@ public class CityRank {
 		} else {
 			permissions.add(permission);
 		}
+	}
+	
+	public void addMember(UUID player) {
+		members.add(player);
+	}
+	
+	public void removeMember(UUID player) {
+		members.remove(player);
 	}
 }

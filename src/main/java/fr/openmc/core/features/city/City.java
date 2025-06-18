@@ -1013,7 +1013,7 @@ public class City {
     }
     
     public void loadRanks() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT name, permissions, priority, icon FROM city_ranks WHERE city_uuid = ?")) {
+        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT name, permissions, priority, icon, members FROM city_ranks WHERE city_uuid = ?")) {
             statement.setString(1, cityUUID);
             ResultSet rs = statement.executeQuery();
             
@@ -1022,10 +1022,20 @@ public class City {
                 Set<CPermission> permissions = Arrays.stream(rs.getString("permissions").split(","))
                         .map(CPermission::valueOf)
                         .collect(Collectors.toSet());
-                byte priority = rs.getByte("priority");
+                int priority = rs.getByte("priority");
                 Material icon = rs.getString("icon") != null ? Material.valueOf(rs.getString("icon")) : Material.GOLD_BLOCK;
+                Set<UUID> members = Arrays.stream(rs.getString("members").split(","))
+                        .map(s -> {
+                            if (s.isEmpty()) return null;
+                            try {
+                                return UUID.fromString(s);
+                            } catch (IllegalArgumentException e) {
+                                return null;
+                            }
+                        })
+                        .collect(Collectors.toSet());
                 
-                CityRank rank = new CityRank(name, priority, permissions, icon);
+                CityRank rank = new CityRank(name, priority, permissions, icon, members);
                 cityRanks.add(rank);
             }
         } catch (SQLException e) {
@@ -1053,5 +1063,60 @@ public class City {
         } else {
             throw new IllegalArgumentException("Old rank not found in the city's ranks.");
         }
+    }
+    
+    public CityRank getRankOfMember(UUID member) {
+        for (CityRank rank : cityRanks) {
+            if (rank.getMembers().contains(member)) {
+                return rank;
+            }
+        }
+        return null;
+    }
+    
+    public void changeRank(Player sender, UUID playerUUID, CityRank newRank) {
+        if (! cityRanks.contains(newRank)) {
+            throw new IllegalArgumentException("The specified rank does not exist in the city's ranks.");
+        }
+        
+        CityRank currentRank = getRankOfMember(playerUUID);
+        
+        if (currentRank != null) {
+            currentRank.removeMember(playerUUID);
+            for (CPermission permission : currentRank.getPermissions()) {
+                removePermission(playerUUID, permission);
+            }
+            MessagesManager.sendMessage(sender, Component.text("§cVous avez retiré le grade §e" + currentRank.getName() + "§c de §6" + sender.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+        }
+        
+        if (currentRank != newRank) {
+            newRank.addMember(playerUUID);
+            for (CPermission permission : newRank.getPermissions()) {
+                addPermission(playerUUID, permission);
+            }
+            MessagesManager.sendMessage(sender, Component.text("§aVous avez assigné le grade §e" + newRank.getName() + "§a à §6" + sender.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+        }
+        
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            if (currentRank != null) {
+                try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_ranks SET members = ? WHERE city_uuid = ? AND name = ?")) {
+                    statement.setString(1, currentRank.getMembers() == null ? "" : currentRank.getMembers().stream().map(UUID::toString).collect(Collectors.joining(",")));
+                    statement.setString(2, cityUUID);
+                    statement.setString(3, currentRank.getName());
+                    statement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_ranks SET members = ? WHERE city_uuid = ? AND name = ?")) {
+                statement.setString(1, newRank.getMembers() == null ? "" : newRank.getMembers().stream().map(UUID::toString).collect(Collectors.joining(",")));
+                statement.setString(2, cityUUID);
+                statement.setString(3, newRank.getName());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

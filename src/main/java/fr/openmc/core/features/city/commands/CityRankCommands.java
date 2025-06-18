@@ -12,6 +12,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -102,7 +103,7 @@ public class CityRankCommands {
 	@Subcommand("assign")
 	@CommandPermission("omc.commands.city.rank.assign")
 	@AutoComplete("@city_ranks @city_members")
-	public void assign(Player player, @Optional @Named("rank") String rankName, @Optional @Named("player") Player target) {
+	public void assign(Player player, @Optional @Named("rank") String rankName, @Optional @Named("player") OfflinePlayer target) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -112,14 +113,19 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (target == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOTFOUND.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-		}
 		CityRank rank = city.getRankByName(rankName);
-		if (rank == null) {
+		if (target == null && rank == null) {
+			new CityRankMemberMenu(player, city).open();
+			return;
+		} else if (target == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOTFOUND.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
+		} else if (rank == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			return;
 		}
-		new CityRankMemberMenu(player).open(); //TODO implement assign rank logic
+		
+		city.changeRank(player, target.getUniqueId(), rank);
 	}
 	
 	@Subcommand("rename")

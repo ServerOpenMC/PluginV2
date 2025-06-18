@@ -27,6 +27,7 @@ import fr.openmc.core.features.city.menu.mayor.create.MayorColorMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
+import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -81,7 +82,16 @@ public class CityMenu extends Menu {
         try {
             City city = CityManager.getPlayerCity(player.getUniqueId());
             assert city != null;
-
+            
+            inventory.put(0, new ItemBuilder(this, Material.COMMAND_BLOCK, itemMeta -> {
+                itemMeta.displayName(Component.text("§6Grades de la Ville"));
+                itemMeta.lore(List.of(
+                        Component.text("§7Gérer les grades de votre ville"),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX GRADES")
+                ));
+            }).setOnClick(inventoryClickEvent -> new CityRanksMenu(getOwner(), city).open()));
+            
 
             MayorManager mayorManager = MayorManager.getInstance();
 
@@ -154,7 +164,7 @@ public class CityMenu extends Menu {
                     }
                 } else {
                     loreMascots = List.of(
-                            Component.text("§cMascotte Inexistante")
+                            Component.text("§cMascotte non trouvée")
                     );
                 }
             } else {

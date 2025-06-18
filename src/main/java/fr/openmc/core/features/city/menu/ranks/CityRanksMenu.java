@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityRank;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -73,6 +74,12 @@ public class CityRanksMenu extends Menu {
 				i++;
 			}
 		}
+		
+		map.put(18, new ItemBuilder(this, Material.ARROW,
+				itemMeta -> {
+					itemMeta.displayName(Component.text("§cRetour"));
+					itemMeta.lore(List.of(Component.text("§7Cliquez pour revenir en arrière")));
+				}).setOnClick(inventoryClickEvent -> new CityMenu(getOwner()).open()));
 		
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(),
 				itemMeta -> {

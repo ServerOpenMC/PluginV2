@@ -97,7 +97,7 @@ public class CityManager implements Listener {
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_regions (city_uuid VARCHAR(8) NOT NULL, x MEDIUMINT NOT NULL, z MEDIUMINT NOT NULL);").executeUpdate();// Il faut esperer qu'aucun clodo n'ira à 134.217.712 blocks du spawn
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_power (city_uuid VARCHAR(8) NOT NULL, power_point INT NOT NULL);").executeUpdate();
         conn.prepareStatement("CREATE TABLE IF NOT EXISTS free_claim (city_uuid VARCHAR(8) NOT NULL PRIMARY KEY, claim INT NOT NULL);").executeUpdate();
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_ranks (city_uuid VARCHAR(8) NOT NULL, name VARCHAR(32) NOT NULL, permissions TEXT NOT NULL, priority INT NOT NULL, icon VARCHAR(32) NOT NULL DEFAULT 'GOLD_BLOCK', PRIMARY KEY (city_uuid, name));").executeUpdate();
+        conn.prepareStatement("CREATE TABLE IF NOT EXISTS city_ranks (city_uuid VARCHAR(8) NOT NULL, name VARCHAR(32) NOT NULL, permissions TEXT NOT NULL, priority INT NOT NULL, icon VARCHAR(32) NOT NULL DEFAULT 'GOLD_BLOCK', members TEXT, PRIMARY KEY (city_uuid, name));").executeUpdate();
     }
 
     @EventHandler

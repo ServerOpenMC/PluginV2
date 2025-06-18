@@ -128,7 +128,7 @@ public class CityModifyMenu extends Menu {
 
             if (hasPermissionOwner) {
                 loreTransfer = List.of(
-                        Component.text("§dLa Ville §7sera transferer à §dla personne §7que vous séléctionnerez"),
+		                Component.text("§dLa Ville §7sera transferée à §dla personne §7que vous sélectionnerez"),
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
                 );
@@ -187,7 +187,7 @@ public class CityModifyMenu extends Menu {
                                 CityCommands.deleteCity(player);
                             });
                         },
-                        () -> player.closeInventory(),
+		                player::closeInventory,
                         List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getName() + " ?")),
                         List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getName())));
                 menu.open();
