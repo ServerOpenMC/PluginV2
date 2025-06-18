@@ -40,6 +40,9 @@ public class CityLaw {
     }
 
     public Location getWarp() {
+        if (this.warpWorld == null || this.warpWorld.isBlank())
+            return null;
+
         return new Location(Bukkit.getWorld(this.warpWorld), this.warpX, this.warpY, this.warpZ, this.warpYaw,
                 this.warpPitch);
     }
