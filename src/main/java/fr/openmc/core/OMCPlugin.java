@@ -24,7 +24,6 @@ import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
-import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.api.*;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -125,9 +124,6 @@ public class OMCPlugin extends JavaPlugin {
 
         // - Mascottes
         MascotsManager.saveMascots();
-
-        // - Cube
-        CubeListener.clearCube(CubeListener.currentLocation);
 
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();
