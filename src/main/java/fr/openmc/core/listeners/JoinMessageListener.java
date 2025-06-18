@@ -24,6 +24,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.UUID;
 
 public class JoinMessageListener implements Listener {
+    private final double balanceOnJoin;
+
+    public JoinMessageListener() {
+        this.balanceOnJoin = OMCPlugin.getInstance().getConfig().getDouble("money-on-first-join", 500D);
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -69,7 +74,7 @@ public class JoinMessageListener implements Listener {
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
             player.teleport(SpawnManager.getSpawnLocation());
-            EconomyManager.setBalance(player.getUniqueId(), 500D);
+            EconomyManager.setBalance(player.getUniqueId(), this.balanceOnJoin);
         }
 
         new BukkitRunnable() {
