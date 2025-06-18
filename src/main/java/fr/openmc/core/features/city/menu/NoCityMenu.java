@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -109,34 +108,30 @@ public class NoCityMenu extends Menu {
                     itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
                     itemMeta.lore(loreCreate);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (!CityCreateConditions.canCityCreate(player)) {
-                        return;
-                    }
-
                     String[] lines = new String[4];
                     lines[0] = "";
                     lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
                     lines[2] = "Entrez votre nom";
                     lines[3] = "de ville ci dessus";
 
-                SignGUI gui = null;
-                try {
-                    gui = SignGUI.builder()
-                            .setLines(null, lines[1] , lines[2], lines[3])
-                            .setType(ItemUtils.getSignType(player))
-                            .setHandler((p, result) -> {
-                                String input = result.getLine(0);
+                    SignGUI gui = null;
+                    try {
+                        gui = SignGUI.builder()
+                                .setLines(null, lines[1], lines[2], lines[3])
+                                .setType(ItemUtils.getSignType(player))
+                                .setHandler((p, result) -> {
+                                    String input = result.getLine(0);
 
-                                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                    CityCreateAction.beginCreateCity(player, input);
-                                });
+                                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                        CityCreateAction.beginCreateCity(player, input);
+                                    });
 
-                                return Collections.emptyList();
-                            })
-                            .build();
-                } catch (SignGUIVersionException e) {
-                    throw new RuntimeException(e);
-                }
+                                    return Collections.emptyList();
+                                })
+                                .build();
+                    } catch (SignGUIVersionException e) {
+                        throw new RuntimeException(e);
+                    }
 
                     gui.open(player);
                 });

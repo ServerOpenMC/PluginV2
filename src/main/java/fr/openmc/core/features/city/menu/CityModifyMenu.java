@@ -182,23 +182,7 @@ public class CityModifyMenu extends Menu {
                     itemMeta.itemName(Component.text("§7Supprimer la ville"));
                     itemMeta.lore(loreDelete);
                 }).setOnClick(inventoryClickEvent -> {
-                    City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-
-                    if (!CityManageConditions.canCityDelete(city, player)) return;
-
-                    ConfirmMenu menu = new ConfirmMenu(
-                            player,
-                            () -> {
-                                player.closeInventory();
-                                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                    CityCommands.deleteCity(player);
-                                });
-                            },
-                            () -> player.closeInventory(),
-                            List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getName() + " ?")),
-                            List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getName())));
-                    menu.open();
-
+                    CityDeleteAction.startDeleteCity(player);
                 });
             };
 
