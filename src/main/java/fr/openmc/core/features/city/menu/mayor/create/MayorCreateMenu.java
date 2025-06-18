@@ -65,8 +65,6 @@ public class MayorCreateMenu extends Menu {
         Player player = getOwner();
 
         try {
-            MayorManager mayorManager = MayorManager.getInstance();
-
             boolean canConfirmPerk;
 
             if (type == MenuType.OWNER_1) {
@@ -275,7 +273,7 @@ public class MayorCreateMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 if (canConfirmPerk) {
                     if (type == MenuType.OWNER_1) {
-                        mayorManager.put1Perk(CityManager.getPlayerCity(player.getUniqueId()), perk1);
+                        MayorManager.put1Perk(CityManager.getPlayerCity(player.getUniqueId()), perk1);
                         MessagesManager.sendMessage(player, Component.text("Vous avez ajouté la Réforme : " + perk1.getName()), Prefix.MAYOR, MessageType.SUCCESS, false);
                         player.closeInventory();
                         return;

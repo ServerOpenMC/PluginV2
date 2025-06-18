@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.commands;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.menu.CityChestMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -18,20 +19,8 @@ public class CityChestCommand {
     @CommandPermission("omc.commands.city.chest")
     void chest(Player player, @Optional @Named("page") @Range(min=0) Integer page) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas dans une ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
 
-        if (!city.hasPermission(player.getUniqueId(), CPermission.CHEST)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas les permissions de voir le coffre"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (city.getChestWatcher() != null) {
-            MessagesManager.sendMessage(player, Component.text("Le coffre est déjà ouvert"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityChestConditions.canCityChestOpen(city, player)) return;
 
         if ((page == null)) page = 1;
         if (page < 1) page = 1;
@@ -68,7 +57,7 @@ public class CityChestCommand {
 
         city.updateBalance((double) -price);
 
-        city.upgradeChest();
+        city.saveChestContent(city.getChestPages() + 1, null);
         MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, false);
     }
 }

@@ -47,19 +47,17 @@ public class UrneListener implements Listener {
             return;
         }
 
-        MayorManager mayorManager = MayorManager.getInstance();
-
         if (playerCity.getElectionType() == ElectionType.OWNER_CHOOSE) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + mayorManager.MEMBER_REQ_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
-        if (mayorManager.phaseMayor != 1) {
+        if (MayorManager.phaseMayor != 1) {
             MessagesManager.sendMessage(player, Component.text("§8§o*Les éléctions ont déjà eu lieu !*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
-        if (mayorManager.cityElections.get(playerCity) == null) {
+        if (MayorManager.cityElections.get(playerCity.getUUID()) == null) {
             MessagesManager.sendMessage(player, Component.text("§8§o*personne ne s'est présenté ! Présenter vous ! /city*"), Prefix.MAYOR, MessageType.INFO, true);
             return;
         }
@@ -102,7 +100,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!playerCity.getPlayerWith(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (!playerCity.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
             removeUrne(event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le propriétaire !"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
@@ -152,7 +150,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!playerCity.getPlayerWith(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (!playerCity.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le propriétaire"), Prefix.MAYOR, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
@@ -176,30 +174,23 @@ public class UrneListener implements Listener {
 
     private Location getSafeNearbySurface(Location urneLoc) {
         World world = urneLoc.getWorld();
-        int baseY = urneLoc.getBlockY();
-
         int radius = 2;
+        int maxY = world.getMaxHeight() - 2;
+        int minY = world.getMinHeight() + 1;
 
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
-                Location candidate = new Location(
-                        world,
-                        urneLoc.getX() + dx,
-                        baseY,
-                        urneLoc.getZ() + dz
-                );
+                int baseX = urneLoc.getBlockX() + dx;
+                int baseZ = urneLoc.getBlockZ() + dz;
 
-                Block under = world.getBlockAt(candidate.getBlockX(), baseY - 1, candidate.getBlockZ());
-                Block feet = world.getBlockAt(candidate.getBlockX(), baseY, candidate.getBlockZ());
-                Block head = world.getBlockAt(candidate.getBlockX(), baseY + 1, candidate.getBlockZ());
+                for (int y = maxY; y >= minY; y--) {
+                    Block under = world.getBlockAt(baseX, y - 1, baseZ);
+                    Block feet = world.getBlockAt(baseX, y, baseZ);
+                    Block head = world.getBlockAt(baseX, y + 1, baseZ);
 
-                if (!under.isPassable() && feet.isPassable() && head.isPassable()) {
-                    return new Location(
-                            world,
-                            candidate.getBlockX() + 0.5,
-                            baseY,
-                            candidate.getBlockZ() + 0.5
-                    );
+                    if (!under.isPassable() && feet.isPassable() && head.isPassable()) {
+                        return new Location(world, baseX + 0.5, y, baseZ + 0.5);
+                    }
                 }
             }
         }
@@ -207,7 +198,7 @@ public class UrneListener implements Listener {
         return new Location(
                 world,
                 urneLoc.getBlockX() + 0.5,
-                baseY,
+                urneLoc.getBlockY(),
                 urneLoc.getBlockZ() + 0.5
         );
     }

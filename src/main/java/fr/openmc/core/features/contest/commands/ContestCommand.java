@@ -25,26 +25,20 @@ import java.util.Map;
 @Command("contest")
 @Description("Ouvre l'interface des festivals, et quand un festival commence, vous pouvez choisir votre camp")
 public class ContestCommand {
-    private final ContestManager contestManager;
-
-    public ContestCommand() {
-        this.contestManager = ContestManager.getInstance();
-    }
-
     @Cooldown(4)
     @DefaultFor("~")
     public void defaultCommand(Player player) {
-        int phase = contestManager.data.getPhase();
-        if ((phase >= 2 && contestManager.dataPlayer.get(player.getUniqueId().toString()) == null) || (phase == 2)) {
+        int phase = ContestManager.data.getPhase();
+        if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId().toString()) == null) || (phase == 2)) {
             VoteMenu menu = new VoteMenu(player);
             menu.open();
-        } else if (phase == 3 && contestManager.dataPlayer.get(player.getUniqueId().toString()) != null) {
+        } else if (phase == 3 && ContestManager.dataPlayer.get(player.getUniqueId().toString()) != null) {
             ContributionMenu menu = new ContributionMenu(player);
             menu.open();
 
         } else {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("E", Locale.FRENCH);
-            DayOfWeek dayStartContestOfWeek = DayOfWeek.from(formatter.parse(contestManager.data.getStartdate()));
+            DayOfWeek dayStartContestOfWeek = DayOfWeek.from(formatter.parse(ContestManager.data.getStartdate()));
 
             int days = (dayStartContestOfWeek.getValue() - DateUtils.getCurrentDayOfWeek().getValue() + 7) % 7;
 
@@ -58,16 +52,16 @@ public class ContestCommand {
     public void setPhase(Integer phase) {
         switch(phase) {
             case 1:
-                this.contestManager.initPhase1();
+                ContestManager.initPhase1();
                 break;
             case 2:
-                this.contestManager.initPhase2();
+                ContestManager.initPhase2();
                 break;
             case 3:
-                this.contestManager.initPhase3();
+                ContestManager.initPhase3();
                 break;
             default:
-                this.contestManager.initPhase1();
+                ContestManager.initPhase1();
                 break;
         }
     }
@@ -77,12 +71,11 @@ public class ContestCommand {
     @CommandPermission("omc.commands.contest.setcontest")
     @AutoComplete("@colorContest")
     public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
-        int phase = contestManager.data.getPhase();
+        int phase = ContestManager.data.getPhase();
         if (phase == 1) {
-            if (contestManager.getColorContestList().containsAll(Arrays.asList(color1, color2))) {
-                contestManager.deleteTableContest(ContestManager.TABLE_CONTEST);
-                contestManager.deleteTableContest(ContestManager.TABLE_CONTEST_CAMPS);
-                contestManager.insertCustomContest(camp1, color1, camp2, color2);
+            if (ContestManager.getColorContestList().containsAll(Arrays.asList(color1, color2))) {
+                ContestManager.clearDB();
+                ContestManager.insertCustomContest(camp1, color1, camp2, color2);
 
                 MessagesManager.sendMessage(player, Component.text("§aLe Contest : " + camp1 + " VS " + camp2 + " a bien été sauvegardé\nMerci d'attendre que les données en cache s'actualise."), Prefix.STAFF, MessageType.SUCCESS, true);
             } else {
@@ -98,7 +91,7 @@ public class ContestCommand {
     @CommandPermission("omc.commands.contest.settrade")
     @AutoComplete("@trade")
     public void setTrade(Player player, @Named("trade") String trade, int amount, int amountShell) {
-        YamlConfiguration config = ContestManager.getInstance().contestConfig;
+        YamlConfiguration config = ContestManager.contestConfig;
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
         boolean tradeFound = false;
@@ -113,7 +106,7 @@ public class ContestCommand {
         }
 
         if (tradeFound) {
-            ContestManager.getInstance().saveContestConfig();
+            ContestManager.saveContestConfig();
             MessagesManager.sendMessage(player, Component.text("Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amountShell + " coquillages de contest."), Prefix.STAFF, MessageType.SUCCESS, true);
         } else {
             MessagesManager.sendMessage(player, Component.text("Le trade n'existe pas.\n/contest settrade <mat> <amount> <amount_shell>"), Prefix.STAFF, MessageType.ERROR, true);
@@ -124,12 +117,12 @@ public class ContestCommand {
     @Description("Permet d'ajouter des points a un membre")
     @CommandPermission("omc.commands.contest.addpoints")
     public void addPoints(Player player, Player target, Integer points) {
-        if (contestManager.data.getPhase()!=3) {
+        if (ContestManager.data.getPhase()!=3) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le Contests n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 
-        if (contestManager.dataPlayer.get(target.getUniqueId().toString()) == null) {
+        if (ContestManager.dataPlayer.get(target.getUniqueId().toString()) == null) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points à ce joueur car il ne s'est pas inscrit"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
@@ -139,7 +132,7 @@ public class ContestCommand {
             return;
         }
 
-        ContestPlayerManager.getInstance().setPointsPlayer(target,points + contestManager.dataPlayer.get(target.getUniqueId().toString()).getPoints());
+        ContestPlayerManager.setPointsPlayer(target,points + ContestManager.dataPlayer.get(target.getUniqueId().toString()).getPoints());
         MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté " + points + " §apoint(s) à " + target.getName()), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 }

@@ -24,81 +24,81 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-    public class ShopSalesMenu extends PaginatedMenu {
+public class ShopSalesMenu extends PaginatedMenu {
 
-        private final Shop shop;
-        private final int itemIndex;
+    private final Shop shop;
+    private final int itemIndex;
 
-        public ShopSalesMenu(Player owner, Shop shop, int itemIndex) {
-            super(owner);
-            this.shop = shop;
-            this.itemIndex = itemIndex;
+    public ShopSalesMenu(Player owner, Shop shop, int itemIndex) {
+        super(owner);
+        this.shop = shop;
+        this.itemIndex = itemIndex;
+    }
+
+    @Override
+    public @Nullable Material getBorderMaterial() {
+        return Material.BLUE_STAINED_GLASS_PANE;
+    }
+
+    @Override
+    public @NotNull List<Integer> getStaticSlots() {
+        return StaticSlots.STANDARD;
+    }
+
+    @Override
+    public @NotNull List<ItemStack> getItems() {
+        List<ItemStack> items = new java.util.ArrayList<>();
+        for (ShopItem sale : shop.getSales()) {
+            items.add(new ItemBuilder(this, sale.getItem().getType(), itemMeta -> {
+                itemMeta.displayName(ShopItem.getItemName(sale.getItem()).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
+                itemMeta.setLore(List.of(
+                        "§7■ Prix : §a" + sale.getPrice() + EconomyManager.getEconomyIcon(),
+                        "§7■ Quantité : §a" + sale.getAmount()
+                ));
+            }));
         }
+        return items;
+    }
 
-        @Override
-        public @Nullable Material getBorderMaterial() {
-            return Material.BLUE_STAINED_GLASS_PANE;
+    @Override
+    public Map<Integer, ItemStack> getButtons() {
+        Map<Integer, ItemStack> buttons = new HashMap<>();
+        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+                .setCloseButton());
+        ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
+        if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cRetour"))
+                    .setNextMenu(new ShopMenu(getOwner(), shop, itemIndex)));
+            buttons.put(50, nextPageButton);
+        } else {
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+                    .setPreviousPageButton());
+            buttons.put(50, nextPageButton.setNextPageButton());
         }
+        return buttons;
+    }
 
-        @Override
-        public @NotNull List<Integer> getStaticSlots() {
-            return StaticSlots.STANDARD;
-        }
-
-        @Override
-        public @NotNull List<ItemStack> getItems() {
-            List<ItemStack> items = new java.util.ArrayList<>();
-            for (ShopItem sale : shop.getSales()) {
-                items.add(new ItemBuilder(this, sale.getItem().getType(), itemMeta -> {
-                    itemMeta.displayName(ShopItem.getItemName(sale.getItem()).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
-                    itemMeta.setLore(List.of(
-                            "§7■ Prix : §a" + sale.getPrice() + EconomyManager.getEconomyIcon(),
-                            "§7■ Quantité : §a" + sale.getAmount()
-                    ));
-                }));
-            }
-            return items;
-        }
-
-        @Override
-        public Map<Integer, ItemStack> getButtons() {
-            Map<Integer, ItemStack> buttons = new HashMap<>();
-            buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
-                    .setCloseButton());
-            ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
-            if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
-                buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cRetour"))
-                        .setNextMenu(new ShopMenu(getOwner(), shop, itemIndex)));
-                buttons.put(50, nextPageButton);
-            } else {
-                buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
-                        .setPreviousPageButton());
-                buttons.put(50, nextPageButton.setNextPageButton());
-            }
-            return buttons;
-        }
-
-        @Override
-        public @NotNull String getName() {
-            if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
-                return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
-            } else {
-                return "Ventes de " + shop.getName();
-            }
-        }
-
-        @Override
-        public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
-
-        }
-
-        @Override
-        public void onClose(InventoryCloseEvent event) {
-
-        }
-
-        @Override
-        public List<Integer> getTakableSlot() {
-            return List.of();
+    @Override
+    public @NotNull String getName() {
+        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
+        } else {
+            return "Ventes de " + shop.getName();
         }
     }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
+    @Override
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+
+    }
+}

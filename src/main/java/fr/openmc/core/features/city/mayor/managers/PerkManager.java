@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.mayor.managers;
 
-import fr.openmc.core.features.city.mayor.Mayor;
+import fr.openmc.core.features.city.models.Mayor;
 import fr.openmc.core.features.city.mayor.perks.PerkType;
 import fr.openmc.core.features.city.mayor.perks.Perks;
 

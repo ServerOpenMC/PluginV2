@@ -23,7 +23,6 @@ public class ListenersManager {
                 new CubeListener(OMCPlugin.getInstance()),
                 new ItemInteraction(),
                 new ChatInput(),
-                new CubeListener(OMCPlugin.getInstance()),
                 new RespawnListener(),
                 new SleepListener(),
                 new PlayerDeathListener(),
@@ -32,7 +31,7 @@ public class ListenersManager {
         );
     }
 
-    private void registerEvents(Listener... args) {
+    private static void registerEvents(Listener... args) {
         Server server = Bukkit.getServer();
         JavaPlugin plugin = OMCPlugin.getInstance();
         for (Listener listener : args) {
