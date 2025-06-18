@@ -47,19 +47,19 @@ public class JoinMessageListener implements Listener {
         // Quest pending reward notification
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             for (Quest quest : QuestsManager.getAllQuests()) {
-                if (quest.hasPendingRewards(player.getUniqueId())) {
-                    int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
-                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                        MessagesManager.sendMessage(player,
-                                Component.text("§aVous avez " + pendingRewardsNumber + " récompense(s) de quête en attente.")
-                                        .append(Component.text(" §6Cliquez ici pour les récupérer."))
-                                                .clickEvent(ClickEvent.runCommand("/quest")),
-                                Prefix.QUEST,
-                                MessageType.INFO,
-                                true);
-                    });
-                    break;
-                }
+                if (!quest.hasPendingRewards(player.getUniqueId()))
+                    continue;
+
+                int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    MessagesManager.sendMessage(player,
+                            Component.text("§aVous avez " + pendingRewardsNumber + " récompense(s) de quête en attente.")
+                                    .append(Component.text(" §6Cliquez ici pour les récupérer."))
+                                            .clickEvent(ClickEvent.runCommand("/quest")),
+                            Prefix.QUEST,
+                            MessageType.INFO,
+                            true);
+                });
             }
         });
 
