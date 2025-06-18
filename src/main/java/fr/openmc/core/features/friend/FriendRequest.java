@@ -16,13 +16,9 @@ import java.util.UUID;
 
 public class FriendRequest extends BukkitRunnable {
 
-    private final FriendManager friendManager;
-    private final OMCPlugin plugin;
     private final List<UUID> uuids = new ArrayList<>();
 
-    public FriendRequest(FriendManager friendManager, OMCPlugin plugin, UUID firstUUID, UUID secondUUID) {
-        this.friendManager = friendManager;
-        this.plugin = plugin;
+    public FriendRequest(UUID firstUUID, UUID secondUUID) {
         this.uuids.add(firstUUID);
         this.uuids.add(secondUUID);
     }
@@ -40,13 +36,13 @@ public class FriendRequest extends BukkitRunnable {
     }
 
     public void sendRequest() {
-        this.runTaskLater(plugin, 6000L);
+        this.runTaskLater(OMCPlugin.getInstance(), 6000L);
     }
 
     public void removeRequest() {
         sendExpiryMessage(uuids.get(0));
         sendExpiryMessage(uuids.get(1));
-        friendManager.removeRequest(this);
+        FriendManager.removeRequest(this);
         uuids.clear();
     }
 

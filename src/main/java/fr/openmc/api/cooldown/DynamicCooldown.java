@@ -10,17 +10,19 @@ import java.lang.annotation.Target;
 public @interface DynamicCooldown {
     /**
      * The cooldown group name
+     * 
      * @return group name
      */
     String group() default "general";
 
     /**
      * The message to show when cooldown is active
+     * 
      * @return message
      */
     String message() default "§cVous devez attendre %sec%s";
     /*
-    %sec% | Le temps restant en secondes
-    %ms%  | Le temps restant en millisecondes
+     * %sec% | Le temps restant en secondes
+     * %ms% | Le temps restant en millisecondes
      */
 }

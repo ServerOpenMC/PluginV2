@@ -1,7 +1,7 @@
 package fr.openmc.core.features.mailboxes.letter;
 
-
-import fr.openmc.core.features.mailboxes.menu.letter.Letter;
+import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -18,6 +18,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getPlayerName
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
 
+@Getter
 public class LetterHead extends ItemStack {
     private final int id;
     private final int itemsCount;
@@ -34,8 +35,8 @@ public class LetterHead extends ItemStack {
         ArrayList<Component> lore = new ArrayList<>();
         Component firstLine = Component.text(formatRelativeDate(sentAt), NamedTextColor.DARK_GRAY);
         Component secondLine = Component.text("➤ Contient ", NamedTextColor.DARK_GREEN)
-                                        .append(Component.text(itemsCount, NamedTextColor.GREEN, TextDecoration.BOLD))
-                                        .append(Component.text(" item" + (itemsCount > 1 ? "s" : ""), NamedTextColor.DARK_GREEN));
+                .append(Component.text(itemsCount, NamedTextColor.GREEN, TextDecoration.BOLD))
+                .append(Component.text(" item" + (itemsCount > 1 ? "s" : ""), NamedTextColor.DARK_GREEN));
         lore.add(nonItalic(firstLine));
         lore.add(nonItalic(secondLine));
         skullMeta.lore(lore);
@@ -46,20 +47,8 @@ public class LetterHead extends ItemStack {
         this(player, id, itemsCount, sentAt, null);
     }
 
-    public ItemStack[] getItems() {
-        return items;
-    }
-
     public void openLetter(Player player) {
-        Letter letter = new Letter(player, this);
+        LetterMenu letter = new LetterMenu(player, this);
         letter.openInventory();
-    }
-
-    public int getItemsCount() {
-        return itemsCount;
-    }
-
-    public int getId() {
-        return id;
     }
 }

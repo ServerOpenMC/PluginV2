@@ -11,7 +11,6 @@ import fr.openmc.core.utils.DiscordWebhook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -38,21 +37,16 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class AccountDetectionManager implements Listener {
-    @Getter
-    private static AccountDetectionManager instance;
-    private final BiMap<String, UUID> ipMap = HashBiMap.create();
-    private final OMCPlugin plugin;
-    private final File configFile;
-    private boolean isAntiVpnEnabled;
-    private boolean isAntiDoubleAccountEnabled;
-    private Set<UUID> exemptedPlayers;
-    private String webhookUrl;
+    private static final BiMap<String, UUID> ipMap = HashBiMap.create();
+    private static File configFile;
+    private static boolean isAntiVpnEnabled;
+    private static boolean isAntiDoubleAccountEnabled;
+    private static Set<UUID> exemptedPlayers;
+    private static String webhookUrl;
 
-    public AccountDetectionManager(OMCPlugin plugin) {
-        instance = this;
-        this.plugin = plugin;
-        this.configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "accountdetection.yml");
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    public AccountDetectionManager() {
+        configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "accountdetection.yml");
+        OMCPlugin.getInstance().getServer().getPluginManager().registerEvents(this, OMCPlugin.getInstance());
         CommandsManager.getHandler().register(new AccountDetectionCommand());
         loadConfig();
     }
@@ -76,7 +70,7 @@ public class AccountDetectionManager implements Listener {
         return JsonParser.parseString(body).getAsJsonObject();
     }
 
-    private void loadConfig() {
+    private static void loadConfig() {
         if (!configFile.exists()) {
             configFile.getParentFile().mkdirs();
             OMCPlugin.getInstance().saveResource("data/accountdetection.yml", false);
@@ -84,7 +78,7 @@ public class AccountDetectionManager implements Listener {
         reload();
     }
 
-    public void reload() {
+    public static void reload() {
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         isAntiVpnEnabled = config.getBoolean("anti-vpn");
         isAntiDoubleAccountEnabled = config.getBoolean("anti-double-account");
@@ -98,7 +92,7 @@ public class AccountDetectionManager implements Listener {
      * @param playersUUID l'UUID du joueur à exempter
      * @throws IOException si il y a une erreur lors de la sauvegarde
      */
-    public void addExemptedPlayer(UUID playersUUID) throws IOException {
+    public static void addExemptedPlayer(UUID playersUUID) throws IOException {
         exemptedPlayers.add(playersUUID);
         FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
         config.set("exempted-players", exemptedPlayers);
@@ -106,7 +100,7 @@ public class AccountDetectionManager implements Listener {
     }
 
     @EventHandler
-    private void onPlayerJoin(PlayerJoinEvent event) {
+    private static void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String ip = Objects.requireNonNull(player.getAddress()).getHostString();
         if (exemptedPlayers.contains(player.getUniqueId())) return;
@@ -120,7 +114,7 @@ public class AccountDetectionManager implements Listener {
      * @param ip     l'Ip de joueur au format texte
      * @param player le joueur à vérifier
      */
-    private void verifyAccount(String ip, Player player) {
+    private static void verifyAccount(String ip, Player player) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -132,7 +126,7 @@ public class AccountDetectionManager implements Listener {
                     ipMap.inverse().put(player.getUniqueId(), ip);
                 }
             }
-        }.runTaskAsynchronously(plugin);
+        }.runTaskAsynchronously(OMCPlugin.getInstance());
     }
 
     /**
@@ -141,7 +135,7 @@ public class AccountDetectionManager implements Listener {
      * @param firstPlayer  c'est le joueur qui s'était connecté avant avec la même Ip que secondPlayer
      * @param secondPlayer c'est le joueur qui vient de se connecter avec la même Ip que firstPlayer
      */
-    private void handleDoubleAccount(OfflinePlayer firstPlayer, Player secondPlayer) {
+    private static void handleDoubleAccount(OfflinePlayer firstPlayer, Player secondPlayer) {
         Component message = Component.text("On dirait que vous utilisez un double compte, nous tenons à rappeler que cela est strictement interdit, ").color(NamedTextColor.RED)
                 .append(Component.text("aucune sanction ne vous est donnée pour le moment").color(NamedTextColor.RED).decorate(TextDecoration.UNDERLINED))
                 .append(Component.text(", des modérateurs appliquerons une sanction si c'est bien le cas.").color(NamedTextColor.RED));
@@ -149,7 +143,7 @@ public class AccountDetectionManager implements Listener {
         try {
             DiscordWebhook.sendMessage(webhookUrl, "Double compte détecté: `" + firstPlayer.getName() + "` et `" + secondPlayer.getName() + "`");
         } catch (Exception e) {
-            plugin.getLogger().warning("Impossible d'envoyer le message sur Discord: " + e.getMessage());
+            OMCPlugin.getInstance().getLogger().warning("Impossible d'envoyer le message sur Discord: " + e.getMessage());
         }
     }
 
@@ -158,7 +152,7 @@ public class AccountDetectionManager implements Listener {
      *
      * @param player Le joueur qui a un Vpn
      */
-    private void handleVpn(Player player, String detectedFlags) {
+    private static void handleVpn(Player player, String detectedFlags) {
         Component message = Component.text("On dirait que vous utilisez un VPN, nous tenons à rappeler que cela est strictement interdit, ").color(NamedTextColor.RED)
                 .append(Component.text("aucune sanction ne vous est donnée pour le moment").color(NamedTextColor.RED).decorate(TextDecoration.UNDERLINED))
                 .append(Component.text(", des modérateurs appliquerons une sanction si c'est bien le cas.").color(NamedTextColor.RED));
@@ -169,7 +163,7 @@ public class AccountDetectionManager implements Listener {
                     "Vpn détecté: " + player.getName() + " (flags: " + detectedFlags + "). Pour plus d'information exécutez `/accountdetection check " + player.getName() + "` sur le serveur minecraft."
             );
         } catch (Exception e) {
-            plugin.getLogger().warning("Impossible d'envoyer le message sur Discord: " + e.getMessage());
+            OMCPlugin.getInstance().getLogger().warning("Impossible d'envoyer le message sur Discord: " + e.getMessage());
         }
     }
 
@@ -179,7 +173,7 @@ public class AccountDetectionManager implements Listener {
      * @param ip     L'Ip du joueur
      * @param player Le joueur
      */
-    private void verifyIpAddress(String ip, Player player) {
+    private static void verifyIpAddress(String ip, Player player) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -196,10 +190,9 @@ public class AccountDetectionManager implements Listener {
                         handleVpn(player, flags.toString());
                     }
                 } catch (Exception e) {
-                    plugin.getLogger().warning("Impossible de vérifier l'adresse IP: " + e.getMessage());
+                    OMCPlugin.getInstance().getLogger().warning("Impossible de vérifier l'adresse IP: " + e.getMessage());
                 }
             }
-        }.runTaskAsynchronously(plugin);
+        }.runTaskAsynchronously(OMCPlugin.getInstance());
     }
-
 }
