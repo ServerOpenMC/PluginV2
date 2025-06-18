@@ -71,6 +71,11 @@ public class JoinMessageListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (!player.isOnline()) {
+                    cancel();
+                    return;
+                }
+
                 TabList.updateTabList(player);
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 100L);
