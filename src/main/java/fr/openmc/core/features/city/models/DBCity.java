@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @DatabaseTable(tableName = "cities")
 public class DBCity {
-    @DatabaseField(id = true)
+    @DatabaseField(id = true, columnName = "uuid")
     @Getter
     private String UUID;
     @DatabaseField
