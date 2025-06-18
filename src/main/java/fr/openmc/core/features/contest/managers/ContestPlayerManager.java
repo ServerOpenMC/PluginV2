@@ -60,7 +60,7 @@ public class ContestPlayerManager  {
     /**
      * Met a jour le nombre de points du joueur, cela écrase les points précédents
      */
-    public void setPointsPlayer(Player player, int points) {
+    public static void setPointsPlayer(Player player, int points) {
         String uuid = player.getUniqueId().toString();
 
         ContestPlayer data = ContestManager.dataPlayer.get(uuid);
