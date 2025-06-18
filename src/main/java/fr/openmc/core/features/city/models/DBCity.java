@@ -7,11 +7,11 @@ import lombok.Getter;
 
 @DatabaseTable(tableName = "cities")
 public class DBCity {
-    @DatabaseField(id = true)
+    @DatabaseField(id = true, columnName = "uuid")
     @Getter
     private String UUID;
     @DatabaseField
-    private String owner;
+    private String name;
     @DatabaseField(defaultValue = "0")
     private double balance;
     @DatabaseField(canBeNull = false)
@@ -25,9 +25,9 @@ public class DBCity {
         // required for ORMLite
     }
 
-    public DBCity(String uuid, String owner, double balance, String type, int power, int freeClaims) {
+    public DBCity(String uuid, String name, double balance, String type, int power, int freeClaims) {
         this.UUID = uuid;
-        this.owner = owner;
+        this.name = name;
         this.balance = balance;
         this.type = type;
         this.power = power;
@@ -35,6 +35,6 @@ public class DBCity {
     }
 
     public City deserialize() {
-        return new City(UUID, owner, balance, type, power, freeClaims);
+        return new City(UUID, name, balance, type, power, freeClaims);
     }
 }
