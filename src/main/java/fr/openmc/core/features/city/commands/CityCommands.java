@@ -10,24 +10,12 @@ import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.actions.*;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.menu.CityChunkMenu;
-import fr.openmc.core.features.city.events.CityCreationEvent;
-import fr.openmc.core.features.city.models.Mascot;
-import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.MascotsLevels;
-import fr.openmc.core.features.city.models.CityLaw;
-import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.models.Mayor;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.PerkManager;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.WorldGuardApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -44,18 +32,6 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static fr.openmc.core.features.city.conditions.CityCreateConditions.AYWENITE_CREATE;
-import static fr.openmc.core.features.city.conditions.CityCreateConditions.MONEY_CREATE;
-import static fr.openmc.core.features.city.mayor.managers.MayorManager.PHASE_1_DAY;
-import static fr.openmc.core.features.city.menu.mayor.MayorLawMenu.COOLDOWN_TIME_WARP;
 
 @Command({"ville", "city"})
 public class CityCommands {

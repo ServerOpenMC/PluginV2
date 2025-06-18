@@ -4,26 +4,17 @@ import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
-import fr.openmc.core.features.city.sub.mascots.Mascot;
+import fr.openmc.core.features.city.models.DBCity;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.city.sub.mayor.CityLaw;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
-import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
+import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
-import fr.openmc.core.features.city.models.Mascot;
-import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.features.city.models.CityLaw;
-import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.models.Mayor;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.PerkManager;
-import fr.openmc.core.features.city.mayor.perks.Perks;
-import fr.openmc.core.features.city.models.DBCity;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
@@ -39,22 +30,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import com.sk89q.worldedit.math.BlockVector2;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.*;
 
 public class City {
     @Getter
@@ -270,16 +250,6 @@ public class City {
         });
     }
 
-    /**
-     * Updates the power of a city
-     */
-    public void updatePowerPoints(int diff) {
-        powerPoints += diff;
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
-    }
-
     // ==================== Chest Methods ====================
 
     /**
@@ -359,14 +329,24 @@ public class City {
      * Removes a chunk from the city's claimed chunks and updates the database
      * asynchronously.
      *
+     * @param chunk The chunk to be removed.
+     */
+    public void removeChunk(Chunk chunk) {
+        removeChunk(chunk.getX(), chunk.getZ());
+    }
+
+    /**
+     * Removes a chunk from the city's claimed chunks and updates the database
+     * asynchronously.
+     *
      * @param chunkX The X coordinate of the chunk to be removed.
      * @param chunkZ The Z coordinate of the chunk to be removed.
      */
-    public void removeChunk(Chunk chunk) {
+    public void removeChunk(int chunkX, int chunkZ) {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
-        BlockVector2 coords = BlockVector2.at(chunk.getX(), chunk.getZ());
+        BlockVector2 coords = BlockVector2.at(chunkX, chunkZ);
         if (!chunks.contains(coords))
             chunks.remove(coords);
 
@@ -565,28 +545,28 @@ public class City {
      * Adds a specific permission to a player and updates the database
      * asynchronously.
      *
-     * @param uuid       The UUID of the player to add the permission to.
+     * @param playerUUID       The UUID of the player to add the permission to.
      * @param permission The permission to add.
      */
-    public void addPermission(UUID player, CPermission permission) {
+    public void addPermission(UUID playerUUID, CPermission permission) {
         if (this.permissions == null)
             this.permissions = CityManager.getCityPermissions(this);
 
-        Set<CPermission> playerPerms = permissions.getOrDefault(player, new HashSet<>());
+        Set<CPermission> playerPerms = permissions.getOrDefault(playerUUID, new HashSet<>());
 
         if (playerPerms.contains(permission))
             return;
 
         playerPerms.add(permission);
-        permissions.put(player, playerPerms);
+        permissions.put(playerUUID, playerPerms);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.addPlayerPermission(this, player, permission);
+            CityManager.addPlayerPermission(this, playerUUID, permission);
         });
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(
-                    new CityPermissionChangeEvent(this, CacheOfflinePlayer.getOfflinePlayer(player), permission, true));
+                    new CityPermissionChangeEvent(this, CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, true));
         });
     }
 
@@ -594,14 +574,14 @@ public class City {
      * Removes a specific permission from a player and updates the database
      * asynchronously.
      *
-     * @param uuid       The UUID of the player to remove the permission from.
+     * @param playerUUID       The UUID of the player to remove the permission from.
      * @param permission The permission to remove.
      */
-    public void removePermission(UUID player, CPermission permission) {
+    public void removePermission(UUID playerUUID, CPermission permission) {
         if (this.permissions == null)
             this.permissions = CityManager.getCityPermissions(this);
 
-        Set<CPermission> playerPerms = permissions.get(player);
+        Set<CPermission> playerPerms = permissions.get(playerUUID);
 
         if (playerPerms == null)
             return;
@@ -610,14 +590,14 @@ public class City {
             return;
 
         playerPerms.remove(permission);
-        permissions.put(player, playerPerms);
+        permissions.put(playerUUID, playerPerms);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.removePlayerPermission(this, player, permission);
+            CityManager.removePlayerPermission(this, playerUUID, permission);
         });
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
-                    CacheOfflinePlayer.getOfflinePlayer(player), permission, false));
+                    CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false));
         });
     }
 
@@ -635,9 +615,7 @@ public class City {
      * @return The mayor of the city, or null if not found.
      */
     public Mayor getMayor() {
-        MayorManager mayorManager = MayorManager.getInstance();
-
-        return mayorManager.cityMayor.get(CityManager.getCity(cityUUID));
+        return MayorManager.cityMayor.get(this.getUUID());
     }
 
     /**
@@ -646,7 +624,7 @@ public class City {
      * @return True if the city has a mayor, false otherwise.
      */
     public boolean hasMayor() {
-        Mayor mayor = mayorManager.cityMayor.get(this);
+        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
         if (mayor == null) return false;
 
         return mayor.getUUID() != null;
@@ -658,7 +636,7 @@ public class City {
      * @return The election type of the city, or null if not found.
      */
     public ElectionType getElectionType() {
-        Mayor mayor = mayorManager.cityMayor.get(this);
+        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
         if (mayor == null) return null;
 
         return mayor.getElectionType();
@@ -670,9 +648,7 @@ public class City {
      * @return The law of the city, or null if not found.
      */
     public CityLaw getLaw() {
-        MayorManager mayorManager = MayorManager.getInstance();
-
-        return mayorManager.cityLaws.get(CityManager.getCity(cityUUID));
+        return MayorManager.cityLaws.get(cityUUID);
     }
 
     // ==================== War Methods ====================
@@ -705,47 +681,17 @@ public class City {
     }
 
     /**
-     * Retrieves the power points of the city.
-     *
-     * @return The power points of the city, or 0 if not found.
-     */
-    public int getPowerPoints() {
-        if (cachedPowerPoints != null) return cachedPowerPoints;
-
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT points FROM city_power WHERE city_uuid = ?");
-            statement.setString(1, cityUUID);
-            ResultSet rs = statement.executeQuery();
-
-            if (rs.next()) {
-                cachedPowerPoints = rs.getInt("points");
-            } else {
-                cachedPowerPoints = 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            cachedPowerPoints = 0;
-        }
-
-        return cachedPowerPoints;
-    }
-
-    /**
      * Updates the power of a City by adding or removing points.
      *
      * @param point The amount to be added or remove to the existing power.
      */
-    public void updatePowerPoints(int point) {
-        try {
-            int result = getPowerPoints() + point;
-            if (result < 0) result = 0;
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_power SET power_point=? WHERE city_uuid=?;");
-            statement.setInt(1, result);
-            cachedPowerPoints = result;
-            statement.setString(2, cityUUID);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    /**
+     * Updates the power of a city
+     */
+    public void updatePowerPoints(int diff) {
+        powerPoints += diff;
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            CityManager.saveCity(this);
+        });
     }
 }

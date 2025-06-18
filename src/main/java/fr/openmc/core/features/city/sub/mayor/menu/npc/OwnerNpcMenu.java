@@ -9,9 +9,9 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
-import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
@@ -67,9 +67,9 @@ public class OwnerNpcMenu extends Menu {
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
-        UUID uuidOwner = city.getPlayerWith(CPermission.OWNER);
+        UUID uuidOwner = city.getPlayerWithPermission((CPermission.OWNER));
 
-        String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CPermission.OWNER))).getName();
 
         if (electionType == ElectionType.ELECTION) {
             Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());

@@ -1,8 +1,7 @@
-package fr.openmc.core.features.city.models;
+package fr.openmc.core.features.city.sub.mayor.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
 
 @DatabaseTable(tableName = "mayor_constants")

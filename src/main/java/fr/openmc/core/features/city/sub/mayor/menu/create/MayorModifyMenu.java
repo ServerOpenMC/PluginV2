@@ -4,9 +4,9 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.menu.CityMenu;
-import fr.openmc.core.features.city.sub.mayor.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.ColorUtils;
 import net.kyori.adventure.text.Component;
@@ -51,7 +51,7 @@ public class MayorModifyMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        MayorCandidate mayorCandidate = MayorManager.getInstance().getCandidate(player);
+        MayorCandidate mayorCandidate = MayorManager.getCandidate(player.getUniqueId());
         Perks perk2 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk2());
         Perks perk3 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk3());
 

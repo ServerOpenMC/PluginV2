@@ -22,14 +22,14 @@ public class JoinListener implements Listener  {
             MayorManager.createCityLaws(playerCity, false, null);
         }
 
-        if (MayorManager.phaseMayor == 2 && MayorManager.cityMayor.get(playerCity)==null) {
+        if (MayorManager.phaseMayor == 2 && MayorManager.cityMayor.get(playerCity.getUUID()) == null) {
             if (playerCity.getMembers().size() >= MayorManager.MEMBER_REQ_ELECTION) {
                 MayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.ELECTION);
             }
             MayorManager.createMayor(null, null, playerCity, null, null, null, null, ElectionType.OWNER_CHOOSE);
 
             MayorManager.runSetupMayor(playerCity);
-        } else if (MayorManager.phaseMayor == 1 && MayorManager.cityMayor.get(playerCity)==null) {
+        } else if (MayorManager.phaseMayor == 1 && MayorManager.cityMayor.get(playerCity.getUUID()) == null) {
             if (playerCity.getMembers().size()>=MayorManager.MEMBER_REQ_ELECTION) {
                 MayorManager.createMayor(null,null, playerCity, null, null, null, null, ElectionType.ELECTION);
             }

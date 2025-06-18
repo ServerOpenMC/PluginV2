@@ -68,7 +68,7 @@ public class CityClaimAction {
         int price = calculatePrice(city.getChunks().size());
         int aywenite = calculateAywenite(city.getChunks().size());
 
-        if ((!CityManager.freeClaim.containsKey(city.getUUID())) || (CityManager.freeClaim.get(city.getUUID()) <= 0)) {
+        if (city.getFreeClaims() <= 0) {
             if (city.getBalance() < price) {
                 MessagesManager.sendMessage(sender, Component.text("Ta ville n'a pas assez d'argent (" + price + EconomyManager.getEconomyIcon() + " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
                 return;
@@ -82,7 +82,7 @@ public class CityClaimAction {
             city.updateBalance((double) (price * -1));
             ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
         } else {
-            CityManager.freeClaim.replace(city.getUUID(), CityManager.freeClaim.get(city.getUUID()) - 1);
+            city.updateFreeClaims(-1);
         }
 
         city.addChunk(chunk);

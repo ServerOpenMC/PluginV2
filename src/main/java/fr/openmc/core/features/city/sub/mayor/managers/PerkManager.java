@@ -1,11 +1,8 @@
 package fr.openmc.core.features.city.sub.mayor.managers;
 
-import fr.openmc.core.features.city.sub.mayor.Mayor;
+import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkType;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.features.city.models.Mayor;
-import fr.openmc.core.features.city.mayor.perks.PerkType;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 
 import java.util.ArrayList;
 import java.util.List;

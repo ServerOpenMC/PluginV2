@@ -1,5 +1,9 @@
 package fr.openmc.core.features.city.sub.mascots;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
@@ -7,9 +11,9 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
 import fr.openmc.core.features.city.sub.mascots.listeners.*;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
-import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -25,11 +29,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,14 +91,17 @@ public class MascotsManager {
     public static void loadMascots() {
         try {
             assert mascotsDao != null;
-            mascots = mascotsDao.queryForAll();
+            mascotsDao.queryForAll().forEach(mascot -> {
+                mascotsByCityUUID.put(mascot.getCityUUID(), mascot);
+                mascotsByEntityUUID.put(mascot.getMascotUUID(), mascot);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public static void saveMascots() {
-        mascots.forEach(mascot -> {
+        mascotsByCityUUID.forEach((cityUUID, mascot) -> {
             try {
                 mascotsDao.createOrUpdate(mascot);
             } catch (SQLException e) {
@@ -120,7 +122,7 @@ public class MascotsManager {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                mascotsDao.create(new Mascot(city_uuid, mob.getUniqueId(), 1, true, true, chunk.getX(), chunk.getZ()));
+                mascotsDao.create(new Mascot(cityUUID, mob.getUniqueId(), 1, true, true, chunk.getX(), chunk.getZ()));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -134,8 +136,7 @@ public class MascotsManager {
 
         if (mascot == null) return;
 
-        LivingEntity mascots = (LivingEntity) mascot.getEntity();
-        LivingEntity mascotEntity = MascotUtils.loadMascot(mascot);
+        LivingEntity mascotEntity = (LivingEntity) mascot.getEntity();
 
         if (mascotEntity != null) mascotEntity.remove();
 

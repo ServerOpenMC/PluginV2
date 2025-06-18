@@ -6,14 +6,10 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.features.city.models.MayorCandidate;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.PerkManager;
-import fr.openmc.core.features.city.mayor.perks.Perks;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -55,9 +51,8 @@ public class MayorVoteMenu extends PaginatedMenu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-
             int totalVotes = city.getMembers().size();
-            for (MayorCandidate candidate : MayorManager.cityElections.get(city)) {
+        for (MayorCandidate candidate : MayorManager.cityElections.get(city.getUUID())) {
                 Perks perk2 = PerkManager.getPerkById(candidate.getIdChoicePerk2());
                 Perks perk3 = PerkManager.getPerkById(candidate.getIdChoicePerk3());
                 NamedTextColor color = candidate.getCandidateColor();

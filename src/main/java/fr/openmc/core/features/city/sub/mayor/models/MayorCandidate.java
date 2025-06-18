@@ -1,15 +1,13 @@
-package fr.openmc.core.features.city.models;
+package fr.openmc.core.features.city.sub.mayor.models;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.core.utils.ColorUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.UUID;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
-import fr.openmc.core.utils.ColorUtils;
 
 @DatabaseTable(tableName = "candidates")
 public class MayorCandidate {

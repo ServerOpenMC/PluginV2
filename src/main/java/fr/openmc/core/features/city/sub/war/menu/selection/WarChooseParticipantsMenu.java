@@ -61,7 +61,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
                 .sorted(Comparator.comparing((UUID uuid) -> !Bukkit.getPlayer(uuid).isOnline())
                         .thenComparing(uuid -> {
                             if (cityLaunch.hasPermission(uuid, CPermission.OWNER)) return 0;
-                            else if (MayorManager.getInstance().cityMayor.get(cityLaunch).getUUID().equals(uuid))
+                            else if (MayorManager.cityMayor.get(cityLaunch.getUUID()).getUUID().equals(uuid))
                                 return 1;
                             else return 2;
                         }))
@@ -71,7 +71,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
             OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(uuid);
             boolean isSelected = selected.contains(uuid);
             boolean isOwner = cityLaunch.hasPermission(uuid, CPermission.OWNER);
-            boolean isMayor = MayorManager.getInstance().phaseMayor == 2 && cityLaunch.getMayor().getUUID().equals(uuid);
+            boolean isMayor = MayorManager.phaseMayor == 2 && cityLaunch.getMayor().getUUID().equals(uuid);
 
             String prefix = isOwner ? "Propriétaire " : isMayor ? "Maire " : "Membre ";
 

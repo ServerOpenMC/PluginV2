@@ -1,10 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.location.ItemInteraction;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
@@ -19,13 +16,11 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,8 +28,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,35 +118,15 @@ public class CityCreateAction {
         EconomyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE);
         ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), CityCreateConditions.AYWENITE_CREATE);
 
-        // DB insert
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try (PreparedStatement st = DatabaseManager.getConnection()
-                    .prepareStatement("INSERT INTO city_regions (city_uuid, x, z) VALUES (?, ?, ?)")) {
-                st.setString(1, cityUUID);
-                st.setInt(2, chunk.getX());
-                st.setInt(3, chunk.getZ());
-                st.execute();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-
-
-        City city = CityManager.createCity(player, cityUUID, pendingCityName, CityType.PEACE);
-        city.addPlayer(playerUUID);
-        city.addPermission(playerUUID, CPermission.OWNER);
-
-        CityManager.claimedChunks.put(BlockVector2.at(chunk.getX(), chunk.getZ()), city);
-        CityManager.freeClaim.put(cityUUID, 15);
+        City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 
         // Maire
-        MayorManager mayorManager = MayorManager.getInstance();
-        if (mayorManager.phaseMayor == 1) { // si création pendant le choix des maires
-            mayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+        if (MayorManager.phaseMayor == 1) { // si création pendant le choix des maires
+            MayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
         } else { // si création pendant les réformes actives
-            NamedTextColor color = mayorManager.getRandomMayorColor();
+            NamedTextColor color = MayorManager.getRandomMayorColor();
             List<Perks> perks = PerkManager.getRandomPerksAll();
-            mayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
+            MayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
             MessagesManager.sendMessage(player, Component.text("Vous avez été désigné comme §6Maire de la Ville.\n§8§oVous pourrez choisir vos Réformes dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)), Prefix.MAYOR, MessageType.SUCCESS, true);
         }
 

@@ -7,6 +7,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 
+import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_1_DAY;
+import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_2_DAY;
+
 public class PhaseListener {
 
     /**

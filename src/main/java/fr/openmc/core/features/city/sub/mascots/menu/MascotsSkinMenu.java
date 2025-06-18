@@ -4,7 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.menu.CityMenu;
-import fr.openmc.core.features.city.sub.mascots.Mascot;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;

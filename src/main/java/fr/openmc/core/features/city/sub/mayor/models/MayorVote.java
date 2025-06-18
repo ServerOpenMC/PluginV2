@@ -1,15 +1,13 @@
-package fr.openmc.core.features.city.models;
-
-import lombok.Getter;
-
-import java.util.UUID;
+package fr.openmc.core.features.city.sub.mayor.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import lombok.Getter;
+
+import java.util.UUID;
 
 @DatabaseTable(tableName = "votes")
 public class MayorVote {

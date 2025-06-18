@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.mascots.utils;
 
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataType;
@@ -20,7 +20,7 @@ public class MascotUtils {
 	 *                   This method creates a new Mascot object and adds it to the mascotsByCityUUID and mascotsByEntityUUID maps.
 	 */
 	public static void addMascotForCity(City city, UUID mascotUUID, Chunk chunk) {
-		Mascot newMascot = new Mascot(city, mascotUUID, 1, true, true, chunk);
+        Mascot newMascot = new Mascot(city.getUUID(), mascotUUID, 1, true, true, chunk.getX(), chunk.getZ());
 		MascotsManager.mascotsByCityUUID.put(city.getUUID(), newMascot);
 		MascotsManager.mascotsByEntityUUID.put(mascotUUID, newMascot);
 	}

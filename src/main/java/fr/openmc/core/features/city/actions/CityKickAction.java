@@ -19,14 +19,11 @@ public class CityKickAction {
 
         if (city == null) return;
 
-        if (city.removePlayer(playerKick.getUniqueId())) {
-            MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + playerKick.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+        city.removePlayer(playerKick.getUniqueId());
+        MessagesManager.sendMessage(sender, Component.text("Tu as exclu " + playerKick.getName() + " de la ville " + city.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
-            if (playerKick.isOnline()) {
-                MessagesManager.sendMessage((Player) playerKick, Component.text("Tu as été exclu de la ville " + city.getName()), Prefix.CITY, MessageType.INFO, true);
-            }
-        } else {
-            MessagesManager.sendMessage(sender, Component.text("Impossible d'exclure " + playerKick.getName() + " de la ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (playerKick.isOnline()) {
+            MessagesManager.sendMessage((Player) playerKick, Component.text("Tu as été exclu de la ville " + city.getName()), Prefix.CITY, MessageType.INFO, true);
         }
     }
 }

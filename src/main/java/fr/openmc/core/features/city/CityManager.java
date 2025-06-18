@@ -12,28 +12,16 @@ import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
-import fr.openmc.core.features.city.events.ChunkClaimedEvent;
-import fr.openmc.core.features.city.events.ChunkUnclaimedEvent;
-import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
+import fr.openmc.core.features.city.models.*;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
-import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
-import fr.openmc.core.features.city.models.Mascot;
-import fr.openmc.core.features.city.mascots.MascotsListener;
-import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.NPCManager;
-import fr.openmc.core.features.city.models.DBCity;
-import fr.openmc.core.features.city.models.DBCityChest;
-import fr.openmc.core.features.city.models.DBCityClaim;
-import fr.openmc.core.features.city.models.DBCityMember;
-import fr.openmc.core.features.city.models.DBCityPermission;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -41,16 +29,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CityManager implements Listener {
@@ -211,6 +191,7 @@ public class CityManager implements Listener {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
     public static void removePlayerPermission(City city, UUID player, CPermission permission) {
         try {
@@ -390,39 +371,6 @@ public class CityManager implements Listener {
     }
 
     /**
-     * Create a new city
-     *
-     * @param owner    The owner of the city
-     * @param cityUUID The UUID of the city
-     * @param name     The name of the city
-     * @param type     The type of the city
-     * @return The created city object
-     */
-    public static City createCity(Player owner, String cityUUID, String name, CityType type) {
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city VALUE (?, ?, ?, 0, ?)");
-                statement.setString(1, cityUUID);
-                statement.setString(2, owner.getUniqueId().toString());
-                statement.setString(3, name);
-                statement.setString(4, type == CityType.PEACE ? "peace" : "war");
-                statement.executeUpdate();
-
-                statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_chests VALUE (?, 1, null)");
-                statement.setString(1, cityUUID);
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-        City city = new City(cityUUID);
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new CityCreationEvent(city, owner));
-        });
-        return city;
-    }
-
-    /**
      * Register a city
      *
      * @param city The city object
@@ -437,9 +385,9 @@ public class CityManager implements Listener {
      * @param city The city
      */
     public static void deleteCity(City city) {
-        MayorManager.cityMayor.remove(city);
-        MayorManager.cityElections.remove(city);
-        MayorManager.playerVote.remove(city);
+        MayorManager.cityMayor.remove(city.getUUID());
+        MayorManager.cityElections.remove(city.getUUID());
+        MayorManager.playerVote.remove(city.getUUID());
 
         List<UUID> membersCopy = new ArrayList<>(city.getMembers());
         for (UUID memberId : membersCopy) {
@@ -488,7 +436,7 @@ public class CityManager implements Listener {
             DynamicCooldownManager.clear(city.getUUID(), "city:type");
         }
 
-        MascotsManager.removeMascotsFromCity(city.getUUID());
+        MascotsManager.removeMascotsFromCity(city);
         NPCManager.removeNPCS(city.getUUID());
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.sub.mascots.utils;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.sub.mascots.Mascot;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataContainer;

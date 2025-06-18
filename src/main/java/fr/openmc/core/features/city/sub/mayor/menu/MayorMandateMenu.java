@@ -8,8 +8,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
-import fr.openmc.core.features.city.sub.mayor.Mayor;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
@@ -110,8 +110,8 @@ public class MayorMandateMenu extends Menu {
         loreOwner.add(Component.text(perk1.getName()));
         loreOwner.addAll(perk1.getLore());
 
-        inventory.put(5, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
-            itemMeta.displayName(Component.text("§ePropriétaire " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()));
+        inventory.put(5, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWithPermission(CPermission.OWNER)), itemMeta -> {
+            itemMeta.displayName(Component.text("§ePropriétaire " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CPermission.OWNER))).getName()));
             itemMeta.lore(loreOwner);
         }));
 

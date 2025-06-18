@@ -5,10 +5,10 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.sub.mascots.Mascot;
-import fr.openmc.core.features.city.sub.mayor.Mayor;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
@@ -58,7 +58,7 @@ public class WarCityDetailsMenu extends Menu {
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
-        if (MayorManager.getInstance().phaseMayor == 2 && mayor != null) {
+        if (MayorManager.phaseMayor == 2 && mayor != null) {
             Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
             Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
             Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());

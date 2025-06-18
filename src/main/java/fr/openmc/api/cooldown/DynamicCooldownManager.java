@@ -1,7 +1,12 @@
 package fr.openmc.api.cooldown;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.DatabaseTable;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -9,13 +14,6 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
-
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.DatabaseTable;
-import com.j256.ormlite.table.TableUtils;
 
 /**
  * Main class for managing cooldowns
@@ -34,7 +32,7 @@ public class DynamicCooldownManager {
         private long duration;
         @DatabaseField(canBeNull = false)
         private long lastUse;
-        private final BukkitTask scheduledTask;
+        private BukkitTask scheduledTask;
 
         Cooldown() {
             // required for ORMLite
@@ -49,12 +47,12 @@ public class DynamicCooldownManager {
             this.id = id;
             this.group = group;
 
-            Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.uuid, this.group));
+            Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.id, this.group));
 
             long delayTicks = duration / 50; //ticks
             this.scheduledTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uuid, this.group));
-                DynamicCooldownManager.clear(uuid, group);
+                Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.id, this.group));
+                DynamicCooldownManager.clear(id, group);
             }, delayTicks);
         }
 

@@ -1,6 +1,8 @@
-package fr.openmc.core.features.city.models;
+package fr.openmc.core.features.city.sub.mayor.models;
 
-import fr.openmc.core.features.city.mayor.ElectionType;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.utils.ColorUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,14 +10,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.UUID;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
 @DatabaseTable(tableName = "mayors")
 public class Mayor {
     @DatabaseField(id = true)
     @Getter
-    private String city;
+    private String cityUUID;
     @DatabaseField
     @Getter
     @Setter
@@ -45,9 +44,9 @@ public class Mayor {
         // required for ORMLite
     }
 
-    public Mayor(String city, String mayorName, UUID mayorUUID, NamedTextColor mayorColor, int idPerk1, int idPerk2,
+    public Mayor(String cityUUID, String mayorName, UUID mayorUUID, NamedTextColor mayorColor, int idPerk1, int idPerk2,
             int idPerk3, ElectionType electionType) {
-        this.city = city;
+        this.cityUUID = cityUUID;
         this.name = mayorName;
         this.UUID = mayorUUID;
         setMayorColor(mayorColor);

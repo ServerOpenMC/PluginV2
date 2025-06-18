@@ -1,14 +1,9 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.sub.mascots.Mascot;
+import fr.openmc.core.features.city.*;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.city.CPermission;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityMessages;
-import fr.openmc.core.features.city.ProtectionsManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

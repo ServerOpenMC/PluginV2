@@ -1,32 +1,26 @@
 package fr.openmc.core.features.city.sub.mayor.managers;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.sub.mayor.*;
+import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.commands.AdminMayorCommands;
 import fr.openmc.core.features.city.sub.mayor.commands.MayorCommands;
 import fr.openmc.core.features.city.sub.mayor.listeners.JoinListener;
 import fr.openmc.core.features.city.sub.mayor.listeners.PhaseListener;
 import fr.openmc.core.features.city.sub.mayor.listeners.UrneListener;
+import fr.openmc.core.features.city.sub.mayor.models.*;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
-import fr.openmc.core.features.city.mayor.*;
-import fr.openmc.core.features.city.mayor.listeners.JoinListener;
-import fr.openmc.core.features.city.mayor.listeners.PhaseListener;
-import fr.openmc.core.features.city.mayor.listeners.UrneListener;
-import fr.openmc.core.features.city.mayor.perks.Perks;
-import fr.openmc.core.features.city.mayor.perks.basic.*;
-import fr.openmc.core.features.city.mayor.perks.event.*;
-import fr.openmc.core.features.city.models.CityLaw;
-import fr.openmc.core.features.city.models.Mayor;
-import fr.openmc.core.features.city.models.MayorCandidate;
-import fr.openmc.core.features.city.models.MayorConstant;
-import fr.openmc.core.features.city.models.MayorVote;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.api.FancyNpcApi;
 import fr.openmc.core.utils.api.ItemAdderApi;
@@ -38,31 +32,12 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-
 import java.sql.SQLException;
 import java.time.DayOfWeek;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 public class MayorManager {
     public static int MEMBER_REQ_ELECTION = 3;
-
-    public static final String TABLE_MAYOR = "city_mayor";
-    public static final String TABLE_ELECTION = "city_election";
-    public static final String TABLE_VOTE = "city_vote";
-    public static final String TABLE_LAW = "city_law";
-    public static final String TABLE_CONSTANTS = "mayor_constants";
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
@@ -179,7 +154,7 @@ public class MayorManager {
         try {
             List<Mayor> mayors = mayorsDao.queryForAll();
 
-            mayors.forEach(mayor -> cityMayor.put(mayor.getCity(), mayor));
+            mayors.forEach(mayor -> cityMayor.put(mayor.getCityUUID(), mayor));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -410,8 +385,8 @@ public class MayorManager {
                         ElectionType.OWNER_CHOOSE);
             }
         } else {
-            if (cityElections.containsKey(city)) { // si y'a des maires qui se sont présenter
-                List<MayorCandidate> candidates = cityElections.get(city);
+            if (cityElections.containsKey(city.getUUID())) { // si y'a des maires qui se sont présenter
+                List<MayorCandidate> candidates = cityElections.get(city.getUUID());
 
                 // Code fait avec ChatGPT pour avoir une complexité de O(n log(n)) au lieu de
                 // 0(n²)

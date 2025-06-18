@@ -4,10 +4,10 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.MayorSetWarpAction;
-import fr.openmc.core.features.city.sub.mayor.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorMandateMenu;
+import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -31,7 +31,7 @@ public class MayorCommands {
             MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
         }
 
-        if (MayorManager.getInstance().phaseMayor == 1) {
+        if (MayorManager.phaseMayor == 1) {
             MayorElectionMenu menu = new MayorElectionMenu(sender);
             menu.open();
         } else {
@@ -51,7 +51,7 @@ public class MayorCommands {
         Location warp = law.getWarp();
 
         if (warp == null) {
-            if (MayorManager.getInstance().phaseMayor == 2) {
+            if (MayorManager.phaseMayor == 2) {
                 MessagesManager.sendMessage(player, Component.text("Le Warp de la Ville n'est pas encore défini ! Demandez au §6Maire §fActuel d'en mettre un ! §8§o*via /city setwarp ou avec le Menu des Lois*"), Prefix.CITY, MessageType.INFO, true);
                 return;
             }

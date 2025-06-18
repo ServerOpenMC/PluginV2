@@ -1,19 +1,17 @@
-package fr.openmc.core.features.city.models;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+package fr.openmc.core.features.city.sub.mayor.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 @DatabaseTable(tableName = "laws")
 public class CityLaw {
     @DatabaseField(id = true)
     @Getter
-    private String city;
+    private String cityUUID;
     @DatabaseField(canBeNull = false)
     @Getter
     @Setter
@@ -35,8 +33,8 @@ public class CityLaw {
         // required for ORMLite
     }
 
-    public CityLaw(String city, boolean pvp, Location warp) {
-        this.city = city;
+    public CityLaw(String cityUUID, boolean pvp, Location warp) {
+        this.cityUUID = cityUUID;
         this.pvp = pvp;
         setWarp(warp);
     }
