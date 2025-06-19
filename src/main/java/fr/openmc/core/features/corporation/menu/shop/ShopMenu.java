@@ -190,7 +190,7 @@ public class ShopMenu extends Menu {
         if (getCurrentItem() != null)
 
             content.put(itemSlot, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
-                itemMeta.displayName(ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
+                itemMeta.displayName(ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
                 List<String> lore = new ArrayList<>();
                 lore.add("§7■ Prix: §c" + EconomyManager.getFormattedNumber(getCurrentItem().getPricePerItem() * amountToBuy));
                 lore.add("§7■ En stock: " + EconomyManager.getFormattedSimplifiedNumber(getCurrentItem().getAmount()));
