@@ -331,11 +331,13 @@ public class ShopMenu extends Menu {
             getOwner().closeInventory();
             return;
         }
-//        if (buyState == MethodState.FAILURE) {
-//            MessagesManager.sendMessage(getOwner(), Component.text("§cVous ne pouvez pas acheter vos propres items"), Prefix.SHOP, MessageType.INFO, false);
-//            getOwner().closeInventory();
-//            return;
-//        }
+
+        if (buyState == MethodState.FAILURE) {
+            MessagesManager.sendMessage(getOwner(), Component.text("§cVous ne pouvez pas acheter vos propres items"), Prefix.SHOP, MessageType.INFO, false);
+            getOwner().closeInventory();
+            return;
+        }
+
         if (buyState == MethodState.WARNING) {
             MessagesManager.sendMessage(getOwner(), Component.text("§cIl n'y a pas assez de stock pour acheter cet item"), Prefix.SHOP, MessageType.INFO, false);
             getOwner().closeInventory();
