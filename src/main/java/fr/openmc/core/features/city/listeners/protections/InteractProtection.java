@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.listeners.protections;
 
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -17,35 +18,47 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class InteractProtection implements Listener {
+
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.isCancelled()) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
+        Location location = clickedBlock.getLocation();
         Material clickedType = clickedBlock.getType();
 
-        if (!clickedType.isInteractable()) return;
-
         ItemStack inHand = event.getItem();
-        if (inHand != null && inHand.getType() == Material.TNT) return;
+        Material itemType = inHand != null ? inHand.getType() : Material.AIR;
 
-        ProtectionsManager.verify(player, event, clickedBlock.getLocation());
+        boolean isMinecart = isMinecart(itemType);
+        boolean isTnt = itemType == Material.TNT;
+
+        if (!clickedType.isInteractable() && !isMinecart) return;
+        if (isTnt) return;
+
+        ProtectionsManager.verify(player, event, location);
     }
 
     @EventHandler
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (event.isCancelled()) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Entity entity = event.getRightClicked();
         if (entity instanceof Player) return;
-        if (entity instanceof ItemFrame == false) return;
+        if (!(entity instanceof ItemFrame)) return;
         if (MascotUtils.isMascot(entity)) return;
 
         ProtectionsManager.verify(event.getPlayer(), event, entity.getLocation());
+    }
+
+    private boolean isMinecart(Material type) {
+        return switch (type) {
+            case MINECART, CHEST_MINECART, FURNACE_MINECART, HOPPER_MINECART, TNT_MINECART, COMMAND_BLOCK_MINECART ->
+                    true;
+            default -> false;
+        };
     }
 }
