@@ -88,7 +88,6 @@ public class OMCPlugin extends JavaPlugin {
         new CompanyManager();// laisser apres Economy Manager
         new ContestManager();
         new PrivateMessageManager();
-        new PlayerSettingsManager();
 
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager();
@@ -98,12 +97,17 @@ public class OMCPlugin extends JavaPlugin {
         new DynamicCooldownManager();
         HomeIconCacheManager.initialize();
 
+        PlayerSettingsManager.loadAllPlayerSettings();
+
         getLogger().info("Plugin activé");
     }
 
     @Override
     public void onDisable() {
         // SAUVEGARDE
+
+        // - Settings
+        PlayerSettingsManager.saveAllSettings();
 
         // - Maires
         MayorManager.saveMayorConstant();

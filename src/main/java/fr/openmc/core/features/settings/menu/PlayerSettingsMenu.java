@@ -32,7 +32,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
 
     public PlayerSettingsMenu(Player player) {
         super(player);
-        this.settings = PlayerSettingsManager.getInstance().getPlayerSettings(player);
+        this.settings = PlayerSettingsManager.getPlayerSettings(player);
     }
 
     @Override
@@ -49,8 +49,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> buttons = new HashMap<>();
 
-        buttons.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes" +
-                ":omc_homes_icon_bin_red")).getBest(), meta -> {
+        buttons.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), meta -> {
             meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }).setOnClick(event -> {
