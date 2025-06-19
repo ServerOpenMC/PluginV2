@@ -114,20 +114,7 @@ public class ShopMenu extends Menu {
         if (shop.getOwner().isCompany()){
             company = shop.getOwner().getCompany();
         }
-        if (company == null && shop.isOwner(getOwner().getUniqueId())) {
-            previousItemSlot = 39;
-            nextItemSlot = 41;
-            closeMenuSlot = 40;
-            purpleSetOne = 19;
-            redRemoveTen = 20;
-            redRemoveOne = 21;
-            itemSlot = 22;
-            greenAddOne = 23;
-            greenAddTen = 24;
-            purpleAddSixtyFour = 25;
-            catalogue = 44;
-            ownerItem = true;
-        } else if (company != null && company.getAllMembers().contains(getOwner().getUniqueId())) {
+        if ((company == null && shop.isOwner(getOwner().getUniqueId())) || (company != null && company.getAllMembers().contains(getOwner().getUniqueId()))) {
             previousItemSlot = 39;
             nextItemSlot = 41;
             closeMenuSlot = 40;
