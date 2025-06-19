@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
 import fr.openmc.core.utils.messages.MessageType;
@@ -30,9 +30,10 @@ import java.util.Map;
 public class CityPlayerGestionMenu extends Menu {
 
     private final OfflinePlayer playerTarget;
+
     public CityPlayerGestionMenu(Player owner, OfflinePlayer player) {
         super(owner);
-        this.playerTarget=player;
+        this.playerTarget = player;
     }
 
     @Override
@@ -55,110 +56,103 @@ public class CityPlayerGestionMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        try {
-            City city = CityManager.getPlayerCity(player.getUniqueId());
-            assert city != null;
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        assert city != null;
 
-            boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
-            boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
+        boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
+        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
 
 
-            List<Component> loreKick;
+        List<Component> loreKick;
 
-            if (hasPermissionKick) {
-                if (player.getUniqueId().equals(playerTarget.getUniqueId())) {
-                    loreKick = List.of(
-                            Component.text("§cVous pouvez pas vous expulser")
-                    );
-                } else if (city.hasPermission(playerTarget.getUniqueId(), CPermission.OWNER)) {
-                    loreKick = List.of(
-                            Component.text("§cVous pouvez pas expulser le propriétaire")
-                    );
-                } else {
-                    loreKick = List.of(
-                            Component.text("§7Vous pouvez expulser" + playerTarget.getName() + "§7de votre §dville§7."),
-                            Component.text(""),
-                            Component.text("§e§lCLIQUEZ ICI POUR L'EXPLUSER")
-                    );
-                }
+        if (hasPermissionKick) {
+            if (player.getUniqueId().equals(playerTarget.getUniqueId())) {
+                loreKick = List.of(
+                        Component.text("§cVous pouvez pas vous expulser")
+                );
+            } else if (city.hasPermission(playerTarget.getUniqueId(), CPermission.OWNER)) {
+                loreKick = List.of(
+                        Component.text("§cVous pouvez pas expulser le propriétaire")
+                );
             } else {
                 loreKick = List.of(
-                        MessagesManager.Message.NOPERMISSION2.getMessage()
+                        Component.text("§7Vous pouvez expulser" + playerTarget.getName() + "§7de votre §dville§7."),
+                        Component.text(""),
+                        Component.text("§e§lCLIQUEZ ICI POUR L'EXPLUSER")
                 );
             }
-
-            inventory.put(11, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
-                itemMeta.itemName(Component.text("§cExpulser " + playerTarget.getName()));
-                itemMeta.lore(loreKick);
-            }).setOnClick(inventoryClickEvent -> {
-                if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget)) {
-                    return;
-                } else {
-                    ConfirmMenu menu = new ConfirmMenu(
-                            player,
-                            () -> {
-                                player.closeInventory();
-                                CityCommands.kick(player, playerTarget);
-                            },
-                            () -> player.closeInventory(),
-                            List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
-                            List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
-                    menu.open();
-
-                }
-            }));
-
-
-            List<Component> lorePlayerTarget = List.of(
-                        Component.text("§7Vous êtes entrain de modifier son status dans la §dville")
+        } else {
+            loreKick = List.of(
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
+        }
 
-            inventory.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
-                itemMeta.displayName(Component.text("§eJoueur " + playerTarget.getName()));
-                itemMeta.lore(lorePlayerTarget);
-            }));
-
-            List<Component> lorePermission;
-
-            if (hasPermissionPerms) {
-                lorePermission = List.of(
-                        Component.text("§7Vous allez modifier §ases permissisons"),
-                        Component.text("§e§lCLIQUEZ ICI POUR MODIFIER")
-                );
+        inventory.put(11, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
+            itemMeta.itemName(Component.text("§cExpulser " + playerTarget.getName()));
+            itemMeta.lore(loreKick);
+        }).setOnClick(inventoryClickEvent -> {
+            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget)) {
+                return;
             } else {
-                lorePermission = List.of(
-                        MessagesManager.Message.NOPERMISSION2.getMessage()
-                );
+                ConfirmMenu menu = new ConfirmMenu(
+                        player,
+                        () -> {
+                            player.closeInventory();
+                            CityKickAction.startKick(player, playerTarget);
+                        },
+                        () -> player.closeInventory(),
+                        List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
+                        List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
+                menu.open();
+
+            }
+        }));
+
+
+        List<Component> lorePlayerTarget = List.of(
+                Component.text("§7Vous êtes entrain de modifier son status dans la §dville")
+        );
+
+        inventory.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
+            itemMeta.displayName(Component.text("§eJoueur " + playerTarget.getName()));
+            itemMeta.lore(lorePlayerTarget);
+        }));
+
+        List<Component> lorePermission;
+
+        if (hasPermissionPerms) {
+            lorePermission = List.of(
+                    Component.text("§7Vous allez modifier §ases permissisons"),
+                    Component.text("§e§lCLIQUEZ ICI POUR MODIFIER")
+            );
+        } else {
+            lorePermission = List.of(
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
+            );
+        }
+
+        inventory.put(15, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+            itemMeta.itemName(Component.text("§cModifier les permissions"));
+            itemMeta.lore(lorePermission);
+        }).setOnClick(inventoryClickEvent -> CitizensPermsMenu.openBookFor(player, playerTarget.getUniqueId())));
+
+        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.itemName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Vous allez retourner au Menu de votre Ville"),
+                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+            ));
+        }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
             }
 
-            inventory.put(15, new ItemBuilder(this, Material.BOOK, itemMeta -> {
-                itemMeta.itemName(Component.text("§cModifier les permissions"));
-                itemMeta.lore(lorePermission);
-            }).setOnClick(inventoryClickEvent -> CitizensPermsMenu.openBookFor(player, playerTarget.getUniqueId())));
+            CityPlayerListMenu menu = new CityPlayerListMenu(player);
+            menu.open();
+        }));
 
-            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-                itemMeta.itemName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(
-                        Component.text("§7Vous allez retourner au Menu de votre Ville"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
-            }).setOnClick(inventoryClickEvent -> {
-                City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-                if (cityCheck == null) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
-
-                CityPlayerListMenu menu = new CityPlayerListMenu(player);
-                menu.open();
-            }));
-
-            return inventory;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
-        }
         return inventory;
     }
 

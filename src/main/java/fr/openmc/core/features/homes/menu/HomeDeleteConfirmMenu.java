@@ -46,7 +46,6 @@ public class HomeDeleteConfirmMenu extends Menu {
         Map<Integer, ItemStack> content = new HashMap<>();
         Player player = getOwner();
 
-        try {
             content.put(2, new ItemBuilder(
                             this,
                             Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(),
@@ -77,15 +76,11 @@ public class HomeDeleteConfirmMenu extends Menu {
             );
 
             return content;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            throw new RuntimeException(e);
-        }
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
 
     @Override
     public void onClose(InventoryCloseEvent event) {

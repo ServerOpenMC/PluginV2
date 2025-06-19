@@ -12,7 +12,7 @@ import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -53,7 +53,7 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {// sell_shop_menu
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {// sell_shop_menu
             if (shop.getOwner().isCompany()){
                 Company company = shop.getOwner().getCompany();
                 if (company.getAllMembers().contains(getOwner().getUniqueId())){
@@ -114,20 +114,7 @@ public class ShopMenu extends Menu {
         if (shop.getOwner().isCompany()){
             company = shop.getOwner().getCompany();
         }
-        if (company == null && shop.isOwner(getOwner().getUniqueId())) {
-            previousItemSlot = 39;
-            nextItemSlot = 41;
-            closeMenuSlot = 40;
-            purpleSetOne = 19;
-            redRemoveTen = 20;
-            redRemoveOne = 21;
-            itemSlot = 22;
-            greenAddOne = 23;
-            greenAddTen = 24;
-            purpleAddSixtyFour = 25;
-            catalogue = 44;
-            ownerItem = true;
-        } else if (company != null && company.getAllMembers().contains(getOwner().getUniqueId())) {
+        if ((company == null && shop.isOwner(getOwner().getUniqueId())) || (company != null && company.getAllMembers().contains(getOwner().getUniqueId()))) {
             previousItemSlot = 39;
             nextItemSlot = 41;
             closeMenuSlot = 40;
@@ -203,7 +190,7 @@ public class ShopMenu extends Menu {
         if (getCurrentItem() != null)
 
             content.put(itemSlot, new ItemBuilder(this, getCurrentItem().getItem(), itemMeta -> {
-                itemMeta.displayName(ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
+                itemMeta.displayName(ItemUtils.getItemTranslation(getCurrentItem().getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
                 List<String> lore = new ArrayList<>();
                 lore.add("§7■ Prix: §c" + EconomyManager.getFormattedNumber(getCurrentItem().getPricePerItem() * amountToBuy));
                 lore.add("§7■ En stock: " + EconomyManager.getFormattedSimplifiedNumber(getCurrentItem().getAmount()));
@@ -344,11 +331,13 @@ public class ShopMenu extends Menu {
             getOwner().closeInventory();
             return;
         }
-//        if (buyState == MethodState.FAILURE) {
-//            MessagesManager.sendMessage(getOwner(), Component.text("§cVous ne pouvez pas acheter vos propres items"), Prefix.SHOP, MessageType.INFO, false);
-//            getOwner().closeInventory();
-//            return;
-//        }
+
+        if (buyState == MethodState.FAILURE) {
+            MessagesManager.sendMessage(getOwner(), Component.text("§cVous ne pouvez pas acheter vos propres items"), Prefix.SHOP, MessageType.INFO, false);
+            getOwner().closeInventory();
+            return;
+        }
+
         if (buyState == MethodState.WARNING) {
             MessagesManager.sendMessage(getOwner(), Component.text("§cIl n'y a pas assez de stock pour acheter cet item"), Prefix.SHOP, MessageType.INFO, false);
             getOwner().closeInventory();

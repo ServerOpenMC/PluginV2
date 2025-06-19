@@ -68,16 +68,8 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     public @NotNull List<ItemStack> getItems() {
         Player player = getOwner();
 
-        try {
-            if (!searchQuery.isEmpty()) return HomeIconCacheManager.searchIcons(searchQuery, this, home, player);
-            else return HomeIconCacheManager.getItemsForCategory(currentCategory, this, home, player);
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player,
-                    Component.text("§cUne erreur est survenue, veuillez contacter le Staff"),
-                    Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            throw new RuntimeException(e);
-        }
+        if (!searchQuery.isEmpty()) return HomeIconCacheManager.searchIcons(searchQuery, this, home, player);
+        else return HomeIconCacheManager.getItemsForCategory(currentCategory, this, home, player);
     }
 
     @Override
@@ -123,6 +115,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
                             .setHandler((p, result) -> {
                                 searchQuery = result.getLine(0);
                                 currentCategory = IconCategory.ALL;
+                                setPage(0);
                                 refresh();
 
                                 return Collections.emptyList();
@@ -198,7 +191,8 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
 
     @Override
     public void onClose(InventoryCloseEvent event) {}

@@ -20,7 +20,8 @@ public enum CPermission {
     MASCOT_SKIN("Changer le skin de la mascotte"),
     MASCOT_UPGRADE("Améliorer la mascotte"),
     MASCOT_HEAL("Soigner la mascotte"),
-    MANAGE_ALLIANCE("Gérer les alliances")
+    LAUNCH_WAR("Lancer des guerres"),
+	MANAGE_ALLIANCE("Gérer les alliances"),
     ;
 
     @Getter

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.listeners.protections;
 
 import fr.openmc.core.features.city.ProtectionsManager;
-import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,8 +28,14 @@ public class InteractProtection implements Listener {
 
         ItemStack inHand = event.getItem();
 
-        if (event.getAction() == Action.RIGHT_CLICK_AIR && inHand != null && inHand.getType().isEdible()) {
-            return;
+        if (inHand != null) {
+            Material type = inHand.getType();
+
+            if (type == Material.TNT) return;
+
+            if (type.isBlock()) return;
+
+            if (type.isEdible() && event.getAction() == Action.RIGHT_CLICK_AIR) return;
         }
 
         if (event.getClickedBlock() == null) return;

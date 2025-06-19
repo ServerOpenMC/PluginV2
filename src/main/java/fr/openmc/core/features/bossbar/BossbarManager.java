@@ -6,6 +6,7 @@ import fr.openmc.core.features.bossbar.commands.BossBarCommand;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import lombok.Getter;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -13,7 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import lombok.Getter;
 
 import java.io.File;
 import java.util.*;
@@ -133,13 +133,13 @@ public class BossbarManager {
     public static void toggleBossBar(Player player) {
         UUID uuid = player.getUniqueId();
 
-        if (activeBossBars.containsKey(player.getUniqueId())) {
+        if (activeBossBars.containsKey(uuid)) {
             removeBossBar(player);
             playerPreferences.put(uuid, false);
             MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
         } else {
-            addBossBar(player);
             playerPreferences.put(uuid, true);
+            addBossBar(player);
             MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
         }
     }

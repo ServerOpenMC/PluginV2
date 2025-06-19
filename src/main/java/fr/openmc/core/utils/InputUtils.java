@@ -1,5 +1,7 @@
 package fr.openmc.core.utils;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import org.bukkit.Bukkit;
 
 public class InputUtils {
@@ -83,6 +85,14 @@ public class InputUtils {
 
         if (input.length() > 24) {
             return false;
+        }
+
+        //TODO: Attendre la PR des alliances.
+        for (City city : CityManager.getCities()) {
+            String testCityName = city.getName();
+            if (testCityName.equalsIgnoreCase(input)) {
+                return false;
+            }
         }
 
         return input.matches("[a-zA-Z0-9\\s]+");

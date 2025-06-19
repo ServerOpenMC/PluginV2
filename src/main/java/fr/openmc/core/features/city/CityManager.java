@@ -14,35 +14,25 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.commands.*;
 import fr.openmc.core.features.city.events.CityDeleteEvent;
 import fr.openmc.core.features.city.listeners.CityChatListener;
-import fr.openmc.core.features.city.models.Mascot;
-import fr.openmc.core.features.city.mascots.MascotsListener;
-import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.NPCManager;
-import fr.openmc.core.features.city.models.DBCity;
-import fr.openmc.core.features.city.models.DBCityChest;
-import fr.openmc.core.features.city.models.DBCityClaim;
-import fr.openmc.core.features.city.models.DBCityMember;
-import fr.openmc.core.features.city.models.DBCityPermission;
+import fr.openmc.core.features.city.models.*;
+import fr.openmc.core.features.city.sub.bank.CityBankManager;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CityManager implements Listener {
@@ -80,16 +70,19 @@ public class CityManager implements Listener {
                 new AdminCityCommands(),
                 new CityPermsCommands(),
                 new CityChatCommand(),
-                new CityChestCommand(),
-                new AdminMayorCommands()
-            );
+                new CityChestCommand()
+        );
 
         OMCPlugin.registerEvents(
-                new MascotsListener(),
                 new CityChatListener()
             );
 
         new ProtectionsManager();
+        // SUB-FEATURE
+        new MayorManager();
+        new MascotsManager();
+        new WarManager();
+        new CityBankManager();
     }
 
     private static Dao<DBCity, String> citiesDao;
@@ -120,7 +113,7 @@ public class CityManager implements Listener {
     private static void loadCities() {
         try {
             cities.clear();
-            citiesDao.queryForAll().forEach(city -> cities.put(city.getId(), city.deserialize()));
+            citiesDao.queryForAll().forEach(city -> cities.put(city.getUUID(), city.deserialize()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -203,7 +196,6 @@ public class CityManager implements Listener {
 
         return permissions;
     }
-
     public static void addPlayerPermission(City city, UUID player, CPermission permission) {
         try {
             permissionsDao.create(new DBCityPermission(city.getUUID(), player, permission.name()));
@@ -214,7 +206,7 @@ public class CityManager implements Listener {
 
     public static void removePlayerPermission(City city, UUID player, CPermission permission) {
         try {
-            permissionsDao.create(new DBCityPermission(city.getUUID(), player, permission.name()));
+            permissionsDao.delete(new DBCityPermission(city.getUUID(), player, permission.name()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -276,7 +268,7 @@ public class CityManager implements Listener {
 
     /**
      * Get all cities registered in manager
-     * 
+     *
      * @return cities
      */
     public static Collection<City> getCities() {
@@ -296,7 +288,7 @@ public class CityManager implements Listener {
 
     /**
      * Check if a chunk is claimed
-     * 
+     *
      * @param x The x coordinate of the chunk
      * @param z The z coordinate of the chunk
      * @return true if the chunk is claimed, false otherwise
@@ -306,8 +298,26 @@ public class CityManager implements Listener {
     }
 
     /**
+     * Check if a chunk is claimed in radius
+     *
+     * @param chunk  The chunk
+     * @param radius The radius
+     * @return true if the chunk is claimed, false otherwise
+     */
+    public static boolean isChunkClaimedInRadius(Chunk chunk, int radius) {
+        for (int x = -radius; x <= radius; x++) {
+            for (int z = -radius; z <= radius; z++) {
+                if (CityManager.isChunkClaimed(chunk.getX() + x, chunk.getZ() + z)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Get a city by its UUID
-     * 
+     *
      * @param city The UUID of the city
      * @return The city object, or null if not found
      */
@@ -317,7 +327,7 @@ public class CityManager implements Listener {
 
     /**
      * Get a cities claimed chunks
-     * 
+     *
      * @param inCity The cities whose chunks are requested
      * @return The cities claimed chunks
      */
@@ -334,7 +344,7 @@ public class CityManager implements Listener {
 
     /**
      * Get a cities members
-     * 
+     *
      * @param inCity The cities whose members are requested
      * @return The cities members
      */
@@ -351,7 +361,7 @@ public class CityManager implements Listener {
 
     /**
      * Get a city by its member
-     * 
+     *
      * @param player The UUID of the member
      * @return The city object, or null if not found
      */
@@ -372,22 +382,6 @@ public class CityManager implements Listener {
     }
 
     /**
-     * Apply all city interests
-     * WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT
-     * PERFORMANCE IF THERE ARE MANY CITIES SAVED IN THE DB
-     */
-    public static void applyAllCityInterests() {
-        try {
-            List<String> cityUUIDs = getAllCityUUIDs();
-            for (String cityUUID : cityUUIDs) {
-                getCityByUUID(cityUUID).applyCityInterest();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * Register a city
      *
      * @param city The city object
@@ -400,12 +394,12 @@ public class CityManager implements Listener {
     /**
      * Delete a city
      *
-     * @param city The UUID of the city
+     * @param city The city
      */
     public static void deleteCity(City city) {
-        MayorManager.cityMayor.remove(city);
-        MayorManager.cityElections.remove(city);
-        MayorManager.playerVote.remove(city);
+        MayorManager.cityMayor.remove(city.getUUID());
+        MayorManager.cityElections.remove(city.getUUID());
+        MayorManager.playerVote.remove(city.getUUID());
 
         List<UUID> membersCopy = new ArrayList<>(city.getMembers());
         for (UUID memberId : membersCopy) {
@@ -454,7 +448,7 @@ public class CityManager implements Listener {
             DynamicCooldownManager.clear(city.getUUID(), "city:type");
         }
 
-        MascotsManager.removeMascotsFromCity(city.getUUID());
+        MascotsManager.removeMascotsFromCity(city);
         NPCManager.removeNPCS(city.getUUID());
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {

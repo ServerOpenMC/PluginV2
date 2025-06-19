@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -43,7 +44,12 @@ public class CityInviteConditions {
 			MessagesManager.sendMessage(player, Component.text("Cette personne est déjà dans une ville"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
-		
+
+		if (PlayerSettingsManager.canReceiveCityInvite(player.getUniqueId(), target.getUniqueId())) {
+			MessagesManager.sendMessage(player, Component.text("Cette personne ne peut pas recevoir d'invitation"), Prefix.CITY, MessageType.ERROR, false);
+			return false;
+		}
+
 		return true;
 	}
 	

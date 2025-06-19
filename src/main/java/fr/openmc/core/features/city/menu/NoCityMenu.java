@@ -8,13 +8,11 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -58,7 +56,7 @@ public class NoCityMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        try {
+
             Component nameNotif;
             List<Component> loreNotif = new ArrayList<>();
             if (!CityCommands.invitations.containsKey(player)) {
@@ -66,23 +64,23 @@ public class NoCityMenu extends Menu {
                 loreNotif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
                 loreNotif.add(Component.text("§6via /city invite"));
 
-                inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
-                    itemMeta.itemName(nameNotif);
-                    itemMeta.lore(loreNotif);
-                }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
-            } else {
-                List<Player> invitations = CityCommands.invitations.get(player);
-                nameNotif = Component.text("§7Vous avez §6" + invitations.size() + " invitation" + (invitations.size() > 1 ? "s" : ""));
+            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
+                itemMeta.itemName(nameNotif);
+                itemMeta.lore(loreNotif);
+            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
+        } else {
+            List<Player> invitations = CityCommands.invitations.get(player);
+            nameNotif = Component.text("§7Vous avez §6" + invitations.size() + " invitation" + (invitations.size() > 1 ? "s" : ""));
 
-                loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR VOIR VOS INVITATIONS"));
+            loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR VOIR VOS INVITATIONS"));
 
-                inventory.put(15, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
-                    itemMeta.itemName(nameNotif);
-                    itemMeta.lore(loreNotif);
-                }).setOnClick(inventoryClickEvent -> {
-                    new InvitationsMenu(player).open();
-                }));
-            }
+            inventory.put(15, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
+                itemMeta.itemName(nameNotif);
+                itemMeta.lore(loreNotif);
+            }).setOnClick(inventoryClickEvent -> {
+                new InvitationsMenu(player).open();
+            }));
+        }
 
             Supplier<ItemStack> createItemSupplier = () -> {
                 List<Component> loreCreate;
@@ -110,10 +108,6 @@ public class NoCityMenu extends Menu {
                     itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
                     itemMeta.lore(loreCreate);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (!CityCreateConditions.canCityCreate(player)) {
-                        return;
-                    }
-
                     String[] lines = new String[4];
                     lines[0] = "";
                     lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
@@ -128,23 +122,9 @@ public class NoCityMenu extends Menu {
                                 .setHandler((p, result) -> {
                                     String input = result.getLine(0);
 
-                                    for (City city : CityManager.getCities()) {
-                                        String cityName = city.getName();
-                                        if (cityName != null && cityName.equalsIgnoreCase(input)) {
-                                            MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
-                                            return Collections.emptyList();
-                                        }
-                                    }
-
-                                    if (InputUtils.isInputCityName(input)) {
-                                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                            CityTypeMenu menu = new CityTypeMenu(player, input);
-                                            menu.open();
-                                        });
-
-                                    } else {
-                                        MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                                    }
+                                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                        CityCreateAction.beginCreateCity(player, input);
+                                    });
 
                                     return Collections.emptyList();
                                 })
@@ -164,12 +144,7 @@ public class NoCityMenu extends Menu {
                 inventory.put(11, createItemSupplier.get());
             }
 
-            return inventory;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
-        }
+
         return inventory;
     }
 

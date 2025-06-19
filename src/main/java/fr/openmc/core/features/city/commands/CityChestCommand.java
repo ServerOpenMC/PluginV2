@@ -1,14 +1,10 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityChestAction;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.menu.CityChestMenu;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -34,30 +30,8 @@ public class CityChestCommand {
     @CommandPermission("omc.commands.city.chest_upgrade")
     void upgrade(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas dans une ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
+        if (!CityChestConditions.canCityChestUpgrade(city, player)) return;
 
-        if (!city.hasPermission(player.getUniqueId(), CPermission.CHEST_UPGRADE)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas les permissions d'améliorer le coffre de la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (city.getChestPages() >= 5) {
-            MessagesManager.sendMessage(player, Component.text("Le coffre de la Ville est déjà au niveau maximum"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        int price = city.getChestPages()*5000; // fonction linéaire f(x)=ax ; a=5000
-        if (city.getBalance() < price) {
-            MessagesManager.sendMessage(player, Component.text("La ville n'as pas assez d'argent ("+price+" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        city.updateBalance((double) -price);
-
-        city.saveChestContent(city.getChestPages() + 1, null);
-        MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, false);
+        CityChestAction.upgradeChest(player, city);
     }
 }

@@ -42,6 +42,7 @@ import java.util.function.Function;
 public class ItemInteraction implements Listener {
 
     private static final Map<UUID, HashMap<String, Function<Location, Boolean>>> playerCallbacks = new HashMap<>();
+    private static final Map<UUID, HashMap<String, Runnable>> playerCallbacksFail = new HashMap<>();
     private static final Map<UUID, HashMap<String, InteractionInfo>> playerChronometerData = new HashMap<>();
 
     private static final NamespacedKey NAMESPACE_KEY = new NamespacedKey(OMCPlugin.getInstance(), "interaction_item");
@@ -49,9 +50,14 @@ public class ItemInteraction implements Listener {
     /*
      * Méthode qui permet de donner un objet à une personne et de quand elle clique avec l'Item, la méthode renverra la positon ou il a cliqué
      */
-    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, String startMessage, String endMessage, Function<Location, Boolean> result) {
+    public static void runLocationInteraction(Player player, ItemStack item, String chronometerGroup, int chronometerTime, String startMessage, String endMessage, Function<Location, Boolean> result, Runnable onFail) {
         if (!ItemUtils.hasAvailableSlot(player)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez de place dans votre inventaire ! L'action a été annulée"), Prefix.OPENMC, MessageType.ERROR, false);
+            return;
+        }
+
+        if (Chronometer.containsChronometer(player.getUniqueId(), chronometerGroup)) {
+            MessagesManager.sendMessage(player, Component.text("Vous avez déjà l'Item !"), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -64,6 +70,10 @@ public class ItemInteraction implements Listener {
         playerCallbacks
                 .computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
                 .put(chronometerGroup, result);
+
+        playerCallbacksFail
+                .computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
+                .put(chronometerGroup, onFail);
 
         playerChronometerData
                 .computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
@@ -149,6 +159,14 @@ public class ItemInteraction implements Listener {
     void onTimeEnd(Chronometer.ChronometerEndEvent e) {
         Player player = (Player) e.getEntity();
         String chronometerGroup = e.getGroup();
+
+        HashMap<String, Runnable> playerCallbacksMap = playerCallbacksFail.get(player.getUniqueId());
+
+        if (playerCallbacksMap != null) {
+            Runnable onFail = playerCallbacksMap.get(chronometerGroup);
+
+            onFail.run();
+        }
 
         stopInteraction(player, chronometerGroup);
     }

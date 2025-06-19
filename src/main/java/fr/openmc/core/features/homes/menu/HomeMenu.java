@@ -28,6 +28,7 @@ public class HomeMenu extends PaginatedMenu {
 
     private final OfflinePlayer target;
     private boolean wasTarget = false;
+
     public HomeMenu(Player player, OfflinePlayer target) {
         super(player);
         this.target = target;
@@ -117,7 +118,7 @@ public class HomeMenu extends PaginatedMenu {
                             ));
                         }
                     )
-                );
+            );
 
                 map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
                     itemMeta.displayName(Component.text("§8● §6Améliorer les homes §8(Click ici)"));
@@ -127,15 +128,16 @@ public class HomeMenu extends PaginatedMenu {
                 }).setOnClick(event -> new HomeUpgradeMenu(getOwner()).open()));
             }
 
-            map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-            map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
-            map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+        map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
+        map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         return map;
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
 
     @Override
     public void onClose(InventoryCloseEvent event) {
