@@ -27,12 +27,6 @@ import java.util.UUID;
 @Getter
 public class HomesManager {
 
-    // Les TODOs présents, sont du plus, donc je prend mon temps pour les faire /
-    // faire les autres features
-    // TODO: Faire le menu sign pour changer le nom du home
-    // TODO: Dans le menu HomeChangeIcon, ajouter les items vanilla + un menu pour
-    // faire une recherche par nom, les filtres, etc
-
     public static List<Home> homes = new ArrayList<>();
     public static List<HomeLimit> homeLimits = new ArrayList<>();
     public DisabledWorldHome disabledWorldHome;

@@ -28,16 +28,18 @@ public class FriendSQLManager {
         try {
             QueryBuilder<Friend, UUID> query = friendsDao.queryBuilder();
             Where<Friend, UUID> where = query.where();
-            where.eq("first", first).and().eq("second", second);
-            where.or();
-            where.eq("first", second).and().eq("second", first);
+
+            where.or(where.eq("first", first).and().eq("second", second), where.eq("first", second).and().eq("second"
+                    , first)); // Bordel !!!!
 
             List<Friend> objs = friendsDao.query(query.prepare());
-            if (objs.size() == 0) {
+
+            if (objs.isEmpty()) {
                 return null;
             } else {
-                return objs.get(0);
+                return objs.getFirst();
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
             return null;

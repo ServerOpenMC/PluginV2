@@ -35,6 +35,7 @@ public class ProtectionsManager {
                 new InteractProtection(),
                 new LeashProtection(),
                 new MountProtection(),
+                new PistonProtection(),
                 new PotionProtection(),
                 new TramplingProtection()
         );

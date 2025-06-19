@@ -268,6 +268,9 @@ public class City {
         if (this.chestContent == null)
             this.chestContent = CityManager.getCityChestContent(this);
 
+        if (page > getChestPages())
+            page = getChestPages();
+
         return chestContent.get(page);
     }
 
@@ -296,6 +299,9 @@ public class City {
     public @NotNull Integer getChestPages() {
         if (this.chestContent == null)
             this.chestContent = CityManager.getCityChestContent(this);
+
+        if (this.chestContent.size() < 1)
+            saveChestContent(1, null);
 
         return chestContent.size();
     }
