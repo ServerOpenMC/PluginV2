@@ -10,10 +10,6 @@ import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -29,14 +25,10 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
-import java.util.UUID;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 
 public class MailboxListener implements Listener {
     private final OMCPlugin plugin = OMCPlugin.getInstance();
@@ -83,13 +75,13 @@ public class MailboxListener implements Listener {
 
     @EventHandler
     public void onInventoryOpen(InventoryCloseEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
+        InventoryHolder holder = event.getInventory().getHolder(false);
         if (holder instanceof MailboxInv mailboxInv) mailboxInv.addInventory();
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder();
+        InventoryHolder holder = event.getInventory().getHolder(false);
         if (holder instanceof SendingLetter sendingLetter) sendingLetter.giveItems();
         if (holder instanceof MailboxInv mailboxInv) mailboxInv.removeInventory();
     }
@@ -104,7 +96,7 @@ public class MailboxListener implements Listener {
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
         Inventory inv = event.getView().getTopInventory();
-        InventoryHolder holder = inv.getHolder();
+        InventoryHolder holder = inv.getHolder(false);
         Set<Integer> slots = event.getRawSlots();
 
         if (holder instanceof SendingLetter) {
@@ -131,7 +123,7 @@ public class MailboxListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         Inventory inv = event.getView().getTopInventory();
-        InventoryHolder holder = inv.getHolder();
+        InventoryHolder holder = inv.getHolder(false);
         ItemStack item = event.getCurrentItem();
         Player player = (Player) event.getWhoClicked();
         int slot = event.getRawSlot();

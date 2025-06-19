@@ -1,6 +1,6 @@
 package fr.openmc.core.features.corporation.listener;
 
-import fr.openmc.core.features.corporation.*;
+import fr.openmc.core.features.corporation.CorpPermission;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
@@ -17,7 +17,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -125,7 +127,7 @@ public class ShopListener implements Listener {
 
             if (clickedInventory == null) return;
 
-            if (clickedInventory.getHolder() instanceof Barrel) {
+            if (clickedInventory.getHolder(false) instanceof Barrel) {
                 ItemStack currentItem = e.getCurrentItem();
                 ItemStack cursorItem = e.getCursor();
 
@@ -143,7 +145,7 @@ public class ShopListener implements Listener {
                 else if (e.getAction().name().contains("PLACE") && isValidItem(cursorItem)) {
                     setSupplierKey(cursorItem, player.getUniqueId().toString());
                 }
-            } else if (clickedInventory.getHolder() instanceof Player) {
+            } else if (clickedInventory.getHolder(false) instanceof Player) {
                 ItemStack currentItem = e.getCurrentItem();
 
                 if (e.isShiftClick() && !e.getAction().name().contains("SWAP") && isValidItem(currentItem)) {
@@ -156,7 +158,7 @@ public class ShopListener implements Listener {
     @EventHandler
     public void onItemDrag(InventoryDragEvent e) {
         UUID playerUUID = e.getWhoClicked().getUniqueId();
-        if (inShopBarrel.getOrDefault(playerUUID, false) && e.getInventory().getHolder() instanceof Barrel) {
+        if (inShopBarrel.getOrDefault(playerUUID, false) && e.getInventory().getHolder(false) instanceof Barrel) {
             ItemStack item = e.getOldCursor();
             if (isValidItem(item)) {
                 removeSupplierKey(item);
