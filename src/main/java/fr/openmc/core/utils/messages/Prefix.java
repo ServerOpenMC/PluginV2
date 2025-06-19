@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 public enum Prefix {
 
-    // Font: https://lingojam.com/MinecraftSmallFont
+    // Font: https://mcutils.com/small-text-converter
     // For gradient color: https://www.birdflop.com/resources/rgb/
     // Color format: MiniMessage
 
