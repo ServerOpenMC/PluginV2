@@ -3,7 +3,7 @@ package fr.openmc.core.features.settings.policy;
 import lombok.Getter;
 
 @Getter
-public enum CityPolicy {
+public enum CityPolicy implements Policy {
     EVERYONE("§aTout le monde", "Accepter les demandes de tous les joueurs"),
     FRIENDS("§dAmis uniquement", "Accepter uniquement les demandes de mes amis"),
     NOBODY("§cPersonne", "Refuser toutes les demandes");

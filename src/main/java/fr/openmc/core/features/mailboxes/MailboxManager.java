@@ -5,6 +5,7 @@ import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -194,6 +195,9 @@ public class MailboxManager {
 
     // todo
     public static boolean canSend(Player sender, OfflinePlayer receiver) {
+        if (!PlayerSettingsManager.getInstance().canReceiveMailbox(receiver.getUniqueId(), sender.getUniqueId())) {
+            return false;
+        }
         return true;
     }
 

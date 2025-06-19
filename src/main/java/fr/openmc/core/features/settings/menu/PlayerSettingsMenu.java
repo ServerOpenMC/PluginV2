@@ -1,17 +1,20 @@
 package fr.openmc.core.features.settings.menu;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
-import fr.openmc.core.features.settings.policy.CityPolicy;
-import fr.openmc.core.features.settings.policy.FriendPolicy;
-import fr.openmc.core.features.settings.policy.GlobalPolicy;
+import fr.openmc.core.features.settings.policy.Policy;
+import fr.openmc.core.utils.customitems.CustomItem;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -21,58 +24,65 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.IntStream;
 
-public class PlayerSettingsMenu extends Menu {
+public class PlayerSettingsMenu extends PaginatedMenu {
 
     private final PlayerSettings settings;
 
     public PlayerSettingsMenu(Player player) {
         super(player);
-        try {
-            this.settings = PlayerSettingsManager.getInstance().getPlayerSettings(player);
-        } catch (Exception e) {
-            player.sendMessage(Component.text("Erreur lors de l'ouverture des paramètres. Veuillez réessayer plus tard.", NamedTextColor.RED));
-            throw new RuntimeException("Failed to initialize PlayerSettingsMenu", e);
-        }
+        this.settings = PlayerSettingsManager.getInstance().getPlayerSettings(player);
+    }
+
+    @Override
+    public @Nullable Material getBorderMaterial() {
+        return null;
+    }
+
+    @Override
+    public @NotNull List<Integer> getStaticSlots() {
+        return IntStream.rangeClosed(45, 53).boxed().toList();
+    }
+
+    @Override
+    public Map<Integer, ItemStack> getButtons() {
+        Map<Integer, ItemStack> buttons = new HashMap<>();
+
+        buttons.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes" +
+                ":omc_homes_icon_bin_red")).getBest(), meta -> {
+            meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
+                    .decoration(TextDecoration.ITALIC, false));
+        }).setOnClick(event -> {
+            settings.resetAllSettings();
+            this.refresh();
+            MessagesManager.sendMessage(getOwner(),
+                    Component.text("Tous les paramètres ont été réinitialisés.", NamedTextColor.GREEN)
+                            .decoration(TextDecoration.ITALIC, false),
+                    Prefix.SETTINGS, MessageType.SUCCESS, true);
+        }));
+        buttons.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
+        buttons.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        buttons.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
+
+        return buttons;
     }
 
     @Override
     public @NotNull String getName() {
-        return "§r§fParamètres de " + getOwner().getName();
+        return "§r" + PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_settings%");
     }
 
     @Override
-    public @NotNull InventorySize getInventorySize() {
-        return InventorySize.LARGEST;
-    }
+    public @NotNull List<ItemStack> getItems() {
+        List<ItemStack> content = new ArrayList<>();
 
-    @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
-
-        // Slots de placement automatique (ligne par ligne)
-        int[] slots = {10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34};
-        int slotIndex = 0;
-
-        // Génération automatique des items pour chaque paramètre
         for (SettingType settingType : SettingType.values()) {
-            if (slotIndex >= slots.length) break; // Éviter de dépasser les slots disponibles
-
-            content.put(slots[slotIndex], createSettingItem(settingType));
-            slotIndex++;
+            content.add(createSettingItem(settingType));
         }
-
-        // Bouton de fermeture
-        content.put(40, new ItemBuilder(this, Material.BARRIER, meta -> {
-            meta.displayName(Component.text("Fermer", NamedTextColor.RED)
-                    .decoration(TextDecoration.ITALIC, false)
-                    .decoration(TextDecoration.BOLD, true));
-        }).setCloseButton());
 
         return content;
     }
@@ -125,7 +135,6 @@ public class PlayerSettingsMenu extends Menu {
                         .decoration(TextDecoration.ITALIC, false));
             }
 
-            // Ajout des options avec indicateur de sélection
             addEnumOptions(lore, settingType, currentValue);
 
             lore.add(Component.empty());
@@ -161,12 +170,7 @@ public class PlayerSettingsMenu extends Menu {
     }
 
     private Object[] getEnumValues(SettingType settingType) {
-        return switch (settingType) {
-            case FRIEND_REQUESTS_POLICY -> FriendPolicy.values();
-            case CITY_JOIN_REQUESTS_POLICY -> CityPolicy.values();
-            case PRIVATE_MESSAGE_POLICY -> GlobalPolicy.values();
-            default -> new Object[0];
-        };
+        return settingType.getDefaultValue().getClass().getEnumConstants();
     }
 
     private Object getNextEnumValue(SettingType settingType, Object currentValue) {
@@ -180,23 +184,15 @@ public class PlayerSettingsMenu extends Menu {
     }
 
     private String getEnumDisplayName(Object enumValue) {
-        if (enumValue instanceof FriendPolicy policy) {
+        if (enumValue instanceof Policy policy) {
             return policy.getDisplayName();
-        } else if (enumValue instanceof CityPolicy policy) {
-            return policy.getDisplayName();
-        } else if (enumValue instanceof GlobalPolicy level) {
-            return level.getDisplayName();
         }
         return enumValue.toString();
     }
 
     private String getEnumDescription(Object enumValue) {
-        if (enumValue instanceof FriendPolicy policy) {
+        if (enumValue instanceof Policy policy) {
             return policy.getDescription();
-        } else if (enumValue instanceof CityPolicy policy) {
-            return policy.getDescription();
-        } else if (enumValue instanceof GlobalPolicy level) {
-            return level.getDescription();
         }
         return "";
     }
@@ -214,29 +210,5 @@ public class PlayerSettingsMenu extends Menu {
     @Override
     public List<Integer> getTakableSlot() {
         return List.of();
-    }
-
-    // Classe pour stocker les informations d'affichage
-    private static class SettingDisplayInfo {
-        final Material enabledMaterial;
-        final Material disabledMaterial;
-        final String displayName;
-        final String enumDescription;
-
-        // Constructeur pour les paramètres booléens
-        SettingDisplayInfo(Material enabledMaterial, Material disabledMaterial, String displayName) {
-            this.enabledMaterial = enabledMaterial;
-            this.disabledMaterial = disabledMaterial;
-            this.displayName = displayName;
-            this.enumDescription = null;
-        }
-
-        // Constructeur pour les paramètres enum
-        SettingDisplayInfo(Material material, String displayName, String enumDescription) {
-            this.enabledMaterial = material;
-            this.disabledMaterial = material;
-            this.displayName = displayName;
-            this.enumDescription = enumDescription;
-        }
     }
 }

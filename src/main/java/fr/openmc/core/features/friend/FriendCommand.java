@@ -3,6 +3,8 @@ package fr.openmc.core.features.friend;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.settings.PlayerSettings;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -35,6 +37,10 @@ public class FriendCommand {
         try {
             if (player.getUniqueId().equals(target.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous ajouter vous-même en ami."), Prefix.FRIEND, MessageType.ERROR, true);
+                return;
+            }
+            if (!PlayerSettingsManager.getInstance().canReceiveFriendRequest(target.getUniqueId(), player.getUniqueId())) {
+                MessagesManager.sendMessage(player, Component.text("§cCe joueur a désactivé les demandes d'amis."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             if (FriendManager.isRequestPending(target.getUniqueId())) {

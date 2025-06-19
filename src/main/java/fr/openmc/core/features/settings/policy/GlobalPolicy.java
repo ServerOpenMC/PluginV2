@@ -3,7 +3,7 @@ package fr.openmc.core.features.settings.policy;
 import lombok.Getter;
 
 @Getter
-public enum GlobalPolicy {
+public enum GlobalPolicy implements Policy {
     EVERYONE("§aTout le monde", "Visible par tous les joueurs"),
     FRIENDS("§dAmis uniquement", "Visible uniquement par mes amis"),
     CITY_MEMBERS("§6Membres de ma ville", "Visible par les membres de ma ville"),
