@@ -1,5 +1,8 @@
-package fr.openmc.core.features.city;
+package fr.openmc.core.features.city.models;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -12,14 +15,26 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+@DatabaseTable(tableName = "city_ranks")
 @Getter
 public class CityRank {
 	
+	@DatabaseField(id = true, columnName = "city_uuid")
+	private String cityUUID;
+	@DatabaseField(id = true)
 	private String name;
+	
+	@DatabaseField(canBeNull = false)
 	private int priority;
 	private Set<CPermission> permissions;
+	
+	@DatabaseField(canBeNull = false)
 	private Material icon;
-	private final Set<UUID> members; // Optional, if you want to track members with this rank
+	private Set<UUID> members; // Optional, if you want to track members with this rank
+	
+	public CityRank() {
+		// Default constructor for ORMLite
+	}
 	
 	public CityRank(String name, int priority, Set<CPermission> permissions, Material icon) {
 		this(name, priority, permissions, icon, null);

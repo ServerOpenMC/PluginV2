@@ -14,7 +14,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
-import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.features.city.mascots.MascotUtils;
 import fr.openmc.core.features.city.mayor.ElectionType;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
@@ -28,6 +27,7 @@ import fr.openmc.core.features.city.menu.mayor.create.MayorCreateMenu;
 import fr.openmc.core.features.city.menu.mayor.create.MenuType;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
+import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -91,9 +91,6 @@ public class CityMenu extends Menu {
                         Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX GRADES")
                 ));
             }).setOnClick(inventoryClickEvent -> new CityRanksMenu(getOwner(), city).open()));
-            
-
-            MayorManager mayorManager = MayorManager.getInstance();
 
             boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
             boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);

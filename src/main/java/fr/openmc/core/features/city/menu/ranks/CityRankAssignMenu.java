@@ -5,7 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityRank;
+import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -16,10 +16,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class CityRankAssignMenu extends Menu {
 	
@@ -56,7 +53,7 @@ public class CityRankAssignMenu extends Menu {
 	public @NotNull Map<Integer, ItemStack> getContent() {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
-		List<CityRank> availableRanks = city.getRanks();
+		Set<CityRank> availableRanks = city.getRanks();
 		for (CityRank rank : availableRanks) {
 			map.put(map.size(), new ItemBuilder(this, new ItemStack(rank.getIcon()), itemMeta -> {
 				itemMeta.displayName(Component.text(rank.getName()));

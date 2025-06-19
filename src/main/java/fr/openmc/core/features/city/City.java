@@ -1,16 +1,14 @@
 package fr.openmc.core.features.city;
 
+import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
-import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.features.city.models.CityLaw;
 import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.models.Mayor;
 import fr.openmc.core.features.city.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.mayor.perks.Perks;
-import fr.openmc.core.features.city.models.DBCity;
+import fr.openmc.core.features.city.models.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
@@ -22,12 +20,9 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
-import com.sk89q.worldedit.math.BlockVector2;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,7 +36,7 @@ public class City {
     private Set<UUID> members;
     private Set<BlockVector2> chunks; // Liste des chunks claims par la ville
     private HashMap<UUID, Set<CPermission>> permissions;
-    private List<CityRank> cityRanks = new ArrayList<>();
+    private Set<CityRank> cityRanks;
     private HashMap<Integer, ItemStack[]> chestContent;
     @Getter
     @Setter
@@ -72,6 +67,7 @@ public class City {
 
         this.members = new HashSet<>();
         this.permissions = new HashMap<>();
+        this.cityRanks = new HashSet<>();
         this.chunks = new HashSet<>();
         this.chestContent = new HashMap<>();
         
@@ -79,7 +75,7 @@ public class City {
         addPlayer(owner.getUniqueId());
         addPermission(owner.getUniqueId(), CPermission.OWNER);
         saveChestContent(1, null);
-        loadRanks();
+        CityManager.loadCityRanks(this);
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new CityCreationEvent(this, owner));
@@ -315,9 +311,7 @@ public class City {
      * Removes a chunk from the city's claimed chunks and updates the database
      * asynchronously.
      *
-     * @param chunkX The X coordinate of the chunk to be removed.
-     * @param chunkZ The Z coordinate of the chunk to be removed.
-     * @return True if the chunk was successfully removed, false otherwise.
+     * @param chunk The chunk to be removed.
      */
     public void removeChunk(Chunk chunk) {
         if (this.chunks == null)
@@ -333,8 +327,8 @@ public class City {
     /**
      * Checks if a specific chunk is claimed by the city.
      *
-     * @param chunkX The X coordinate of the chunk to check.
-     * @param chunkZ The Z coordinate of the chunk to check.
+     * @param x The X coordinate of the chunk to check.
+     * @param z The Z coordinate of the chunk to check.
      * @return True if the chunk is claimed, false otherwise.
      */
     public boolean hasChunk(double x, double z) {
@@ -568,7 +562,7 @@ public class City {
      * Adds a specific permission to a player and updates the database
      * asynchronously.
      *
-     * @param uuid       The UUID of the player to add the permission to.
+     * @param player The UUID of the player to add the permission to.
      * @param permission The permission to add.
      */
     public void addPermission(UUID player, CPermission permission) {
@@ -597,7 +591,7 @@ public class City {
      * Removes a specific permission from a player and updates the database
      * asynchronously.
      *
-     * @param uuid       The UUID of the player to remove the permission from.
+     * @param player The UUID of the player to remove the permission from.
      * @param permission The permission to remove.
      */
     public void removePermission(UUID player, CPermission permission) {
@@ -635,7 +629,7 @@ public class City {
         return null;
     }
     
-    public List<CityRank> getRanks() {
+    public Set<CityRank> getRanks() {
         return cityRanks;
     }
     
@@ -670,18 +664,7 @@ public class City {
             throw new IllegalStateException("Cannot add more than 18 ranks to a city.");
         }
         cityRanks.add(rank);
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO city_ranks (city_uuid, name, permissions, priority, icon) VALUES (?, ?, ?, ?, ?)")) {
-                statement.setString(1, cityUUID);
-                statement.setString(2, rank.getName());
-                statement.setString(3, rank.getPermissions().stream().map(Enum::name).collect(Collectors.joining(",")));
-                statement.setInt(4, rank.getPriority());
-                statement.setString(5, rank.getIcon() != null ? rank.getIcon().name() : Material.GOLD_BLOCK.name());
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> CityManager.addCityRank(this, rank));
     }
     
     public void deleteRank(CityRank rank) {
@@ -693,61 +676,14 @@ public class City {
         }
         cityRanks.remove(rank);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM city_ranks WHERE city_uuid = ? AND name = ?")) {
-                statement.setString(1, cityUUID);
-                statement.setString(2, rank.getName());
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            CityManager.removeCityRank(this, rank);
         });
-    }
-    
-    public void loadRanks() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT name, permissions, priority, icon, members FROM city_ranks WHERE city_uuid = ?")) {
-            statement.setString(1, cityUUID);
-            ResultSet rs = statement.executeQuery();
-            
-            while (rs.next()) {
-                String name = rs.getString("name");
-                Set<CPermission> permissions = Arrays.stream(rs.getString("permissions").split(","))
-                        .map(CPermission::valueOf)
-                        .collect(Collectors.toSet());
-                int priority = rs.getByte("priority");
-                Material icon = rs.getString("icon") != null ? Material.valueOf(rs.getString("icon")) : Material.GOLD_BLOCK;
-                Set<UUID> members = Arrays.stream(rs.getString("members").split(","))
-                        .map(s -> {
-                            if (s.isEmpty()) return null;
-                            try {
-                                return UUID.fromString(s);
-                            } catch (IllegalArgumentException e) {
-                                return null;
-                            }
-                        })
-                        .collect(Collectors.toSet());
-                
-                CityRank rank = new CityRank(name, priority, permissions, icon, members);
-                cityRanks.add(rank);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
     
     public void updateRank(CityRank oldRank, CityRank newRank) {
         if (cityRanks.contains(oldRank)) {
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_ranks SET name = ?, permissions = ?, priority = ?, icon = ? WHERE city_uuid = ? AND name = ?")) {
-                    statement.setString(1, newRank.getName());
-                    statement.setString(2, newRank.getPermissions().stream().map(Enum::name).collect(Collectors.joining(",")));
-                    statement.setInt(3, newRank.getPriority());
-                    statement.setString(4, newRank.getIcon() != null ? newRank.getIcon().name() : Material.GOLD_BLOCK.name());
-                    statement.setString(5, cityUUID);
-                    statement.setString(6, oldRank.getName());
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                CityManager.updateCityRank(this, oldRank, newRank);
             });
             cityRanks.remove(oldRank);
             cityRanks.add(newRank);
@@ -790,24 +726,10 @@ public class City {
         
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             if (currentRank != null) {
-                try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_ranks SET members = ? WHERE city_uuid = ? AND name = ?")) {
-                    statement.setString(1, currentRank.getMembers() == null ? "" : currentRank.getMembers().stream().map(UUID::toString).collect(Collectors.joining(",")));
-                    statement.setString(2, cityUUID);
-                    statement.setString(3, currentRank.getName());
-                    statement.executeUpdate();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                CityManager.updateCityRankMembers(currentRank);
             }
             
-            try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE city_ranks SET members = ? WHERE city_uuid = ? AND name = ?")) {
-                statement.setString(1, newRank.getMembers() == null ? "" : newRank.getMembers().stream().map(UUID::toString).collect(Collectors.joining(",")));
-                statement.setString(2, cityUUID);
-                statement.setString(3, newRank.getName());
-                statement.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            CityManager.updateCityRankMembers(newRank);
         });
     }
 }

@@ -1,5 +1,10 @@
 package fr.openmc.core.features.corporation.manager;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -13,14 +18,7 @@ import fr.openmc.core.features.corporation.company.CompanyOwner;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.listener.CustomItemsCompanyListener;
 import fr.openmc.core.features.corporation.listener.ShopListener;
-import fr.openmc.core.features.corporation.models.CompanyMerchant;
-import fr.openmc.core.features.corporation.models.CompanyPermission;
-import fr.openmc.core.features.corporation.models.DBCompany;
-import fr.openmc.core.features.corporation.models.DBShop;
-import fr.openmc.core.features.corporation.models.Merchant;
-import fr.openmc.core.features.corporation.models.ShopSupplier;
-import fr.openmc.core.features.corporation.models.DBShopItem;
-import fr.openmc.core.features.corporation.models.DBShopSale;
+import fr.openmc.core.features.corporation.models.*;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.corporation.shops.Supply;
@@ -36,12 +34,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -450,9 +442,8 @@ public class CompanyManager {
     /**
      * get the items of a marchant from the database
      *
-     * @param playerUUID the uuid of the player we check
-     * @param conn       use to have the same connection
-     * @return A ItemStack[] from bytes stock in the database
+     * @param player the uuid of the player we check
+     * @return An ItemStack[] from byte stock in the database
      */
     public static ItemStack[] getMerchantItem(UUID player) {
         try {

@@ -45,10 +45,9 @@ public enum Stats {
     }
 
     /**
-     * Increment a stats by one for a player
-     * 
-     * @param player Player
-     * @param value  the amount to increment the statistic
+     * Increment a stat by one for a player
+     *
+     * @param player The player to increment the stat for
      */
     public void increment(UUID player) {
         increment(player, 1);

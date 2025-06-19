@@ -4,8 +4,8 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityRank;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CityRanksMenu extends Menu {
 	
@@ -54,7 +55,7 @@ public class CityRanksMenu extends Menu {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
 		int i = 0;
-		List<CityRank> cityRanks = city.getRanks();
+		Set<CityRank> cityRanks = city.getRanks();
 		if (! cityRanks.isEmpty()) {
 			for (CityRank rank : cityRanks) {
 				if (i == 18) break; // Limit to 18 ranks displayed
