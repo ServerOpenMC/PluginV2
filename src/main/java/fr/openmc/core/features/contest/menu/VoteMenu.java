@@ -71,7 +71,7 @@ public class VoteMenu extends Menu {
         boolean ench1;
         boolean ench2;
 
-            ContestPlayer playerData = ContestManager.dataPlayer.get(player.getUniqueId().toString());
+        ContestPlayer playerData = ContestManager.dataPlayer.get(player.getUniqueId());
 
         String voteTeamMsg = "§7Votez pour la Team ";
         String winMsg = "§7Faites la gagner en déposant le plus de points";

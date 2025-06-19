@@ -9,7 +9,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -29,10 +28,10 @@ public class ContestCommand {
     @DefaultFor("~")
     public void defaultCommand(Player player) {
         int phase = ContestManager.data.getPhase();
-        if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId().toString()) == null) || (phase == 2)) {
+        if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId()) == null) || (phase == 2)) {
             VoteMenu menu = new VoteMenu(player);
             menu.open();
-        } else if (phase == 3 && ContestManager.dataPlayer.get(player.getUniqueId().toString()) != null) {
+        } else if (phase == 3 && ContestManager.dataPlayer.get(player.getUniqueId()) != null) {
             ContributionMenu menu = new ContributionMenu(player);
             menu.open();
 
@@ -122,7 +121,7 @@ public class ContestCommand {
             return;
         }
 
-        if (ContestManager.dataPlayer.get(target.getUniqueId().toString()) == null) {
+        if (ContestManager.dataPlayer.get(target.getUniqueId()) == null) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points à ce joueur car il ne s'est pas inscrit"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
@@ -132,7 +131,7 @@ public class ContestCommand {
             return;
         }
 
-        ContestPlayerManager.setPointsPlayer(target,points + ContestManager.dataPlayer.get(target.getUniqueId().toString()).getPoints());
+        ContestPlayerManager.setPointsPlayer(target.getUniqueId() ,points + ContestManager.dataPlayer.get(target.getUniqueId()).getPoints());
         MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté " + points + " §apoint(s) à " + target.getName()), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 }
