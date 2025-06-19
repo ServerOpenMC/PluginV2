@@ -53,15 +53,15 @@ public class CityManager implements Listener {
                     .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
                     .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.toList());
-                }))
-                .registerSuggestion("city_ranks", ((args, sender, command) -> {
+        })).registerSuggestion("city_ranks", ((args, sender, command) -> {
                     City city = playerCities.get(sender.getUniqueId());
                     if (city == null) return List.of();
                     
                     return city.getRanks().stream()
                             .map(CityRank::getName)
                             .collect(Collectors.toList());
-                }));
+                })
+        );
 
         CommandsManager.getHandler().register(
 		        new AdminCityCommands(),
@@ -132,6 +132,20 @@ public class CityManager implements Listener {
             claimedChunks.clear();
             claimsDao.queryForAll()
                     .forEach(claim -> claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity())));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        cities.values().forEach(City::initializeRanks);
+        
+        try {
+            ranksDao.queryForAll()
+                    .forEach(rank -> {
+                        City city = getCity(rank.getCityUUID());
+                        if (city != null) {
+                            city.getRanks().add(rank);
+                        }
+                    });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -406,13 +420,9 @@ public class CityManager implements Listener {
         }
     }
     
-    public static void updateCityRank(CityRank oldRank, CityRank newRank) {
+    public static void updateCityRank(CityRank rank) {
         try {
-            DeleteBuilder<CityRank, String> delete = ranksDao.deleteBuilder();
-            delete.where().eq("city_uuid", oldRank.getCityUUID()).and().eq("name", oldRank.getName());
-            ranksDao.delete(delete.prepare());
-            
-            ranksDao.create(newRank);
+            ranksDao.update(rank);
         } catch (SQLException e) {
             e.printStackTrace();
         }

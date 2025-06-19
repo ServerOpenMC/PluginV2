@@ -122,6 +122,7 @@ public class MessagesManager {
         PLAYERNORENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
         PLAYERNOMONEYGIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),
         PLAYERNOMONEYTAKE(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville")),
+        PLAYERISOWNER(Component.text("Le propriétaire a tous les pouvoirs.")),
         
         CITYRANKS_NOTEXIST(Component.text("Ce grade n'existe pas.")),
         CITYRANKS_MAX(Component.text("Le nombre maximum de grades a été atteint, tu ne peux pas en ajouter d'autres.")),

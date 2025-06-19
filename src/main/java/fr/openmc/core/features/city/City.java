@@ -58,7 +58,7 @@ public class City {
     @Getter
     private int freeClaims;
     
-    private static final int MAX_RANKS = 18; // Maximum number of ranks allowed in a city
+    public static final int MAX_RANKS = 18; // Maximum number of ranks allowed in a city
 
     /**
      * Constructor used for City creation
@@ -725,6 +725,12 @@ public class City {
         return false;
     }
     
+    public void initializeRanks() {
+        if (cityRanks == null) {
+            cityRanks = new HashSet<>();
+        }
+    }
+    
     public void createRank(CityRank rank) {
         if (isRanksFull()) {
             throw new IllegalStateException("Cannot add more than 18 ranks to a city.");
@@ -749,7 +755,7 @@ public class City {
     public void updateRank(CityRank oldRank, CityRank newRank) {
         if (cityRanks.contains(oldRank)) {
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                CityManager.updateCityRank(oldRank, newRank);
+                CityManager.updateCityRank(newRank);
             });
             cityRanks.remove(oldRank);
             cityRanks.add(newRank);
@@ -770,6 +776,11 @@ public class City {
     public void changeRank(Player sender, UUID playerUUID, CityRank newRank) {
         if (! cityRanks.contains(newRank)) {
             throw new IllegalArgumentException("The specified rank does not exist in the city's ranks.");
+        }
+        
+        if (hasPermission(playerUUID, CPermission.OWNER)) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERISOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
         }
         
         CityRank currentRank = getRankOfMember(playerUUID);

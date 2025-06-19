@@ -45,13 +45,13 @@ public class MascotMenu extends Menu {
 
     private static final int AYWENITE_REDUCE = 15;
     private static final long COOLDOWN_REDUCE = 3600000L;
-
-    private final Mascot mascots;
+    
+    private final Mascot mascot;
     private City city;
-
-    public MascotMenu(Player owner, Mascot mascots) {
+    
+    public MascotMenu(Player owner, Mascot mascot) {
         super(owner);
-        this.mascots = mascots;
+        this.mascot = mascot;
         this.city = CityManager.getPlayerCity(owner.getUniqueId());
     }
 
@@ -87,8 +87,8 @@ public class MascotMenu extends Menu {
                 Component.text(""),
                 Component.text("§e§lCLIQUEZ ICI POUR CHANGER DE SKIN")
         );
-
-        map.put(11, new ItemBuilder(this, mascots.getMascotEgg(), itemMeta -> {
+        
+        map.put(11, new ItemBuilder(this, this.mascot.getMascotEgg(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Le Skin de la §cMascotte"));
             itemMeta.lore(loreSkinMascot);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
@@ -100,17 +100,17 @@ public class MascotMenu extends Menu {
                 player.closeInventory();
                 return;
             }
-            new MascotsSkinMenu(player, mascots.getMascotEgg(), mascots).open();
+            new MascotsSkinMenu(player, this.mascot.getMascotEgg(), this.mascot).open();
         }));
 
         Supplier<ItemStack> moveMascotItemSupplier = () -> {
             List<Component> lorePosMascot;
-
-            if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
+            
+            if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
                 lorePosMascot = List.of(
                         Component.text("§7Vous ne pouvez pas changer la position de votre §cMascotte"),
                         Component.text(""),
-                        Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mascots.getMascotUUID().toString(), "mascots:move")))
+                        Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(this.mascot.getMascotUUID().toString(), "mascots:move")))
                 );
             } else {
                 lorePosMascot = List.of(
@@ -127,7 +127,7 @@ public class MascotMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }).setOnClick(inventoryClickEvent -> {
-                if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
+                if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
                     return;
                 }
                 if (!city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)) {
@@ -201,7 +201,7 @@ public class MascotMenu extends Menu {
                 player.closeInventory();
             });
         };
-        if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
+        if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
             MenuUtils.runDynamicItem(player, this, 13, moveMascotItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {

@@ -18,10 +18,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CityRankDetailsMenu extends Menu {
 	
@@ -35,7 +32,7 @@ public class CityRankDetailsMenu extends Menu {
 	}
 	
 	public CityRankDetailsMenu(Player owner, City city, String rankName) {
-		this(owner, city, new CityRank(city.getUUID(), rankName, 0, new HashSet<>(), Material.GOLD_BLOCK));
+		this(owner, city, new CityRank(UUID.randomUUID(), city.getUUID(), rankName, 0, new HashSet<>(), Material.GOLD_BLOCK));
 	}
 	
 	@Override

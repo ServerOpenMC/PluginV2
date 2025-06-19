@@ -166,6 +166,7 @@ public class CityMenu extends Menu {
 	                );
 				}
             } else {
+                mob = null;
                 loreMascots = List.of(
                         Component.text("§cMascotte Inexistante")
                 );
@@ -175,7 +176,8 @@ public class CityMenu extends Menu {
                 itemMeta.lore(loreMascots);
             }).setOnClick(inventoryClickEvent -> {
                 if (mascot == null) return;
-
+                if (mob == null) return;
+                
                 if (!mascot.isAlive()) {
                     MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
                     menu.open();

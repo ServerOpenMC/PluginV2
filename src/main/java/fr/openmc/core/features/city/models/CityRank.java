@@ -23,15 +23,17 @@ public class CityRank {
 	public String permissions;
 	@DatabaseField(useGetSet = true)
 	public String members;
-	
-	@DatabaseField(canBeNull = false)
-	private int priority;
-	@DatabaseField(id = true, uniqueCombo = true, columnName = "city_uuid")
+	@DatabaseField(id = true, canBeNull = false, unique = true, columnName = "rank_uuid")
+	private UUID rankUUID;
+	@DatabaseField(uniqueCombo = true)
+	private String name;
+	@DatabaseField(uniqueCombo = true, columnName = "city_uuid")
 	private String cityUUID;
 	@DatabaseField(canBeNull = false)
 	private Material icon;
-	@DatabaseField(uniqueCombo = true)
-	private String name;
+	@DatabaseField(canBeNull = false)
+	private int priority;
+
 	private Set<CPermission> permissionsSet;
 	private Set<UUID> membersSet;
 	
@@ -39,17 +41,14 @@ public class CityRank {
 		// Default constructor for ORMLite
 	}
 	
-	public CityRank(String cityUUID, String name, int priority, Set<CPermission> permissionsSet, Material icon) {
-		this(cityUUID, name, priority, permissionsSet, icon, null);
-	}
-	
-	public CityRank(String cityUUID, String name, int priority, Set<CPermission> permissionsSet, Material icon, Set<UUID> membersSet) {
+	public CityRank(UUID rankUUID, String cityUUID, String name, int priority, Set<CPermission> permissionsSet, Material icon) {
+		this.rankUUID = rankUUID;
 		this.cityUUID = cityUUID;
 		this.name = name;
 		this.priority = priority;
 		this.permissionsSet = permissionsSet;
 		this.icon = icon;
-		this.membersSet = membersSet != null ? membersSet : new HashSet<>();
+		this.membersSet = new HashSet<>();
 	}
 	
 	public CityRank validate(Player player) throws IllegalArgumentException {

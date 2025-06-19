@@ -49,7 +49,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (city.getRanks().size() >= 18) {
+		if (city.getRanks().size() >= City.MAX_RANKS) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -147,7 +147,7 @@ public class CityRankCommands {
 			return;
 		}
 		
-		city.updateRank(rank, new CityRank(city.getUUID(), newName, rank.getPriority(), rank.getPermissionsSet(), rank.getIcon()));
+		city.updateRank(rank, new CityRank(rank.getRankUUID(), city.getUUID(), newName, rank.getPriority(), rank.getPermissionsSet(), rank.getIcon()));
 		MessagesManager.sendMessage(player, Component.text("Le nom du grade a été mis à jour : " + rankName + " → " + newName), Prefix.CITY, MessageType.SUCCESS, false);
 	}
 	
