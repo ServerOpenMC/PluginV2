@@ -76,10 +76,10 @@ public class CityManager implements Listener {
                 new CityChatListener()
             );
 
-        new ProtectionsManager();
         // SUB-FEATURE
-        new MayorManager();
         new MascotsManager();
+        new MayorManager();
+        new ProtectionsManager();
         new WarManager();
         new CityBankManager();
     }
