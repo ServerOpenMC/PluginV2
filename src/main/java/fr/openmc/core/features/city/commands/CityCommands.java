@@ -293,7 +293,7 @@ public class CityCommands {
 			return;
 		}
 		
-		City targetCity = CityManager.getCityByName(cityName);
+		City targetCity = CityManager.getCitiesByName().get(cityName);
 		if (targetCity == null) {
 			MessagesManager.sendMessage(player, Component.text("Ville ciblée introuvable"), Prefix.CITY, MessageType.ERROR, true);
 			return;

@@ -34,7 +34,7 @@ public class CityInviteConditions {
 			return false;
 		}
 		
-		if (! (city.hasPermission(player.getUniqueId(), CPermission.INVITE))) {
+		if (!(city.hasPermission(player.getUniqueId(), CPermission.INVITE))) {
 			MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'inviter des joueurs dans la ville"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
@@ -43,6 +43,7 @@ public class CityInviteConditions {
 			MessagesManager.sendMessage(player, Component.text("Cette personne est déjà dans une ville"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
+		
 		return true;
 	}
 	

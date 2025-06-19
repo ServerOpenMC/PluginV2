@@ -565,7 +565,7 @@ public class City {
      * Adds a specific permission to a player and updates the database
      * asynchronously.
      *
-     * @param uuid       The UUID of the player to add the permission to.
+     * @param player       The UUID of the player to add the permission to.
      * @param permission The permission to add.
      */
     public void addPermission(UUID player, CPermission permission) {
@@ -594,7 +594,7 @@ public class City {
      * Removes a specific permission from a player and updates the database
      * asynchronously.
      *
-     * @param uuid       The UUID of the player to remove the permission from.
+     * @param player       The UUID of the player to remove the permission from.
      * @param permission The permission to remove.
      */
     public void removePermission(UUID player, CPermission permission) {

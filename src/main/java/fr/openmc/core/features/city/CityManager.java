@@ -26,6 +26,7 @@ import fr.openmc.core.features.city.models.DBCityMember;
 import fr.openmc.core.features.city.models.DBCityPermission;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -46,7 +47,9 @@ import java.util.stream.Collectors;
 
 public class CityManager implements Listener {
  
+    @Getter
     private static final HashMap<String, City> citiesByName = new HashMap<>();
+    @Getter
     private static final HashMap<String, City> citiesByUUID = new HashMap<>();
     private static final HashMap<UUID, City> playerCities = new HashMap<>();
     public static final HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
