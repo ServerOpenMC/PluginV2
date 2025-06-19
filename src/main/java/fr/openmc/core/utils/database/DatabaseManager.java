@@ -16,6 +16,7 @@ import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.friend.FriendSQLManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -58,6 +59,7 @@ public class DatabaseManager {
             CompanyManager.init_db(connectionSource);
             CityManager.init_db(connectionSource);
             MascotsManager.init_db(connectionSource);
+            PlayerSettingsManager.init_db(connectionSource);
         } catch (SQLException e) {
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
             throw new RuntimeException(e);

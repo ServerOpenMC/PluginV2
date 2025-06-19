@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.messages;
 
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
@@ -35,7 +36,7 @@ public class MessagesManager {
                         .append(message)
                 );
 
-        if(sender instanceof Player player && sound) {
+        if(sender instanceof Player player && sound && PlayerSettingsManager.shouldPlayNotificationSound(player.getUniqueId())) {
             player.playSound(player.getLocation(), type.getSound(), soundVolume, 1.0F);
         }
 

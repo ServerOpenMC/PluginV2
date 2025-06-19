@@ -1,31 +1,25 @@
 package fr.openmc.core.utils;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.settings.SettingType;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.UUID;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class PlayerUtils {
-	
-	/**
-	 * @param player Player to be tested
-	 * @return If the player is safe
-	 */
-	private boolean isInSafePosition(Player player) {
-		if (player.isFlying()) return false;
-		if (player.isInsideVehicle()) return false;
-		if (player.isGliding()) return false;
-		if (player.isSleeping()) return false;
-		if (player.isUnderWater()) return false;
-		if (player.isFlying()) return false;
-		if (player.isVisualFire()) return false;
-		// TODO: Check si le block en pile, sur la tête et en dessous (trapdoor) est plein
-		
-		return true;
+	public static void sendFadeTitleTeleport(Player player, Location location) {
+		if (PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
+			player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					player.teleport(location);
+				}
+			}.runTaskLater(OMCPlugin.getInstance(), 10);
+		} else {
+			player.teleport(location);
+		}
 	}
 }

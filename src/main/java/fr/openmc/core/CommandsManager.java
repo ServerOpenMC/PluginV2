@@ -15,6 +15,7 @@ import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
 import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
 import fr.openmc.core.features.quests.command.QuestCommand;
+import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.features.updates.UpdateCommand;
 import lombok.Getter;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
@@ -50,7 +51,8 @@ public class CommandsManager {
                 new Restart(),
                 new AdminShopCommand(),
                 new PrivateMessageCommand(),
-                new SocialSpyCommand());
+                new SocialSpyCommand(),
+                new SettingsCommand());
     }
 
     private static void registerSuggestions() {

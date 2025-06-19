@@ -2,6 +2,7 @@ package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.tpa.TPAQueue;
+import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -63,22 +64,9 @@ public class TPAcceptCommand {
 	}
 	
 	private void teleport(Player requester, Player target) {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				Location loc = target.getLocation();
-				requester.sendTitle(PlaceholderAPI.setPlaceholders(requester, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						requester.teleport(loc);
-						MessagesManager.sendMessage(target, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
-						MessagesManager.sendMessage(requester, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
-						
-						TPAQueue.QUEUE.removeRequest(requester, target);
-					}
-				}.runTaskLater(OMCPlugin.getInstance(), 10);
-			}
-		}.runTaskLater(OMCPlugin.getInstance(), 10);
+		Location loc = target.getLocation();
+		PlayerUtils.sendFadeTitleTeleport(requester, loc);
+		MessagesManager.sendMessage(target, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
+		MessagesManager.sendMessage(requester, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
 	}
 }
