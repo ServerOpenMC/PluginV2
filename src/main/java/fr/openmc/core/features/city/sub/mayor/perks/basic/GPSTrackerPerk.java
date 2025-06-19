@@ -16,8 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,18 +71,11 @@ public class GPSTrackerPerk implements Listener {
     }
 
     private void applyGlowing(Player player) {
-        player.addPotionEffect(new PotionEffect(
-                PotionEffectType.GLOWING,
-                Integer.MAX_VALUE,
-                0,
-                false,
-                false,
-                false
-        ));
+        player.setGlowing(true);
     }
 
     private void removeGlowing(Player player) {
-        player.removePotionEffect(PotionEffectType.GLOWING);
+        player.setGlowing(false);
     }
 
     @EventHandler
