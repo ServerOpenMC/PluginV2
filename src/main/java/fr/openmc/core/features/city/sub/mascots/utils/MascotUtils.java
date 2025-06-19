@@ -5,11 +5,28 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class MascotUtils {
+	private static final Set<EntityType> POSSIBLE_MASCOT_TYPES = Set.of(
+			EntityType.PIG,
+			EntityType.PANDA,
+			EntityType.SHEEP,
+			EntityType.AXOLOTL,
+			EntityType.CHICKEN,
+			EntityType.COW,
+			EntityType.GOAT,
+			EntityType.MOOSHROOM,
+			EntityType.WOLF,
+			EntityType.VILLAGER,
+			EntityType.SKELETON,
+			EntityType.SPIDER,
+			EntityType.ZOMBIE
+	);
 
 	/**
 	 * Adds a mascot for a given city.
@@ -42,6 +59,9 @@ public class MascotUtils {
 	 * @return true if the entity is a mascot, false otherwise.
 	 */
 	public static boolean isMascot(Entity entity) {
+		if (!POSSIBLE_MASCOT_TYPES.contains(entity.getType()))
+			return false;
+
 		return entity.getPersistentDataContainer().has(MascotsManager.mascotsKey, PersistentDataType.STRING);
 	}
 
