@@ -23,7 +23,11 @@ import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -44,9 +48,9 @@ public class CityManager implements Listener {
     private static final HashMap<UUID, City> playerCities = new HashMap<>();
     public static final HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
     public static HashMap<String, Integer> freeClaim = new HashMap<>();
-    private static HashMap<City, City> requestedAllies = new HashMap<>();
+    @Getter
+    private static HashMap<City, City> allies = new HashMap<>();
     private static HashMap<String, City> cities = new HashMap<>();
-    private static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
@@ -483,7 +487,7 @@ public class CityManager implements Listener {
     }
     
     public static void requestAllie(City resquesterCity, City targetCity) {
-        requestedAllies.put(resquesterCity, targetCity);
+        // requestedAllies.put(resquesterCity, targetCity);
 	    for (UUID m : targetCity.getMembers()) {
 		    if (targetCity.hasPermission(m, CPermission.OWNER) || targetCity.hasPermission(m, CPermission.MANAGE_ALLIANCE)) {
 			    Player player = Bukkit.getServer().getPlayer(m);

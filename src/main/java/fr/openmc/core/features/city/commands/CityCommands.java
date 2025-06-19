@@ -252,7 +252,7 @@ public class CityCommands {
 			return;
 		}
 		
-		if (playerCity.getAllies().contains(targetCity) && targetCity.getAllies().contains(playerCity)) {
+		if (CityManager.getAllies().get(playerCity) == targetCity) {
 			MessagesManager.sendMessage(player, Component.text("Cette ville est déjà alliée avec la votre"), Prefix.CITY, MessageType.ERROR, true);
 		}
 		

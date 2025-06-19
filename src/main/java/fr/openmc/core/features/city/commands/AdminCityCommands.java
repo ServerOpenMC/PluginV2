@@ -31,7 +31,7 @@ public class AdminCityCommands {
     @Subcommand("deleteCity")
     @CommandPermission("omc.admins.commands.admincity.deleteCity")
     void deleteCity(Player player, @Named("uuid") String cityUUID) {
-        City city = CityManager.getCityByUUID(cityUUID);
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -47,7 +47,7 @@ public class AdminCityCommands {
     @Subcommand("list")
     @CommandPermission("omc.admins.commands.admincity.list")
     void list(Player player) {
-        List<City> all = new ArrayList<>(CityManager.getCitiesByUUID());
+        List<City> all = new ArrayList<>(CityManager.getCitiesByUUID().values());
 
         all.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 
@@ -107,7 +107,7 @@ public class AdminCityCommands {
     @CommandPermission("omc.admins.commands.admincity.info")
     @AutoComplete("<uuid>")
     void info(Player player, @Named("uuid") String cityUUID) {
-        City city = CityManager.getCityByUUID(cityUUID);
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
             MessagesManager.sendMessage(player, Component.text("Cette ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
@@ -121,7 +121,7 @@ public class AdminCityCommands {
     @CommandPermission("omc.admins.commands.admincity.rename")
     void rename(Player player, @Named("uuid") String cityUUID, @Named("nouveau nom") String newName) {
         // Aucune vérification de nom, mais il faut espérer que le nom est valide
-        City city = CityManager.getCityByUUID(cityUUID);
+        City city = CityManager.getCity(cityUUID);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
@@ -134,7 +134,7 @@ public class AdminCityCommands {
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
     void setOwner(Player player, @Named("uuid") String cityUUID, @Named("nouveau maire") Player newOwner) {
-        City city = CityManager.getCityByUUID(cityUUID);
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -148,7 +148,7 @@ public class AdminCityCommands {
     @Subcommand("setBalance")
     @CommandPermission("omc.admins.commands.admincity.setBalance")
     void setBalance(Player player, @Named("uuid") String cityUUID, @Named("balance") double newBalance) {
-        City city = CityManager.getCityByUUID(cityUUID);
+        City city = CityManager.getCity(cityUUID);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
@@ -161,7 +161,7 @@ public class AdminCityCommands {
     @Subcommand("getBalance")
     @CommandPermission("omc.admins.commands.admincity.getBalance")
     void getBalance(Player player, String cityUUID) {
-        City city = CityManager.getCityByUUID(cityUUID);
+        City city = CityManager.getCity(cityUUID);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
@@ -173,7 +173,7 @@ public class AdminCityCommands {
     @Subcommand("add")
     @CommandPermission("omc.admins.commands.admincity.add")
     void add(Player player, @Named("uuid") String cityUUID, Player newMember) {
-        City city = CityManager.getCityByUUID(cityUUID);
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);

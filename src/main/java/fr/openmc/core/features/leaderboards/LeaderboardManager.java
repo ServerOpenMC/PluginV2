@@ -404,7 +404,7 @@ public class LeaderboardManager {
     private static void updateCityMoneyMap() {
         villeMoneyMap.clear();
         int rank = 1;
-        for (City city : CityManager.getCitiesByUUID().stream()
+        for (City city : CityManager.getCitiesByUUID().values().stream()
                 .sorted((city1, city2) -> Double.compare(city2.getBalance(), city1.getBalance()))
                 .limit(10)
                 .toList()) {

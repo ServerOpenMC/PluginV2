@@ -43,7 +43,7 @@ public class Restart {
         remainingTime = 60;
 
         // protection pour le bug de duplication
-        for (City city : CityManager.getCitiesByUUID()) {
+        for (City city : CityManager.getCitiesByUUID().values()) {
             UUID watcherUUID = city.getChestWatcher();
             if (watcherUUID == null) continue;
 
