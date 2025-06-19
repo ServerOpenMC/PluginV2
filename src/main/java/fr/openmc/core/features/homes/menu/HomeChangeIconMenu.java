@@ -115,6 +115,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
                             .setHandler((p, result) -> {
                                 searchQuery = result.getLine(0);
                                 currentCategory = IconCategory.ALL;
+                                setPage(0);
                                 refresh();
 
                                 return Collections.emptyList();
