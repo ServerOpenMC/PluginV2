@@ -262,6 +262,9 @@ public class City {
         if (this.chestContent == null)
             this.chestContent = CityManager.getCityChestContent(this);
 
+        if (page > getChestPages())
+            page = getChestPages();
+
         return chestContent.get(page);
     }
 
