@@ -1,17 +1,13 @@
 package fr.openmc.core.features.tpa.commands;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Optional;
@@ -68,5 +64,6 @@ public class TPAcceptCommand {
 		PlayerUtils.sendFadeTitleTeleport(requester, loc);
 		MessagesManager.sendMessage(target, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
 		MessagesManager.sendMessage(requester, Component.text("§2Téléportation réussie"), Prefix.OPENMC, MessageType.SUCCESS, true);
+		TPAQueue.QUEUE.removeRequest(requester, target);
 	}
 }
