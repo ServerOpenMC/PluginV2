@@ -143,7 +143,7 @@ public class PlayerSettings {
         if (policy instanceof CityPolicy cityPolicy) {
             return switch (cityPolicy) {
                 case EVERYONE -> true;
-                case FRIENDS -> areFriends(playerUUID, targetUUID);
+                case FRIENDS -> FriendManager.areFriends(playerUUID, targetUUID);
                 case NOBODY -> false;
             };
         }
@@ -151,53 +151,13 @@ public class PlayerSettings {
         if (policy instanceof GlobalPolicy globalPolicy) {
             return switch (globalPolicy) {
                 case EVERYONE -> true;
-                case FRIENDS -> areFriends(playerUUID, targetUUID);
+                case FRIENDS -> FriendManager.areFriends(playerUUID, targetUUID);
                 case CITY_MEMBERS -> areSameCityMembers(playerUUID, targetUUID);
                 case NOBODY -> false;
             };
         }
 
         throw new IllegalArgumentException("Unsupported policy: " + policy);
-    }
-
-    /**
-     * Checks if the player can receive a friend request from the sender.
-     *
-     * @param senderUUID the UUID of the sender
-     * @return true if the player can receive the friend request, false otherwise
-     */
-    public boolean canReceiveFriendRequest(UUID senderUUID) {
-        return canPerformAction(SettingType.FRIEND_REQUESTS_POLICY, senderUUID);
-    }
-
-    /**
-     * Checks if the player can receive a city join request from the sender.
-     *
-     * @param senderUUID the UUID of the sender
-     * @return true if the player can receive the city join request, false otherwise
-     */
-    public boolean canReceiveCityJoinRequest(UUID senderUUID) {
-        return canPerformAction(SettingType.CITY_JOIN_REQUESTS_POLICY, senderUUID);
-    }
-
-    /**
-     * Checks if the player can receive a private message from the sender.
-     *
-     * @param senderUUID the UUID of the sender
-     * @return true if the player can receive the private message, false otherwise
-     */
-    public boolean canReceivePrivateMessage(UUID senderUUID) {
-        return canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, senderUUID);
-    }
-
-    /**
-     * Checks if the player can receive a mailbox message from the sender.
-     *
-     * @param senderUUID the UUID of the sender
-     * @return true if the player can receive the mailbox message, false otherwise
-     */
-    public boolean canReceiveMailbox(UUID senderUUID) {
-        return canPerformAction(SettingType.MAILBOX_RECEIVE_POLICY, senderUUID);
     }
 
     /**
@@ -212,7 +172,7 @@ public class PlayerSettings {
 
         return switch (level) {
             case EVERYONE -> true;
-            case FRIENDS -> areFriends(friendUUID, playerUUID);
+            case FRIENDS -> FriendManager.areFriends(friendUUID, playerUUID);
             case CITY_MEMBERS -> areSameCityMembers(playerUUID, friendUUID);
             case NOBODY -> false;
         };
@@ -227,7 +187,7 @@ public class PlayerSettings {
      * @return true if the player is visible to the friend, false otherwise
      */
     public boolean isVisibleToFriend(SettingType visibilitySetting, UUID friendUUID) {
-        if (!areFriends(playerUUID, friendUUID)) return false;
+        if (!FriendManager.areFriends(playerUUID, friendUUID)) return false;
         return isVisibleTo(visibilitySetting, friendUUID);
     }
 
@@ -252,19 +212,6 @@ public class PlayerSettings {
     private boolean areSameCityMembers(UUID player1UUID, UUID player2UUID) {
         City player2City = CityManager.getPlayerCity(player2UUID);
         Player player1 = Bukkit.getPlayer(player1UUID);
-        if (player1 != null && player2City != null)
-            return player2City.isMember(player1);
-        return false;
-    }
-
-    /**
-     * Checks if two players are friends.
-     *
-     * @param player1 the UUID of the first player
-     * @param player2 the UUID of the second player
-     * @return true if the players are friends, false otherwise
-     */
-    private boolean areFriends(UUID player1, UUID player2) {
-        return FriendManager.areFriends(player1, player2);
+        return player1 != null && player2City != null && player2City.isMember(player1);
     }
 }

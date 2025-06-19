@@ -1,5 +1,7 @@
 package fr.openmc.core.features.friend;
 
+import fr.openmc.core.features.settings.PlayerSettings;
+import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.CommandsManager;
 import lombok.Getter;

@@ -235,7 +235,7 @@ public class PlayerSettingsManager implements Listener {
      */
     public static boolean canReceiveFriendRequest(UUID receiverUUID, UUID senderUUID) {
         PlayerSettings settings = getPlayerSettings(receiverUUID);
-        return settings.canReceiveFriendRequest(senderUUID);
+        return settings.canPerformAction(SettingType.FRIEND_REQUESTS_POLICY, senderUUID);
     }
 
     /**
@@ -258,19 +258,7 @@ public class PlayerSettingsManager implements Listener {
      */
     public static boolean canReceiveCityInvite(UUID receiverUUID, UUID senderUUID) {
         PlayerSettings settings = getPlayerSettings(receiverUUID);
-        return settings.canReceiveCityJoinRequest(senderUUID);
-    }
-
-    /**
-     * Checks if a player can receive a mailbox message from another player.
-     *
-     * @param receiverUUID the UUID of the player receiving the mailbox message
-     * @param senderUUID   the UUID of the player sending the mailbox message
-     * @return true if the receiver can receive the mailbox message, false otherwise
-     */
-    public static boolean canReceiveMailbox(UUID receiverUUID, UUID senderUUID) {
-        PlayerSettings settings = getPlayerSettings(receiverUUID);
-        return settings.canReceiveMailbox(senderUUID);
+        return settings.canPerformAction(SettingType.CITY_JOIN_REQUESTS_POLICY, senderUUID);
     }
 
     // ============== Event Handlers ==============

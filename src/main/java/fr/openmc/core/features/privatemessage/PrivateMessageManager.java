@@ -1,6 +1,7 @@
 package fr.openmc.core.features.privatemessage;
 
 import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -36,11 +37,11 @@ public class PrivateMessageManager {
                     "vous-même."), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
-
-        if (PlayerSettingsManager.getPlayerSettings(receiver).canReceivePrivateMessage(receiver.getUniqueId())) {
-            if (PlayerSettingsManager.getPlayerSettings(sender).canReceivePrivateMessage(sender.getUniqueId())) {
-                MessagesManager.sendMessage(sender, Component.text("§cVous avez désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
-            }
+        if (PlayerSettingsManager.getPlayerSettings(sender).canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, sender.getUniqueId())) {
+            MessagesManager.sendMessage(sender, Component.text("§cVous avez désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
+            return;
+        }
+        if (PlayerSettingsManager.getPlayerSettings(receiver).canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, receiver.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("§cLe joueur " + receiver.getName() + " a désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
