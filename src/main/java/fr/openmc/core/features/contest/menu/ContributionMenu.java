@@ -58,7 +58,7 @@ public class ContributionMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
             String campName = ContestPlayerManager.getPlayerCampName(player);
-            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
             Material m = ColorUtils.getMaterialFromColor(campColor);
 
         List<Component> loreInfo = Arrays.asList(
@@ -84,7 +84,7 @@ public class ContributionMenu extends Menu {
             List<Component> loreRang = Arrays.asList(
                     Component.text(ContestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
                     Component.text("§7Progression §8: ")
-                            .append(Component.text(ContestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
+                            .append(Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
                             .append(Component.text("§8/"))
                             .append(Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
                     Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
@@ -120,11 +120,11 @@ public class ContributionMenu extends Menu {
                 if (ItemUtils.hasEnoughItems(player, shellContestItem.getType(), shellCount)) {
                     ItemUtils.removeItemsFromInventory(player, shellContestItem.getType(), shellCount);
 
-                        int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
-                        int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp());
+                        int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
+                        int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp());
 
-                        ContestPlayerManager.setPointsPlayer(player, newPlayerPoints);
-                        String pointCamp = "points" + ContestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
+                        ContestPlayerManager.setPointsPlayer(player.getUniqueId(), newPlayerPoints);
+                        String pointCamp = "points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
                         if (Objects.equals(pointCamp, "points1")) {
                             ContestManager.data.setPoints1(updatedCampPoints);
                         } else if (Objects.equals(pointCamp, "points2")) {
