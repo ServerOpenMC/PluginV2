@@ -1,15 +1,12 @@
 package fr.openmc.core.features.settings.menu;
 
-import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.features.settings.policy.Policy;
-import fr.openmc.core.utils.customitems.CustomItem;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
