@@ -131,7 +131,7 @@ public class ContestCommand {
             return;
         }
 
-        ContestPlayerManager.setPointsPlayer(target,points + ContestManager.dataPlayer.get(target.getUniqueId()).getPoints());
+        ContestPlayerManager.setPointsPlayer(target.getUniqueId() ,points + ContestManager.dataPlayer.get(target.getUniqueId()).getPoints());
         MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté " + points + " §apoint(s) à " + target.getName()), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 }
