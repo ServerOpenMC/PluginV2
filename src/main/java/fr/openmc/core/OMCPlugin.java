@@ -22,6 +22,7 @@ import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.utils.MotdUtils;
@@ -32,6 +33,7 @@ import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -94,12 +96,17 @@ public class OMCPlugin extends JavaPlugin {
         new DynamicCooldownManager();
         HomeIconCacheManager.initialize();
 
+        PlayerSettingsManager.loadAllPlayerSettings();
+
         getLogger().info("Plugin activé");
     }
 
     @Override
     public void onDisable() {
         // SAUVEGARDE
+
+        // - Settings
+        PlayerSettingsManager.saveAllSettings();
 
         // - Maires
         MayorManager.saveMayorConstant();
@@ -125,6 +132,11 @@ public class OMCPlugin extends JavaPlugin {
 
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();
+
+        // - Close all inventories
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.closeInventory();
+        }
 
         getLogger().info("Plugin désactivé");
     }

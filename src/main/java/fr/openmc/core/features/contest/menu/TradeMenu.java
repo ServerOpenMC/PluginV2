@@ -59,7 +59,7 @@ public class TradeMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
             String campName = ContestPlayerManager.getPlayerCampName(player);
-            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
 
         // ITEM ADDER
         String namespaceShellContest = "omc_contest:contest_shell";

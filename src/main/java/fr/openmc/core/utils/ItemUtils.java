@@ -25,7 +25,7 @@ public class ItemUtils {
      */
     public static TranslatableComponent getItemTranslation(ItemStack stack) {
         return Component.translatable(Objects.requireNonNullElse(
-                stack.getType().getItemTranslationKey(),
+                stack.getType().translationKey(),
                 "block.minecraft.stone"
         ));
     }
