@@ -2,7 +2,6 @@ package fr.openmc.core.features.corporation.shops;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
@@ -71,7 +70,7 @@ public class Shop {
             return;
         }
 
-        if (stockBlock.getState() instanceof Barrel barrel) {
+        if (stockBlock.getState(false) instanceof Barrel barrel) {
 
             Inventory inventory = barrel.getInventory();
             for (ItemStack item : inventory.getContents()) {

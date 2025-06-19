@@ -11,9 +11,9 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -60,7 +60,9 @@ public class ShopListener implements Listener {
             return;
         }
 
-        if (event.getClickedBlock().getState() instanceof Sign) {
+        // Check if the clicked block is a sign with tags
+        // Instead of getting the entire state of the block
+        if (Tag.SIGNS.isTagged(event.getClickedBlock().getType())) {
             if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
                 return;
             }
