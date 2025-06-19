@@ -58,7 +58,7 @@ public class CityRankAssignMenu extends Menu {
 			map.put(map.size(), new ItemBuilder(this, new ItemStack(rank.getIcon()), itemMeta -> {
 				itemMeta.displayName(Component.text(rank.getName()));
 				itemMeta.lore(List.of(
-						Component.text("§7Permissions : " + (rank.getPermissions().isEmpty() ? "§cAucune" : "§a" + rank.getPermissions().size() + " permission(s)"))
+						Component.text("§7Permissions : " + (rank.getPermissionsSet().isEmpty() ? "§cAucune" : "§a" + rank.getPermissionsSet().size() + " permission(s)"))
 				));
 			}).setOnClick(event -> {
 				if (event.getWhoClicked() instanceof Player player) {

@@ -35,7 +35,7 @@ public class CityRankDetailsMenu extends Menu {
 	}
 	
 	public CityRankDetailsMenu(Player owner, City city, String rankName) {
-		this(owner, city, new CityRank(rankName, 0, new HashSet<>(), Material.GOLD_BLOCK));
+		this(owner, city, new CityRank(city.getUUID(), rankName, 0, new HashSet<>(), Material.GOLD_BLOCK));
 	}
 	
 	@Override
@@ -109,7 +109,7 @@ public class CityRankDetailsMenu extends Menu {
 			itemMeta.lore(List.of(
 					Component.text("§7Cliquez pour sélectionner les permissions"),
 					Component.text("§7Modifiables plus tard"),
-					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissions().isEmpty() ? "§oAucune" : this.rank.getPermissions().size()))
+					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "§oAucune" : this.rank.getPermissionsSet().size()))
 			));
 		}).setOnClick(inventoryClickEvent -> CityRankPermsMenu.openBook(getOwner(), rank)));
 		
@@ -171,7 +171,7 @@ public class CityRankDetailsMenu extends Menu {
 			itemMeta.displayName(Component.text("§bModifier les permissions du grade"));
 			itemMeta.lore(List.of(
 					Component.text("§7Cliquez pour modifier les permissions du grade"),
-					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissions().isEmpty() ? "§oAucune" : this.rank.getPermissions().size()))
+					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "§oAucune" : this.rank.getPermissionsSet().size()))
 			));
 		}).setOnClick(inventoryClickEvent -> {
 			CityRankPermsMenu.openBook(getOwner(), rank);

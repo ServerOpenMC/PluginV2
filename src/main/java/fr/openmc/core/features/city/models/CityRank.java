@@ -19,33 +19,37 @@ import java.util.UUID;
 @Getter
 public class CityRank {
 	
-	@DatabaseField(id = true, columnName = "city_uuid")
-	private String cityUUID;
-	@DatabaseField(id = true)
-	private String name;
+	@DatabaseField(useGetSet = true)
+	public String permissions;
+	@DatabaseField(useGetSet = true)
+	public String members;
 	
 	@DatabaseField(canBeNull = false)
 	private int priority;
-	private Set<CPermission> permissions;
-	
+	@DatabaseField(id = true, uniqueCombo = true, columnName = "city_uuid")
+	private String cityUUID;
 	@DatabaseField(canBeNull = false)
 	private Material icon;
-	private Set<UUID> members; // Optional, if you want to track members with this rank
+	@DatabaseField(uniqueCombo = true)
+	private String name;
+	private Set<CPermission> permissionsSet;
+	private Set<UUID> membersSet;
 	
 	public CityRank() {
 		// Default constructor for ORMLite
 	}
 	
-	public CityRank(String name, int priority, Set<CPermission> permissions, Material icon) {
-		this(name, priority, permissions, icon, null);
+	public CityRank(String cityUUID, String name, int priority, Set<CPermission> permissionsSet, Material icon) {
+		this(cityUUID, name, priority, permissionsSet, icon, null);
 	}
 	
-	public CityRank(String name, int priority, Set<CPermission> permissions, Material icon, Set<UUID> members) {
+	public CityRank(String cityUUID, String name, int priority, Set<CPermission> permissionsSet, Material icon, Set<UUID> membersSet) {
+		this.cityUUID = cityUUID;
 		this.name = name;
 		this.priority = priority;
-		this.permissions = permissions;
+		this.permissionsSet = permissionsSet;
 		this.icon = icon;
-		this.members = members != null ? members : new HashSet<>();
+		this.membersSet = membersSet != null ? membersSet : new HashSet<>();
 	}
 	
 	public CityRank validate(Player player) throws IllegalArgumentException {
@@ -56,10 +60,6 @@ public class CityRank {
 		if (priority < 0) {
 			MessagesManager.sendMessage(player, Component.text("La priorité doit être contenue entre 0 et 17"), Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank priority cannot be negative");
-		}
-		if (permissions == null) {
-			MessagesManager.sendMessage(player, Component.text("Les permissions du grade ne peuvent pas être nulles (prévenir le staff)"), Prefix.CITY, MessageType.ERROR, false);
-			throw new IllegalArgumentException("Rank must have at least one permission");
 		}
 		if (icon == null) {
 			MessagesManager.sendMessage(player, Component.text("L'icône du grade ne peut pas être nulle (prévenir le staff)"), Prefix.CITY, MessageType.ERROR, false);
@@ -78,8 +78,8 @@ public class CityRank {
 		return this;
 	}
 	
-	public CityRank withPermissions(Set<CPermission> permissions) {
-		this.permissions = permissions;
+	public CityRank withPermissions(Set<CPermission> permissionsSet) {
+		this.permissionsSet = permissionsSet;
 		return this;
 	}
 	
@@ -89,18 +89,64 @@ public class CityRank {
 	}
 	
 	public void swapPermission(CPermission permission) {
-		if (permissions.contains(permission)) {
-			permissions.remove(permission);
+		if (permissionsSet.contains(permission)) {
+			permissionsSet.remove(permission);
 		} else {
-			permissions.add(permission);
+			permissionsSet.add(permission);
 		}
 	}
 	
 	public void addMember(UUID player) {
-		members.add(player);
+		membersSet.add(player);
 	}
 	
 	public void removeMember(UUID player) {
-		members.remove(player);
+		membersSet.remove(player);
+	}
+	
+	/* METHODS FOR ORM - DON'T TOUCH IT */
+	
+	public String getPermissions() {
+		return permissionsSet.stream()
+				.map(CPermission::name)
+				.reduce((a, b) -> a + "," + b)
+				.orElse("");
+	}
+	
+	public void setPermissions(String permissions) {
+		if (permissionsSet == null) permissionsSet = new HashSet<>();
+		
+		if (permissions != null && ! permissions.isEmpty()) {
+			String[] perms = permissions.split(",");
+			for (String perm : perms) {
+				try {
+					permissionsSet.add(CPermission.valueOf(perm.trim()));
+				} catch (IllegalArgumentException e) {
+					// Ignore invalid permissions
+				}
+			}
+		}
+	}
+	
+	public String getMembers() {
+		return membersSet.stream()
+				.map(UUID::toString)
+				.reduce((a, b) -> a + "," + b)
+				.orElse("");
+	}
+	
+	public void setMembers(String members) {
+		if (membersSet == null) membersSet = new HashSet<>();
+		
+		if (members != null && ! members.isEmpty()) {
+			String[] membersUUIDs = members.split(",");
+			for (String uuid : membersUUIDs) {
+				try {
+					membersSet.add(UUID.fromString(uuid.trim()));
+				} catch (IllegalArgumentException e) {
+					// Ignore invalid UUIDs
+				}
+			}
+		}
 	}
 }

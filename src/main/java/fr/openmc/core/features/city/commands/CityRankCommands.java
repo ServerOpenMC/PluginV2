@@ -147,7 +147,7 @@ public class CityRankCommands {
 			return;
 		}
 		
-		city.updateRank(rank, new CityRank(newName, rank.getPriority(), rank.getPermissions(), rank.getIcon()));
+		city.updateRank(rank, new CityRank(city.getUUID(), newName, rank.getPriority(), rank.getPermissionsSet(), rank.getIcon()));
 		MessagesManager.sendMessage(player, Component.text("Le nom du grade a été mis à jour : " + rankName + " → " + newName), Prefix.CITY, MessageType.SUCCESS, false);
 	}
 	

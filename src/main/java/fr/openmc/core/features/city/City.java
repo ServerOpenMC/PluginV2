@@ -57,6 +57,8 @@ public class City {
     private int powerPoints;
     @Getter
     private int freeClaims;
+    
+    private static final int MAX_RANKS = 18; // Maximum number of ranks allowed in a city
 
     /**
      * Constructor used for City creation
@@ -582,27 +584,22 @@ public class City {
      * @param permission The permission to remove.
      */
     public void removePermission(UUID playerUUID, CPermission permission) {
-        if (this.permissions == null)
-            this.permissions = CityManager.getCityPermissions(this);
+        if (this.permissions == null) this.permissions = CityManager.getCityPermissions(this);
 
         Set<CPermission> playerPerms = permissions.get(playerUUID);
-
-        if (playerPerms == null)
-            return;
-
-        if (!playerPerms.contains(permission))
-            return;
+        
+        if (playerPerms == null) return;
+        
+        if (! playerPerms.contains(permission)) return;
 
         playerPerms.remove(permission);
         permissions.put(playerUUID, playerPerms);
-
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.removePlayerPermission(this, playerUUID, permission);
-        });
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
-                    CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false));
-        });
+        
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.removePlayerPermission(this, playerUUID, permission));
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
+                        CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false)));
     }
 
     // ==================== Mascots Methods ====================
@@ -695,15 +692,15 @@ public class City {
             CityManager.saveCity(this);
         });
     }
-	
-	/* RANKS */
+    
+    /* =================== RANKS =================== */
     
     public Set<CityRank> getRanks() {
         return cityRanks;
     }
     
     public boolean isRanksFull() {
-        return cityRanks.size() >= 18;
+        return cityRanks.size() >= MAX_RANKS;
     }
     
     public CityRank getRankByName(String rankName) {
@@ -729,11 +726,11 @@ public class City {
     }
     
     public void createRank(CityRank rank) {
-        if (cityRanks.size() >= 18) {
+        if (isRanksFull()) {
             throw new IllegalStateException("Cannot add more than 18 ranks to a city.");
         }
         cityRanks.add(rank);
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> CityManager.addCityRank(this, rank));
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> CityManager.addCityRank(rank));
     }
     
     public void deleteRank(CityRank rank) {
@@ -745,14 +742,14 @@ public class City {
         }
         cityRanks.remove(rank);
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.removeCityRank(this, rank);
+            CityManager.removeCityRank(rank);
         });
     }
     
     public void updateRank(CityRank oldRank, CityRank newRank) {
         if (cityRanks.contains(oldRank)) {
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                CityManager.updateCityRank(this, oldRank, newRank);
+                CityManager.updateCityRank(oldRank, newRank);
             });
             cityRanks.remove(oldRank);
             cityRanks.add(newRank);
@@ -763,7 +760,7 @@ public class City {
     
     public CityRank getRankOfMember(UUID member) {
         for (CityRank rank : cityRanks) {
-            if (rank.getMembers().contains(member)) {
+            if (rank.getMembersSet().contains(member)) {
                 return rank;
             }
         }
@@ -779,7 +776,7 @@ public class City {
         
         if (currentRank != null) {
             currentRank.removeMember(playerUUID);
-            for (CPermission permission : currentRank.getPermissions()) {
+            for (CPermission permission : currentRank.getPermissionsSet()) {
                 removePermission(playerUUID, permission);
             }
             MessagesManager.sendMessage(sender, Component.text("§cVous avez retiré le grade §e" + currentRank.getName() + "§c de §6" + sender.getName()), Prefix.CITY, MessageType.SUCCESS, true);
@@ -787,7 +784,7 @@ public class City {
         
         if (currentRank != newRank) {
             newRank.addMember(playerUUID);
-            for (CPermission permission : newRank.getPermissions()) {
+            for (CPermission permission : newRank.getPermissionsSet()) {
                 addPermission(playerUUID, permission);
             }
             MessagesManager.sendMessage(sender, Component.text("§aVous avez assigné le grade §e" + newRank.getName() + "§a à §6" + sender.getName()), Prefix.CITY, MessageType.SUCCESS, true);

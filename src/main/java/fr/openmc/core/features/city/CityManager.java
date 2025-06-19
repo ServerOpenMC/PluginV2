@@ -18,7 +18,6 @@ import fr.openmc.core.features.city.models.*;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import fr.openmc.core.features.city.sub.mayor.commands.AdminMayorCommands;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
@@ -70,7 +69,6 @@ public class CityManager implements Listener {
 		        new CityChatCommand(),
 		        new CityPermsCommands(),
                 new CityChestCommand(),
-		        new AdminMayorCommands(),
 		        new CityRankCommands()
         );
 
@@ -387,7 +385,10 @@ public class CityManager implements Listener {
         return claimedChunks.get(BlockVector2.at(x, z));
     }
     
-    public static void addCityRank(City city, CityRank rank) {
+    
+    /* =================== RANKS =================== */
+    
+    public static void addCityRank(CityRank rank) {
         try {
             ranksDao.create(rank);
         } catch (SQLException e) {
@@ -395,20 +396,20 @@ public class CityManager implements Listener {
         }
     }
     
-    public static void removeCityRank(City city, CityRank rank) {
+    public static void removeCityRank(CityRank rank) {
         try {
             DeleteBuilder<CityRank, String> delete = ranksDao.deleteBuilder();
-            delete.where().eq("city_uuid", city.getUUID()).and().eq("name", rank.getName());
+            delete.where().eq("city_uuid", rank.getCityUUID()).and().eq("name", rank.getName());
             ranksDao.delete(delete.prepare());
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
     
-    public static void updateCityRank(City city, CityRank oldRank, CityRank newRank) {
+    public static void updateCityRank(CityRank oldRank, CityRank newRank) {
         try {
             DeleteBuilder<CityRank, String> delete = ranksDao.deleteBuilder();
-            delete.where().eq("city_uuid", city.getUUID()).and().eq("name", oldRank.getName());
+            delete.where().eq("city_uuid", oldRank.getCityUUID()).and().eq("name", oldRank.getName());
             ranksDao.delete(delete.prepare());
             
             ranksDao.create(newRank);
