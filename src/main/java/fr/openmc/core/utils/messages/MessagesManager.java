@@ -27,7 +27,6 @@ public class MessagesManager {
      */
 
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
-        MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
                         .append(prefix.getPrefix())
