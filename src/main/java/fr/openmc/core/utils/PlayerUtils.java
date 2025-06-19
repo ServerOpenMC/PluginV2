@@ -19,7 +19,7 @@ public class PlayerUtils {
 				}
 			}.runTaskLater(OMCPlugin.getInstance(), 10);
 		} else {
-			player.teleport(location);
+			player.teleportAsync(location);
 		}
 	}
 }

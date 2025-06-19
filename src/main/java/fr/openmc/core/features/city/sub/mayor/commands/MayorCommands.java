@@ -63,8 +63,9 @@ public class MayorCommands {
         new BukkitRunnable() {
             @Override
             public void run() {
-                player.teleport(warp);
-                MessagesManager.sendMessage(player, Component.text("Vous avez été envoyé au Warp §fde votre §dVille"), Prefix.CITY, MessageType.SUCCESS, true);
+                player.teleportAsync(warp).thenAccept(success -> {
+                    MessagesManager.sendMessage(player, Component.text("Vous avez été envoyé au Warp §fde votre §dVille"), Prefix.CITY, MessageType.SUCCESS, true);
+                });
             }
         }.runTaskLater(OMCPlugin.getInstance(), 10);
     }
