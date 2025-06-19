@@ -24,7 +24,9 @@ public enum SettingType {
             Material.WRITABLE_BOOK, "Qui peut t'envoyer des messages privés:"),
     NOTIFICATIONS_SOUND(ValueType.BOOLEAN, true, "Sons des messages",
             Material.NOTE_BLOCK, Material.GRAY_DYE, "Activer ou désactiver les sons des messages privés"),
-
+    TELEPORT_TITLE_FADE(ValueType.BOOLEAN, true, "Fondu du titre lors des téléportations",
+            Material.ENDER_PEARL, Material.GRAY_DYE, "Activer ou désactiver le fondu du titre lors des téléportations"),
+    
     ;
 
     private final ValueType valueType;
