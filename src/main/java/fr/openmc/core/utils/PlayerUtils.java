@@ -11,18 +11,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class PlayerUtils {
 	public static void sendFadeTitleTeleport(Player player, Location location) {
 		if (PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
+			player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
-					new BukkitRunnable() {
-						@Override
-						public void run() {
-							player.teleport(location);
-						}
-					}.runTaskLater(OMCPlugin.getInstance(), 10);
+					player.teleport(location);
 				}
-			}.runTaskLater(OMCPlugin.getInstance(), 5);
+			}.runTaskLater(OMCPlugin.getInstance(), 10);
 		} else {
 			player.teleport(location);
 		}
