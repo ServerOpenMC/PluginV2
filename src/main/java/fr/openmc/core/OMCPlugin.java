@@ -8,23 +8,22 @@ import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.bossbar.BossbarManager;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
+import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
-import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
+import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
-import fr.openmc.core.listeners.CubeListener;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.api.*;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -54,12 +53,12 @@ public class OMCPlugin extends JavaPlugin {
 
         /* EXTERNALS */
         MenuLib.init(this);
-        // TODO: faire des messages a envoyer dans la console disant, la version du plugin, version de minecraft, si chaque api sont bien connecté ou manquant, et les versions des plugins lié a OpenMC ?
+
         new LuckPermsApi();
         new PapiApi();
         new WorldGuardApi();
-        new ItemAdderApi();
-        new FancyNpcApi();
+        new ItemsAdderApi();
+        new FancyNpcsApi();
 
         logLoadMessage();
 
@@ -69,11 +68,9 @@ public class OMCPlugin extends JavaPlugin {
         new CustomItemRegistry();
         new SpawnManager();
         new UpdateManager();
-        new MascotsManager(); // laisser avant CityManager
         new CityManager();
         new ListenersManager();
         new EconomyManager();
-        new MayorManager(); // laisser apres CityManager
         new BankManager();
         new ScoreboardManager();
         new HomesManager();
@@ -125,9 +122,6 @@ public class OMCPlugin extends JavaPlugin {
 
         // - Mascottes
         MascotsManager.saveMascots();
-
-        // - Cube
-        CubeListener.clearCube(CubeListener.currentLocation);
 
         // - Cooldowns
         DynamicCooldownManager.saveCooldowns();

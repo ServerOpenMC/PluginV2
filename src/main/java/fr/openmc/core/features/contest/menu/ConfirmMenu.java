@@ -3,10 +3,10 @@ package fr.openmc.core.features.contest.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -40,7 +40,7 @@ public class ConfirmMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
         } else {
             return "Menu des Contests - Confirmation";
@@ -63,31 +63,30 @@ public class ConfirmMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-        try {
-            String messageTeam = "La Team ";
+        String messageTeam = "La Team ";
 
             String campName = ContestManager.data.get(getCampName);
             String campColor = ContestManager.data.get(getColor);
 
-            NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
-            List<Component> lore1 = Arrays.asList(
-                    Component.text("§7Vous allez rejoindre ").append(Component.text( messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
-                    Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
-            );
+        NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
+        List<Component> lore1 = Arrays.asList(
+                Component.text("§7Vous allez rejoindre ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
+                Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+        );
 
-            List<Component> lore0 = Arrays.asList(
-                    Component.text("§7Vous allez annuler votre choix : ").append(Component.text( messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
-                    Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
-            );
+        List<Component> lore0 = Arrays.asList(
+                Component.text("§7Vous allez annuler votre choix : ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
+                Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+        );
 
 
-            inventory.put(11, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> {
-                itemMeta.displayName(Component.text("§r§cAnnuler"));
-                itemMeta.lore(lore0);
-            }).setOnClick(inventoryClickEvent -> {
-                VoteMenu menu = new VoteMenu(player);
-                menu.open();
-            }));
+        inventory.put(11, new ItemBuilder(this, Material.RED_CONCRETE, itemMeta -> {
+            itemMeta.displayName(Component.text("§r§cAnnuler"));
+            itemMeta.lore(lore0);
+        }).setOnClick(inventoryClickEvent -> {
+            VoteMenu menu = new VoteMenu(player);
+            menu.open();
+        }));
 
             inventory.put(15, new ItemBuilder(this, Material.GREEN_CONCRETE, itemMeta -> {
                 itemMeta.displayName(Component.text("§r§aConfirmer"));
@@ -101,17 +100,11 @@ public class ConfirmMenu extends Menu {
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
                 MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
 
-                player.closeInventory();
-            }));
-            player.openInventory(getInventory());
-            return inventory;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
             player.closeInventory();
-            e.printStackTrace();
-        }
-        return inventory;
+        }));
+        player.openInventory(getInventory());
 
+        return inventory;
     }
 
     @Override

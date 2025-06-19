@@ -10,7 +10,7 @@ import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -150,7 +150,7 @@ public class ShopSearchMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemAdderApi.hasItemAdder()) {
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
         } else {
             return "§l§6search";

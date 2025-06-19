@@ -1,14 +1,20 @@
 package fr.openmc.core.features.city;
 
 import com.sk89q.worldedit.math.BlockVector2;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
-import fr.openmc.core.features.city.mascots.MascotsManager;
-import fr.openmc.core.features.city.mayor.ElectionType;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.PerkManager;
-import fr.openmc.core.features.city.mayor.perks.Perks;
-import fr.openmc.core.features.city.models.*;
+import fr.openmc.core.features.city.models.DBCity;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.sub.mayor.ElectionType;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
+import fr.openmc.core.features.city.sub.mayor.models.Mayor;
+import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.war.War;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
@@ -28,6 +34,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class City {
     @Getter
@@ -170,6 +177,19 @@ public class City {
     // ==================== Members Methods ====================
 
     /**
+     * Gets the list of online members (UUIDs) of a specific city.
+     *
+     * @return A list of UUIDs representing the online members of the city.
+     */
+    public Set<UUID> getOnlineMembers() {
+        Set<UUID> allMembers = getMembers();
+        return Bukkit.getOnlinePlayers().stream()
+                .map(Player::getUniqueId)
+                .filter(allMembers::contains)
+                .collect(Collectors.toSet());
+    }
+
+    /**
      * Checks if a player is a member of the city.
      *
      * @param player The player to check.
@@ -233,16 +253,6 @@ public class City {
         });
     }
 
-    /**
-     * Updates the power of a city
-     */
-    public void updatePowerPoints(int diff) {
-        powerPoints += diff;
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
-    }
-
     // ==================== Chest Methods ====================
 
     /**
@@ -260,7 +270,7 @@ public class City {
 
     /**
      * Saves the content of a specific chest page for a city.
-     * 
+     *
      * @param page    The page number of the chest.
      * @param content The content to save as an array of ItemStack.
      */
@@ -308,16 +318,38 @@ public class City {
     }
 
     /**
+     * Adds a chunk to the city's claimed chunks by specifying its coordinates and updates the database asynchronously.
+     *
+     * @param x The X coordinate of the chunk to be added.
+     * @param z The Z coordinate of the chunk to be added.
+     */
+    public void addChunk(int x, int z) {
+        Chunk chunk = Bukkit.getWorld("world").getChunkAt(x, z);
+        addChunk(chunk);
+    }
+
+    /**
      * Removes a chunk from the city's claimed chunks and updates the database
      * asynchronously.
      *
      * @param chunk The chunk to be removed.
      */
     public void removeChunk(Chunk chunk) {
+        removeChunk(chunk.getX(), chunk.getZ());
+    }
+
+    /**
+     * Removes a chunk from the city's claimed chunks and updates the database
+     * asynchronously.
+     *
+     * @param chunkX The X coordinate of the chunk to be removed.
+     * @param chunkZ The Z coordinate of the chunk to be removed.
+     */
+    public void removeChunk(int chunkX, int chunkZ) {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
-        BlockVector2 coords = BlockVector2.at(chunk.getX(), chunk.getZ());
+        BlockVector2 coords = BlockVector2.at(chunkX, chunkZ);
         if (!chunks.contains(coords))
             chunks.remove(coords);
 
@@ -351,52 +383,6 @@ public class City {
         return chunks.contains(BlockVector2.at(chunk.getX(), chunk.getZ()));
     }
 
-    // ==================== Mayor Methods ====================
-
-    /**
-     * Retrieves the mayor of the city.
-     *
-     * @return The mayor of the city, or null if not found.
-     */
-    public Mayor getMayor() {
-        return MayorManager.cityMayor.get(this.getUUID());
-    }
-
-    /**
-     * Checks if the city has a mayor.
-     *
-     * @return True if the city has a mayor, false otherwise.
-     */
-    public boolean hasMayor() {
-        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
-        if (mayor == null)
-            return false;
-
-        return mayor.getUUID() != null;
-    }
-
-    /**
-     * Retrieves the election type of the city.
-     *
-     * @return The election type of the city, or null if not found.
-     */
-    public ElectionType getElectionType() {
-        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
-        if (mayor == null)
-            return null;
-
-        return mayor.getElectionType();
-    }
-
-    /**
-     * Retrieves the law of the city.
-     *
-     * @return The law of the city, or null if not found.
-     */
-    public CityLaw getLaw() {
-        return MayorManager.cityLaws.get(this.getUUID());
-    }
-
     // ==================== Economy Methods ====================
 
     /**
@@ -428,7 +414,7 @@ public class City {
 
     /**
      * Adds money to the city bank and removes it from {@link Player}
-     * 
+     *
      * @param player The player depositing into the bank
      * @param input  The input string to get the money value
      */
@@ -454,7 +440,7 @@ public class City {
 
     /**
      * Removes money from the city bank and add it to {@link Player}
-     * 
+     *
      * @param player The player withdrawing from the bank
      * @param input  The input string to get the money value
      */
@@ -562,28 +548,28 @@ public class City {
      * Adds a specific permission to a player and updates the database
      * asynchronously.
      *
-     * @param player The UUID of the player to add the permission to.
+     * @param playerUUID       The UUID of the player to add the permission to.
      * @param permission The permission to add.
      */
-    public void addPermission(UUID player, CPermission permission) {
+    public void addPermission(UUID playerUUID, CPermission permission) {
         if (this.permissions == null)
             this.permissions = CityManager.getCityPermissions(this);
 
-        Set<CPermission> playerPerms = permissions.getOrDefault(player, new HashSet<>());
+        Set<CPermission> playerPerms = permissions.getOrDefault(playerUUID, new HashSet<>());
 
         if (playerPerms.contains(permission))
             return;
 
         playerPerms.add(permission);
-        permissions.put(player, playerPerms);
+        permissions.put(playerUUID, playerPerms);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.addPlayerPermission(this, player, permission);
+            CityManager.addPlayerPermission(this, playerUUID, permission);
         });
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(
-                    new CityPermissionChangeEvent(this, CacheOfflinePlayer.getOfflinePlayer(player), permission, true));
+                    new CityPermissionChangeEvent(this, CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, true));
         });
     }
 
@@ -591,14 +577,14 @@ public class City {
      * Removes a specific permission from a player and updates the database
      * asynchronously.
      *
-     * @param player The UUID of the player to remove the permission from.
+     * @param playerUUID       The UUID of the player to remove the permission from.
      * @param permission The permission to remove.
      */
-    public void removePermission(UUID player, CPermission permission) {
+    public void removePermission(UUID playerUUID, CPermission permission) {
         if (this.permissions == null)
             this.permissions = CityManager.getCityPermissions(this);
 
-        Set<CPermission> playerPerms = permissions.get(player);
+        Set<CPermission> playerPerms = permissions.get(playerUUID);
 
         if (playerPerms == null)
             return;
@@ -607,27 +593,109 @@ public class City {
             return;
 
         playerPerms.remove(permission);
-        permissions.put(player, playerPerms);
+        permissions.put(playerUUID, playerPerms);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.removePlayerPermission(this, player, permission);
+            CityManager.removePlayerPermission(this, playerUUID, permission);
         });
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
-                    CacheOfflinePlayer.getOfflinePlayer(player), permission, false));
+                    CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false));
         });
     }
 
     // ==================== Mascots Methods ====================
 
     public Mascot getMascot() {
-        for (Mascot mascot : MascotsManager.mascots) {
-            if (mascot.getCityUUID().equals(cityUUID)) {
-                return mascot;
-            }
-        }
-        return null;
+        return MascotsManager.mascotsByCityUUID.get(cityUUID);
     }
+
+    // ==================== Mayor Methods ====================
+
+    /**
+     * Retrieves the mayor of the city.
+     *
+     * @return The mayor of the city, or null if not found.
+     */
+    public Mayor getMayor() {
+        return MayorManager.cityMayor.get(this.getUUID());
+    }
+
+    /**
+     * Checks if the city has a mayor.
+     *
+     * @return True if the city has a mayor, false otherwise.
+     */
+    public boolean hasMayor() {
+        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
+        if (mayor == null) return false;
+
+        return mayor.getUUID() != null;
+    }
+
+    /**
+     * Retrieves the election type of the city.
+     *
+     * @return The election type of the city, or null if not found.
+     */
+    public ElectionType getElectionType() {
+        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
+        if (mayor == null) return null;
+
+        return mayor.getElectionType();
+    }
+
+    /**
+     * Retrieves the law of the city.
+     *
+     * @return The law of the city, or null if not found.
+     */
+    public CityLaw getLaw() {
+        return MayorManager.cityLaws.get(cityUUID);
+    }
+
+    // ==================== War Methods ====================
+
+    /**
+     * Retrieves the power points of the city.
+     *
+     * @return The power points of the city, or 0 if not found.
+     */
+    public boolean isInWar() {
+        return WarManager.isCityInWar(cityUUID);
+    }
+
+    /**
+     * Retrieves the power points of the city.
+     *
+     * @return The power points of the city, or 0 if not found.
+     */
+    public War getWar() {
+        return WarManager.getWarByCity(cityUUID);
+    }
+
+    /**
+     * Checks if the city is immune.
+     *
+     * @return True if the city is immune, false otherwise.
+     */
+    public boolean isImmune() {
+        return getMascot().isImmunity() && !DynamicCooldownManager.isReady(cityUUID, "city:immunity");
+    }
+
+    /**
+     * Updates the power of a City by adding or removing points.
+     *
+     * @param diff The amount to be added or remove to the existing power.
+     */
+    public void updatePowerPoints(int diff) {
+        powerPoints += diff;
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            CityManager.saveCity(this);
+        });
+    }
+	
+	/* RANKS */
     
     public Set<CityRank> getRanks() {
         return cityRanks;

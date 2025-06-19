@@ -3,9 +3,10 @@ package fr.openmc.core.features.economy;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.mayor.managers.PerkManager;
-import fr.openmc.core.features.city.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.bank.CityBankManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
+import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -179,7 +180,7 @@ public class BankManager {
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
             applyAllPlayerInterests();
-            CityManager.applyAllCityInterests();
+            CityBankManager.applyAllCityInterests();
             OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
             updateInterestTimer();
 

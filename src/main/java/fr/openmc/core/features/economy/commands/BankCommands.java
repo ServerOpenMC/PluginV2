@@ -1,8 +1,6 @@
 package fr.openmc.core.features.economy.commands;
 
-import org.bukkit.entity.Player;
-
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.menu.PersonalBankMenu;
@@ -10,6 +8,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Description;
@@ -49,7 +48,7 @@ public class BankCommands {
     void applyInterest(Player player) {
         MessagesManager.sendMessage(player, Component.text("Distribution des intérèts en cours..."), Prefix.BANK, MessageType.INFO, false);
         BankManager.applyAllPlayerInterests();
-        CityManager.applyAllCityInterests();
+        CityBankManager.applyAllCityInterests();
         MessagesManager.sendMessage(player, Component.text("Distribution des intérèts réussie."), Prefix.BANK, MessageType.SUCCESS, false);
     }
 }
