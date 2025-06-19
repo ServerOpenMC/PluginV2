@@ -64,9 +64,11 @@ public class EconomyManager {
 
     public static boolean withdrawBalance(UUID player, double amount) {
         EconomyPlayer bank = getPlayerBank(player);
-        bank.withdraw(amount);
-        savePlayerBank(bank);
-        return true;
+        if (bank.withdraw(amount)) {
+            savePlayerBank(bank);
+            return true;
+        }
+        return false;
     }
 
     public static void setBalance(UUID player, double amount) {
