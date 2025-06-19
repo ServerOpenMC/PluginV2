@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.customitems;
 
-import fr.openmc.core.utils.api.ItemAdderApi;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
@@ -42,7 +42,7 @@ public abstract class CustomItem {
      */
     public ItemStack getBest() {
         ItemStack item = null;
-        if (ItemAdderApi.hasItemAdder()) item = getItemsAdder();
+        if (ItemsAdderApi.hasItemAdder()) item = getItemsAdder();
 
         if (item == null) {
             item = getVanilla();
