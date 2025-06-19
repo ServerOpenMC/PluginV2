@@ -22,6 +22,12 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import lombok.Getter;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -34,9 +40,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CityManager implements Listener {
+ 
+    @Getter
+    private static final HashMap<String, City> citiesByName = new HashMap<>();
+    @Getter
+    private static final HashMap<String, City> citiesByUUID = new HashMap<>();
+    private static final HashMap<UUID, City> playerCities = new HashMap<>();
+    public static final HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
+    public static HashMap<String, Integer> freeClaim = new HashMap<>();
+    @Getter
+    private static HashMap<City, City> allies = new HashMap<>();
     private static HashMap<String, City> cities = new HashMap<>();
-    private static HashMap<UUID, City> playerCities = new HashMap<>();
-    private static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
@@ -377,7 +391,8 @@ public class CityManager implements Listener {
      * @param city The city object
      */
     public static void registerCity(City city) {
-        cities.put(city.getUUID(), city);
+        citiesByUUID.put(city.getUUID(), city);
+        citiesByName.put(city.getName(), city);
     }
 
     /**
@@ -469,5 +484,18 @@ public class CityManager implements Listener {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new CityDeleteEvent(city));
         });
+    }
+    
+    public static void requestAllie(City resquesterCity, City targetCity) {
+        // requestedAllies.put(resquesterCity, targetCity);
+	    for (UUID m : targetCity.getMembers()) {
+		    if (targetCity.hasPermission(m, CPermission.OWNER) || targetCity.hasPermission(m, CPermission.MANAGE_ALLIANCE)) {
+			    Player player = Bukkit.getServer().getPlayer(m);
+			    if (player == null) continue;
+			    if (player.isOnline()) {
+				    MessagesManager.sendMessage(player, Component.text("La ville " + resquesterCity.getName() + " vous demande en allié !"), Prefix.CITY, MessageType.INFO, true);
+			    }
+		    }
+	    }
     }
 }

@@ -4,6 +4,7 @@ import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityMessages;
@@ -231,6 +232,41 @@ public class CityCommands {
 
         CityLeaveAction.startLeave(player);
     }
+	
+	@Subcommand("allies add")
+	void addAllie(Player player, @Named("city") String cityName) {
+		City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+		if (playerCity == null) {
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, true);
+			return;
+		}
+		
+		if (! playerCity.hasPermission(player.getUniqueId(), CPermission.MANAGE_ALLIANCE) || ! playerCity.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+			MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de gérer les alliances"), Prefix.CITY, MessageType.ERROR, true);
+			return;
+		}
+		
+		City targetCity = CityManager.getCitiesByName().get(cityName);
+		if (targetCity == null) {
+			MessagesManager.sendMessage(player, Component.text("Ville ciblée introuvable"), Prefix.CITY, MessageType.ERROR, true);
+			return;
+		}
+		
+		if (CityManager.getAllies().get(playerCity) == targetCity) {
+			MessagesManager.sendMessage(player, Component.text("Cette ville est déjà alliée avec la votre"), Prefix.CITY, MessageType.ERROR, true);
+		}
+		
+		CityManager.requestAllie(playerCity, targetCity);
+	}
+	
+	@Subcommand("allies accept")
+	public void acceptAlly(Player player, @Named("city") String cityName) {
+		City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+		if (! playerCity.hasPermission(player.getUniqueId(), CPermission.MANAGE_ALLIANCE) || ! playerCity.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+			MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de gérer les alliances"), Prefix.CITY, MessageType.ERROR, true);
+			return;
+		}
+	}
 
     @Subcommand("claim")
     @CommandPermission("omc.commands.city.claim")

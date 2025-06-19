@@ -47,7 +47,7 @@ public class AdminCityCommands {
     @Subcommand("list")
     @CommandPermission("omc.admins.commands.admincity.list")
     void list(Player player) {
-        List<City> all = new ArrayList<>(CityManager.getCities());
+        List<City> all = new ArrayList<>(CityManager.getCitiesByUUID().values());
 
         all.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 
