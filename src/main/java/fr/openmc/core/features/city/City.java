@@ -701,10 +701,20 @@ public class City {
     
     /* =================== RANKS =================== */
     
+    /**
+     * Retrieves the ranks of the city.
+     *
+     * @return A set of CityRank objects representing the ranks of the city.
+     */
     public Set<CityRank> getRanks() {
         return cityRanks;
     }
     
+    /**
+     * Checks if the city ranks are full.
+     *
+     * @return True if the city ranks are full, false otherwise.
+     */
     public boolean isRanksFull() {
         return cityRanks.size() >= MAX_RANKS;
     }
@@ -718,10 +728,22 @@ public class City {
         return null;
     }
     
+    /**
+     * Checks if a specific rank exists in the city's ranks.
+     *
+     * @param rank The CityRank object to check.
+     * @return True if the rank exists, false otherwise.
+     */
     public boolean isRankExists(CityRank rank) {
         return cityRanks.contains(rank);
     }
     
+    /**
+     * Checks if a specific rank exists by the name in the city's ranks.
+     *
+     * @param rankName The name of the rank to check.
+     * @return True if the rank name exists, false otherwise.
+     */
     public boolean isRankExists(String rankName) {
         for (CityRank rank : cityRanks) {
             if (rank.getName().equalsIgnoreCase(rankName)) {
@@ -731,12 +753,21 @@ public class City {
         return false;
     }
     
+    /**
+     * Initializes the ranks of the city if they are not already initialized.
+     */
     public void initializeRanks() {
         if (cityRanks == null) {
             cityRanks = new HashSet<>();
         }
     }
     
+    /**
+     * Creates a new rank for the city and saves it asynchronously.
+     *
+     * @param rank The CityRank object to be created.
+     * @throws IllegalStateException if the city already has 18 ranks.
+     */
     public void createRank(CityRank rank) {
         if (isRanksFull()) {
             throw new IllegalStateException("Cannot add more than 18 ranks to a city.");
@@ -745,6 +776,12 @@ public class City {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> CityManager.addCityRank(rank));
     }
     
+    /**
+     * Deletes a rank from the city and updates the database asynchronously.
+     *
+     * @param rank The CityRank object to be deleted.
+     * @throws IllegalArgumentException if the rank is not found, or if it is the default rank (priority 0).
+     */
     public void deleteRank(CityRank rank) {
         if (! cityRanks.contains(rank)) {
             throw new IllegalArgumentException("Rank not found in the city's ranks.");
@@ -758,6 +795,13 @@ public class City {
         });
     }
     
+    /**
+     * Updates a rank in the city and saves it asynchronously.
+     *
+     * @param oldRank The old CityRank object to be replaced.
+     * @param newRank The new CityRank object to replace the old one.
+     * @throws IllegalArgumentException if the old rank is not found in the city's ranks.
+     */
     public void updateRank(CityRank oldRank, CityRank newRank) {
         if (cityRanks.contains(oldRank)) {
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -770,6 +814,12 @@ public class City {
         }
     }
     
+    /**
+     * Retrieves the rank of a specific member in the city.
+     *
+     * @param member The UUID of the member to check.
+     * @return The CityRank object representing the member's rank, or null if not found.
+     */
     public CityRank getRankOfMember(UUID member) {
         for (CityRank rank : cityRanks) {
             if (rank.getMembersSet().contains(member)) {
@@ -779,6 +829,14 @@ public class City {
         return null;
     }
     
+    /**
+     * Changes the rank of a member in the city.
+     *
+     * @param sender     The player who is changing the rank.
+     * @param playerUUID The UUID of the player whose rank is being changed.
+     * @param newRank    The new CityRank to assign to the player.
+     * @throws IllegalArgumentException if the specified rank does not exist in the city's ranks.
+     */
     public void changeRank(Player sender, UUID playerUUID, CityRank newRank) {
         if (! cityRanks.contains(newRank)) {
             throw new IllegalArgumentException("The specified rank does not exist in the city's ranks.");
@@ -809,10 +867,10 @@ public class City {
         
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             if (currentRank != null) {
-                CityManager.updateCityRankMembers(currentRank);
+                CityManager.updateCityRank(currentRank);
             }
             
-            CityManager.updateCityRankMembers(newRank);
+            CityManager.updateCityRank(newRank);
         });
     }
 }

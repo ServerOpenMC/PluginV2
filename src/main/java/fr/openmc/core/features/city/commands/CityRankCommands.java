@@ -82,6 +82,13 @@ public class CityRankCommands {
 		new CityRankDetailsMenu(player, city, rank).open();
 	}
 	
+	/**
+	 * Swap a permission for a rank.
+	 *
+	 * @param player     The player who is swapping the permission.
+	 * @param rank       The rank to swap the permission for.
+	 * @param permission The permission to swap.
+	 */
 	public static void swapPermission(Player player, CityRank rank, CPermission permission) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {

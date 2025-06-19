@@ -402,6 +402,11 @@ public class CityManager implements Listener {
     
     /* =================== RANKS =================== */
     
+    /**
+     * Add a city rank to the database
+     *
+     * @param rank The rank to add
+     */
     public static void addCityRank(CityRank rank) {
         try {
             ranksDao.create(rank);
@@ -410,6 +415,11 @@ public class CityManager implements Listener {
         }
     }
     
+    /**
+     * Remove a city rank from the database
+     *
+     * @param rank The rank to remove
+     */
     public static void removeCityRank(CityRank rank) {
         try {
             DeleteBuilder<CityRank, String> delete = ranksDao.deleteBuilder();
@@ -420,6 +430,11 @@ public class CityManager implements Listener {
         }
     }
     
+    /**
+     * Update a city rank in the database
+     *
+     * @param rank The rank to update
+     */
     public static void updateCityRank(CityRank rank) {
         try {
             ranksDao.update(rank);
@@ -428,14 +443,11 @@ public class CityManager implements Listener {
         }
     }
     
-    public static void updateCityRankMembers(CityRank rank) {
-        try {
-            ranksDao.update(rank);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    
+    /**
+     * Load city ranks from the database and add them to the city
+     *
+     * @param city The city to load ranks for
+     */
     public static void loadCityRanks(City city) {
         try {
             QueryBuilder<CityRank, String> query = ranksDao.queryBuilder();

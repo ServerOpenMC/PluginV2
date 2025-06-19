@@ -41,6 +41,16 @@ public class CityRank {
 		// Default constructor for ORMLite
 	}
 	
+	/**
+	 * Constructor for creating a new CityRank.
+	 *
+	 * @param rankUUID       Unique identifier for the rank.
+	 * @param cityUUID       Unique identifier for the city this rank belongs to.
+	 * @param name           Name of the rank.
+	 * @param priority       Priority of the rank (0-17).
+	 * @param permissionsSet Set of permissions associated with this rank.
+	 * @param icon           Icon representing the rank.
+	 */
 	public CityRank(UUID rankUUID, String cityUUID, String name, int priority, Set<CPermission> permissionsSet, Material icon) {
 		this.rankUUID = rankUUID;
 		this.cityUUID = cityUUID;
@@ -51,6 +61,13 @@ public class CityRank {
 		this.membersSet = new HashSet<>();
 	}
 	
+	/**
+	 * Validates the CityRank properties.
+	 *
+	 * @param player Player to send error messages to.
+	 * @return The validated CityRank instance.
+	 * @throws IllegalArgumentException if any validation fails.
+	 */
 	public CityRank validate(Player player) throws IllegalArgumentException {
 		if (name == null || name.isEmpty()) {
 			MessagesManager.sendMessage(player, Component.text("Le nom du grade ne peut pas être vide"), Prefix.CITY, MessageType.ERROR, false);
@@ -67,26 +84,55 @@ public class CityRank {
 		return this;
 	}
 	
+	/**
+	 * Creates a copy of the current CityRank with the specified name.
+	 *
+	 * @param name The new name for the rank.
+	 * @return A new CityRank instance with the new name.
+	 */
 	public CityRank withName(String name) {
 		this.name = name;
 		return this;
 	}
 	
+	/**
+	 * Creates a copy of the current CityRank with the specified priority.
+	 *
+	 * @param priority The new priority for the rank.
+	 * @return A new CityRank instance with the new priority.
+	 */
 	public CityRank withPriority(int priority) {
 		this.priority = priority;
 		return this;
 	}
 	
+	/**
+	 * Creates a copy of the current CityRank with the specified permissions.
+	 *
+	 * @param permissionsSet The new set of permissions for the rank.
+	 * @return A new CityRank instance with the new permissions.
+	 */
 	public CityRank withPermissions(Set<CPermission> permissionsSet) {
 		this.permissionsSet = permissionsSet;
 		return this;
 	}
 	
+	/**
+	 * Creates a copy of the current CityRank with the specified icon.
+	 *
+	 * @param icon The new icon for the rank.
+	 * @return A new CityRank instance with the new icon.
+	 */
 	public CityRank withIcon(Material icon) {
 		this.icon = icon;
 		return this;
 	}
 	
+	/**
+	 * Toggles the specified permission for this rank.
+	 *
+	 * @param permission The permission to toggle.
+	 */
 	public void swapPermission(CPermission permission) {
 		if (permissionsSet.contains(permission)) {
 			permissionsSet.remove(permission);
@@ -95,12 +141,22 @@ public class CityRank {
 		}
 	}
 	
-	public void addMember(UUID player) {
-		membersSet.add(player);
+	/**
+	 * Adds a member to this rank.
+	 *
+	 * @param playerUUID The UUID of the player to add as a member.
+	 */
+	public void addMember(UUID playerUUID) {
+		membersSet.add(playerUUID);
 	}
 	
-	public void removeMember(UUID player) {
-		membersSet.remove(player);
+	/**
+	 * Removes a member from this rank.
+	 *
+	 * @param playerUUID The UUID of the player to remove from members.
+	 */
+	public void removeMember(UUID playerUUID) {
+		membersSet.remove(playerUUID);
 	}
 	
 	/* METHODS FOR ORM - DON'T TOUCH IT */

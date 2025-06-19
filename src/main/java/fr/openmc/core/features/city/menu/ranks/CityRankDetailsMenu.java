@@ -65,6 +65,11 @@ public class CityRankDetailsMenu extends Menu {
 		return List.of();
 	}
 	
+	/**
+	 * Creates the rank creation menu content.
+	 *
+	 * @return A map of slot indices to ItemStacks for the rank creation menu.
+	 */
 	private Map<Integer, ItemStack> createRank() {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
@@ -131,6 +136,11 @@ public class CityRankDetailsMenu extends Menu {
 		return map;
 	}
 	
+	/**
+	 * Creates the rank editing menu content.
+	 *
+	 * @return A map of slot indices to ItemStacks for the rank editing menu.
+	 */
 	private @NotNull Map<Integer, ItemStack> editRank() {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		
