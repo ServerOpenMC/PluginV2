@@ -37,6 +37,6 @@ public class Friend {
     }
 
     public UUID getOther(UUID player) {
-        return player == first ? second : first;
+        return player.equals(first) ? second : first;
     }
 }
