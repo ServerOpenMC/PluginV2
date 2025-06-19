@@ -661,18 +661,18 @@ public class City {
     // ==================== War Methods ====================
 
     /**
-     * Retrieves the power points of the city.
+     * Checks if the city is currently in a war.
      *
-     * @return The power points of the city, or 0 if not found.
+     * @return True if the city is in war, false otherwise.
      */
     public boolean isInWar() {
         return WarManager.isCityInWar(cityUUID);
     }
 
     /**
-     * Retrieves the power points of the city.
+     * Retrieves the war associated with the city.
      *
-     * @return The power points of the city, or 0 if not found.
+     * @return The War object associated with the city or null if not in war.
      */
     public War getWar() {
         return WarManager.getWarByCity(cityUUID);

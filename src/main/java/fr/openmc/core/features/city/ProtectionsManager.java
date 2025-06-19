@@ -82,7 +82,7 @@ public class ProtectionsManager {
 	    
 	    if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
 	    
-	    if (city.getType().equals(CityType.WAR)) return; // En guerre, pas de protection
+	    if (city.isInWar()) return; // En guerre, pas de protection
         
         
         if (! city.isMember(player)) {
@@ -134,7 +134,7 @@ public class ProtectionsManager {
 		
 		if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
 		if (city == null) return; // Pas de ville, pas de protection
-		if (city.getType().equals(CityType.WAR)) return; // En guerre, pas de protection
+		if (city.isInWar()) return; // En guerre, pas de protection
 		
 		if (city.isMember(player)) {
 			if (! city.hasPermission(player.getUniqueId(), permission)) {
