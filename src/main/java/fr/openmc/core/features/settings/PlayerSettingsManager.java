@@ -26,21 +26,8 @@ import java.util.logging.Level;
 @Getter
 public class PlayerSettingsManager implements Listener {
 
-    private static PlayerSettingsManager instance;
     private static final Map<UUID, PlayerSettings> playersSettings = new ConcurrentHashMap<>();
     private static Dao<PlayerSettingEntity, Long> playerSettingDao;
-
-    /**
-     * Returns the singleton instance of PlayerSettingsManager.
-     *
-     * @return the singleton instance
-     */
-    public static PlayerSettingsManager getInstance() {
-        if (instance == null) {
-            instance = new PlayerSettingsManager();
-        }
-        return instance;
-    }
 
     /**
      * Initializes the database connection and creates tables if needed.

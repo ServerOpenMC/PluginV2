@@ -37,8 +37,8 @@ public class PrivateMessageManager {
             return;
         }
 
-        if (PlayerSettingsManager.getInstance().getPlayerSettings(receiver).canReceivePrivateMessage(receiver.getUniqueId())) {
-            if (PlayerSettingsManager.getInstance().getPlayerSettings(sender).canReceivePrivateMessage(sender.getUniqueId())) {
+        if (PlayerSettingsManager.getPlayerSettings(receiver).canReceivePrivateMessage(receiver.getUniqueId())) {
+            if (PlayerSettingsManager.getPlayerSettings(sender).canReceivePrivateMessage(sender.getUniqueId())) {
                 MessagesManager.sendMessage(sender, Component.text("§cVous avez désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
             }
             MessagesManager.sendMessage(sender, Component.text("§cLe joueur " + receiver.getName() + " a désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);

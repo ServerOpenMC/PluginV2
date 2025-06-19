@@ -39,7 +39,7 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous ajouter vous-même en ami."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            if (!PlayerSettingsManager.getInstance().canReceiveFriendRequest(target.getUniqueId(), player.getUniqueId())) {
+            if (!PlayerSettingsManager.canReceiveFriendRequest(target.getUniqueId(), player.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cCe joueur a désactivé les demandes d'amis."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }

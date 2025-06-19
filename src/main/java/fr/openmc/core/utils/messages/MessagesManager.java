@@ -36,7 +36,7 @@ public class MessagesManager {
                         .append(message)
                 );
 
-        if(sender instanceof Player player && sound && PlayerSettingsManager.getInstance().shouldPlayNotificationSound(player.getUniqueId())) {
+        if(sender instanceof Player player && sound && PlayerSettingsManager.shouldPlayNotificationSound(player.getUniqueId())) {
             player.playSound(player.getLocation(), type.getSound(), soundVolume, 1.0F);
         }
 

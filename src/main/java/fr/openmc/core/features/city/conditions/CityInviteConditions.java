@@ -45,7 +45,7 @@ public class CityInviteConditions {
 			return false;
 		}
 
-		if (PlayerSettingsManager.getInstance().canReceiveCityInvite(player.getUniqueId(), target.getUniqueId())) {
+		if (PlayerSettingsManager.canReceiveCityInvite(player.getUniqueId(), target.getUniqueId())) {
 			MessagesManager.sendMessage(player, Component.text("Cette personne ne peut pas recevoir d'invitation"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}

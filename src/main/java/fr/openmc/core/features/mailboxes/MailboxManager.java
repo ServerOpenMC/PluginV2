@@ -195,7 +195,7 @@ public class MailboxManager {
 
     // todo
     public static boolean canSend(Player sender, OfflinePlayer receiver) {
-        if (!PlayerSettingsManager.getInstance().canReceiveMailbox(receiver.getUniqueId(), sender.getUniqueId())) {
+        if (!PlayerSettingsManager.canReceiveMailbox(receiver.getUniqueId(), sender.getUniqueId())) {
             return false;
         }
         return true;
