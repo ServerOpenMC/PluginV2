@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -7,7 +8,6 @@ import fr.openmc.core.features.city.menu.ranks.CityRankDetailsMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRankMemberMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
 import fr.openmc.core.features.city.models.CityRank;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

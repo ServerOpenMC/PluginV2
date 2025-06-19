@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -44,7 +45,6 @@ public class ProtectionsManager {
      * Si le joueur n'en est pas membre, l'événement est annulé.
      *
      * @param player Le joueur à vérifier
-     * @param event L'événement à annuler si le joueur n'est pas membre
      * @param loc La localisation pour vérifier la ville
      */
     public static boolean canInteract(Player player, Location loc) {
@@ -78,13 +78,11 @@ public class ProtectionsManager {
         if (! player.getWorld().getName().equals("world")) return;
         
         if (city == null) return; // Pas de ville, pas de protection
+	    
+	    if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
+	    
+	    if (city.getType().equals(CityType.WAR)) return; // En guerre, pas de protection
         
-        boolean canBypass = canBypassPlayer.contains(player.getUniqueId());
-        if (canBypass) return; // Le joueur peut bypass les protections
-        
-        if (city.getType().equals(CityType.WAR)) {
-            return; // En guerre, pas de protection
-        }
         
         if (! city.isMember(player)) {
             event.setCancelled(true);
@@ -127,6 +125,23 @@ public class ProtectionsManager {
 					0.6F,
 					true
 			);
+		}
+	}
+	
+	public static void checkPermissions(@NotNull Player player, Cancellable event, City city, CPermission permission) {
+		if (! player.getWorld().getName().equals("world")) return;
+		
+		if (canBypassPlayer.contains(player.getUniqueId())) return; // Le joueur peut bypass les protections
+		if (city == null) return; // Pas de ville, pas de protection
+		if (city.getType().equals(CityType.WAR)) return; // En guerre, pas de protection
+		
+		if (city.isMember(player)) {
+			if (! city.hasPermission(player.getUniqueId(), permission)) {
+				event.setCancelled(true);
+				cancelMessage(player);
+			}
+		} else {
+			checkCity(player, event, city);
 		}
 	}
 }

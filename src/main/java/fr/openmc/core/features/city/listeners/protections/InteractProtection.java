@@ -82,6 +82,6 @@ public class InteractProtection implements Listener {
         if (rightClicked instanceof Player) return;
         if (MascotUtils.isMascot(rightClicked)) return;
         
-        ProtectionsManager.checkClaim(event.getPlayer(), event, rightClicked.getLocation());
+        ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
     }
 }

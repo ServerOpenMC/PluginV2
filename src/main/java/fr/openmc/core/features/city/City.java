@@ -4,6 +4,7 @@ import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
+import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.features.city.models.DBCity;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;

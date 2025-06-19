@@ -16,7 +16,7 @@ public class HangingProtection implements Listener {
         Entity entity = event.getRightClicked();
 
         if (entity instanceof ItemFrame || entity instanceof GlowItemFrame || entity instanceof Hanging) {
-            ProtectionsManager.checkClaim(player, event, entity.getLocation());
+            ProtectionsManager.verify(player, event, entity.getLocation());
         }
     }
 
@@ -24,7 +24,7 @@ public class HangingProtection implements Listener {
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
         if (event.isCancelled()) return;
         if (event.getRemover() instanceof Player player) {
-            ProtectionsManager.checkClaim(player, event, event.getEntity().getLocation());
+            ProtectionsManager.verify(player, event, event.getEntity().getLocation());
         }
     }
 }

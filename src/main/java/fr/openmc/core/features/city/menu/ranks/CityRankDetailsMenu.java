@@ -1,12 +1,12 @@
 package fr.openmc.core.features.city.menu.ranks;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

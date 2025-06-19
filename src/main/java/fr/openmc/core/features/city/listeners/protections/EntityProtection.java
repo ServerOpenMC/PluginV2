@@ -14,12 +14,12 @@ import org.bukkit.inventory.Merchant;
 public class EntityProtection implements Listener {
     @EventHandler
     public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
-        ProtectionsManager.checkClaim(event.getPlayer(), event, event.getRightClicked().getLocation());
+        ProtectionsManager.verify(event.getPlayer(), event, event.getRightClicked().getLocation());
     }
 
     @EventHandler
     void onShear(PlayerShearEntityEvent event) {
-        ProtectionsManager.checkClaim(event.getPlayer(), event, event.getEntity().getLocation());
+        ProtectionsManager.verify(event.getPlayer(), event, event.getEntity().getLocation());
     }
 
     @EventHandler
@@ -28,7 +28,7 @@ public class EntityProtection implements Listener {
         Entity entity = event.getRightClicked();
 
         if (entity instanceof Merchant || entity instanceof InventoryHolder) {
-            ProtectionsManager.checkClaim(player, event, entity.getLocation());
+            ProtectionsManager.verify(player, event, entity.getLocation());
         }
     }
 }

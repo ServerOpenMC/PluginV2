@@ -12,11 +12,11 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
+import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
+import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotMenu;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotsDeadMenu;
@@ -28,8 +28,6 @@ import fr.openmc.core.features.city.sub.mayor.menu.MayorMandateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorColorMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
-import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
-import fr.openmc.core.features.city.models.Mascot;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -144,7 +142,7 @@ public class CityMenu extends Menu {
                 mob = (LivingEntity) mascot.getEntity();
 
                 if (mob != null) {
-	                if (!mascot.isAlive()) {
+                    if (! mascot.isAlive()) {
 		                loreMascots = List.of(
 				                Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
 				                Component.text("§7Status : §cMorte"),
@@ -162,7 +160,7 @@ public class CityMenu extends Menu {
 				                Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
 		                );
 	                }
-				} else {
+                } else {
 	                loreMascots = List.of(
 			                Component.text("§cMascotte non trouvée")
 	                );

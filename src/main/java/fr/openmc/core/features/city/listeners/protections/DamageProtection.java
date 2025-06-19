@@ -44,14 +44,14 @@ public class DamageProtection implements Listener {
         }
 
         if (victim instanceof Player victimPlayer) {
-            ProtectionsManager.checkClaim(victimPlayer, event, victimPlayer.getLocation());
+            ProtectionsManager.verify(victimPlayer, event, victimPlayer.getLocation());
             if (event.isCancelled()) return;
         }
 
         if (MascotUtils.isMascot(victim)) return;
 
         if (attacker != null) {
-            ProtectionsManager.checkClaim(attacker, event, victim.getLocation());
+            ProtectionsManager.verify(attacker, event, victim.getLocation());
         }
     }
 }

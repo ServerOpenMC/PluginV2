@@ -17,8 +17,9 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -120,7 +121,7 @@ public class CityListDetailsMenu extends Menu {
 			);
 		}
 		
-		Entity entity = getEntityByMascotUUID(city.getMascot().getMascotUUID());
+		LivingEntity entity = (LivingEntity) city.getMascot().getEntity();
 		
 		map.put(8, new ItemBuilder(this, new ItemStack(entity != null ? Bukkit.getItemFactory().getSpawnEgg(entity.getType()) : Material.BARRIER),
 				itemMeta -> itemMeta.displayName(Component.text(entity != null ? "§dNiveau de la Mascotte : " + city.getMascot().getLevel() : "§cAucune mascotte trouvée (bug)"))));

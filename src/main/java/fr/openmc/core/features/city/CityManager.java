@@ -18,11 +18,11 @@ import fr.openmc.core.features.city.models.*;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.sub.mayor.commands.AdminMayorCommands;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
