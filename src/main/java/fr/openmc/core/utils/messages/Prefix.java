@@ -1,6 +1,8 @@
 package fr.openmc.core.utils.messages;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
 /**
  * Enum representing various prefixes for messages.
@@ -30,8 +32,9 @@ public enum Prefix {
 
     ;
 
-    @Getter private final String prefix;
+    @Getter
+    private final Component prefix;
     Prefix(String prefix) {
-        this.prefix = prefix;
+        this.prefix = MiniMessage.miniMessage().deserialize(prefix);
     }
 }
