@@ -11,6 +11,8 @@ import lombok.Setter;
 
 @DatabaseTable(tableName = "friends")
 public class Friend {
+    @DatabaseField(generatedId = true)
+    private Long id;
     @DatabaseField(canBeNull = false)
     private UUID first;
     @DatabaseField(canBeNull = false)
