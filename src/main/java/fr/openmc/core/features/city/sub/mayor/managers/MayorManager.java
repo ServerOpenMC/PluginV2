@@ -412,11 +412,6 @@ public class MayorManager {
 
                 MayorCandidate mayorWinner = candidateQueue.peek();
 
-                // si owner a pas choisi perk event
-                if (mayor.getIdPerk1() == 0) {
-                    mayor.setIdPerk1(PerkManager.getRandomPerkEvent().getId());
-                }
-
                 Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
                 Perks perk2 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk2());
                 Perks perk3 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk3());
@@ -430,7 +425,7 @@ public class MayorManager {
                 List<Perks> perks = PerkManager.getRandomPerksBasic();
 
                 Perks perk1;
-                if (mayor == null) {
+                if (mayor == null || (mayor.getIdPerk1() == 0)) {
                     perk1 = PerkManager.getRandomPerkEvent();
                 } else {
                     perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
