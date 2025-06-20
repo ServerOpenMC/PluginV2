@@ -252,13 +252,18 @@ public class PlayerSettingsManager implements Listener {
     /**
      * Checks if a player can receive a city invite from another player.
      *
-     * @param receiverUUID the UUID of the player receiving the invite
-     * @param senderUUID   the UUID of the player sending the invite
+     * @param senderUUID     the UUID of the player send the invite
+     * @param receiverUUID   the UUID of the player receive the invite
      * @return true if the receiver can receive the city invite, false otherwise
      */
-    public static boolean canReceiveCityInvite(UUID receiverUUID, UUID senderUUID) {
+    public static boolean canReceiveCityInvite(UUID senderUUID, UUID receiverUUID) {
         PlayerSettings settings = getPlayerSettings(receiverUUID);
         return settings.canPerformAction(SettingType.CITY_JOIN_REQUESTS_POLICY, senderUUID);
+    }
+
+    public static boolean canReceivePrivateMessage(UUID senderUUID, UUID receiverUUID) {
+        PlayerSettings settings = getPlayerSettings(receiverUUID);
+        return settings.canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, senderUUID);
     }
 
     // ============== Event Handlers ==============

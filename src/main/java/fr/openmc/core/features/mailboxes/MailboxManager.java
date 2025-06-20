@@ -190,7 +190,7 @@ public class MailboxManager {
     // todo
     public static boolean canSend(Player sender, OfflinePlayer receiver) {
         PlayerSettings settings = PlayerSettingsManager.getPlayerSettings(receiver.getUniqueId());
-        return !settings.canPerformAction(SettingType.MAILBOX_RECEIVE_POLICY, sender.getUniqueId());
+        return settings.canPerformAction(SettingType.MAILBOX_RECEIVE_POLICY, sender.getUniqueId());
     }
 
     private static void sendNotification(Player receiver, int numItems, int id, String name) {
