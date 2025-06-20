@@ -37,11 +37,12 @@ public class PrivateMessageManager {
                     "vous-même."), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
-        if (PlayerSettingsManager.getPlayerSettings(sender).canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, sender.getUniqueId())) {
+
+        if (!PlayerSettingsManager.canReceivePrivateMessage(receiver.getUniqueId(), sender.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("§cVous avez désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
-        if (PlayerSettingsManager.getPlayerSettings(receiver).canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, receiver.getUniqueId())) {
+        if (!PlayerSettingsManager.canReceivePrivateMessage(sender.getUniqueId(), receiver.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("§cLe joueur " + receiver.getName() + " a désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }

@@ -261,6 +261,11 @@ public class PlayerSettingsManager implements Listener {
         return settings.canPerformAction(SettingType.CITY_JOIN_REQUESTS_POLICY, senderUUID);
     }
 
+    public static boolean canReceivePrivateMessage(UUID senderUUID, UUID receiverUUID) {
+        PlayerSettings settings = getPlayerSettings(receiverUUID);
+        return settings.canPerformAction(SettingType.PRIVATE_MESSAGE_POLICY, senderUUID);
+    }
+
     // ============== Event Handlers ==============
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
