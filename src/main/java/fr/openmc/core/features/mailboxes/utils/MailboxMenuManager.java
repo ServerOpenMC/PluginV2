@@ -1,5 +1,7 @@
 package fr.openmc.core.features.mailboxes.utils;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.CustomModelData;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,10 +29,11 @@ public class MailboxMenuManager {
         return getCustomItem(name, data, null);
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public static ItemStack getCustomItem(Component name, int data, List<Component> lore) {
         ItemStack item = new ItemStack(customMaterial);
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(data).build());
         ItemMeta meta = item.getItemMeta();
-        meta.setCustomModelData(data);
         meta.displayName(nonItalic(name));
         if (lore != null) meta.lore(lore);
         meta.setMaxStackSize(1);
@@ -40,10 +43,10 @@ public class MailboxMenuManager {
 
     public static ItemStack transparentItem() {
         ItemStack item = new ItemStack(customMaterial);
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(2005).build());
         ItemMeta meta = item.getItemMeta();
         meta.setHideTooltip(true);
-        meta.setCustomModelData(2005);
-        meta.displayName(Component.text(""));
+        meta.displayName(Component.empty());
         meta.setMaxStackSize(1);
         item.setItemMeta(meta);
         return item;
@@ -97,8 +100,9 @@ public class MailboxMenuManager {
         return item != null && item.getType() != Material.AIR && item.getItemMeta() != null;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public static boolean isBtn(ItemStack item, int data) {
-        return isNotNull(item) && item.getType() == customMaterial && item.getItemMeta().hasCustomModelData() && item.getItemMeta().getCustomModelData() == data;
+        return isNotNull(item) && item.getType() == customMaterial && item.hasData(DataComponentTypes.CUSTOM_MODEL_DATA) && item.getData(DataComponentTypes.CUSTOM_MODEL_DATA).floats().getFirst() == data;
     }
 
     public static boolean cancelBtn(ItemStack item) {

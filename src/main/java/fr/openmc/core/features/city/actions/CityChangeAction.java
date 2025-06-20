@@ -14,6 +14,9 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -22,6 +25,7 @@ import java.util.List;
 
 public class CityChangeAction {
     private static final long COOLDOWN_CHANGE_TYPE = 2 * 24 * 60 * 60 * 1000L; // 2 jours
+    private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:mascot_max_health");
 
     public static void beginChangeCity(Player player, CityType typeChange) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -101,7 +105,8 @@ public class CityChangeAction {
 
         try {
             double maxHealth = mascotsLevels.getHealth();
-            mob.setMaxHealth(maxHealth);
+            mob.getAttribute(Attribute.MAX_HEALTH).removeModifier(MAX_HEALTH_KEY);
+            mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
             if (mob.getHealth() >= lastHealth) {
                 mob.setHealth(maxHealth);
             }

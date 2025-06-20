@@ -85,7 +85,7 @@ public class CubeListener implements Listener {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Bukkit.getLogger().severe("Failed to create the cube at " + location);
+            this.plugin.getLogger().severe("Failed to create the cube at " + location);
         }
     }
 

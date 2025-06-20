@@ -12,9 +12,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
+import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
@@ -38,6 +37,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -132,9 +132,10 @@ public class CityMenu extends Menu {
             if (mascot != null) {
                 mob = (LivingEntity) mascot.getEntity();
 
+                double maxHealth = mob.getAttribute(Attribute.MAX_HEALTH).getValue();
                 if (!mascot.isAlive()) {
                     loreMascots = List.of(
-                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
+                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
                             Component.text("§7Status : §cMorte"),
                             Component.text("§7Réapparition dans : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity"))),
                             Component.text("§7Niveau : §c" + mascot.getLevel()),
@@ -143,7 +144,7 @@ public class CityMenu extends Menu {
                     );
                 } else {
                     loreMascots = List.of(
-                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
+                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
                             Component.text("§7Status : §aEn Vie"),
                             Component.text("§7Niveau : §c" + mascot.getLevel()),
                             Component.text(""),
