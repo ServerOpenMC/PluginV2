@@ -37,7 +37,8 @@ public class ProtectionsManager {
                 new MountProtection(),
                 new PistonProtection(),
                 new PotionProtection(),
-                new TramplingProtection()
+                new TramplingProtection(),
+                new VehicleProtection()
         );
     }
     
@@ -54,25 +55,26 @@ public class ProtectionsManager {
         if (canBypassPlayer.contains(player.getUniqueId())) return true; // Le joueur peut bypass les protections
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-        if (cityAtLoc == null) return true;
-	    
-	    if (cityAtLoc.isMember(player)) return true;
-	    
-	    City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-	    
-	    if (playerCity == null) return true;
-	    
-	    if (cityAtLoc.isInWar() && playerCity.isInWar()) {
-		    if (cityAtLoc.getWar().equals(playerCity.getWar())) {
-			    War citiesWar = cityAtLoc.getWar();
-			    if (citiesWar.getPhase() == War.WarPhase.COMBAT) {
-				    return citiesWar.getAttackers().contains(player.getUniqueId()) ||
-						    citiesWar.getDefenders().contains(player.getUniqueId());
-			    }
-		    }
-	    }
-	    
-	    return false;
+
+        if (cityAtLoc.isMember(player)) return true;
+
+        War war = cityAtLoc.getWar();
+        if (cityAtLoc.isInWar() && war != null && war.getPhase() == War.WarPhase.COMBAT) {
+            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            if (playerCity != null && war.equals(playerCity.getWar())) {
+                return war.getAttackers().contains(player.getUniqueId())
+                        || war.getDefenders().contains(player.getUniqueId());
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean canExplodeNaturally(Location loc) {
+        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+        if (city == null) return true;
+
+        return city.isInWar() && city.getWar().getPhase() == War.WarPhase.COMBAT;
     }
     
     public static void checkCity(Player player, Cancellable event, City city) {

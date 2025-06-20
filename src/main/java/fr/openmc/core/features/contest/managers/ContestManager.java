@@ -51,7 +51,7 @@ public class ContestManager {
     public static YamlConfiguration contestConfig;
 
     public static Contest data;
-    public static Map<String, ContestPlayer> dataPlayer = new HashMap<>();
+    public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
 
     private static List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
@@ -86,7 +86,7 @@ public class ContestManager {
     }
 
     private static Dao<Contest, Integer> contestDao;
-    private static Dao<ContestPlayer, String> playerDao;
+    private static Dao<ContestPlayer, UUID> playerDao;
 
     /**
      * Initialise la DB pour les Contests
@@ -156,7 +156,7 @@ public class ContestManager {
      */
     public static void loadContestPlayerData() {
         try {
-            playerDao.queryForAll().forEach(player -> dataPlayer.put(player.getName(), player));
+            playerDao.queryForAll().forEach(player -> dataPlayer.put(player.getUUID(), player));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -375,7 +375,7 @@ public class ContestManager {
         // 2EME PAGE - LES CLASSEMENTS
         final Component[] leaderboard = {Component.text("§8§lLe Classement du Contest (Jusqu'au 10eme)")};
 
-        Map<String, ContestPlayer> orderedMap = dataPlayer.entrySet()
+        Map<UUID, ContestPlayer> orderedMap = dataPlayer.entrySet()
                 .stream()
                 .sorted((entry1, entry2) -> Integer.compare(
                         entry2.getValue().getPoints(),
@@ -416,7 +416,7 @@ public class ContestManager {
 
             OMCPlugin.getInstance().getLogger().info(uuid + " " + dataPlayer1.getCamp() + " " + dataPlayer1.getColor() + " " + dataPlayer1.getPoints() + " " + dataPlayer1.getName());
 
-            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(uuid));
+            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
             int points = dataPlayer1.getPoints();
 
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());
