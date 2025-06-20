@@ -8,8 +8,8 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class MemberLeaveEvent extends Event {
-    @Getter private OfflinePlayer player;
-    @Getter private City city;
+    @Getter private final OfflinePlayer player;
+    @Getter private final City city;
 
     public MemberLeaveEvent(OfflinePlayer player, City city) {
         this.player = player;

@@ -64,7 +64,7 @@ public class Shop {
             return;
         }
 
-        Block stockBlock = multiblock.getStockBlock().getBlock();
+        Block stockBlock = multiblock.stockBlock().getBlock();
         if (stockBlock.getType() != Material.BARREL) {
             ShopBlocksManager.removeShop(shop);
             return;
@@ -177,14 +177,7 @@ public class Shop {
      */
     public void removeItem(ShopItem item) {
         items.remove(item);
-
-        Iterator<Map.Entry<Long, Supply>> iterator = suppliers.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<Long, Supply> entry = iterator.next();
-            if (entry.getValue().getItemId().equals(item.getItemID())) {
-                iterator.remove();
-            }
-        }
+        suppliers.entrySet().removeIf(entry -> entry.getValue().getItemId().equals(item.getItemID()));
     }
 
     public int recoverItemOf(ShopItem item, Player supplier) {
@@ -448,15 +441,7 @@ public class Shop {
         return shop.getUuid();
     }
 
-    @Getter
-    public static class Multiblock {
+    public record Multiblock(Location stockBlock, Location cashBlock) {
 
-        private final Location stockBlock;
-        private final Location cashBlock;
-
-        public Multiblock(Location stockBlock, Location cashBlock) {
-            this.stockBlock = stockBlock;
-            this.cashBlock = cashBlock;
-        }
     }
 }

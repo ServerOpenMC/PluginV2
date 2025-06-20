@@ -35,7 +35,7 @@ public class BlockProtection implements Listener {
         ProtectionsManager.verify(event.getPlayer(), event, event.getBlock().getLocation());
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlaceTNT(BlockPlaceEvent event) {
         if (event.getBlock().getType() != Material.TNT) return;
 

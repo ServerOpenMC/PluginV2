@@ -1,7 +1,6 @@
 package fr.openmc.core.features.adminshop;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
 import fr.openmc.core.features.adminshop.menus.ColorVariantsMenu;
 import fr.openmc.core.features.adminshop.menus.ConfirmMenu;
@@ -16,7 +15,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Manages the admin shop system including items, categories, and player interactions.
@@ -30,8 +32,6 @@ public class AdminShopManager {
 
     /**
      * Constructs the AdminShopManager and loads the admin shop configuration.
-     *
-     * @param plugin The main plugin instance.
      */
     public AdminShopManager() {
         adminShopYAML = new AdminShopYAML();

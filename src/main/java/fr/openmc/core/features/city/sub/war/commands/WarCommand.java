@@ -29,7 +29,7 @@ import java.util.UUID;
 @CommandPermission("omc.commands.city.war")
 public class WarCommand {
     @DefaultFor("~")
-    void main(Player player) {
+    void mainCommand(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);

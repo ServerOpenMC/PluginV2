@@ -1,7 +1,6 @@
 package fr.openmc.api.input.signgui;
 
 import fr.openmc.api.input.signgui.exception.SignGUIException;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.input.signgui.wrapper.MojangWrapper;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -24,9 +23,8 @@ public class SignGUI {
      * Constructs a new SignGUIBuilder.
      *
      * @return The new {@link SignGUIBuilder} instance
-     * @throws SignGUIVersionException If the server version is not supported by this api.
      */
-    public static SignGUIBuilder builder() throws SignGUIVersionException {
+    public static SignGUIBuilder builder() {
         return new SignGUIBuilder(MojangWrapper.get());
     }
 

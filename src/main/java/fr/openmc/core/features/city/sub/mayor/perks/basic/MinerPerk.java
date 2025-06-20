@@ -65,7 +65,7 @@ public class MinerPerk implements Listener {
         Player player = event.getPlayer();
         if (event.getItem().getType() == Material.MILK_BUCKET)  {
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> updatePlayerEffects(player), 1L);
-            };
+            }
 
-        }
+    }
 }

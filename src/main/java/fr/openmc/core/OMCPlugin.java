@@ -151,10 +151,11 @@ public class OMCPlugin extends JavaPlugin {
         return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void logLoadMessage() {
         Logger log = getLogger();
 
-        String pluginVersion = getDescription().getVersion();
+        String pluginVersion = getPluginMeta().getDescription();
         String javaVersion = System.getProperty("java.version");
         String server = Bukkit.getName() + " " + Bukkit.getVersion();
 
@@ -173,7 +174,7 @@ public class OMCPlugin extends JavaPlugin {
         for (String pluginName : plugins) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
             if (plugin != null && plugin.isEnabled()) {
-                log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getDescription().getVersion() + " trouvé \u001B[0m");
+                log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getPluginMeta().getVersion() + " trouvé (facultatif) \u001B[0m");
             } else {
                 log.info("  \u001B[31m✘ " + pluginName + " (facultatif)\u001B[0m");
             }

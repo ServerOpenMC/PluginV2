@@ -11,7 +11,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
@@ -327,21 +326,15 @@ public class CityMenu extends Menu {
         MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L * 60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
 
-        CityType type = city.getType();
-        String typeStr;
-        if (type.equals(CityType.WAR)) {
-            typeStr = "guerre";
-        } else if (type.equals(CityType.PEACE)) {
-            typeStr = "paix";
-        } else {
-            typeStr = "inconnu";
-        }
-        String finalType = typeStr;
+        String typeStr = switch(city.getType()) {
+            case WAR -> "guerre";
+            case PEACE -> "paix";
+        };
 
         Supplier<ItemStack> typeItemSupplier = () -> {
 
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("§7Votre ville est en §5" + finalType));
+            lore.add(Component.text("§7Votre ville est en §5" + typeStr));
 
             if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
                 lore.add(Component.text(""));

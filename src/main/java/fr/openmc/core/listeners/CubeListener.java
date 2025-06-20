@@ -20,12 +20,12 @@ import org.bukkit.util.Vector;
 // Les Restes du Cube. Aucun mouvement possible, juste pour le lore, les souvenirs, l'easter egg, bref :)
 // - iambibi_
 public class CubeListener implements Listener {
-    private OMCPlugin plugin;
+    private final OMCPlugin plugin;
     private static final int CUBE_SIZE = 5;
     private static final Material CUBE_MATERIAL = Material.LAPIS_BLOCK;
-    private BossBar bossBar;
-    static double currentX = -171.0;
-    static double currentZ = -117.0;
+    private final BossBar bossBar;
+    static final double currentX = -171.0;
+    static final double currentZ = -117.0;
     public static Location currentLocation;
 
 

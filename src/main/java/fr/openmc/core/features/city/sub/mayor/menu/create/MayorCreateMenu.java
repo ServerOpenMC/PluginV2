@@ -79,7 +79,6 @@ public class MayorCreateMenu extends Menu {
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk1 = new ArrayList<>(perk1.getLore());
                 lorePerk1.add(Component.text(""));
@@ -116,7 +115,6 @@ public class MayorCreateMenu extends Menu {
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk2 = new ArrayList<>(perk2.getLore());
                 lorePerk2.add(Component.text(""));
@@ -140,7 +138,6 @@ public class MayorCreateMenu extends Menu {
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk3 = new ArrayList<>(perk3.getLore());
                 lorePerk3.add(Component.text(""));
@@ -200,7 +197,6 @@ public class MayorCreateMenu extends Menu {
                         Component.text(""),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk2 = new ArrayList<>(perk2.getLore());
                 lorePerk2.add(Component.text(""));

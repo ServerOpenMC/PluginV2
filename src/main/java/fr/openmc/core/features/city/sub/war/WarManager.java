@@ -20,12 +20,12 @@ import java.util.function.BiConsumer;
 
 public class WarManager {
 
-    public static int TIME_PREPARATION = 10; // in minutes
-    public static int TIME_FIGHT = 30; // in minutes
+    public static final int TIME_PREPARATION = 10; // in minutes
+    public static final int TIME_FIGHT = 30; // in minutes
 
-    public static long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
-    public static long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
-    public static long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
+    public static final long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
+    public static final long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
+    public static final long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
 
     public static final Map<String, War> warsByAttacker = new HashMap<>();
     public static final Map<String, War> warsByDefender = new HashMap<>();
@@ -58,6 +58,7 @@ public class WarManager {
 
     /**
      * Retrieves the war associated with a given city UUID.
+     *
      * @param cityUUID The UUID of the city.
      * @return The War object if found, null otherwise.
      */
@@ -73,8 +74,9 @@ public class WarManager {
 
     /**
      * Starts a war between two cities.
-     * @param attacker The city that is attacking.
-     * @param defender The city that is defending.
+     *
+     * @param attacker  The city that is attacking.
+     * @param defender  The city that is defending.
      * @param attackers The list of UUIDs of the players in the attacking city.
      * @param defenders The list of UUIDs of the players in the defending city.
      */
@@ -93,9 +95,9 @@ public class WarManager {
      * @param war The War object representing the war to be ended.
      */
     public static void endWar(War war) {
-        War warRemoved;
-        warRemoved = warsByAttacker.remove(war.getCityAttacker().getUUID());
-        warRemoved = warsByDefender.remove(war.getCityDefender().getUUID());
+        War warRemoved = warsByAttacker.remove(war.getCityAttacker().getUUID());
+        if (warRemoved == null)
+            warRemoved = warsByDefender.remove(war.getCityDefender().getUUID());
 
         if (warRemoved == null) return;
 
@@ -197,14 +199,14 @@ public class WarManager {
     /**
      * Broadcasts the result of a war to the members of the winning and losing cities.
      *
-     * @param war        The War object containing details about the war.
-     * @param winner     The city that won the war.
-     * @param loser      The city that lost the war.
-     * @param reason     The reason for the win (e.g., mascot death, HP, kills, draw).
-     * @param powerChange The change in power points for the winning city.
+     * @param war          The War object containing details about the war.
+     * @param winner       The city that won the war.
+     * @param loser        The city that lost the war.
+     * @param reason       The reason for the win (e.g., mascot death, HP, kills, draw).
+     * @param powerChange  The change in power points for the winning city.
      * @param amountStolen The amount of money stolen from the losing city.
-     * @param bonusMoney Additional bonus money awarded to the winning city.
-     * @param claimNumber The number of claims transferred to the winning city.
+     * @param bonusMoney   Additional bonus money awarded to the winning city.
+     * @param claimNumber  The number of claims transferred to the winning city.
      */
     public static void broadcastWarResult(War war, City winner, City loser, WinReason reason, int powerChange, double amountStolen, double bonusMoney, int claimNumber) {
         int killsWinner = war.getCityAttacker().equals(winner) ? war.getAttackersKill() : war.getDefendersKill();
@@ -212,16 +214,16 @@ public class WarManager {
 
         if (reason == WinReason.DRAW) {
             String message = String.format("""
-                    §8§m                                                     §r
-                    §7
-                    §c§lGUERRE!§r §7C'est la fin des combats!§7
-                    §8§oIl y a eu égalité !
-                    §7
-                    §7Statistiques globales:
-                    §7 - §cKills de %s : §f%d
-                    §7 - §9Kills de %s : §f%d
-                    §7
-                            §8§m                                                     §r""",
+                            §8§m                                                     §r
+                            §7
+                            §c§lGUERRE!§r §7C'est la fin des combats!§7
+                            §8§oIl y a eu égalité !
+                            §7
+                            §7Statistiques globales:
+                            §7 - §cKills de %s : §f%d
+                            §7 - §9Kills de %s : §f%d
+                            §7
+                                    §8§m                                                     §r""",
                     war.getCityAttacker().getName(), killsWinner, war.getCityDefender().getName(), killsLoser);
 
 
@@ -406,7 +408,7 @@ public class WarManager {
             }
             if (!borderChunks.isEmpty()) {
                 Collections.shuffle(borderChunks);
-                BlockVector2 seed = borderChunks.get(0);
+                BlockVector2 seed = borderChunks.getFirst();
 
                 loser.removeChunk(seed.getX(), seed.getZ());
                 winner.addChunk(seed.getX(), seed.getZ());

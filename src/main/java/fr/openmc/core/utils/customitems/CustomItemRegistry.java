@@ -1,15 +1,15 @@
 package fr.openmc.core.utils.customitems;
 
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.utils.customitems.buttons.*;
-import fr.openmc.core.utils.customitems.items.company.CompanyBox;
-import fr.openmc.core.utils.customitems.items.homes.*;
-import fr.openmc.core.utils.customitems.items.homes.icons.*;
 import fr.openmc.core.utils.customitems.armors.SuitBoots;
 import fr.openmc.core.utils.customitems.armors.SuitChestplate;
 import fr.openmc.core.utils.customitems.armors.SuitHelmet;
 import fr.openmc.core.utils.customitems.armors.SuitLeggings;
+import fr.openmc.core.utils.customitems.buttons.*;
 import fr.openmc.core.utils.customitems.items.*;
+import fr.openmc.core.utils.customitems.items.company.CompanyBox;
+import fr.openmc.core.utils.customitems.items.homes.*;
+import fr.openmc.core.utils.customitems.items.homes.icons.*;
 import io.papermc.paper.persistence.PersistentDataContainerView;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class CustomItemRegistry {
-    static HashMap<String, CustomItem> items = new HashMap<>();
-    static NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
+    static final HashMap<String, CustomItem> items = new HashMap<>();
+    static final NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
 
     public CustomItemRegistry() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());

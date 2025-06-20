@@ -1,7 +1,7 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -17,13 +17,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class DelHome {
-
-    private final HomesManager homesManager;
-    MessagesManager msg;
-    public DelHome(HomesManager homesManager) {
-        this.homesManager = homesManager;
-    }
-
     @Command("delhome")
     @Description("Supprime un home")
     @CommandPermission("omc.commands.home.delhome")
@@ -44,7 +37,7 @@ public class DelHome {
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for(Home home : homes) {
                 if(home.getName().equalsIgnoreCase(homeName)) {
-                    homesManager.removeHome(home);
+                    HomesManager.removeHome(home);
                     MessagesManager.sendMessage(player, Component.text("§aLe home §e" + home.getName() + " §aa été supprimé."), Prefix.HOME, MessageType.SUCCESS, true);
                     return;
                 }
@@ -58,7 +51,7 @@ public class DelHome {
 
         for(Home home : homes) {
             if(home.getName().equalsIgnoreCase(name)) {
-                homesManager.removeHome(home);
+                HomesManager.removeHome(home);
                 MessagesManager.sendMessage(player, Component.text("§aTon home §e" + home.getName() + " §aa été supprimé."), Prefix.HOME, MessageType.SUCCESS, true);
                 return;
             }

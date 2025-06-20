@@ -1,7 +1,6 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
 import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -54,9 +53,9 @@ public class ShopSearchMenu extends PaginatedMenu {
             if (shops==null){continue;}
 
             List<Component> loc = new ArrayList<>();
-            double x = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockX();
-            double y = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockY();
-            double z = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shops.getUuid()).stockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shops.getUuid()).stockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shops.getUuid()).stockBlock().getBlockZ();
 
             loc.add(Component.text("§lLocation : §r x : " + x + " y : " + y + " z : " + z));
 
@@ -88,59 +87,54 @@ public class ShopSearchMenu extends PaginatedMenu {
                 lines[2] = "Entrez le nom";
                 lines[3] = "du shop/joueur";
 
-                SignGUI gui = null;
-                try {
-                    gui = SignGUI.builder()
-                            .setLines(null, lines[1] , lines[2], lines[3])
-                            .setType(ItemUtils.getSignType(getOwner()))
-                            .setHandler((p, result) -> {
-                                String input = result.getLine(0);
+                SignGUI gui = SignGUI.builder()
+                        .setLines(null, lines[1] , lines[2], lines[3])
+                        .setType(ItemUtils.getSignType(getOwner()))
+                        .setHandler((p, result) -> {
+                            String input = result.getLine(0);
 
-                                boolean shopFind = false;
+                            boolean shopFind = false;
 
-                                for (Shop shop : CompanyManager.shops){
-                                    double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-                                    double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-                                    double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+                            for (Shop shop : CompanyManager.shops){
+                                double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
+                                double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
+                                double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
 
-                                    if (shop.getName().contains(input)){
+                                if (shop.getName().contains(input)){
+                                    MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
+                                    shopFind = true;
+                                    break;
+                                }
+                                Player player = Bukkit.getPlayer(input);
+                                if (player==null) continue;
+                                if (shop.getOwner().isCompany()){
+                                    Company company = shop.getOwner().getCompany();
+                                    if (company.getAllMembers().contains(player.getUniqueId())){
                                         MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
                                         shopFind = true;
                                         break;
                                     }
-                                    Player player = Bukkit.getPlayer(input);
-                                    if (player==null) continue;
-                                    if (shop.getOwner().isCompany()){
-                                        Company company = shop.getOwner().getCompany();
-                                        if (company.getAllMembers().contains(player.getUniqueId())){
-                                            MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
-                                            shopFind = true;
-                                            break;
-                                        }
+                                }
+                                if (shop.getOwner().isPlayer()){
+                                    Player shopPlayer = Bukkit.getPlayer(shop.getOwner().getPlayer());
+                                    if (shopPlayer==null){
+                                        continue;
                                     }
-                                    if (shop.getOwner().isPlayer()){
-                                        Player shopPlayer = Bukkit.getPlayer(shop.getOwner().getPlayer());
-                                        if (shopPlayer==null){
-                                            continue;
-                                        }
-                                        if (shopPlayer.equals(player)){
-                                            MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
-                                            shopFind = true;
-                                            break;
-                                        }
+                                    if (shopPlayer.equals(player)){
+                                        MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
+                                        shopFind = true;
+                                        break;
                                     }
                                 }
+                            }
 
-                                if (!shopFind){
-                                    MessagesManager.sendMessage(getOwner(), Component.text("§cAucun shop trouvé !"), Prefix.SHOP, MessageType.INFO, false);
-                                }
+                            if (!shopFind){
+                                MessagesManager.sendMessage(getOwner(), Component.text("§cAucun shop trouvé !"), Prefix.SHOP, MessageType.INFO, false);
+                            }
 
-                                return Collections.emptyList();
-                            })
-                            .build();
-                } catch (SignGUIVersionException e) {
-                    throw new RuntimeException(e);
-                }
+                            return Collections.emptyList();
+                        })
+                        .build();
 
                 gui.open(getOwner());
             }));

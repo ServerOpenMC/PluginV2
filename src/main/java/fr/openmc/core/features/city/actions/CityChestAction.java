@@ -23,7 +23,7 @@ public class CityChestAction {
         int price = city.getChestPages() * UPGRADE_PER_MONEY;
         int aywenite = city.getChestPages() * UPGRADE_PER_AYWENITE;
 
-        city.updateBalance((double) -price);
+        city.updateBalance(-price);
         ItemUtils.removeItemsFromInventory(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), aywenite);
 
         city.saveChestContent(city.getChestPages() + 1, null);

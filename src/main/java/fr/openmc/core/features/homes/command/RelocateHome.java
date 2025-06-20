@@ -1,8 +1,7 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.utils.HomeUtil;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -58,7 +57,7 @@ public class RelocateHome {
                     continue;
                 }
 
-                homeManager.relocateHome(h, location);
+                HomesManager.relocateHome(h, location);
                 MessagesManager.sendMessage(player, Component.text("§aLe home §e" + h.getName() + " §aa été déplacé."), Prefix.HOME, MessageType.SUCCESS, true);
                 return;
             }
@@ -76,7 +75,7 @@ public class RelocateHome {
 
         for(Home h : homes) {
             if(h.getName().equalsIgnoreCase(home)) {
-                homeManager.relocateHome(h, location);
+                HomesManager.relocateHome(h, location);
                 MessagesManager.sendMessage(player, Component.text("§aTon home §e" + h.getName() + " §aa été déplacé."), Prefix.HOME, MessageType.SUCCESS, true);
                 return;
             }

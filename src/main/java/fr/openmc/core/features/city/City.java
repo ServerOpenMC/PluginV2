@@ -294,7 +294,7 @@ public class City {
         if (this.chestContent == null)
             this.chestContent = CityManager.getCityChestContent(this);
 
-        if (this.chestContent.size() < 1)
+        if (this.chestContent.isEmpty())
             saveChestContent(1, null);
 
         return chestContent.size();
@@ -689,10 +689,7 @@ public class City {
     /**
      * Updates the power of a City by adding or removing points.
      *
-     * @param point The amount to be added or remove to the existing power.
-     */
-    /**
-     * Updates the power of a city
+     * @param diff The amount to be added or remove to the existing power.
      */
     public void updatePowerPoints(int diff) {
         powerPoints += diff;

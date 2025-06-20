@@ -1,8 +1,8 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -30,7 +30,6 @@ public class SetHome {
     @CommandPermission("omc.commands.home.sethome")
     @AutoComplete("@homes")
     public void setHome(Player player, String name) {
-
         if(homesManager.disabledWorldHome.isDisabledWorld(player.getWorld())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir de home dans ce monde."), Prefix.HOME, MessageType.ERROR, true);
             return;
@@ -65,7 +64,7 @@ public class SetHome {
             }
 
             Home home = new Home(target.getUniqueId(), homeName, player.getLocation(), HomeIconRegistry.getDefaultIcon());
-            homesManager.addHome(home);
+            HomesManager.addHome(home);
 
             MessagesManager.sendMessage(player, Component.text("§aLe home §e" + homeName + " §aa été défini pour §e" + targetName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
             if(target.isOnline() && target instanceof Player targetPlayer) {
@@ -81,7 +80,7 @@ public class SetHome {
         }
 
         int currentHome = HomesManager.getHomes(player.getUniqueId()).size();
-        int homesLimit = homesManager.getHomeLimit(player.getUniqueId());
+        int homesLimit = HomesManager.getHomeLimit(player.getUniqueId());
 
         if(currentHome >= homesLimit) {
             MessagesManager.sendMessage(player, Component.text("§cVous avez atteint la limite de homes."), Prefix.HOME, MessageType.ERROR, true);
@@ -98,7 +97,7 @@ public class SetHome {
         }
 
         Home home = new Home(player.getUniqueId(), name, player.getLocation(), HomeIconRegistry.getDefaultIcon());
-        homesManager.addHome(home);
+        HomesManager.addHome(home);
 
         MessagesManager.sendMessage(player, Component.text("§aVotre home §e" + name + " §aa été défini."), Prefix.HOME, MessageType.SUCCESS, true);
     }

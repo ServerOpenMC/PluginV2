@@ -10,10 +10,10 @@ public class CityMoneyUpdateEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
-    @Getter private double difference;
-    @Getter private double before;
-    @Getter private double after;
-    @Getter private City city;
+    @Getter private final double difference;
+    @Getter private final double before;
+    @Getter private final double after;
+    @Getter private final City city;
 
     public CityMoneyUpdateEvent(City city, double before, double after) {
         this.city = city;

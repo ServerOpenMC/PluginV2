@@ -1,5 +1,10 @@
 package fr.openmc.core.features.mailboxes;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
@@ -20,21 +25,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-
-import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -101,8 +95,6 @@ public class MailboxManager {
         } catch (SQLException e) {
             Logger.getLogger(MailboxManager.class.getName()).log(Level.SEVERE,
                     "Erreur lors de l'envoi des items batch à des joueurs hors ligne", e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -116,7 +108,7 @@ public class MailboxManager {
             if (count == 0)
                 return;
 
-            Component message = null;
+            Component message;
             message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN);
             if (count > 1) {
                 message.append(Component.text(count, NamedTextColor.GREEN))

@@ -20,6 +20,8 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -39,12 +41,14 @@ import java.util.List;
 import java.util.UUID;
 
 public class MascotsManager {
-     public static List<String> movingMascots = new ArrayList<>();
+    private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:mascot_max_health");
+
+     public static final List<String> movingMascots = new ArrayList<>();
 
     public static NamespacedKey mascotsKey;
 
-    public static HashMap<String, Mascot> mascotsByCityUUID = new HashMap<>();
-    public static HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
+    public static final HashMap<String, Mascot> mascotsByCityUUID = new HashMap<>();
+    public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
 
     public static final String PLACEHOLDER_MASCOT_NAME = "§l%s §c%.0f/%.0f❤";
     public static final String DEAD_MASCOT_NAME = "☠ §cMascotte Morte";
@@ -166,11 +170,12 @@ public class MascotsManager {
 
         if (entity == null) return;
 
-        entity.setHealth(Math.floor(0.10 * entity.getMaxHealth()));
+        double maxHealth = entity.getAttribute(Attribute.MAX_HEALTH).getValue();
+        entity.setHealth(Math.floor(0.10 * maxHealth));
         entity.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
                 city.getName(),
-                0.10 * entity.getMaxHealth(),
-                entity.getMaxHealth()
+                0.10 * maxHealth,
+                maxHealth
         )));
         entity.setGlowing(false);
 
@@ -209,7 +214,7 @@ public class MascotsManager {
 
         try {
             double maxHealth = mascotsLevels.getHealth();
-            mob.setMaxHealth(maxHealth);
+            mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
 
             if (mob.getHealth() == lastHealth) {
                 mob.setHealth(maxHealth);
@@ -253,7 +258,7 @@ public class MascotsManager {
         }
 
         double baseHealth = entityMascot.getHealth();
-        double maxHealth = entityMascot.getMaxHealth();
+        double maxHealth = entityMascot.getAttribute(Attribute.MAX_HEALTH).getValue();
         String mascotsCustomUUID = entityMascot.getPersistentDataContainer().get(mascotsKey, PersistentDataType.STRING);
 
         if (!DynamicCooldownManager.isReady(mascots.getMascotUUID().toString(), "mascots:move")) {
@@ -287,7 +292,7 @@ public class MascotsManager {
 
     private static void setMascotsData(LivingEntity mob, String cityName, double maxHealth, double baseHealth) {
         mob.setAI(false);
-        mob.setMaxHealth(maxHealth);
+        mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
         mob.setHealth(baseHealth);
         mob.setPersistent(true);
         mob.setRemoveWhenFarAway(false);

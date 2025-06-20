@@ -17,10 +17,9 @@ public class SymbiosisPerk implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player)) {
+        if (!(event.getEntity() instanceof Player player)) {
             return;
         }
-        Player player = (Player) event.getEntity();
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {

@@ -16,6 +16,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public class MascotsDamageListener implements Listener {
     void onMascotDamageCaused(EntityDamageEvent e) {
         Entity entity = e.getEntity();
 
-        if (!(entity instanceof Player)) return;
+        if (!(entity instanceof Player mob)) return;
 
         if (!MascotUtils.isMascot(entity)) return;
 
@@ -49,11 +50,10 @@ public class MascotsDamageListener implements Listener {
 
         City city = MascotUtils.getCityFromEntity(entity.getUniqueId());
         if (city == null) return;
-        LivingEntity mob = (LivingEntity) entity;
 
         double newHealth = Math.floor(mob.getHealth());
         mob.setHealth(newHealth);
-        double maxHealth = mob.getMaxHealth();
+        double maxHealth = mob.getAttribute(Attribute.MAX_HEALTH).getValue();
 
         Mascot mascot = city.getMascot();
         if (mascot == null) return;
@@ -76,7 +76,6 @@ public class MascotsDamageListener implements Listener {
     void onMascotTakeDamage(EntityDamageByEntityEvent e) {
         Entity damageEntity = e.getEntity();
         Entity damager = e.getDamager();
-        double baseDamage;
 
         if (!MascotUtils.isMascot(damageEntity)) return;
 
@@ -111,37 +110,37 @@ public class MascotsDamageListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        String city_uuid = city.getUUID();
-        String cityEnemy_uuid = cityEnemy.getUUID();
+        String cityUUID = city.getUUID();
+        String cityEnemyUUID = cityEnemy.getUUID();
 
-        CityType city_type = city.getType();
-        CityType cityEnemy_type = cityEnemy.getType();
+        CityType cityType = city.getType();
+        CityType cityEnemyType = cityEnemy.getType();
 
-        if (city_type == null) {
+        if (cityType == null) {
             MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de votre ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
 
-        if (cityEnemy_type == null) {
+        if (cityEnemyType == null) {
             MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de la ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
 
-        if (pdcCityUUID.equals(city_uuid)) {
+        if (pdcCityUUID.equals(cityUUID)) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer votre mascotte"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }
 
-        if (cityEnemy_type.equals(CityType.PEACE)) {
+        if (cityEnemyType.equals(CityType.PEACE)) {
             MessagesManager.sendMessage(player, Component.text("§cCette ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }
 
-        if (city_type.equals(CityType.PEACE)) {
+        if (cityType.equals(CityType.PEACE)) {
             MessagesManager.sendMessage(player, Component.text("§cVotre ville est en situation de §apaix"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
@@ -175,8 +174,7 @@ public class MascotsDamageListener implements Listener {
         }
 
         if (!player.getEquipment().getItemInMainHand().getEnchantments().isEmpty()) {
-            baseDamage = e.getDamage(EntityDamageByEntityEvent.DamageModifier.BASE);
-            e.setDamage(baseDamage);
+            e.setDamage(e.getDamage());
         }
 
 
@@ -193,7 +191,7 @@ public class MascotsDamageListener implements Listener {
         mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
                 cityMob.getName(),
                 mob.getHealth() - e.getFinalDamage(),
-                mob.getMaxHealth()
+                mob.getAttribute(Attribute.MAX_HEALTH).getValue()
         )));
 
         try {

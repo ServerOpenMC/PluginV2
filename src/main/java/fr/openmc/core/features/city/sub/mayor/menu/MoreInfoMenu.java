@@ -63,21 +63,8 @@ public class MoreInfoMenu extends Menu {
 
         int phase = MayorManager.phaseMayor;
 
-        boolean ench0;
-        boolean ench1;
-
-        switch (phase) {
-            case 2: {
-                ench1 = true;
-                ench0 = false;
-                break;
-            }
-            default: {
-                ench1 = false;
-                ench0 = true;
-                break;
-            }
-        }
+        boolean ench0 = phase != 2;
+        boolean ench1 = phase == 2;
 
         inventory.put(11, new ItemBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(Component.text("§r§6Les Elections - Mercredi"));

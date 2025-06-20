@@ -72,7 +72,7 @@ public class HomeMenu extends PaginatedMenu {
                 home.setIcon(homeIcon);
             }
             try {
-                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().getId()).getItemStack(), itemMeta -> {
+                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().id()).getItemStack(), itemMeta -> {
                     itemMeta.displayName(Component.text("§e" + home.getName()));
                     itemMeta.lore(List.of(
                             Component.text("§7■ §aClique §2gauche pour vous téléporter"),

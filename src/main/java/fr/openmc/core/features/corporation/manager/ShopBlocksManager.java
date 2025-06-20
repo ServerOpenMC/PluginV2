@@ -20,8 +20,8 @@ import java.util.UUID;
 
 public class ShopBlocksManager {
 
-    private static Map<UUID, Shop.Multiblock> multiblocks = new HashMap<>();
-    private static Map<Location, Shop> shopsByLocation = new HashMap<>();
+    private static final Map<UUID, Shop.Multiblock> multiblocks = new HashMap<>();
+    private static final Map<Location, Shop> shopsByLocation = new HashMap<>();
 
     /**
      * Registers a shop's multiblock structure and maps its key locations.
@@ -31,8 +31,8 @@ public class ShopBlocksManager {
      */
     public static void registerMultiblock(Shop shop, Shop.Multiblock multiblock) {
         multiblocks.put(shop.getUuid(), multiblock);
-        Location stockLoc = multiblock.getStockBlock();
-        Location cashLoc = multiblock.getCashBlock();
+        Location stockLoc = multiblock.stockBlock();
+        Location cashLoc = multiblock.cashBlock();
         shopsByLocation.put(stockLoc, shop);
         shopsByLocation.put(cashLoc, shop);
     }
@@ -70,7 +70,7 @@ public class ShopBlocksManager {
         if (multiblock == null) {
             return;
         }
-        Block cashBlock = multiblock.getCashBlock().getBlock();
+        Block cashBlock = multiblock.cashBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
 
         if (ItemsAdderApi.hasItemAdder()) {
@@ -101,8 +101,8 @@ public class ShopBlocksManager {
         if (multiblock == null) {
             return false;
         }
-        Block cashBlock = multiblock.getCashBlock().getBlock();
-        Block stockBlock = multiblock.getStockBlock().getBlock();
+        Block cashBlock = multiblock.cashBlock().getBlock();
+        Block stockBlock = multiblock.stockBlock().getBlock();
 
         if (ItemsAdderApi.hasItemAdder()) {
 

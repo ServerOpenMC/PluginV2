@@ -1,6 +1,5 @@
 package fr.openmc.core.features.bossbar.commands;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.bossbar.BossbarManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

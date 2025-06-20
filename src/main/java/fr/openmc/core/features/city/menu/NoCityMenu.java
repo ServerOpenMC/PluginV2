@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -114,24 +113,19 @@ public class NoCityMenu extends Menu {
                     lines[2] = "Entrez votre nom";
                     lines[3] = "de ville ci dessus";
 
-                    SignGUI gui = null;
-                    try {
-                        gui = SignGUI.builder()
-                                .setLines(null, lines[1], lines[2], lines[3])
-                                .setType(ItemUtils.getSignType(player))
-                                .setHandler((p, result) -> {
-                                    String input = result.getLine(0);
+                    SignGUI gui = SignGUI.builder()
+                            .setLines(null, lines[1], lines[2], lines[3])
+                            .setType(ItemUtils.getSignType(player))
+                            .setHandler((p, result) -> {
+                                String input = result.getLine(0);
 
-                                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                        CityCreateAction.beginCreateCity(player, input);
-                                    });
+                                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                    CityCreateAction.beginCreateCity(player, input);
+                                });
 
-                                    return Collections.emptyList();
-                                })
-                                .build();
-                    } catch (SignGUIVersionException e) {
-                        throw new RuntimeException(e);
-                    }
+                                return Collections.emptyList();
+                            })
+                            .build();
 
                     gui.open(player);
                 });

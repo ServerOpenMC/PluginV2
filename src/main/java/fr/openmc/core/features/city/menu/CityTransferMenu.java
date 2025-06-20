@@ -81,7 +81,7 @@ public class CityTransferMenu extends PaginatedMenu {
                             }
                             player.closeInventory();
                         },
-                        () -> player.closeInventory(),
+                        player::closeInventory,
                         List.of(Component.text("§7Voulez-vous vraiment donner la ville à " + playerOffline.getName() + " ?")),
                         List.of(Component.text("§7Vous allez garder la ville " + playerOffline.getName())));
                 menu.open();

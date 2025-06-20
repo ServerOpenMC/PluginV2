@@ -118,7 +118,7 @@ public class ColorUtils {
         colorCode.put(NamedTextColor.LIGHT_PURPLE, "§d");
         colorCode.put(NamedTextColor.YELLOW, "§e");
         colorCode.put(NamedTextColor.WHITE, "§f");
-    };
+    }
 
     /**
      * Retourne un code couleur en § en fonction de la couleur donnée

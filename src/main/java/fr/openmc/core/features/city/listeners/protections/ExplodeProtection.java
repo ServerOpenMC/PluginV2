@@ -84,7 +84,7 @@ public class ExplodeProtection implements Listener {
             City blockCity = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
             if (blockCity == null) return false;
 
-            if ((playerCity != null && blockCity.equals(playerCity)) || blockCity.isMember(player)) {
+            if (blockCity.equals(playerCity) || blockCity.isMember(player)) {
                 return false;
             }
 

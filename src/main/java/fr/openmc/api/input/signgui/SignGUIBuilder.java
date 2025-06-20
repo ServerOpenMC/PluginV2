@@ -27,7 +27,7 @@ public class SignGUIBuilder {
         return availableSignTypes;
     }
 
-    private MojangWrapper wrapper;
+    private final MojangWrapper wrapper;
     private String[] lines = new String[4];
     private Object[] adventureLines = null;
     private Material type;

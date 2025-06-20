@@ -53,7 +53,7 @@ public class ContestManager {
     public static Contest data;
     public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
 
-    private static List<String> colorContest = Arrays.asList(
+    private static final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
             "DARK_GREEN","DARK_BLUE","BLACK"
@@ -437,8 +437,8 @@ public class ContestManager {
             List<ItemStack> itemListRewards = new ArrayList<>();
             String textRewards = "§8§lRécompenses";
 
-            int money = 0;
-            int aywenite = 0;
+            int money;
+            int aywenite;
 
             double multiplicator = ContestPlayerManager.getMultiplicatorFromRank(ContestPlayerManager.getRankContestFromOfflineInt(player));
             if(ContestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
@@ -501,7 +501,7 @@ public class ContestManager {
             itemListRewards.add(bookPlayer);
             itemListRewards.add(ayweniteItemStack);
 
-            ItemStack[] rewards = itemListRewards.toArray(new ItemStack[itemListRewards.size()]);
+            ItemStack[] rewards = itemListRewards.toArray(new ItemStack[0]);
             playerItemsMap.put(player, rewards);
             rank.getAndIncrement();
         });
@@ -621,12 +621,6 @@ public class ContestManager {
 
         for (Map<?, ?> contest : contestList) {
             if (contest.get("camp1").equals(camps)) {
-                Map<String, Object> result = new HashMap<>();
-                for (Map.Entry<?, ?> entry : contest.entrySet()) {
-                    if (entry.getKey() instanceof String) {
-                        result.put((String) entry.getKey(), entry.getValue());
-                    }
-                }
                 updateSelected(camps);
             }
         }
@@ -669,9 +663,7 @@ public class ContestManager {
      */
     public static List<String> getColorContestList() {
         List<String> color = new ArrayList<>();
-        for (String colorName : colorContest) {
-            color.add(colorName);
-        }
+        color.addAll(colorContest);
         return color;
     }
 

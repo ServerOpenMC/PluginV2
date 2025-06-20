@@ -280,15 +280,21 @@ public class ShopMenu extends Menu {
                 meta.setTitle("Guide des Shop");
                 meta.setAuthor("Nocolm");
                 meta.addPage(
-                        "Comment utiliser les shops !\n\n" +
-                                "§l§6Stock§r :\n" +
-                                "1. Utilisez la commande §d§l/shop sell §r§7<prix> §r en tenant l'item en main\n" +
-                                "2. Ajoutez les items dans le barril §c§l* le raccourci avec les chiffres ne fonctionnera pas *\n"
+                        """
+                                Comment utiliser les shops !
+                                
+                                §l§6Stock§r :
+                                1. Utilisez la commande §d§l/shop sell §r§7<prix> §r en tenant l'item en main
+                                2. Ajoutez les items dans le barril §c§l* le raccourci avec les chiffres ne fonctionnera pas *
+                                """
                 );
                 meta.addPage(
-                        "3. Ouvrez une fois le shop pour renouveler son stock\n\n" +
-                                "Et voilà comment utiliser votre shops\n\n" +
-                                "§6▪ Pour plus d'info : /shop help§r"
+                        """
+                                3. Ouvrez une fois le shop pour renouveler son stock
+                                
+                                Et voilà comment utiliser votre shops
+                                
+                                §6▪ Pour plus d'info : /shop help§r"""
                 );
 
                 book.setItemMeta(meta);

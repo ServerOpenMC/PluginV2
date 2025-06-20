@@ -41,7 +41,7 @@ public class MayorManager {
     @Getter
     private static ConnectionSource connectionSource;
 
-    public static int MEMBER_REQ_ELECTION = 3;
+    public static final int MEMBER_REQ_ELECTION = 3;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
@@ -63,7 +63,7 @@ public class MayorManager {
 
     public static int phaseMayor;
     public static HashMap<String, Mayor> cityMayor = new HashMap<>();
-    public static HashMap<String, CityLaw> cityLaws = new HashMap<>();
+    public static final HashMap<String, CityLaw> cityLaws = new HashMap<>();
     public static Map<String, List<MayorCandidate>> cityElections = new HashMap<>();
     public static Map<String, List<MayorVote>> playerVote = new HashMap<>();
 

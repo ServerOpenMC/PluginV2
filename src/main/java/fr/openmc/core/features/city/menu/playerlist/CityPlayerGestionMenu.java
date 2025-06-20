@@ -92,7 +92,6 @@ public class CityPlayerGestionMenu extends Menu {
             itemMeta.lore(loreKick);
         }).setOnClick(inventoryClickEvent -> {
             if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget)) {
-                return;
             } else {
                 ConfirmMenu menu = new ConfirmMenu(
                         player,
@@ -100,7 +99,7 @@ public class CityPlayerGestionMenu extends Menu {
                             player.closeInventory();
                             CityKickAction.startKick(player, playerTarget);
                         },
-                        () -> player.closeInventory(),
+                        player::closeInventory,
                         List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
                         List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
                 menu.open();

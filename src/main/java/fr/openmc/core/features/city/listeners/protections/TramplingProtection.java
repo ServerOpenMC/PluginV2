@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.listeners.protections;
 import fr.openmc.core.features.city.ProtectionsManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -21,7 +22,7 @@ public class TramplingProtection implements Listener {
 
     @EventHandler
     public void onPlayerTrampling(PlayerInteractEvent event) {
-        if (event.isCancelled()) return;
+        if (event.useInteractedBlock() == Event.Result.DENY) return;
         if (event.getAction() == Action.PHYSICAL) {
             if (event.getClickedBlock() == null) return;
             if (event.getClickedBlock().getType() == Material.FARMLAND) {

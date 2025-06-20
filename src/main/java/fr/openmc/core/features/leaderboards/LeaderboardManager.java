@@ -287,7 +287,7 @@ public class LeaderboardManager {
 
     /**
      * Updates the GitHub contributors leaderboard map by fetching data from the GitHub API.
-     * Documentation GitHub API (REST) : https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity
+     * Documentation GitHub API (REST) : <a href="https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity">...</a>
      */
     private static void updateGithubContributorsMap() {
         String repoOwner = "ServerOpenMC";

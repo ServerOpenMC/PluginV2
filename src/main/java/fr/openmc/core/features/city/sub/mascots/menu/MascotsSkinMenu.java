@@ -30,8 +30,8 @@ public class MascotsSkinMenu extends Menu {
 
     private final Material egg;
     private final Mascot mascots;
-    Sound selectSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    Sound deniedSound = Sound.BLOCK_NOTE_BLOCK_BASS;
+    final Sound selectSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+    final Sound deniedSound = Sound.BLOCK_NOTE_BLOCK_BASS;
 
     public MascotsSkinMenu(Player owner, Material egg, Mascot mascots) {
         super(owner);

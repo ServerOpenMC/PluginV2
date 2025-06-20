@@ -2,7 +2,8 @@ package fr.openmc.core.features.corporation.commands;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.corporation.*;
+import fr.openmc.core.features.corporation.CorpPermission;
+import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.company.CompanyOwner;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
@@ -10,7 +11,6 @@ import fr.openmc.core.features.corporation.manager.PlayerShopManager;
 import fr.openmc.core.features.corporation.menu.company.CompanyBaltopMenu;
 import fr.openmc.core.features.corporation.menu.company.CompanyMenu;
 import fr.openmc.core.features.corporation.menu.company.CompanySearchMenu;
-import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -293,7 +293,7 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent dans la banque d'entreprise !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        MessagesManager.sendMessage(player, Component.text("§aVous avez retiré " + amount + "" + EconomyManager.getEconomyIcon() + " de l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez retiré " + amount + EconomyManager.getEconomyIcon() + " de l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("deposit")
@@ -317,7 +317,7 @@ public class CompanyCommand {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent sur vous !"), Prefix.ENTREPRISE, MessageType.INFO, false);
             return;
         }
-        MessagesManager.sendMessage(player, Component.text("§aVous avez déposé " + amount + "" + EconomyManager.getEconomyIcon() + " dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
+        MessagesManager.sendMessage(player, Component.text("§aVous avez déposé " + amount + EconomyManager.getEconomyIcon() + " dans l'entreprise !"), Prefix.ENTREPRISE, MessageType.SUCCESS, false);
     }
 
     @Subcommand("owner")

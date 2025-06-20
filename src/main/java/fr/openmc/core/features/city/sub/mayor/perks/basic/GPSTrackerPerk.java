@@ -67,7 +67,7 @@ public class GPSTrackerPerk implements Listener {
 
     private boolean hasGpsTrackerPerk(City city) {
         Mayor mayor = city.getMayor();
-        return mayor != null && PerkManager.hasPerk(mayor, Perks.GPS_TRACKER.getId());
+        return PerkManager.hasPerk(mayor, Perks.GPS_TRACKER.getId());
     }
 
     private void applyGlowing(Player player) {

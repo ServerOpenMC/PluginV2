@@ -24,7 +24,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendWarningMe
 @CommandPermission("omc.commands.mailbox")
 public class MailboxCommand {
     
-    private OMCPlugin plugin;
+    private final OMCPlugin plugin;
     
     public MailboxCommand(OMCPlugin plugin) {
         this.plugin = plugin;
