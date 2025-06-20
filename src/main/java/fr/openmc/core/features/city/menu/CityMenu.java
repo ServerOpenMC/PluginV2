@@ -342,7 +342,7 @@ public class CityMenu extends Menu {
             lore.add(Component.text("§7Votre ville est en §5" + finalType));
 
             if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CPermission.LAUNCH_WAR)) {
-                lore.add(Component.text(""));
+                lore.add(Component.empty());
                 lore.add(Component.text("§7Vous pouvez lancer une guerre avec §c/war"));
             }
 
