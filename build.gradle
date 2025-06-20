@@ -28,6 +28,9 @@ group = 'fr.openmc'
 repositories {
     mavenCentral()
     maven {
+        url "https://maven.devs.beer/"
+    }
+    maven {
         url "https://oss.sonatype.org/content/groups/public/"
     }
     maven {
@@ -53,30 +56,30 @@ repositories {
 dependencies {
     paperweight.paperDevBundle '1.21.5-R0.1-SNAPSHOT'
 
-    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
+    compileOnly 'dev.lone:api-itemsadder:4.0.10'
     compileOnly 'net.luckperms:api:5.4'
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
     compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
-    compileOnly 'de.oliver:FancyNpcs:2.5.0'
+    compileOnly 'de.oliver:FancyNpcs:2.5.2'
 
-    implementation 'org.jetbrains:annotations:24.1.0'
-    implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
-    implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
+    implementation 'org.jetbrains:annotations:26.0.2'
+    implementation 'com.github.Revxrsal.Lamp:common:3.3.6'
+    implementation 'com.github.Revxrsal.Lamp:bukkit:3.3.6'
     implementation 'net.raidstone:wgevents:1.18.1'
     implementation 'com.j256.ormlite:ormlite-jdbc:6.1'
 
-    compileOnly 'org.projectlombok:lombok:1.18.34'
-    annotationProcessor 'org.projectlombok:lombok:1.18.34'
-    testCompileOnly 'org.projectlombok:lombok:1.18.34'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    compileOnly 'org.projectlombok:lombok:1.18.38'
+    annotationProcessor 'org.projectlombok:lombok:1.18.38'
+    testCompileOnly 'org.projectlombok:lombok:1.18.38'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
 
     testImplementation 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
-    testImplementation 'org.slf4j:slf4j-simple:2.0.16'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.17'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.50.0'
+    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.52.0'
     testImplementation 'com.h2database:h2:2.3.232'
 }
 
