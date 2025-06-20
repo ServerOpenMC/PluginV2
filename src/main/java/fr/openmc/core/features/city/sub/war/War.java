@@ -127,7 +127,7 @@ public class War {
 
             if (player.isOnline()) {
                 player.sendMessage(Component.text(String.format(message, cityDefender.getName(), TIME_FIGHT)));
-                PlayerUtils.teleportNear(player, mascotLocAttacker, 5.0);
+                PlayerUtils.teleportNear(player, mascotLocAttacker, 0);
             }
         }
 
