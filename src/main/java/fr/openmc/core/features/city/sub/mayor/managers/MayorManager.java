@@ -24,6 +24,7 @@ import fr.openmc.core.features.city.sub.mayor.perks.event.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.api.FancyNpcsApi;
 import fr.openmc.core.utils.api.ItemsAdderApi;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -37,6 +38,9 @@ import java.time.DayOfWeek;
 import java.util.*;
 
 public class MayorManager {
+    @Getter
+    private static ConnectionSource connectionSource;
+
     public static int MEMBER_REQ_ELECTION = 3;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
@@ -125,6 +129,8 @@ public class MayorManager {
 
         TableUtils.createTableIfNotExists(connectionSource, MayorConstant.class);
         constantsDao = DaoManager.createDao(connectionSource, MayorConstant.class);
+
+        MayorManager.connectionSource = connectionSource;
     }
 
     // Load and Save Data Methods
@@ -234,7 +240,7 @@ public class MayorManager {
 
     public static void removeCity(City city) throws SQLException {
         DeleteBuilder<Mayor, String> mayorsDelete = mayorsDao.deleteBuilder();
-        mayorsDelete.where().eq("city", city.getUUID());
+        mayorsDelete.where().eq("cityUUID", city.getUUID());
         mayorsDao.delete(mayorsDelete.prepare());
         cityMayor.remove(city.getUUID());
 
@@ -249,13 +255,13 @@ public class MayorManager {
         playerVote.remove(city.getUUID());
 
         DeleteBuilder<CityLaw, String> lawsDelete = lawsDao.deleteBuilder();
-        lawsDelete.where().eq("city", city.getUUID());
+        lawsDelete.where().eq("cityUUID", city.getUUID());
         lawsDao.delete(lawsDelete.prepare());
         cityLaws.remove(city.getUUID());
     }
 
     // setup elections
-    public static void initPhase1() throws SQLException {
+    public static void initPhase1() {
         // ---OUVERTURE DES ELECTIONS---
         phaseMayor = 1;
 
@@ -268,10 +274,20 @@ public class MayorManager {
                 TableUtils.dropTable(mayorsDao, false);
                 TableUtils.dropTable(candidatesDao, false);
                 TableUtils.dropTable(votesDao, false);
+
+                TableUtils.createTableIfNotExists(connectionSource, Mayor.class);
+                mayorsDao = DaoManager.createDao(connectionSource, Mayor.class);
+
+                TableUtils.createTableIfNotExists(connectionSource, MayorCandidate.class);
+                candidatesDao = DaoManager.createDao(connectionSource, MayorCandidate.class);
+
+                TableUtils.createTableIfNotExists(connectionSource, MayorVote.class);
+                votesDao = DaoManager.createDao(connectionSource, MayorVote.class);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
+
         HashMap<String, Mayor> copyCityMayor = cityMayor;
         cityMayor = new HashMap<>();
         cityElections = new HashMap<>();
@@ -396,11 +412,6 @@ public class MayorManager {
 
                 MayorCandidate mayorWinner = candidateQueue.peek();
 
-                // si owner a pas choisi perk event
-                if (mayor.getIdPerk1() == 0) {
-                    mayor.setIdPerk1(PerkManager.getRandomPerkEvent().getId());
-                }
-
                 Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
                 Perks perk2 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk2());
                 Perks perk3 = PerkManager.getPerkById(mayorWinner.getIdChoicePerk3());
@@ -414,7 +425,7 @@ public class MayorManager {
                 List<Perks> perks = PerkManager.getRandomPerksBasic();
 
                 Perks perk1;
-                if (mayor == null) {
+                if (mayor == null || (mayor.getIdPerk1() == 0)) {
                     perk1 = PerkManager.getRandomPerkEvent();
                 } else {
                     perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
