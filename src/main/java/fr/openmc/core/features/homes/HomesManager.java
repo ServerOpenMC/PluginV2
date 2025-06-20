@@ -1,7 +1,11 @@
 package fr.openmc.core.features.homes;
 
-import fr.openmc.core.OMCPlugin;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
@@ -14,11 +18,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.WorldInfo;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +26,9 @@ import java.util.UUID;
 @Getter
 public class HomesManager {
 
-    public static List<Home> homes = new ArrayList<>();
-    public static List<HomeLimit> homeLimits = new ArrayList<>();
-    public DisabledWorldHome disabledWorldHome;
+    public static final List<Home> homes = new ArrayList<>();
+    public static final List<HomeLimit> homeLimits = new ArrayList<>();
+    public final DisabledWorldHome disabledWorldHome;
 
     public HomesManager() {
         disabledWorldHome = new DisabledWorldHome(OMCPlugin.getInstance());
@@ -68,7 +67,7 @@ public class HomesManager {
                                 String[] split = arg.split(":", 2);
                                 OfflinePlayer target = Bukkit.getOfflinePlayer(split[0]);
 
-                                if (target != null && target.hasPlayedBefore()) {
+                                if (target.hasPlayedBefore()) {
                                     String prefix = split[0] + ":";
                                     suggestions.addAll(getHomesNames(target.getUniqueId())
                                             .stream()
@@ -121,8 +120,8 @@ public class HomesManager {
 
         CommandsManager.getHandler().register(
                 new SetHome(this),
-                new RenameHome(this),
-                new DelHome(this),
+                new RenameHome(),
+                new DelHome(),
                 new RelocateHome(this),
                 new TpHome(this),
                 new HomeWorld(disabledWorldHome));

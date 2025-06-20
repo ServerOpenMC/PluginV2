@@ -126,7 +126,7 @@ public class ItemUtils {
         Player player = Bukkit.getPlayer(playerUUID);
         ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
-        String playerName = "not found";
+        String playerName;
         if (player!=null){
             playerName = player.getName();
             meta.setOwningPlayer(player);

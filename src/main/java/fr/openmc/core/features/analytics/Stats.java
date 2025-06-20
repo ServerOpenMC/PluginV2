@@ -7,7 +7,7 @@ public enum Stats {
     TOTAL_TRANSACTIONS("total_transactions"),
     ;
 
-    private String scope;
+    private final String scope;
 
     Stats(String scope) {
         this.scope = scope;
@@ -48,7 +48,6 @@ public enum Stats {
      * Increment a stats by one for a player
      * 
      * @param player Player
-     * @param value  the amount to increment the statistic
      */
     public void increment(UUID player) {
         increment(player, 1);

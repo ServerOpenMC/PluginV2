@@ -96,7 +96,7 @@ public class ConfirmMenu extends Menu {
                 String color = ContestManager.data.get("color" + Integer.valueOf(substring));
                 NamedTextColor campColorF = ColorUtils.getNamedTextColor(color);
 
-                ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, Integer.valueOf(substring), campColorF));
+                ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, Integer.parseInt(substring), campColorF));
                 player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
                 MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
 

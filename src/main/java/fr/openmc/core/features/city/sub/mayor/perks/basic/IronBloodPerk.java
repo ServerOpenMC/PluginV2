@@ -45,16 +45,16 @@ public class IronBloodPerk implements Listener {
                 return;
             }
             List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
-                    .filter(ent -> ent instanceof Player)
-                    .map(ent -> (Player) ent)
+                    .filter(Player.class::isInstance)
+                    .map(Player.class::cast)
                     .filter(nearbyPlayer -> {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
                         return enemyCity != null && !enemyCity.getUUID().equals(city.getUUID());
                     })
-                    .collect(Collectors.toList());
+                    .toList();
 
             if (!nearbyEnemies.isEmpty()) {
-                Player target = nearbyEnemies.get(0);
+                Player target = nearbyEnemies.getFirst();
                 golem.setAI(true);
                 golem.setTarget(target);
                 org.bukkit.util.Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();

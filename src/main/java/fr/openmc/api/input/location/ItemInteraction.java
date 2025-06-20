@@ -96,7 +96,7 @@ public class ItemInteraction implements Listener {
             String interactionId = item.getItemMeta().getPersistentDataContainer().get(NAMESPACE_KEY, PersistentDataType.STRING);
             if (interactionId == null) return;
 
-            Block targetBlock = null;
+            Block targetBlock;
 
             if (event.getClickedBlock() != null) {
                 BlockFace face = event.getBlockFace();
@@ -120,9 +120,9 @@ public class ItemInteraction implements Listener {
                             playerCallbacksMap.remove(interactionId);
                             playerChronometerMap.remove(interactionId);
 
-                            ChronometerInfo chronoInfo = interactionInfo.getChronometerInfo();
+                            ChronometerInfo chronoInfo = interactionInfo.chronometerInfo();
                             if (chronoInfo != null) {
-                                Chronometer.stopChronometer(player, chronoInfo.getChronometerGroup(), null, "%null%");
+                                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, "%null%");
                             }
                             player.getInventory().remove(item);
                         }
@@ -236,7 +236,6 @@ public class ItemInteraction implements Listener {
         if (event.isShiftClick()) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet par shift-click"), Prefix.OPENMC, MessageType.ERROR, false);
             event.setCancelled(true);
-            return;
         }
     }
 
@@ -315,11 +314,11 @@ public class ItemInteraction implements Listener {
 
         if (playerCallbacksMap != null && playerChronometerMap != null) {
             Function<Location, Boolean> callback = playerCallbacksMap.get(chronometerGroup);
-            ItemStack item = playerChronometerMap.get(chronometerGroup).getItem();
-            ChronometerInfo chronoInfo = playerChronometerMap.get(chronometerGroup).getChronometerInfo();
+            ItemStack item = playerChronometerMap.get(chronometerGroup).item();
+            ChronometerInfo chronoInfo = playerChronometerMap.get(chronometerGroup).chronometerInfo();
 
             if (chronoInfo != null) {
-                Chronometer.stopChronometer(player, chronoInfo.getChronometerGroup(), null, "%null%");
+                Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, "%null%");
             }
 
             player.getInventory().remove(item);

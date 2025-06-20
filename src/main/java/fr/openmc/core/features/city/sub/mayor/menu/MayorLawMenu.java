@@ -278,7 +278,6 @@ public class MayorLawMenu extends Menu {
 
                         }
                         DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
-                        return;
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) {
                         // Essor agricole (id : 11) - Perk Event
                         for (UUID uuid : city.getMembers()) {

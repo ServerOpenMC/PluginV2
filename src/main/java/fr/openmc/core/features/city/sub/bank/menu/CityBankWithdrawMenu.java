@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.sub.bank.menu;
 
 import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -153,20 +152,15 @@ public class CityBankWithdrawMenu extends Menu {
             lines[2] = "Entrez votre";
             lines[3] = "montant ci dessus";
 
-            SignGUI gui = null;
-            try {
-                gui = SignGUI.builder()
-                        .setLines(null, lines[1], lines[2], lines[3])
-                        .setType(ItemUtils.getSignType(player))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
-                            city.withdrawCityBank(player, input);
-                            return Collections.emptyList();
-                        })
-                        .build();
-            } catch (SignGUIVersionException e) {
-                throw new RuntimeException(e);
-            }
+            SignGUI gui = SignGUI.builder()
+                    .setLines(null, lines[1], lines[2], lines[3])
+                    .setType(ItemUtils.getSignType(player))
+                    .setHandler((p, result) -> {
+                        String input = result.getLine(0);
+                        city.withdrawCityBank(player, input);
+                        return Collections.emptyList();
+                    })
+                    .build();
 
             gui.open(player);
 

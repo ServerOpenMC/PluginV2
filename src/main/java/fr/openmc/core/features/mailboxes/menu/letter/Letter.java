@@ -20,7 +20,7 @@ public class Letter extends MailboxInv {
     }
 
     private final int id;
-    private ItemStack[] items;
+    private final ItemStack[] items;
 
     public Letter(Player player, LetterHead letterHead) {
         super(player);

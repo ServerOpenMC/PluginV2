@@ -2,10 +2,10 @@ package fr.openmc.core.features.homes.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -72,7 +72,7 @@ public class HomeMenu extends PaginatedMenu {
                 home.setIcon(homeIcon);
             }
             try {
-                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().getId()).getItemStack(), itemMeta -> {
+                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().id()).getItemStack(), itemMeta -> {
                     itemMeta.displayName(Component.text("§e" + home.getName()));
                     itemMeta.lore(List.of(
                             Component.text("§7■ §aClique §2gauche pour vous téléporter"),
@@ -81,8 +81,9 @@ public class HomeMenu extends PaginatedMenu {
                 }).setOnClick(event -> {
                     if(event.isLeftClick()) {
                         this.getInventory().close();
-                        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez été téléporté à votre home §e" + home.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
-                        getOwner().teleport(home.getLocation());
+                        getOwner().teleportAsync(home.getLocation()).thenAccept(success -> {
+                            MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez été téléporté à votre home §e" + home.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                        });
                     } else if(event.isRightClick()) {
                         Player player = (Player) event.getWhoClicked();
                         new HomeConfigMenu(player, home).open();

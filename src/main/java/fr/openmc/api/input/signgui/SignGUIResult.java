@@ -1,5 +1,6 @@
 package fr.openmc.api.input.signgui;
 
+import lombok.Getter;
 import org.bukkit.ChatColor;
 
 // Ce code est basé sur le fichier SignGUIResult.java du dépôt SignGUI
@@ -7,19 +8,18 @@ import org.bukkit.ChatColor;
 /**
  * The result of the sign editing.
  */
+@Getter
 public class SignGUIResult {
 
+    /**
+     * -- GETTER --
+     *
+     * @return The lines of the sign when the player finished editing.
+     */
     private final String[] lines;
 
     SignGUIResult(String[] lines) {
         this.lines = lines;
-    }
-
-    /**
-     * @return The lines of the sign when the player finished editing.
-     */
-    public String[] getLines() {
-        return lines;
     }
 
     /**

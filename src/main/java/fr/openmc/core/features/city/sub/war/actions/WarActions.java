@@ -152,9 +152,7 @@ public class WarActions {
                     finishLaunchWar(player, cityLaunch, cityAttack, attackers);
                     player.closeInventory();
                 },
-                () -> {
-                    player.closeInventory();
-                },
+                player::closeInventory,
                 List.of(
                         Component.text("§c§lATTENTION"),
                         Component.text("§7Vous êtes sur le point de lancer une guerre contre §c" + cityAttack.getName()),

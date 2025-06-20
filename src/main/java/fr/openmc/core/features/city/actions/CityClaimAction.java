@@ -79,7 +79,7 @@ public class CityClaimAction {
                 return;
             }
 
-            city.updateBalance((double) (price * -1));
+            city.updateBalance(-price);
             ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
         } else {
             city.updateFreeClaims(-1);

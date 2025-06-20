@@ -11,10 +11,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
+import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
@@ -38,6 +36,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -132,9 +131,10 @@ public class CityMenu extends Menu {
             if (mascot != null) {
                 mob = (LivingEntity) mascot.getEntity();
 
+                double maxHealth = mob.getAttribute(Attribute.MAX_HEALTH).getValue();
                 if (!mascot.isAlive()) {
                     loreMascots = List.of(
-                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
+                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
                             Component.text("§7Status : §cMorte"),
                             Component.text("§7Réapparition dans : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity"))),
                             Component.text("§7Niveau : §c" + mascot.getLevel()),
@@ -143,7 +143,7 @@ public class CityMenu extends Menu {
                     );
                 } else {
                     loreMascots = List.of(
-                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
+                            Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
                             Component.text("§7Status : §aEn Vie"),
                             Component.text("§7Niveau : §c" + mascot.getLevel()),
                             Component.text(""),
@@ -326,21 +326,15 @@ public class CityMenu extends Menu {
         MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L * 60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
 
-        CityType type = city.getType();
-        String typeStr;
-        if (type.equals(CityType.WAR)) {
-            typeStr = "guerre";
-        } else if (type.equals(CityType.PEACE)) {
-            typeStr = "paix";
-        } else {
-            typeStr = "inconnu";
-        }
-        String finalType = typeStr;
+        String typeStr = switch(city.getType()) {
+            case WAR -> "guerre";
+            case PEACE -> "paix";
+        };
 
         Supplier<ItemStack> typeItemSupplier = () -> {
 
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("§7Votre ville est en §5" + finalType));
+            lore.add(Component.text("§7Votre ville est en §5" + typeStr));
 
             if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
                 lore.add(Component.text(""));

@@ -152,12 +152,7 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
                 if (!MayorManager.hasChoicePerkOwner(player)) {
-                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                            new MayorCreateMenu(player, null, null, null, MenuType.OWNER_1).open();
-                        }
-                    });
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new MayorCreateMenu(player, null, null, null, MenuType.OWNER_1).open());
                 }
             }));
         }

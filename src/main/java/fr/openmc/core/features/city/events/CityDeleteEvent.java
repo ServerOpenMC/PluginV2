@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CityDeleteEvent extends Event {
 
-    @Getter private City city;
+    @Getter private final City city;
 
     public CityDeleteEvent(City city) {
         this.city = city;

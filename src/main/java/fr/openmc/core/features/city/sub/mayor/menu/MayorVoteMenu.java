@@ -74,12 +74,7 @@ public class MayorVoteMenu extends PaginatedMenu {
             loreMayor.add(Component.text(""));
             loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
 
-            boolean ench;
-            if (candidate == playerVote) {
-                ench = true;
-            } else {
-                ench = false;
-            }
+            boolean ench = candidate == playerVote;
 
 
                 ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getUUID()), itemMeta -> {
@@ -91,7 +86,7 @@ public class MayorVoteMenu extends PaginatedMenu {
                         if (candidate == playerVote) {
                             MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6Maire"), Prefix.MAYOR, MessageType.ERROR, false);
                             return;
-                        };
+                        }
 
                         playerVote.setVote(playerVote.getVote()-1);
                         MayorManager.removeVotePlayer(player);
@@ -117,13 +112,9 @@ public class MayorVoteMenu extends PaginatedMenu {
 
         StringBuilder bar = new StringBuilder();
         bar.append(ColorUtils.getColorCode(color));
-        for (int i = 0; i < barFill; i++) {
-            bar.append("|");
-        }
+        bar.append("|".repeat(Math.max(0, barFill)));
         bar.append("§7");
-        for (int i = barFill; i < progressBars; i++) {
-            bar.append("|");
-        }
+        bar.append("|".repeat(Math.max(0, progressBars - barFill)));
         return bar.toString();
     }
 

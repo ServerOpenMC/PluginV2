@@ -10,9 +10,11 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -464,7 +466,7 @@ public class Quest {
                     if (onlinePlayer != null && onlinePlayer.isOnline()) {
                         if (this.isLargeActionBar && newProgress % 50 != 0) return;
                         Component actionBar = Component.text()
-                                .append(MiniMessage.miniMessage().deserialize(Prefix.QUEST.getPrefix()))
+                                .append(Prefix.QUEST.getPrefix())
                                 .append(Component.text(" » ", NamedTextColor.DARK_GRAY))
                                 .append(Component.text("Progression de la quête ", NamedTextColor.GRAY))
                                 .append(Component.text(this.name, NamedTextColor.WHITE))

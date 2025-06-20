@@ -41,7 +41,7 @@ public class MayorManager {
     @Getter
     private static ConnectionSource connectionSource;
 
-    public static int MEMBER_REQ_ELECTION = 3;
+    public static final int MEMBER_REQ_ELECTION = 3;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
@@ -63,7 +63,7 @@ public class MayorManager {
 
     public static int phaseMayor;
     public static HashMap<String, Mayor> cityMayor = new HashMap<>();
-    public static HashMap<String, CityLaw> cityLaws = new HashMap<>();
+    public static final HashMap<String, CityLaw> cityLaws = new HashMap<>();
     public static Map<String, List<MayorCandidate>> cityElections = new HashMap<>();
     public static Map<String, List<MayorVote>> playerVote = new HashMap<>();
 
@@ -341,12 +341,10 @@ public class MayorManager {
     }
 
     public static void initPhase2() {
-        Bukkit.getLogger().info("MAYOR - INIT PHASE 2");
         phaseMayor = 2;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : CityManager.getCities()) {
-            Bukkit.getLogger().info("- City : " + city.getName());
             runSetupMayor(city);
 
             for (UUID uuid : city.getMembers()) {

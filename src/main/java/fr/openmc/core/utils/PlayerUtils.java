@@ -15,11 +15,11 @@ public class PlayerUtils {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					player.teleport(location);
+					player.teleportAsync(location);
 				}
 			}.runTaskLater(OMCPlugin.getInstance(), 10);
 		} else {
-			player.teleport(location);
+			player.teleportAsync(location);
 		}
 	}
 }

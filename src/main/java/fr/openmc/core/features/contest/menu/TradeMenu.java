@@ -142,7 +142,7 @@ public class TradeMenu extends Menu {
                                 if (remain2 != 0) {
                                     newshellContestItem.setAmount(remain2);
                                     List<ItemStack> itemlist = ItemUtils.splitAmountIntoStack(newshellContestItem);
-                                    ItemStack[] shellContestArray = itemlist.toArray(new ItemStack[itemlist.size()]);
+                                    ItemStack[] shellContestArray = itemlist.toArray(new ItemStack[0]);
                                     MailboxManager.sendItems(player, player, shellContestArray);
                                 }
                             }

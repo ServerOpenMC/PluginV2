@@ -14,7 +14,6 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.sql.SQLException;
 import java.util.Objects;
 
 @Command({"adminmayor"})
@@ -22,7 +21,7 @@ import java.util.Objects;
 public class AdminMayorCommands {
     @Subcommand({"setphase"})
     @CommandPermission("omc.admins.commands.adminmayor")
-    public void setPhase(Player sender, int phase) throws SQLException {
+    public void setPhase(Player sender, int phase) {
         if (phase == 1) {
             MayorManager.initPhase1();
         } else if (phase == 2){
@@ -32,7 +31,7 @@ public class AdminMayorCommands {
 
     @Subcommand({"changeelection"})
     @CommandPermission("omc.admins.commands.adminmayor")
-    public void changeElection(Player sender, @Named("uuid") String cityUUID, String electionType) throws SQLException {
+    public void changeElection(Player sender, @Named("uuid") String cityUUID, String electionType) {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {

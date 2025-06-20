@@ -1,13 +1,12 @@
 package fr.openmc.core.utils.messages;
 
 import fr.openmc.core.features.settings.PlayerSettingsManager;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import lombok.Getter;
 
 import java.util.Map;
 
@@ -28,10 +27,9 @@ public class MessagesManager {
      */
 
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
-        MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(MiniMessage.miniMessage().deserialize(prefix.getPrefix()))
+                        .append(prefix.getPrefix())
                         .append(Component.text(" §7» ")
                         .append(message)
                 );
@@ -71,7 +69,7 @@ public class MessagesManager {
         MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(MiniMessage.miniMessage().deserialize(prefix.getPrefix()))
+                        .append(prefix.getPrefix())
                         .append(Component.text(" §7» ")
                         .append(message)
                 );

@@ -95,7 +95,7 @@ public class MayorColorMenu extends Menu {
                 itemMeta.displayName(Component.text("§7Mettez du " + ColorUtils.getNameFromColor(color)));
                 itemMeta.lore(loreColor);
             }).setOnClick(inventoryClickEvent -> {
-                if (type == "create") {
+                if (type.equals("create")) {
                     List<Component> loreAccept = new ArrayList<>(List.of(
                             Component.text("§7Vous allez vous présenter en tant que §6Maire de " + city.getName()),
                             Component.text(""),
@@ -139,16 +139,14 @@ public class MayorColorMenu extends Menu {
                                     e.printStackTrace();
                                 }
                             },
-                            () -> {
-                                player.closeInventory();
-                            },
+                            player::closeInventory,
                             loreAccept,
                             List.of(
                                     Component.text("§7Ne pas se présenter en tant que §6Maire de " + city.getName())
                             )
                     );
                     menu.open();
-                } else if (type == "change") {
+                } else if (type.equals("change")) {
                     if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
                         if (city.getMayor() == null) {
                             MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.MAYOR, MessageType.ERROR, false);
@@ -161,9 +159,7 @@ public class MayorColorMenu extends Menu {
                                     MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.MAYOR, MessageType.SUCCESS, false);
                                     player.closeInventory();
                                 },
-                                () -> {
-                                    player.closeInventory();
-                                },
+                                player::closeInventory,
                                 List.of(
                                         Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
                                 ),
@@ -181,9 +177,7 @@ public class MayorColorMenu extends Menu {
                                     MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
                                     player.closeInventory();
                                 },
-                                () -> {
-                                    player.closeInventory();
-                                },
+                                player::closeInventory,
                                 List.of(
                                         Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
                                 ),

@@ -142,7 +142,7 @@ public class MojangWrapper {
     }
 
     public void displayNewLines(Player player, SignEditor signEditor, String[] textLines, Object[] adventureLines) {
-        SignBlockEntity sign = (SignBlockEntity)signEditor.getSign();
+        SignBlockEntity sign = (SignBlockEntity)signEditor.sign();
 
         SignText newSignText = sign.getText(true);
         Component[] lines = createLines(textLines, adventureLines);
@@ -155,12 +155,12 @@ public class MojangWrapper {
         sign.setLevel(p.level());
         conn.send(sign.getUpdatePacket());
         sign.setLevel(null);
-        conn.send(new ClientboundOpenSignEditorPacket((BlockPos)signEditor.getBlockPosition(), true));
+        conn.send(new ClientboundOpenSignEditorPacket((BlockPos)signEditor.blockPosition(), true));
     }
 
     public void closeSignEditor(Player player, SignEditor signEditor) {
-        Location loc = signEditor.getLocation();
-        signEditor.getPipeline().remove("SignGUI");
+        Location loc = signEditor.location();
+        signEditor.pipeline().remove("SignGUI");
         player.sendBlockChange(loc, loc.getBlock().getBlockData());
     }
 

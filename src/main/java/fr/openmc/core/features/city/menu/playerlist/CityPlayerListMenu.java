@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
 import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -65,7 +64,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
                 boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
-                String title = "";
+                String title;
                 if(hasPermissionOwner) {
                     title = "Propriétaire ";
                 } else if (MayorManager.cityMayor.get(city.getUUID()).getUUID() == uuid) {
@@ -74,7 +73,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                     title = "Membre ";
                 }
 
-            List<Component> lorePlayer = List.of();
+            List<Component> lorePlayer;
             if (hasPermissionPerms && hasPermissionKick) {
                 if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
                     lorePlayer = List.of(
@@ -128,9 +127,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                     CitizensPermsMenu.openBookFor(player, playerOffline.getUniqueId());
                 } else if (hasPermissionKick) {
                     if (player.getUniqueId().equals(playerOffline.getUniqueId())) {
-                        return;
                     } else if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
-                        return;
                     } else {
                         ConfirmMenu menu = new ConfirmMenu(
                                 player,
@@ -138,7 +135,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                                     player.closeInventory();
                                     CityKickAction.startKick(player, playerOffline);
                                 },
-                                () -> player.closeInventory(),
+                                player::closeInventory,
                                 List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
                                 List.of(Component.text("§7Ne pas expulser " + playerOffline.getName())));
                         menu.open();
@@ -174,26 +171,22 @@ public class CityPlayerListMenu extends PaginatedMenu {
             lines[3] = "joueur ci dessus";
 
             SignGUI gui;
-            try {
-                gui = SignGUI.builder()
-                        .setLines(null, lines[1], lines[2], lines[3])
-                        .setType(fr.openmc.core.utils.ItemUtils.getSignType(player))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
+            gui = SignGUI.builder()
+                    .setLines(null, lines[1], lines[2], lines[3])
+                    .setType(fr.openmc.core.utils.ItemUtils.getSignType(player))
+                    .setHandler((p, result) -> {
+                        String input = result.getLine(0);
 
-                            if (InputUtils.isInputPlayer(input)) {
-                                Player playerToInvite = Bukkit.getPlayer(input);
-                                CityCommands.invite(player, playerToInvite);
-                            } else {
-                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                            }
+                        if (InputUtils.isInputPlayer(input)) {
+                            Player playerToInvite = Bukkit.getPlayer(input);
+                            CityCommands.invite(player, playerToInvite);
+                        } else {
+                            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                        }
 
-                            return Collections.emptyList();
-                        })
-                        .build();
-            } catch (SignGUIVersionException e) {
-                throw new RuntimeException(e);
-            }
+                        return Collections.emptyList();
+                    })
+                    .build();
 
             gui.open(player);
         }));

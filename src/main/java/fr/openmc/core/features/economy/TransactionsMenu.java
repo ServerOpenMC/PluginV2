@@ -3,7 +3,6 @@ package fr.openmc.core.features.economy;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -16,8 +15,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TransactionsMenu extends Menu {
-    Player owner;
-    UUID target;
+    final Player owner;
+    final UUID target;
 
     public TransactionsMenu(Player owner, UUID target) {
         super(owner);

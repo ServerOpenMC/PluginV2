@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -27,19 +26,19 @@ import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
 
 @Command({"ville", "city"})
 public class CityCommands {
-    public static HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
+    public static final HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     @DefaultFor("~")
-    void main(Player player) {
+    void mainCommand(Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:chest")) {
                 if (playerCity == null) {
@@ -89,23 +88,19 @@ public class CityCommands {
         lines[3] = "de ville ci dessus";
 
         SignGUI gui;
-        try {
-            gui = SignGUI.builder()
-                    .setLines(null, lines[1], lines[2], lines[3])
-                    .setType(ItemUtils.getSignType(player))
-                    .setHandler((p, result) -> {
-                        String input = result.getLine(0);
+        gui = SignGUI.builder()
+                .setLines(null, lines[1], lines[2], lines[3])
+                .setType(ItemUtils.getSignType(player))
+                .setHandler((p, result) -> {
+                    String input = result.getLine(0);
 
-                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                            CityCreateAction.beginCreateCity(player, input);
-                        });
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                        CityCreateAction.beginCreateCity(player, input);
+                    });
 
-                        return Collections.emptyList();
-                    })
-                    .build();
-        } catch (SignGUIVersionException e) {
-            throw new RuntimeException(e);
-        }
+                    return Collections.emptyList();
+                })
+                .build();
 
         gui.open(player);
     }

@@ -85,13 +85,12 @@ public class Company {
      * create a company object (use to deserliaze to DBCompany)
      *
      * @param name the name of the company
-     * @param owner the owner
-     * @param company_uuid the uuid of the company if it has one
+     * @param player the owner
+     * @param id the uuid of the company if it has one
      */
     public Company(UUID id, String name, UUID player, String city, double cut, double balance) {
         this.name = name;
         this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city));
-        assert id != null;
         this.company_uuid = id;
         this.cut = cut;
         this.balance = balance;
@@ -111,7 +110,7 @@ public class Company {
     /**
      * load permission in permsCache
      *
-     * @param playerUUID the uuid of the player
+     * @param player the uuid of the player
      */
     private void loadPermission(UUID player) {
         if (!permsCache.containsKey(player)) {

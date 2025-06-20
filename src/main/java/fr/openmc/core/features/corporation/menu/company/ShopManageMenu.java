@@ -49,9 +49,9 @@ public class ShopManageMenu extends PaginatedMenu {
         for (Shop shop : company.getShops()) {
 
             List<Component> loc = new ArrayList<>();
-            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
 
             loc.add(Component.text("§lLocation : §r x : " + x + " y : " + y + " z : " + z));
 

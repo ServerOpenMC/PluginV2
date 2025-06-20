@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.sub.mayor.listeners;
 import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
-import dev.lone.itemsadder.api.Events.FurniturePlaceSuccessEvent;
+import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
@@ -69,7 +69,7 @@ public class UrneListener implements Listener {
     }
 
     @EventHandler
-    private void onUrnePlaceSuccessEvent(FurniturePlaceSuccessEvent event) {
+    private void onUrnePlaceSuccessEvent(FurniturePlacedEvent event) {
         if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
 
         Player player = event.getPlayer();

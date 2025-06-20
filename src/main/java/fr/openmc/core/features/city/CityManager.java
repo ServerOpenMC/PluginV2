@@ -34,9 +34,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CityManager implements Listener {
-    private static HashMap<String, City> cities = new HashMap<>();
-    private static HashMap<UUID, City> playerCities = new HashMap<>();
-    private static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
+    private static final HashMap<String, City> cities = new HashMap<>();
+    private static final HashMap<UUID, City> playerCities = new HashMap<>();
+    private static final HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
@@ -270,7 +270,7 @@ public class CityManager implements Listener {
      *
      * @return A list of all city UUIDs
      */
-    public static List<String> getAllCityUUIDs() throws SQLException {
+    public static List<String> getAllCityUUIDs() {
         List<String> uuidList = new ArrayList<>();
         cities.forEach((name, city) -> uuidList.add(city.getUUID()));
         return uuidList;
@@ -325,7 +325,7 @@ public class CityManager implements Listener {
         Set<BlockVector2> chunks = new HashSet<>();
 
         claimedChunks.forEach((chunk, city) -> {
-            if (city.getUUID() == inCity.getUUID())
+            if (city.getUUID().equals(inCity.getUUID()))
                 chunks.add(chunk);
         });
 
@@ -342,7 +342,7 @@ public class CityManager implements Listener {
         Set<UUID> members = new HashSet<>();
 
         playerCities.forEach((player, city) -> {
-            if (city.getUUID() == inCity.getUUID())
+            if (city.getUUID().equals(inCity.getUUID()))
                 members.add(player);
         });
 
