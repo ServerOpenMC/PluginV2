@@ -27,12 +27,11 @@ public class MascotUtils {
 
 	/**
 	 * Removes the mascot associated with a given city.
-	 * @param city The city whose mascot is to be removed.
+	 * @param mascot The mascot is to be removed.
 	 * This method will also remove the mascot from the mascotsByCityUUID and mascotsByEntityUUID maps.
 	 */
-	public static void removeMascotOfCity(City city) {
-		Mascot mascot = city.getMascot();
-		MascotsManager.mascotsByCityUUID.remove(city.getUUID());
+	public static void removeMascotOfCity(Mascot mascot) {
+		MascotsManager.mascotsByCityUUID.remove(mascot.getCityUUID());
 		MascotsManager.mascotsByEntityUUID.remove(mascot.getMascotUUID());
 	}
 
