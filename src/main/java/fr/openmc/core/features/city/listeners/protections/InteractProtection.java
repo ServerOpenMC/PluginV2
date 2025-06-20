@@ -24,13 +24,11 @@ public class InteractProtection implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.isCancelled()) return;
         Player player = event.getPlayer();
       
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
-        Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
         Location location = clickedBlock.getLocation();
@@ -41,9 +39,6 @@ public class InteractProtection implements Listener {
 
         boolean isMinecart = isMinecart(itemType);
         boolean isTnt = itemType == Material.TNT;
-	    
-	      Block clickedBlock = event.getClickedBlock();
-        if (clickedBlock == null) return;
 
         Location loc = clickedBlock.getLocation();
 
@@ -79,12 +74,11 @@ public class InteractProtection implements Listener {
     @EventHandler
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
-
-        Entity entity = event.getRightClicked();
-        if (entity instanceof Player) return;
-        if (!(entity instanceof ItemFrame)) return;
-
+        
+        Entity rightClicked = event.getRightClicked();
         if (rightClicked instanceof Player) return;
+        if (! (rightClicked instanceof ItemFrame)) return;
+
         if (MascotUtils.isMascot(rightClicked)) return;
         
         ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());

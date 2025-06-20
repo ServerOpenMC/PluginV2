@@ -93,13 +93,6 @@ public class ProtectionsManager {
         }
     }
 	
-	public static boolean canExplodeNaturally(Location loc) {
-		City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-		if (city == null) return true;
-		
-		return city.isInWar() && city.getWar().getPhase() == War.WarPhase.COMBAT;
-	}
-	
 	public static void verify(Entity entity, Cancellable event, Location loc) {
 		if (!entity.getWorld().getName().equals("world")) return;
 		
