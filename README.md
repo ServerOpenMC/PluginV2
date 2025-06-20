@@ -2,7 +2,7 @@
 Nouveau plugin collaboratif pour un serveur : VOTRE serveur !
 
 <a href="https://github.com/ServerOpenMC/PluginV2/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ServerOpenMC/PluginV2" />
+  <img src="https://contrib.rocks/image?repo=ServerOpenMC/PluginV2" alt="Contributors" />
 </a>
 
 ## 🤝 Rejoindre le développement.

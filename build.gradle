@@ -12,7 +12,7 @@ def getLatestGitTag() {
             standardOutput = stdout
         }
         return stdout.toString().trim()
-    } catch (Exception e) {
+    } catch (Exception ignored) {
         return "unknown" // Default value if no tags exist
     }
 }
@@ -93,7 +93,7 @@ paperweight {
   addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { [it] as Set }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = targetJavaVersion
 }
