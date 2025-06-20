@@ -39,6 +39,6 @@ public class PlayerUtils {
 
 		Location target = new Location(world, x, y, z);
 
-		player.teleport(target.add(0.5, 1, 0.5));
+		player.teleportAsync(target.add(0.5, 1, 0.5));
 	}
 }
