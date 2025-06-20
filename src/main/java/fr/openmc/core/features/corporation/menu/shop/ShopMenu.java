@@ -146,14 +146,14 @@ public class ShopMenu extends Menu {
                 itemMeta.setLore(lore);
             }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat")))));
 
-        content.put(22, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
+        content.put(23, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 1");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
             amountToBuy = getCurrentItem().getAmount()<=amountToBuy ? getCurrentItem().getAmount() : amountToBuy + 1;
             open();
         }));
-        content.put(23, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:10_btn").getBest(), itemMeta -> {
+        content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:10_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 10");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
@@ -161,7 +161,7 @@ public class ShopMenu extends Menu {
             open();
         }));
 
-        content.put(24, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), itemMeta -> {
+        content.put(25, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§5Ajouter 64");
         }).setOnClick(inventoryClickEvent -> {
             if (getCurrentItem() == null) return;
