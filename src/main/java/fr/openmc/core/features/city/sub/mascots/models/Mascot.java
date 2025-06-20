@@ -32,6 +32,7 @@ public class Mascot {
     @DatabaseField(canBeNull = false)
     private int z;
 
+    private City city;
     Mascot() {
         // required by ORMLite
     }
@@ -83,6 +84,10 @@ public class Mascot {
     }
 
     public City getCity() {
-        return CityManager.getCity(this.cityUUID);
+        if (this.city != null) {
+            return this.city;
+        }
+        this.city = CityManager.getCity(this.cityUUID);
+        return this.city;
     }
 }
