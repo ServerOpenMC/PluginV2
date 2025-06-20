@@ -41,7 +41,7 @@ public class MayorManager {
     @Getter
     private static ConnectionSource connectionSource;
 
-    public static int MEMBER_REQ_ELECTION = 1;
+    public static int MEMBER_REQ_ELECTION = 3;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
