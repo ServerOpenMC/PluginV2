@@ -6,11 +6,9 @@ import revxrsal.commands.annotation.Description;
 
 
 public class AdminShopCommand {
-
     @Command("adminshop")
     @Description("Ouvrir le menu du shop admin")
     public void openAdminShop(Player player) {
         AdminShopManager.openMainMenu(player);
     }
-
 }
