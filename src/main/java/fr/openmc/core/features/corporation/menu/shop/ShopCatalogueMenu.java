@@ -36,7 +36,7 @@ public class ShopCatalogueMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.BLUE_STAINED_GLASS_PANE;
+        return null;
     }
 
     @Override
