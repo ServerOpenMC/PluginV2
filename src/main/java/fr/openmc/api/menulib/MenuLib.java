@@ -30,7 +30,6 @@ import java.util.function.Consumer;
 public final class MenuLib implements Listener {
 	
 	private static final Map<Player, Menu> lastMenu = new HashMap<>();
-	private static final Map<Menu, Map<ItemStack, Consumer<InventoryClickEvent>>> itemClickEvents = new HashMap<>();
 	@Getter
 	private static NamespacedKey itemIdKey;
 	
@@ -69,12 +68,7 @@ public final class MenuLib implements Listener {
 	 *                  to be executed when the {@link ItemStack} is clicked within the menu.
 	 */
 	public static void setItemClickEvent(Menu menu, ItemStack itemStack, Consumer<InventoryClickEvent> e) {
-		Map<ItemStack, Consumer<InventoryClickEvent>> itemEvents = itemClickEvents.get(menu);
-		if (itemEvents == null) {
-			itemEvents = new HashMap<>();
-		}
-		itemEvents.put(itemStack, e);
-		itemClickEvents.put(menu, itemEvents);
+		menu.itemClickEvents.put(itemStack, e);
 	}
 	
 	/**
@@ -114,33 +108,27 @@ public final class MenuLib implements Listener {
 	 */
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		if (e.getInventory().getHolder(false) instanceof Menu menu) {
-			if (e.getCurrentItem() == null) {
-				return;
-			}
+        if (!(e.getInventory().getHolder(false) instanceof Menu menu))
+            return;
 
-			if (menu.getTakableSlot().contains(e.getSlot())) {
-				return;
-			}
+        if (e.getCurrentItem() == null)
+            return;
 
-			e.setCancelled(true);
-			menu.onInventoryClick(e);
-			
-			try {
-				itemClickEvents.forEach((menu1, itemStackConsumerMap) -> {
-					if (menu1.equals(menu)) {
-						itemStackConsumerMap.forEach((itemStack, inventoryClickEventConsumer) -> {
-							if (itemStack.equals(e.getCurrentItem())) {
-								inventoryClickEventConsumer.accept(e);
-							}
-						});
-					}
-				});
-			} catch (Exception ignore) {
+        if (menu.getTakableSlot().contains(e.getSlot()))
+            return;
 
-			}
-		}
-	}
+        e.setCancelled(true);
+        menu.onInventoryClick(e);
+
+        Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = menu.itemClickEvents;
+        if (itemClickEvents.isEmpty())
+            return;
+
+        for (Map.Entry<ItemStack, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
+            if (entry.getKey().equals(e.getCurrentItem()))
+                entry.getValue().accept(e);
+        }
+    }
 
 	/**
 	 * Handles the event that occurs when a player closes an inventory associated with a {@link Menu}.

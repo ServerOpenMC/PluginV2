@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Represents an abstract Menu framework for managing custom player inventories.
@@ -30,6 +31,7 @@ import java.util.Objects;
  * handling inventory interactions, and managing permissions.
  */
 public abstract class Menu implements InventoryHolder {
+	Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = new HashMap<>();
 	
 	@Getter
 	private final Player owner;
