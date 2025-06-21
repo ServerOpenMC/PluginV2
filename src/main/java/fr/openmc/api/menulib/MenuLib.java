@@ -135,11 +135,7 @@ public final class MenuLib implements Listener {
 	 */
 	@EventHandler
 	public void onClose(InventoryCloseEvent e) {
-		if (e.getInventory().getHolder(false) instanceof PaginatedMenu menu) {
+		if (e.getInventory().getHolder(false) instanceof Menu menu)
 			menu.onClose(e);
-		}
-		if (e.getInventory().getHolder(false) instanceof Menu menu) {
-			menu.onClose(e);
-		}
 	}
 }
