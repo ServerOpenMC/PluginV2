@@ -152,7 +152,7 @@ public class MascotsManager {
             }
         });
 
-        MascotUtils.removeMascotOfCity(city);
+        MascotUtils.removeMascotOfCity(mascot);
     }
 
     public static void reviveMascots(String city_uuid) {

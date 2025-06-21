@@ -10,6 +10,8 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
@@ -27,8 +29,6 @@ import java.util.*;
 public class QuestsMenu extends Menu {
     private int currentPage;
     private static String TITLE;
-    private static final ItemStack LEFT_ARROW;
-    private static final ItemStack RIGHT_ARROW;
     private final int totalPages;
     private Player target;
     private final Map<Integer, Integer> slotToQuestIndex = new HashMap<>();
@@ -37,7 +37,6 @@ public class QuestsMenu extends Menu {
         super(player);
         this.currentPage = currentPage;
         this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
-        TITLE = "Quests (" + currentPage + 1 + "/" + this.totalPages + ")";
         this.target = player;
     }
 
@@ -45,24 +44,21 @@ public class QuestsMenu extends Menu {
         super(player);
         this.currentPage = currentPage;
         this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
-        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
         this.target = target;
     }
 
     public QuestsMenu(Player player) {
         this(player, 0);
         this.target = player;
-        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
     }
 
     public QuestsMenu(Player player, Player target) {
         this(player, 0);
         this.target = target;
-        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
     }
 
     public @NotNull String getName() {
-        return TITLE;
+        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-25%%img_quests_menu%");
     }
 
     public @NotNull InventorySize getInventorySize() {
@@ -71,10 +67,10 @@ public class QuestsMenu extends Menu {
 
     public void onInventoryClick(InventoryClickEvent event) {
         int slot = event.getSlot();
-        if (slot == 18 && this.currentPage > 0) {
+        if (slot == 19 && this.currentPage > 0) {
             --this.currentPage;
             this.refresh();
-        } else if (slot == 26 && this.currentPage < this.totalPages - 1) {
+        } else if (slot == 25 && this.currentPage < this.totalPages - 1) {
             ++this.currentPage;
             this.refresh();
         } else if (slot >= 9 && slot <= 17) {
@@ -113,11 +109,11 @@ public class QuestsMenu extends Menu {
         }
 
         if (this.currentPage > 0) {
-            content.put(18, LEFT_ARROW);
+            content.put(19, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_left_arrow")).getBest());
         }
 
         if (this.currentPage < this.totalPages - 1) {
-            content.put(26, RIGHT_ARROW);
+            content.put(25, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_right_arrow")).getBest());
         }
 
         return content;
@@ -281,16 +277,5 @@ public class QuestsMenu extends Menu {
         lore.add(bar);
         meta.lore(lore);
         item.setItemMeta(meta);
-    }
-
-    static {
-        LEFT_ARROW = new ItemStack(Material.ARROW);
-        ItemMeta leftArrowMeta = LEFT_ARROW.getItemMeta();
-        leftArrowMeta.displayName(Component.text("§aPage précédente"));
-        LEFT_ARROW.setItemMeta(leftArrowMeta);
-        RIGHT_ARROW = new ItemStack(Material.ARROW);
-        ItemMeta rightArrowMeta = RIGHT_ARROW.getItemMeta();
-        rightArrowMeta.displayName(Component.text("§aPage suivante"));
-        RIGHT_ARROW.setItemMeta(rightArrowMeta);
     }
 }

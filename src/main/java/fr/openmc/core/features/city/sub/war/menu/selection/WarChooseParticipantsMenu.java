@@ -57,8 +57,8 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
-        List<UUID> sortedMembers = cityLaunch.getMembers().stream()
-                .sorted(Comparator.comparing((UUID uuid) -> !Bukkit.getPlayer(uuid).isOnline())
+        List<UUID> sortedMembers = cityLaunch.getOnlineMembers().stream()
+                .sorted(Comparator.comparing((UUID uuid) -> !Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline())
                         .thenComparing(uuid -> {
                             if (cityLaunch.hasPermission(uuid, CPermission.OWNER)) return 0;
                             else if (MayorManager.cityMayor.get(cityLaunch.getUUID()).getUUID().equals(uuid))

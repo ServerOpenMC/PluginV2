@@ -11,8 +11,9 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.actions.CityLeaveAction;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
+import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
@@ -335,6 +336,11 @@ public class CityMenu extends Menu {
 
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("§7Votre ville est en §5" + typeStr));
+
+            if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CPermission.LAUNCH_WAR)) {
+                lore.add(Component.empty());
+                lore.add(Component.text("§7Vous pouvez lancer une guerre avec §c/war"));
+            }
 
             if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
                 lore.add(Component.text(""));
