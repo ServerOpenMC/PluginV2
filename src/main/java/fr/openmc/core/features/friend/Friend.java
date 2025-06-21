@@ -11,6 +11,8 @@ import lombok.Setter;
 
 @DatabaseTable(tableName = "friends")
 public class Friend {
+    @DatabaseField(generatedId = true)
+    private Long id;
     @DatabaseField(canBeNull = false)
     private UUID first;
     @DatabaseField(canBeNull = false)
@@ -37,6 +39,6 @@ public class Friend {
     }
 
     public UUID getOther(UUID player) {
-        return player == first ? second : first;
+        return player.equals(first) ? second : first;
     }
 }

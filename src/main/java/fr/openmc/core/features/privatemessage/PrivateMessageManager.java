@@ -1,12 +1,13 @@
 package fr.openmc.core.features.privatemessage;
 
+import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Named;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,15 @@ public class PrivateMessageManager {
         if (sender.equals(receiver)) {
             MessagesManager.sendMessage(sender, Component.text("§cVous ne pouvez pas vous envoyer de message privé à " +
                     "vous-même."), Prefix.OPENMC, MessageType.ERROR, true);
+            return;
+        }
+
+        if (!PlayerSettingsManager.canReceivePrivateMessage(receiver.getUniqueId(), sender.getUniqueId())) {
+            MessagesManager.sendMessage(sender, Component.text("§cVous avez désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
+            return;
+        }
+        if (!PlayerSettingsManager.canReceivePrivateMessage(sender.getUniqueId(), receiver.getUniqueId())) {
+            MessagesManager.sendMessage(sender, Component.text("§cLe joueur " + receiver.getName() + " a désactivé les messages privés."), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 

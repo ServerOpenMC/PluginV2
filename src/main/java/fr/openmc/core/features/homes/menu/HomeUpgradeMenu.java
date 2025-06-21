@@ -7,9 +7,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -36,10 +33,9 @@ public class HomeUpgradeMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> items = new HashMap<>();
 
-        try {
-            int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId());
+        int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId());
 
-            int homeMaxLimit = HomeLimits.values().length - 1;
+        int homeMaxLimit = HomeLimits.values().length - 1;
 
             HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
             HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner())) != null
@@ -65,12 +61,7 @@ public class HomeUpgradeMenu extends Menu {
                 getOwner().closeInventory();
             }));
 
-            return items;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            getOwner().closeInventory();
-            throw new RuntimeException("Failed to load HomeUpgradeMenu content", e);
-        }
+        return items;
     }
 
     @Override
@@ -79,7 +70,8 @@ public class HomeUpgradeMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
 
     @Override
     public void onClose(InventoryCloseEvent event) {}

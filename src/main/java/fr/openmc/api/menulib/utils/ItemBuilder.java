@@ -3,6 +3,10 @@ package fr.openmc.api.menulib.utils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -140,12 +144,19 @@ public class ItemBuilder extends ItemStack {
 	 * for additional configurations.
 	 */
 	public ItemBuilder setNextMenu(Menu menu) {
-		Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
-			Player player = (Player) inventoryClickEvent.getWhoClicked();
-			MenuLib.setLastMenu(player, itemMenu);
-			menu.open();
-		};
-		setOnClick(clickEventConsumer);
+		try {
+			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
+				Player player = (Player) inventoryClickEvent.getWhoClicked();
+				MenuLib.setLastMenu(player, itemMenu);
+				menu.open();
+			};
+			setOnClick(clickEventConsumer);
+			return this;
+		} catch (Exception e) {
+			MessagesManager.sendMessage(menu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			menu.getOwner().closeInventory();
+			e.printStackTrace();
+		}
 		return this;
 	}
 	
@@ -157,8 +168,15 @@ public class ItemBuilder extends ItemStack {
 	 * for further customization of the item.
 	 */
 	public ItemBuilder setCloseButton() {
-		Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> itemMenu.getOwner().closeInventory();
-		setOnClick(clickEventConsumer);
+		try {
+			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> itemMenu.getOwner().closeInventory();
+			setOnClick(clickEventConsumer);
+			return this;
+		} catch (Exception e) {
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			itemMenu.getOwner().closeInventory();
+			e.printStackTrace();
+		}
 		return this;
 	}
 	
@@ -170,8 +188,15 @@ public class ItemBuilder extends ItemStack {
 	 * for additional configurations.
 	 */
 	public ItemBuilder setBackButton() {
-		Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> itemMenu.back();
-		setOnClick(clickEventConsumer);
+		try {
+			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> itemMenu.back();
+			setOnClick(clickEventConsumer);
+			return this;
+		} catch (Exception e) {
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			itemMenu.getOwner().closeInventory();
+			e.printStackTrace();
+		}
 		return this;
 	}
 	
@@ -184,13 +209,20 @@ public class ItemBuilder extends ItemStack {
 	 * for additional configurations of the item.
 	 */
 	public ItemBuilder setNextPageButton() {
-		Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
-			if (itemMenu instanceof PaginatedMenu menu) {
-				menu.setPage(menu.isLastPage() ? menu.getPage() : menu.getPage() + 1);
-				menu.open();
-			}
-		};
-		setOnClick(clickEventConsumer);
+		try {
+			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
+				if (itemMenu instanceof PaginatedMenu menu) {
+					menu.setPage(menu.isLastPage() ? menu.getPage() : menu.getPage() + 1);
+					menu.open();
+				}
+			};
+			setOnClick(clickEventConsumer);
+			return this;
+		} catch (Exception e) {
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			itemMenu.getOwner().closeInventory();
+			e.printStackTrace();
+		}
 		return this;
 	}
 	
@@ -203,13 +235,20 @@ public class ItemBuilder extends ItemStack {
 	 * for additional configurations of the item.
 	 */
 	public ItemBuilder setPreviousPageButton() {
-		Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
-			if (itemMenu instanceof PaginatedMenu menu) {
-				menu.setPage(menu.getPage() == 0 ? 0 : menu.getPage() - 1);
-				menu.open();
-			}
-		};
-		setOnClick(clickEventConsumer);
+		try {
+			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
+				if (itemMenu instanceof PaginatedMenu menu) {
+					menu.setPage(menu.getPage() == 0 ? 0 : menu.getPage() - 1);
+					menu.open();
+				}
+			};
+			setOnClick(clickEventConsumer);
+			return this;
+		} catch (Exception e) {
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			itemMenu.getOwner().closeInventory();
+			e.printStackTrace();
+		}
 		return this;
 	}
 	
@@ -241,7 +280,14 @@ public class ItemBuilder extends ItemStack {
 	 */
 	@Override
 	public final boolean setItemMeta(@Nullable ItemMeta itemMeta) {
-		meta = itemMeta;
-		return super.setItemMeta(itemMeta);
+		try {
+			meta = itemMeta;
+			return super.setItemMeta(itemMeta);
+		} catch (Exception e) {
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			itemMenu.getOwner().closeInventory();
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

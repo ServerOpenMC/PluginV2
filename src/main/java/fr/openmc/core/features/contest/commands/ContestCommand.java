@@ -9,7 +9,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
@@ -29,10 +28,10 @@ public class ContestCommand {
     @DefaultFor("~")
     public void defaultCommand(Player player) {
         int phase = ContestManager.data.getPhase();
-        if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId().toString()) == null) || (phase == 2)) {
+        if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId()) == null) || (phase == 2)) {
             VoteMenu menu = new VoteMenu(player);
             menu.open();
-        } else if (phase == 3 && ContestManager.dataPlayer.get(player.getUniqueId().toString()) != null) {
+        } else if (phase == 3 && ContestManager.dataPlayer.get(player.getUniqueId()) != null) {
             ContributionMenu menu = new ContributionMenu(player);
             menu.open();
 
@@ -48,7 +47,7 @@ public class ContestCommand {
 
     @Subcommand("setphase")
     @Description("Permet de lancer une procédure de phase")
-    @CommandPermission("omc.commands.contest.setphase")
+    @CommandPermission("omc.admin.commands.contest.setphase")
     public void setPhase(Integer phase) {
         switch(phase) {
             case 1:
@@ -68,7 +67,7 @@ public class ContestCommand {
 
     @Subcommand("setcontest")
     @Description("Permet de définir un Contest")
-    @CommandPermission("omc.commands.contest.setcontest")
+    @CommandPermission("omc.admin.commands.contest.setcontest")
     @AutoComplete("@colorContest")
     public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
         int phase = ContestManager.data.getPhase();
@@ -88,7 +87,7 @@ public class ContestCommand {
 
     @Subcommand("settrade")
     @Description("Permet de définir un Trade")
-    @CommandPermission("omc.commands.contest.settrade")
+    @CommandPermission("omc.admin.commands.contest.settrade")
     @AutoComplete("@trade")
     public void setTrade(Player player, @Named("trade") String trade, int amount, int amountShell) {
         YamlConfiguration config = ContestManager.contestConfig;
@@ -115,14 +114,14 @@ public class ContestCommand {
 
     @Subcommand("addpoints")
     @Description("Permet d'ajouter des points a un membre")
-    @CommandPermission("omc.commands.contest.addpoints")
+    @CommandPermission("omc.admin.commands.contest.addpoints")
     public void addPoints(Player player, Player target, Integer points) {
         if (ContestManager.data.getPhase()!=3) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le Contests n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 
-        if (ContestManager.dataPlayer.get(target.getUniqueId().toString()) == null) {
+        if (ContestManager.dataPlayer.get(target.getUniqueId()) == null) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points à ce joueur car il ne s'est pas inscrit"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
@@ -132,7 +131,7 @@ public class ContestCommand {
             return;
         }
 
-        ContestPlayerManager.setPointsPlayer(target,points + ContestManager.dataPlayer.get(target.getUniqueId().toString()).getPoints());
+        ContestPlayerManager.setPointsPlayer(target.getUniqueId() ,points + ContestManager.dataPlayer.get(target.getUniqueId()).getPoints());
         MessagesManager.sendMessage(player, Component.text("§aVous avez ajouté " + points + " §apoint(s) à " + target.getName()), Prefix.STAFF, MessageType.SUCCESS, true);
     }
 }

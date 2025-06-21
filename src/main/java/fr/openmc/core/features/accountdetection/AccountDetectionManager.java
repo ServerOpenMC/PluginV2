@@ -160,7 +160,7 @@ public class AccountDetectionManager implements Listener {
         try {
             DiscordWebhook.sendMessage(
                     webhookUrl,
-                    "Vpn détecté: " + player.getName() + " (flags: " + detectedFlags + "). Pour plus d'information exécutez `/accountdetection check " + player.getName() + "` sur le serveur minecraft."
+                    "Vpn détecté: `" + player.getName() + "` (flags: " + detectedFlags + "). Pour plus d'information exécutez `/accountdetection check " + player.getName() + "` sur le serveur minecraft."
             );
         } catch (Exception e) {
             OMCPlugin.getInstance().getLogger().warning("Impossible d'envoyer le message sur Discord: " + e.getMessage());

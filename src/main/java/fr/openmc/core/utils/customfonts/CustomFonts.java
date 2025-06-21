@@ -1,11 +1,8 @@
 package fr.openmc.core.utils.customfonts;
 
-import org.bukkit.Bukkit;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 
 public abstract class CustomFonts {
-
-    private static final boolean hasItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
-
     /**
      * use exemple : CustomFonts.getBest("omc_homes:bin", "🗑️")
      *
@@ -15,7 +12,7 @@ public abstract class CustomFonts {
      */
     public static String getBest(String namespaceID, String baseFont) {
         String font = null;
-        if (hasItemsAdder) font = Fonts.getFont(namespaceID);
+        if (ItemsAdderApi.hasItemAdder()) font = Fonts.getFont(namespaceID);
 
         if (font == null) {
             font = baseFont;

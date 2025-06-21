@@ -28,8 +28,11 @@ public class EconomyPlayer {
         balance += amount;
     }
 
-    public void withdraw(double amount) {
-        balance -= amount;
-        assert balance >= 0;
+    public boolean withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+            return true;
+        }
+        return false;
     }
 }

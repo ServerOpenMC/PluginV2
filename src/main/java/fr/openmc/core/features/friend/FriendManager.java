@@ -1,5 +1,7 @@
 package fr.openmc.core.features.friend;
 
+import fr.openmc.core.features.settings.PlayerSettings;
+import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.CommandsManager;
 import lombok.Getter;
@@ -43,8 +45,8 @@ public class FriendManager {
         removeRequest(getRequest(firstUUID));
     }
 
-    public static void removeFriend(UUID firstUUID, UUID secondUUID) {
-        FriendSQLManager.removeInDatabase(firstUUID, secondUUID);
+    public static boolean removeFriend(UUID firstUUID, UUID secondUUID) {
+        return FriendSQLManager.removeInDatabase(firstUUID, secondUUID);
     }
 
     public static boolean areFriends(UUID firstUUID, UUID secondUUID) {

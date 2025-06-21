@@ -3,6 +3,8 @@ package fr.openmc.core.features.friend;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.settings.PlayerSettings;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -35,6 +37,10 @@ public class FriendCommand {
         try {
             if (player.getUniqueId().equals(target.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous ajouter vous-même en ami."), Prefix.FRIEND, MessageType.ERROR, true);
+                return;
+            }
+            if (!PlayerSettingsManager.canReceiveFriendRequest(target.getUniqueId(), player.getUniqueId())) {
+                MessagesManager.sendMessage(player, Component.text("§cCe joueur a désactivé les demandes d'amis."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             if (FriendManager.isRequestPending(target.getUniqueId())) {
@@ -88,8 +94,14 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas amis avec ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            FriendManager.removeFriend(player.getUniqueId(), target.getUniqueId());
+            if (!FriendManager.removeFriend(player.getUniqueId(), target.getUniqueId())) {
+                MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de la suppression de l'ami."), Prefix.FRIEND, MessageType.ERROR, true);
+                return;
+            }
             MessagesManager.sendMessage(player, Component.text("§aVous avez supprimé §e" + target.getName() + " §ade votre liste d'amis."), Prefix.FRIEND, MessageType.INFO, true);
+            if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
+                MessagesManager.sendMessage(targetPlayer, Component.text("§cVous avez été supprimé de la liste d'amis de §e" + player.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
+            }
         } catch (Exception e) {
             MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de la suppression de l'ami."), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);

@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.conditions;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -29,7 +30,7 @@ public class CityCreateConditions {
      * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
-    public static boolean canCityCreate(Player player) {
+    public static boolean canCityCreate(Player player, String cityName) {
         if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
             MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir créer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
             return false;
@@ -47,6 +48,11 @@ public class CityCreateConditions {
 
         if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), AYWENITE_CREATE)) {
             MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE +" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (cityName != null && !InputUtils.isInputCityName(cityName)) {
+            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

@@ -7,12 +7,9 @@ import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityChestAction;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -29,14 +26,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.IntStream;
 
+import static fr.openmc.core.features.city.conditions.CityChestConditions.*;
+
 public class CityChestMenu extends PaginatedMenu {
 
     private final City city;
     @Getter
     private final int page;
-
-    public static final int UPGRADE_PER_MONEY = 3000;
-    public static final int UPGRADE_PER_AYWENITE = 5;
 
     public CityChestMenu(Player owner, City city, int page) {
         super(owner);
@@ -50,6 +46,8 @@ public class CityChestMenu extends PaginatedMenu {
         if (this.page > this.city.getChestPages()) {
             throw new IllegalArgumentException("Page must be less than or equal to " + this.city.getChestPages());
         }
+
+        city.setChestWatcher(getOwner().getUniqueId());
     }
 
     @Override
@@ -65,7 +63,6 @@ public class CityChestMenu extends PaginatedMenu {
     @Override
     public @NotNull List<ItemStack> getItems() {
         ItemStack[] contents = city.getChestContent(this.page);
-        city.setChestWatcher(getOwner().getUniqueId());
 
         if (contents == null) {
             return Collections.emptyList();
@@ -111,7 +108,9 @@ public class CityChestMenu extends PaginatedMenu {
                     Inventory inv = inventoryClickEvent.getInventory();
 
                     exit(city, inv);
+
                     new CityChestMenu(player, city, this.getPage() - 1).open();
+                    city.setChestWatcher(getOwner().getUniqueId());
                 }
             }));
         }
@@ -123,7 +122,9 @@ public class CityChestMenu extends PaginatedMenu {
                     Inventory inv = inventoryClickEvent.getInventory();
 
                     exit(city, inv);
+
                     new CityChestMenu(player, city, this.getPage() + 1).open();
+                    city.setChestWatcher(getOwner().getUniqueId());
                 }
             }));
         }
@@ -139,23 +140,9 @@ public class CityChestMenu extends PaginatedMenu {
                         Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE")
                 ));
             }).setOnClick(inventoryClickEvent -> {
-                int price = city.getChestPages() * UPGRADE_PER_MONEY; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
-                if (city.getBalance() < price) {
-                    MessagesManager.sendMessage(player, Component.text("La ville n'as pas assez d'argent (" + price + EconomyManager.getEconomyIcon() + " nécessaires)"), Prefix.CITY, MessageType.ERROR, true);
-                    return;
-                }
+                if (!canCityChestUpgrade(city, player)) return;
 
-                int aywenite = city.getChestPages() * UPGRADE_PER_AYWENITE; // fonction linéaire f(x)=ax ; a=UPGRADE_PER_MONEY
-                if (!fr.openmc.core.utils.ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), aywenite)) {
-                    MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite §f(" + aywenite + " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
-
-                city.updateBalance((double) -price);
-                ItemUtils.removeItemsFromInventory(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), aywenite);
-
-                city.saveChestContent(city.getChestPages() + 1, null);
-                MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+                CityChestAction.upgradeChest(player, city);
                 exit(city, getInventory());
                 player.closeInventory();
             }));

@@ -2,6 +2,7 @@ package fr.openmc.core.features.city;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.listeners.protections.*;
+import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -33,43 +34,59 @@ public class ProtectionsManager {
                 new InteractProtection(),
                 new LeashProtection(),
                 new MountProtection(),
+                new PistonProtection(),
                 new PotionProtection(),
-                new TramplingProtection()
+                new TramplingProtection(),
+                new VehicleProtection()
         );
     }
 
-    public static void verify(Player player, Cancellable event, Location loc) {
-        if (!player.getWorld().getName().equals("world")) return;
+    public static boolean canInteract(Player player, Location loc) {
+        if (!player.getWorld().getName().equals("world")) return true;
 
-        boolean canBypass = canBypassPlayer.contains(player.getUniqueId());
-        if (canBypass) return;
+        if (canBypassPlayer.contains(player.getUniqueId())) return true;
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
-        if (cityAtLoc == null) return;
+        if (cityAtLoc == null) return true;
 
-        CityType cityType = cityAtLoc.getType();
-        boolean isMember = cityAtLoc.isMember(player);
+        if (cityAtLoc.isMember(player)) return true;
 
-        if (cityType.equals(CityType.WAR)) {
-            return;
+        War war = cityAtLoc.getWar();
+        if (cityAtLoc.isInWar() && war != null && war.getPhase() == War.WarPhase.COMBAT) {
+            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            if (playerCity != null && war.equals(playerCity.getWar())) {
+                return war.getAttackers().contains(player.getUniqueId())
+                        || war.getDefenders().contains(player.getUniqueId());
+            }
         }
 
-        if (!isMember) {
-            event.setCancelled(true);
+        return false;
+    }
 
-            long now = System.currentTimeMillis();
-            long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
-            if (now - last >= ERROR_MESSAGE_COOLDOWN) {
-                lastErrorMessageTime.put(player.getUniqueId(), now);
-                MessagesManager.sendMessage(
-                        player,
-                        Component.text("Vous n'avez pas l'autorisation de faire ceci !"),
-                        Prefix.CITY,
-                        MessageType.ERROR,
-                        0.6F,
-                        true
-                );
-            }
+    public static boolean canExplodeNaturally(Location loc) {
+        City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+        if (city == null) return true;
+
+        return city.isInWar() && city.getWar().getPhase() == War.WarPhase.COMBAT;
+    }
+
+    public static void verify(Player player, Cancellable event, Location loc) {
+        if (canInteract(player, loc)) return;
+
+        event.setCancelled(true);
+
+        long now = System.currentTimeMillis();
+        long last = lastErrorMessageTime.getOrDefault(player.getUniqueId(), 0L);
+        if (now - last >= ERROR_MESSAGE_COOLDOWN) {
+            lastErrorMessageTime.put(player.getUniqueId(), now);
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas l'autorisation de faire ceci !"),
+                    Prefix.CITY,
+                    MessageType.ERROR,
+                    0.6F,
+                    true
+            );
         }
     }
 

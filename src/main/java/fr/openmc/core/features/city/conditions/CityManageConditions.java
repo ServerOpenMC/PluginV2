@@ -32,6 +32,7 @@ public class CityManageConditions {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de renommer ta ville."), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
         return true;
     }
 
@@ -75,6 +76,11 @@ public class CityManageConditions {
 
         if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
             MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+            return false;
+        }
+
+        if (city.isInWar()) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas supprimer votre ville pendant une guerre"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

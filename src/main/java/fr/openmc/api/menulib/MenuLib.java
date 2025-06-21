@@ -137,7 +137,7 @@ public final class MenuLib implements Listener {
 					}
 				});
 			} catch (Exception ignore) {
-			
+
 			}
 		}
 	}

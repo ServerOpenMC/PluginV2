@@ -1,17 +1,18 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityCreateAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.InputUtils;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 public class NoCityMenu extends Menu {
 
@@ -54,18 +56,6 @@ public class NoCityMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
 
-        try {
-            List<Component> loreCreate = List.of(
-                    Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
-                    Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
-                    Component.text(""),
-                    Component.text("§cCoûte :"),
-                    Component.text("§8- §6"+ CityCreateConditions.MONEY_CREATE + EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
-                    Component.text("§8- §d"+ CityCreateConditions.AYWENITE_CREATE + " d'Aywenite"),
-                    Component.text(""),
-                    Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
-            );
-
 
             Component nameNotif;
             List<Component> loreNotif = new ArrayList<>();
@@ -74,80 +64,87 @@ public class NoCityMenu extends Menu {
                 loreNotif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
                 loreNotif.add(Component.text("§6via /city invite"));
 
-                inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
-                    itemMeta.itemName(nameNotif);
-                    itemMeta.lore(loreNotif);
-                }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
-            } else {
-                List<Player> invitations = CityCommands.invitations.get(player);
-                nameNotif = Component.text("§7Vous avez §6" + invitations.size() + " invitation" + (invitations.size() > 1 ? "s" : ""));
+            inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
+                itemMeta.itemName(nameNotif);
+                itemMeta.lore(loreNotif);
+            }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
+        } else {
+            List<Player> invitations = CityCommands.invitations.get(player);
+            nameNotif = Component.text("§7Vous avez §6" + invitations.size() + " invitation" + (invitations.size() > 1 ? "s" : ""));
 
-                loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR VOIR VOS INVITATIONS"));
+            loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR VOIR VOS INVITATIONS"));
 
-                inventory.put(15, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
-                    itemMeta.itemName(nameNotif);
-                    itemMeta.lore(loreNotif);
+            inventory.put(15, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
+                itemMeta.itemName(nameNotif);
+                itemMeta.lore(loreNotif);
+            }).setOnClick(inventoryClickEvent -> {
+                new InvitationsMenu(player).open();
+            }));
+        }
+
+            Supplier<ItemStack> createItemSupplier = () -> {
+                List<Component> loreCreate;
+                if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+                    loreCreate = List.of(
+                            Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
+                            Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
+                            Component.text(""),
+                            Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")) + " §7avant de pouvoir créer une ville")
+                    );
+                } else {
+                    loreCreate = List.of(
+                            Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
+                            Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
+                            Component.text(""),
+                            Component.text("§cCoûte :"),
+                            Component.text("§8- §6" + CityCreateConditions.MONEY_CREATE + EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
+                            Component.text("§8- §d" + CityCreateConditions.AYWENITE_CREATE + " d'Aywenite"),
+                            Component.text(""),
+                            Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
+                    );
+                }
+
+                return new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
+                    itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
+                    itemMeta.lore(loreCreate);
                 }).setOnClick(inventoryClickEvent -> {
-                    new InvitationsMenu(player).open();
-                }));
+                    String[] lines = new String[4];
+                    lines[0] = "";
+                    lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
+                    lines[2] = "Entrez votre nom";
+                    lines[3] = "de ville ci dessus";
+
+                    SignGUI gui = null;
+                    try {
+                        gui = SignGUI.builder()
+                                .setLines(null, lines[1], lines[2], lines[3])
+                                .setType(ItemUtils.getSignType(player))
+                                .setHandler((p, result) -> {
+                                    String input = result.getLine(0);
+
+                                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                                        CityCreateAction.beginCreateCity(player, input);
+                                    });
+
+                                    return Collections.emptyList();
+                                })
+                                .build();
+                    } catch (SignGUIVersionException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    gui.open(player);
+                });
+            };
+
+            if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+                MenuUtils.runDynamicItem(player, this, 11, createItemSupplier)
+                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+            } else {
+                inventory.put(11, createItemSupplier.get());
             }
 
-            inventory.put(11, new ItemBuilder(this, Material.SCAFFOLDING, itemMeta -> {
-                itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
-                itemMeta.lore(loreCreate);
-            }).setOnClick(inventoryClickEvent -> {
-                if (!CityCreateConditions.canCityCreate(player)) {
-                    return;
-                }
 
-                String[] lines = new String[4];
-                lines[0] = "";
-                lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-                lines[2] = "Entrez votre nom";
-                lines[3] = "de ville ci dessus";
-
-                SignGUI gui = null;
-                try {
-                    gui = SignGUI.builder()
-                            .setLines(null, lines[1] , lines[2], lines[3])
-                            .setType(ItemUtils.getSignType(player))
-                            .setHandler((p, result) -> {
-                                String input = result.getLine(0);
-
-                            for (City city : CityManager.getCities()){
-                                String cityName = city.getName();
-                                if (cityName!=null && cityName.equalsIgnoreCase(input)){
-                                    MessagesManager.sendMessage(player, Component.text("§cUne ville possédant ce nom existe déjà"), Prefix.CITY, MessageType.INFO, false);
-                                    return Collections.emptyList();
-                                }
-                            }
-
-                            if (InputUtils.isInputCityName(input)) {
-                                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                    CityTypeMenu menu = new CityTypeMenu(player, input);
-                                    menu.open();
-                                });
-
-                                } else {
-                                    MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                                }
-
-                                return Collections.emptyList();
-                            })
-                            .build();
-                } catch (SignGUIVersionException e) {
-                    throw new RuntimeException(e);
-                }
-
-                gui.open(player);
-            }));
-
-            return inventory;
-        } catch (Exception e) {
-            MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-            player.closeInventory();
-            e.printStackTrace();
-        }
         return inventory;
     }
 

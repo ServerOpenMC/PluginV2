@@ -2,15 +2,14 @@ package fr.openmc.core.features.city.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import fr.openmc.core.features.city.City;
 import lombok.Getter;
 
 @DatabaseTable(tableName = "cities")
 public class DBCity {
-    @DatabaseField(id = true)
+    @DatabaseField(id = true, columnName = "uuid")
     @Getter
-    private String id;
+    private String UUID;
     @DatabaseField
     private String name;
     @DatabaseField(defaultValue = "0")
@@ -26,8 +25,8 @@ public class DBCity {
         // required for ORMLite
     }
 
-    public DBCity(String id, String name, double balance, String type, int power, int freeClaims) {
-        this.id = id;
+    public DBCity(String uuid, String name, double balance, String type, int power, int freeClaims) {
+        this.UUID = uuid;
         this.name = name;
         this.balance = balance;
         this.type = type;
@@ -36,6 +35,6 @@ public class DBCity {
     }
 
     public City deserialize() {
-        return new City(id, name, balance, type, power, freeClaims);
+        return new City(UUID, name, balance, type, power, freeClaims);
     }
 }

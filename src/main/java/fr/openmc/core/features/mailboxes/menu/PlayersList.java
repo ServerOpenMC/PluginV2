@@ -1,6 +1,7 @@
 package fr.openmc.core.features.mailboxes.menu;
 
 
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
 import fr.openmc.core.utils.ItemUtils;
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ public class PlayersList extends PaginatedMailbox<ItemStack> {
         super(player);
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (onlinePlayer == player) continue;
+            if (!MailboxManager.canSend(player, onlinePlayer)) continue;
             pageItems.add(ItemUtils.getPlayerHead(onlinePlayer.getUniqueId()));
         }
         initInventory();
