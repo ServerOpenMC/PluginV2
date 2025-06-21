@@ -62,18 +62,20 @@ public class ShopListener implements Listener {
 
         // Check if the clicked block is a sign with tags
         // Instead of getting the entire state of the block
-        if (Tag.SIGNS.isTagged(event.getClickedBlock().getType())) {
-            if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-                return;
-            }
-            Shop shop = ShopBlocksManager.getShop(event.getClickedBlock().getLocation());
-            if (shop == null) {
-                return;
-            }
-            event.setCancelled(true);
-            ShopMenu menu = new ShopMenu(event.getPlayer(), shop, 0);
-            menu.open();
-        }
+        // This is much faster and avoids unnecessary overhead
+        if (!Tag.SIGNS.isTagged(event.getClickedBlock().getType()))
+            return;
+
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+            return;
+
+        Shop shop = ShopBlocksManager.getShop(event.getClickedBlock().getLocation());
+        if (shop == null)
+            return;
+        
+        event.setCancelled(true);
+        ShopMenu menu = new ShopMenu(event.getPlayer(), shop, 0);
+        menu.open();
     }
 
     @EventHandler
