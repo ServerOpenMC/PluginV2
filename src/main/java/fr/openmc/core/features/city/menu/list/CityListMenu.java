@@ -74,7 +74,7 @@ public class CityListMenu extends PaginatedMenu {
 
 			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
 				String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
-				NamedTextColor mayorColor = city.getMayor() == null ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
+				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
 				itemMeta.displayName(Component.text("§a" + city.getName()));
 				itemMeta.lore(List.of(
 						Component.text("§7Propriétaire : " + ownerName),
