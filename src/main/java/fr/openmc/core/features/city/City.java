@@ -27,6 +27,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -546,9 +547,11 @@ public class City {
             this.permissions = CityManager.getCityPermissions(this);
 
         Set<CPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
-
-        if (playerPerms.contains(CPermission.OWNER))
+        
+        if (playerPerms.contains(CPermission.OWNER)) {
             return true;
+        }
+        
 
         return playerPerms.contains(permission);
     }
@@ -848,13 +851,14 @@ public class City {
         }
         
         CityRank currentRank = getRankOfMember(playerUUID);
+        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
         
         if (currentRank != null) {
             currentRank.removeMember(playerUUID);
             for (CPermission permission : currentRank.getPermissionsSet()) {
                 removePermission(playerUUID, permission);
             }
-            MessagesManager.sendMessage(sender, Component.text("§cVous avez retiré le grade §e" + currentRank.getName() + "§c de §6" + sender.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(sender, Component.text("§cVous avez retiré le grade §e" + currentRank.getName() + "§c de §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
         }
         
         if (currentRank != newRank) {
@@ -862,7 +866,7 @@ public class City {
             for (CPermission permission : newRank.getPermissionsSet()) {
                 addPermission(playerUUID, permission);
             }
-            MessagesManager.sendMessage(sender, Component.text("§aVous avez assigné le grade §e" + newRank.getName() + "§a à §6" + sender.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+            MessagesManager.sendMessage(sender, Component.text("§aVous avez assigné le grade §e" + newRank.getName() + "§a à §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
         }
         
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {

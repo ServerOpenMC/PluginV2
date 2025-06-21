@@ -82,6 +82,14 @@ public class CityRanksMenu extends Menu {
 					itemMeta.lore(List.of(Component.text("§7Cliquez pour revenir en arrière")));
 				}).setOnClick(inventoryClickEvent -> new CityMenu(getOwner()).open()));
 		
+		map.put(22, new ItemBuilder(this, Material.FEATHER,
+				itemMeta -> {
+					itemMeta.displayName(Component.text("§aAssigner des grades"));
+					itemMeta.lore(List.of(
+							Component.text("§7Cliquez pour assigner les grades de la ville aux membres.")
+					));
+				}).setOnClick(inventoryClickEvent -> new CityRankMemberMenu(getOwner(), city).open()));
+		
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(),
 				itemMeta -> {
 					itemMeta.displayName(Component.text("§aAjouter un grade"));

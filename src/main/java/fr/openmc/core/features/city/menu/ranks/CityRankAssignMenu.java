@@ -61,14 +61,14 @@ public class CityRankAssignMenu extends Menu {
 						Component.text("§7Permissions : " + (rank.getPermissionsSet().isEmpty() ? "§cAucune" : "§a" + rank.getPermissionsSet().size() + " permission(s)"))
 				));
 			}).setOnClick(event -> {
-				if (event.getWhoClicked() instanceof Player player) {
-					if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) || ! city.hasPermission(playerUUID, CPermission.OWNER)) {
-						MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-						player.closeInventory();
+				if (event.getWhoClicked() instanceof Player) {
+					if (! city.hasPermission(getOwner().getUniqueId(), CPermission.PERMS) || ! city.hasPermission(getOwner().getUniqueId(), CPermission.OWNER)) {
+						MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+						getOwner().closeInventory();
 						return;
 					}
 					city.changeRank(getOwner(), playerUUID, rank);
-					player.closeInventory();
+					getOwner().closeInventory();
 				}
 			}));
 		}
