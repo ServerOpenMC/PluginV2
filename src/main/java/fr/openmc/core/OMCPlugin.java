@@ -174,7 +174,7 @@ public class OMCPlugin extends JavaPlugin {
         for (String pluginName : plugins) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
             if (plugin != null && plugin.isEnabled()) {
-                log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getPluginMeta().getVersion() + " trouvé (facultatif) \u001B[0m");
+                log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getPluginMeta().getVersion() + " trouvé \u001B[0m");
             } else {
                 log.info("  \u001B[31m✘ " + pluginName + " (facultatif)\u001B[0m");
             }
