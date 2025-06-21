@@ -76,7 +76,7 @@ dependencies {
     testImplementation 'org.slf4j:slf4j-simple:2.0.17'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.13.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.52.0'
+    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.50.0'
     testImplementation 'com.h2database:h2:2.3.232'
 }
 
