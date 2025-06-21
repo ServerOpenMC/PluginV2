@@ -64,8 +64,8 @@ public abstract class Menu implements InventoryHolder {
 		return null;
 	}
 	
-	public String getNoPermissionMessage() {
-		return "";
+	public Component getNoPermissionMessage() {
+		return Component.text("§cVous n'avez pas la permission d'ouvrir ce menu.");
 	}
 	
 	/**
