@@ -1,5 +1,7 @@
 package fr.openmc.api.menulib;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -11,7 +13,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -28,8 +29,7 @@ import java.util.function.Consumer;
  * The {@code MenuLib} class implements the {@link Listener} interface to handle inventory-related events.
  */
 public final class MenuLib implements Listener {
-	
-	private static final Map<Player, Menu> lastMenu = new HashMap<>();
+	private static final Object2ObjectMap<Player, Menu> lastMenu = new Object2ObjectOpenHashMap<>();
 	@Getter
 	private static NamespacedKey itemIdKey;
 	
@@ -68,7 +68,7 @@ public final class MenuLib implements Listener {
 	 *                  to be executed when the {@link ItemStack} is clicked within the menu.
 	 */
 	public static void setItemClickEvent(Menu menu, ItemStack itemStack, Consumer<InventoryClickEvent> e) {
-		menu.itemClickEvents.put(itemStack, e);
+		menu.getItemClickEvents().put(itemStack, e);
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public final class MenuLib implements Listener {
         e.setCancelled(true);
         menu.onInventoryClick(e);
 
-        Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = menu.itemClickEvents;
+        Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = menu.getItemClickEvents();
         if (itemClickEvents.isEmpty())
             return;
 
