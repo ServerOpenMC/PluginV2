@@ -3,7 +3,6 @@ package fr.openmc.core.utils.messages;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -66,7 +65,6 @@ public class MessagesManager {
      * @param type    The type of message (information, error, success, warning)
      */
     public static void broadcastMessage(Component message, Prefix prefix, MessageType type) {
-        MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
                         .append(prefix.getPrefix())
