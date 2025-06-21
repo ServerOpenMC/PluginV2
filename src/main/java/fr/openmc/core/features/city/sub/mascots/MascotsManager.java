@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.commands.AdminMascotsCommands;
 import fr.openmc.core.features.city.sub.mascots.listeners.*;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotRegenerationUtils;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import fr.openmc.core.utils.ItemUtils;

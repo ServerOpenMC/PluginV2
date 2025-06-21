@@ -67,6 +67,7 @@ public enum MascotType {
                     .append(Component.text("Nécéssite ").color(NamedTextColor.GRAY))
                     .append(Component.text(price, NamedTextColor.LIGHT_PURPLE))
                     .append(Component.text(" d'Aywenites"))
+                    .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                     .build();
 
             meta.lore(Collections.singletonList(lore));
