@@ -12,8 +12,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
+import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
@@ -259,7 +259,7 @@ public class CityMenu extends Menu {
                             if (city.hasMayor()) {
                                 loreElections = List.of(
                                         Component.text("§7Les Elections sont §6désactivées"),
-                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                         Component.text(""),
                                         Component.text("§7Vous avez déjà choisis vos §3Réformes §7!"),
                                         Component.text("§7Cependant vous pouvez changer votre couleur !"),
@@ -269,7 +269,7 @@ public class CityMenu extends Menu {
                             } else {
                                 loreElections = List.of(
                                         Component.text("§7Les Elections sont §6désactivées"),
-                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                         Component.text(""),
                                         Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
                                         Component.text(""),
@@ -281,7 +281,7 @@ public class CityMenu extends Menu {
                         } else {
                             loreElections = List.of(
                                     Component.text("§7Les Elections sont §6désactivées"),
-                                    Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                    Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                     Component.text(""),
                                     Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
                                     Component.text(""),

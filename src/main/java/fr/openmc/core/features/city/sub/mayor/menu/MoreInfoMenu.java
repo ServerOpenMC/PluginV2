@@ -49,7 +49,7 @@ public class MoreInfoMenu extends Menu {
 
         List<Component> lore0 = Arrays.asList(
                 Component.text("§7Tous les §6Mercredi§7, les §6Elections §7commencent"),
-                Component.text("§7Si vous avez plus de §6" + MayorManager.MEMBER_REQ_ELECTION + " §7membres,"),
+                Component.text("§7Si vous avez plus de §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §7membres,"),
                 Component.text("§7vous pouvez élire un §6Maire §7pour votre ville"),
                 Component.text("§7Sinon, le propriétaire choisira les §3Réformes qu'il veut!")
         );

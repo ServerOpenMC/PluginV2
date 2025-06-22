@@ -321,7 +321,7 @@ public class MayorManager {
                 }
             }
 
-            if (city.getMembers().size() >= MEMBER_REQ_ELECTION) {
+            if (city.getMembers().size() >= MEMBER_REQUEST_ELECTION) {
                 createMayor(null, null, city, null, null, null, null, ElectionType.ELECTION);
             }
             createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
