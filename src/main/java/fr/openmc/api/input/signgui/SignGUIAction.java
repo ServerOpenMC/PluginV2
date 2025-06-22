@@ -188,18 +188,9 @@ public interface SignGUIAction {
      */
     class SignGUIActionInfo {
 
-        /**
-         * -- GETTER --
-         *
-         * @return The name of the action
-         */
         @Getter
         private final String name;
-        /**
-         * -- GETTER --
-         *
-         * @return Whether the sign gui should be kept open.
-         */
+
         @Getter
         private final boolean keepOpen;
         private final int conflicting;
