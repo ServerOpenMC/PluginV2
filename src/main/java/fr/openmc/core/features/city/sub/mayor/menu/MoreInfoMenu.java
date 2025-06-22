@@ -63,20 +63,16 @@ public class MoreInfoMenu extends Menu {
 
         int phase = MayorManager.phaseMayor;
 
-        boolean ench0 = phase != 2;
-        boolean ench1 = phase == 2;
-
         inventory.put(11, new ItemBuilder(this, Material.ORANGE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(Component.text("§r§6Les Elections - Mercredi"));
             itemMeta.lore(lore0);
-            itemMeta.setEnchantmentGlintOverride(ench0);
+            itemMeta.setEnchantmentGlintOverride(phase != 2);
         }));
-
 
         inventory.put(15, new ItemBuilder(this, Material.CYAN_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(Component.text("§r§3Les Réformes - Jeudi"));
             itemMeta.lore(lore1);
-            itemMeta.setEnchantmentGlintOverride(ench1);
+            itemMeta.setEnchantmentGlintOverride(phase == 2);
         }));
 
         inventory.put(26, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
