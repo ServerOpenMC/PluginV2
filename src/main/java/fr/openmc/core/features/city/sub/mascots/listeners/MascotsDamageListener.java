@@ -111,7 +111,6 @@ public class MascotsDamageListener implements Listener {
             return;
         }
         String cityUUID = city.getUUID();
-        String cityEnemyUUID = cityEnemy.getUUID();
 
         CityType cityType = city.getType();
         CityType cityEnemyType = cityEnemy.getType();
