@@ -1,4 +1,4 @@
-package fr.openmc.core.features.milestones.base;
+package fr.openmc.core.features.milestones;
 
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.bukkit.annotation.CommandPermission;

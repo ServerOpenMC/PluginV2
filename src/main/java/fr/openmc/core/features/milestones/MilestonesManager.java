@@ -1,4 +1,4 @@
-package fr.openmc.core.features.milestones.base;
+package fr.openmc.core.features.milestones;
 
 import fr.openmc.core.CommandsManager;
 
