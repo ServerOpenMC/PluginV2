@@ -72,14 +72,14 @@ public class CityListDetailsMenu extends Menu {
 			Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
 			Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
-			loreOwner.add(Component.text(""));
+			loreOwner.add(Component.empty());
 			loreOwner.add(Component.text(perk1.getName()));
 			loreOwner.addAll(perk1.getLore());
 			if (electionType == ElectionType.OWNER_CHOOSE) {
-				loreOwner.add(Component.text(""));
+				loreOwner.add(Component.empty());
 				loreOwner.add(Component.text(perk2.getName()));
 				loreOwner.addAll(perk2.getLore());
-				loreOwner.add(Component.text(""));
+				loreOwner.add(Component.empty());
 				loreOwner.add(Component.text(perk3.getName()));
 				loreOwner.addAll(perk3.getLore());
 			}
@@ -93,10 +93,10 @@ public class CityListDetailsMenu extends Menu {
 
 			if (electionType == ElectionType.ELECTION) {
 				List<Component> loreMayor = new ArrayList<>();
-				loreMayor.add(Component.text(""));
+				loreMayor.add(Component.empty());
 				loreMayor.add(Component.text(perk2.getName()));
 				loreMayor.addAll(perk2.getLore());
-				loreMayor.add(Component.text(""));
+				loreMayor.add(Component.empty());
 				loreMayor.add(Component.text(perk3.getName()));
 				loreMayor.addAll(perk3.getLore());
 
@@ -133,7 +133,7 @@ public class CityListDetailsMenu extends Menu {
 				itemMeta -> {
 					itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
 					itemMeta.lore(List.of(
-									Component.text(""),
+							Component.empty(),
 									Component.text("§e§lCLIQUEZ ICI POUR VOIR LES MEMBRES")
 							)
 					);
