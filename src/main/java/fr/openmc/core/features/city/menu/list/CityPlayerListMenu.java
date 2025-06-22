@@ -6,7 +6,7 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
