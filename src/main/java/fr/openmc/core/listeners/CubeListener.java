@@ -50,9 +50,9 @@ public class CubeListener implements Listener {
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getWorld().equals(currentLocation.getWorld())) {
-                        double distance = player.getLocation().distance(currentLocation);
+                        double distance = player.getLocation().distanceSquared(currentLocation);
 
-                        if (distance <= 50) {
+                        if (distance <= 50 * 50) { // 50 blocks radius but squared for performance
                             if (!bossBar.getPlayers().contains(player)) {
                                 bossBar.addPlayer(player);
                             }
