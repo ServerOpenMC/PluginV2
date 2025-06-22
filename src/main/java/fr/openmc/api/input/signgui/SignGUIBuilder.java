@@ -10,10 +10,10 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 // Ce code est basé sur le fichier SignGUIBuilder.java du dépôt SignGUI
 // (https://github.com/Rapha149/SignGUI). Licence originale : MIT.
+
 /**
  * Builder for {@link SignGUI}.
  */
@@ -22,8 +22,18 @@ public class SignGUIBuilder {
     private static String availableSignTypes;
 
     private static String getAvailableSignTypes(MojangWrapper wrapper) {
-        if (availableSignTypes == null)
-            availableSignTypes = wrapper.getSignTypes().stream().map(Material::toString).collect(Collectors.joining(", "));
+        if (availableSignTypes == null) {
+            StringBuilder sb = new StringBuilder();
+            for (Material material : wrapper.getSignTypes()) {
+                if (!sb.isEmpty())
+                    sb.append(", ");
+
+                sb.append(material.toString());
+            }
+
+            availableSignTypes = sb.toString();
+        }
+
         return availableSignTypes;
     }
 
@@ -93,8 +103,8 @@ public class SignGUIBuilder {
      * Lines set using this method are only shown when using a mojang-mapped Paper plugin.
      * It is recommended to also set fallback lines using {@link #setLine(int, String)} as these will be used if the Adventure components cannot be used for some reason.
      *
-     * @param index The index of the line.
-     * @param component  Adventure component
+     * @param index     The index of the line.
+     * @param component Adventure component
      * @return The {@link SignGUIBuilder} instance
      * @throws java.lang.IllegalArgumentException If the index is below 0 or above 4.
      */
