@@ -3,30 +3,21 @@ package fr.openmc.core.features.city.sub.mascots.utils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.sub.mascots.models.MascotType;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class MascotUtils {
-	private static final Set<EntityType> POSSIBLE_MASCOT_TYPES = Set.of(
-			EntityType.PIG,
-			EntityType.PANDA,
-			EntityType.SHEEP,
-			EntityType.AXOLOTL,
-			EntityType.CHICKEN,
-			EntityType.COW,
-			EntityType.GOAT,
-			EntityType.MOOSHROOM,
-			EntityType.WOLF,
-			EntityType.VILLAGER,
-			EntityType.SKELETON,
-			EntityType.SPIDER,
-			EntityType.ZOMBIE
-	);
+	private static final Set<EntityType> POSSIBLE_MASCOT_TYPES = Arrays.stream(MascotType.values())
+			.map(MascotType::getEntityType)
+			.collect(Collectors.toUnmodifiableSet());
 
 	/**
 	 * Adds a mascot for a given city.
