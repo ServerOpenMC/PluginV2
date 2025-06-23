@@ -94,7 +94,7 @@ public class MayorNpcMenu extends Menu {
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
-            inventory.put(11, new ItemBuilder(this, iaPerk2, itemMeta -> {
+        inventory.put(20, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -104,7 +104,7 @@ public class MayorNpcMenu extends Menu {
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
-            inventory.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
+        inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -112,7 +112,7 @@ public class MayorNpcMenu extends Menu {
             }));
 
             if (mayor.getUUID().equals(player.getUniqueId())) {
-                inventory.put(18, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
+                inventory.put(46, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                     itemMeta.itemName(Component.text("§aDéplacer ce NPC"));
                     itemMeta.lore(List.of(
                             Component.text("§7Vous allez pouvoir déplacer ce NPC"),
