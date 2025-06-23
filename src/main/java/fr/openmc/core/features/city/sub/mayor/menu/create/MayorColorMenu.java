@@ -12,9 +12,12 @@ import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -45,12 +48,16 @@ public class MayorColorMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Couleur";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Menu des Maires - Couleur";
+        }
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -71,19 +78,19 @@ public class MayorColorMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         Map<NamedTextColor, Integer> colorSlot = new HashMap<>();
         {
-            colorSlot.put(NamedTextColor.RED, 3);
-            colorSlot.put(NamedTextColor.GOLD, 4);
-            colorSlot.put(NamedTextColor.YELLOW, 5);
-            colorSlot.put(NamedTextColor.GREEN, 10);
-            colorSlot.put(NamedTextColor.DARK_GREEN, 11);
-            colorSlot.put(NamedTextColor.BLUE, 12);
-            colorSlot.put(NamedTextColor.AQUA, 13);
-            colorSlot.put(NamedTextColor.DARK_BLUE, 14);
-            colorSlot.put(NamedTextColor.DARK_PURPLE, 15);
-            colorSlot.put(NamedTextColor.LIGHT_PURPLE, 16);
-            colorSlot.put(NamedTextColor.WHITE, 21);
-            colorSlot.put(NamedTextColor.GRAY, 22);
-            colorSlot.put(NamedTextColor.DARK_GRAY, 23);
+            colorSlot.put(NamedTextColor.RED, 12);
+            colorSlot.put(NamedTextColor.GOLD, 13);
+            colorSlot.put(NamedTextColor.YELLOW, 14);
+            colorSlot.put(NamedTextColor.GREEN, 21);
+            colorSlot.put(NamedTextColor.DARK_GREEN, 22);
+            colorSlot.put(NamedTextColor.BLUE, 23);
+            colorSlot.put(NamedTextColor.AQUA, 30);
+            colorSlot.put(NamedTextColor.DARK_BLUE, 31);
+            colorSlot.put(NamedTextColor.DARK_PURPLE, 32);
+            colorSlot.put(NamedTextColor.LIGHT_PURPLE, 39);
+            colorSlot.put(NamedTextColor.WHITE, 40);
+            colorSlot.put(NamedTextColor.GRAY, 41);
+            colorSlot.put(NamedTextColor.DARK_GRAY, 49);
         }
         colorSlot.forEach((color, slot) -> {
             List<Component> loreColor = List.of(

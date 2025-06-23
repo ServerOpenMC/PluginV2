@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.sub.mayor.menu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -11,10 +10,13 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -28,6 +30,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+import static fr.openmc.api.menulib.utils.StaticSlots.*;
+
 public class MayorVoteMenu extends PaginatedMenu {
     public MayorVoteMenu(Player owner) {
         super(owner);
@@ -35,12 +39,12 @@ public class MayorVoteMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return combine(combine(RIGHT, LEFT), BOTTOM);
     }
 
     @Override
@@ -160,7 +164,11 @@ public class MayorVoteMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Votes";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Menu des Maires - Votes";
+        }
     }
 
     @Override

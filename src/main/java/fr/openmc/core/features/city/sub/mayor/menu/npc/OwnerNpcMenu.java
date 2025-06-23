@@ -14,9 +14,12 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -43,12 +46,16 @@ public class OwnerNpcMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Propriétaire - Mandat";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Propriétaire - Mandat";
+        }
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
