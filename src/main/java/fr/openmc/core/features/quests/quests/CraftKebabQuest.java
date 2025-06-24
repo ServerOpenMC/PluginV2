@@ -33,7 +33,7 @@ public class CraftKebabQuest extends Quest implements Listener {
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
         if (item != null && item.isSimilar(CustomItemRegistry.getByName("omc_foods:kebab").getBest())) {
-            incrementProgress(event.getWhoClicked().getUniqueId());
+            incrementProgress(event.getWhoClicked().getUniqueId(), item.getAmount());
         }
     }
 
