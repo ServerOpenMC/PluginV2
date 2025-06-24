@@ -4,8 +4,10 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,8 +35,16 @@ public class CraftKebabQuest extends Quest implements Listener {
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
         if (item != null && item.isSimilar(CustomItemRegistry.getByName("omc_foods:kebab").getBest())) {
-            incrementProgress(event.getWhoClicked().getUniqueId(), item.getAmount());
+            if (event.isShiftClick()) {
+                int maxCraftable = ItemUtils.getMaxCraftAmount(event.getInventory());
+                int capacity = ItemUtils.getFreePlacesForItem((Player) event.getWhoClicked(), item);
+                maxCraftable = Math.min(maxCraftable, capacity);
+
+                incrementProgress(event.getWhoClicked().getUniqueId(), maxCraftable);
+                return;
+            }
+
+            incrementProgress(event.getWhoClicked().getUniqueId());
         }
     }
-
 }
