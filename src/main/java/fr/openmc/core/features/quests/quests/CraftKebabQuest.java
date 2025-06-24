@@ -34,17 +34,24 @@ public class CraftKebabQuest extends Quest implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
-        if (item != null && item.isSimilar(CustomItemRegistry.getByName("omc_foods:kebab").getBest())) {
-            if (event.isShiftClick()) {
-                int maxCraftable = ItemUtils.getMaxCraftAmount(event.getInventory());
-                int capacity = ItemUtils.getFreePlacesForItem((Player) event.getWhoClicked(), item);
-                maxCraftable = Math.min(maxCraftable, capacity);
+        if (item == null || !item.isSimilar(CustomItemRegistry.getByName("omc_foods:kebab").getBest()))
+            return;
 
-                incrementProgress(event.getWhoClicked().getUniqueId(), maxCraftable);
-                return;
-            }
-
+        // Le joueur ne craft pas plus d'un kebab
+        if (!event.isShiftClick()) {
             incrementProgress(event.getWhoClicked().getUniqueId());
+            return;
         }
+
+        // Calcul le nombre maximum de kebabs pouvant être craftés avec les items dans la table de craft
+        int maxCraftable = ItemUtils.getMaxCraftAmount(event.getInventory());
+        // Calcul le nombre maximum de kebabs que le joueur peut stocker en plus
+        int capacity = ItemUtils.getFreePlacesForItem((Player) event.getWhoClicked(), item);
+
+        maxCraftable = Math.min(maxCraftable, capacity);
+        if (maxCraftable == 0)
+            return;
+
+        incrementProgress(event.getWhoClicked().getUniqueId(), maxCraftable);
     }
 }
