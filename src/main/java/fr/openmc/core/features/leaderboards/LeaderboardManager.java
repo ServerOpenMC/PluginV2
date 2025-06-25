@@ -37,8 +37,6 @@ import java.util.*;
 
 public class LeaderboardManager {
     @Getter
-    private static LeaderboardManager instance;
-    @Getter
     private static final Map<Integer, Map.Entry<String, Integer>> githubContributorsMap = new TreeMap<>();
     @Getter
     private static final Map<Integer, Map.Entry<String, String>> playerMoneyMap = new TreeMap<>();
@@ -57,16 +55,15 @@ public class LeaderboardManager {
     private static Location playTimeHologramLocation;
     private static BukkitTask taskTimer;
     private static float scale;
-    private TextDisplay contributorsHologram;
-    private TextDisplay moneyHologram;
-    private TextDisplay villeMoneyHologram;
-    private TextDisplay playTimeHologram;
+    private static TextDisplay contributorsHologram;
+    private static TextDisplay moneyHologram;
+    private static TextDisplay villeMoneyHologram;
+    private static TextDisplay playTimeHologram;
 
     public LeaderboardManager() {
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());
         enable();
-        instance = this;
     }
 
     /**
@@ -208,7 +205,7 @@ public class LeaderboardManager {
         };
     }
 
-    public void enable() {
+    public static void enable() {
         contributorsHologram = new TextDisplay(createContributorsTextLeaderboard(), contributorsHologramLocation, new Vector3f(scale));
         moneyHologram = new TextDisplay(createMoneyTextLeaderboard(), moneyHologramLocation, new Vector3f(scale));
         villeMoneyHologram = new TextDisplay(createCityMoneyTextLeaderboard(), villeMoneyHologramLocation, new Vector3f(scale));
@@ -232,7 +229,7 @@ public class LeaderboardManager {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0, 20L); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
     }
 
-    private void updateHologramsViewers() {
+    private static void updateHologramsViewers() {
         if (contributorsHologramLocation != null) {
             contributorsHologram.updateViewersList();
         }
@@ -247,7 +244,7 @@ public class LeaderboardManager {
         }
     }
 
-    public void disable() {
+    public static void disable() {
         taskTimer.cancel();
         contributorsHologram.remove();
         moneyHologram.remove();
@@ -262,7 +259,7 @@ public class LeaderboardManager {
      * @param location The new location of the hologram.
      * @throws IOException If an error occurs while saving the configuration.
      */
-    public void setHologramLocation(String name, Location location) throws IOException {
+    public static void setHologramLocation(String name, Location location) throws IOException {
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         leaderBoardConfig.set(name + "-location", location);
         leaderBoardConfig.save(leaderBoardFile);
@@ -284,7 +281,7 @@ public class LeaderboardManager {
      * @param scale The new scale of the holograms.
      * @throws IOException If an error occurs while saving the configuration.
      */
-    public void setScale(float scale) throws IOException {
+    public static void setScale(float scale) throws IOException {
         FileConfiguration leaderBoardConfig = YamlConfiguration.loadConfiguration(leaderBoardFile);
         leaderBoardConfig.set("scale", scale);
         leaderBoardConfig.save(leaderBoardFile);
@@ -467,7 +464,7 @@ public class LeaderboardManager {
     /**
      * Updates the holograms for all leaderboards by sending ENTITY_METADATA packets to players.
      */
-    public void updateHolograms() {
+    public static void updateHolograms() {
         if (contributorsHologram != null) {
             contributorsHologram.updateText(createContributorsTextLeaderboard());
         }
