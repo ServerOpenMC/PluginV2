@@ -80,7 +80,7 @@ public class MayorManager {
                 new SymbiosisPerk(),
                 new ImpotCollection(),
                 new AgriculturalEssorPerk(),
-                new MineralRushPerk(),
+//                new MineralRushPerk(),
                 new MilitaryDissuasion(),
                 new IdyllicRain());
         if (ItemsAdderApi.hasItemAdder()) {

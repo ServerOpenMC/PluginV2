@@ -72,11 +72,12 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
+    testImplementation 'me.clip:placeholderapi:2.11.6'
     testImplementation 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
     testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.50.0'
+    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.54.0'
     testImplementation 'com.h2database:h2:2.3.232'
 }
 

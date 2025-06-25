@@ -101,4 +101,8 @@ public class CustomItemRegistry {
     public static HashSet<String> getNames() {
         return new HashSet<>(items.keySet());
     }
+
+    public static void clear() {
+        items.clear();
+    }
 }

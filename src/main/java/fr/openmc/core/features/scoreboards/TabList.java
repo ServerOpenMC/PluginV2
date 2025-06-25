@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import fr.openmc.core.OMCPlugin;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,7 +38,13 @@ public class TabList {
             }
         }
 
-        String header = PlaceholderAPI.setPlaceholders(player, "\n\n\n\n\n\n\n"+PlaceholderAPI.setPlaceholders(player, "%img_openmc%")+"\n\n  §eJoueurs en ligne §7: §6"+visibleOnlinePlayers+"§7/§e%server_max_players%  \n");
+        String logo = "OpenMC";
+
+        if (OMCPlugin.isPluginEnabled("PlaceholderAPI")) {
+            logo = PlaceholderAPI.setPlaceholders(player, "\n\n\n\n\n\n\n" + PlaceholderAPI.setPlaceholders(player, "%img_openmc%"));
+        }
+
+        String header = logo + "\n\n  §eJoueurs en ligne §7: §6" + visibleOnlinePlayers + "§7/§e" + Bukkit.getMaxPlayers() + "  \n";
         String footer = "\n§dplay.openmc.fr\n";
 
         updateHeaderFooter(player, header, footer);

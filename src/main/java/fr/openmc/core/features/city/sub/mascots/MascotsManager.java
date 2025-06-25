@@ -65,7 +65,7 @@ public class MascotsManager {
         loadMascots();
 
         OMCPlugin.registerEvents(
-                new MascotsProtectionsListener(),
+//                new MascotsProtectionsListener(),
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
                 new MascotsDeathListener(),
