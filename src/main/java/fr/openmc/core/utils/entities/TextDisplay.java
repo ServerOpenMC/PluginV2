@@ -1,4 +1,4 @@
-package fr.openmc.core.features.leaderboards.entities;
+package fr.openmc.core.utils.entities;
 
 import com.mojang.math.Transformation;
 import io.papermc.paper.adventure.PaperAdventure;
