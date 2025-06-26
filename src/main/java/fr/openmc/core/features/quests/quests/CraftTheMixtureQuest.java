@@ -14,38 +14,38 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class CraftKebabQuest extends Quest implements Listener {
+public class CraftTheMixtureQuest extends Quest implements Listener {
 
-    public CraftKebabQuest() {
+    public CraftTheMixtureQuest() {
         super(
-                "Kebab",
-                "Fabriquer {target} kebab{s}",
-                Material.BREAD
+                "Un étrange mélange",
+                "Fabriquer {target} The Mixture{s}",
+                CustomItemRegistry.getByName("omc_foods:the_mixture").getBest()
         );
 
         this.addTiers(
-                new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_foods:kebab").getBest(), 16)),
-                new QuestTier(32, new QuestMoneyReward(100)),
-                new QuestTier(128, new QuestMoneyReward(400)),
-                new QuestTier(512, new QuestMoneyReward(800))
+                new QuestTier(1, new QuestMoneyReward(250))),
+                new QuestTier(32, new QuestMoneyReward(500)),
+                new QuestTier(128, new QuestMoneyReward(1000)),
+                new QuestTier(512, new QuestMoneyReward(2000))
         );
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
-        if (item == null || !item.isSimilar(CustomItemRegistry.getByName("omc_foods:kebab").getBest()))
+        if (item == null || !item.isSimilar(CustomItemRegistry.getByName("omc_foods:the_mixture").getBest()))
             return;
 
-        // Le joueur ne craft pas plus d'un kebab
+        // Le joueur ne craft pas plus d'un de The Mixture
         if (!event.isShiftClick()) {
             incrementProgress(event.getWhoClicked().getUniqueId());
             return;
         }
 
-        // Calcul le nombre maximum de kebabs pouvant être craftés avec les items dans la table de craft
+        // Calcul le nombre maximum de The Mixture pouvant être craftés avec les items dans la table de craft
         int maxCraftable = ItemUtils.getMaxCraftAmount(event.getInventory());
-        // Calcul le nombre maximum de kebabs que le joueur peut stocker en plus
+        // Calcul le nombre maximum de The Mixture que le joueur peut stocker en plus
         int capacity = ItemUtils.getFreePlacesForItem((Player) event.getWhoClicked(), item);
 
         maxCraftable = Math.min(maxCraftable, capacity);
