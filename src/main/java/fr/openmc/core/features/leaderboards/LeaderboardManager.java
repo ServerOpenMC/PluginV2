@@ -8,7 +8,7 @@ import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
-import fr.openmc.core.features.leaderboards.entities.TextDisplay;
+import fr.openmc.core.utils.entities.TextDisplay;
 import fr.openmc.core.utils.DateUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -229,7 +229,7 @@ public class LeaderboardManager {
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0, 20L); // Toutes les 15 secondes en async sauf l'updateGithubContributorsMap qui est toutes les 30 minutes
     }
 
-    private static void updateHologramsViewers() {
+    public static void updateHologramsViewers() {
         if (contributorsHologramLocation != null) {
             contributorsHologram.updateViewersList();
         }
@@ -320,7 +320,7 @@ public class LeaderboardManager {
      * Updates the GitHub contributors leaderboard map by fetching data from the GitHub API.
      * <a href="https://docs.github.com/fr/rest/metrics/statistics?apiVersion=2022-11-28#get-all-contributor-commit-activity">Documentation GitHub API (REST)</a>
      */
-    private static void updateGithubContributorsMap() {
+    public static void updateGithubContributorsMap() {
         String repoOwner = "ServerOpenMC";
         String repoName = "PluginV2";
 
@@ -409,7 +409,7 @@ public class LeaderboardManager {
     /**
      * Updates the player money leaderboard map by sorting and formatting player balances.
      */
-    private static void updatePlayerMoneyMap() {
+    public static void updatePlayerMoneyMap() {
         playerMoneyMap.clear();
         int rank = 1;
 
@@ -432,7 +432,7 @@ public class LeaderboardManager {
     /**
      * Updates the city money leaderboard map by sorting and formatting city balances.
      */
-    private static void updateCityMoneyMap() {
+    public static void updateCityMoneyMap() {
         villeMoneyMap.clear();
         int rank = 1;
         for (City city : CityManager.getCities().stream()
@@ -448,7 +448,7 @@ public class LeaderboardManager {
     /**
      * Updates the playtime leaderboard map by sorting and formatting player playtime.
      */
-    private static void updatePlayTimeMap() {
+    public static void updatePlayTimeMap() {
         playTimeMap.clear();
         int rank = 1;
         for (OfflinePlayer player : Arrays.stream(Bukkit.getOfflinePlayers())
