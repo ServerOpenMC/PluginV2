@@ -24,7 +24,7 @@ public class CraftTheMixtureQuest extends Quest implements Listener {
         );
 
         this.addTiers(
-                new QuestTier(1, new QuestMoneyReward(250))),
+                new QuestTier(1, new QuestMoneyReward(250)),
                 new QuestTier(32, new QuestMoneyReward(500)),
                 new QuestTier(128, new QuestMoneyReward(1000)),
                 new QuestTier(512, new QuestMoneyReward(2000))
