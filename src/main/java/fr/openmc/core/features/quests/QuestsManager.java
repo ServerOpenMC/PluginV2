@@ -77,7 +77,7 @@ public class QuestsManager {
                 new SaveTheEarthQuest(),
                 new CityCreateQuest(),
                 new WinContestQuest(),
-                new CraftKebabQuest(),
+                new CraftTheMixtureQuest(),
                 new ConsumeKebabQuest(),
                 new MineAyweniteQuest(),
                 new ChickenThrowerQuest(),
