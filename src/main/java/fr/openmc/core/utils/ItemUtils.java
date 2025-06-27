@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -107,15 +108,17 @@ public class ItemUtils {
      * @param player Joueur pour acceder a son inventaire
      * @param item Objet concerné
      */
-    public static int getFreePlacesForItem(Player player, ItemStack item){
+    public static int getFreePlacesForItem(Player player, ItemStack item) {
         int stackSize = item.getMaxStackSize();
         int freePlace = stackSize * getSlotNull(player);
 
         Inventory inventory = player.getInventory();
         for (ItemStack stack : inventory.getStorageContents()) {
-            if (stack != null && stack.getType()==item.getType()){
-                if (stack.getAmount() != stackSize) freePlace += stackSize - stack.getAmount();
-            }
+            if (stack == null || !item.isSimilar(stack))
+                continue;
+
+            if (stack.getAmount() != stackSize)
+                freePlace += stackSize - stack.getAmount();
         }
 
         return freePlace;
@@ -218,6 +221,32 @@ public class ItemUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Calcule le nombre maximal d'items pouvant être craftés.
+     * <p>
+     * Cette méthode récupère le résultat du craft. Si le résultat est nul, elle retourne 0.
+     * Sinon, elle détermine le nombre minimal d'items présents dans la grille de craft et
+     * renvoie le produit de la quantité du résultat par ce nombre minimal.
+     *
+     * @param inventory l'inventaire de crafting
+     * @return le nombre maximal d'items pouvant être craftés
+     */
+    public static int getMaxCraftAmount(CraftingInventory inventory) {
+        ItemStack result = inventory.getResult();
+        if (result == null)
+            return 0;
+
+        int resultCount = result.getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack itemStack : inventory.getMatrix()) {
+            if (itemStack != null && itemStack.getAmount() < materialCount)
+                materialCount = itemStack.getAmount();
+        }
+
+        return resultCount * materialCount;
     }
 
     /**

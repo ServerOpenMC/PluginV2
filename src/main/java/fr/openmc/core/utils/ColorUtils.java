@@ -70,6 +70,9 @@ public class ColorUtils {
      * Retourne une couleur en fonction du String (LIGHT_PURPLE => NamedTextColor.LIGHT_PURPLE)
      */
     public static NamedTextColor getNamedTextColor(String color) {
+        if (color == null) {
+            return NamedTextColor.WHITE;
+        }
         return NamedTextColor.NAMES.valueOr(color.toLowerCase(), NamedTextColor.WHITE);
     }
 

@@ -18,9 +18,12 @@ import fr.openmc.core.features.city.sub.mayor.perks.event.IdyllicRain;
 import fr.openmc.core.features.city.sub.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.sub.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -48,12 +51,16 @@ public class MayorLawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Lois";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Menu des Lois";
+        }
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -117,10 +124,10 @@ public class MayorLawMenu extends Menu {
         };
 
         if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
-            MenuUtils.runDynamicItem(player, this, 10, pvpItemSupplier)
+            MenuUtils.runDynamicItem(player, this, 19, pvpItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
-            inventory.put(10, pvpItemSupplier.get());
+            inventory.put(19, pvpItemSupplier.get());
         }
 
         Supplier<ItemStack> warpItemSupplier = () -> {
@@ -170,9 +177,9 @@ public class MayorLawMenu extends Menu {
         };
 
         if (law.getWarp() == null) {
-            inventory.put(12, warpItemSupplier.get());
+            inventory.put(21, warpItemSupplier.get());
         } else {
-            MenuUtils.runDynamicItem(player, this, 12, warpItemSupplier)
+            MenuUtils.runDynamicItem(player, this, 21, warpItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         }
 
@@ -229,7 +236,7 @@ public class MayorLawMenu extends Menu {
             });
         };
 
-        MenuUtils.runDynamicItem(player, this, 14, announceItemSupplier)
+        MenuUtils.runDynamicItem(player, this, 23, announceItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
         Perks perkEvent = PerkManager.getPerkEvent(mayor);
@@ -343,11 +350,11 @@ public class MayorLawMenu extends Menu {
                 });
             };
 
-            MenuUtils.runDynamicItem(player, this, 16, perkEventItemSupplier)
+            MenuUtils.runDynamicItem(player, this, 25, perkEventItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         }
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous allez retourner au Menu du Mandat du Maire"),
@@ -363,7 +370,7 @@ public class MayorLawMenu extends Menu {
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
-        inventory.put(26, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+        inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));

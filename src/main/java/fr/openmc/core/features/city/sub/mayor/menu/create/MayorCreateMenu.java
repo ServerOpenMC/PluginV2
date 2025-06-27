@@ -8,10 +8,13 @@ import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -42,12 +45,16 @@ public class MayorCreateMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Creation";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Menu des Maires - Creation";
+        }
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -84,7 +91,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk1.add(Component.text(""));
                 lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(13, new ItemBuilder(this, iaPerk1, itemMeta -> {
+            inventory.put(22, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -93,7 +100,7 @@ public class MayorCreateMenu extends Menu {
                 new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
             }));
 
-            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
                 itemMeta.lore(List.of(
                         Component.text("§7Vous allez retourner au Menu des Elections"),
@@ -120,7 +127,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk2.add(Component.text(""));
                 lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(11, new ItemBuilder(this, iaPerk2, itemMeta -> {
+            inventory.put(20, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -143,7 +150,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk3.add(Component.text(""));
                 lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
+            inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -152,7 +159,7 @@ public class MayorCreateMenu extends Menu {
                 new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
             }));
 
-            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
                 itemMeta.lore(List.of(
                         Component.text("§7Vous allez retourner au Menu des Elections"),
@@ -179,7 +186,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk1.add(Component.text(""));
                 lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(11, new ItemBuilder(this, iaPerk1, itemMeta -> {
+            inventory.put(20, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -202,7 +209,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk2.add(Component.text(""));
                 lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
+            inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -225,7 +232,7 @@ public class MayorCreateMenu extends Menu {
                 lorePerk3.add(Component.text(""));
                 lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
-            inventory.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
+            inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -234,7 +241,7 @@ public class MayorCreateMenu extends Menu {
                 new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
             }));
 
-            inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
                 itemMeta.lore(List.of(
                         Component.text("§7Vous allez retourner au Menu de votre ville"),
@@ -267,7 +274,7 @@ public class MayorCreateMenu extends Menu {
             );
         }
 
-        inventory.put(26, new ItemBuilder(this, matConfirm, itemMeta -> {
+        inventory.put(52, new ItemBuilder(this, matConfirm, itemMeta -> {
             itemMeta.itemName(Component.text(nameConfirm));
             itemMeta.lore(loreConfirm);
         }).setOnClick(inventoryClickEvent -> {
