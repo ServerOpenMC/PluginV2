@@ -19,7 +19,7 @@ public class TeleportProtection implements Listener {
         if (!ProtectionsManager.canInteract(player, event.getTo())) {
             ProtectionsManager.verify(player, event, event.getTo());
 
-            if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.ENDER_PEARL) && player.getGameMode().equals(GameMode.CREATIVE)) {
+            if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.ENDER_PEARL) && !player.getGameMode().equals(GameMode.CREATIVE)) {
                 player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
             }
         }

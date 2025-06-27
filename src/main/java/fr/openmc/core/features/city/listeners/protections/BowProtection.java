@@ -20,8 +20,9 @@ public class BowProtection implements Listener {
 
         ProtectionsManager.verify(player, event, event.getEntity().getLocation());
 
-        if (event.isCancelled() && player.getGameMode().equals(GameMode.CREATIVE)) {
-            player.getInventory().addItem(event.getProjectile().getPickItemStack());
+        if (event.isCancelled() && !player.getGameMode().equals(GameMode.CREATIVE)) {
+            System.out.println(event.getConsumable());
+            player.getInventory().addItem(event.getConsumable());
         }
     }
 }
