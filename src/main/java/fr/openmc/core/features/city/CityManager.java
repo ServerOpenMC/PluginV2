@@ -118,10 +118,7 @@ public class CityManager implements Listener {
         try {
             claimedChunks.clear();
             claimsDao.queryForAll()
-                    .forEach(claim -> {
-                        System.out.println(claim.getBlockVector().getX() + " " + claim.getBlockVector().getZ());
-                        claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity()));
-                    });
+                    .forEach(claim -> claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity())));
         } catch (SQLException e) {
             e.printStackTrace();
         }
