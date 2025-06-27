@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
 import fr.openmc.core.features.city.sub.war.commands.WarCommand;
+import fr.openmc.core.features.city.sub.war.listeners.TntPlaceListener;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
@@ -41,7 +42,8 @@ public class WarManager {
         );
 
         OMCPlugin.registerEvents(
-                new WarKillListener()
+                new WarKillListener(),
+                new TntPlaceListener()
         );
     }
 
