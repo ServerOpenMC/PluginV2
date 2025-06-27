@@ -414,8 +414,6 @@ public class ContestManager {
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-            OMCPlugin.getInstance().getLogger().info(uuid + " " + dataPlayer1.getCamp() + " " + dataPlayer1.getColor() + " " + dataPlayer1.getPoints() + " " + dataPlayer1.getName());
-
             OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
             int points = dataPlayer1.getPoints();
 
