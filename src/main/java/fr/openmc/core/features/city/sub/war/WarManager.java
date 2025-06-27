@@ -19,10 +19,8 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class WarManager {
-
-    //todo: remettre time preparation a 5 et time fight a 30
-    public static int TIME_PREPARATION = 2; // in minutes
-    public static int TIME_FIGHT = 20; // in minutes
+    public static int TIME_PREPARATION = 5; // in minutes
+    public static int TIME_FIGHT = 30; // in minutes
 
     public static long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
     public static long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
