@@ -33,5 +33,5 @@ public abstract class Milestone {
 	 *
 	 * @return A step list of the milestone.
 	 */
-	public abstract List<Quest> getSteps();
+	public abstract List<Quest> getSteps(); //TODO a voir si on met des quests ou des advencements
 }
