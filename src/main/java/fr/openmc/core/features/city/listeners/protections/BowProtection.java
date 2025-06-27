@@ -11,6 +11,11 @@ public class BowProtection implements Listener {
     @EventHandler
     void onLaunchProjectile(PlayerLaunchProjectileEvent event) {
         ProtectionsManager.verify(event.getPlayer(), event, event.getPlayer().getLocation());
+
+        if (event.isCancelled()) {
+            event.getPlayer().getInventory().addItem(event.getItemStack());
+        }
+
     }
 
     @EventHandler
