@@ -23,7 +23,7 @@ public class CityTransferAction {
         OfflinePlayer owner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER));
 
         if (owner.isOnline()) {
-            if (!CityManageConditions.canCityTransfer(city, (Player) owner)) return;
+            if (!CityManageConditions.canCityTransfer(city, owner.getPlayer())) return;
         }
 
         ConfirmMenu menu = new ConfirmMenu(player,
