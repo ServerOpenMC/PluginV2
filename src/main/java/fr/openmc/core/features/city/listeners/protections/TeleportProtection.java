@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.listeners.protections;
 
 import fr.openmc.core.features.city.ProtectionsManager;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,7 +19,7 @@ public class TeleportProtection implements Listener {
         if (!ProtectionsManager.canInteract(player, event.getTo())) {
             ProtectionsManager.verify(player, event, event.getTo());
 
-            if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.ENDER_PEARL)) {
+            if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.ENDER_PEARL) && player.getGameMode().equals(GameMode.CREATIVE)) {
                 player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
             }
         }
