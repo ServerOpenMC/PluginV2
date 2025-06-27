@@ -391,7 +391,7 @@ public class ContestManager {
 
         final int[] rankInt = {0};
 
-        dataPlayer.forEach((uuid, dataOrdered) -> {
+        orderedMap.forEach((uuid, dataOrdered) -> {
             NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(dataOrdered.getColor());
 
             Component rankComponent = Component.text("\n#" + (rankInt[0] + 1) + " ").color(LeaderboardManager.getRankColor(rankInt[0] + 1))
