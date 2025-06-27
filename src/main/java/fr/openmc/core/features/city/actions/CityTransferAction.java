@@ -32,7 +32,7 @@ public class CityTransferAction {
                     MessagesManager.sendMessage(player, Component.text("Le nouveau propriétaire est " + playerToTransfer.getName()), Prefix.CITY, MessageType.SUCCESS, false);
 
                     if (playerToTransfer.isOnline()) {
-                        MessagesManager.sendMessage((Player) playerToTransfer, Component.text("Vous êtes devenu le propriétaire de la ville"), Prefix.CITY, MessageType.INFO, true);
+                        MessagesManager.sendMessage(playerToTransfer.getPlayer(), Component.text("Vous êtes devenu le propriétaire de la ville"), Prefix.CITY, MessageType.INFO, true);
                     }
                     player.closeInventory();
                 },
