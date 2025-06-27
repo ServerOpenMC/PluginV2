@@ -118,7 +118,10 @@ public class CityManager implements Listener {
         try {
             claimedChunks.clear();
             claimsDao.queryForAll()
-                    .forEach(claim -> claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity())));
+                    .forEach(claim -> {
+                        System.out.println(claim.getBlockVector().getX() + " " + claim.getBlockVector().getZ());
+                        claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity()));
+                    });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -247,7 +250,10 @@ public class CityManager implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                claimsDao.delete(new DBCityClaim(chunk, city.getUUID()));
+                DeleteBuilder<DBCityClaim, String> delete = claimsDao.deleteBuilder();
+                delete.where().eq("city", city.getUUID()).and().eq("x", chunk.getX()).and().eq("z", chunk.getZ());
+
+                claimsDao.delete(delete.prepare());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
