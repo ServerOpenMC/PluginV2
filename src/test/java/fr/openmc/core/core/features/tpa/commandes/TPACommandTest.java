@@ -5,15 +5,18 @@ import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.mockbukkit.ServerMock;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 public class TPACommandTest {
 
     private ServerMock server;
+    private OMCPlugin plugin;
 
     @BeforeEach
     public void setUp() {
@@ -21,7 +24,7 @@ public class TPACommandTest {
 
         this.server.addSimpleWorld("world");
 
-        MockBukkit.load(OMCPlugin.class);
+        this.plugin = MockBukkit.load(OMCPlugin.class);
     }
 
     @AfterEach
@@ -36,16 +39,28 @@ public class TPACommandTest {
 
     @Test
     public void testAskCommand() {
-        Player player = server.addPlayer();
-
-        player.setOp(true); // TODO: replace by omc.commands.tpa permission
-
+        Player player = server.addPlayerWithPermissions(plugin, "omc.commands.tpa");
         Player player1 = server.addPlayer();
 
         boolean perform = player.performCommand("tpa " + player1.getName());
 
         Assertions.assertTrue(perform);
         Assertions.assertTrue(TPAQueue.QUEUE.hasPendingRequest(player1));
+    }
+
+    @Test
+    public void testASkCommand_HasPendingRequest() {
+        Player player = server.addPlayerWithPermissions(plugin, "omc.commands.tpa");
+        PlayerMock player1 = server.addPlayerWithPermissions(plugin, "omc.commands.tpa");
+
+        boolean perform = player.performCommand("tpa " + player1.getName());
+
+        Assertions.assertTrue(perform);
+
+        perform = player1.performCommand("tpa " + player.getName());
+
+        Assertions.assertTrue(perform);
+        Assertions.assertFalse(TPAQueue.QUEUE.hasPendingRequest(player));
     }
 
 }
