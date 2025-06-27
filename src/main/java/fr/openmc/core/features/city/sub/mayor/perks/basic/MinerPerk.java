@@ -34,7 +34,7 @@ public class MinerPerk implements Listener {
 
             if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.MINER.getId())) return;
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, PotionEffect.INFINITE_DURATION, 1, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, PotionEffect.INFINITE_DURATION, 0, false, false));
         } else {
             player.removePotionEffect(PotionEffectType.HASTE);
         }
