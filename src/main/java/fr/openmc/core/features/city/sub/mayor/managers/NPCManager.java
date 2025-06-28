@@ -201,7 +201,7 @@ public class NPCManager implements Listener {
             Chunk chunkTest = event.getNpc().getData().getLocation().getChunk();
             int chunkX = chunkTest.getX();
             int chunkZ = chunkTest.getZ();
-            System.out.println(!city.hasChunk(chunkX, chunkZ));
+
             if (!city.hasChunk(chunkX, chunkZ)) {
                 MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);

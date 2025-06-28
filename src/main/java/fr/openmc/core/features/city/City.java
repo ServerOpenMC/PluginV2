@@ -369,9 +369,6 @@ public class City {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
-        chunks.forEach(chunk -> {
-            System.out.println(chunk.getX() + " " + chunk.getZ());
-        });
         return chunks.contains(BlockVector2.at(x, z));
     }
 
