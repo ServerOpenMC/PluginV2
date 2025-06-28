@@ -179,15 +179,73 @@ public class NPCManager implements Listener {
         Npc npc = event.getNpc();
 
         if (npc.getData().getName().startsWith("mayor-")) {
-            if (MayorManager.phaseMayor == 1) {
-                MessagesManager.sendMessage(player, Component.text("§8§o*les elections sont en cours... on ne sait pas ce qu'il décide de prendre*"), Prefix.MAYOR, MessageType.INFO, true);
-                event.setCancelled(true);
+            String cityUUID = npc.getData().getName().replace("mayor-", "");
+            City city = CityManager.getCity(cityUUID);
+            if (city == null || !city.hasChunk(event.getNpc().getData().getLocation().getChunk())) {
+                removeNPCS(cityUUID);
                 return;
             }
 
-            String cityUUID = npc.getData().getName().replace("mayor-", "");
-            City city = CityManager.getCity(cityUUID);
-            if (city == null) return;
+            if (MayorManager.phaseMayor == 1) {
+                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CPermission.OWNER))) {
+                    MessagesManager.sendMessage(player, Component.text("§8§o*mhh cette ville n'a pas encore élu un maire*"), Prefix.MAYOR, MessageType.INFO, true);
+                    return;
+                }
+
+                Component message = Component.text("§8§o*Bonjour ? Tu veux me bouger ? Clique ici !*")
+                        .clickEvent(ClickEvent.callback(audience -> {
+                            List<Component> loreItemNPC = List.of(
+                                    Component.text("§7Cliquez sur l'endroit où vous voulez déplacer le §9NPC")
+                            );
+                            ItemStack itemToGive = new ItemStack(Material.STICK);
+                            ItemMeta itemMeta = itemToGive.getItemMeta();
+
+                            itemMeta.displayName(Component.text("§7Emplacement du §9NPC"));
+                            itemMeta.lore(loreItemNPC);
+                            itemToGive.setItemMeta(itemMeta);
+                            ItemInteraction.runLocationInteraction(
+                                    player,
+                                    itemToGive,
+                                    "mayor:mayor-npc-move",
+                                    300,
+                                    "§7Vous avez 300s pour séléctionner votre emplacement",
+                                    "§7Vous n'avez pas eu le temps de déplacer votre NPC",
+                                    locationClick -> {
+                                        if (locationClick == null) return true;
+
+                                        Chunk chunk = locationClick.getChunk();
+
+                                        City cityByChunk = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
+                                        if (cityByChunk == null) {
+                                            MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                            return false;
+                                        }
+
+                                        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+                                        if (playerCity == null) {
+                                            return false;
+                                        }
+
+                                        if (!cityByChunk.getUUID().equals(playerCity.getUUID())) {
+                                            MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+                                            return false;
+                                        }
+
+                                        NPCManager.moveNPC("mayor", locationClick, city.getUUID());
+                                        NPCManager.updateNPCS(city.getUUID());
+                                        return true;
+                                    },
+                                    null
+                            );
+                        }))
+                        .hoverEvent(HoverEvent.showText(Component.text("Déplacer ce NPC")));
+
+                MessagesManager.sendMessage(player, message, Prefix.MAYOR, MessageType.INFO, false);
+
+                event.setCancelled(true);
+                return;
+            }
 
             if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
                 MessagesManager.sendMessage(player, Component.text("§8§o*mhh cette ville n'a pas encore débloquée les éléctions*"), Prefix.MAYOR, MessageType.INFO, true);
@@ -198,9 +256,14 @@ public class NPCManager implements Listener {
         } else if (npc.getData().getName().startsWith("owner-")) {
             String cityUUID = npc.getData().getName().replace("owner-", "");
             City city = CityManager.getCity(cityUUID);
-            if (city == null) return;
+            if (city == null || !city.hasChunk(event.getNpc().getData().getLocation().getChunk())) {
+                removeNPCS(cityUUID);
+                return;
+            }
 
             if (MayorManager.phaseMayor == 1) {
+                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CPermission.OWNER))) return;
+
                 Component message = Component.text("§8§o*Bonjour ? Tu veux me bouger ? Clique ici !*")
                         .clickEvent(ClickEvent.callback(audience -> {
                             List<Component> loreItemNPC = List.of(
