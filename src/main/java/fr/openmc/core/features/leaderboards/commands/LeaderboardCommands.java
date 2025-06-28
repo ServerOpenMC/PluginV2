@@ -23,6 +23,7 @@ import java.util.List;
 
 import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
 
+@SuppressWarnings("unused")
 @Command({"leaderboard", "lb"})
 public class LeaderboardCommands {
     @DefaultFor("~")
@@ -123,6 +124,7 @@ public class LeaderboardCommands {
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
         LeaderboardManager.disable();
+        sender.sendMessage("§cHolograms désactivés avec succès.");
     }
 
     @Subcommand("enable")
@@ -130,6 +132,20 @@ public class LeaderboardCommands {
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
         LeaderboardManager.enable();
+        sender.sendMessage("§aHolograms activés avec succès.");
+    }
+
+    @Subcommand("update")
+    @CommandPermission("op")
+    @Description("Met à jour les Holograms.")
+    void updateCommand(CommandSender sender) {
+        LeaderboardManager.updateGithubContributorsMap();
+        LeaderboardManager.updatePlayerMoneyMap();
+        LeaderboardManager.updateCityMoneyMap();
+        LeaderboardManager.updatePlayTimeMap();
+        LeaderboardManager.updateHolograms();
+        LeaderboardManager.updateHologramsViewers();
+        sender.sendMessage("§aHolograms mis à jour avec succès.");
     }
 
     @Subcommand("setScale")

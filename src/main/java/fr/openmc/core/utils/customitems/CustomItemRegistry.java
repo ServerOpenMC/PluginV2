@@ -40,6 +40,8 @@ public class CustomItemRegistry {
         new StackButton();
         new MinusButton();
         new PlusButton();
+        new QuestsRightArrow();
+        new QuestsLeftArrow();
 
         /* Items */
         new ContestShell();

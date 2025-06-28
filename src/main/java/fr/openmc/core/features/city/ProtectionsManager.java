@@ -37,6 +37,7 @@ public class ProtectionsManager {
                 new MountProtection(),
                 new PistonProtection(),
                 new PotionProtection(),
+                new TeleportProtection(),
                 new TramplingProtection(),
                 new VehicleProtection()
         );
