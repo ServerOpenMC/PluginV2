@@ -98,7 +98,6 @@ public class DynamicCooldownManager {
                     cooldownDao.delete(cooldown);
                     continue;
                 }
-                ;
 
                 cooldowns.computeIfAbsent(cooldown.id, k -> new HashMap<>())
                         .put(cooldown.group, cooldown);
