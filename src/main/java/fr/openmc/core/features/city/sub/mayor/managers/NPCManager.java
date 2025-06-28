@@ -103,7 +103,8 @@ public class NPCManager implements Listener {
         FancyNpcsPlugin.get().getNpcManager().registerNpc(npcOwner);
 
         npcMayor.create();
-        if (city.getElectionType() == ElectionType.ELECTION) npcMayor.spawnForAll();
+        npcMayor.spawnForAll();
+        npcMayor.getData().setSpawnEntity(city.getElectionType().equals(ElectionType.ELECTION));
         npcOwner.create();
         npcOwner.spawnForAll();
     }
@@ -197,7 +198,11 @@ public class NPCManager implements Listener {
                 return;
             }
 
-            if (!city.hasChunk(event.getNpc().getData().getLocation().getChunk())) {
+            Chunk chunkTest = event.getNpc().getData().getLocation().getChunk();
+            int chunkX = chunkTest.getX();
+            int chunkZ = chunkTest.getZ();
+            System.out.println(!city.hasChunk(chunkX, chunkZ));
+            if (!city.hasChunk(chunkX, chunkZ)) {
                 MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
                 return;
