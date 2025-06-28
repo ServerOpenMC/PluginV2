@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.PlayerNameCache;
 import net.kyori.adventure.text.Component;
@@ -72,17 +73,21 @@ public class CityListMenu extends PaginatedMenu {
 			UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
 			String ownerName = PlayerNameCache.getName(ownerUUID);
 
-			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+			List<Component> cityLore = new ArrayList<>();
+
+			cityLore.add(Component.text("§7Propriétaire : " + ownerName));
+			if (MayorManager.phaseMayor == 2) {
 				String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
-				NamedTextColor mayorColor = city.getMayor() == null ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
+				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
+				cityLore.add(Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)));
+			}
+			cityLore.add(Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")));
+			cityLore.add(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
+
+
+			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
 				itemMeta.displayName(Component.text("§a" + city.getName()));
-				itemMeta.lore(List.of(
-						Component.text("§7Propriétaire : " + ownerName),
-						Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
-						Component.text("§bPopulation : " + city.getMembers().size()),
-						Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")),
-						Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
-				));
+				itemMeta.lore(cityLore);
 			}));
 		});
 		return items;

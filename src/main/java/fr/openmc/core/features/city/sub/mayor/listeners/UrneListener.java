@@ -17,13 +17,17 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.Objects;
+
+import static fr.openmc.core.utils.LocationUtils.getSafeNearbySurface;
 
 public class UrneListener implements Listener {
 
@@ -116,14 +120,9 @@ public class UrneListener implements Listener {
 
         if (!FancyNpcsApi.hasFancyNpc()) return;
 
-        int baseY = urneLocation.getBlockY();
-        World world = urneLocation.getWorld();
+        Location locationMayor = getSafeNearbySurface(urneLocation, 2);
 
-        Location locationMayor = new Location(world, urneLocation.getX() + 3, baseY, urneLocation.getZ());
-        locationMayor = getSafeNearbySurface(locationMayor);
-
-        Location locationOwner = new Location(world, urneLocation.getX() - 3, baseY, urneLocation.getZ());
-        locationOwner = getSafeNearbySurface(locationOwner);
+        Location locationOwner = getSafeNearbySurface(urneLocation, 2);
 
         NPCManager.createNPCS(playerCity.getUUID(), locationMayor, locationOwner, player.getUniqueId());
     }
@@ -172,34 +171,5 @@ public class UrneListener implements Listener {
         }, 1L);
     }
 
-    private Location getSafeNearbySurface(Location urneLoc) {
-        World world = urneLoc.getWorld();
-        int radius = 2;
-        int maxY = world.getMaxHeight() - 2;
-        int minY = world.getMinHeight() + 1;
 
-        for (int dx = -radius; dx <= radius; dx++) {
-            for (int dz = -radius; dz <= radius; dz++) {
-                int baseX = urneLoc.getBlockX() + dx;
-                int baseZ = urneLoc.getBlockZ() + dz;
-
-                for (int y = maxY; y >= minY; y--) {
-                    Block under = world.getBlockAt(baseX, y - 1, baseZ);
-                    Block feet = world.getBlockAt(baseX, y, baseZ);
-                    Block head = world.getBlockAt(baseX, y + 1, baseZ);
-
-                    if (!under.isPassable() && feet.isPassable() && head.isPassable()) {
-                        return new Location(world, baseX + 0.5, y, baseZ + 0.5);
-                    }
-                }
-            }
-        }
-
-        return new Location(
-                world,
-                urneLoc.getBlockX() + 0.5,
-                urneLoc.getBlockY(),
-                urneLoc.getBlockZ() + 0.5
-        );
-    }
 }
