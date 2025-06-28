@@ -17,10 +17,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -126,9 +123,9 @@ public class UrneListener implements Listener {
 
         if (!FancyNpcsApi.hasFancyNpc()) return;
 
-        Location locationMayor = getSafeNearbySurface(urneLocation, 2);
+        Location locationMayor = getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
 
-        Location locationOwner = getSafeNearbySurface(urneLocation, 2);
+        Location locationOwner = getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
 
         NPCManager.createNPCS(playerCity.getUUID(), locationMayor, locationOwner, player.getUniqueId());
     }
