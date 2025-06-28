@@ -35,7 +35,7 @@ public class DamageProtection implements Listener {
                     && city.isMember(victimPlayer)
                     && city.isMember(attacker)) {
 
-                if (!city.getLaw().isPvp()) {
+                if (!city.getLaw().isPvp() || city.isInWar()) {
                     event.setCancelled(true);
                     return;
                 }
