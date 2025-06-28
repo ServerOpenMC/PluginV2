@@ -1,33 +1,27 @@
 package fr.openmc.core.features.mailboxes.menu;
 
-
+import fr.openmc.core.features.mailboxes.Letter;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
-import fr.openmc.core.utils.database.DatabaseManager;
-import org.bukkit.Bukkit;
+import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import org.bukkit.entity.Player;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
 public class PlayerMailbox extends PaginatedMailbox<LetterHead> {
 
-    static {
-        invErrorMessage = "Erreur lors de la récupération de votre boite aux lettres.";
-    }
-
     public PlayerMailbox(Player player) {
         super(player);
-        if (fetchMailbox()) initInventory();
+        if (fetchMailbox())
+            initInventory();
     }
 
     public void addLetter(LetterHead letterHead) {
         pageItems.add(letterHead);
         int size = pageItems.size();
-        if (size - 1 / maxIndex == page) updateInventory(false, size - 1 % maxIndex);
+        if (size - 1 / maxIndex == page)
+            updateInventory(false, size - 1 % maxIndex);
     }
 
     public void removeLetter(int id) {
@@ -47,21 +41,13 @@ public class PlayerMailbox extends PaginatedMailbox<LetterHead> {
     }
 
     public boolean fetchMailbox() {
-        try (PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT id, sender_id, sent_at, items_count FROM mailbox_items WHERE receiver_id = ? AND refused = false ORDER BY sent_at DESC;")) {
-            statement.setString(1, player.getUniqueId().toString());
-            try (ResultSet result = statement.executeQuery()) {
-                while (result.next()) {
-                    int id = result.getInt("id");
-                    UUID senderUUID = UUID.fromString(result.getString("sender_id"));
-                    int itemsCount = result.getInt("items_count");
-                    LocalDateTime sentAt = result.getTimestamp("sent_at").toLocalDateTime();
-                    pageItems.add(new LetterHead(Bukkit.getOfflinePlayer(senderUUID), id, itemsCount, sentAt));
-                }
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        List<Letter> letters = MailboxManager.getReceivedLetters(player);
+        if (letters.size() < 1) {
+            MailboxUtils.sendFailureMessage(player, "Vous n'avez aucune lettre.");
             return false;
         }
+
+        letters.forEach((letter) -> pageItems.add(letter.toLetterHead()));
+        return true;
     }
 }

@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.features.homes.Home;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.messages.MessageType;
@@ -18,8 +18,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class RenameHome {
-
-    private MessagesManager msg;
     private final HomesManager homesManager;
     public RenameHome(HomesManager homesManager) {
         this.homesManager = homesManager;
@@ -30,7 +28,6 @@ public class RenameHome {
     @CommandPermission("omc.commands.home.rename")
     @AutoComplete("@homes")
     public void renameHome(Player player, String home, String newName) {
-
         if(player.hasPermission("omc.admin.homes.rename.other") && home.contains(":")) {
             String[] split = home.split(":");
             String targetName = split[0];
@@ -43,7 +40,10 @@ public class RenameHome {
                 return;
             }
 
-            if (HomeUtil.checkName(player, msg, newName)) return;
+            if (!HomeUtil.isValidHomeName(newName)) {
+                MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+                return;
+            }
 
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home h : homes) {
@@ -64,7 +64,10 @@ public class RenameHome {
             return;
         }
 
-        if(HomeUtil.checkName(player, msg, newName)) return;
+        if (!HomeUtil.isValidHomeName(newName)) {
+            MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+            return;
+        }
 
         List<Home> homes = HomesManager.getHomes(player.getUniqueId());
 

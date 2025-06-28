@@ -1,14 +1,15 @@
 package fr.openmc.core.features.contest.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.managers.ColorUtils;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -20,28 +21,24 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-
 public class ContributionMenu extends Menu {
-    private final ContestManager contestManager;
-    private final ContestPlayerManager contestPlayerManager;
 
     public ContributionMenu(Player owner) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
-        this.contestPlayerManager = ContestPlayerManager.getInstance();
     }
 
     @Override
     public @NotNull String getName() {
-        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
         } else {
-            return "Menu des Contests";
+            return "Menu des Contests - Contribution";
         }
     }
 
@@ -60,9 +57,9 @@ public class ContributionMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-        String campName = contestPlayerManager.getPlayerCampName(player);
-        NamedTextColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
-        Material m = ColorUtils.getMaterialFromColor(campColor);
+            String campName = ContestPlayerManager.getPlayerCampName(player);
+            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
+            Material m = ColorUtils.getMaterialFromColor(campColor);
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
@@ -84,18 +81,18 @@ public class ContributionMenu extends Menu {
                 Component.text("§e§lCliquez pour acceder au Menu des trades")
         );
 
-        List<Component> loreRang = Arrays.asList(
-                Component.text(contestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
-                Component.text("§7Progression §8: ")
-                        .append(Component.text(contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
-                        .append(Component.text("§8/"))
-                        .append(Component.text(contestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
-                Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
-        );
+            List<Component> loreRang = Arrays.asList(
+                    Component.text(ContestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
+                    Component.text("§7Progression §8: ")
+                            .append(Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
+                            .append(Component.text("§8/"))
+                            .append(Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
+                    Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
+            );
 
         //ITEMADDER
         String namespaceShellContest = "omc_contest:contest_shell";
-        ItemStack shellContest = Objects.requireNonNull(CustomItemRegistry.getByName(namespaceShellContest)).getBest();
+        ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
             itemMeta.displayName(Component.text("§6§lVotre Titre"));
@@ -111,7 +108,7 @@ public class ContributionMenu extends Menu {
             itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CustomItemRegistry.hasItemsAdder()) {
+            if (!ItemsAdderApi.hasItemAdder()) {
                 MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                 return;
             }
@@ -123,16 +120,16 @@ public class ContributionMenu extends Menu {
                 if (ItemUtils.hasEnoughItems(player, shellContestItem.getType(), shellCount)) {
                     ItemUtils.removeItemsFromInventory(player, shellContestItem.getType(), shellCount);
 
-                    int newPlayerPoints = shellCount + contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
-                    int updatedCampPoints = shellCount + contestManager.data.getInteger("points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp());
+                        int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
+                        int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp());
 
-                    contestPlayerManager.setPointsPlayer(player, newPlayerPoints);
-                    String pointCamp = "points" + contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
-                    if (Objects.equals(pointCamp, "points1")) {
-                        contestManager.data.setPointsCamp1(updatedCampPoints);
-                    } else if (Objects.equals(pointCamp, "points2")) {
-                        contestManager.data.setPointsCamp2(updatedCampPoints);
-                    }
+                        ContestPlayerManager.setPointsPlayer(player.getUniqueId(), newPlayerPoints);
+                        String pointCamp = "points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
+                        if (Objects.equals(pointCamp, "points1")) {
+                            ContestManager.data.setPoints1(updatedCampPoints);
+                        } else if (Objects.equals(pointCamp, "points2")) {
+                            ContestManager.data.setPoints2(updatedCampPoints);
+                        }
 
                     MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
                 } else {
@@ -144,10 +141,20 @@ public class ContributionMenu extends Menu {
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
-            itemMeta.displayName(Component.text("§r§aPlus d'infos !"));
+            itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));
 
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

@@ -1,14 +1,15 @@
 package fr.openmc.core.features.contest.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.PapiAPI;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -20,6 +21,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,21 +29,17 @@ import java.util.*;
 
 
 public class TradeMenu extends Menu {
-    private final ContestManager contestManager;
-    private final ContestPlayerManager contestPlayerManager;
 
     public TradeMenu(Player owner) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
-        this.contestPlayerManager = ContestPlayerManager.getInstance();
     }
 
     @Override
     public @NotNull String getName() {
-        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
         } else {
-            return "Menu des Contests";
+            return "Menu des Contests - Trades";
         }
     }
 
@@ -50,7 +48,8 @@ public class TradeMenu extends Menu {
         return InventorySize.LARGE;
     }
 
-    @Override public void onInventoryClick(InventoryClickEvent click) {
+    @Override
+    public void onInventoryClick(InventoryClickEvent click) {
         // empty
     }
 
@@ -59,12 +58,12 @@ public class TradeMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-        String campName = contestPlayerManager.getPlayerCampName(player);
-        NamedTextColor campColor = contestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+            String campName = ContestPlayerManager.getPlayerCampName(player);
+            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
 
         // ITEM ADDER
         String namespaceShellContest = "omc_contest:contest_shell";
-        ItemStack shellContest = Objects.requireNonNull(CustomItemRegistry.getByName(namespaceShellContest)).getBest();
+        ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
@@ -84,8 +83,8 @@ public class TradeMenu extends Menu {
             itemMeta.lore(loreTrade);
         }));
 
-        List<Map<String, Object>> selectedTrades = contestManager.getTradeSelected(true).stream()
-                .sorted(Comparator.comparing(trade -> (String) trade.get("ress"))).toList();
+            List<Map<String, Object>> selectedTrades = ContestManager.getTradeSelected(true).stream()
+                    .sorted(Comparator.comparing(trade -> (String) trade.get("ress"))).toList();
 
         List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
 
@@ -99,15 +98,14 @@ public class TradeMenu extends Menu {
                     Component.text("§e§lCLIQUE-GAUCHE POUR VENDRE UNE FOIS"),
                     Component.text("§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE")
             );
-	        
-	        assert m != null;
-	        inventory.put(slot, new ItemBuilder(this, m, itemMeta -> itemMeta.lore(loreTrades)).setOnClick(inventoryClickEvent -> {
-                if (!CustomItemRegistry.hasItemsAdder()) {
+
+            inventory.put(slot, new ItemBuilder(this, m, itemMeta -> itemMeta.lore(loreTrades)).setOnClick(inventoryClickEvent -> {
+                if (!ItemsAdderApi.hasItemAdder()) {
                     MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                     return;
                 }
 
-                String m1 = String.valueOf(Objects.requireNonNull(inventoryClickEvent.getCurrentItem()).getType());
+                String m1 = String.valueOf(inventoryClickEvent.getCurrentItem().getType());
                 int amount = (int) trade.get("amount");
                 int amountShell = (int) trade.get("amount_shell");
                 ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
@@ -126,13 +124,13 @@ public class TradeMenu extends Menu {
                         int slotEmpty = ItemUtils.getSlotNull(player);
                         int stackAvailable = slotEmpty * 64;
                         int additem = Math.min(amountShell2, stackAvailable);
-                        if (stackAvailable >=64) {
+                        if (stackAvailable >= 64) {
                             shellContestItem.setAmount(additem);
                             for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {
                                 player.getInventory().addItem(item);
                             }
                             int remain1 = amountShell2 - additem;
-                            if(remain1 != 0) {
+                            if (remain1 != 0) {
                                 int numbertoStack = ItemUtils.getNumberItemToStack(player, shellContestItem);
                                 if (numbertoStack > 0) {
                                     shellContestItem.setAmount(numbertoStack);
@@ -194,5 +192,15 @@ public class TradeMenu extends Menu {
         }).setNextMenu(new MoreInfoMenu(getOwner())));
 
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

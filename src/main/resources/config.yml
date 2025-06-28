@@ -10,9 +10,17 @@ features:
   analytics: true
   transactions: true
 
+chat:
+  # {prefix}, {suffix}, {name}, {message}
+  message: "&r{prefix} {name}&8: &f{message}"
+
+# Montant d'argent donné à un joueur lors de sa première connexion
+money-on-first-join: 500
+
 #####
 # Paramètres pour un environnement de production
 #####
 homepage: "https://openmc.fr/"
-discord: "https://discord.gg/aywen/"
+discord: "https://aywen.fr/discord/"
 blog: "https://blog.openmc.fr/"
+wiki: "https://wiki.openmc.fr/"

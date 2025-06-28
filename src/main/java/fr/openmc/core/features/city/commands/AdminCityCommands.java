@@ -1,13 +1,16 @@
 package fr.openmc.core.features.city.commands;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.*;
-import fr.openmc.core.features.city.mascots.MascotUtils;
-import fr.openmc.core.features.city.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mascots.MascotsManager;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,6 +21,7 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,8 +38,69 @@ public class AdminCityCommands {
             return;
         }
 
-        city.delete();
+        CityManager.deleteCity(city);
         MessagesManager.sendMessage(player, Component.text("La ville a été supprimée"), Prefix.STAFF, MessageType.SUCCESS, false);
+    }
+
+    private static final int PER_PAGE = 10;
+
+    @Subcommand("list")
+    @CommandPermission("omc.admins.commands.admincity.list")
+    void list(Player player) {
+        List<City> all = new ArrayList<>(CityManager.getCities());
+
+        all.sort((a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+
+        int page = 1;
+
+        int total = all.size();
+        int maxPage = (int) Math.ceil(total / (double) PER_PAGE);
+        if (page > maxPage) page = maxPage;
+
+        int start = (page - 1) * PER_PAGE;
+        int end = Math.min(start + PER_PAGE, total);
+        List<City> sub = all.subList(start, end);
+        MessagesManager.sendMessage(
+                player,
+                Component.text("—— Villes (page " + page + " / " + maxPage + ") ——")
+                        .color(NamedTextColor.GOLD),
+                Prefix.STAFF,
+                MessageType.SUCCESS,
+                false
+        );
+
+        sub.forEach(city -> {
+            String id = city.getUUID();
+            String name = city.getName();
+
+            Component line = Component.text("- ")
+                    .append(Component.text(id).color(NamedTextColor.GRAY))
+                    .append(Component.text(" • "))
+                    .append(Component.text(name).color(NamedTextColor.WHITE))
+                    .append(Component.text(" [copier]")
+                            .color(NamedTextColor.GREEN)
+                            .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(
+                                    Component.text("Clique pour copier l’UUID"))
+                            )
+                            .clickEvent(ClickEvent.copyToClipboard(id))
+                    );
+
+            player.sendMessage(line);
+        });
+
+        Component nav = Component.text("")
+                .append(page > 1
+                        ? Component.text("« Prev").color(NamedTextColor.YELLOW)
+                        .clickEvent(ClickEvent.runCommand("/cities " + (page - 1)))
+                        : Component.text("       "))
+                .append(Component.text("    "))
+                .append(page < maxPage
+                        ? Component.text("Next »").color(NamedTextColor.YELLOW)
+                        .clickEvent(ClickEvent.runCommand("/cities " + (page + 1)))
+                        : Component.text("      "));
+
+        player.sendMessage(nav);
+        return;
     }
 
     @Subcommand("info")
@@ -61,7 +126,7 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        city.renameCity(newName);
+        city.rename(newName);
 
         MessagesManager.sendMessage(player, Component.text("La ville a été renommée"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
@@ -154,6 +219,28 @@ public class AdminCityCommands {
         MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
     }
 
+    @Subcommand("claim bypass")
+    @CommandPermission("omc.admins.commands.admincity.claim.bypass")
+    public void bypass(Player player) {
+        UUID uuid = player.getUniqueId();
+        Boolean canBypass = ProtectionsManager.canBypassPlayer.contains(uuid);
+
+        if (canBypass == null) {
+            ProtectionsManager.canBypassPlayer.add(uuid);
+            MessagesManager.sendMessage(player, Component.text("Vous pouvez bypass les claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+            return;
+        }
+
+        if (canBypass) {
+            ProtectionsManager.canBypassPlayer.remove(uuid);
+            MessagesManager.sendMessage(player, Component.text("Vous avez désactivé le bypass des claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+        } else {
+            ProtectionsManager.canBypassPlayer.add(uuid);
+            MessagesManager.sendMessage(player, Component.text("Vous avez activé le bypass des claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+
+        }
+    }
+
     @Subcommand("freeclaim add")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.add")
     public void freeClaimAdd(@Named("player") Player player, @Named("claim") int claim) {
@@ -162,11 +249,8 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        if (MascotsManager.freeClaim.get(city.getUUID())==null){
-            MascotsManager.freeClaim.put(city.getUUID(), claim);
-            return;
-        }
-        MascotsManager.freeClaim.replace(city.getUUID(), MascotsManager.freeClaim.get(city.getUUID()) + claim);
+
+        city.updateFreeClaims(claim);
     }
 
     @Subcommand("freeclaim remove")
@@ -177,11 +261,8 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        if (MascotsManager.freeClaim.get(city.getUUID()) - claim <= 0){
-            MascotsManager.freeClaim.remove(city.getUUID());
-            return;
-        }
-        MascotsManager.freeClaim.replace(city.getUUID(),MascotsManager.freeClaim.get(city.getUUID()) - claim);
+
+        city.updateFreeClaims(-claim);
     }
 
     @Subcommand("freeclaim delete")
@@ -192,33 +273,20 @@ public class AdminCityCommands {
             MessagesManager.sendMessage(player, Component.text("La ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
-        MascotsManager.freeClaim.remove(city.getUUID());
+        city.updateFreeClaims(-city.getFreeClaims());
     }
 
     @Subcommand("mascots remove")
     @CommandPermission("omc.admins.commands.admcity.mascots.remove")
     public void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {
-        List<String> uuidList = CityManager.getAllCityUUIDs();
         City city = CityManager.getPlayerCity(target.getUniqueId());
 
-        if (city != null){
-            String city_uuid = city.getUUID();
-
-            if (uuidList.contains(city_uuid)){
-                MascotsManager.removeMascotsFromCity(city_uuid);
-                return;
-            }
-
+        if (city == null) {
             MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
         }
-    }
 
-    @Subcommand("mascots chest")
-    @CommandPermission("omc.admins.commands.admcity.mascots.chest")
-    public void giveMascotsChest(@Named("player") Player target){
-        if (target.isOnline()){
-            MascotsManager.giveChest(target);
-        }
+        MascotsManager.removeMascotsFromCity(city);
+        MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
     }
 
     @Subcommand("mascots immunityoff")
@@ -231,18 +299,18 @@ public class AdminCityCommands {
             return;
         }
 
-        String city_uuid = city.getUUID();
+        Mascot mascot = city.getMascot();
 
-        if (!MascotUtils.getMascotState(city_uuid)){
+        if (!mascot.isAlive()) {
             MessagesManager.sendMessage(sender, Component.text("§cLa mascotte est en immunité forcée"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
-        if (MascotUtils.getMascotImmunity(city_uuid)){
-            MascotUtils.changeMascotImmunity(city_uuid, false);
+        if (mascot.isImmunity()) {
+            mascot.setImmunity(false);
         }
-        MascotUtils.setImmunityTime(city_uuid, 0);
-        UUID mascotUUID = MascotUtils.getMascotUUIDOfCity(city_uuid);
+        DynamicCooldownManager.clear(city.getUUID(), "city:immunity");
+        UUID mascotUUID = mascot.getMascotUUID();
         if (mascotUUID!=null){
             Entity mob = Bukkit.getEntity(mascotUUID);
             if (mob!=null) mob.setGlowing(false);

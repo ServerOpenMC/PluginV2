@@ -1,31 +1,37 @@
 package fr.openmc.core.features.city.menu;
 
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
+import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class CityModifyMenu extends Menu {
 
@@ -66,7 +72,7 @@ public class CityModifyMenu extends Menu {
             loreRename = List.of(
                     Component.text("§7Vous pouvez renommer votre §dville§7."),
                     Component.text(""),
-                    Component.text("§7Nom actuel : §d" + city.getCityName()),
+                    Component.text("§7Nom actuel : §d" + city.getName()),
                     Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR LE MODIFIER")
             );
@@ -99,10 +105,9 @@ public class CityModifyMenu extends Menu {
 
                             if (InputUtils.isInputCityName(input)) {
                                 City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-	                            
-	                            assert playerCity != null;
-	                            playerCity.renameCity(input);
-                                MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
+
+                                    playerCity.rename(input);
+                                    MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
 
                             } else {
                                 MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
@@ -125,6 +130,7 @@ public class CityModifyMenu extends Menu {
         if (hasPermissionOwner) {
             loreTransfer = List.of(
                     Component.text("§dLa Ville §7sera transferer à §dla personne §7que vous séléctionnerez"),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
             );
         } else {
@@ -151,46 +157,47 @@ public class CityModifyMenu extends Menu {
 
         }));
 
+            Supplier<ItemStack> deleteItemSupplier = () -> {
+                List<Component> loreDelete;
+                if (hasPermissionOwner) {
+                    if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+                        loreDelete = List.of(
+                                Component.text("§7Vous allez définitivement §csupprimer la ville!"),
+                                Component.text(""),
+                                Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")) + " §7avant de pouvoir delete votre ville")
+                        );
+                    } else {
+                        loreDelete = List.of(
+                                Component.text("§7Vous allez définitivement §csupprimer la ville!"),
+                                Component.text(""),
+                                Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                        );
+                    }
+                } else {
+                    loreDelete = List.of(
+                            MessagesManager.Message.NOPERMISSION2.getMessage()
+                    );
+                }
+                return new ItemBuilder(this, Material.TNT, itemMeta -> {
+                    itemMeta.itemName(Component.text("§7Supprimer la ville"));
+                    itemMeta.lore(loreDelete);
+                }).setOnClick(inventoryClickEvent -> {
+                    CityDeleteAction.startDeleteCity(player);
+                });
+            };
 
-        List<Component> loreDelete;
-
-        if (hasPermissionOwner) {
-            loreDelete = List.of(
-                    Component.text("§7Vous allez définitivement §csupprimer la ville!"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            );
-        } else {
-            loreDelete = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
-            );
-        }
-
-        inventory.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Supprimer la ville"));
-            itemMeta.lore(loreDelete);
-        }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-
-            if (!CityManageConditions.canCityDelete(city, player)) return;
-	        
-	        assert cityCheck != null;
-	        ConfirmMenu menu = new ConfirmMenu(
-                    player,
-                    () -> {
-                        player.closeInventory();
-                        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.deleteCity(player));
-                    },
-			        player::closeInventory,
-                    List.of(Component.text("§7Voulez vous vraiment dissoudre la ville " + cityCheck.getCityName() + " ?")),
-                    List.of(Component.text("§7Ne pas dissoudre la ville " + cityCheck.getCityName())));
-            menu.open();
-
-        }));
+            if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+                MenuUtils.runDynamicItem(player, this, 15, deleteItemSupplier)
+                        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
+            } else {
+                inventory.put(15, deleteItemSupplier.get());
+            }
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous allez retourner au Menu de votre Ville"),
+                    Component.text(""),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {
@@ -205,5 +212,15 @@ public class CityModifyMenu extends Menu {
         }));
 
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

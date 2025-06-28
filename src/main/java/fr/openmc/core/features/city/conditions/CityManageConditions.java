@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.conditions;
 
+import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.utils.cooldown.DynamicCooldownManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
  * pour modifier une ville (utile pour faire une modif sur menu et commandes).
  */
 public class CityManageConditions {
-
 
     /**
      * Retourne un booleen pour dire si la ville peut etre rename
@@ -33,6 +32,7 @@ public class CityManageConditions {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de renommer ta ville."), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
         return true;
     }
 
@@ -74,12 +74,17 @@ public class CityManageConditions {
             return false;
         }
 
-        if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
-            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+        if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir supprimer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
             return false;
         }
 
-        if (!city.getPlayerWith(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (city.isInWar()) {
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas supprimer votre ville pendant une guerre"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (!city.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

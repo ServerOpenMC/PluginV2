@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityPermsCommands;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -60,7 +61,7 @@ public class CitizensPermsMenu {
                     .decoration(TextDecoration.UNDERLINED, false)
                     .decoration(TextDecoration.BOLD, false)
                     .clickEvent(ClickEvent.callback((plr1) -> {
-                        CityPermsCommands.swap(sender, sender.getServer().getOfflinePlayer(player), permission);
+                        CityPermsCommands.swap(sender, CacheOfflinePlayer.getOfflinePlayer(player), permission);
                         sender.closeInventory();
                         openBookFor(sender, player);
                     }))
@@ -116,7 +117,7 @@ public class CitizensPermsMenu {
         ArrayList<Component> players = new ArrayList<>();
 
         for (UUID citizen: city.getMembers()) {
-            OfflinePlayer offlinePlayer = sender.getServer().getOfflinePlayer(citizen);
+            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(citizen);
             players.add(Component.text("- "+Objects.requireNonNullElse(offlinePlayer.getName(), "Inconnu"))
                     .decoration(TextDecoration.UNDERLINED, false)
                     .decoration(TextDecoration.BOLD, false)

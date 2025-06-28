@@ -1,8 +1,16 @@
 package fr.openmc.core.utils.customitems;
 
-import fr.openmc.core.commands.CommandsManager;
+import fr.openmc.core.CommandsManager;
+import fr.openmc.core.utils.customitems.buttons.*;
+import fr.openmc.core.utils.customitems.items.company.CompanyBox;
+import fr.openmc.core.utils.customitems.items.homes.*;
+import fr.openmc.core.utils.customitems.items.homes.icons.*;
+import fr.openmc.core.utils.customitems.armors.SuitBoots;
+import fr.openmc.core.utils.customitems.armors.SuitChestplate;
+import fr.openmc.core.utils.customitems.armors.SuitHelmet;
+import fr.openmc.core.utils.customitems.armors.SuitLeggings;
+import fr.openmc.core.utils.customitems.items.*;
 import io.papermc.paper.persistence.PersistentDataContainerView;
-import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -14,25 +22,56 @@ import java.util.HashSet;
 public class CustomItemRegistry {
     static HashMap<String, CustomItem> items = new HashMap<>();
     static NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
-    private static final boolean hasItemsAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
 
-    public static boolean hasItemsAdder() {
-        return hasItemsAdder;
-    }
-
-    static public void init() {
+    public CustomItemRegistry() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
 
         // Ici, enregistrer tous les items custom
+
+        /* Buttons */
         new CloseButton();
         new PreviousPage();
         new NextPage();
         new AcceptButton();
         new RefuseButton();
         new SearchButton();
+        new OneButton();
+        new TenButton();
+        new StackButton();
+        new MinusButton();
+        new PlusButton();
+        new QuestsRightArrow();
+        new QuestsLeftArrow();
 
+        /* Items */
         new ContestShell();
         new Aywenite();
+        new KebabItem();
+        new MascotWand();
+        new WarpWand();
+
+        new SuitHelmet();
+        new SuitChestplate();
+        new SuitLeggings();
+        new SuitBoots();
+
+        new CompanyBox();
+
+        new BinRed();
+        new Bin();
+        new Information();
+        new Upgrade();
+        new Axenq();
+        new Bank();
+        new Chateau();
+        new Chest();
+        new Default();
+        new Farm();
+        new Home();
+        new Sandblock();
+        new Shop();
+        new Xernas();
+        new Invisible();
     }
 
     public static void register(String name, CustomItem item) {

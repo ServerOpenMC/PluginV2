@@ -1,16 +1,16 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
-import dev.xernas.menulib.utils.ItemUtils;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -19,6 +19,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,9 +30,10 @@ import java.util.Map;
 public class CityPlayerGestionMenu extends Menu {
 
     private final OfflinePlayer playerTarget;
+
     public CityPlayerGestionMenu(Player owner, OfflinePlayer player) {
         super(owner);
-        this.playerTarget=player;
+        this.playerTarget = player;
     }
 
     @Override
@@ -96,9 +98,9 @@ public class CityPlayerGestionMenu extends Menu {
                         player,
                         () -> {
                             player.closeInventory();
-                            CityCommands.kick(player, playerTarget);
+                            CityKickAction.startKick(player, playerTarget);
                         },
-		                player::closeInventory,
+                        () -> player.closeInventory(),
                         List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
                         List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
                 menu.open();
@@ -108,7 +110,7 @@ public class CityPlayerGestionMenu extends Menu {
 
 
         List<Component> lorePlayerTarget = List.of(
-                    Component.text("§7Vous êtes entrain de modifier son status dans la §dville")
+                Component.text("§7Vous êtes entrain de modifier son status dans la §dville")
         );
 
         inventory.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(playerTarget.getUniqueId()), itemMeta -> {
@@ -120,7 +122,7 @@ public class CityPlayerGestionMenu extends Menu {
 
         if (hasPermissionPerms) {
             lorePermission = List.of(
-                    Component.text("§7Vous allez modifier §ases permissions"),
+                    Component.text("§7Vous allez modifier §ases permissisons"),
                     Component.text("§e§lCLIQUEZ ICI POUR MODIFIER")
             );
         } else {
@@ -152,5 +154,15 @@ public class CityPlayerGestionMenu extends Menu {
         }));
 
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

@@ -1,33 +1,27 @@
 package fr.openmc.core.features.homes.menu;
 
-import dev.lone.itemsadder.api.CustomStack;
-import dev.xernas.menulib.Menu;
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HomeUpgradeMenu extends Menu {
 
-    private final HomeUpgradeManager homeUpgradeManager;
-    private final HomesManager homesManager;
-
     public HomeUpgradeMenu(Player owner) {
         super(owner);
-        this.homeUpgradeManager = HomeUpgradeManager.getInstance();
-        this.homesManager = HomesManager.getInstance();
     }
 
     @Override
@@ -39,34 +33,33 @@ public class HomeUpgradeMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> items = new HashMap<>();
 
-        int currentHome = homesManager.getHomeLimit(getOwner().getUniqueId());
+        int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId());
 
         int homeMaxLimit = HomeLimits.values().length - 1;
 
-        HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
-        HomeLimits nextUpgrade = homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer())) != null
-                ? homeUpgradeManager.getNextUpgrade(homeUpgradeManager.getCurrentUpgrade(getOwner().getPlayer()))
-                : lastUpgrade;
+            HomeLimits lastUpgrade = HomeLimits.valueOf("LIMIT_" + homeMaxLimit);
+            HomeLimits nextUpgrade = HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner())) != null
+                    ? HomeUpgradeManager.getNextUpgrade(HomeUpgradeManager.getCurrentUpgrade(getOwner()))
+                    : lastUpgrade;
 
-        int finalCurrentHome = currentHome;
-        items.put(4, new ItemBuilder(this, CustomStack.getInstance("omc_homes:omc_homes_icon_upgrade").getItemStack(), itemMeta -> {
-            itemMeta.setDisplayName("§8● §6Améliorer les homes §8(Clique gauche)");
-            List<String> lore = new ArrayList<>();
-            lore.add("§6Nombre de home actuel: §e" + finalCurrentHome);
-            if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
-                lore.add("§cVous avez atteint le nombre maximum de homes");
-            } else {
-                lore.add("§bPrix: §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon());
-                lore.add("§bAywenite: §d" + nextUpgrade.getAyweniteCost());
-                lore.add("§6Nombre de home au prochain niveau: §e" + nextUpgrade.getLimit());
-                lore.add("§7→ Clique gauche pour améliorer");
-            }
+            items.put(4, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade")).getBest(), itemMeta -> {
+                itemMeta.displayName(Component.text("§8● §6Améliorer les homes §8(Clique gauche)"));
+                List<Component> lore = new ArrayList<>();
+                lore.add(Component.text("§6Nombre de home actuel: §e" + currentHome));
+                if (nextUpgrade.getLimit() >= lastUpgrade.getLimit()) {
+                    lore.add(Component.text("§cVous avez atteint le nombre maximum de homes"));
+                } else {
+                    lore.add(Component.text("§bPrix: §a" + nextUpgrade.getPrice() + " " + EconomyManager.getEconomyIcon()));
+                    lore.add(Component.text("§bAywenite: §d" + nextUpgrade.getAyweniteCost()));
+                    lore.add(Component.text("§6Nombre de home au prochain niveau: §e" + nextUpgrade.getLimit()));
+                    lore.add(Component.text("§7→ Clique gauche pour améliorer"));
+                }
 
-            itemMeta.setLore(lore);
-        }).setOnClick(event -> {
-            homeUpgradeManager.upgradeHome(getOwner());
-            getOwner().closeInventory();
-        }));
+                itemMeta.lore(lore);
+            }).setOnClick(event -> {
+                HomeUpgradeManager.upgradeHome(getOwner());
+                getOwner().closeInventory();
+            }));
 
         return items;
     }
@@ -77,5 +70,14 @@ public class HomeUpgradeMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {}
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
 }

@@ -5,7 +5,7 @@ import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
-import fr.openmc.core.features.mailboxes.menu.letter.Letter;
+import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -21,7 +21,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendFailureMe
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendWarningMessage;
 
 @Command({"mailbox", "mb", "letter", "mail", "lettre", "boite", "courrier"})
-@CommandPermission("ayw.command.mailbox")
+@CommandPermission("omc.commands.mailbox")
 public class MailboxCommand {
     
     private OMCPlugin plugin;
@@ -69,9 +69,9 @@ public class MailboxCommand {
     @Subcommand("open")
     @Description("Ouvrir une lettre")
     public void openMailbox(Player player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        LetterHead letterHead = Letter.getById(player, id);
+        LetterHead letterHead = LetterMenu.getById(player, id);
         if (letterHead == null) return;
-        Letter mailbox = new Letter(player, letterHead);
+        LetterMenu mailbox = new LetterMenu(player, letterHead);
         mailbox.openInventory();
     }
 
@@ -79,7 +79,7 @@ public class MailboxCommand {
     @SecretCommand
     @Description("Refuser une lettre")
     public void refuseMailbox(Player player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        Letter.refuseLetter(player, id);
+        LetterMenu.refuseLetter(player, id);
     }
 
     @Subcommand("cancel")
@@ -91,7 +91,6 @@ public class MailboxCommand {
 
     @DefaultFor("~")
     public void mailbox(Player player) {
-        PlayerMailbox playerMailbox = new PlayerMailbox(player);
-        playerMailbox.openInventory();
+        new PlayerMailbox(player).openInventory();
     }
 }

@@ -1,7 +1,10 @@
 package fr.openmc.core.utils.messages;
 
+import fr.openmc.core.features.settings.PlayerSettingsManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import lombok.Getter;
@@ -24,7 +27,7 @@ public class MessagesManager {
      * @param sound   Indicates whether a sound should be played (true) or not (false)
      */
 
-    public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, boolean sound) {
+    public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
         MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
@@ -33,13 +36,16 @@ public class MessagesManager {
                         .append(message)
                 );
 
-        if(sender instanceof Player player && sound) {
-            player.playSound(player.getLocation(), type.getSound(), 1, 1);
+        if(sender instanceof Player player && sound && PlayerSettingsManager.shouldPlayNotificationSound(player.getUniqueId())) {
+            player.playSound(player.getLocation(), type.getSound(), soundVolume, 1.0F);
         }
 
         sender.sendMessage(messageComponent);
     }
 
+    public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, boolean sound) {
+        sendMessage(sender, message, prefix, type, 1.0F, sound);
+    }
 
     /**
      *
@@ -51,6 +57,26 @@ public class MessagesManager {
      */
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix) {
         sendMessage(sender, message, prefix, MessageType.NONE, false);
+    }
+
+    /**
+     *
+     * Broadcasts a formatted message to the entire server
+     *
+     * @param message The content of the message
+     * @param prefix  The prefix for the message
+     * @param type    The type of message (information, error, success, warning)
+     */
+    public static void broadcastMessage(Component message, Prefix prefix, MessageType type) {
+        MiniMessage.miniMessage().deserialize("e");
+        Component messageComponent =
+                Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
+                        .append(MiniMessage.miniMessage().deserialize(prefix.getPrefix()))
+                        .append(Component.text(" §7» ")
+                        .append(message)
+                );
+
+        Bukkit.broadcast(messageComponent);
     }
         
     public static String textToSmall(String text) {

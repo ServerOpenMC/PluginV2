@@ -1,35 +1,51 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.utils.SpawnManager;
+import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.utils.LuckPermsAPI;
 import fr.openmc.core.utils.animations.Animations;
+import fr.openmc.core.features.quests.QuestsManager;
+import fr.openmc.core.features.quests.objects.Quest;
+import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
+import net.kyori.adventure.text.event.ClickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 
 import java.util.UUID;
 
 public class JoinMessageListener implements Listener {
+    private final double balanceOnJoin;
+
+    public JoinMessageListener() {
+        this.balanceOnJoin = OMCPlugin.getInstance().getConfig().getDouble("money-on-first-join", 500D);
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
-        final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
 
-        FriendManager.getInstance().getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+        MessagesManager.sendMessage(player, Component.text("Bienvenue sur OpenMC !"), Prefix.OPENMC, MessageType.INFO, false);
+
+        TabList.updateTabList(player);
+
+        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §e" + friend.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
@@ -37,7 +53,44 @@ public class JoinMessageListener implements Listener {
             return null;
         });
 
-        event.joinMessage(Component.text("§8[§a§l+§8] §r" + prefix + player.getName()));
+        // Quest pending reward notification
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            for (Quest quest : QuestsManager.getAllQuests()) {
+                if (!quest.hasPendingRewards(player.getUniqueId()))
+                    continue;
+
+                int pendingRewardsNumber = quest.getPendingRewardTiers(player.getUniqueId()).size();
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    MessagesManager.sendMessage(player,
+                            Component.text("§aVous avez " + pendingRewardsNumber + " récompense(s) de quête en attente.")
+                                    .append(Component.text(" §6Cliquez ici pour les récupérer."))
+                                            .clickEvent(ClickEvent.runCommand("/quest")),
+                            Prefix.QUEST,
+                            MessageType.INFO,
+                            true);
+                });
+            }
+        });
+
+        event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName()));
+
+        // Adjust player's spawn location
+        if (!player.hasPlayedBefore()) {
+            player.teleport(SpawnManager.getSpawnLocation());
+            EconomyManager.setBalance(player.getUniqueId(), this.balanceOnJoin);
+        }
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (!player.isOnline()) {
+                    cancel();
+                    return;
+                }
+
+                TabList.updateTabList(player);
+            }
+        }.runTaskTimer(OMCPlugin.getInstance(), 0L, 100L);
     }
     
     @EventHandler
@@ -54,13 +107,14 @@ public class JoinMessageListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        final String prefix = LuckPermsAPI.getPrefix(player).replace("&", "§");
 
-        FriendManager.getInstance().getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
+        QuestsManager.saveQuests(player.getUniqueId());
+
+        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + friend.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
@@ -68,6 +122,7 @@ public class JoinMessageListener implements Listener {
             return null;
         });
 
-        event.quitMessage(Component.text("§8[§c§l-§8] §r" + prefix + player.getName()));
+        event.quitMessage(Component.text("§8[§c§l-§8] §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName()));
     }
+
 }

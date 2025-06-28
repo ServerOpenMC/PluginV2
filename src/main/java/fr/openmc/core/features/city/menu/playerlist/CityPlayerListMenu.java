@@ -1,20 +1,22 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-
-import de.rapha149.signgui.SignGUI;
-import de.rapha149.signgui.exception.SignGUIVersionException;
-import dev.xernas.menulib.PaginatedMenu;
-import dev.xernas.menulib.utils.ItemBuilder;
-import dev.xernas.menulib.utils.ItemUtils;
-import dev.xernas.menulib.utils.StaticSlots;
+import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import fr.openmc.core.utils.menu.ConfirmMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -25,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,6 +52,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<ItemStack> getItems() {
+        List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -56,23 +60,25 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
         boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
-        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
-        List<ItemStack> items = new ArrayList<>();
         for (UUID uuid : city.getMembers()) {
-            OfflinePlayer playerOffline = Bukkit.getOfflinePlayer(uuid);
-            String title;
-            if(hasPermissionOwner) {
-                title = "Propriétaire ";
-            } else {
-                title = "Membre ";
-            }
+            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-            List<Component> lorePlayer;
+                boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
+                String title = "";
+                if(hasPermissionOwner) {
+                    title = "Propriétaire ";
+                } else if (MayorManager.cityMayor.get(city.getUUID()).getUUID() == uuid) {
+                    title = "Maire ";
+                } else {
+                    title = "Membre ";
+                }
+
+            List<Component> lorePlayer = List.of();
             if (hasPermissionPerms && hasPermissionKick) {
                 if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
                     lorePlayer = List.of(
-                        Component.text("§7Vous ne pouvez pas éditer le propriétaire!")
+                            Component.text("§7Vous ne pouvez pas éditer le propriétaire!")
                     );
                 } else {
                     lorePlayer = List.of(
@@ -130,18 +136,24 @@ public class CityPlayerListMenu extends PaginatedMenu {
                                 player,
                                 () -> {
                                     player.closeInventory();
-                                    CityCommands.kick(player, playerOffline);
+                                    CityKickAction.startKick(player, playerOffline);
                                 },
                                 () -> player.closeInventory(),
                                 List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
-                                List.of(Component.text( "§7Ne pas expulser " + playerOffline.getName())));
+                                List.of(Component.text("§7Ne pas expulser " + playerOffline.getName())));
                         menu.open();
 
                     }
                 }
             }));
         }
+
         return items;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 
     @Override
@@ -164,14 +176,14 @@ public class CityPlayerListMenu extends PaginatedMenu {
             SignGUI gui;
             try {
                 gui = SignGUI.builder()
-                        .setLines(null, lines[1] , lines[2], lines[3])
+                        .setLines(null, lines[1], lines[2], lines[3])
                         .setType(fr.openmc.core.utils.ItemUtils.getSignType(player))
                         .setHandler((p, result) -> {
                             String input = result.getLine(0);
 
                             if (InputUtils.isInputPlayer(input)) {
                                 Player playerToInvite = Bukkit.getPlayer(input);
-                                CityCommands.add(player, playerToInvite);
+                                CityCommands.invite(player, playerToInvite);
                             } else {
                                 MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                             }
@@ -195,6 +207,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+        //empty
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
         //empty
     }
 }

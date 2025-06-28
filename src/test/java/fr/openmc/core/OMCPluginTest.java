@@ -1,25 +1,26 @@
 package fr.openmc.core;
 
-import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockbukkit.mockbukkit.MockBukkit;
+
 import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.MockBukkit;
 
 public class OMCPluginTest {
-    
-    private JavaPlugin plugin;
+
+    public OMCPlugin plugin;
+    public ServerMock server;
 
     @BeforeEach
     public void setUp() {
-        ServerMock server = MockBukkit.mock();
+        server = MockBukkit.mock();
 
         server.addSimpleWorld("world");
 
-        this.plugin = MockBukkit.load(OMCPlugin.class);
+        plugin = MockBukkit.load(OMCPlugin.class);
     }
 
     @AfterEach

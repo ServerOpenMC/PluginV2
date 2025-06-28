@@ -1,7 +1,8 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.features.homes.Home;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -18,8 +19,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class SetHome {
-
-    private MessagesManager msg;
     private final HomesManager homesManager;
 
     public SetHome(HomesManager homesManager) {
@@ -53,8 +52,10 @@ public class SetHome {
                 return;
             }
 
-            if(HomeUtil.checkName(player, msg, homeName)) return;
-
+            if (!HomeUtil.isValidHomeName(homeName)) {
+                MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+                return;
+            }
             List<Home> homes = HomesManager.getHomes(target.getUniqueId());
             for (Home home : homes) {
                 if (home.getName().equalsIgnoreCase(homeName)) {
@@ -63,7 +64,7 @@ public class SetHome {
                 }
             }
 
-            Home home = new Home(target.getUniqueId(), homeName, player.getLocation(), HomeUtil.getDefaultHomeIcon(homeName));
+            Home home = new Home(target.getUniqueId(), homeName, player.getLocation(), HomeIconRegistry.getDefaultIcon());
             homesManager.addHome(home);
 
             MessagesManager.sendMessage(player, Component.text("§aLe home §e" + homeName + " §aa été défini pour §e" + targetName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
@@ -74,7 +75,10 @@ public class SetHome {
             return;
         }
 
-        if(HomeUtil.checkName(player, msg, name)) return;
+        if (!HomeUtil.isValidHomeName(name)) {
+            MessagesManager.sendMessage(player, Component.text("§cLe nom du home doit être valide."), Prefix.HOME, MessageType.ERROR, true);
+            return;
+        }
 
         int currentHome = HomesManager.getHomes(player.getUniqueId()).size();
         int homesLimit = homesManager.getHomeLimit(player.getUniqueId());
@@ -93,7 +97,7 @@ public class SetHome {
             }
         }
 
-        Home home = new Home(player.getUniqueId(), name, player.getLocation(), HomeUtil.getDefaultHomeIcon(name));
+        Home home = new Home(player.getUniqueId(), name, player.getLocation(), HomeIconRegistry.getDefaultIcon());
         homesManager.addHome(home);
 
         MessagesManager.sendMessage(player, Component.text("§aVotre home §e" + name + " §aa été défini."), Prefix.HOME, MessageType.SUCCESS, true);

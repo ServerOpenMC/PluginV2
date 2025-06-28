@@ -1,39 +1,38 @@
 package fr.openmc.core.features.contest.menu;
 
-import dev.xernas.menulib.utils.InventorySize;
-import dev.xernas.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.contest.ContestPlayer;
-import fr.openmc.core.features.contest.managers.ColorUtils;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.utils.PapiAPI;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.features.contest.models.ContestPlayer;
+import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import dev.xernas.menulib.Menu;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class VoteMenu extends Menu {
-    private final ContestManager contestManager;
 
     public VoteMenu(Player owner) {
         super(owner);
-        this.contestManager = ContestManager.getInstance();
     }
 
     @Override
     public @NotNull String getName() {
-        if (PapiAPI.hasPAPI() && CustomItemRegistry.hasItemsAdder()) {
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
             return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
         } else {
-            return "Menu des Contests";
+            return "Menu des Contests - Vote";
         }
     }
 
@@ -53,11 +52,11 @@ public class VoteMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
-        String camp1Name = contestManager.data.getCamp1();
-        String camp2Name = contestManager.data.getCamp2();
+            String camp1Name = ContestManager.data.getCamp1();
+            String camp2Name = ContestManager.data.getCamp2();
 
-        String camp1Color = contestManager.data.getColor1();
-        String camp2Color = contestManager.data.getColor2();
+            String camp1Color = ContestManager.data.getColor1();
+            String camp2Color = ContestManager.data.getColor2();
 
         NamedTextColor color1 = ColorUtils.getNamedTextColor(camp1Color);
         NamedTextColor color2 = ColorUtils.getNamedTextColor(camp2Color);
@@ -72,11 +71,11 @@ public class VoteMenu extends Menu {
         boolean ench1;
         boolean ench2;
 
-        ContestPlayer playerData = contestManager.dataPlayer.get(player.getUniqueId().toString());
+        ContestPlayer playerData = ContestManager.dataPlayer.get(player.getUniqueId());
 
         String voteTeamMsg = "§7Votez pour la Team ";
-        String winMsg="§7Faites la gagner en déposant le plus de points";
-        String clickMsg="§c§lATTENTION! Le choix est définitif!";
+        String winMsg = "§7Faites la gagner en déposant le plus de points";
+        String clickMsg = "§c§lATTENTION! Le choix est définitif!";
 
 
         if (playerData == null) {
@@ -95,7 +94,7 @@ public class VoteMenu extends Menu {
             lore2.add(Component.text(winMsg));
             lore2.add(Component.text(clickMsg));
         } else {
-            if(playerData.getCamp() <= 0) {
+            if (playerData.getCamp() <= 0) {
                 ench1 = false;
                 ench2 = false;
                 lore1.add(Component.text(voteTeamMsg)
@@ -110,10 +109,10 @@ public class VoteMenu extends Menu {
                 lore2.add(Component.text(winMsg));
                 lore2.add(Component.text(clickMsg));
 
-            } else if(playerData.getCamp() == 1) {
+            } else if (playerData.getCamp() == 1) {
                 lore1.add(
                         Component.text("§7Vous avez votez pour la Team ")
-                        .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
+                                .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
                 );
                 lore1.add(Component.text("§7Faites la gagner en déposant le plus de points!"));
                 ench1 = true;
@@ -124,7 +123,7 @@ public class VoteMenu extends Menu {
                 );
                 lore2.add(Component.text("§7En Apportant le plus de points que vous pouvez!"));
                 ench2 = false;
-            } else if(playerData.getCamp() == 2) {
+            } else if (playerData.getCamp() == 2) {
                 lore1.add(
                         Component.text("§7Faites perdre la Team ")
                                 .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
@@ -139,8 +138,8 @@ public class VoteMenu extends Menu {
                 lore2.add(Component.text("§7Faites la gagner en déposant le plus de points!"));
                 ench2 = true;
             } else {
-                ench1=false;
-                ench2=false;
+                ench1 = false;
+                ench2 = false;
             }
         }
 
@@ -178,5 +177,15 @@ public class VoteMenu extends Menu {
         }).setNextMenu(new MoreInfoMenu(player)));
 
         return inventory;
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        //empty
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

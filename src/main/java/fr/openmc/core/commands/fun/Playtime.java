@@ -1,10 +1,10 @@
 package fr.openmc.core.commands.fun;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import fr.openmc.core.utils.translation.TranslationManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ public class Playtime {
     private void playtime(Player player) {
         long timePlayed = player.getStatistic(Statistic.PLAY_ONE_MINUTE);
 
-        MessagesManager.sendMessage(player, Component.text(OMCPlugin.getTranslationManager().getTranslation("messages.general.playtime",
+        MessagesManager.sendMessage(player, Component.text(TranslationManager.getTranslation("messages.general.playtime",
                         "fr", "playTime", DateUtils.convertTime(timePlayed))), Prefix.OPENMC, MessageType.INFO, true);
     }
 }

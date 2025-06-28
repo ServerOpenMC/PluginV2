@@ -3,6 +3,9 @@ package fr.openmc.core.features.friend;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.settings.PlayerSettings;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -28,12 +31,6 @@ import java.util.UUID;
 @Command({"friends", "friend", "ami", "f"})
 public class FriendCommand {
 
-    private final FriendManager friendManager;
-
-    public FriendCommand() {
-        this.friendManager = FriendManager.getInstance();
-    }
-
     @Subcommand("add")
     @Description("Envoyer une demande d'ami")
     public void addCommand(Player player, Player target) {
@@ -42,15 +39,19 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous ajouter vous-même en ami."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            if (friendManager.isRequestPending(target.getUniqueId())) {
+            if (!PlayerSettingsManager.canReceiveFriendRequest(target.getUniqueId(), player.getUniqueId())) {
+                MessagesManager.sendMessage(player, Component.text("§cCe joueur a désactivé les demandes d'amis."), Prefix.FRIEND, MessageType.ERROR, true);
+                return;
+            }
+            if (FriendManager.isRequestPending(target.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cVous avez déjà envoyé une demande à ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            if (friendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
+            if (FriendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cVous êtes déjà amis avec ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            friendManager.addRequest(player.getUniqueId(), target.getUniqueId());
+            FriendManager.addRequest(player.getUniqueId(), target.getUniqueId());
             MessagesManager.sendMessage(player, Component.text("§aDemande d'ami envoyée à §e" + target.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
 
             Component acceptButton = Component.text(" [Accepter]", NamedTextColor.GREEN)
@@ -59,11 +60,11 @@ public class FriendCommand {
 
             Component ignoreButton = Component.text(" [Ignorer]", NamedTextColor.GRAY)
                     .clickEvent(ClickEvent.callback(audience -> {
-                        if (!friendManager.isRequestPending(player.getUniqueId())) {
+                        if (!FriendManager.isRequestPending(player.getUniqueId())) {
                             MessagesManager.sendMessage(target, Component.text("§cLa demande d'ami a expiré."), Prefix.FRIEND, MessageType.INFO, true);
                             return;
                         }
-                        friendManager.removeRequest(friendManager.getRequest(player.getUniqueId()));
+                        FriendManager.removeRequest(FriendManager.getRequest(player.getUniqueId()));
                         MessagesManager.sendMessage(target, Component.text("§cVous avez ignoré la demande d'ami de §e" + player.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
                     }))
                     .hoverEvent(HoverEvent.showText(Component.text("Cliquer pour ignorer la demande d'ami", NamedTextColor.GRAY)));
@@ -89,12 +90,18 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
-            if (!friendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
+            if (!FriendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'êtes pas amis avec ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            friendManager.removeFriend(player.getUniqueId(), target.getUniqueId());
+            if (!FriendManager.removeFriend(player.getUniqueId(), target.getUniqueId())) {
+                MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de la suppression de l'ami."), Prefix.FRIEND, MessageType.ERROR, true);
+                return;
+            }
             MessagesManager.sendMessage(player, Component.text("§aVous avez supprimé §e" + target.getName() + " §ade votre liste d'amis."), Prefix.FRIEND, MessageType.INFO, true);
+            if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
+                MessagesManager.sendMessage(targetPlayer, Component.text("§cVous avez été supprimé de la liste d'amis de §e" + player.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
+            }
         } catch (Exception e) {
             MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de la suppression de l'ami."), Prefix.FRIEND, MessageType.ERROR, true);
             throw new RuntimeException(e);
@@ -108,7 +115,7 @@ public class FriendCommand {
         int currentPage = (page != null && page > 0) ? page : 1;
         final int ITEMS_PER_PAGE = 7;
 
-        friendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friends -> {
+        FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friends -> {
             if (friends.isEmpty()) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas d'amis pour le moment."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
@@ -130,16 +137,16 @@ public class FriendCommand {
             player.sendMessage(header);
             for (int i = startIndex; i < endIndex; i++) {
                 UUID friendUUID = friendsList.get(i);
-                OfflinePlayer friend = Bukkit.getOfflinePlayer(friendUUID);
+                OfflinePlayer friend = CacheOfflinePlayer.getOfflinePlayer(friendUUID);
 
                 try {
-                    Timestamp timestamp = friendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());
+                    Timestamp timestamp = FriendManager.getTimestamp(player.getUniqueId(), friend.getUniqueId());
                     String formattedDate = getFormattedDate(timestamp);
 
                     boolean isOnline = friend.isOnline();
 
                     City city = CityManager.getPlayerCity(friend.getUniqueId());
-                    String formattedMoney = EconomyManager.getInstance().getFormattedBalance(friend.getUniqueId());
+                    String formattedMoney = EconomyManager.getFormattedBalance(friend.getUniqueId());
 
                     TextComponent friendComponent = Component.text("  " + (i+1) + ". ")
                             .color(NamedTextColor.GRAY)
@@ -225,11 +232,11 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
-            if (!friendManager.isRequestPending(target.getUniqueId())) {
+            if (!FriendManager.isRequestPending(target.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas reçu de demande d'ami de ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            friendManager.addFriend(player.getUniqueId(), target.getUniqueId());
+            FriendManager.addFriend(player.getUniqueId(), target.getUniqueId());
             MessagesManager.sendMessage(player, Component.text("§aVous êtes désormais amis avec §e" + target.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
             if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
                 MessagesManager.sendMessage(targetPlayer, Component.text("§aVous êtes désormais amis avec §e"+ player.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
@@ -250,11 +257,11 @@ public class FriendCommand {
                 MessagesManager.sendMessage(player, Component.text("§cCe joueur n'existe pas."), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
-            if (!friendManager.isRequestPending(target.getUniqueId())) {
+            if (!FriendManager.isRequestPending(target.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas reçu de demande d'ami de ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
-            friendManager.removeRequest(friendManager.getRequest(target.getUniqueId()));
+            FriendManager.removeRequest(FriendManager.getRequest(target.getUniqueId()));
             MessagesManager.sendMessage(player, Component.text("§cVous avez refusé la demande d'ami de §e" + target.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
             if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
                 MessagesManager.sendMessage(targetPlayer, Component.text("§cVotre demande d'ami a été refusée par §e" + player.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
