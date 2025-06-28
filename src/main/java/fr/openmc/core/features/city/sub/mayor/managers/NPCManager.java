@@ -46,10 +46,20 @@ public class NPCManager implements Listener {
             FancyNpcsPlugin.get().getNpcManager().getAllNpcs().forEach(npc -> {
                 if (npc.getData().getName().startsWith("owner-")) {
                     String cityUUID = npc.getData().getName().replace("owner-", "");
-                    ownerNpcMap.put(cityUUID, new OwnerNPC(npc, cityUUID, npc.getData().getLocation()));
+                    if (CityManager.getCity(cityUUID) != null) {
+                        ownerNpcMap.put(cityUUID, new OwnerNPC(npc, cityUUID, npc.getData().getLocation()));
+                    } else {
+                        FancyNpcsPlugin.get().getNpcManager().removeNpc(npc);
+                        npc.removeForAll();
+                    }
                 } else if (npc.getData().getName().startsWith("mayor-")) {
                     String cityUUID = npc.getData().getName().replace("mayor-", "");
-                    mayorNpcMap.put(cityUUID, new MayorNPC(npc, cityUUID, npc.getData().getLocation()));
+                    if (CityManager.getCity(cityUUID) != null) {
+                        mayorNpcMap.put(cityUUID, new MayorNPC(npc, cityUUID, npc.getData().getLocation()));
+                    } else {
+                        FancyNpcsPlugin.get().getNpcManager().removeNpc(npc);
+                        npc.removeForAll();
+                    }
                 }
             });
         }, 20L * 30);
@@ -181,7 +191,14 @@ public class NPCManager implements Listener {
         if (npc.getData().getName().startsWith("mayor-")) {
             String cityUUID = npc.getData().getName().replace("mayor-", "");
             City city = CityManager.getCity(cityUUID);
-            if (city == null || !city.hasChunk(event.getNpc().getData().getLocation().getChunk())) {
+            if (city == null) {
+                MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
+                removeNPCS(cityUUID);
+                return;
+            }
+
+            if (!city.hasChunk(event.getNpc().getData().getLocation().getChunk())) {
+                MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
                 return;
             }
@@ -256,7 +273,14 @@ public class NPCManager implements Listener {
         } else if (npc.getData().getName().startsWith("owner-")) {
             String cityUUID = npc.getData().getName().replace("owner-", "");
             City city = CityManager.getCity(cityUUID);
-            if (city == null || !city.hasChunk(event.getNpc().getData().getLocation().getChunk())) {
+            if (city == null) {
+                MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
+                removeNPCS(cityUUID);
+                return;
+            }
+
+            if (!city.hasChunk(event.getNpc().getData().getLocation().getChunk())) {
+                MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
                 return;
             }
