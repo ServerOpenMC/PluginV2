@@ -353,8 +353,7 @@ public class City {
             this.chunks = CityManager.getCityChunks(this);
 
         BlockVector2 coords = BlockVector2.at(chunkX, chunkZ);
-        if (!chunks.contains(coords))
-            chunks.remove(coords);
+        chunks.remove(coords);
 
         CityManager.unclaimChunk(this, coords);
     }
@@ -370,6 +369,9 @@ public class City {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
+        chunks.forEach(chunk -> {
+            System.out.println(chunk.getX() + " " + chunk.getZ());
+        });
         return chunks.contains(BlockVector2.at(x, z));
     }
 
