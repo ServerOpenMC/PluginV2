@@ -250,6 +250,24 @@ public class ItemUtils {
     }
 
     /**
+     * Trouve le slot ou est l'item
+     *
+     * @param player le joueur pour l'inventaire
+     * @param item   l'item a chercher
+     * @return le slot de l'item (-1 si introuvable)
+     */
+    public static int getSlotOfItem(Player player, ItemStack item) {
+        Inventory inv = player.getInventory();
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack current = inv.getItem(i);
+            if (item.equals(current)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Donner le Type de Panneau en fonction du biome ou il se trouve
      * @param player Joueur pour acceder au biome ou il est
      */

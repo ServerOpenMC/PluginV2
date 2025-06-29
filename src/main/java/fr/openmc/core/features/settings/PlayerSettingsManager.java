@@ -275,7 +275,6 @@ public class PlayerSettingsManager implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
-        System.out.println(playerSettingDao);
         unloadPlayerSettings(uuid);
     }
 }
