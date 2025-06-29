@@ -176,7 +176,7 @@ public class HomesManager {
             homeLimits.add(homeLimit);
         }
 
-        return homeLimit == null ? 0 : homeLimit.getLimit();
+        return homeLimit.getLimit();
     }
 
     public static void updateHomeLimit(UUID owner) {
