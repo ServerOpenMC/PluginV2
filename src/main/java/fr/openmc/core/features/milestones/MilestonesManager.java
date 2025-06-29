@@ -12,7 +12,12 @@ public class MilestonesManager {
 	public MilestonesManager() {
 		this.milestones = new HashSet<>();
 	}
-	
+
+	/**
+	 * Enregistre tous les millestones
+	 *
+	 * @return Instance of MilestonesManager
+	 */
 	public MilestonesManager registerMilestones(Milestone[] milestones) {
 		for (Milestone milestone : milestones) {
 			if (milestone != null) {
