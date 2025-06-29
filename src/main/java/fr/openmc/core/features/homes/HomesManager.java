@@ -211,7 +211,7 @@ public class HomesManager {
             homeLimits.addAll(limitsDao.queryForAll());
 
             for (HomeLimit homeLimit : homeLimits) {
-                if (homeLimit.getLimit() == 0) homeLimit.setLimit(1);
+                if (homeLimit.getLimit() == 0) homeLimit.setLimit(HomeLimits.LIMIT_0.getLimit());
             }
         } catch (SQLException e) {
             e.printStackTrace();
