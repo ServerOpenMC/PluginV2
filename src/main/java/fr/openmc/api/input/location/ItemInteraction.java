@@ -325,7 +325,6 @@ public class ItemInteraction implements Listener {
      * Méthode qui permet d'arreter une interaction
      */
     public static void stopInteraction(Player player, String chronometerGroup) {
-        System.out.println("'stop'");
         HashMap<String, Function<Location, Boolean>> playerCallbacksMap = playerCallbacks.get(player.getUniqueId());
         HashMap<String, InteractionInfo> playerChronometerMap = playerChronometerData.get(player.getUniqueId());
 
