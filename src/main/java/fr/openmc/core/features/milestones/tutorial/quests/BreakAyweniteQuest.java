@@ -1,4 +1,4 @@
-package fr.openmc.core.features.millestones.tutorial.quests;
+package fr.openmc.core.features.milestones.tutorial.quests;
 
 import dev.lone.itemsadder.api.CustomBlock;
 import fr.openmc.core.features.quests.objects.Quest;

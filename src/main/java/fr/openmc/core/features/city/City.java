@@ -701,7 +701,7 @@ public class City {
         });
     }
 
-    // ==================== City Millestone Methods ====================
+    // ==================== City Milestone Methods ====================
 
     /**
      * Retrieves the power points of the city.

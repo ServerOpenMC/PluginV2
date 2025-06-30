@@ -1,4 +1,4 @@
-package fr.openmc.core.features.millestones.tutorial.quests;
+package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.homes.events.HomeCreateEvent;
 import fr.openmc.core.features.quests.objects.Quest;

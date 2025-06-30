@@ -1,8 +1,9 @@
-package fr.openmc.core.features.millestones.tutorial;
+package fr.openmc.core.features.milestones.tutorial;
 
-import fr.openmc.core.features.millestones.Millestone;
-import fr.openmc.core.features.millestones.tutorial.quests.BreakAyweniteQuest;
-import fr.openmc.core.features.millestones.tutorial.quests.CityCreateQuest;
+import fr.openmc.core.features.milestones.Milestone;
+import fr.openmc.core.features.milestones.tutorial.quests.BreakAyweniteQuest;
+import fr.openmc.core.features.milestones.tutorial.quests.CityCreateQuest;
+import fr.openmc.core.features.milestones.tutorial.quests.HomeCreateQuest;
 import fr.openmc.core.features.quests.objects.Quest;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -10,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class TutorialMillestone extends Millestone {
+public class TutorialMilestone extends Milestone {
     @Override
     public String getName() {
         return "§7Tutoriel d'OpenMC";
@@ -35,7 +36,8 @@ public class TutorialMillestone extends Millestone {
     public List<Quest> getSteps() {
         return List.of(
                 new BreakAyweniteQuest(),
-                new CityCreateQuest()
+                new CityCreateQuest(),
+                new HomeCreateQuest()
         );
     }
 }

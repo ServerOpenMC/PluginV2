@@ -1,4 +1,4 @@
-package fr.openmc.core.features.millestones.tutorial.quests;
+package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.events.MemberJoinEvent;
@@ -33,7 +33,7 @@ public class CityCreateQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape 2 §f! Cette version est centrée autour des villes. Vous y trouverez un §eMillestone spécial pour les Villes §fqui vous guideront dans cette aventure pas comme les autres ! Mais avant cela, faudrait peut être mettre un §2Home§f?",
+                        "Bien Joué! Vous avez fini l'§6Etape 2 §f! Cette version est centrée autour des villes. Vous y trouverez un §eMilestone spécial pour les Villes §fqui vous guideront dans cette aventure pas comme les autres ! Mais avant cela, faudrait peut être mettre un §2Home§f?",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 )

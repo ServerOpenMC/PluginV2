@@ -17,7 +17,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
-import fr.openmc.core.features.millestones.MillestonesManager;
+import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
@@ -88,7 +88,7 @@ public class OMCPlugin extends JavaPlugin {
         new CompanyManager();// laisser apres Economy Manager
         new ContestManager();
         new PrivateMessageManager();
-        new MillestonesManager();
+        new MilestonesManager();
 
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager();
