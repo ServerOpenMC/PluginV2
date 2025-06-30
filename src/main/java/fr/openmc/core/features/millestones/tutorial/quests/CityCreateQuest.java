@@ -31,8 +31,12 @@ public class CityCreateQuest extends Quest implements Listener {
 
         this.addTier(new QuestTier(
                 1,
-                new QuestMoneyReward(1000),
-                new QuestTextReward("Bien Joué! Vous avez fini l'§6Etape 2 §f! ", Prefix.MILLESTONE, MessageType.SUCCESS)
+                new QuestMoneyReward(500),
+                new QuestTextReward(
+                        "Bien Joué! Vous avez fini l'§6Etape 2 §f! Cette version est centrée autour des villes. Vous y trouverez un §eMillestone spécial pour les Villes §fqui vous guideront dans cette aventure pas comme les autres ! Mais avant cela, faudrait peut être mettre un §2Home§f?",
+                        Prefix.MILLESTONE,
+                        MessageType.SUCCESS
+                )
         ));
     }
 
