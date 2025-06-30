@@ -7,10 +7,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class CityCreationEvent extends Event {
 
-    @Getter private final City city;
-    @Getter private final Player owner;
+    private final City city;
+    private final Player owner;
 
     private static final HandlerList HANDLERS = new HandlerList();
 
