@@ -1,6 +1,8 @@
 package fr.openmc.core.features.quests.objects;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.quests.events.QuestTierCompleteEvent;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import fr.openmc.core.utils.messages.MessageType;
@@ -243,6 +245,10 @@ public class Quest {
             boolean isLastTier = tierIndex == this.tiers.size() - 1;
 
             if (player != null && player.isOnline()) {
+
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new QuestTierCompleteEvent(this, player));
+                });
 
                 boolean hasEnoughSpace = true;
 

@@ -1,6 +1,5 @@
 package fr.openmc.core.features.quests.rewards;
 
-import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -14,17 +13,21 @@ import org.bukkit.entity.Player;
  * This class implements the QuestReward interface and provides functionality to give a specified amount of money to a player.
  */
 @Getter
-public class QuestMoneyReward implements QuestReward {
+public class QuestTextReward implements QuestReward {
 
-    private final double amount;
+    private final String text;
+    private final Prefix prefix;
+    private final MessageType messageType;
 
     /**
-     * Constructor for the QuestMoneyReward class.
+     * Constructor for the QuestTextReward class.
      *
-     * @param amount The amount of money to be rewarded.
+     * @param text The text to be sended.
      */
-    public QuestMoneyReward(double amount) {
-        this.amount = amount;
+    public QuestTextReward(String text, Prefix prefix, MessageType messageType) {
+        this.text = text;
+        this.prefix = prefix;
+        this.messageType = messageType;
     }
 
     /**
@@ -34,12 +37,11 @@ public class QuestMoneyReward implements QuestReward {
      */
     @Override
     public void giveReward(Player player) {
-        EconomyManager.addBalance(player.getUniqueId(), amount);
         MessagesManager.sendMessage(
                 player,
-                Component.text("§aVous avez reçu §e" + amount + EconomyManager.getEconomyIcon()),
-                Prefix.QUEST,
-                MessageType.SUCCESS,
+                Component.text(text),
+                prefix,
+                messageType,
                 false
         );
     }
