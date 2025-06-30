@@ -12,7 +12,10 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Quest {
 
     private final String name;
-    private final String baseDescription;
+    private final List<String> baseDescription;
     private final ItemStack icon;
     private final boolean isLargeActionBar;
     private final List<QuestTier> tiers = new ArrayList<>();
@@ -42,7 +45,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - ItemStack
      */
-    public Quest(String name, String baseDescription, ItemStack icon) {
+    public Quest(String name, List<String> baseDescription, ItemStack icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = icon;
@@ -56,7 +59,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - Material
      */
-    public Quest(String name, String baseDescription, Material icon) {
+    public Quest(String name, List<String> baseDescription, Material icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = new ItemStack(icon);
@@ -71,7 +74,7 @@ public class Quest {
      * @param icon            The icon representing the quest - ItemStack
      * @param isLargeActionBar If true, the quest will be displayed in large action bar
      */
-    public Quest(String name, String baseDescription, ItemStack icon, boolean isLargeActionBar) {
+    public Quest(String name, List<String> baseDescription, ItemStack icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = icon;
@@ -86,7 +89,7 @@ public class Quest {
      * @param icon            The icon representing the quest - Material
      * @param isLargeActionBar If true, the quest will be displayed in large action bar
      */
-    public Quest(String name, String baseDescription, Material icon, boolean isLargeActionBar) {
+    public Quest(String name, List<String> baseDescription, Material icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = new ItemStack(icon);
@@ -193,10 +196,15 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the description of the quest for the player
      */
-    public String getDescription(UUID playerUUID) {
-        return this.baseDescription
-                .replace("{target}", String.valueOf(this.getCurrentTarget(playerUUID)))
-                .replace("{s}", this.getCurrentTarget(playerUUID) > 1 ? "s" : "");
+    public List<String> getDescription(UUID playerUUID) {
+        int target = this.getCurrentTarget(playerUUID);
+        String s = target > 1 ? "s" : "";
+
+        return this.baseDescription.stream()
+                .map(line -> line
+                        .replace("{target}", String.valueOf(target))
+                        .replace("{s}", s))
+                .toList();
     }
 
     /**
@@ -207,10 +215,15 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the next tier description of the quest for the player
      */
-    public String getNextTierDescription(UUID playerUUID) {
-        return this.baseDescription
-                .replace("{target}", String.valueOf(this.getNextTierTarget(playerUUID)))
-                .replace("{s}", this.getNextTierTarget(playerUUID) > 1 ? "s" : "");
+    public List<String> getNextTierDescription(UUID playerUUID) {
+        int target = this.getNextTierTarget(playerUUID);
+        String s = this.getNextTierTarget(playerUUID) > 1 ? "s" : "";
+
+        return this.baseDescription.stream()
+                .map(line -> line
+                        .replace("{target}", String.valueOf(target))
+                        .replace("{s}", s))
+                .toList();
     }
 
     /**

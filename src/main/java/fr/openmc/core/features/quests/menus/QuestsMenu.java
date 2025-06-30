@@ -14,7 +14,6 @@ import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -187,7 +186,9 @@ public class QuestsMenu extends Menu {
         meta.displayName(Component.text(nameIcon + " §e" + quest.getName() + " " + tierDisplay));
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
-        lore.add(Component.text("§7" + quest.getDescription(playerUUID)));
+        quest.getDescription(playerUUID).forEach(string -> {
+            lore.add(Component.text("§7" + string));
+        });
         lore.add(bar);
 
         if (hasPendingRewards) {
@@ -243,8 +244,9 @@ public class QuestsMenu extends Menu {
             lore.add(Component.text(progressBar.toString()));
             lore.add(Component.text(""));
             lore.add(Component.text("§6➤ §eObjectif actuel:"));
-            lore.add(Component.text("  §f" + quest.getDescription(playerUUID)));
-
+            quest.getDescription(playerUUID).forEach(string -> {
+                lore.add(Component.text("  §f" + string));
+            });
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
                 lore.add(Component.text(""));
                 lore.add(Component.text("§6◆ §eAvancement:"));

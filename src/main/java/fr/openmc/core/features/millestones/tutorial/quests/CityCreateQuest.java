@@ -1,4 +1,4 @@
-package fr.openmc.core.features.quests.quests;
+package fr.openmc.core.features.millestones.tutorial.quests;
 
 import fr.openmc.core.features.city.events.CityCreationEvent;
 import fr.openmc.core.features.city.events.MemberJoinEvent;
@@ -12,18 +12,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import java.util.List;
+
 public class CityCreateQuest extends Quest implements Listener {
 
     public CityCreateQuest() {
         super(
-                "Citoyen",
-                "Créer ou rejoins une ville",
+                "Créer/Rejoindre une ville",
+                List.of("Fait §d/city §fpour commencer"),
                 Material.OAK_DOOR
         );
 
         this.addTier(new QuestTier(
                 1,
-                new QuestMoneyReward(3000)
+                new QuestMoneyReward(1000)
         ));
     }
 

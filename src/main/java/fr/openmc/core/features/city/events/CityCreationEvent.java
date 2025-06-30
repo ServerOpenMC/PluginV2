@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.events;
 
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.quests.quests.CityCreateQuest;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
