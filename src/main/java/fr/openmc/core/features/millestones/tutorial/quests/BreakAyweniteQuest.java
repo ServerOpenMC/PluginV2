@@ -6,9 +6,9 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -25,7 +25,7 @@ public class BreakAyweniteQuest extends Quest implements Listener {
                         "Le nouveau minérai de la §dV2, trouvable dans les grottes",
                         "Il vous sera §dutile §fdans plein de fonctionnalité"
                 ),
-                Material.OAK_DOOR
+                CustomItemRegistry.getByName("omc_items:aywenite").getBest()
         );
 
         this.addTier(new QuestTier(
