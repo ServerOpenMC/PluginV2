@@ -19,10 +19,8 @@ public class SymbiosisPerk implements Listener {
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
 
-
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) return;
-
 
         if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.SYMBIOSIS.getId())) return;
 
