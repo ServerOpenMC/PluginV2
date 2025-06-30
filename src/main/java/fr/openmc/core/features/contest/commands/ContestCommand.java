@@ -26,7 +26,7 @@ import java.util.Map;
 public class ContestCommand {
     @Cooldown(4)
     @DefaultFor("~")
-    public void defaultCommand(Player player) {
+    public static void defaultCommand(Player player) {
         int phase = ContestManager.data.getPhase();
         if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId()) == null) || (phase == 2)) {
             VoteMenu menu = new VoteMenu(player);

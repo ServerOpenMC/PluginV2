@@ -39,9 +39,9 @@ public class CityCommands {
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     @DefaultFor("~")
-    void main(Player player) {
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+    public static void main(Player player) {
         if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:chest")) {
+            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
                 if (playerCity == null) {
                     NoCityMenu menu = new NoCityMenu(player);
                     menu.open();
