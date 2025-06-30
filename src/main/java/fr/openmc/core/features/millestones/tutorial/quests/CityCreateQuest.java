@@ -32,7 +32,7 @@ public class CityCreateQuest extends Quest implements Listener {
         this.addTier(new QuestTier(
                 1,
                 new QuestMoneyReward(1000),
-                new QuestTextReward("Bien Joué! Vous avez fini l'Etape ", Prefix.MILLESTONE, MessageType.SUCCESS)
+                new QuestTextReward("Bien Joué! Vous avez fini l'§6Etape 2 §f! ", Prefix.MILLESTONE, MessageType.SUCCESS)
         ));
     }
 
