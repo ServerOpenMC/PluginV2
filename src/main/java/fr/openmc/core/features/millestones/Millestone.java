@@ -1,11 +1,12 @@
-package fr.openmc.core.features.milestones;
+package fr.openmc.core.features.millestones;
 
 import fr.openmc.core.features.quests.objects.Quest;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 
 import java.util.List;
 
-public abstract class Milestone {
+public abstract class Millestone {
 	
 	/**
 	 * Returns the name of the milestone.
@@ -19,7 +20,7 @@ public abstract class Milestone {
 	 *
 	 * @return The description of the milestone.
 	 */
-	public abstract String getDescription();
+	public abstract List<Component> getDescription();
 	
 	/**
 	 * Returns the icon of the milestone.
