@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.war;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.LocationUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
@@ -127,7 +127,7 @@ public class War {
 
             if (player.isOnline()) {
                 player.sendMessage(Component.text(String.format(message, cityDefender.getName(), TIME_FIGHT)));
-                PlayerUtils.teleportNear(player, mascotLocAttacker, 0);
+                player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocAttacker,3));
             }
         }
 
@@ -137,7 +137,7 @@ public class War {
 
             if (player.isOnline()) {
                 player.sendMessage(Component.text(String.format(message, cityAttacker.getName(), TIME_FIGHT)));
-                PlayerUtils.teleportNear(player, mascotLocDefender, 5.0);
+                player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocDefender,3));
             }
         }
 

@@ -16,6 +16,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -105,7 +106,7 @@ public class TradeMenu extends Menu {
                     return;
                 }
 
-                String m1 = String.valueOf(inventoryClickEvent.getCurrentItem().getType());
+                TranslatableComponent tradeName = ItemUtils.getItemTranslation(inventoryClickEvent.getCurrentItem().getType());
                 int amount = (int) trade.get("amount");
                 int amountShell = (int) trade.get("amount_shell");
                 ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
@@ -156,7 +157,9 @@ public class TradeMenu extends Menu {
                             MailboxManager.sendItems(player, player, shellContestArray);
                         }
 
-                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + items1 + " " + m1 + " §7contre§b " + amountShell2 + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + items1 + " ")
+                                .append(tradeName)
+                                .append(Component.text(" §7contre§b " + amountShell2 + " Coquillages(s) de Contest")), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
                         MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
@@ -176,7 +179,9 @@ public class TradeMenu extends Menu {
                         }
 
                         ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), amount);
-                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + amount + " " + m1 + " §7contre§b " + amountShell + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + amount + " ")
+                                .append(tradeName)
+                                .append(Component.text(" §7contre§b " + amountShell + " Coquillages(s) de Contest")), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
                         MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }

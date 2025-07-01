@@ -13,7 +13,7 @@ public class QuestCommand {
 
     @DefaultFor({"~"})
     @Description("Ouvre le menu des quêtes")
-    public void onQuest(Player player) {
+    public static void onQuest(Player player) {
         new QuestsMenu(player).open();
     }
 
