@@ -13,8 +13,13 @@ import java.util.Random;
 
 public class PlayerUtils {
 	public static void sendFadeTitleTeleport(Player player, Location location) {
-		if (PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
-			player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
+		String title = "On vous souhaite bon voyage"; // To be used if the placeholder is not present
+
+		if (OMCPlugin.isPluginEnabled("PlaceholderAPI")) {
+			title = PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%");
+		}
+		if ((Boolean) PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
+			player.sendTitle(title, "§a§lTéléportation...", 20, 10, 10);
 			new BukkitRunnable() {
 				@Override
 				public void run() {
