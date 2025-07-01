@@ -1,14 +1,13 @@
 package fr.openmc.core.features.milestones.tutorial;
 
 import fr.openmc.core.features.milestones.Milestone;
-import fr.openmc.core.features.milestones.tutorial.quests.BreakAyweniteQuest;
-import fr.openmc.core.features.milestones.tutorial.quests.CityCreateQuest;
-import fr.openmc.core.features.milestones.tutorial.quests.HomeCreateQuest;
+import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.quests.objects.Quest;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TutorialMilestone extends Milestone {
@@ -34,10 +33,11 @@ public class TutorialMilestone extends Milestone {
 
     @Override
     public List<Quest> getSteps() {
-        return List.of(
-                new BreakAyweniteQuest(),
-                new CityCreateQuest(),
-                new HomeCreateQuest()
-        );
+        return Arrays.stream(TutorialStep.values()).map(TutorialStep::getQuest).toList();
+    }
+
+    @Override
+    public MilestoneType getType() {
+        return MilestoneType.TUTORIAL;
     }
 }

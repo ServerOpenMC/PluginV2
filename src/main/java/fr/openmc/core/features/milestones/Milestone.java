@@ -1,13 +1,18 @@
 package fr.openmc.core.features.milestones;
 
 import fr.openmc.core.features.quests.objects.Quest;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
+@Getter
 public abstract class Milestone {
-	
+	final HashMap<UUID, DBMilestone> playerData = new HashMap<>();
+
 	/**
 	 * Returns the name of the milestone.
 	 *
@@ -35,4 +40,12 @@ public abstract class Milestone {
 	 * @return A step list of the milestone.
 	 */
 	public abstract List<Quest> getSteps();
+
+	/**
+	 * Returns the Type of the Milestone
+	 *
+	 * @return A step list of the milestone.
+	 */
+	public abstract MilestoneType getType();
+
 }
