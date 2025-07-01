@@ -57,25 +57,12 @@ public class CityManageConditions {
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.OWNER))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
-        if (!city.getMembers().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
-        if (!city.getMembers().contains(target)) {
-            MessagesManager.sendMessage(player, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
         if (city.getPlayerWithPermission(CPermission.OWNER).equals(target)) {
             MessagesManager.sendMessage(player, Component.text("Ce joueur est déjà le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
+        canCityTransfer(city, player);
 
         return true;
     }
