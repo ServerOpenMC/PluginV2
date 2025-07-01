@@ -9,6 +9,8 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 /**
  * Le but de cette classe est de regrouper toutes les conditions necessaires
  * pour modifier une ville (utile pour faire une modif sur menu et commandes).
@@ -58,6 +60,13 @@ public class CityManageConditions {
             MessagesManager.sendMessage(player, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
+        UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
+        if (player.getUniqueId().equals(ownerUUID)) {
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas vous transférer la ville à vous-même"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         return true;
     }
 
