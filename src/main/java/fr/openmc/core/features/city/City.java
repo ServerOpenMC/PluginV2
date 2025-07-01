@@ -262,6 +262,9 @@ public class City {
         if (this.chestContent == null)
             this.chestContent = CityManager.getCityChestContent(this);
 
+        if (page > getChestPages())
+            page = getChestPages();
+
         return chestContent.get(page);
     }
 
@@ -290,6 +293,9 @@ public class City {
     public @NotNull Integer getChestPages() {
         if (this.chestContent == null)
             this.chestContent = CityManager.getCityChestContent(this);
+
+        if (this.chestContent.size() < 1)
+            saveChestContent(1, null);
 
         return chestContent.size();
     }
@@ -347,8 +353,7 @@ public class City {
             this.chunks = CityManager.getCityChunks(this);
 
         BlockVector2 coords = BlockVector2.at(chunkX, chunkZ);
-        if (!chunks.contains(coords))
-            chunks.remove(coords);
+        chunks.remove(coords);
 
         CityManager.unclaimChunk(this, coords);
     }

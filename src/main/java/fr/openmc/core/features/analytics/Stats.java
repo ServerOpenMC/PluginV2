@@ -16,41 +16,40 @@ public enum Stats {
     /**
      * Return the stats for a player
      * 
-     * @param player       Player
-     * @param defaultValue The value if analytics manager is disabled
+     * @param playerUUID       Player
+     * @param defaultValue The value if the analytics manager is disabled
      * @return The stats of the player, if unavailable, it will return `0`
      */
-    public int get(UUID player, int defaultValue) {
-        return AnalyticsManager.getStatistic(this.scope, player, defaultValue);
+    public int get(UUID playerUUID, int defaultValue) {
+        return AnalyticsManager.getStatistic(this.scope, playerUUID, defaultValue);
     }
 
     /**
      * Return the stats for a player
      * 
-     * @param uuid Player
+     * @param playerUUID Player
      * @return The stats of the player, if unavailable, it will return `0`
      */
-    public int get(UUID uuid) {
-        return get(uuid, 0);
+    public int get(UUID playerUUID) {
+        return get(playerUUID, 0);
     }
 
     /**
-     * Increment a stats by one for a player
+     * Increment a stat by one for a player
      * 
-     * @param player Player
+     * @param playerUUID Player
      * @param value  the amount to increment the statistic
      */
-    public void increment(UUID player, int value) {
-        AnalyticsManager.incrementStatistic(this.scope, player, value);
+    public void increment(UUID playerUUID, int value) {
+        AnalyticsManager.incrementStatistic(this.scope, playerUUID, value);
     }
 
     /**
-     * Increment a stats by one for a player
+     * Increment a stat by one for a player
      * 
-     * @param player Player
-     * @param value  the amount to increment the statistic
+     * @param playerUUID Player
      */
-    public void increment(UUID player) {
-        increment(player, 1);
+    public void increment(UUID playerUUID) {
+        increment(playerUUID, 1);
     }
 }

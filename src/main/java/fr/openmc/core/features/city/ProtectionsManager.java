@@ -36,7 +36,9 @@ public class ProtectionsManager {
                 new MountProtection(),
                 new PistonProtection(),
                 new PotionProtection(),
-                new TramplingProtection()
+                new TeleportProtection(),
+                new TramplingProtection(),
+                new VehicleProtection()
         );
     }
 
@@ -50,17 +52,12 @@ public class ProtectionsManager {
 
         if (cityAtLoc.isMember(player)) return true;
 
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-
-        if (playerCity == null) return true;
-
-        if (cityAtLoc.isInWar() && playerCity.isInWar()) {
-            if (cityAtLoc.getWar().equals(playerCity.getWar())) {
-                War citiesWar = cityAtLoc.getWar();
-                if (citiesWar.getPhase() == War.WarPhase.COMBAT) {
-                    return citiesWar.getAttackers().contains(player.getUniqueId()) ||
-                            citiesWar.getDefenders().contains(player.getUniqueId());
-                }
+        War war = cityAtLoc.getWar();
+        if (cityAtLoc.isInWar() && war != null && war.getPhase() == War.WarPhase.COMBAT) {
+            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+            if (playerCity != null && war.equals(playerCity.getWar())) {
+                return war.getAttackers().contains(player.getUniqueId())
+                        || war.getDefenders().contains(player.getUniqueId());
             }
         }
 

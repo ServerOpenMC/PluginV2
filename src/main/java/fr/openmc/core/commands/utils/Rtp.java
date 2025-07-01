@@ -56,22 +56,22 @@ public class Rtp {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (tryRtp(player)) {
-                    DynamicCooldownManager.use(player.getUniqueId().toString(), "player:rtp", 1000L * rtpCooldown);
-                } else {
-                    if ((tries+1) < maxTries) {
-                        player.sendActionBar("RTP: Tentative " + (tries + 1) + "/" + maxTries + " §cÉchec§r...");
-                        new BukkitRunnable() {
-                            @Override
-                            public void run() {
-                                rtpPlayer(player, tries + 1);
-                            }
-                        }.runTaskLaterAsynchronously(OMCPlugin.getInstance(), 20);
-                    } else {
-                        player.sendActionBar("Échec du RTP réessayez plus tard...");
-                        // On a déjà mis le cooldown au début
-                    }
+                if (tryRtp(player))
+                    return;
+
+                if ((tries + 1) >= maxTries) {
+                    // On a déjà mis le cooldown au début
+                    player.sendActionBar("Échec du RTP réessayez plus tard...");
+                    return;
                 }
+
+                player.sendActionBar("RTP: Tentative " + (tries + 1) + "/" + maxTries + " §cÉchec§r...");
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        rtpPlayer(player, tries + 1);
+                    }
+                }.runTaskLaterAsynchronously(OMCPlugin.getInstance(), 20);
             }
         }.runTaskAsynchronously(OMCPlugin.getInstance());
 

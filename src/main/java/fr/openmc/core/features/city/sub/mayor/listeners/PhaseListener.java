@@ -5,8 +5,6 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.DateUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.sql.SQLException;
-
 import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_1_DAY;
 import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_2_DAY;
 
@@ -26,11 +24,7 @@ public class PhaseListener {
 
                 // PHASE 1 - Elections - Mardi à Mercredi
                 if (phase == 2 && PHASE_1_DAY == DateUtils.getCurrentDayOfWeek()) {
-                    try {
-                        MayorManager.initPhase1();
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                    MayorManager.initPhase1();
                 }
 
                 // PHASE 2 - Maire Elu - Jeudi à Jeudi Prochain

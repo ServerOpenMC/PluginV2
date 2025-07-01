@@ -12,9 +12,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
+import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.features.city.conditions.CityLeaveCondition;
 import fr.openmc.core.features.city.menu.playerlist.CityPlayerListMenu;
 import fr.openmc.core.features.city.sub.bank.menu.CityBankMenu;
@@ -22,12 +21,8 @@ import fr.openmc.core.features.city.sub.mascots.menu.MascotMenu;
 import fr.openmc.core.features.city.sub.mascots.menu.MascotsDeadMenu;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
+import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
-import fr.openmc.core.features.city.sub.mayor.menu.MayorMandateMenu;
-import fr.openmc.core.features.city.sub.mayor.menu.create.MayorColorMenu;
-import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
-import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -294,33 +289,7 @@ public class CityMenu extends Menu {
                 return new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
                     itemMeta.displayName(Component.text("§6Les Elections"));
                     itemMeta.lore(finalLoreElections);
-                }).setOnClick(inventoryClickEvent -> {
-                    if (city.getElectionType() == ElectionType.ELECTION) {
-                        if (MayorManager.phaseMayor == 1) {
-                            MayorElectionMenu menu = new MayorElectionMenu(player);
-                            menu.open();
-                        } else {
-                            MayorMandateMenu menu = new MayorMandateMenu(player);
-                            menu.open();
-                        }
-                    } else {
-                        if (MayorManager.phaseMayor == 2) {
-                            MayorMandateMenu menu = new MayorMandateMenu(player);
-                            menu.open();
-                        } else if (MayorManager.phaseMayor == 1) {
-                            if (hasPermissionOwner) {
-                                if (!city.hasMayor()) {
-                                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                        new MayorCreateMenu(player, null, null, null, MenuType.OWNER).open();
-                                    });
-                                } else {
-                                    new MayorColorMenu(player, null, null, null, "change", null).open();
-                                }
-
-                        }
-                    }
-                }
-            });
+                }).setOnClick(inventoryClickEvent -> MayorCommandAction.launchInteractionMenu(player));
         };
 
         MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
@@ -341,6 +310,11 @@ public class CityMenu extends Menu {
 
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("§7Votre ville est en §5" + finalType));
+
+            if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CPermission.LAUNCH_WAR)) {
+                lore.add(Component.empty());
+                lore.add(Component.text("§7Vous pouvez lancer une guerre avec §c/war"));
+            }
 
             if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
                 lore.add(Component.text(""));

@@ -45,8 +45,8 @@ public class FriendManager {
         removeRequest(getRequest(firstUUID));
     }
 
-    public static void removeFriend(UUID firstUUID, UUID secondUUID) {
-        FriendSQLManager.removeInDatabase(firstUUID, secondUUID);
+    public static boolean removeFriend(UUID firstUUID, UUID secondUUID) {
+        return FriendSQLManager.removeInDatabase(firstUUID, secondUUID);
     }
 
     public static boolean areFriends(UUID firstUUID, UUID secondUUID) {

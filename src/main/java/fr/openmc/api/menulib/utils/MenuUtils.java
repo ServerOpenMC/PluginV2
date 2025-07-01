@@ -3,9 +3,6 @@ package fr.openmc.api.menulib.utils;
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.ItemsAdder;
 import fr.openmc.api.menulib.Menu;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -76,14 +73,7 @@ public class MenuUtils {
 			@Override
 			public void run() {
 				try {
-					Component component = player.getOpenInventory().title();
-					if (component instanceof TextComponent textComponent) {
-						String content = textComponent.content();
-						if (!ChatColor.stripColor(content).equals(ChatColor.stripColor(menu.getName()))) {
-							cancel();
-							return;
-						}
-					} else {
+					if (!menu.getInventory().getHolder().equals(player.getOpenInventory().getTopInventory().getHolder())) {
 						cancel();
 						return;
 					}

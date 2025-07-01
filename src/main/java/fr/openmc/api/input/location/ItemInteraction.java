@@ -44,6 +44,7 @@ public class ItemInteraction implements Listener {
     private static final Map<UUID, HashMap<String, Function<Location, Boolean>>> playerCallbacks = new HashMap<>();
     private static final Map<UUID, HashMap<String, Runnable>> playerCallbacksFail = new HashMap<>();
     private static final Map<UUID, HashMap<String, InteractionInfo>> playerChronometerData = new HashMap<>();
+    private static final Map<UUID, HashMap<String, ItemStack>> playerOldItemHand = new HashMap<>();
 
     private static final NamespacedKey NAMESPACE_KEY = new NamespacedKey(OMCPlugin.getInstance(), "interaction_item");
 
@@ -65,7 +66,14 @@ public class ItemInteraction implements Listener {
 
         player.closeInventory();
         Chronometer.startChronometer(player, chronometerGroup, chronometerTime, ChronometerType.ACTION_BAR, startMessage, ChronometerType.ACTION_BAR, endMessage);
-        player.getInventory().addItem(itemInteraction);
+
+
+        ItemStack oldItemHand = player.getInventory().getItemInMainHand();
+        player.getInventory().setItemInMainHand(itemInteraction);
+
+        playerOldItemHand
+                .computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
+                .put(chronometerGroup, oldItemHand);
 
         playerCallbacks
                 .computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
@@ -124,7 +132,14 @@ public class ItemInteraction implements Listener {
                             if (chronoInfo != null) {
                                 Chronometer.stopChronometer(player, chronoInfo.getChronometerGroup(), null, "%null%");
                             }
+
+                            ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(interactionId);
+
+
+                            int slotOfItem = ItemUtils.getSlotOfItem(player, item);
+
                             player.getInventory().remove(item);
+                            if (slotOfItem != -1) player.getInventory().setItem(slotOfItem, oldItem);
                         }
                     }
                 }
@@ -317,12 +332,17 @@ public class ItemInteraction implements Listener {
             Function<Location, Boolean> callback = playerCallbacksMap.get(chronometerGroup);
             ItemStack item = playerChronometerMap.get(chronometerGroup).getItem();
             ChronometerInfo chronoInfo = playerChronometerMap.get(chronometerGroup).getChronometerInfo();
+            ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(chronometerGroup);
+
 
             if (chronoInfo != null) {
                 Chronometer.stopChronometer(player, chronoInfo.getChronometerGroup(), null, "%null%");
             }
 
+            int slotOfItem = ItemUtils.getSlotOfItem(player, item);
+
             player.getInventory().remove(item);
+            if (slotOfItem != -1) player.getInventory().setItem(slotOfItem, oldItem);
 
             if (player.getInventory().getItemInOffHand().isSimilar(item)) {
                 player.getInventory().setItemInOffHand(null);

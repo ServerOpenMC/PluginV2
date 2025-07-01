@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
 import fr.openmc.core.features.city.sub.war.commands.WarCommand;
+import fr.openmc.core.features.city.sub.war.listeners.TntPlaceListener;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
@@ -19,8 +20,7 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class WarManager {
-
-    public static int TIME_PREPARATION = 10; // in minutes
+    public static int TIME_PREPARATION = 5; // in minutes
     public static int TIME_FIGHT = 30; // in minutes
 
     public static long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
@@ -42,7 +42,8 @@ public class WarManager {
         );
 
         OMCPlugin.registerEvents(
-                new WarKillListener()
+                new WarKillListener(),
+                new TntPlaceListener()
         );
     }
 

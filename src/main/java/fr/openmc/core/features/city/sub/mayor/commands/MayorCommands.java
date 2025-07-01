@@ -4,9 +4,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.MayorSetWarpAction;
+import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
-import fr.openmc.core.features.city.sub.mayor.menu.MayorMandateMenu;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -25,19 +24,7 @@ public class MayorCommands {
     @CommandPermission("omc.commands.city.mayor")
     @Description("Ouvre le menu des maires")
     void mayor(Player sender) {
-        City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
-
-        if (playerCity == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-        }
-
-        if (MayorManager.phaseMayor == 1) {
-            MayorElectionMenu menu = new MayorElectionMenu(sender);
-            menu.open();
-        } else {
-            MayorMandateMenu menu = new MayorMandateMenu(sender);
-            menu.open();
-        }
+        MayorCommandAction.launchInteractionMenu(sender);
     }
 
     @Command({"city warp", "ville warp"})
