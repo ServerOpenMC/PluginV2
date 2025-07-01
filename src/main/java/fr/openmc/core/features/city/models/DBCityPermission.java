@@ -10,8 +10,6 @@ import lombok.Getter;
 
 @DatabaseTable(tableName = "city_permissions")
 public class DBCityPermission {
-    @DatabaseField(generatedId = true)
-    private Long id;
     @DatabaseField(canBeNull = false)
     private String city;
     @DatabaseField(canBeNull = false, uniqueCombo = true)
