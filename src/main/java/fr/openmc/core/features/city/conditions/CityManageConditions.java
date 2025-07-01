@@ -62,9 +62,7 @@ public class CityManageConditions {
             return false;
         }
 
-        canCityTransfer(city, player);
-
-        return true;
+        return canCityTransfer(city, player);
     }
 
     /**
