@@ -43,6 +43,48 @@ public class CityManageConditions {
      *
      * @param city la ville sur laquelle on modifie le propriétaire
      * @param player le joueur sur lequel tester les permissions
+     * @param target le joueur cible vers lequel on veut transferer la ville
+     * @return booleen
+     */
+    public static boolean canCityTransfer(City city, Player player, UUID target) {
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (target.equals(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas te transférer la ville à toi-même"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (!(city.hasPermission(player.getUniqueId(), CPermission.OWNER))) {
+            MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (!city.getMembers().contains(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (!city.getMembers().contains(target)) {
+            MessagesManager.sendMessage(player, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (city.getPlayerWithPermission(CPermission.OWNER).equals(target)) {
+            MessagesManager.sendMessage(player, Component.text("Ce joueur est déjà le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Retourne un booleen pour dire si la ville peut etre transferer
+     *
+     * @param city la ville sur laquelle on modifie le propriétaire
+     * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
     public static boolean canCityTransfer(City city, Player player) {
@@ -58,12 +100,6 @@ public class CityManageConditions {
 
         if (!city.getMembers().contains(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
-        UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
-        if (player.getUniqueId().equals(ownerUUID)) {
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas vous transférer la ville à vous-même"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
