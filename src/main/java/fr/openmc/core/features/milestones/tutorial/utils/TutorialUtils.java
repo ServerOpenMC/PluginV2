@@ -19,7 +19,7 @@ public class TutorialUtils {
                 player,
                 Component.text(TutorialBossBar.PLACEHOLDER_TUTORIAL_BOSSBAR.formatted(
                         (stepInt + 1),
-                        TutorialStep.values()[stepInt].getQuest().getName()
+                        TutorialStep.values()[stepInt].getQuest().getName(player.getUniqueId())
                 )),
                 (float) (stepInt + 1) / maxStep
         );

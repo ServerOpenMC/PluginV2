@@ -1,10 +1,12 @@
 package fr.openmc.core.features.quests.rewards;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -37,12 +39,15 @@ public class QuestTextReward implements QuestReward {
      */
     @Override
     public void giveReward(Player player) {
-        MessagesManager.sendMessage(
-                player,
-                Component.text(text),
-                prefix,
-                messageType,
-                false
-        );
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text(text),
+                    prefix,
+                    messageType,
+                    false
+            );
+        }, 1L);
+
     }
 }

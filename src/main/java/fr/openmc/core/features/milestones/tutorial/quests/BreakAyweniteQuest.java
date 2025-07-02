@@ -23,8 +23,8 @@ import java.util.List;
 
 public class BreakAyweniteQuest extends Quest implements Listener {
 
-    private final TutorialStep step = TutorialStep.BREAK_AYWENITE;
-    private final MilestoneType type = MilestoneType.TUTORIAL;
+    private final TutorialStep step;
+    private final MilestoneType type;
 
     public BreakAyweniteQuest() {
         super(
@@ -35,6 +35,9 @@ public class BreakAyweniteQuest extends Quest implements Listener {
                 ),
                 CustomItemRegistry.getByName("omc_items:aywenite").getBest()
         );
+
+        this.step = TutorialStep.BREAK_AYWENITE;
+        this.type = MilestoneType.TUTORIAL;
 
         this.addTier(new QuestTier(
                 30,
@@ -48,7 +51,6 @@ public class BreakAyweniteQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreakBlock(BlockBreakEvent event) {
-        // si
         if (MilestonesManager.getPlayerStep(type, event.getPlayer()) > step.ordinal()) return;
 
         if (!ItemsAdderApi.hasItemAdder())

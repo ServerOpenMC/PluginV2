@@ -1,7 +1,6 @@
 package fr.openmc.core.features.quests;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.milestones.tutorial.quests.CityCreateQuest;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.quests.*;
 import org.bukkit.Bukkit;
@@ -76,7 +75,6 @@ public class QuestsManager {
                 new KillZombieQuest(),
                 new SmeltIronQuest(),
                 new SaveTheEarthQuest(),
-                new CityCreateQuest(),
                 new WinContestQuest(),
                 new CraftKebabQuest(),
                 new ConsumeKebabQuest(),

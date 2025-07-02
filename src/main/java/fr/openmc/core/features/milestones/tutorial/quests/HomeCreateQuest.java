@@ -21,8 +21,8 @@ import java.util.List;
 
 public class HomeCreateQuest extends Quest implements Listener {
 
-    private final TutorialStep step = TutorialStep.HOME_CREATE;
-    private final MilestoneType type = MilestoneType.TUTORIAL;
+    private final TutorialStep step;
+    private final MilestoneType type;
 
     public HomeCreateQuest() {
         super(
@@ -33,6 +33,9 @@ public class HomeCreateQuest extends Quest implements Listener {
                 ),
                 Material.OAK_DOOR
         );
+
+        this.step = TutorialStep.HOME_CREATE;
+        this.type = MilestoneType.TUTORIAL;
 
         this.addTier(new QuestTier(
                 1,

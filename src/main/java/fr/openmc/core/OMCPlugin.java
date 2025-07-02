@@ -79,6 +79,7 @@ public class OMCPlugin extends JavaPlugin {
         new HomesManager();
         new TPAManager();
         new FreezeManager();
+        new MilestonesManager();
         new QuestsManager();
         new QuestProgressSaveManager();
         new TabList();
@@ -88,7 +89,6 @@ public class OMCPlugin extends JavaPlugin {
         new CompanyManager();// laisser apres Economy Manager
         new ContestManager();
         new PrivateMessageManager();
-        new MilestonesManager();
 
         if (!OMCPlugin.isUnitTestVersion())
             new LeaderboardManager();

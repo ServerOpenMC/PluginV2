@@ -189,6 +189,24 @@ public class Quest {
     }
 
     /**
+     * Get the name of the quest for a player.
+     * <p>
+     * The name can contain the placeholder {target} which will be replaced by the current target number.
+     * And the placeholder {s} which will be replaced by "s" if the current target is greater than 1.
+     *
+     * @param playerUUID The UUID of the player
+     * @return the name of the quest for the player
+     */
+    public String getName(UUID playerUUID) {
+        int target = this.getCurrentTarget(playerUUID);
+        String s = target > 1 ? "s" : "";
+
+        return this.name
+                .replace("{target}", String.valueOf(target))
+                .replace("{s}", s);
+    }
+
+    /**
      * Get the description of the quest for a player.
      * <p>
      * The description can contain the placeholder {target} which will be replaced by the current target number.
@@ -269,7 +287,7 @@ public class Quest {
                         .append(Component.text(" ✦", TextColor.color(15770808)));
 
                 Component titleSub = Component.text(this.name, TextColor.color(8087790));
-                String message = isLastTier ? "§6★ §aQuête terminée ! §e" + this.name + " §7est maintenant complète !" : "§e★ §aPalier " + (tierIndex + 1) + " §7de §e" + this.name + " §avalidé !";
+                String message = isLastTier ? "§6★ §aQuête terminée ! §e" + getName(uuid) + " §7est maintenant complète !" : "§e★ §aPalier " + (tierIndex + 1) + " §7de §e" + this.name + " §avalidé !";
 
                 player.showTitle(Title.title(
                         titleMain,

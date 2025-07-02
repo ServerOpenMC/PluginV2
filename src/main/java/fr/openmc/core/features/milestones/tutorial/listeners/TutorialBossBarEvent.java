@@ -26,7 +26,7 @@ public class TutorialBossBarEvent implements Listener {
                 player,
                 Component.text(TutorialBossBar.PLACEHOLDER_TUTORIAL_BOSSBAR.formatted(
                         step + 1,
-                        TutorialStep.values()[step].getQuest().getName()
+                        TutorialStep.values()[step].getQuest().getName(player.getUniqueId())
                 )),
                 (float) (step + 1) / maxStep
         );
