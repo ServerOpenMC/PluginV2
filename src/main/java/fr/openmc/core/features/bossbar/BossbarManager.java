@@ -21,13 +21,20 @@ import java.util.*;
 public class BossbarManager {
     @Getter
     private static final List<Component> helpMessages = new ArrayList<>();
-    private static final Map<UUID, BossBar> activeBossBars = new HashMap<>();
+    private static final HashMap<BossbarsType, Map<UUID, BossBar>> activeBossBars = new HashMap<>();
     private static final Map<UUID, Boolean> playerPreferences = new HashMap<>();
     @Getter
     private static boolean bossBarEnabled = true;
     @Getter
     private static File configFile;
     private static int currentMessageIndex = 0;
+
+    public static BossBar bossBarHelp = BossBar.bossBar(
+            helpMessages.getFirst(),
+            0f,
+            BossBar.Color.RED,
+            BossBar.Overlay.PROGRESS
+    );
 
     /**
      * Constructs the BossbarManager and initializes its components
@@ -81,11 +88,14 @@ public class BossbarManager {
                 currentMessageIndex = (currentMessageIndex + 1) % helpMessages.size();
                 Component message = helpMessages.get(currentMessageIndex);
 
-                activeBossBars.forEach((uuid, bossBar) -> {
-                    Player player = Bukkit.getPlayer(uuid);
-                    if (player != null) {
-                        bossBar.name(message);
-                    }
+                activeBossBars.forEach((type, bossBarData) -> {
+                    if (!type.equals(BossbarsType.HELP)) return;
+
+                    bossBarData.forEach((uuid, bossBar) -> {
+                        if (bossBar != null) {
+                            bossBar.name(message);
+                        }
+                    });
                 });
             }
         }.runTaskTimer(OMCPlugin.getInstance(), 0, 200);
@@ -93,37 +103,45 @@ public class BossbarManager {
 
     /**
      * Adds a bossbar to the specified player
+     * @param type The type of bossbar to add
+     * @param bossbar The bossbar to add
      * @param player The player to add the bossbar to
      */
-    public static void addBossBar(Player player) {
-        if (!bossBarEnabled || activeBossBars.containsKey(player.getUniqueId())) return;
+    public static void addBossBar(BossbarsType type, BossBar bossbar, Player player) {
+        if (!bossBarEnabled || activeBossBars.get(type).containsKey(player.getUniqueId())) return;
 
         Boolean preference = playerPreferences.get(player.getUniqueId());
         if (preference != null && !preference) {
             return;
         }
-        removeBossBar(player);
+        removeBossBar(type, player);
 
-        BossBar bossBar = BossBar.bossBar(
-                helpMessages.get(0),
-                0f,
-                BossBar.Color.RED,
-                BossBar.Overlay.PROGRESS
-        );
-
-        player.showBossBar(bossBar);
-        activeBossBars.put(player.getUniqueId(), bossBar);
+        player.showBossBar(bossbar);
+        activeBossBars.computeIfAbsent(type, k -> new HashMap<>()).put(player.getUniqueId(), bossbar);
     }
 
     /**
      * Removes the bossbar from the specified player
+     * @param type The type of bossbar to remove
      * @param player The player to remove the bossbar from
      */
-    public static void removeBossBar(Player player) {
-        BossBar bossBar = activeBossBars.remove(player.getUniqueId());
+    public static void removeBossBar(BossbarsType type, Player player) {
+        BossBar bossBar = activeBossBars.get(type).remove(player.getUniqueId());
         if (bossBar != null) {
             player.hideBossBar(bossBar);
         }
+    }
+
+    /**
+     * Gets the bossbar for a specific player
+     *
+     * @param type   The type of bossbar to get
+     * @param player The player to get the bossbar for
+     * @return The bossbar for the specified player, or null if not found
+     */
+    public static BossBar getBossBar(BossbarsType type, Player player) {
+        return activeBossBars.get(type).get(player.getUniqueId());
+
     }
 
     /**
@@ -132,16 +150,17 @@ public class BossbarManager {
      */
     public static void toggleBossBar(Player player) {
         UUID uuid = player.getUniqueId();
-
-        if (activeBossBars.containsKey(uuid)) {
-            removeBossBar(player);
-            playerPreferences.put(uuid, false);
-            MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
-        } else {
-            playerPreferences.put(uuid, true);
-            addBossBar(player);
-            MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
-        }
+        activeBossBars.forEach((type, bossBarData) -> {
+            if (bossBarData.containsKey(uuid)) {
+                removeBossBar(type, player);
+                playerPreferences.put(uuid, false);
+                MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
+            } else {
+                playerPreferences.put(uuid, true);
+                addBossBar(type, bossBarHelp, player);
+                MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
+            }
+        });
     }
 
     /**
@@ -228,9 +247,9 @@ public class BossbarManager {
         bossBarEnabled = !bossBarEnabled;
 
         if (bossBarEnabled) {
-            Bukkit.getOnlinePlayers().forEach(BossbarManager::addBossBar);
+            Bukkit.getOnlinePlayers().forEach(player -> addBossBar(BossbarsType.HELP, bossBarHelp, player));
         } else {
-            Bukkit.getOnlinePlayers().forEach(BossbarManager::removeBossBar);
+            Bukkit.getOnlinePlayers().forEach(player -> removeBossBar(BossbarsType.HELP, player));
         }
     }
 }
