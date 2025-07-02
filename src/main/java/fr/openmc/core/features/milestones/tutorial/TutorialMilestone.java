@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.List;
 
-public class TutorialMilestone extends Milestone {
+public class TutorialMilestone implements Milestone {
     @Override
     public String getName() {
         return "§7Tutoriel d'OpenMC";

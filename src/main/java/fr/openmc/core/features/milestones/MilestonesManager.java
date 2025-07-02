@@ -16,30 +16,29 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class MilestonesManager {
-    private final Set<Milestone> milestones;
+    private static final Set<Milestone> milestones = new HashSet<>();
+    ;
 
-    private static Dao<DBMilestone, String> millestoneDao;
+    private static Dao<MilestoneModel, String> millestoneDao;
 
     public MilestonesManager() {
-        this.milestones = new HashSet<>();
-
         registerMilestones(
                 new TutorialMilestone()
         );
 
-        loadMilestoneData();
+        loadMilestonesData();
     }
 
     public static void init_db(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, DBMilestone.class);
-        millestoneDao = DaoManager.createDao(connectionSource, DBMilestone.class);
+        TableUtils.createTableIfNotExists(connectionSource, MilestoneModel.class);
+        millestoneDao = DaoManager.createDao(connectionSource, MilestoneModel.class);
     }
 
-    public static void loadMilestoneData() {
+    public static void loadMilestonesData() {
         try {
-            List<DBMilestone> milestoneData = millestoneDao.queryForAll();
+            List<MilestoneModel> milestoneData = millestoneDao.queryForAll();
 
-            for (DBMilestone data : milestoneData) {
+            for (MilestoneModel data : milestoneData) {
                 MilestoneType type = MilestoneType.valueOf(data.getType());
                 Milestone milestone = type.getMilestone();
                 milestone.getPlayerData().put(data.getUUID(), data);
@@ -49,11 +48,24 @@ public class MilestonesManager {
         }
     }
 
-    public static Map<UUID, DBMilestone> getMilestoneData(Milestone milestone) {
+    public static void saveMilestonesData() {
+        try {
+            for (Milestone milestone : milestones) {
+                for (Map.Entry<UUID, MilestoneModel> entry : milestone.getPlayerData().entrySet()) {
+                    MilestoneModel model = entry.getValue();
+                    millestoneDao.createOrUpdate(model);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Map<UUID, MilestoneModel> getMilestoneData(Milestone milestone) {
         return milestone.getPlayerData();
     }
 
-    public static Map<UUID, DBMilestone> getMilestoneData(MilestoneType type) {
+    public static Map<UUID, MilestoneModel> getMilestoneData(MilestoneType type) {
         return type.getMilestone().getPlayerData();
     }
 
@@ -73,20 +85,24 @@ public class MilestonesManager {
         setPlayerStep(type, player.getUniqueId(), step);
     }
 
+    public static Set<Milestone> getRegisteredMilestones() {
+        return milestones;
+    }
+
     /**
      * Enregistre tous les milestones
      */
-    public void registerMilestones(Milestone... milestones) {
-        for (Milestone milestone : milestones) {
+    public void registerMilestones(Milestone... milestonesRegister) {
+        for (Milestone milestone : milestonesRegister) {
             if (milestone != null) {
-                this.milestones.add(milestone);
+                milestones.add(milestone);
                 registerQuestMilestone(milestone);
             }
         }
     }
 
     public void registerMilestoneCommand() {
-        CommandsManager.getHandler().register(new MilestoneCommand(this.milestones));
+        CommandsManager.getHandler().register(new MilestoneCommand(milestones));
     }
 
     public void registerQuestMilestone(Milestone milestone) {

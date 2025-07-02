@@ -124,6 +124,9 @@ public class OMCPlugin extends JavaPlugin {
         HomesManager.saveHomesData();
         HomeIconCacheManager.clearCache();
 
+        // - Milestones
+        MilestonesManager.saveMilestonesData();
+
         // - Contest
         ContestManager.saveContestData();
         ContestManager.saveContestPlayerData();

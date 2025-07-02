@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @DatabaseTable(tableName = "milestone")
 @Getter
-public class DBMilestone {
+public class MilestoneModel {
     @DatabaseField(id = true, columnName = "uuid")
     private java.util.UUID UUID;
     @DatabaseField
@@ -16,11 +16,11 @@ public class DBMilestone {
     @Setter
     private int step;
 
-    DBMilestone() {
+    MilestoneModel() {
         // required for ORMLite
     }
 
-    public DBMilestone(java.util.UUID uuid, MilestoneType type, int step) {
+    public MilestoneModel(java.util.UUID uuid, MilestoneType type, int step) {
         this.UUID = uuid;
         this.type = type.name();
         this.step = step;
