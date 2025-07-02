@@ -1,5 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.listeners;
 
+import fr.openmc.core.features.bossbar.BossbarManager;
+import fr.openmc.core.features.bossbar.BossbarsType;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialBossBar;
@@ -9,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class TutorialBossBarEvent implements Listener {
 
@@ -30,5 +33,10 @@ public class TutorialBossBarEvent implements Listener {
                 )),
                 (float) (step + 1) / maxStep
         );
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        BossbarManager.removeBossBar(BossbarsType.TUTORIAL, event.getPlayer());
     }
 }

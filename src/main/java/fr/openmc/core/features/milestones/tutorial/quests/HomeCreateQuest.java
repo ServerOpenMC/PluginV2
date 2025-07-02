@@ -55,12 +55,9 @@ public class HomeCreateQuest extends Quest implements Listener {
     public void onHomeCreate(HomeCreateEvent event) {
         Player player = event.getOwner();
 
-        if (MilestonesManager.getPlayerStep(type, player) > step.ordinal()) return;
+        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (MilestonesManager.getPlayerStep(MilestoneType.TUTORIAL, player) != TutorialStep.HOME_CREATE.ordinal())
-            return;
-
-        if (player != null) this.incrementProgress(player.getUniqueId());
+        this.incrementProgress(player.getUniqueId());
     }
 
 }

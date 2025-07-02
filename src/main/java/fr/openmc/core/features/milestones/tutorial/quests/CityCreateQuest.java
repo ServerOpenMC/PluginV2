@@ -58,7 +58,7 @@ public class CityCreateQuest extends Quest implements Listener {
     public void onCityCreate(CityCreationEvent event) {
         Player player = event.getOwner();
 
-        if (MilestonesManager.getPlayerStep(type, player) > step.ordinal()) return;
+        if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
         this.incrementProgress(player.getUniqueId());
     }

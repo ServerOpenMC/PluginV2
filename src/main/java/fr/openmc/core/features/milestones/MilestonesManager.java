@@ -100,10 +100,10 @@ public class MilestonesManager {
      */
     public void registerMilestones(Milestone... milestonesRegister) {
         for (Milestone milestone : milestonesRegister) {
-            if (milestone != null) {
-                milestones.add(milestone);
-                registerQuestMilestone(milestone);
-            }
+            if (milestone == null) continue;
+            milestones.add(milestone);
+
+            registerQuestMilestone(milestone);
         }
     }
 

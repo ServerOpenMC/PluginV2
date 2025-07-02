@@ -51,7 +51,7 @@ public class BreakAyweniteQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreakBlock(BlockBreakEvent event) {
-        if (MilestonesManager.getPlayerStep(type, event.getPlayer()) > step.ordinal()) return;
+        if (MilestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
 
         if (!ItemsAdderApi.hasItemAdder())
             return;

@@ -15,7 +15,7 @@ public class TutorialUtils {
 
         int maxStep = TutorialStep.values().length;
 
-        TutorialBossBar.addTutorialBossBarForPlayer(
+        TutorialBossBar.update(
                 player,
                 Component.text(TutorialBossBar.PLACEHOLDER_TUTORIAL_BOSSBAR.formatted(
                         (stepInt + 1),
