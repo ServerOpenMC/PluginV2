@@ -6,9 +6,10 @@ import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.milestones.listeners.PlayerJoin;
 import fr.openmc.core.features.milestones.tutorial.TutorialMilestone;
+import fr.openmc.core.features.milestones.tutorial.listeners.TutorialBossBarEvent;
 import fr.openmc.core.features.quests.objects.Quest;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -27,6 +28,11 @@ public class MilestonesManager {
         );
 
         loadMilestonesData();
+
+        OMCPlugin.registerEvents(
+                new PlayerJoin(),
+                new TutorialBossBarEvent()
+        );
     }
 
     public static void init_db(ConnectionSource connectionSource) throws SQLException {
@@ -108,7 +114,7 @@ public class MilestonesManager {
     public void registerQuestMilestone(Milestone milestone) {
         for (Quest quest : milestone.getSteps()) {
             if (quest instanceof Listener listener) {
-                Bukkit.getPluginManager().registerEvents(listener, OMCPlugin.getInstance());
+                OMCPlugin.registerEvents(listener);
             }
         }
     }

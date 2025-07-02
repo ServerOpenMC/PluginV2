@@ -15,21 +15,20 @@ public class TutorialBossBarEvent implements Listener {
     @EventHandler
     void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        int maxStep = TutorialStep.values().length - 1;
+        int maxStep = TutorialStep.values().length;
         int step = MilestonesManager.getPlayerStep(MilestoneType.TUTORIAL, player);
 
-        if (maxStep == step) {
+        if (step > maxStep) {
             return;
         }
 
         TutorialBossBar.addTutorialBossBarForPlayer(
                 player,
                 Component.text(TutorialBossBar.PLACEHOLDER_TUTORIAL_BOSSBAR.formatted(
-                        (step + 1),
-                        (maxStep + 1),
+                        step + 1,
                         TutorialStep.values()[step].getQuest().getName()
                 )),
-                (float) step / maxStep
+                (float) (step + 1) / maxStep
         );
     }
 }

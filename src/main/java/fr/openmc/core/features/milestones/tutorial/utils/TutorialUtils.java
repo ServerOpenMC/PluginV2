@@ -9,20 +9,19 @@ import org.bukkit.entity.Player;
 
 public class TutorialUtils {
     public static void completeStep(MilestoneType type, Player player, TutorialStep step) {
-        int stepInt = step.ordinal();
+        int stepInt = step.ordinal() + 1;
 
         MilestonesManager.setPlayerStep(type, player, stepInt);
 
-        int maxStep = TutorialStep.values().length - 1;
+        int maxStep = TutorialStep.values().length;
 
         TutorialBossBar.addTutorialBossBarForPlayer(
                 player,
                 Component.text(TutorialBossBar.PLACEHOLDER_TUTORIAL_BOSSBAR.formatted(
                         (stepInt + 1),
-                        (maxStep + 1),
                         TutorialStep.values()[stepInt].getQuest().getName()
                 )),
-                (float) stepInt / maxStep
+                (float) (stepInt + 1) / maxStep
         );
     }
 }

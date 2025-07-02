@@ -19,7 +19,7 @@ public class PlayerJoin implements Listener {
                 milestone.getPlayerData().put(player.getUniqueId(), new MilestoneModel(
                         player.getUniqueId(),
                         milestone.getType(),
-                        -1
+                        0
                 ));
             }
         }

@@ -29,12 +29,7 @@ public class BossbarManager {
     private static File configFile;
     private static int currentMessageIndex = 0;
 
-    public static BossBar bossBarHelp = BossBar.bossBar(
-            helpMessages.getFirst(),
-            0f,
-            BossBar.Color.RED,
-            BossBar.Overlay.PROGRESS
-    );
+    public static BossBar bossBarHelp;
 
     /**
      * Constructs the BossbarManager and initializes its components
@@ -45,6 +40,13 @@ public class BossbarManager {
         loadDefaultMessages();
         startRotationTask();
         CommandsManager.getHandler().register(new BossBarCommand());
+
+        bossBarHelp = BossBar.bossBar(
+                helpMessages.getFirst(),
+                0f,
+                BossBar.Color.RED,
+                BossBar.Overlay.PROGRESS
+        );
     }
 
     /**
@@ -108,7 +110,10 @@ public class BossbarManager {
      * @param player The player to add the bossbar to
      */
     public static void addBossBar(BossbarsType type, BossBar bossbar, Player player) {
-        if (!bossBarEnabled || activeBossBars.get(type).containsKey(player.getUniqueId())) return;
+        if (!bossBarEnabled) return;
+
+        Map<UUID, BossBar> bars = activeBossBars.get(type);
+        if (bars != null && bars.containsKey(player.getUniqueId())) return;
 
         Boolean preference = playerPreferences.get(player.getUniqueId());
         if (preference != null && !preference) {
@@ -126,7 +131,10 @@ public class BossbarManager {
      * @param player The player to remove the bossbar from
      */
     public static void removeBossBar(BossbarsType type, Player player) {
-        BossBar bossBar = activeBossBars.get(type).remove(player.getUniqueId());
+        Map<UUID, BossBar> map = activeBossBars.get(type);
+        if (map == null) return;
+
+        BossBar bossBar = map.remove(player.getUniqueId());
         if (bossBar != null) {
             player.hideBossBar(bossBar);
         }

@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class TutorialBossBar {
 
-    public static final String PLACEHOLDER_TUTORIAL_BOSSBAR = "§6Etape %s/%s : %s";
+    public static final String PLACEHOLDER_TUTORIAL_BOSSBAR = "§6Etape %s : %s";
 
     public static void addTutorialBossBarForPlayer(Player player, Component message, float progress) {
         BossBar bar = BossBar.bossBar(
