@@ -4,7 +4,7 @@ import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
-import fr.openmc.core.features.quests.menus.QuestsMenu;
+import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
@@ -16,33 +16,32 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
-public class OpenQuestMenuQuest extends Quest implements Listener {
+public class FinishQuestQuest extends Quest implements Listener {
 
     private final TutorialStep step;
     private final MilestoneType type;
 
-    public OpenQuestMenuQuest() {
+    public FinishQuestQuest() {
         super(
-                "Ouvrez le menu des Quêtes",
+                "Accomplissez une Quête",
                 List.of(
-                        "Tapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "Tapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu et voir quelle quête finir",
                         "§8§oCela va pouvoir vous lancer dans l'aventure et de vous diversifier !"
                 ),
-                Material.GOLDEN_AXE
+                Material.DIAMOND
         );
 
-        this.step = TutorialStep.OPEN_QUEST;
+        this.step = TutorialStep.QUEST_FINISH;
         this.type = MilestoneType.TUTORIAL;
 
         this.addTier(new QuestTier(
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §9Quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! D'ailleurs, accomplissez une des §9tâches §fque vous voulez !",
+                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Et voici une §9récompense §f! Pratique non? Allons découvrir une autre méthode de production d'argent et de consomation ! Allez dans l'§cAdmin Shop§f, un endroit où plusieurs items sont achetable à des prix variants en fonction l'§coffre et la demande §f!",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -53,14 +52,10 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onQuestMenuOpen(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
+    public void onQuestComplete(QuestCompleteEvent event) {
+        Player player = event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
-
-        if (event.getInventory().getHolder() == null) return;
-
-        if (!event.getInventory().getHolder().getClass().equals(QuestsMenu.class)) return;
 
         this.incrementProgress(player.getUniqueId());
     }

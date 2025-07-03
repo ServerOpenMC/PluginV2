@@ -1,6 +1,8 @@
 package fr.openmc.core.features.quests.objects;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import fr.openmc.core.utils.messages.MessageType;
@@ -418,6 +420,11 @@ public class Quest {
 
         QuestStep step = currentTier.getSteps().get(stepIndex);
         if (step.isCompleted(playerUUID)) {
+
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player));
+            });
+
             int tierIndex = getCurrentTierIndex(playerUUID);
             String stepName = "Étape " + (stepIndex + 1);
 
