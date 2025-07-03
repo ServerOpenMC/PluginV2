@@ -1,7 +1,11 @@
 package fr.openmc.core.features.homes;
 
-import fr.openmc.core.OMCPlugin;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
@@ -13,11 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.WorldInfo;
-
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -125,7 +124,9 @@ public class HomesManager {
                 new DelHome(this),
                 new RelocateHome(this),
                 new TpHome(this),
-                new HomeWorld(disabledWorldHome));
+                new HomeWorld(disabledWorldHome),
+                new UpgradeHome()
+        );
 
         loadHomeLimit();
         loadHomes();

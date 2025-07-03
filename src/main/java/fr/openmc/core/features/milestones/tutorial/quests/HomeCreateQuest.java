@@ -7,9 +7,11 @@ import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
+import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
+import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.Material;
@@ -39,7 +41,8 @@ public class HomeCreateQuest extends Quest implements Listener {
 
         this.addTier(new QuestTier(
                 1,
-                new QuestMoneyReward(500),
+                new QuestMoneyReward(5000),
+                new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), 10),
                 new QuestTextReward(
                         "Bien Joué! Vous avez fini l'§6Etape 3§f! Les Homes sont souvent utilisé pour pas perdre votre base ! Vous êtes limité à avoir que 1 Home au début. Va falloir penser à les améliorer...",
                         Prefix.MILLESTONE,
