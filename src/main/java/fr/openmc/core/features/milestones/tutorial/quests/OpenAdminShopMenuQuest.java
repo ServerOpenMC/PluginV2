@@ -1,6 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
+import fr.openmc.core.features.adminshop.menus.AdminShopCategoryMenu;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
@@ -60,7 +60,7 @@ public class OpenAdminShopMenuQuest extends Quest implements Listener {
 
         if (event.getInventory().getHolder() == null) return;
 
-        if (!event.getInventory().getHolder().getClass().equals(AdminShopMenu.class)) return;
+        if (!event.getInventory().getHolder().getClass().equals(AdminShopCategoryMenu.class)) return;
 
         this.incrementProgress(player.getUniqueId());
     }
