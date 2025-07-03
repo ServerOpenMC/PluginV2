@@ -41,20 +41,21 @@ public class ItemUtils {
     }
 
     /**
-     * Découpe un nombre d'item en packet de 64
+     * Découpe un nombre d'item en paquets
      * @param items Votre ItemStack
      * @return Une Liste d'ItemStack
      */
     public static List<ItemStack> splitAmountIntoStack(ItemStack items) {
+        int maxStackSize = items.getMaxStackSize();
         int amount = items.getAmount();
 
         List<ItemStack> stacks = new ArrayList<>();
-        while (amount > 64) {
+        while (amount > maxStackSize) {
             ItemStack item = items.clone();
-            item.setAmount(64);
+            item.setAmount(maxStackSize);
             stacks.add(item);
 
-            amount -= 64;
+            amount -= maxStackSize;
         }
 
         if (amount > 0) {
@@ -78,7 +79,7 @@ public class ItemUtils {
 
         for (ItemStack stack : inventory.getStorageContents()) {
             if (stack != null && stack.isSimilar(item)) {
-                numberitemtostack = 64 - stack.getAmount();
+                numberitemtostack = stack.getMaxStackSize() - stack.getAmount();
             }
         }
         return numberitemtostack;
