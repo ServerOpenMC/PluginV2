@@ -103,28 +103,29 @@ public class MailboxManager {
             QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
             query.where().eq("receiver", player.getUniqueId()).and().eq("refused", false);
             query.setCountOf(true);
-            long count = letterDao.countOf(query.prepare());
 
+            long count = letterDao.countOf(query.prepare());
             if (count == 0)
                 return;
 
             Component message;
             message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN);
+
             if (count > 1) {
-                message.append(Component.text(count, NamedTextColor.GREEN))
+                message = message.append(Component.text(count, NamedTextColor.GREEN))
                         .append(Component.text(" lettres.", NamedTextColor.DARK_GREEN));
             } else if (count == 1) {
-                message.append(Component.text("une", NamedTextColor.GREEN))
+                message = message.append(Component.text("une", NamedTextColor.GREEN))
                         .append(Component.text(" lettre.", NamedTextColor.DARK_GREEN));
             }
 
-            message.append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
+            message = message.append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
                     .clickEvent(ClickEvent.runCommand("/mailbox"))
                     .hoverEvent(getHoverEvent("Ouvrir ma boîte aux lettres"))
                     .append(Component.text(" pour ouvrir les lettres", NamedTextColor.GOLD));
-
-            if (message != null)
+            if (message != null) {
                 sendSuccessMessage(player, message);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             sendFailureMessage(player, "Une erreur est survenue.");

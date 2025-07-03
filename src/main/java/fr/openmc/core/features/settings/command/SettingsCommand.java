@@ -11,7 +11,7 @@ public class SettingsCommand {
     @Command("settings")
     @Description("Affiche les paramètres de votre compte")
     @CommandPermission("omc.commands.settings")
-    public void settings(Player player) {
+    public static void settings(Player player) {
         new PlayerSettingsMenu(player).open();
     }
 

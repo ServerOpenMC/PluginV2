@@ -17,6 +17,7 @@ import fr.openmc.core.utils.DirectionUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.LuckPermsApi;
 import fr.openmc.core.utils.api.PapiApi;
+import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -274,8 +275,10 @@ public class ScoreboardManager implements Listener {
             objective.getScore("  ").setScore(7);
 
             City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
-            String chunkCityName = (chunkCity != null) ? chunkCity.getName() : "Nature";
-            objective.getScore("§8• §fLocation§7: " + chunkCityName).setScore(6);
+            boolean isInRegion = WorldGuardApi.isRegionConflict(player.getLocation());
+            String location = isInRegion ? "§6Région Protégé" : "Nature";
+            location = (chunkCity != null) ? chunkCity.getName() : location;
+            objective.getScore("§8• §fLocation§7: " + location).setScore(6);
         }
 
         if (CompanyManager.isInCompany(player.getUniqueId())){

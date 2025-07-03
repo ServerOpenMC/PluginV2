@@ -391,7 +391,7 @@ public class ContestManager {
 
         final int[] rankInt = {0};
 
-        dataPlayer.forEach((uuid, dataOrdered) -> {
+        orderedMap.forEach((uuid, dataOrdered) -> {
             NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(dataOrdered.getColor());
 
             Component rankComponent = Component.text("\n#" + (rankInt[0] + 1) + " ").color(LeaderboardManager.getRankColor(rankInt[0] + 1))
@@ -413,8 +413,6 @@ public class ContestManager {
         orderedMap.forEach((uuid, dataPlayer1) -> {
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
-
-            OMCPlugin.getInstance().getLogger().info(uuid + " " + dataPlayer1.getCamp() + " " + dataPlayer1.getColor() + " " + dataPlayer1.getPoints() + " " + dataPlayer1.getName());
 
             OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
             int points = dataPlayer1.getPoints();

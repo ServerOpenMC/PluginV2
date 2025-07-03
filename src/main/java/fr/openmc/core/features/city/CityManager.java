@@ -196,7 +196,14 @@ public class CityManager implements Listener {
 
     public static void removePlayerPermission(City city, UUID player, CPermission permission) {
         try {
-            permissionsDao.delete(new DBCityPermission(city.getUUID(), player, permission.name()));
+            DeleteBuilder<DBCityPermission, String> delete = permissionsDao.deleteBuilder();
+            delete.where()
+                    .eq("city", city.getUUID())
+                    .and()
+                    .eq("player", player)
+                    .and()
+                    .eq("permission", permission.name());
+            permissionsDao.delete(delete.prepare());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -247,7 +254,10 @@ public class CityManager implements Listener {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
-                claimsDao.delete(new DBCityClaim(chunk, city.getUUID()));
+                DeleteBuilder<DBCityClaim, String> delete = claimsDao.deleteBuilder();
+                delete.where().eq("city", city.getUUID()).and().eq("x", chunk.getX()).and().eq("z", chunk.getZ());
+
+                claimsDao.delete(delete.prepare());
             } catch (SQLException e) {
                 e.printStackTrace();
             }

@@ -31,7 +31,7 @@ public class TpHome {
     @Description("Se téléporter à un home")
     @CommandPermission("omc.commands.home.teleport")
     @AutoComplete("@homes")
-    public void home(Player player, @Optional String home) {
+    public static void home(Player player, @Optional String home) {
 
         if(home != null && home.contains(":") && player.hasPermission("omc.admin.homes.teleport.others")) {
             String[] split = home.split(":");

@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
 import fr.openmc.core.features.city.sub.war.commands.WarCommand;
+import fr.openmc.core.features.city.sub.war.listeners.TntPlaceListener;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.economy.EconomyManager;
 import net.kyori.adventure.text.Component;
@@ -19,10 +20,8 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class WarManager {
-
-    //todo: remettre time preparation a 5 et time fight a 30
-    public static final int TIME_PREPARATION = 2; // in minutes
-    public static final int TIME_FIGHT = 20; // in minutes
+    public static final int TIME_PREPARATION = 5; // in minutes
+    public static final int TIME_FIGHT = 30; // in minutes
 
     public static final long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
     public static final long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
@@ -43,7 +42,8 @@ public class WarManager {
         );
 
         OMCPlugin.registerEvents(
-                new WarKillListener()
+                new WarKillListener(),
+                new TntPlaceListener()
         );
     }
 
@@ -76,8 +76,8 @@ public class WarManager {
     /**
      * Starts a war between two cities.
      *
-     * @param attacker  The city that is attacking.
-     * @param defender  The city that is defending.
+     * @param attacker The city that is attacking.
+     * @param defender The city that is defending.
      * @param attackers The list of UUIDs of the players in the attacking city.
      * @param defenders The list of UUIDs of the players in the defending city.
      */
@@ -200,14 +200,14 @@ public class WarManager {
     /**
      * Broadcasts the result of a war to the members of the winning and losing cities.
      *
-     * @param war          The War object containing details about the war.
-     * @param winner       The city that won the war.
-     * @param loser        The city that lost the war.
-     * @param reason       The reason for the win (e.g., mascot death, HP, kills, draw).
-     * @param powerChange  The change in power points for the winning city.
+     * @param war        The War object containing details about the war.
+     * @param winner     The city that won the war.
+     * @param loser      The city that lost the war.
+     * @param reason     The reason for the win (e.g., mascot death, HP, kills, draw).
+     * @param powerChange The change in power points for the winning city.
      * @param amountStolen The amount of money stolen from the losing city.
-     * @param bonusMoney   Additional bonus money awarded to the winning city.
-     * @param claimNumber  The number of claims transferred to the winning city.
+     * @param bonusMoney Additional bonus money awarded to the winning city.
+     * @param claimNumber The number of claims transferred to the winning city.
      */
     public static void broadcastWarResult(War war, City winner, City loser, WinReason reason, int powerChange, double amountStolen, double bonusMoney, int claimNumber) {
         int killsWinner = war.getCityAttacker().equals(winner) ? war.getAttackersKill() : war.getDefendersKill();

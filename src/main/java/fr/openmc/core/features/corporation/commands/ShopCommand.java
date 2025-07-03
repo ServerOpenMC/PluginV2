@@ -295,7 +295,7 @@ public class ShopCommand {
 
     @Subcommand("manage")
     @Description("Manage a shop")
-    public void manageShop(Player player) {
+    public static void manageShop(Player player) {
         boolean isInCompany = CompanyManager.isInCompany(player.getUniqueId());
         if (isInCompany) {
             ShopManageMenu shopManageMenu = new ShopManageMenu(player, CompanyManager.getCompany(player.getUniqueId()));

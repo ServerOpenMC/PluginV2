@@ -26,8 +26,8 @@ import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import revxrsal.commands.annotation.*;
 import revxrsal.commands.annotation.Optional;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
@@ -39,8 +39,8 @@ public class CityCommands {
 
     @DefaultFor("~")
     void mainCommand(Player player) {
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:chest")) {
+            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
                 if (playerCity == null) {
                     NoCityMenu menu = new NoCityMenu(player);
                     menu.open();
@@ -194,19 +194,14 @@ public class CityCommands {
     @CommandPermission("omc.commands.city.transfer")
     @Description("Transfert la propriété de votre ville")
     @AutoComplete("@city_members")
-    void transfer(Player sender, @Named("maire") OfflinePlayer player) {
+    void transfer(Player sender, @Named("owner") OfflinePlayer player) {
         City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (!CityManageConditions.canCityTransfer(playerCity, sender)) return;
+        if (!CityManageConditions.canCityTransfer(playerCity, sender, player.getUniqueId())) return;
 
         if (playerCity == null) return;
 
-        playerCity.changeOwner(player.getUniqueId());
-        MessagesManager.sendMessage(sender, Component.text("Le nouveau maire est "+player.getName()), Prefix.CITY, MessageType.SUCCESS, false);
-
-        if (player.isOnline()) {
-            MessagesManager.sendMessage((Player) player, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
-        }
+        CityTransferAction.transfer(sender, playerCity, player);
     }
 
     @Subcommand("kick")

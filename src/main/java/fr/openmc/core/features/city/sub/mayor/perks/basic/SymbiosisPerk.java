@@ -17,22 +17,18 @@ public class SymbiosisPerk implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) {
-            return;
-        }
+        if (!(event.getEntity() instanceof Player player)) return;
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        if (playerCity == null) {
-            return;
-        }
+        if (playerCity == null) return;
 
         if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.SYMBIOSIS.getId())) return;
 
         LivingEntity mascot = (LivingEntity) Bukkit.getEntity(playerCity.getMascot().getMascotUUID());
 
-        if (mascot == null || !mascot.isValid()) {
-            return;
-        }
+        if (mascot == null || !mascot.isValid()) return;
+
+        if (!player.getLocation().getWorld().equals(mascot.getLocation().getWorld())) return;
 
         if (player.getLocation().distanceSquared(mascot.getLocation()) <= SQUARED_RADIUS) {
             double originalDamage = event.getDamage();
