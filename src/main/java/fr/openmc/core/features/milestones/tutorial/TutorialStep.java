@@ -1,8 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial;
 
-import fr.openmc.core.features.milestones.tutorial.quests.BreakAyweniteQuest;
-import fr.openmc.core.features.milestones.tutorial.quests.CityCreateQuest;
-import fr.openmc.core.features.milestones.tutorial.quests.HomeCreateQuest;
+import fr.openmc.core.features.milestones.tutorial.quests.*;
 import fr.openmc.core.features.quests.objects.Quest;
 import lombok.Getter;
 
@@ -33,5 +31,7 @@ public enum TutorialStep {
         BREAK_AYWENITE.quest = new BreakAyweniteQuest();
         CITY_CREATE.quest = new CityCreateQuest();
         HOME_CREATE.quest = new HomeCreateQuest();
+        HOME_UPGRADE.quest = new HomeUpgradeQuest();
+        OPEN_QUEST.quest = new OpenQuestMenuQuest();
     }
 }

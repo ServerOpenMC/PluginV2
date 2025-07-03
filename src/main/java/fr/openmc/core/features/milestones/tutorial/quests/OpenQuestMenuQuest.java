@@ -20,12 +20,12 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
-public class QuestOpenQuest extends Quest implements Listener {
+public class OpenQuestMenuQuest extends Quest implements Listener {
 
     private final TutorialStep step;
     private final MilestoneType type;
 
-    public QuestOpenQuest() {
+    public OpenQuestMenuQuest() {
         super(
                 "Ouvrez le menu des Quêtes",
                 List.of(
