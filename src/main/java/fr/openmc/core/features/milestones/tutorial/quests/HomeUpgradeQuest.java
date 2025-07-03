@@ -1,7 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import fr.openmc.core.features.homes.HomeLimits;
-import fr.openmc.core.features.homes.events.HomeCreateEvent;
+import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
@@ -15,29 +15,28 @@ import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class HomeCreateQuest extends Quest implements Listener {
+public class HomeUpgradeQuest extends Quest implements Listener {
 
     private final TutorialStep step;
     private final MilestoneType type;
 
-    public HomeCreateQuest() {
+    public HomeUpgradeQuest() {
         super(
-                "Poser un Home",
+                "Améliorer votre limite de Homes",
                 List.of(
-                        "Tapez §d/sethome §fpour faire un home",
-                        "§8§oC'est très utile d'en faire un pour se téléportez à sa base !"
+                        "Tapez §d/upgradehome §fpour pouvoir améliorer votre limite de Homes",
+                        "§8§oCela vous permettra d'avoir plus de Homes !"
                 ),
-                Material.ENDER_PEARL
+                CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest()
         );
 
-        this.step = TutorialStep.HOME_CREATE;
+        this.step = TutorialStep.HOME_UPGRADE;
         this.type = MilestoneType.TUTORIAL;
 
         this.addTier(new QuestTier(
@@ -45,7 +44,7 @@ public class HomeCreateQuest extends Quest implements Listener {
                 new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
                 new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape 3§f! Les Homes sont souvent utilisé pour pas perdre votre base ! Vous êtes limité à avoir que 1 Home au début. Va falloir penser à les améliorer...",
+                        "Bien Joué! Vous avez fini l'§6Etape 4§f! Les §2homes §fvous seront très utile pour vous téléporter à votre base ! Vous êtes limité à avoir que §21 Home §6au début. Bref, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -56,7 +55,7 @@ public class HomeCreateQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onHomeCreate(HomeCreateEvent event) {
+    public void onHomeUpgrade(HomeUpgradeEvent event) {
         Player player = event.getOwner();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
