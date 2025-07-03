@@ -15,7 +15,7 @@ public enum TutorialStep {
     OPEN_ADMINSHOP(null),
     SELL_BUY_ADMINSHOP(null),
     SPARE_BANK(null),
-    SETTINGS(null), //TODO: ajouter des quêtes autour des shops/entreprises lorsque refonte faite
+    OPEN_SETTINGS(null), //TODO: ajouter des quêtes autour des shops/entreprises lorsque refonte faite
     OPEN_CONTEST(null),
     OPEN_LETTER(null),
     LINK_DISCORD(null);
