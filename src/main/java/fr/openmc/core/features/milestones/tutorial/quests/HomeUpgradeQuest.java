@@ -44,7 +44,7 @@ public class HomeUpgradeQuest extends Quest implements Listener {
                 new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
                 new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + "§f ! Les §2homes §fvous seront très utile pour vous téléporter à votre base ! Vous êtes limité à avoir que §21 Home §6au début. Bref, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
+                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + "§f ! Les §2homes §fvous seront très utile pour vous téléporter à votre base ! Vous êtes limité à avoir que §21 Home §fau début. Bref, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
