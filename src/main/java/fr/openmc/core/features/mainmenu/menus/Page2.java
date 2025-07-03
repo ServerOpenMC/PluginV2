@@ -22,30 +22,31 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Page2 implements Menu {
 
     private final Component title;
-    private static final List<Integer> SHOPS_SLOTS = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8);
-    private static final List<Integer> COMPANY_SLOTS = Arrays.asList(9, 10, 11, 12, 13, 14, 15, 16, 17);
-    private static final List<Integer> LEADERBOARD_SLOTS = Arrays.asList(18, 19, 20, 21, 22, 23, 24, 25, 26);
-    private static final List<Integer> BANK_SLOTS = Arrays.asList(27, 28, 29, 30, 31, 32, 33, 34, 35);
-    private static final List<Integer> COMING_SOON_1_SLOTS = Arrays.asList(36, 37, 38, 39, 40, 41, 42, 43, 44);
-    private static final List<Integer> COMING_SOON_2_SLOTS = Arrays.asList(45, 46, 47, 48, 49, 50, 51, 52, 53);
-    private static final List<Integer> COMING_SOON_3_SLOTS = Arrays.asList(54, 55, 56, 57, 58, 59, 60, 61, 62);
-    private static final List<Integer> COMING_SOON_4_SLOTS = Arrays.asList(63, 64, 65, 66, 67, 68, 69, 70, 71);
-    private static final List<Integer> COMING_SOON_5_SLOTS = Arrays.asList(72, 73, 74, 75, 76, 77, 78, 79, 80);
+    private static final Set<Integer> SHOPS_SLOTS = Set.of(0, 1, 2, 3, 4, 5, 6, 7, 8);
+    private static final Set<Integer> COMPANY_SLOTS = Set.of(9, 10, 11, 12, 13, 14, 15, 16, 17);
+    private static final Set<Integer> LEADERBOARD_SLOTS = Set.of(18, 19, 20, 21, 22, 23, 24, 25, 26);
+    private static final Set<Integer> BANK_SLOTS = Set.of(27, 28, 29, 30, 31, 32, 33, 34, 35);
+    private static final Set<Integer> COMING_SOON_1_SLOTS = Set.of(36, 37, 38, 39, 40, 41, 42, 43, 44);
+    private static final Set<Integer> COMING_SOON_2_SLOTS = Set.of(45, 46, 47, 48, 49, 50, 51, 52, 53);
+    private static final Set<Integer> COMING_SOON_3_SLOTS = Set.of(54, 55, 56, 57, 58, 59, 60, 61, 62);
+    private static final Set<Integer> COMING_SOON_4_SLOTS = Set.of(63, 64, 65, 66, 67, 68, 69, 70, 71);
+    private static final Set<Integer> COMING_SOON_5_SLOTS = Set.of(72, 73, 74, 75, 76, 77, 78, 79, 80);
     private final Map<Integer, ItemStack> content;
     private static final int LEFT_ARROW_SLOT = 81;
-    private static final int RIGHT_ARROW_SLOT = 89;
-    private static final List<Integer> SETTINGS_SLOTS = Arrays.asList(82, 83, 84);
-    private static final List<Integer> MAILBOX_SLOTS = Arrays.asList(85, 86, 87);
+    private static final int RIGHT_ARROW_SLOT = 89; // Not used in this menu, but in Page1
+    private static final Set<Integer> SETTINGS_SLOTS = Set.of(82, 83, 84);
+    private static final Set<Integer> MAILBOX_SLOTS = Set.of(85, 86, 87);
     private static final int ADVANCEMENTS_SLOT = 88;
 
     public Page2() {
@@ -135,45 +136,53 @@ public class Page2 implements Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
+        Player player = event.player();
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
-            PacketMenuLib.closeMenu(event.player());
-        } else if (event.clickType() == ClickType.LEFT_CLICK) {
-            if (LEFT_ARROW_SLOT == event.slot()) {
-                PacketMenuLib.openMenu(new Page1(event.player()), event.player());
-            } else if (SETTINGS_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> SettingsCommand.settings(event.player()));
-            } else if (MAILBOX_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> MailboxCommand.homeMailbox(event.player()));
-            } else if (ADVANCEMENTS_SLOT == event.slot()) {
-                PacketMenuLib.closeMenu(event.player());
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    ServerPlayer player = ((CraftPlayer) event.player()).getHandle();
-                    ClientboundUpdateAdvancementsPacket packet = PacketListener.getAdvancementPackets().get(player.getUUID());
-                    if (packet != null) {
-                        player.connection.send(packet);
-                        PacketListener.getEnabledAdvancements().add(player.getUUID());
-                        Component message = Component.text("Appuyez sur la touche '").color(NamedTextColor.GREEN)
-                                .append(Component.keybind("key.advancements").color(NamedTextColor.YELLOW))
-                                .append(Component.text("' pour ouvrir le menu des Avancements.", NamedTextColor.GREEN));
-                        event.player().sendActionBar(message);
-                    }
-                });
-            } else if (SHOPS_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ShopCommand.manageShop(event.player()));
-            } else if (COMPANY_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CompanyCommand.onCommand(event.player()));
-            } else if (LEADERBOARD_SLOTS.contains(event.slot())) {
-                // TODO: Ajouter un menu de classement
-                PacketMenuLib.closeMenu(event.player());
-                event.player().sendMessage(Component.text(FontImageWrapper.replaceFontImages("Le menu de leaderboard est toujours en développement :sad:.\nVous pouvez toujours utiliser le /lb ou regarder les holograms dans le spawn."), NamedTextColor.RED));
-            } else if (BANK_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> BankCommands.openBankMenu(event.player()));
-            } else if (COMING_SOON_1_SLOTS.contains(event.slot()) || COMING_SOON_2_SLOTS.contains(event.slot())
-                    || COMING_SOON_3_SLOTS.contains(event.slot()) || COMING_SOON_4_SLOTS.contains(event.slot())
-                    || COMING_SOON_5_SLOTS.contains(event.slot())) {
-                PacketMenuLib.closeMenu(event.player());
-                event.player().sendMessage(Component.text("Cette fonctionnalité est en cours de développement et sera bientôt disponible !", NamedTextColor.GOLD));
-            }
+            PacketMenuLib.closeMenu(player);
+            return;
+        }
+
+        if (event.clickType() != ClickType.LEFT_CLICK) {
+            return;
+        }
+
+        int slot = event.slot();
+        if (LEFT_ARROW_SLOT == slot) {
+            PacketMenuLib.openMenu(new Page1(player), player);
+        } else if (SETTINGS_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> SettingsCommand.settings(player));
+        } else if (MAILBOX_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> MailboxCommand.homeMailbox(player));
+        } else if (ADVANCEMENTS_SLOT == slot) {
+            PacketMenuLib.closeMenu(player);
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+                ClientboundUpdateAdvancementsPacket packet = PacketListener.getAdvancementPackets().get(nmsPlayer.getUUID());
+                if (packet == null)
+                    return;
+
+                nmsPlayer.connection.send(packet);
+                PacketListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
+                Component message = Component.text("Appuyez sur la touche '").color(NamedTextColor.GREEN)
+                        .append(Component.keybind("key.advancements").color(NamedTextColor.YELLOW))
+                        .append(Component.text("' pour ouvrir le menu des Avancements.", NamedTextColor.GREEN));
+                player.sendActionBar(message);
+            });
+        } else if (SHOPS_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ShopCommand.manageShop(player));
+        } else if (COMPANY_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CompanyCommand.onCommand(player));
+        } else if (LEADERBOARD_SLOTS.contains(slot)) {
+            // TODO: Ajouter un menu de classement
+            PacketMenuLib.closeMenu(player);
+            player.sendMessage(Component.text(FontImageWrapper.replaceFontImages("Le menu de leaderboard est toujours en développement :sad:.\nVous pouvez toujours utiliser le /lb ou regarder les holograms dans le spawn."), NamedTextColor.RED));
+        } else if (BANK_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> BankCommands.openBankMenu(player));
+        } else if (COMING_SOON_1_SLOTS.contains(slot) || COMING_SOON_2_SLOTS.contains(slot)
+                || COMING_SOON_3_SLOTS.contains(slot) || COMING_SOON_4_SLOTS.contains(slot)
+                || COMING_SOON_5_SLOTS.contains(slot)) {
+            PacketMenuLib.closeMenu(player);
+            player.sendMessage(Component.text("Cette fonctionnalité est en cours de développement et sera bientôt disponible !", NamedTextColor.GOLD));
         }
     }
 

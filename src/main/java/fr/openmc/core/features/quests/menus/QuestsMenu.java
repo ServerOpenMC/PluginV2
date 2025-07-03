@@ -11,10 +11,8 @@ import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -58,7 +56,7 @@ public class QuestsMenu extends Menu {
     }
 
     public @NotNull String getName() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-25%%img_quests_menu%");
+        return "§r§f:offset_-25::quests_menu:";
     }
 
     public @NotNull InventorySize getInventorySize() {
@@ -203,7 +201,7 @@ public class QuestsMenu extends Menu {
                             String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
                             lore.add(Component.text("    §7- §f" + itemName + " §7x" + itemReward.getAmount()));
                         } else if (reward instanceof QuestMoneyReward moneyReward) {
-                            lore.add(Component.text("    §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
+                            lore.add(Component.text("    §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.amount()) + " §f" + EconomyManager.getEconomyIcon()));
                         }
                     }
                 }
@@ -218,7 +216,7 @@ public class QuestsMenu extends Menu {
                     String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
                     lore.add(Component.text("  §7- §f" + itemName + " §7x" + itemReward.getAmount()));
                 } else if (reward instanceof QuestMoneyReward moneyReward) {
-                    lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
+                    lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.amount()) + " §f" + EconomyManager.getEconomyIcon()));
                 }
             }
             lore.add(Component.text(""));

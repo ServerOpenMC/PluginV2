@@ -21,8 +21,8 @@ import java.util.Objects;
  */
 public class CityCreateConditions {
 
-    public static double MONEY_CREATE = 3500.0;
-    public static int AYWENITE_CREATE = 30;
+    public static final double MONEY_CREATE = 3500.0;
+    public static final int AYWENITE_CREATE = 30;
 
     /**
      * Retourne un booleen pour dire si le joueur peut faire une ville

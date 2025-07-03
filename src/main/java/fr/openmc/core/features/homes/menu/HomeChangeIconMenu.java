@@ -1,20 +1,18 @@
 package fr.openmc.core.features.homes.menu;
 
 import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.icons.IconCategory;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -34,7 +32,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     private final Home home;
     private IconCategory currentCategory = IconCategory.ALL;
-    private String searchQuery = "";
+    private String searchQuery;
 
     private static final Map<UUID, Long> CATEGORY_COOLDOWNS = new ConcurrentHashMap<>();
     private static final long CATEGORY_COOLDOWN_TIME = 500; // 2 seconds cooldown
@@ -51,7 +49,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home%");
+        return "§r§f:offset_-8::omc_homes_menus_home:";
     }
 
     @Override
@@ -108,26 +106,20 @@ public class HomeChangeIconMenu extends PaginatedMenu {
                 };
 
                 SignGUI gui;
-                try {
-                    gui = SignGUI.builder()
-                            .setLines(lines)
-                            .setType(ItemUtils.getSignType(getOwner()))
-                            .setHandler((p, result) -> {
-                                searchQuery = result.getLine(0);
-                                currentCategory = IconCategory.ALL;
-                                setPage(0);
-                                refresh();
+                gui = SignGUI.builder()
+                        .setLines(lines)
+                        .setType(ItemUtils.getSignType(getOwner()))
+                        .setHandler((p, result) -> {
+                            searchQuery = result.getLine(0);
+                            currentCategory = IconCategory.ALL;
+                            setPage(0);
+                            refresh();
 
-                                return Collections.emptyList();
-                            })
-                            .build();
+                            return Collections.emptyList();
+                        })
+                        .build();
 
-                    gui.open(getOwner());
-                } catch (SignGUIVersionException e) {
-                    MessagesManager.sendMessage(getOwner(),
-                            Component.text("§cUne erreur est survenue, veuillez contacter le Staff"),
-                            Prefix.OPENMC, MessageType.ERROR, false);
-                }
+                gui.open(getOwner());
             } else if (event.getClick().isRightClick()) {
                 searchQuery = "";
                 refresh();

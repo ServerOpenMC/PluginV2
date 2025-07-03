@@ -105,7 +105,7 @@ public class BossbarManager {
         removeBossBar(player);
 
         BossBar bossBar = BossBar.bossBar(
-                helpMessages.get(0),
+                helpMessages.getFirst(),
                 0f,
                 BossBar.Color.RED,
                 BossBar.Overlay.PROGRESS

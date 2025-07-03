@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -96,29 +95,25 @@ public class CityModifyMenu extends Menu {
             lines[3] = "nom ci dessus";
 
             SignGUI gui;
-            try {
-                gui = SignGUI.builder()
-                        .setLines(null, lines[1], lines[2], lines[3])
-                        .setType(ItemUtils.getSignType(player))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
+            gui = SignGUI.builder()
+                    .setLines(null, lines[1], lines[2], lines[3])
+                    .setType(ItemUtils.getSignType(player))
+                    .setHandler((p, result) -> {
+                        String input = result.getLine(0);
 
-                            if (InputUtils.isInputCityName(input)) {
-                                City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+                        if (InputUtils.isInputCityName(input)) {
+                            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-                                    playerCity.rename(input);
-                                    MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
+                                playerCity.rename(input);
+                                MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
 
-                            } else {
-                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                            }
+                        } else {
+                            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                        }
 
-                            return Collections.emptyList();
-                        })
-                        .build();
-            } catch (SignGUIVersionException e) {
-                throw new RuntimeException(e);
-            }
+                        return Collections.emptyList();
+                    })
+                    .build();
 
             gui.open(player);
 

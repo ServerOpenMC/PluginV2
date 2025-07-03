@@ -3,13 +3,21 @@ package fr.openmc.core.features.city.sub.mascots.utils;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.sub.mascots.models.MascotType;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Arrays;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class MascotUtils {
+	private static final Set<EntityType> POSSIBLE_MASCOT_TYPES = Arrays.stream(MascotType.values())
+			.map(MascotType::getEntityType)
+			.collect(Collectors.toUnmodifiableSet());
 
 	/**
 	 * Adds a mascot for a given city.
@@ -41,6 +49,11 @@ public class MascotUtils {
 	 * @return true if the entity is a mascot, false otherwise.
 	 */
 	public static boolean isMascot(Entity entity) {
+		// Check if the entity is of a type that can be a mascot
+		// So it doesn't check the persistent data container that takes more time
+		if (!POSSIBLE_MASCOT_TYPES.contains(entity.getType()))
+			return false;
+
 		return entity.getPersistentDataContainer().has(MascotsManager.mascotsKey, PersistentDataType.STRING);
 	}
 

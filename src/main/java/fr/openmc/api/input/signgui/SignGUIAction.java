@@ -1,5 +1,6 @@
 package fr.openmc.api.input.signgui;
 
+import lombok.Getter;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -41,7 +42,7 @@ public interface SignGUIAction {
 
         return new SignGUIAction() {
 
-            private SignGUIActionInfo info = new SignGUIActionInfo("displayNewLines", true, 1);
+            private final SignGUIActionInfo info = new SignGUIActionInfo("displayNewLines", true, 1);
 
             @Override
             public SignGUIActionInfo getInfo() {
@@ -86,7 +87,7 @@ public interface SignGUIAction {
 
         return new SignGUIAction() {
 
-            private SignGUIActionInfo info = new SignGUIActionInfo("displayNewLines", true, 1);
+            private final SignGUIActionInfo info = new SignGUIActionInfo("displayNewLines", true, 1);
 
             @Override
             public SignGUIActionInfo getInfo() {
@@ -115,7 +116,7 @@ public interface SignGUIAction {
 
         return new SignGUIAction() {
 
-            private SignGUIActionInfo info = new SignGUIActionInfo("openInventory", false, 1);
+            private final SignGUIActionInfo info = new SignGUIActionInfo("openInventory", false, 1);
 
             @Override
             public SignGUIActionInfo getInfo() {
@@ -141,7 +142,7 @@ public interface SignGUIAction {
 
         return new SignGUIAction() {
 
-            private SignGUIActionInfo info = new SignGUIActionInfo("run", false, 0);
+            private final SignGUIActionInfo info = new SignGUIActionInfo("run", false, 0);
 
             @Override
             public SignGUIActionInfo getInfo() {
@@ -168,7 +169,7 @@ public interface SignGUIAction {
 
         return new SignGUIAction() {
 
-            private SignGUIActionInfo info = new SignGUIActionInfo("runSync", false, 0);
+            private final SignGUIActionInfo info = new SignGUIActionInfo("runSync", false, 0);
 
             @Override
             public SignGUIActionInfo getInfo() {
@@ -187,7 +188,10 @@ public interface SignGUIAction {
      */
     class SignGUIActionInfo {
 
+        @Getter
         private final String name;
+
+        @Getter
         private final boolean keepOpen;
         private final int conflicting;
 
@@ -202,20 +206,6 @@ public interface SignGUIAction {
             this.name = name;
             this.keepOpen = keepOpen;
             this.conflicting = conflicting;
-        }
-
-        /**
-         * @return The name of the action
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * @return Whether the sign gui should be kept open.
-         */
-        public boolean isKeepOpen() {
-            return keepOpen;
         }
 
         /**

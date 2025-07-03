@@ -16,17 +16,16 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.LuckPermsApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,10 +49,10 @@ public class ScoreboardManager implements Listener {
     @Getter
     static ScoreboardManager instance;
 
-    public Set<UUID> disabledPlayers = new HashSet<>();
-    public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder();
-    OMCPlugin plugin = OMCPlugin.getInstance();
+    public final Set<UUID> disabledPlayers = new HashSet<>();
+    public final HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
+    private final boolean canShowLogo = ItemsAdderApi.hasItemAdder();
+    final OMCPlugin plugin = OMCPlugin.getInstance();
     private GlobalTeamManager globalTeamManager = null;
 
     public ScoreboardManager() {
@@ -116,7 +115,7 @@ public class ScoreboardManager implements Listener {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective objective;
         if (canShowLogo) {
-            objective = scoreboard.registerNewObjective("sb_aywen", "dummy", PlaceholderAPI.setPlaceholders(player, "%img_openmc%"));
+            objective = scoreboard.registerNewObjective("sb_aywen", "dummy", ":openmc:");
         } else {
             objective = scoreboard.registerNewObjective("sb_aywen", "dummy", Component.text("OPENMC").decorate(TextDecoration.BOLD).color(NamedTextColor.LIGHT_PURPLE));
         }
@@ -230,7 +229,7 @@ public class ScoreboardManager implements Listener {
                         objective.getScore("   ").setScore(5);
                         if (mobMascot != null) {
                             if (city.getMascot().isAlive()) {
-                                objective.getScore("§8• §fVotre Mascotte§7: §c" + Math.floor(mobMascot.getHealth()) + "§4/§c" + mobMascot.getMaxHealth() + " ❤").setScore(4);
+                                objective.getScore("§8• §fVotre Mascotte§7: §c" + Math.floor(mobMascot.getHealth()) + "§4/§c" + mobMascot.getAttribute(Attribute.MAX_HEALTH).getValue() + " ❤").setScore(4);
                             } else {
                                 objective.getScore("§8• §fVotre Mascotte§7: §4☠ MORT").setScore(4);
                             }
@@ -238,7 +237,7 @@ public class ScoreboardManager implements Listener {
 
                         if (mobMascotEnemy != null) {
                             if (cityEnemy.getMascot().isAlive()) {
-                                objective.getScore("§8• §4Mascotte Enemnie§7: §c" + Math.floor(mobMascotEnemy.getHealth()) + "§4/§c" + mobMascotEnemy.getMaxHealth() + " ❤").setScore(3);
+                                objective.getScore("§8• §4Mascotte Enemnie§7: §c" + Math.floor(mobMascotEnemy.getHealth()) + "§4/§c" + mobMascotEnemy.getAttribute(Attribute.MAX_HEALTH).getValue() + " ❤").setScore(3);
                             } else {
                                 objective.getScore("§8• §4Mascotte Enemnie§7: §4☠ MORT").setScore(3);
                             }

@@ -10,7 +10,6 @@ import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -46,19 +45,15 @@ public class MayorCommands {
             return;
         }
 
+        player.sendTitle("§0:tp_effect%", "§a§lTéléportation...", 20, 10, 10);
         new BukkitRunnable() {
             @Override
             public void run() {
-                player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        player.teleport(warp);
-                        MessagesManager.sendMessage(player, Component.text("Vous avez été envoyé au Warp §fde votre §dVille"), Prefix.CITY, MessageType.SUCCESS, true);
-                    }
-                }.runTaskLater(OMCPlugin.getInstance(), 10);
+                player.teleportAsync(warp).thenAccept(success -> {
+                    MessagesManager.sendMessage(player, Component.text("Vous avez été envoyé au Warp §fde votre §dVille"), Prefix.CITY, MessageType.SUCCESS, true);
+                });
             }
-        }.runTaskLater(OMCPlugin.getInstance(), 15);
+        }.runTaskLater(OMCPlugin.getInstance(), 10);
     }
 
     @Command({"city setwarp", "ville setwarp"})

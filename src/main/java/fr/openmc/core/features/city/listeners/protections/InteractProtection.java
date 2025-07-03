@@ -37,6 +37,8 @@ public class InteractProtection implements Listener {
         boolean isTnt = itemType == Material.TNT;
 
         if (!clickedType.isInteractable() && !isMinecart) return;
+
+        if (!isMinecart) return;
         if (isTnt) return;
 
         ProtectionsManager.verify(player, event, location);

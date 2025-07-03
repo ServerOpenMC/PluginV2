@@ -54,7 +54,7 @@ public class CityMessages {
         sendLine(sender, "Maire", mayorName);
         sendLine(sender, "Habitants", String.valueOf(citizens));
         sendLine(sender, "Superficie", String.valueOf(area));
-        if (type != null && type == CityType.WAR) {
+        if (type == CityType.WAR) {
             sendLine(sender, "Puissance", String.valueOf(power));
         }
         sendLine(sender, "Vie de la Mascotte", mascotLife);

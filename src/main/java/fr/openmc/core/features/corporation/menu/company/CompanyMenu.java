@@ -8,9 +8,7 @@ import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -127,8 +125,8 @@ public class CompanyMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_company_baltop_menu%");
+        if (ItemsAdderApi.hasItemAdder()) {
+            return "§r§f:offset_-11::company_baltop_menu:";
         } else {
             return company.getName();
         }

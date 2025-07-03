@@ -1,9 +1,9 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.menu.HomeMenu;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

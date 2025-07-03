@@ -10,12 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class FreezeManager {
 	
-	public static final List<Player> FROZEN_PLAYERS = new ArrayList<>();
+	public static final Set<Player> FROZEN_PLAYERS = new HashSet<>();
 	private static Player player;
 	
 	public FreezeManager() {
