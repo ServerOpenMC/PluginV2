@@ -36,26 +36,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.DayOfWeek;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Page1 implements Menu {
 
     private final Component title;
     private final Map<Integer, ItemStack> content;
-    private static final List<Integer> CITY_SLOTS = Arrays.asList(0, 1, 2, 3, 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48);
-    private static final List<Integer> QUEST_SLOTS = Arrays.asList(4, 5, 6, 7, 8, 13, 14, 15, 16, 17, 22, 23, 24, 25, 26);
-    private static final List<Integer> MILESTONES_SLOTS = Arrays.asList(31, 32, 33, 34, 35, 40, 41, 42, 43, 44, 49, 50, 51, 52, 53);
-    private static final List<Integer> CONTEST_SLOTS = Arrays.asList(54, 55, 56, 57, 58);
-    private static final List<Integer> SHOP_SLOTS = Arrays.asList(63, 64, 65, 66, 67);
-    private static final List<Integer> HOME_SLOTS = Arrays.asList(72, 73, 74, 75, 76);
-    private static final List<Integer> PROFILE_SLOTS = Arrays.asList(59, 60, 61, 62, 68, 69, 70, 71, 77, 78, 79, 80);
-    private static final int LEFT_ARROW_SLOT = 81;
+    private static final Set<Integer> CITY_SLOTS = Set.of(0, 1, 2, 3, 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48);
+    private static final Set<Integer> QUEST_SLOTS = Set.of(4, 5, 6, 7, 8, 13, 14, 15, 16, 17, 22, 23, 24, 25, 26);
+    private static final Set<Integer> MILESTONES_SLOTS = Set.of(31, 32, 33, 34, 35, 40, 41, 42, 43, 44, 49, 50, 51, 52, 53);
+    private static final Set<Integer> CONTEST_SLOTS = Set.of(54, 55, 56, 57, 58);
+    private static final Set<Integer> SHOP_SLOTS = Set.of(63, 64, 65, 66, 67);
+    private static final Set<Integer> HOME_SLOTS = Set.of(72, 73, 74, 75, 76);
+    private static final Set<Integer> PROFILE_SLOTS = Set.of(59, 60, 61, 62, 68, 69, 70, 71, 77, 78, 79, 80);
+    private static final int LEFT_ARROW_SLOT = 81;  // Not used in this menu, but in Page2
     private static final int RIGHT_ARROW_SLOT = 89;
-    private static final List<Integer> SETTINGS_SLOTS = Arrays.asList(82, 83, 84);
-    private static final List<Integer> MAILBOX_SLOTS = Arrays.asList(85, 86, 87);
+    private static final Set<Integer> SETTINGS_SLOTS = Set.of(82, 83, 84);
+    private static final Set<Integer> MAILBOX_SLOTS = Set.of(85, 86, 87);
     private static final int ADVANCEMENTS_SLOT = 88;
 
     public Page1(Player player) {
@@ -97,13 +97,13 @@ public class Page1 implements Menu {
         ItemStack contestItem = new ItemStack(Material.PAPER);
         Contest data = ContestManager.data;
         int phase = data.getPhase();
-        if(phase != 1) {
+        if (phase != 1) {
             contestItem.editMeta(meta -> {
                 meta.setItemModel(NamespacedKey.minecraft("air"));
                 meta.itemName(Component.text(ChatColor.valueOf(data.getColor1()) + data.getCamp1() + " §8VS " + ChatColor.valueOf(data.getColor2()) + data.getCamp2()));
                 meta.lore(List.of(
-                        Component.text("§cFin dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY)),
-                        Component.text("/contest", NamedTextColor.DARK_GRAY)
+                                Component.text("§cFin dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY)),
+                                Component.text("/contest", NamedTextColor.DARK_GRAY)
                         )
                 );
             });
@@ -187,47 +187,55 @@ public class Page1 implements Menu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent event) {
+        Player player = event.player();
         if (event.clickType() == ClickType.CLICK_OUTSIDE) {
-            PacketMenuLib.closeMenu(event.player());
-        } else if (event.clickType() == ClickType.LEFT_CLICK) {
-            if (CITY_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.mainCommand(event.player()));
-            } else if (QUEST_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> QuestCommand.onQuest(event.player()));
-            } else if (MILESTONES_SLOTS.contains(event.slot())) {
-                PacketMenuLib.closeMenu(event.player());
-                event.player().sendMessage(Component.text(FontImageWrapper.replaceFontImages("Les Milestones sont toujours en développement :sad:."), NamedTextColor.RED));
-                // TODO : ajouter le menu des Milestones lorsque c'est fait
-            } else if (CONTEST_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ContestCommand.defaultCommand(event.player()));
-            } else if (SHOP_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> AdminShopManager.openMainMenu(event.player()));
-            } else if (HOME_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHome.home(event.player(), null));
-            } else if (PROFILE_SLOTS.contains(event.slot())) {
-                PacketMenuLib.closeMenu(event.player());
-                event.player().sendMessage(Component.text(FontImageWrapper.replaceFontImages("Les profils des joueurs sont toujours en développement :sad:."), NamedTextColor.RED));
-            } else if (RIGHT_ARROW_SLOT == event.slot()) {
-                PacketMenuLib.openMenu(new Page2(), event.player());
-            } else if (SETTINGS_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> SettingsCommand.settings(event.player()));
-            } else if (MAILBOX_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> MailboxCommand.homeMailbox(event.player()));
-            } else if (ADVANCEMENTS_SLOT == event.slot()) {
-                PacketMenuLib.closeMenu(event.player());
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    ServerPlayer player = ((CraftPlayer) event.player()).getHandle();
-                    ClientboundUpdateAdvancementsPacket packet = PacketListener.getAdvancementPackets().get(player.getUUID());
-                    if (packet != null) {
-                        player.connection.send(packet);
-                        PacketListener.getEnabledAdvancements().add(player.getUUID());
-                        Component message = Component.text("Appuyez sur la touche '").color(NamedTextColor.GREEN)
-                                .append(Component.keybind("key.advancements").color(NamedTextColor.YELLOW))
-                                .append(Component.text("' pour ouvrir le menu des Avancements.", NamedTextColor.GREEN));
-                        event.player().sendActionBar(message);
-                    }
-                });
-            }
+            PacketMenuLib.closeMenu(player);
+            return;
+        }
+
+        if (event.clickType() != ClickType.LEFT_CLICK) {
+            return;
+        }
+
+        int slot = event.slot();
+        if (CITY_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.mainCommand(player));
+        } else if (QUEST_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> QuestCommand.onQuest(player));
+        } else if (MILESTONES_SLOTS.contains(slot)) {
+            PacketMenuLib.closeMenu(player);
+            player.sendMessage(Component.text(FontImageWrapper.replaceFontImages("Les Milestones sont toujours en développement :sad:."), NamedTextColor.RED));
+            // TODO : ajouter le menu des Milestones lorsque c'est fait
+        } else if (CONTEST_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ContestCommand.defaultCommand(player));
+        } else if (SHOP_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> AdminShopManager.openMainMenu(player));
+        } else if (HOME_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHome.home(player, null));
+        } else if (PROFILE_SLOTS.contains(slot)) {
+            PacketMenuLib.closeMenu(player);
+            player.sendMessage(Component.text(FontImageWrapper.replaceFontImages("Les profils des joueurs sont toujours en développement :sad:."), NamedTextColor.RED));
+        } else if (RIGHT_ARROW_SLOT == slot) {
+            PacketMenuLib.openMenu(new Page2(), player);
+        } else if (SETTINGS_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> SettingsCommand.settings(player));
+        } else if (MAILBOX_SLOTS.contains(slot)) {
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> MailboxCommand.homeMailbox(player));
+        } else if (ADVANCEMENTS_SLOT == slot) {
+            PacketMenuLib.closeMenu(player);
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+                ClientboundUpdateAdvancementsPacket packet = PacketListener.getAdvancementPackets().get(nmsPlayer.getUUID());
+                if (packet == null)
+                    return;
+
+                nmsPlayer.connection.send(packet);
+                PacketListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
+                Component message = Component.text("Appuyez sur la touche '").color(NamedTextColor.GREEN)
+                        .append(Component.keybind("key.advancements").color(NamedTextColor.YELLOW))
+                        .append(Component.text("' pour ouvrir le menu des Avancements.", NamedTextColor.GREEN));
+                player.sendActionBar(message);
+            });
         }
     }
 
