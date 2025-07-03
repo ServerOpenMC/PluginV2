@@ -1,7 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.contest.menu.ContributionMenu;
-import fr.openmc.core.features.contest.menu.VoteMenu;
+import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
@@ -17,7 +16,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
@@ -54,15 +52,10 @@ public class ClaimLetterQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onClaimLetter(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
+    public void onClaimLetter(ClaimLetterEvent event) {
+        Player player = event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
-
-        if (event.getInventory().getHolder() == null) return;
-
-        if (!event.getInventory().getHolder().getClass().equals(VoteMenu.class) || !event.getInventory().getHolder().getClass().equals(ContributionMenu.class))
-            return;
 
         this.incrementProgress(player.getUniqueId());
     }
