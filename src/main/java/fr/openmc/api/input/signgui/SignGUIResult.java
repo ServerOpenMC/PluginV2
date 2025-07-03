@@ -10,12 +10,6 @@ import org.bukkit.ChatColor;
  */
 @Getter
 public class SignGUIResult {
-
-    /**
-     * -- GETTER --
-     *
-     * @return The lines of the sign when the player finished editing.
-     */
     private final String[] lines;
 
     SignGUIResult(String[] lines) {
