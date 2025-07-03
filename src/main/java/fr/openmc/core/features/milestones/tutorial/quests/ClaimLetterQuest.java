@@ -1,6 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
+import fr.openmc.core.features.contest.menu.ContributionMenu;
+import fr.openmc.core.features.contest.menu.VoteMenu;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
@@ -16,46 +17,52 @@ import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
-public class HomeUpgradeQuest extends Quest implements Listener {
+public class ClaimLetterQuest extends Quest implements Listener {
 
     private final TutorialStep step;
     private final MilestoneType type;
 
-    public HomeUpgradeQuest() {
+    public ClaimLetterQuest() {
         super(
-                "Améliorer votre limite de Homes",
+                "Ouvrez la lettre des Récompenses",
                 List.of(
-                        "Tapez §d/upgradehome §fou bien aller dans le §dmenu principal /menu§f pour pouvoir améliorer votre limite de Homes",
-                        "§8§oCela vous permettra d'avoir plus de Homes !"
+                        "Tapez §d/contest §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§8§oune méthode compétitive pour gagner des grosses récompenses !"
                 ),
-                CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest()
+                CustomItemRegistry.getByName("omc_contest:contest_shell").getBest()
         );
 
-        this.step = TutorialStep.HOME_UPGRADE;
+        this.step = TutorialStep.OPEN_CONTEST;
         this.type = MilestoneType.TUTORIAL;
 
         this.addTier(new QuestTier(
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + "§f ! Les §2homes §fvous seront très utile pour vous téléporter à votre base ! Vous êtes limité à avoir que §21 Home §fau début. Bref, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
+                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §6Contests §f, ça oppose 2 groupes, 2 thèmes opposés, et le gagnant remporte une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §1Mailbox§f,un système de lettre pour recevoir ou bien envoyer des lettres!",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
                 new QuestMethodsReward(
-                        player -> TutorialUtils.completeStep(type, player, step)
+                        player -> TutorialUtils.completeStep(type, player, step);
                 )
         ));
     }
 
     @EventHandler
-    public void onHomeUpgrade(HomeUpgradeEvent event) {
-        Player player = event.getOwner();
+    public void onContestMenuOpen(InventoryOpenEvent event) {
+        Player player = (Player) event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+
+        if (event.getInventory().getHolder() == null) return;
+
+        if (!event.getInventory().getHolder().getClass().equals(VoteMenu.class) || !event.getInventory().getHolder().getClass().equals(ContributionMenu.class))
+            return;
 
         this.incrementProgress(player.getUniqueId());
     }
