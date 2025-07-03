@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -92,7 +93,7 @@ public class MailboxManager {
                 letters.add(letter);
             }
             letterDao.create(letters);
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             Logger.getLogger(MailboxManager.class.getName()).log(Level.SEVERE,
                     "Erreur lors de l'envoi des items batch à des joueurs hors ligne", e);
         }
