@@ -42,7 +42,7 @@ public class BreakAyweniteQuest extends Quest implements Listener {
         this.addTier(new QuestTier(
                 30,
                 new QuestMoneyReward(3500),
-                new QuestTextReward("Bien Joué! Vous avez fini l'§6Etape 1 §f! Comme dit précédemment l'§dAywenite §fest un minerai, précieux pour les features. D'ailleurs vous pouvez faire votre ville ! ", Prefix.MILLESTONE, MessageType.SUCCESS),
+                new QuestTextReward("Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Comme dit précédemment l'§dAywenite §fest un minerai, précieux pour les features. D'ailleurs vous pouvez faire votre ville ! ", Prefix.MILLESTONE, MessageType.SUCCESS),
                 new QuestMethodsReward(
                         player -> TutorialUtils.completeStep(type, player, step)
                 )

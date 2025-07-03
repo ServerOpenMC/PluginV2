@@ -1,51 +1,48 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.homes.HomeLimits;
-import fr.openmc.core.features.homes.events.HomeCreateEvent;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
+import fr.openmc.core.features.quests.menus.QuestsMenu;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
-import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
-public class HomeCreateQuest extends Quest implements Listener {
+public class QuestOpenQuest extends Quest implements Listener {
 
     private final TutorialStep step;
     private final MilestoneType type;
 
-    public HomeCreateQuest() {
+    public QuestOpenQuest() {
         super(
-                "Poser un Home",
+                "Ouvrez le menu des Quêtes",
                 List.of(
-                        "Tapez §d/sethome §fou bien aller dans le §dmenu principal /menu§f pour faire un home",
-                        "§8§oC'est très utile d'en faire un pour se téléportez à sa base !"
+                        "Tapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§8§oCela va pouvoir vous lancer dans l'aventure et de vous diversifier !"
                 ),
-                Material.ENDER_PEARL
+                Material.GOLDEN_AXE
         );
 
-        this.step = TutorialStep.HOME_CREATE;
+        this.step = TutorialStep.OPEN_QUEST;
         this.type = MilestoneType.TUTORIAL;
 
         this.addTier(new QuestTier(
                 1,
-                new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
-                new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
+                new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les Homes sont souvent utilisé pour pas perdre votre base ! Vous êtes limité à avoir que 1 Home au début. Va falloir penser à les améliorer...",
+                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §9Quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! D'ailleurs, accomplissez une des §9tâches §fque vous voulez !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -56,10 +53,15 @@ public class HomeCreateQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onHomeCreate(HomeCreateEvent event) {
-        Player player = event.getOwner();
+    public void onQuestMenuOpen(InventoryOpenEvent event) {
+        Player player = (Player) event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
+
+        System.out.println(event.getInventory().getHolder().getClass());
+        if (event.getInventory().getHolder() == null) return;
+
+        if (!event.getInventory().getHolder().getClass().equals(QuestsMenu.class)) return;
 
         this.incrementProgress(player.getUniqueId());
     }

@@ -30,7 +30,7 @@ public class HomeUpgradeQuest extends Quest implements Listener {
         super(
                 "Améliorer votre limite de Homes",
                 List.of(
-                        "Tapez §d/upgradehome §fpour pouvoir améliorer votre limite de Homes",
+                        "Tapez §d/upgradehome §fou bien aller dans le §dmenu principal /menu§f pour pouvoir améliorer votre limite de Homes",
                         "§8§oCela vous permettra d'avoir plus de Homes !"
                 ),
                 CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest()
@@ -44,7 +44,7 @@ public class HomeUpgradeQuest extends Quest implements Listener {
                 new QuestMoneyReward(HomeLimits.LIMIT_1.getPrice()),
                 new QuestItemReward(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), HomeLimits.LIMIT_1.getAyweniteCost()),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape 4§f! Les §2homes §fvous seront très utile pour vous téléporter à votre base ! Vous êtes limité à avoir que §21 Home §6au début. Bref, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
+                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + "§f ! Les §2homes §fvous seront très utile pour vous téléporter à votre base ! Vous êtes limité à avoir que §21 Home §6au début. Bref, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
