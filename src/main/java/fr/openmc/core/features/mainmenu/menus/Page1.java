@@ -36,7 +36,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.DayOfWeek;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Page1 implements Menu {
 
@@ -188,7 +191,7 @@ public class Page1 implements Menu {
             PacketMenuLib.closeMenu(event.player());
         } else if (event.clickType() == ClickType.LEFT_CLICK) {
             if (CITY_SLOTS.contains(event.slot())) {
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.main(event.player()));
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CityCommands.mainCommand(event.player()));
             } else if (QUEST_SLOTS.contains(event.slot())) {
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> QuestCommand.onQuest(event.player()));
             } else if (MILESTONES_SLOTS.contains(event.slot())) {

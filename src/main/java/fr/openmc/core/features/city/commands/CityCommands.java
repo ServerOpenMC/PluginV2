@@ -26,8 +26,8 @@ import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
@@ -38,7 +38,7 @@ public class CityCommands {
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     @DefaultFor("~")
-    void mainCommand(Player player) {
+    public static void mainCommand(Player player) {
         if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:chest")) {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());
                 if (playerCity == null) {

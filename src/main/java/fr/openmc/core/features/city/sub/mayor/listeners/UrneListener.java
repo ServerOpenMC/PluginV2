@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
+import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.api.FancyNpcsApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -23,8 +24,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.Objects;
-
-import static fr.openmc.core.utils.LocationUtils.getSafeNearbySurface;
 
 public class UrneListener implements Listener {
 
@@ -55,7 +54,7 @@ public class UrneListener implements Listener {
         }
 
         if (playerCity.getElectionType() == ElectionType.OWNER_CHOOSE) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
+            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
@@ -123,9 +122,9 @@ public class UrneListener implements Listener {
 
         if (!FancyNpcsApi.hasFancyNpc()) return;
 
-        Location locationMayor = getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
+        Location locationMayor = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
 
-        Location locationOwner = getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
+        Location locationOwner = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
 
         NPCManager.createNPCS(playerCity.getUUID(), locationMayor, locationOwner, player.getUniqueId());
     }
