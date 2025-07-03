@@ -1,7 +1,5 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
-import fr.openmc.core.features.contest.menu.ContributionMenu;
-import fr.openmc.core.features.contest.menu.VoteMenu;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -18,9 +16,10 @@ import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OpenContestMenuQuest extends Quest implements Listener {
@@ -45,7 +44,7 @@ public class OpenContestMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(1000),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §6Contests §f, ça oppose 2 groupes, 2 thèmes opposés, et le gagnant remporte une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §1Mailbox§f,un système de lettre pour recevoir ou bien envoyer des lettres!",
+                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §6Contests§f, ça oppose 2 groupes, 2 thèmes opposés, et le gagnant remporte une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §1Mailbox§f, un système de lettre pour recevoir ou bien envoyer des lettres! Sur ce bonne aventure, et nous vous souhaitons le meilleur de votre aventure !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -53,11 +52,14 @@ public class OpenContestMenuQuest extends Quest implements Listener {
                         player -> {
                             TutorialUtils.completeStep(type, player, step);
 
-                            ItemStack[] itemsArray = new ItemStack[]{
-                                    CustomItemRegistry.getByName("omc_items:aywenite").getBest()
-                                    //TODO: ajouter les tickets de V1
-                            };
+                            List<ItemStack> items = new ArrayList<>();
+                            ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+                            aywenite.setAmount(30);
+                            items.add(aywenite);
 
+                            //TODO: ajouter les tickets de la V1
+
+                            ItemStack[] itemsArray = items.toArray(new ItemStack[0]);
 
                             MailboxManager.sendItems(player, player, itemsArray);
                         }
@@ -66,15 +68,13 @@ public class OpenContestMenuQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onContestMenuOpen(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
+    public void onContestCommand(PlayerCommandPreprocessEvent event) {
+        Player player = event.getPlayer();
+        String message = event.getMessage();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (event.getInventory().getHolder() == null) return;
-
-        if (!event.getInventory().getHolder().getClass().equals(VoteMenu.class) || !event.getInventory().getHolder().getClass().equals(ContributionMenu.class))
-            return;
+        if (!message.equalsIgnoreCase("/contest")) return;
 
         this.incrementProgress(player.getUniqueId());
     }

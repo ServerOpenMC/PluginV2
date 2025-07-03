@@ -41,7 +41,7 @@ public class ClaimLetterQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §6Contests §f, ça oppose 2 groupes, 2 thèmes opposés, et le gagnant remporte une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §1Mailbox§f,un système de lettre pour recevoir ou bien envoyer des lettres!",
+                        "Et maintenant ? Vous pouvez lier votre compte Discord à votre compte Minecraft afin d'assurer la sécurité de votre compte !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
