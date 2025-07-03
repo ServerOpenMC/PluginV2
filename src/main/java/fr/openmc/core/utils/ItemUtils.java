@@ -21,6 +21,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 public class ItemUtils {
     /**
      * Return a {@link TranslatableComponent} from a {@link ItemStack}
+     *
      * @param stack ItemStack that get translate
      * @return a {@link TranslatableComponent} that can be translated by client
      */
@@ -33,6 +34,7 @@ public class ItemUtils {
 
     /**
      * Return a {@link TranslatableComponent} from a {@link Material}
+     *
      * @param material Material that get translate
      * @return a {@link TranslatableComponent} that can be translated by client
      */
@@ -42,6 +44,7 @@ public class ItemUtils {
 
     /**
      * Découpe un nombre d'item en paquets
+     *
      * @param items Votre ItemStack
      * @return Une Liste d'ItemStack
      */
@@ -69,8 +72,9 @@ public class ItemUtils {
 
     /**
      * Retourne le nombre d'item qui peut aller dans un Stack
+     *
      * @param player Joueur pour acceder a son inventaire
-     * @param item Item recherché pour completer un stack
+     * @param item   Item recherché pour completer un stack
      * @return Le nombre d'item qui peut completer un stack
      */
     public static int getNumberItemToStack(Player player, ItemStack item) {
@@ -88,6 +92,7 @@ public class ItemUtils {
 
     /**
      * Retourne le nombre de slot vide
+     *
      * @param player Joueur pour acceder a son inventaire
      */
     public static int getSlotNull(Player player) {
@@ -105,21 +110,44 @@ public class ItemUtils {
     }
 
     /**
-     * Dire si le joueur a assez d'un objet
+     * Dire si le joueur a assez de place pour un objet
+     *
      * @param player Joueur pour acceder a son inventaire
-     * @param item Objet concerné
+     * @param item   Objet concerné
      */
     public static int getFreePlacesForItem(Player player, ItemStack item) {
-        int stackSize = item.getMaxStackSize();
-        int freePlace = stackSize * getSlotNull(player);
+        int maxStackSize = item.getMaxStackSize();
+        int freePlace = maxStackSize * getSlotNull(player);
 
         Inventory inventory = player.getInventory();
         for (ItemStack stack : inventory.getStorageContents()) {
             if (stack == null || !item.isSimilar(stack))
                 continue;
 
-            if (stack.getAmount() != stackSize)
-                freePlace += stackSize - stack.getAmount();
+            if (stack.getAmount() != maxStackSize)
+                freePlace += maxStackSize - stack.getAmount();
+        }
+
+        return freePlace;
+    }
+
+    /**
+     * Dire si le joueur a assez de place pour un type d'objet
+     *
+     * @param player Joueur pour acceder a son inventaire
+     * @param item   Type d'bjet concerné
+     */
+    public static int getFreePlacesForItem(Player player, Material item) {
+        int maxStackSize = item.getMaxStackSize();
+        int freePlace = maxStackSize * getSlotNull(player);
+
+        Inventory inventory = player.getInventory();
+        for (ItemStack stack : inventory.getStorageContents()) {
+            if (stack == null || stack.getType() != item)
+                continue;
+
+            if (stack.getAmount() != maxStackSize)
+                freePlace += maxStackSize - stack.getAmount();
         }
 
         return freePlace;
@@ -131,7 +159,7 @@ public class ItemUtils {
         ItemStack item = new ItemStack(Material.PLAYER_HEAD, 1);
         SkullMeta meta = (SkullMeta) item.getItemMeta();
         String playerName;
-        if (player!=null){
+        if (player != null) {
             playerName = player.getName();
             meta.setOwningPlayer(player);
         } else {
@@ -163,6 +191,7 @@ public class ItemUtils {
 
     /**
      * Dire si le joueur a des ou un slot de libre
+     *
      * @param player Joueur pour acceder a son inventaire
      */
     public static boolean hasAvailableSlot(Player player) {
@@ -182,8 +211,9 @@ public class ItemUtils {
 
     /**
      * Retirer le nombre d'objet au joueur (vérification obligatoire avant execution)
-     * @param player Joueur pour acceder a son inventaire
-     * @param item Objet a retirer
+     *
+     * @param player   Joueur pour acceder a son inventaire
+     * @param item     Objet a retirer
      * @param quantity Quantité a retirer
      */
     public static void removeItemsFromInventory(Player player, Material item, int quantity) {
@@ -269,7 +299,32 @@ public class ItemUtils {
     }
 
     /**
+     * Vérifie si l'inventaire du joueur dispose d'assez d'espace pour ajouter l'objet.
+     *
+     * @param player le joueur dont l'inventaire est vérifié
+     * @param item   l'objet à ajouter
+     * @param amount la quantité d'objet à ajouter
+     * @return true si l'espace disponible est suffisant, false sinon
+     */
+    public static boolean hasEnoughSpace(Player player, ItemStack item, int amount) {
+        return getFreePlacesForItem(player, item) >= amount;
+    }
+
+    /**
+     * Vérifie si l'inventaire du joueur dispose d'assez d'espace pour ajouter un objet du type sélectionné.
+     *
+     * @param player le joueur dont l'inventaire est vérifié
+     * @param item   le type d'objet à ajouter
+     * @param amount la quantité d'objet à ajouter
+     * @return true si l'espace disponible est suffisant, false sinon
+     */
+    public static boolean hasEnoughSpace(Player player, Material item, int amount) {
+        return getFreePlacesForItem(player, item) >= amount;
+    }
+
+    /**
      * Donner le Type de Panneau en fonction du biome ou il se trouve
+     *
      * @param player Joueur pour acceder au biome ou il est
      */
     public static Material getSignType(Player player) {
