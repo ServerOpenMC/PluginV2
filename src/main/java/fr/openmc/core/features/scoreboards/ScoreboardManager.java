@@ -16,13 +16,11 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.LuckPermsApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -53,7 +51,7 @@ public class ScoreboardManager implements Listener {
 
     public final Set<UUID> disabledPlayers = new HashSet<>();
     public final HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder();
+    private final boolean canShowLogo = ItemsAdderApi.hasItemAdder();
     final OMCPlugin plugin = OMCPlugin.getInstance();
     private GlobalTeamManager globalTeamManager = null;
 
@@ -117,7 +115,7 @@ public class ScoreboardManager implements Listener {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective objective;
         if (canShowLogo) {
-            objective = scoreboard.registerNewObjective("sb_aywen", "dummy", PlaceholderAPI.setPlaceholders(player, "%img_openmc%"));
+            objective = scoreboard.registerNewObjective("sb_aywen", "dummy", ":openmc:");
         } else {
             objective = scoreboard.registerNewObjective("sb_aywen", "dummy", Component.text("OPENMC").decorate(TextDecoration.BOLD).color(NamedTextColor.LIGHT_PURPLE));
         }

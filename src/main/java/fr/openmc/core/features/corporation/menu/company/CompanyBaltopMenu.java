@@ -10,8 +10,6 @@ import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -34,8 +32,8 @@ public class CompanyBaltopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_company_baltop_menu%");
+        if (ItemsAdderApi.hasItemAdder()) {
+            return "§r§f:offset_-11::company_baltop_menu:";
         } else {
             return "Baltop des entreprises";
         }

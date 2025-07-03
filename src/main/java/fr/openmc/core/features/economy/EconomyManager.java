@@ -10,9 +10,8 @@ import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -152,10 +151,10 @@ public class EconomyManager {
     }
 
     public static String getEconomyIcon() {
-        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null
-                && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            return "§f" + PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
+        if (ItemsAdderApi.hasItemAdder()) {
+            return "§f:aywenito:";
+        } else {
+            return "Ⓐ";
         }
-        return "Ⓐ";
     }
 }

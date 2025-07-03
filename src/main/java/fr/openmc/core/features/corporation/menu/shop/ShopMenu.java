@@ -13,12 +13,10 @@ import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -53,16 +51,16 @@ public class ShopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {// sell_shop_menu
+        if (ItemsAdderApi.hasItemAdder()) {// sell_shop_menu
 //            if (shop.getOwner().isCompany()){
 //                Company company = shop.getOwner().getCompany();
 //                if (company.getAllMembers().contains(getOwner().getUniqueId())){
-//                    return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+//                    return "§r§f:offset_-11::shop_menu:";
 //                }
 //            }
 //            if (!shop.isOwner(getOwner().getUniqueId()))
-//                return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_sell_shop_menu%");
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+//                return "§r§f:offset_-11::shop_menu:";
+            return "§r§f:offset_-11::shop_menu:";
         } else {
             return shop.getName();
         }

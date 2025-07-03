@@ -10,7 +10,6 @@ import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -46,7 +45,7 @@ public class MayorCommands {
             return;
         }
 
-        player.sendTitle(PlaceholderAPI.setPlaceholders(player, "§0%img_tp_effect%"), "§a§lTéléportation...", 20, 10, 10);
+        player.sendTitle("§0:tp_effect%", "§a§lTéléportation...", 20, 10, 10);
         new BukkitRunnable() {
             @Override
             public void run() {
