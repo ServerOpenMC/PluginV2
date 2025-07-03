@@ -3,6 +3,7 @@ package fr.openmc.core.features.bossbar;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.bossbar.commands.BossBarCommand;
+import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -17,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BossbarManager {
     @Getter
@@ -158,17 +160,33 @@ public class BossbarManager {
      */
     public static void toggleBossBar(Player player) {
         UUID uuid = player.getUniqueId();
+        AtomicBoolean enabled = new AtomicBoolean(false);
+        AtomicBoolean disabled = new AtomicBoolean(false);
+
         activeBossBars.forEach((type, bossBarData) -> {
             if (bossBarData.containsKey(uuid)) {
                 removeBossBar(type, player);
+                disabled.set(true);
                 playerPreferences.put(uuid, false);
-                MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
             } else {
-                playerPreferences.put(uuid, true);
-                addBossBar(type, bossBarHelp, player);
-                MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
+                switch (type) {
+                    case HELP:
+                        addBossBar(type, bossBarHelp, player);
+                        enabled.set(true);
+                        playerPreferences.put(uuid, true);
+                    case TUTORIAL:
+                        TutorialUtils.setBossBar(player);
+                        enabled.set(true);
+                        playerPreferences.put(uuid, true);
+                }
             }
         });
+
+        if (enabled.get()) {
+            MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
+        } else if (disabled.get()) {
+            MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
+        }
     }
 
     /**

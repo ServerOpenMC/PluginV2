@@ -32,4 +32,22 @@ public class TutorialUtils {
                 (float) (stepInt + 1) / maxStep
         );
     }
+
+    public static void setBossBar(Player player) {
+        int maxStep = TutorialStep.values().length;
+        int step = MilestonesManager.getPlayerStep(MilestoneType.TUTORIAL, player);
+
+        if (step >= maxStep) {
+            return;
+        }
+
+        TutorialBossBar.addTutorialBossBarForPlayer(
+                player,
+                Component.text(TutorialBossBar.PLACEHOLDER_TUTORIAL_BOSSBAR.formatted(
+                        step + 1,
+                        TutorialStep.values()[step].getQuest().getName(player.getUniqueId())
+                )),
+                (float) (step + 1) / maxStep
+        );
+    }
 }

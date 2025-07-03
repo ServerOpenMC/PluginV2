@@ -28,7 +28,7 @@ public class BreakAyweniteQuest extends Quest implements Listener {
 
     public BreakAyweniteQuest() {
         super(
-                "Casser {target} §dAywenite{s}",
+                "Casser 30 §dAywenites",
                 List.of(
                         "Le nouveau minérai de la §dV2, trouvable dans les grottes",
                         "Il vous sera §dutile §fdans plein de fonctionnalité"
