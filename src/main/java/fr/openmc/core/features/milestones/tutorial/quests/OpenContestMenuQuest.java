@@ -43,7 +43,7 @@ public class OpenContestMenuQuest extends Quest implements Listener {
 
         this.addTier(new QuestTier(
                 1,
-                new QuestMoneyReward(500),
+                new QuestMoneyReward(1000),
                 new QuestTextReward(
                         "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §6Contests §f, ça oppose 2 groupes, 2 thèmes opposés, et le gagnant remporte une grosse récompense ! Et voila le tutoriel est maintenant terminé, allez récupérer votre récompense dans la §1Mailbox§f,un système de lettre pour recevoir ou bien envoyer des lettres!",
                         Prefix.MILLESTONE,
@@ -55,7 +55,9 @@ public class OpenContestMenuQuest extends Quest implements Listener {
 
                             ItemStack[] itemsArray = new ItemStack[]{
                                     CustomItemRegistry.getByName("omc_items:aywenite").getBest()
+                                    //TODO: ajouter les tickets de V1
                             };
+
 
                             MailboxManager.sendItems(player, player, itemsArray);
                         }

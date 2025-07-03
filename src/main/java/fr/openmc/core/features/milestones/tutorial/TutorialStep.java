@@ -11,14 +11,14 @@ public enum TutorialStep {
     HOME_CREATE(null),
     HOME_UPGRADE(null),
     OPEN_QUEST(null),
-    QUEST_FINISH(null),
+    FINISH_QUEST(null),
     OPEN_ADMINSHOP(null),
     SELL_BUY_ADMINSHOP(null),
     SPARE_BANK(null),
     OPEN_SETTINGS(null), //TODO: ajouter des quêtes autour des shops/entreprises lorsque refonte faite
     OPEN_CONTEST(null),
-    OPEN_LETTER(null),
-    LINK_DISCORD(null);
+    CLAIM_LETTER(null),
+    ;
 
     private Quest quest;
 

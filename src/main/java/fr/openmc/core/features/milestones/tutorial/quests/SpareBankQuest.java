@@ -1,10 +1,10 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
 import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
-import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
@@ -12,6 +12,7 @@ import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,29 +20,29 @@ import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class FinishQuestQuest extends Quest implements Listener {
+public class SpareBankQuest extends Quest implements Listener {
 
     private final TutorialStep step;
     private final MilestoneType type;
 
-    public FinishQuestQuest() {
+    public SpareBankQuest() {
         super(
-                "Accomplissez une Quête",
+                "Déposer de l'argent à la banque",
                 List.of(
-                        "Tapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu et voir quelle quête finir",
-                        "§8§oCela va pouvoir vous lancer dans l'aventure et de vous diversifier !"
+                        "Tapez §d/bank §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§8§oune méthode compétitive pour gagner des grosses récompenses !"
                 ),
-                Material.DIAMOND
+                Material.DIAMOND_BLOCK
         );
 
-        this.step = TutorialStep.FINISH_QUEST;
+        this.step = TutorialStep.SPARE_BANK;
         this.type = MilestoneType.TUTORIAL;
 
         this.addTier(new QuestTier(
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Et voici une §9récompense §f! Pratique non? Allons découvrir une autre méthode de production d'argent et de consomation ! Allez dans l'§cAdmin Shop§f, un endroit où plusieurs items sont achetable à des prix variants en fonction l'§coffre et la demande §f!",
+                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §bBanques§f sert a stocker une quantité infinie d'argent et de la proteger si vous mourrez! Et maintenant configurer un de vos parametres !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
@@ -52,8 +53,10 @@ public class FinishQuestQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onQuestComplete(QuestCompleteEvent event) {
-        Player player = event.getPlayer();
+    public void onDepositBank(BankDepositEvent event) {
+        Player player = Bukkit.getPlayer(event.getUUID());
+
+        if (player == null || !player.isOnline()) return;
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 

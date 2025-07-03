@@ -36,7 +36,7 @@ public class ClaimLetterQuest extends Quest implements Listener {
                 CustomItemRegistry.getByName("omc_contest:contest_shell").getBest()
         );
 
-        this.step = TutorialStep.OPEN_CONTEST;
+        this.step = TutorialStep.CLAIM_LETTER;
         this.type = MilestoneType.TUTORIAL;
 
         this.addTier(new QuestTier(
@@ -48,13 +48,13 @@ public class ClaimLetterQuest extends Quest implements Listener {
                         MessageType.SUCCESS
                 ),
                 new QuestMethodsReward(
-                        player -> TutorialUtils.completeStep(type, player, step);
+                        player -> TutorialUtils.completeStep(type, player, step)
                 )
         ));
     }
 
     @EventHandler
-    public void onContestMenuOpen(InventoryOpenEvent event) {
+    public void onClaimLetter(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
