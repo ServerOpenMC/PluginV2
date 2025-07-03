@@ -172,10 +172,6 @@ public class MascotsDamageListener implements Listener {
             return;
         }
 
-        if (!player.getEquipment().getItemInMainHand().getEnchantments().isEmpty()) {
-            e.setDamage(e.getDamage());
-        }
-
 
         LivingEntity mob = (LivingEntity) damageEntity;
         City cityMob = MascotUtils.getCityFromEntity(mob.getUniqueId());
