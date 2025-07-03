@@ -1,8 +1,8 @@
 package fr.openmc.core.features.quests.objects;
 
-import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -237,7 +237,7 @@ public class Quest {
 
                 for (QuestReward reward : tier.getRewards()) {
                     if (reward instanceof QuestItemReward itemReward) {
-                        if (!AdminShopManager.hasEnoughSpace(player, itemReward.getItemStack())) {
+                        if (!ItemUtils.hasEnoughSpace(player, itemReward.getItemStack())) {
                             hasEnoughSpace = false;
                         }
                     }
@@ -340,7 +340,7 @@ public class Quest {
 
         for (QuestReward reward : rewards) {
             if (reward instanceof QuestItemReward itemReward) {
-                if (!AdminShopManager.hasEnoughSpace(player, itemReward.getItemStack())) {
+                if (!ItemUtils.hasEnoughSpace(player, itemReward.getItemStack())) {
                     remainingRewards.add(reward);
                     allClaimed = false;
                     continue;

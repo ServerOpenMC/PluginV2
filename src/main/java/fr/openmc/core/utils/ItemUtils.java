@@ -323,6 +323,28 @@ public class ItemUtils {
     }
 
     /**
+     * Vérifie si l'inventaire du joueur dispose d'assez d'espace pour ajouter un objet.
+     *
+     * @param player le joueur dont l'inventaire est vérifié
+     * @param item   l'objet à ajouter
+     * @return true si l'espace disponible est suffisant, false sinon
+     */
+    public static boolean hasEnoughSpace(Player player, ItemStack item) {
+        return hasEnoughSpace(player, item, 1);
+    }
+
+    /**
+     * Vérifie si l'inventaire du joueur dispose d'assez d'espace pour ajouter un objet du type spécifié.
+     *
+     * @param player le joueur dont l'inventaire est vérifié
+     * @param item   le type d'objet à ajouter
+     * @return true si l'espace disponible est suffisant, false sinon
+     */
+    public static boolean hasEnoughSpace(Player player, Material item) {
+        return hasEnoughSpace(player, item, 1);
+    }
+
+    /**
      * Donner le Type de Panneau en fonction du biome ou il se trouve
      *
      * @param player Joueur pour acceder au biome ou il est

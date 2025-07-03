@@ -1,6 +1,6 @@
 package fr.openmc.core.features.quests.rewards;
 
-import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -51,7 +51,7 @@ public class QuestItemReward implements QuestReward {
             ItemStack item = itemStack.clone();
             item.setAmount(stackAmount);
 
-            if (AdminShopManager.hasEnoughSpace(player, item)) {
+            if (ItemUtils.hasEnoughSpace(player, item)) {
                 player.getInventory().addItem(item);
             } else {
                 player.getWorld().dropItem(player.getLocation(), item);
