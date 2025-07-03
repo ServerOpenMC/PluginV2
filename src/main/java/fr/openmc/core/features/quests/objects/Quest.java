@@ -280,6 +280,10 @@ public class Quest {
                     }
                 }
 
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player));
+                });
+
                 Component titleMain = Component.text(
                                 "✦ ", TextColor.color(15770808))
                         .append(Component.text(isLastTier
@@ -420,10 +424,6 @@ public class Quest {
 
         QuestStep step = currentTier.getSteps().get(stepIndex);
         if (step.isCompleted(playerUUID)) {
-
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player));
-            });
 
             int tierIndex = getCurrentTierIndex(playerUUID);
             String stepName = "Étape " + (stepIndex + 1);
