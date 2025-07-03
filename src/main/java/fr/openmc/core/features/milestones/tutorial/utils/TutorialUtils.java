@@ -1,5 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.utils;
 
+import fr.openmc.core.features.bossbar.BossbarManager;
+import fr.openmc.core.features.bossbar.BossbarsType;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialBossBar;
@@ -14,6 +16,12 @@ public class TutorialUtils {
         MilestonesManager.setPlayerStep(type, player, stepInt);
 
         int maxStep = TutorialStep.values().length;
+
+        if (stepInt >= maxStep) {
+            TutorialBossBar.hide(player);
+            BossbarManager.removeBossBar(BossbarsType.TUTORIAL, player);
+            return;
+        }
 
         TutorialBossBar.update(
                 player,

@@ -21,7 +21,7 @@ public class TutorialBossBarEvent implements Listener {
         int maxStep = TutorialStep.values().length;
         int step = MilestonesManager.getPlayerStep(MilestoneType.TUTORIAL, player);
 
-        if (step > maxStep) {
+        if (step >= maxStep) {
             return;
         }
 
