@@ -13,6 +13,7 @@ import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -20,7 +21,6 @@ import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.milestones.tutorial.TutorialHologram;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
@@ -93,7 +93,7 @@ public class OMCPlugin extends JavaPlugin {
 
         if (!OMCPlugin.isUnitTestVersion()) {
             new LeaderboardManager();
-            new TutorialHologram(0.5f);
+            new HologramLoader();
         }
 
 
@@ -110,6 +110,8 @@ public class OMCPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // SAUVEGARDE
+
+        HologramLoader.unloadAll();
 
         // - Settings
         PlayerSettingsManager.saveAllSettings();
