@@ -2,7 +2,6 @@ package fr.openmc.core.features.displays.holograms.commands;
 
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
-import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -21,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fr.openmc.core.features.displays.holograms.HologramLoader.hologramFolder;
+
 @Command({"holograms", "holo", "hologram"})
 public class HologramCommand {
 
@@ -29,8 +30,8 @@ public class HologramCommand {
     @Description("Défini la position d'un Hologram.")
     void setPosCommand(Player player, String hologramName) {
         if (HologramLoader.displays.containsKey(hologramName)) {
-            ItemStack leaderboardMoveItem = new ItemStack(Material.STICK);
-            ItemMeta meta = leaderboardMoveItem.getItemMeta();
+            ItemStack holoMoveItem = new ItemStack(Material.STICK);
+            ItemMeta meta = holoMoveItem.getItemMeta();
 
             if (meta != null) {
                 List<Component> info = new ArrayList<>();
@@ -38,22 +39,22 @@ public class HologramCommand {
                 info.add(Component.text("§cITEM POUR ADMIN"));
                 meta.lore(info);
             }
-            leaderboardMoveItem.setItemMeta(meta);
+            holoMoveItem.setItemMeta(meta);
 
             ItemInteraction.runLocationInteraction(
                     player,
-                    leaderboardMoveItem,
-                    "admin:move-leaderboard",
+                    holoMoveItem,
+                    "admin:move-hologram",
                     120,
                     "Temps Restant : %sec%s",
-                    "§cDéplacement du leaderboard",
-                    leaderboardMove -> {
-                        if (leaderboardMove == null) return true;
+                    "§cDéplacement de l'Hologramme " + hologramName,
+                    holoMove -> {
+                        if (holoMove == null) return true;
                         try {
-                            HologramLoader.setHologramLocation(hologramName, leaderboardMove);
+                            HologramLoader.setHologramLocation(hologramName, holoMove);
                             MessagesManager.sendMessage(
                                     player,
-                                    Component.text("§aPosition du leaderboard " + hologramName + " mise à jour."),
+                                    Component.text("§aPosition du hologramme " + hologramName + " mise à jour."),
                                     Prefix.STAFF,
                                     MessageType.SUCCESS,
                                     true
@@ -73,9 +74,10 @@ public class HologramCommand {
             );
 
         } else {
+            String list = String.join(", ", HologramLoader.displays.keySet());
             MessagesManager.sendMessage(
                     player,
-                    Component.text("§cVeuillez spécifier un leaderboard valide: "),
+                    Component.text("§cVeuillez spécifier un hologramme valide: " + list),
                     Prefix.STAFF,
                     MessageType.WARNING,
                     true
@@ -95,7 +97,8 @@ public class HologramCommand {
     @CommandPermission("op")
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
-        LeaderboardManager.enable();
+        HologramLoader.updateHologramsViewers();
+        HologramLoader.loadAllFromFolder(hologramFolder);
         sender.sendMessage("§aHolograms activés avec succès.");
     }
 }
