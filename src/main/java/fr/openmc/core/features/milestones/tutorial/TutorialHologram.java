@@ -13,7 +13,7 @@ public class TutorialHologram extends Hologram {
                 "§fBienvenue sur §dOpenMC V2§f!",
                 "§fCette version est basée sur les §2Villes",
                 "§f",
-                "§fPour acceder au tutoriel, utilisez la commande §a/milestone tutorial§f.",
+                "§fPour acceder au tutoriel, utilisez la commande §a/milestone§f.",
                 "§fC'est votre §dserveur §f!",
                 "§8§m                                  §r",
                 "§fLiens utiles : §5/socials"

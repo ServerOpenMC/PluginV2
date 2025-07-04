@@ -67,7 +67,7 @@ public class MilestoneMenu extends Menu {
             List<Component> stepLore = new ArrayList<>();
             quest.getDescription(player.getUniqueId()).forEach(line -> stepLore.add(Component.text(line)));
 
-            content.put(slot, new ItemBuilder(this, quest.getIcon().getType(), meta -> {
+            content.put(slot, new ItemBuilder(this, quest.getIcon(), meta -> {
                 meta.displayName(Component.text((completed ? "§a" : active ? "§e" : "§7") + quest.getName()));
                 meta.lore(stepLore);
                 meta.setEnchantmentGlintOverride(completed || active);
@@ -109,7 +109,7 @@ public class MilestoneMenu extends Menu {
 
 
         content.put(53, new ItemBuilder(this, Material.BARRIER, meta ->
-                meta.displayName(Component.text("§cRetour"))).setBackButton());
+                meta.displayName(Component.text("§cFermer"))).setCloseButton());
 
         return content;
     }

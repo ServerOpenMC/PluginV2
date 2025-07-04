@@ -10,9 +10,9 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,7 +31,7 @@ public class ClaimLetterQuest extends Quest implements Listener {
                         "§fTapez §d/contest §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
                         "§8§oune méthode compétitive pour gagner des grosses récompenses !"
                 ),
-                CustomItemRegistry.getByName("omc_contest:contest_shell").getBest()
+                Material.PAPER
         );
 
         this.step = TutorialStep.CLAIM_LETTER;
