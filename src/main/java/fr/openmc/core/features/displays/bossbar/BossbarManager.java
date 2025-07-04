@@ -1,8 +1,8 @@
-package fr.openmc.core.features.bossbar;
+package fr.openmc.core.features.displays.bossbar;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.bossbar.commands.BossBarCommand;
+import fr.openmc.core.features.displays.bossbar.commands.BossBarCommand;
 import fr.openmc.core.features.milestones.tutorial.utils.TutorialUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

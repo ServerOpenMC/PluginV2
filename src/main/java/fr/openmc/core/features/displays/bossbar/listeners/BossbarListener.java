@@ -1,13 +1,13 @@
-package fr.openmc.core.features.bossbar.listeners;
+package fr.openmc.core.features.displays.bossbar.listeners;
 
-import fr.openmc.core.features.bossbar.BossbarManager;
-import fr.openmc.core.features.bossbar.BossbarsType;
+import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.displays.bossbar.BossbarsType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import static fr.openmc.core.features.bossbar.BossbarManager.bossBarHelp;
+import static fr.openmc.core.features.displays.bossbar.BossbarManager.bossBarHelp;
 
 public class BossbarListener implements Listener {
 

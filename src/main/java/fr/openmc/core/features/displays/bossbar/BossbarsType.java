@@ -1,4 +1,4 @@
-package fr.openmc.core.features.bossbar;
+package fr.openmc.core.features.displays.bossbar;
 
 public enum BossbarsType {
     HELP,

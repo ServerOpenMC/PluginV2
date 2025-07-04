@@ -1,4 +1,4 @@
-package fr.openmc.core.features.scoreboards;
+package fr.openmc.core.features.displays.scoreboards;
 
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
@@ -17,9 +17,6 @@ import fr.openmc.core.utils.DirectionUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.LuckPermsApi;
 import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
@@ -28,16 +25,10 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.time.DayOfWeek;
 import java.util.HashMap;
@@ -49,19 +40,23 @@ public class ScoreboardManager implements Listener {
     @Getter
     static ScoreboardManager instance;
 
-    public Set<UUID> disabledPlayers = new HashSet<>();
-    public HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private final boolean canShowLogo = PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder();
+    public static Set<UUID> disabledPlayers = new HashSet<>();
+    public static HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
+    private static final boolean canShowLogo = PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder();
     OMCPlugin plugin = OMCPlugin.getInstance();
-    private GlobalTeamManager globalTeamManager = null;
+    private static GlobalTeamManager globalTeamManager = null;
 
     public ScoreboardManager() {
         instance = this;
 
-        OMCPlugin.registerEvents(this);
-        CommandsManager.getHandler().register(this);
+        OMCPlugin.registerEvents(
+                new ScoreboardListener()
+        );
+        CommandsManager.getHandler().register(
+                new ScoreboardCommand()
+        );
 
-        Bukkit.getScheduler().runTaskTimer(plugin, this::updateAllScoreboards, 0L, 20L * 5); //20x5 = 5s
+        Bukkit.getScheduler().runTaskTimer(plugin, ScoreboardManager::updateAllScoreboards, 0L, 20L * 5); //20x5 = 5s
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -76,42 +71,7 @@ public class ScoreboardManager implements Listener {
         if (LuckPermsApi.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
     }
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        if (disabledPlayers.contains(player.getUniqueId())) return;
-
-        Scoreboard sb = createNewScoreboard(player);
-        player.setScoreboard(sb);
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        playerScoreboards.remove(player.getUniqueId());
-    }
-
-    @Command("sb")
-    @CommandPermission("omc.commands.scoreboard")
-    @Description("Active / désactive le scoreboard")
-    public void onScoreboardCommand(Player player) {
-        UUID uuid = player.getUniqueId();
-        if (disabledPlayers.contains(uuid)) {
-            disabledPlayers.remove(uuid);
-
-            playerScoreboards.remove(uuid);
-            player.setScoreboard(createNewScoreboard(player));
-            updateScoreboard(player);
-
-            MessagesManager.sendMessage(player, Component.text("Scoreboard activé").color(NamedTextColor.GREEN), Prefix.OPENMC, MessageType.INFO, true);
-        } else {
-            disabledPlayers.add(uuid);
-            player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-            MessagesManager.sendMessage(player, Component.text("Scoreboard désactivé").color(NamedTextColor.RED), Prefix.OPENMC, MessageType.INFO, true);
-        }
-    }
-
-    private Scoreboard createNewScoreboard(Player player) {
+    public static Scoreboard createNewScoreboard(Player player) {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective objective;
         if (canShowLogo) {
@@ -125,7 +85,7 @@ public class ScoreboardManager implements Listener {
         return scoreboard;
     }
 
-    public void updateAllScoreboards() {
+    public static void updateAllScoreboards() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (disabledPlayers.contains(player.getUniqueId())) continue;
 
@@ -133,7 +93,7 @@ public class ScoreboardManager implements Listener {
         }
     }
 
-    private void updateScoreboard(Player player) {
+    public static void updateScoreboard(Player player) {
         playerScoreboards.computeIfAbsent(player.getUniqueId(), (uuid) -> {
             Scoreboard sb = createNewScoreboard(player);
             player.setScoreboard(sb);
@@ -149,7 +109,7 @@ public class ScoreboardManager implements Listener {
         updateScoreboard(player, scoreboard, objective);
     }
 
-    private void updateScoreboard(Player player, Scoreboard scoreboard, Objective objective) {
+    private static void updateScoreboard(Player player, Scoreboard scoreboard, Objective objective) {
         /*
          * 07 |
          * 06 | Username

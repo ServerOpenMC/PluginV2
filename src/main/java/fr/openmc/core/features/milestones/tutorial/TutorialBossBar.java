@@ -1,7 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial;
 
-import fr.openmc.core.features.bossbar.BossbarManager;
-import fr.openmc.core.features.bossbar.BossbarsType;
+import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.displays.bossbar.BossbarsType;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
