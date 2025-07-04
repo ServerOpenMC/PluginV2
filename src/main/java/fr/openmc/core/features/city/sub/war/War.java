@@ -127,7 +127,7 @@ public class War {
 
             if (player.isOnline()) {
                 player.sendMessage(Component.text(String.format(message, cityDefender.getName(), TIME_FIGHT)));
-                player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocAttacker, 3));
+                player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocAttacker,3));
             }
         }
 
@@ -137,7 +137,7 @@ public class War {
 
             if (player.isOnline()) {
                 player.sendMessage(Component.text(String.format(message, cityAttacker.getName(), TIME_FIGHT)));
-                player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocDefender, 3));
+                player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocDefender,3));
             }
         }
 

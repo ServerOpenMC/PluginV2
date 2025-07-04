@@ -178,7 +178,7 @@ public class HomesManager {
             homeLimits.add(homeLimit);
         }
 
-        return homeLimit == null ? 0 : homeLimit.getLimit();
+        return homeLimit.getLimit();
     }
 
     public static void updateHomeLimit(UUID owner) {
@@ -211,6 +211,10 @@ public class HomesManager {
     private static void loadHomeLimit() {
         try {
             homeLimits.addAll(limitsDao.queryForAll());
+
+            for (HomeLimit homeLimit : homeLimits) {
+                if (homeLimit.getLimit() == 0) homeLimit.setLimit(HomeLimits.LIMIT_0.getLimit());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

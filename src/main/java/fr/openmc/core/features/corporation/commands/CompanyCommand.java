@@ -29,7 +29,7 @@ import java.util.UUID;
 public class CompanyCommand {
 
     @DefaultFor("~")
-    public void onCommand(Player player) {
+    public static void onCommand(Player player) {
         if (!CompanyManager.isInCompany(player.getUniqueId())) {
             search(player);
             return;
@@ -130,7 +130,7 @@ public class CompanyCommand {
 
     @Subcommand("search")
     @Description("Rechercher une entreprise")
-    public void search(Player player) {
+    public static void search(Player player) {
         CompanySearchMenu menu = new CompanySearchMenu(player);
         menu.open();
     }

@@ -17,10 +17,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,12 +43,18 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (playerCity != city) {
+        if (city == null) {
+            removeUrne(player, furniture.getFurniture());
+            MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
+            return;
+        }
+
+        if (playerCity.equals(city)) {
             MessagesManager.sendMessage(player, Component.text("§8§o*Mhh... Ce n'est pas votre urne*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
-        if (playerCity.getElectionType() == ElectionType.OWNER_CHOOSE) {
+        if (playerCity.getElectionType().equals(ElectionType.OWNER_CHOOSE)) {
             MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
@@ -79,13 +82,13 @@ public class UrneListener implements Listener {
         Player player = event.getPlayer();
 
         if (!player.getWorld().getName().equals("world")) {
-            removeUrne(event.getFurniture());
+            removeUrne(player, event.getFurniture());
             return;
         }
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
-            removeUrne(event.getFurniture());
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous devez avoir une ville pour poser ceci !"), Prefix.MAYOR, MessageType.WARNING, false);
             return;
         }
@@ -93,25 +96,25 @@ public class UrneListener implements Listener {
         City chunkCity = CityManager.getCityFromChunk(event.getFurniture().getEntity().getChunk().getX(), event.getFurniture().getEntity().getChunk().getZ());
 
         if (chunkCity == null) {
-            removeUrne(event.getFurniture());
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous devez poser ceci dans votre ville!"), Prefix.MAYOR, MessageType.WARNING, false);
             return;
         }
 
         if (!chunkCity.getUUID().equals(playerCity.getUUID())) {
-            removeUrne(event.getFurniture());
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous devez la poser dans votre ville"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
         if (!playerCity.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
-            removeUrne(event.getFurniture());
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le propriétaire !"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
         if (NPCManager.hasNPCS(playerCity.getUUID())) {
-            removeUrne(event.getFurniture());
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous avez déjà des NPC"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
@@ -120,9 +123,9 @@ public class UrneListener implements Listener {
 
         if (!FancyNpcsApi.hasFancyNpc()) return;
 
-        Location locationMayor = getSafeNearbySurface(urneLocation, 2);
+        Location locationMayor = getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
 
-        Location locationOwner = getSafeNearbySurface(urneLocation, 2);
+        Location locationOwner = getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
 
         NPCManager.createNPCS(playerCity.getUUID(), locationMayor, locationOwner, player.getUniqueId());
     }
@@ -160,10 +163,10 @@ public class UrneListener implements Listener {
         NPCManager.removeNPCS(playerCity.getUUID());
     }
 
-    private void removeUrne(CustomFurniture furniture) {
+    private void removeUrne(Player player, CustomFurniture furniture) {
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             if (furniture != null) {
-                furniture.remove(true);
+                furniture.remove(!player.getGameMode().equals(GameMode.CREATIVE));
                 if (furniture.getEntity() != null && !furniture.getEntity().isDead()) {
                     furniture.getEntity().remove();
                 }

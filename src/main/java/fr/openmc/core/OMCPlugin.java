@@ -1,11 +1,14 @@
 package fr.openmc.core;
 
+import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.mainmenu.MainMenu;
+import fr.openmc.core.features.bossbar.BossbarManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -63,6 +66,8 @@ public class OMCPlugin extends JavaPlugin {
         new WorldGuardApi();
         new ItemsAdderApi();
         new FancyNpcsApi();
+        if (!OMCPlugin.isUnitTestVersion())
+            new PacketMenuLib(this);
 
         logLoadMessage();
 
@@ -84,19 +89,18 @@ public class OMCPlugin extends JavaPlugin {
         new QuestsManager();
         new QuestProgressSaveManager();
         new TabList();
+        if (!OMCPlugin.isUnitTestVersion()) { // Tous les trucs faits par misieur qui fonctionne à peu près
+            new LeaderboardManager();
+            new MainMenu(this);
+            new HologramLoader();
+        }
         new AdminShopManager();
         new AccountDetectionManager();
         new BossbarManager();
         new CompanyManager();// laisser apres Economy Manager
         new ContestManager();
         new PrivateMessageManager();
-
-        if (!OMCPlugin.isUnitTestVersion()) {
-            new LeaderboardManager();
-            new HologramLoader();
-        }
-
-
+        
         new MotdUtils();
         new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
         new DynamicCooldownManager();

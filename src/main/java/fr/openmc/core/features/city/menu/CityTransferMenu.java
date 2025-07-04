@@ -8,6 +8,7 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -71,20 +72,7 @@ public class CityTransferMenu extends PaginatedMenu {
                     return;
                 }
 
-                ConfirmMenu menu = new ConfirmMenu(player,
-                        () -> {
-                            city.changeOwner(playerOffline.getUniqueId());
-                            MessagesManager.sendMessage(player, Component.text("Le nouveau maire est " + playerOffline.getName()), Prefix.CITY, MessageType.SUCCESS, false);
-
-                            if (playerOffline.isOnline()) {
-                                MessagesManager.sendMessage((Player) playerOffline, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
-                            }
-                            player.closeInventory();
-                        },
-                        () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez-vous vraiment donner la ville à " + playerOffline.getName() + " ?")),
-                        List.of(Component.text("§7Vous allez garder la ville " + playerOffline.getName())));
-                menu.open();
+                CityTransferAction.transfer(player, city, playerOffline);
             }));
         }
 
