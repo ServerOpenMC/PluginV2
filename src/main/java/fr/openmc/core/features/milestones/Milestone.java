@@ -13,6 +13,12 @@ import java.util.UUID;
 public interface Milestone {
 	HashMap<UUID, MilestoneModel> playerData = new HashMap<>();
 
+	/**
+	 * Returns the player data for the milestone.
+	 * This is a static method that returns a HashMap containing player UUIDs and their corresponding MilestoneModel.
+	 *
+	 * @return A HashMap containing player UUIDs and their MilestoneModel.
+	 */
 	default HashMap<UUID, MilestoneModel> getPlayerData() {
 		return playerData;
 	}
@@ -52,5 +58,11 @@ public interface Milestone {
 	 */
 	MilestoneType getType();
 
+	/**
+	 * Returns the menu associated with the milestone for the given player.
+	 *
+	 * @param player The player for whom the menu is created.
+	 * @return The menu for the milestone.
+	 */
 	Menu getMenu(Player player);
 }

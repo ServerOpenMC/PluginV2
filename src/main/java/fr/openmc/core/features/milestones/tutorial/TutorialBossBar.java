@@ -10,6 +10,13 @@ public class TutorialBossBar {
 
     public static final String PLACEHOLDER_TUTORIAL_BOSSBAR = "§6Etape %s : %s";
 
+    /**
+     * Adds a tutorial boss bar for the player with the given message and progress.
+     *
+     * @param player   The player to add the boss bar for.
+     * @param message  The message to display on the boss bar.
+     * @param progress The progress of the tutorial step (0.0 to 1.0).
+     */
     public static void addTutorialBossBarForPlayer(Player player, Component message, float progress) {
         BossBar bar = BossBar.bossBar(
                 message,
@@ -20,6 +27,13 @@ public class TutorialBossBar {
         BossbarManager.addBossBar(BossbarsType.TUTORIAL, bar, player);
     }
 
+    /**
+     * Updates the tutorial boss bar for the player with the given message and progress.
+     *
+     * @param player   The player to update the boss bar for.
+     * @param message  The new message to display on the boss bar.
+     * @param progress The new progress of the tutorial step (0.0 to 1.0).
+     */
     public static void update(Player player, Component message, float progress) {
         BossBar bar = BossbarManager.getBossBar(BossbarsType.TUTORIAL, player);
 
@@ -29,6 +43,11 @@ public class TutorialBossBar {
         }
     }
 
+    /**
+     * Hides the tutorial boss bar for the player.
+     *
+     * @param player The player to hide the boss bar for.
+     */
     public static void hide(Player player) {
         BossbarManager.removeBossBar(BossbarsType.TUTORIAL, player);
     }
