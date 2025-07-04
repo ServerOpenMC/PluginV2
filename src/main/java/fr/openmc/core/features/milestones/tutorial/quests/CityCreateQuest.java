@@ -31,8 +31,8 @@ public class CityCreateQuest extends Quest implements Listener {
         super(
                 "Créer/Rejoindre une ville",
                 List.of(
-                        "Faite §d/city §fpour commencer à créer votre ville",
-                        "ou bien rejoindre une ville en ayant une invitation!"
+                        "§fFaite §d/city §fpour commencer à créer votre ville",
+                        "§fou bien rejoindre une ville en ayant une invitation!"
                 ),
                 Material.OAK_DOOR
         );

@@ -29,7 +29,7 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
         super(
                 "Ouvrez le menu des Paramètres",
                 List.of(
-                        "Tapez §d/settings §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§fTapez §d/settings §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
                         "§8§oCela va vous permettre de configurer votre expérience de jeu !"
                 ),
                 Material.COMPARATOR

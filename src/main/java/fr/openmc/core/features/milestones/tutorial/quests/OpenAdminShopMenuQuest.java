@@ -29,7 +29,7 @@ public class OpenAdminShopMenuQuest extends Quest implements Listener {
         super(
                 "Ouvrez le menu de l'Admin Shop",
                 List.of(
-                        "Tapez §c/adminshop §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§fTapez §c/adminshop §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
                         "§8§oLe marché qui varie en fonction de l'offre et de la demande !"
                 ),
                 Material.EMERALD

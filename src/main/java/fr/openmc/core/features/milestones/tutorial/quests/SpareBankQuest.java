@@ -29,7 +29,7 @@ public class SpareBankQuest extends Quest implements Listener {
         super(
                 "Déposer de l'argent à la banque",
                 List.of(
-                        "Tapez §d/bank §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§fTapez §d/bank §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
                         "§8§oune méthode compétitive pour gagner des grosses récompenses !"
                 ),
                 Material.DIAMOND_BLOCK

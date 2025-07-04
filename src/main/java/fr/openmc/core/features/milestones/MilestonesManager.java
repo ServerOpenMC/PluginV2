@@ -29,6 +29,8 @@ public class MilestonesManager {
 
         loadMilestonesData();
 
+        registerMilestoneCommand();
+
         OMCPlugin.registerEvents(
                 new PlayerJoin(),
                 new TutorialBossBarEvent()
@@ -108,7 +110,7 @@ public class MilestonesManager {
     }
 
     public void registerMilestoneCommand() {
-        CommandsManager.getHandler().register(new MilestoneCommand(milestones));
+        CommandsManager.getHandler().register(new MilestoneCommand());
     }
 
     public void registerQuestMilestone(Milestone milestone) {

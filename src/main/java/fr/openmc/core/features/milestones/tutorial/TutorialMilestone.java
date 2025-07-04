@@ -1,10 +1,13 @@
 package fr.openmc.core.features.milestones.tutorial;
 
+import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.features.milestones.Milestone;
 import fr.openmc.core.features.milestones.MilestoneType;
+import fr.openmc.core.features.milestones.menus.MilestoneMenu;
 import fr.openmc.core.features.quests.objects.Quest;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -39,5 +42,10 @@ public class TutorialMilestone implements Milestone {
     @Override
     public MilestoneType getType() {
         return MilestoneType.TUTORIAL;
+    }
+
+    @Override
+    public Menu getMenu(Player player) {
+        return new MilestoneMenu(player, this);
     }
 }

@@ -31,7 +31,7 @@ public class OpenContestMenuQuest extends Quest implements Listener {
         super(
                 "Ouvrez le menu des Contests",
                 List.of(
-                        "Tapez §d/contest §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§fTapez §d/contest §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
                         "§8§oune méthode compétitive pour gagner des grosses récompenses !"
                 ),
                 CustomItemRegistry.getByName("omc_contest:contest_shell").getBest()

@@ -30,7 +30,7 @@ public class SellBuyQuest extends Quest implements Listener {
         super(
                 "Acheter ou vendre une ressource à l'Admin Shop",
                 List.of(
-                        "Tapez §c/adminshop §fou bien aller dans le §dmenu principal /menu §fpour pouvoir vendre ou acheter une ressource",
+                        "§fTapez §c/adminshop §fou bien aller dans le §dmenu principal /menu §fpour pouvoir vendre ou acheter une ressource",
                         "§8§oC'est le début de la richesse!"
                 ),
                 Material.GOLD_INGOT

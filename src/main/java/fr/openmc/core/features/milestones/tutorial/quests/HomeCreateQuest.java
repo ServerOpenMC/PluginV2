@@ -31,7 +31,7 @@ public class HomeCreateQuest extends Quest implements Listener {
         super(
                 "Poser un Home",
                 List.of(
-                        "Tapez §d/sethome §fou bien aller dans le §dmenu principal /menu§f pour faire un home",
+                        "§fTapez §d/sethome §fou bien aller dans le §dmenu principal /menu§f pour faire un home",
                         "§8§oC'est très utile d'en faire un pour se téléportez à sa base !"
                 ),
                 Material.ENDER_PEARL

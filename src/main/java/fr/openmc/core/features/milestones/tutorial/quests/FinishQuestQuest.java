@@ -28,7 +28,7 @@ public class FinishQuestQuest extends Quest implements Listener {
         super(
                 "Accomplissez une Quête",
                 List.of(
-                        "Tapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu et voir quelle quête finir",
+                        "§fTapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu et voir quelle quête finir",
                         "§8§oCela va pouvoir vous lancer dans l'aventure et de vous diversifier !"
                 ),
                 Material.DIAMOND

@@ -30,8 +30,8 @@ public class BreakAyweniteQuest extends Quest implements Listener {
         super(
                 "Casser 30 §dAywenites",
                 List.of(
-                        "Le nouveau minérai de la §dV2, trouvable dans les grottes",
-                        "Il vous sera §dutile §fdans plein de fonctionnalité"
+                        "§fLe nouveau minérai de la §dV2, trouvable dans les grottes",
+                        "§fIl vous sera §dutile §fdans plein de fonctionnalité"
                 ),
                 CustomItemRegistry.getByName("omc_items:aywenite").getBest()
         );

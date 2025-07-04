@@ -29,7 +29,7 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
         super(
                 "Ouvrez le menu des Quêtes",
                 List.of(
-                        "Tapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§fTapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
                         "§8§oCela va pouvoir vous lancer dans l'aventure et de vous diversifier !"
                 ),
                 Material.GOLDEN_AXE
