@@ -111,11 +111,11 @@ public class MilestonesManager {
     }
 
     /**
-     * Set the player step for a specific milestone type and player UUID.
+     * Get the player step for a specific milestone type and player.
      *
-     * @param type       the type of milestone
-     * @param playerUUID the UUID of the player
-     * @param step       the step to set for the player
+     * @param type the type of milestone
+     * @param player the player to get the step for
+     * @return the step of the milestone for the player
      */
     public static int getPlayerStep(MilestoneType type, Player player) {
         return getPlayerStep(type, player.getUniqueId());

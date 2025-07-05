@@ -26,10 +26,10 @@ public class ClaimLetterQuest extends Quest implements Listener {
 
     public ClaimLetterQuest() {
         super(
-                "Ouvrez la lettre des Récompenses",
+                "Ouvrir la lettre des Récompenses",
                 List.of(
-                        "§fTapez §d/contest §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
-                        "§8§oune méthode compétitive pour gagner des grosses récompenses !"
+                        "§fTapez §d/mailbox §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu mailbox",
+                        "§8§oUn moyen efficace d'envoyer des items à d'autres joueurs !"
                 ),
                 Material.PAPER
         );
@@ -41,7 +41,7 @@ public class ClaimLetterQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Et maintenant ? Vous pouvez lier votre compte Discord à votre compte Minecraft afin d'assurer la sécurité de votre compte !",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + "Et maintenant ? Vous pouvez lier votre compte Discord à votre compte Minecraft afin d'assurer la sécurité de votre compte !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

@@ -26,10 +26,10 @@ public class FinishQuestQuest extends Quest implements Listener {
 
     public FinishQuestQuest() {
         super(
-                "Accomplissez une Quête",
+                "Accomplir une Quête",
                 List.of(
-                        "§fTapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu et voir quelle quête finir",
-                        "§8§oCela va pouvoir vous lancer dans l'aventure et de vous diversifier !"
+                        "§fAccomplissez une quête de votre choix",
+                        "§8§oCela va pouvoir vous donner de l'argent ou certaines ressources !"
                 ),
                 Material.DIAMOND
         );
@@ -41,7 +41,7 @@ public class FinishQuestQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Et voici une §9récompense §f! Pratique non? Allons découvrir une autre méthode de production d'argent et de consomation ! Allez dans l'§cAdmin Shop§f, un endroit où plusieurs items sont achetable à des prix variants en fonction l'§coffre et la demande §f!",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Et voici une §9récompense §f! Pratique non? Allons découvrir une autre méthode de production d'argent et de consomation ! Allez dans l'§cAdmin Shop§f, un endroit où plusieurs items sont achetable à des prix variants en fonction l'§coffre et la demande §f!",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

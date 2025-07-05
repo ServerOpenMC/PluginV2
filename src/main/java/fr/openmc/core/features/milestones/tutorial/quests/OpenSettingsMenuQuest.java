@@ -27,9 +27,9 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
 
     public OpenSettingsMenuQuest() {
         super(
-                "Ouvrez le menu des Paramètres",
+                "Ouvrir le menu des Paramètres",
                 List.of(
-                        "§fTapez §d/settings §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§fTapez §d/settings §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oCela va vous permettre de configurer votre expérience de jeu !"
                 ),
                 Material.COMPARATOR
@@ -42,7 +42,8 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §9Paramètres §fcustomisent votre jeu, ils peuvent être utile dans certains cas. Sujet à part, accàder aux Menus des §6Contests§f, une sorte de concours tout les week end !",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §9Paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, etc." +
+                                "Sujet à part, vous pouvez passer en mode compétition grâce aux §6Contests§f, une sorte de concours hebdomadaire !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

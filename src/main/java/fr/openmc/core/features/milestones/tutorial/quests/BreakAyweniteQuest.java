@@ -30,8 +30,8 @@ public class BreakAyweniteQuest extends Quest implements Listener {
         super(
                 "Casser 30 §dAywenites",
                 List.of(
-                        "§fLe nouveau minérai de la §dV2, trouvable dans les grottes",
-                        "§fIl vous sera §dutile §fdans plein de fonctionnalité"
+                        "§fLe nouveau minerai de la §dV2, trouvable dans les grottes",
+                        "§fIl vous sera §dutile §fdans de nombreuses fonctionnalités"
                 ),
                 CustomItemRegistry.getByName("omc_items:aywenite").getBest()
         );
@@ -42,7 +42,7 @@ public class BreakAyweniteQuest extends Quest implements Listener {
         this.addTier(new QuestTier(
                 30,
                 new QuestMoneyReward(3500),
-                new QuestTextReward("Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Comme dit précédemment l'§dAywenite §fest un minerai, précieux pour les features. D'ailleurs vous pouvez faire votre ville ! ", Prefix.MILLESTONE, MessageType.SUCCESS),
+                new QuestTextReward("Bien Joué! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Comme dit précédemment l'§dAywenite §fest un minerai, précieux pour les features. D'ailleurs vous pouvez l'utiliser pour faire votre ville ! ", Prefix.MILLESTONE, MessageType.SUCCESS),
                 new QuestMethodsReward(
                         player -> TutorialUtils.completeStep(type, player, step)
                 )

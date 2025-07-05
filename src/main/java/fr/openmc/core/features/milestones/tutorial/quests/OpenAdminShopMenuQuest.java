@@ -27,9 +27,9 @@ public class OpenAdminShopMenuQuest extends Quest implements Listener {
 
     public OpenAdminShopMenuQuest() {
         super(
-                "Ouvrez le menu de l'Admin Shop",
+                "Ouvrir le menu de l'Admin Shop",
                 List.of(
-                        "§fTapez §c/adminshop §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§fTapez §c/adminshop §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oLe marché qui varie en fonction de l'offre et de la demande !"
                 ),
                 Material.EMERALD
@@ -42,7 +42,7 @@ public class OpenAdminShopMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! L'§cAdmin Shop §fvous serviront à vous procurer de l'argent et des blocks ! D'ailleurs, achetez ou vendez une ressource à l'Admin Shop !",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! L'§cAdmin Shop §fvous servira à vous procurer de l'argent et des blocs ! Vous pouvez d'ailleurs dès maintenant vendre ou acheter une ressource à l'Admin Shop !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

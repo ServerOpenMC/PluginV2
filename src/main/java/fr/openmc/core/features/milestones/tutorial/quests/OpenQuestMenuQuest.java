@@ -27,10 +27,10 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
 
     public OpenQuestMenuQuest() {
         super(
-                "Ouvrez le menu des Quêtes",
+                "Ouvrir le menu des Quêtes",
                 List.of(
-                        "§fTapez §d/quests §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
-                        "§8§oCela va pouvoir vous lancer dans l'aventure et de vous diversifier !"
+                        "§fTapez §d/quests §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu et voir quelles quêtes vous pouvez accomplir",
+                        "§8§oCela va pouvoir vous lancer dans l'aventure et vous donner des défis afin de vous diversifier !"
                 ),
                 Material.GOLDEN_AXE
         );
@@ -42,7 +42,7 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §9Quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! D'ailleurs, accomplissez une des §9tâches §fque vous voulez !",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §9Quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
