@@ -9,10 +9,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 
+import java.util.List;
+
 public class CraftCakeQuest extends Quest implements Listener {
 
     public CraftCakeQuest() {
-        super("Le pâtissier", "Craft {target} gâteaux", Material.CAKE);
+        super("Le pâtissier", List.of("Craft {target} gâteaux"), Material.CAKE);
 
         this.addTiers(
                 new QuestTier(64, new QuestMoneyReward(100)),

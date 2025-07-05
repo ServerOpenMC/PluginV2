@@ -36,7 +36,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.DayOfWeek;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Page1 implements Menu {
 
@@ -88,7 +91,8 @@ public class Page1 implements Menu {
         milestonesItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Milestones", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("En développement", NamedTextColor.RED)));
+            meta.lore(List.of(Component.text("Découvrez les features dans des routes de progressions!", NamedTextColor.WHITE),
+                    Component.text("/milestones", NamedTextColor.DARK_GRAY)));
         });
         MILESTONES_SLOTS.forEach(slot -> content.put(slot, milestonesItem));
         ItemStack contestItem = new ItemStack(Material.PAPER);

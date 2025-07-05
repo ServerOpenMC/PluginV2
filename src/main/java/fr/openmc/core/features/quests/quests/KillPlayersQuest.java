@@ -10,12 +10,14 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
+import java.util.List;
+
 public class KillPlayersQuest extends Quest implements Listener {
 
     public KillPlayersQuest() {
         super(
                 "Tueur à gage",
-                "Tuer {target} joueurs",
+                List.of("Tuer {target} joueurs"),
                 Material.IRON_SWORD
         );
 

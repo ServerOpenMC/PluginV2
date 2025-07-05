@@ -13,12 +13,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class FishingQuest extends Quest implements Listener {
 
     public FishingQuest() {
         super(
                 "Pêcheur Expérimenté",
-                "Pêcher {target} poissons",
+                List.of("Pêcher {target} poissons"),
                 new ItemStack(Material.FISHING_ROD)
         );
 

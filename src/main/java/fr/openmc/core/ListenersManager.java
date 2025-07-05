@@ -2,7 +2,7 @@ package fr.openmc.core;
 
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
-import fr.openmc.core.features.bossbar.listeners.BossbarListener;
+import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
 import fr.openmc.core.features.mailboxes.MailboxListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.updates.UpdateListener;
