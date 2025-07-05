@@ -360,8 +360,7 @@ public class City {
             this.chunks = CityManager.getCityChunks(this);
 
         BlockVector2 coords = BlockVector2.at(chunkX, chunkZ);
-        if (!chunks.contains(coords))
-            chunks.remove(coords);
+        chunks.remove(coords);
 
         CityManager.unclaimChunk(this, coords);
     }

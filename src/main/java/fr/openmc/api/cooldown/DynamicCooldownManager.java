@@ -94,9 +94,13 @@ public class DynamicCooldownManager {
             List<Cooldown> dbCooldowns = cooldownDao.queryForAll();
 
             for (Cooldown cooldown : dbCooldowns) {
-                if (cooldown.isReady()) continue;
-                HashMap<String, Cooldown> groupCooldowns = cooldowns.getOrDefault(cooldown.id, new HashMap<>());
-                groupCooldowns.put(cooldown.group, cooldown);
+                if (cooldown.isReady()) {
+                    cooldownDao.delete(cooldown);
+                    continue;
+                }
+
+                cooldowns.computeIfAbsent(cooldown.id, k -> new HashMap<>())
+                        .put(cooldown.group, cooldown);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors du chargement des cooldowns depuis la base de données", e);
@@ -105,6 +109,7 @@ public class DynamicCooldownManager {
 
     public static void saveCooldowns() {
         OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns...");
+
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
                 if (cooldown.isReady()) return;

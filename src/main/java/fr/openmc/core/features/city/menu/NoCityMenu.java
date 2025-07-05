@@ -108,6 +108,8 @@ public class NoCityMenu extends Menu {
                     itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
                     itemMeta.lore(loreCreate);
                 }).setOnClick(inventoryClickEvent -> {
+                    if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) return;
+
                     String[] lines = new String[4];
                     lines[0] = "";
                     lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";

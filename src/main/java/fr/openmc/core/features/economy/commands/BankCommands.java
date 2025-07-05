@@ -20,7 +20,7 @@ public class BankCommands {
 
     @DefaultFor("~")
     @Description("Ouvre le menu de votre banque personelle")
-    void openBankMenu(Player player) {
+    public static void openBankMenu(Player player) {
         new PersonalBankMenu(player).open();
     }
 
