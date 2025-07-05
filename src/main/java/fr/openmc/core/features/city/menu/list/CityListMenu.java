@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.menu.list;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -96,6 +97,11 @@ public class CityListMenu extends PaginatedMenu {
 	@Override
 	public List<Integer> getTakableSlot() {
 		return List.of();
+	}
+
+	@Override
+	public @NotNull InventorySize getInventorySize() {
+		return InventorySize.LARGEST;
 	}
 
 	@Override

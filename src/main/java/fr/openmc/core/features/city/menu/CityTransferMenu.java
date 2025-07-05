@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -97,6 +97,11 @@ public class CityTransferMenu extends PaginatedMenu {
             itemMeta.displayName(Component.text("§aPage suivante"));
         }).setNextPageButton());
         return map;
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override

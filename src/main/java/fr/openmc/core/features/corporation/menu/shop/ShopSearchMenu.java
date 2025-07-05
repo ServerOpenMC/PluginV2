@@ -3,6 +3,7 @@ package fr.openmc.core.features.corporation.menu.shop;
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.company.Company;
@@ -33,6 +34,11 @@ public class ShopSearchMenu extends PaginatedMenu {
 
     public ShopSearchMenu(Player owner) {
         super(owner);
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override

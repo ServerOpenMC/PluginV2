@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.commands.utils.Restart;
@@ -157,6 +158,11 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.shops.Shop;
@@ -32,6 +33,11 @@ public class ShopCatalogueMenu extends PaginatedMenu {
         super(owner);
         this.shop = shop;
         this.itemIndex = itemIndex;
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override

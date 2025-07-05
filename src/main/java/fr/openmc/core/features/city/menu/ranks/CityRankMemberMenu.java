@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.menu.ranks;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
@@ -79,7 +80,12 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
 		return map;
 	}
-	
+
+	@Override
+	public @NotNull InventorySize getInventorySize() {
+		return InventorySize.LARGEST;
+	}
+
 	@Override
 	public @NotNull String getName() {
 		return "Liste des membres";

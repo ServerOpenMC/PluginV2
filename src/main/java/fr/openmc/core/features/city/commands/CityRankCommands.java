@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.menu.ranks.CityRankDetailsMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRankMemberMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
@@ -39,26 +40,8 @@ public class CityRankCommands {
 	
 	@Subcommand("add")
 	@CommandPermission("omc.commands.city.rank.add")
-	public void add(Player player, @Named("rank") String rankName) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
-		if (city == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		if (city.getRanks().size() >= City.MAX_RANKS) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		if (city.isRankExists(rankName)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_ALREADYEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		
-		new CityRankDetailsMenu(player, city, rankName).open();
+    public void add(Player player) {
+        CityRankAction.beginCreateRank(player);
 	}
 	
 	@Subcommand("edit")
@@ -70,7 +53,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -95,7 +78,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -116,7 +99,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -144,7 +127,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -167,7 +150,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}

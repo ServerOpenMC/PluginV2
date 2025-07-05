@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.mayor.menu.create;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -127,6 +128,11 @@ public class PerkChoiceMenu extends PaginatedMenu {
         } else {
             return "Menu des Maires - Reformes";
         }
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override

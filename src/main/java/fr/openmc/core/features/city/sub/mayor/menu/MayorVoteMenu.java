@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.City;
@@ -45,6 +46,11 @@ public class MayorVoteMenu extends PaginatedMenu {
     @Override
     public @NotNull List<Integer> getStaticSlots() {
         return combine(combine(RIGHT, LEFT), BOTTOM);
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override

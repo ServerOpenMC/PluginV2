@@ -135,9 +135,7 @@ public abstract class PaginatedMenu extends Menu {
 	 * {@link InventorySize#LARGEST}.
 	 */
 	@Override
-	public final @NotNull InventorySize getInventorySize() {
-		return InventorySize.LARGEST;
-	}
+	public abstract @NotNull InventorySize getInventorySize();
 
 	/**
 	 * Determines whether the current page is the last page in the paginated menu.

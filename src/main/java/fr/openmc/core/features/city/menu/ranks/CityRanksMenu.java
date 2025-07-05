@@ -1,9 +1,12 @@
 package fr.openmc.core.features.city.menu.ranks;
 
-import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.StaticSlots;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -15,13 +18,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-public class CityRanksMenu extends Menu {
+public class CityRanksMenu extends PaginatedMenu {
 	
 	private final City city;
 	
@@ -34,68 +35,88 @@ public class CityRanksMenu extends Menu {
 	public @NotNull String getName() {
 		return "Grades de la ville";
 	}
-	
+
+	@Override
+	public void onInventoryClick(InventoryClickEvent e) {
+	}
+
+	@Override
+	public void onClose(InventoryCloseEvent event) {
+	}
+
 	@Override
 	public @NotNull InventorySize getInventorySize() {
 		return InventorySize.NORMAL;
 	}
-	
+
 	@Override
-	public void onInventoryClick(InventoryClickEvent e) {
-	
+	public @Nullable Material getBorderMaterial() {
+		return null;
 	}
-	
+
 	@Override
-	public void onClose(InventoryCloseEvent event) {
-	
+	public @NotNull List<Integer> getStaticSlots() {
+		return StaticSlots.BOTTOM;
 	}
-	
+
 	@Override
-	public @NotNull Map<Integer, ItemStack> getContent() {
-		Map<Integer, ItemStack> map = new HashMap<>();
-		
-		int i = 0;
+	public @NotNull List<ItemStack> getItems() {
+		List<ItemStack> map = new ArrayList<>();
+		Player player = getOwner();
+
 		Set<CityRank> cityRanks = city.getRanks();
 		if (! cityRanks.isEmpty()) {
 			for (CityRank rank : cityRanks) {
-				if (i == 18) break; // Limit to 18 ranks displayed
-				
 				String rankName = rank.getName();
 				int priority = rank.getPriority();
 				Material icon = rank.getIcon() != null ? rank.getIcon() : Material.PAPER;
-				
-				map.put(i, new ItemBuilder(this, icon,
+
+				map.add(new ItemBuilder(this, icon,
 						itemMeta -> {
 							itemMeta.displayName(Component.text(rankName));
 							itemMeta.lore(List.of(
 									Component.text("Priorité : " + priority).decoration(TextDecoration.ITALIC, false)
 							));
 						}
-				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, rank).open()));
-				i++;
+				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(player, city, rank).open()));
 			}
 		}
-		
+		return map;
+	}
+
+	@Override
+	public Map<Integer, ItemStack> getButtons() {
+		Map<Integer, ItemStack> map = new HashMap<>();
+		Player player = getOwner();
+
 		map.put(18, new ItemBuilder(this, Material.ARROW,
 				itemMeta -> {
 					itemMeta.displayName(Component.text("§cRetour"));
 					itemMeta.lore(List.of(Component.text("§7Cliquez pour revenir en arrière")));
-				}).setOnClick(inventoryClickEvent -> new CityMenu(getOwner()).open()));
-		
+				}).setOnClick(inventoryClickEvent -> new CityMenu(player).open()));
+
 		map.put(22, new ItemBuilder(this, Material.FEATHER,
 				itemMeta -> {
 					itemMeta.displayName(Component.text("§aAssigner des grades"));
 					itemMeta.lore(List.of(
 							Component.text("§7Cliquez pour assigner les grades de la ville aux membres.")
 					));
-				}).setOnClick(inventoryClickEvent -> new CityRankMemberMenu(getOwner(), city).open()));
-		
+				}).setOnClick(inventoryClickEvent -> new CityRankMemberMenu(player, city).open()));
+
+		List<Component> loreCreateRank = new ArrayList<>();
+
+		if (city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
+			loreCreateRank.add(Component.text("§fVous pouvez faire un grade, §aun ensemble de permission !"));
+			loreCreateRank.add(Component.text(""));
+			loreCreateRank.add(Component.text("§e§lCLIQUEZ POUR CREER UN GRADE"));
+		}
+
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(),
 				itemMeta -> {
 					itemMeta.displayName(Component.text("§aAjouter un grade"));
-					itemMeta.lore(List.of(Component.text("§7Pour ajouter un nouveau grade, faites /city rank add <nom>")));
-				}));
-		
+					itemMeta.lore(loreCreateRank);
+				}).setOnClick(inventoryClickEvent -> CityRankAction.beginCreateRank(player)));
+
 		return map;
 	}
 	

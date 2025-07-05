@@ -2,6 +2,7 @@ package fr.openmc.core.features.corporation.menu.company;
 
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.company.Company;
@@ -41,6 +42,11 @@ public class CompanySearchMenu extends PaginatedMenu {
             return StaticSlots.combine(StaticSlots.STANDARD, List.of(12, 13, 14));
         }
         return StaticSlots.STANDARD;
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override

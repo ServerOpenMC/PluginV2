@@ -1,6 +1,7 @@
 package fr.openmc.core.features.corporation.menu.company;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -31,6 +32,11 @@ public class CompanyMenu extends PaginatedMenu {
         super(owner);
         this.company = company;
         this.isBackButton = isBackButton;
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override

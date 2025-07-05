@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.war.menu.selection;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
@@ -29,6 +30,11 @@ public class WarChooseSizeMenu extends PaginatedMenu {
         this.cityAttack = cityAttack;
         this.cityLaunch = cityLaunch;
         this.maxSize = maxSize;
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override
