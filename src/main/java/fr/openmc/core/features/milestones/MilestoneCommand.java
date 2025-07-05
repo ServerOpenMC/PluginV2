@@ -6,8 +6,8 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-@Command("milestone")
-@CommandPermission("omc.commands.milestone")
+@Command("milestones")
+@CommandPermission("omc.commands.milestones")
 public class MilestoneCommand {
     @DefaultFor("~")
     void mainCommand(Player player) {
