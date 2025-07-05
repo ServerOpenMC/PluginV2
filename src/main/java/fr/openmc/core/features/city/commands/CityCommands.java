@@ -202,6 +202,8 @@ public class CityCommands {
     void transfer(Player sender, @Named("owner") OfflinePlayer player) {
         City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
 
+        if (!CityManageConditions.canCityTransfer(playerCity, sender, player.getUniqueId())) return;
+      
         if (playerCity == null) return;
 
         CityTransferAction.transfer(sender, playerCity, player);
