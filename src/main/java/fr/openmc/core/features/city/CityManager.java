@@ -359,7 +359,7 @@ public class CityManager implements Listener {
         Set<BlockVector2> chunks = new HashSet<>();
 
         claimedChunks.forEach((chunk, city) -> {
-            if (city.getUUID() == inCity.getUUID())
+            if (city.getUUID().equals(inCity.getUUID()))
                 chunks.add(chunk);
         });
 
@@ -376,7 +376,7 @@ public class CityManager implements Listener {
         Set<UUID> members = new HashSet<>();
 
         playerCities.forEach((player, city) -> {
-            if (city.getUUID() == inCity.getUUID())
+            if (city.getUUID().equals(inCity.getUUID()))
                 members.add(player);
         });
 
