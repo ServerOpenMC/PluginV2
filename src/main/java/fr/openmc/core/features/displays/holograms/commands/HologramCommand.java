@@ -90,7 +90,13 @@ public class HologramCommand {
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
         HologramLoader.unloadAll();
-        sender.sendMessage("§cHolograms désactivés avec succès.");
+        MessagesManager.sendMessage(
+                sender,
+                Component.text("§cHolograms désactivés avec succès."),
+                Prefix.STAFF,
+                MessageType.SUCCESS,
+                true
+        );
     }
 
     @Subcommand("enable")
@@ -99,6 +105,12 @@ public class HologramCommand {
     void enableCommand(CommandSender sender) {
         HologramLoader.updateHologramsViewers();
         HologramLoader.loadAllFromFolder(hologramFolder);
-        sender.sendMessage("§aHolograms activés avec succès.");
+        MessagesManager.sendMessage(
+                sender,
+                Component.text("§aHolograms activés avec succès."),
+                Prefix.STAFF,
+                MessageType.SUCCESS,
+                true
+        );
     }
 }
