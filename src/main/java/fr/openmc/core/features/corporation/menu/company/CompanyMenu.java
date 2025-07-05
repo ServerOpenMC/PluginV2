@@ -46,7 +46,7 @@ public class CompanyMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.combine(StaticSlots.STANDARD, List.of(12, 13, 14));
+        return StaticSlots.combine(StaticSlots.getStandardSlots(getInventorySize()), List.of(12, 13, 14));
     }
 
     @Override

@@ -39,9 +39,9 @@ public class CompanySearchMenu extends PaginatedMenu {
     @Override
     public @NotNull List<Integer> getStaticSlots() {
         if (CompanyManager.isInCompany(getOwner().getUniqueId())) {
-            return StaticSlots.combine(StaticSlots.STANDARD, List.of(12, 13, 14));
+            return StaticSlots.combine(StaticSlots.getStandardSlots(getInventorySize()), List.of(12, 13, 14));
         }
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override

@@ -41,7 +41,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 
 	@Override
 	public @NotNull List<Integer> getStaticSlots() {
-		return StaticSlots.BOTTOM;
+		return StaticSlots.getBottomSlots(getInventorySize());
 	}
 	
 	@Override

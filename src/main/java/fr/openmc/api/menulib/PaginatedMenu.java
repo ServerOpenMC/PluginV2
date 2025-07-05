@@ -100,10 +100,10 @@ public abstract class PaginatedMenu extends Menu {
 		for (Integer staticSlot : getStaticSlots()) {
 			map.put(staticSlot, ItemUtils.createItem(" ", getBorderMaterial() == null ? Material.AIR : getBorderMaterial()));
 		}
-		List<Integer> staticSlots = StaticSlots.removeRecurringIntegers(getStaticSlots());
+		List<Integer> staticSlots = StaticSlots.removeRecurringIntegers(getStaticSlots(), getInventorySize().getSize());
 		int maxItems = getInventorySize().getSize() - staticSlots.size();
 		numberOfPages = (int) Math.ceil((double) getItems().size() / maxItems) - 1;
-		
+
 		// Check if the page is out of bounds
 		int index = 0;
 		for (int i = 0; i < getInventory().getSize(); i++) {
