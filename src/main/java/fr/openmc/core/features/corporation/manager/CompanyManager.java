@@ -442,9 +442,8 @@ public class CompanyManager {
     /**
      * get the items of a marchant from the database
      *
-     * @param playerUUID the uuid of the player we check
-     * @param conn       use to have the same connection
-     * @return A ItemStack[] from bytes stock in the database
+     * @param player the uuid of the player we check
+     * @return An ItemStack[] from byte stock in the database
      */
     public static ItemStack[] getMerchantItem(UUID player) {
         try {

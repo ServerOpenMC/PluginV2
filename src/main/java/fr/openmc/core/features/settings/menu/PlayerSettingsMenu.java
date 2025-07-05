@@ -2,6 +2,7 @@ package fr.openmc.core.features.settings.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.features.settings.PlayerSettings;
@@ -34,6 +35,11 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     public PlayerSettingsMenu(Player player) {
         super(player);
         this.settings = PlayerSettingsManager.getPlayerSettings(player);
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
     }
 
     @Override
