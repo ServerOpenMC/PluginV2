@@ -224,7 +224,10 @@ public class CityManager implements Listener {
 
     public static void removePlayerPermission(City city, UUID player, CPermission permission) {
         try {
-            permissionsDao.delete(new DBCityPermission(city.getUUID(), player, permission.name()));
+            DeleteBuilder<DBCityPermission, String> delete = permissionsDao.deleteBuilder();
+            delete.where().eq("city", city.getUUID()).and().eq("player", player).and().eq("permisssion", permission.name());
+
+            permissionsDao.delete(delete.prepare());
         } catch (SQLException e) {
             e.printStackTrace();
         }
