@@ -225,8 +225,12 @@ public class CityManager implements Listener {
     public static void removePlayerPermission(City city, UUID player, CPermission permission) {
         try {
             DeleteBuilder<DBCityPermission, String> delete = permissionsDao.deleteBuilder();
-            delete.where().eq("city", city.getUUID()).and().eq("player", player).and().eq("permisssion", permission.name());
-
+            delete.where()
+                    .eq("city", city.getUUID())
+                    .and()
+                    .eq("player", player)
+                    .and()
+                    .eq("permission", permission.name());
             permissionsDao.delete(delete.prepare());
         } catch (SQLException e) {
             e.printStackTrace();
@@ -368,7 +372,7 @@ public class CityManager implements Listener {
 
     /**
      * Get a city member
-     * 
+     *
      * @param inCity The cities whose members are requested
      * @return The city members
      */
