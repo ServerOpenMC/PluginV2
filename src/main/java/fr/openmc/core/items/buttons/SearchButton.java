@@ -1,6 +1,5 @@
 package fr.openmc.core.items.buttons;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.items.CustomItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;

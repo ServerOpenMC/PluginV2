@@ -1,6 +1,5 @@
 package fr.openmc.core.items.armors;
 
-import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.items.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

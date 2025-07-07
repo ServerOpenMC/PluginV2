@@ -61,6 +61,8 @@ public class CustomItemRegistry {
         new Bin();
         new Information();
         new Upgrade();
+
+        /* Homes icons */
         new Axenq();
         new Bank();
         new Chateau();
@@ -96,8 +98,7 @@ public class CustomItemRegistry {
         PersistentDataContainerView view = stack.getPersistentDataContainer();
         String name = view.get(customNameKey, PersistentDataType.STRING);
 
-        if (name == null) return null;
-        return getByName(name);
+        return name == null ? null : getByName(name);
     }
 
     public static HashSet<String> getNames() {
