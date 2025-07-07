@@ -131,7 +131,10 @@ public class CityManager implements Listener {
         try {
             claimedChunks.clear();
             claimsDao.queryForAll()
-                    .forEach(claim -> claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity())));
+                    .forEach(claim -> {
+                        if (getCity(claim.getCity()) != null)
+                            claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity()));
+                    });
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -361,6 +364,10 @@ public class CityManager implements Listener {
      */
     public static Set<BlockVector2> getCityChunks(City inCity) {
         Set<BlockVector2> chunks = new HashSet<>();
+
+        claimedChunks.forEach(
+                (chunk, city) -> System.out.println(city + " - " + chunk)
+        );
 
         claimedChunks.forEach((chunk, city) -> {
             if (city.getUUID().equals(inCity.getUUID()))
