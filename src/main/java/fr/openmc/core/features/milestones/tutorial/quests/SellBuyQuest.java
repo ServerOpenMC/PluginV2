@@ -30,7 +30,7 @@ public class SellBuyQuest extends Quest implements Listener {
         super(
                 "Acheter ou vendre une ressource à l'Admin Shop",
                 List.of(
-                        "§fTapez §c/adminshop §fou bien aller dans le §dmenu principal /menu §fpour pouvoir vendre ou acheter une ressource",
+                        "§fTapez §c/adminshop §fou bien allez dans le §dmenu principal /menu §fpour pouvoir vendre ou acheter une ressource",
                         "§8§oC'est le début de la richesse!"
                 ),
                 Material.GOLD_INGOT
@@ -43,7 +43,7 @@ public class SellBuyQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! L'§cAdmin Shop §fpropose de divers objets ! Cependant, lorsque vous mourrez vous perdez §6" + PlayerDeathListener.LOSS_MONEY * 100 + "%§f de votre argent ! Il est donc important de faire attention à votre peau ! Déposser de l'argent dans votre banque !",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! L'§cAdmin Shop §fpropose divers objets afin de pouvoir build, ou faire de l'argent ! Cependant, lorsque vous mourrez vous perdez §6" + PlayerDeathListener.LOSS_MONEY * 100 + "%§f de votre argent ! Il est donc important de faire attention à votre peau, ou alors de déposer de l'argent dans votre banque !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

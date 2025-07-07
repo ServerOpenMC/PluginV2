@@ -29,7 +29,7 @@ public class SpareBankQuest extends Quest implements Listener {
         super(
                 "Déposer de l'argent à la banque",
                 List.of(
-                        "§fTapez §d/bank §fou bien aller dans le §dmenu principal /menu §fpour pouvoir ouvrir le menu",
+                        "§fTapez §d/bank §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oune méthode compétitive pour gagner des grosses récompenses !"
                 ),
                 Material.DIAMOND_BLOCK
@@ -42,7 +42,8 @@ public class SpareBankQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Les §bBanques§f sert a stocker une quantité infinie d'argent et de la proteger si vous mourrez! Et maintenant configurer un de vos parametres !",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §bBanques§f peuvent stocker une quantité infinie d'argent et protègent celui-ci si vous mourrez ! " +
+                                "Personnalisons maintenant l'expérience de jeu grâce aux paramètres !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

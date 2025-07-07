@@ -31,8 +31,8 @@ public class CityCreateQuest extends Quest implements Listener {
         super(
                 "Créer/Rejoindre une ville",
                 List.of(
-                        "§fFaite §d/city §fpour commencer à créer votre ville",
-                        "§fou bien rejoindre une ville en ayant une invitation!"
+                        "§fFaites §d/city §fpour commencer à créer votre ville",
+                        "§fou bien rejoindre une ville à l'aide d'une invitation !"
                 ),
                 Material.OAK_DOOR
         );
@@ -44,7 +44,7 @@ public class CityCreateQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué! Vous avez fini l'§6Etape " + (step.ordinal() + 1) + " §f! Cette version est centrée autour des villes. Vous y trouverez un §eMilestone spécial pour les Villes §fqui vous guideront dans cette aventure pas comme les autres ! Mais avant cela, faudrait peut être mettre un §2Home§f?",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Cette version d'OpenMC est centrée autour des villes. Vous y trouverez une §eMilestone spéciale pour les Villes §fqui vous guidera dans cette aventure singulière ! Mais avant cela, il faudrait peut être mettre un §2Home §f?",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

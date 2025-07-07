@@ -26,8 +26,8 @@ public enum TutorialStep {
     TutorialStep(Quest quest) {
         this.quest = quest;
     }
-
-    // ça peut paraitre de faire ça mais obligatoire pour pas avoir d'instance nulle de quete.
+    
+    // ça peut paraitre con de faire ça mais obligatoire pour pas avoir d'instance nulle de quete.
     static {
         BREAK_AYWENITE.quest = new BreakAyweniteQuest();
         CITY_CREATE.quest = new CityCreateQuest();

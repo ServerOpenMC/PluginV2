@@ -1,14 +1,12 @@
 package fr.openmc.core;
 
-import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
+import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.mainmenu.MainMenu;
-import fr.openmc.core.features.bossbar.BossbarManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -23,6 +21,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
