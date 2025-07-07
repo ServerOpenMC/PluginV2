@@ -47,6 +47,11 @@ public class HomeMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @NotNull String getName() {
         return PlaceholderAPI.setPlaceholders(this.getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home%");
     }

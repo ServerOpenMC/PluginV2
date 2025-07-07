@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.models.CityRank;
+import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -40,26 +41,46 @@ public class CityRankIconMenu extends PaginatedMenu {
 	}
 
 	@Override
+	public int getSizeOfItems() {
+		return paginableMaterials.size() - 1;
+	}
+
+	@Override
 	public @NotNull List<Integer> getStaticSlots() {
 		return StaticSlots.getBottomSlots(getInventorySize());
 	}
-	
+
+	private static final Set<Material> excludedMaterials = Set.of(
+			Material.AIR, Material.BARRIER, Material.COMMAND_BLOCK, Material.CHAIN_COMMAND_BLOCK, Material.REPEATING_COMMAND_BLOCK, Material.STRUCTURE_BLOCK, Material.STRUCTURE_VOID
+	);
+
+	private static final List<Material> paginableMaterials;
+
+	static {
+		paginableMaterials = Arrays.stream(Material.values())
+				.filter(material -> !excludedMaterials.contains(material))
+				.filter(material -> !material.name().contains("SPAWN_EGG"))
+				.filter(material -> !material.isLegacy())
+				.toList();
+	}
+
 	@Override
 	public @NotNull List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
-		for (Material material : Material.values()) {
-			if (material == Material.AIR || material == Material.BARRIER || material.name().endsWith("COMMAND_BLOCK")) {
-				continue;
-			}
-			if (material.isItem()) {
-				ItemBuilder itemBuilder = new ItemBuilder(this, new ItemStack(material), itemMeta -> {
-					itemMeta.displayName(Component.text(material.name().replace("_", " ").toLowerCase(Locale.ROOT)));
-					itemMeta.lore(List.of(Component.text("§7Cliquez pour sélectionner cette icône")));
-				});
-				
-				items.add(itemBuilder);
-			}
+
+		System.out.println(getPage() * getInventorySize().getSize() - getStaticSlots().size());
+
+		int startIndex = getPage() * (getInventorySize().getSize() - getStaticSlots().size());
+		int endIndex = Math.min(startIndex + (getInventorySize().getSize() - getStaticSlots().size()), paginableMaterials.size());
+
+		for (int i = startIndex; i < endIndex; i++) {
+			Material material = paginableMaterials.get(i);
+			items.add(new ItemBuilder(this, new ItemStack(material), itemMeta -> {
+				itemMeta.displayName(ItemUtils.getItemTranslation(material));
+				itemMeta.lore(List.of(Component.text("§7Cliquez pour sélectionner cette icône")));
+			}));
 		}
+
 		return items;
 	}
 	

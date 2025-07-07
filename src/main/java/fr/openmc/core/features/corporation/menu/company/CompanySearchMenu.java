@@ -50,6 +50,11 @@ public class CompanySearchMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @NotNull List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         for (Company company : CompanyManager.getCompanies()) {

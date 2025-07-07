@@ -166,6 +166,11 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public void onClose(InventoryCloseEvent event) {
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) {

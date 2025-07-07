@@ -105,6 +105,11 @@ public class CityTransferMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @NotNull String getName() {
         return "Menu des Villes - Transferer";
     }

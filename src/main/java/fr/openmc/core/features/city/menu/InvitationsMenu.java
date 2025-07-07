@@ -100,6 +100,11 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public Map<Integer, ItemStack> getButtons() {
         Player player = getOwner();
         Map<Integer, ItemStack> map = new HashMap<>();

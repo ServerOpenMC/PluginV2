@@ -52,6 +52,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @NotNull List<Integer> getStaticSlots() {
         return StaticSlots.getStandardSlots(getInventorySize());
     }

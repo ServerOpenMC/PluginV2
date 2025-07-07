@@ -42,6 +42,11 @@ public class ShopSearchMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @Nullable Material getBorderMaterial() {
         return null;
     }

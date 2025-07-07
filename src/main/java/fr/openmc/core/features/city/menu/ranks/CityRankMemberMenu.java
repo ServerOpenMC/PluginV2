@@ -87,6 +87,11 @@ public class CityRankMemberMenu extends PaginatedMenu {
 	}
 
 	@Override
+	public int getSizeOfItems() {
+		return getItems().size();
+	}
+
+	@Override
 	public @NotNull String getName() {
 		return "Liste des membres";
 	}

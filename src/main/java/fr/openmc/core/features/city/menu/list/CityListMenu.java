@@ -105,6 +105,11 @@ public class CityListMenu extends PaginatedMenu {
 	}
 
 	@Override
+	public int getSizeOfItems() {
+		return getItems().size();
+	}
+
+	@Override
 	public Map<Integer, ItemStack> getButtons() {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		map.put(49, new ItemBuilder(this, Material.HOPPER, itemMeta -> {

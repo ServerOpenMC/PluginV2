@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static fr.openmc.api.menulib.utils.StaticSlots.*;
+import static fr.openmc.api.menulib.utils.StaticSlots.combine;
 
 public class MayorVoteMenu extends PaginatedMenu {
     public MayorVoteMenu(Player owner) {
@@ -52,6 +52,11 @@ public class MayorVoteMenu extends PaginatedMenu {
     @Override
     public @NotNull InventorySize getInventorySize() {
         return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override

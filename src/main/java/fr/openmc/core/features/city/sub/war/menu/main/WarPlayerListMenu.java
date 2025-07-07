@@ -39,6 +39,11 @@ public class WarPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @Nullable Material getBorderMaterial() {
         return Material.GRAY_STAINED_GLASS_PANE;
     }

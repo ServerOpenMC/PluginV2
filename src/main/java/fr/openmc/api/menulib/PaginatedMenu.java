@@ -102,7 +102,7 @@ public abstract class PaginatedMenu extends Menu {
 		}
 		List<Integer> staticSlots = StaticSlots.removeRecurringIntegers(getStaticSlots(), getInventorySize().getSize());
 		int maxItems = getInventorySize().getSize() - staticSlots.size();
-		numberOfPages = (int) Math.ceil((double) getItems().size() / maxItems) - 1;
+		numberOfPages = (int) Math.ceil((double) getSizeOfItems() / maxItems) - 1;
 
 		// Check if the page is out of bounds
 		int index = 0;
@@ -136,6 +136,8 @@ public abstract class PaginatedMenu extends Menu {
 	 */
 	@Override
 	public abstract @NotNull InventorySize getInventorySize();
+
+	public abstract int getSizeOfItems();
 
 	/**
 	 * Determines whether the current page is the last page in the paginated menu.

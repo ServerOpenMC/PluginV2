@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static fr.openmc.api.menulib.utils.StaticSlots.*;
+import static fr.openmc.api.menulib.utils.StaticSlots.combine;
 
 public class PerkChoiceMenu extends PaginatedMenu {
     private final String perkNumber;
@@ -134,6 +134,11 @@ public class PerkChoiceMenu extends PaginatedMenu {
     @Override
     public @NotNull InventorySize getInventorySize() {
         return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override
