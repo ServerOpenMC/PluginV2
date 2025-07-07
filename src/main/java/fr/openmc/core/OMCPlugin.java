@@ -27,6 +27,7 @@ import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
+import fr.openmc.core.items.usable.CustomUsableItemRegistry;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.api.*;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -72,6 +73,7 @@ public class OMCPlugin extends JavaPlugin {
         new DatabaseManager();
         new CommandsManager();
         new CustomItemRegistry();
+        new CustomUsableItemRegistry();
         new SpawnManager();
         new UpdateManager();
         new CityManager();

@@ -29,7 +29,8 @@ public class ListenersManager {
                 new PlayerDeathListener(),
                 new AsyncChatListener(OMCPlugin.getInstance()),
                 new BossbarListener(),
-                new PlayerSettingsManager()
+                new PlayerSettingsManager(),
+                new InteractListener()
         );
     }
 
