@@ -9,7 +9,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityChestAction;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -93,7 +93,7 @@ public class CityChestMenu extends PaginatedMenu {
         Player player = getOwner();
 
         Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
         }).setOnClick(inventoryClickEvent -> {
             exit(city, getInventory());
@@ -101,7 +101,7 @@ public class CityChestMenu extends PaginatedMenu {
         }));
 
         if (hasPreviousPage()) {
-            map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> {
+            map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
                 itemMeta.displayName(Component.text("§cPage précédente"));
             }).setOnClick(inventoryClickEvent -> {
                 if (hasPreviousPage()) {
@@ -115,7 +115,7 @@ public class CityChestMenu extends PaginatedMenu {
             }));
         }
         if (hasNextPage()) {
-            map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> {
+            map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
                 itemMeta.displayName(Component.text("§aPage suivante"));
             }).setOnClick(inventoryClickEvent -> {
                 if (hasNextPage()) {

@@ -29,7 +29,7 @@ import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.api.*;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
