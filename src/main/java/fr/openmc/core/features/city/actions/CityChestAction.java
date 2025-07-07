@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

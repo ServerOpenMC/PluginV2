@@ -1,17 +1,21 @@
-package fr.openmc.core.utils.customitems;
+package fr.openmc.core.items;
 
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 public abstract class CustomItem {
     public abstract ItemStack getVanilla();
-    public abstract ItemStack getItemsAdder();
     @Getter private final String name;
 
     public CustomItem(String name) {
         this.name = name;
-        CustomItemRegistry.register(name, this);
+    }
+
+    public ItemStack getItemsAdder() {
+        CustomStack stack = CustomStack.getInstance(getName());
+        return stack != null ? stack.getItemStack() : null;
     }
 
     @Override
@@ -41,13 +45,6 @@ public abstract class CustomItem {
      * @return Best ItemStack to use for the server
      */
     public ItemStack getBest() {
-        ItemStack item = null;
-        if (ItemsAdderApi.hasItemAdder()) item = getItemsAdder();
-
-        if (item == null) {
-            item = getVanilla();
-        }
-
-        return item;
+        return !ItemsAdderApi.hasItemAdder() || getItemsAdder() == null ? getVanilla() : getItemsAdder();
     }
 }

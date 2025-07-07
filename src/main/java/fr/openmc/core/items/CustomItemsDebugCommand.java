@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.customitems;
+package fr.openmc.core.items;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,10 +18,10 @@ public class CustomItemsDebugCommand {
     public void isCloseButton(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        CustomItem closeButton = CustomItemRegistry.getByName("menu:close_button");
+        CustomItem closeButton = CustomItemRegistry.getByName("_iainternal:icon_cancel");
 
         passTest(player, 1, closeButton.equals(item));
-        passTest(player, 2, closeButton.equals("menu:close_button"));
+        passTest(player, 2, closeButton.equals("_iainternal:icon_cancel"));
         passTest(player, 3, closeButton.equals(closeButton));
     }
 
