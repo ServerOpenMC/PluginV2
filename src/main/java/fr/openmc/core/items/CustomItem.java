@@ -46,13 +46,6 @@ public abstract class CustomItem {
      * @return Best ItemStack to use for the server
      */
     public ItemStack getBest() {
-        ItemStack item = null;
-        if (ItemsAdderApi.hasItemAdder()) item = getItemsAdder();
-
-        if (item == null) {
-            item = getVanilla();
-        }
-
-        return item;
+        return getItemsAdder() == null ? getVanilla() : getItemsAdder();
     }
 }
