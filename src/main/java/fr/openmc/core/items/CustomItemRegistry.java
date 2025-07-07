@@ -1,18 +1,13 @@
 package fr.openmc.core.items;
 
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.items.buttons.*;
-import fr.openmc.core.items.items.company.CompanyBox;
-import fr.openmc.core.items.items.homes.*;
-import fr.openmc.core.items.items.homes.icons.*;
-import fr.openmc.core.items.armors.SuitBoots;
-import fr.openmc.core.items.armors.SuitChestplate;
-import fr.openmc.core.items.armors.SuitHelmet;
-import fr.openmc.core.items.armors.SuitLeggings;
-import fr.openmc.core.items.items.*;
 import io.papermc.paper.persistence.PersistentDataContainerView;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nullable;
@@ -29,54 +24,51 @@ public class CustomItemRegistry {
         // Ici, enregistrer tous les items custom
 
         /* Buttons */
-        new CloseButton();
-        new PreviousPage();
-        new NextPage();
-        new AcceptButton();
-        new RefuseButton();
-        new SearchButton();
-        new OneButton();
-        new TenButton();
-        new StackButton();
-        new MinusButton();
-        new PlusButton();
-        new QuestsRightArrow();
-        new QuestsLeftArrow();
+        registerSimpleItem("_iainternal:icon_cancel", Material.DARK_OAK_DOOR, "Fermer");
+        registerSimpleItem("_iainternal:icon_back_orange", Material.ARROW, "Page précedente");
+        registerSimpleItem("_iainternal:icon_next_orange", Material.ARROW, "Page suivante");
+        registerSimpleItem("_iainternal:icon_search", Material.SPYGLASS, "Rechercher");
+        registerSimpleItem("omc_menus:accept_btn", Material.GREEN_CONCRETE, "Accepter");
+        registerSimpleItem("omc_menus:refuse_btn", Material.RED_CONCRETE, "Refuser");
+        registerSimpleItem("omc_quests:quests_right_arrow", Material.ARROW, "Suivant");
+        registerSimpleItem("omc_quests:quests_left_arrow", Material.ARROW, "Précédent");
+        registerSimpleItem("omc_menus:1_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:10_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:64_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:minus_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:plus_btn", Material.PAPER);
 
         /* Items */
-        new ContestShell();
-        new Aywenite();
-        new KebabItem();
-        new MascotWand();
-        new WarpWand();
-
-        new SuitHelmet();
-        new SuitChestplate();
-        new SuitLeggings();
-        new SuitBoots();
-
-        new CompanyBox();
-
-        new BinRed();
-        new Bin();
-        new Information();
-        new Upgrade();
+        registerSimpleItem("omc_contest:contest_shell", Material.NAUTILUS_SHELL);
+        registerSimpleItem("omc_items:aywenite", Material.AMETHYST_SHARD);
+        registerSimpleItem("omc_foods:kebab", Material.COOKED_BEEF);
+        registerSimpleItem("omc_items:mascot_stick", Material.STICK);
+        registerSimpleItem("omc_items:warp_stick", Material.STICK);
+        registerSimpleItem("omc_items:suit_helmet", Material.IRON_HELMET);
+        registerSimpleItem("omc_items:suit_chestplate", Material.IRON_CHESTPLATE);
+        registerSimpleItem("omc_items:suit_leggings", Material.IRON_LEGGINGS);
+        registerSimpleItem("omc_items:suit_boots", Material.IRON_BOOTS);
+        registerSimpleItem("omc_company:company_box", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_bin_red", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_bin", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_information", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_upgrade", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_invisible", Material.CHEST);
 
         /* Homes icons */
-        new Axenq();
-        new Bank();
-        new Chateau();
-        new Chest();
-        new Default();
-        new Farm();
-        new Home();
-        new Sandblock();
-        new Shop();
-        new Xernas();
-        new Invisible();
+        registerSimpleItem("omc_homes:omc_homes_icon_axenq", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_bank", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_chateau", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_chest", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_grass", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_maison", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_sandblock", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_shop", Material.CHEST);
+        registerSimpleItem("omc_homes:omc_homes_icon_xernas", Material.CHEST);
     }
 
     public static void register(String name, CustomItem item) {
+        System.out.println(items.size() + " all items:" + items.keySet());
         if (items.containsKey(name)) {
             throw new IllegalArgumentException("Custom item with name " + name + " already exists");
         }
@@ -86,6 +78,36 @@ public class CustomItemRegistry {
         }
 
         items.put(name, item);
+    }
+
+    public static void registerItem(CustomItem item) {
+        register(item.getName(), item);
+    }
+
+    public static void registerSimpleItem(String name, ItemStack item) {
+        register(name, new CustomItem(name) {
+            @Override
+            public ItemStack getVanilla() {
+                return item;
+            }
+        });
+    }
+
+    public static void registerSimpleItem(String name, Material item) {
+        registerSimpleItem(name, new ItemStack(item));
+    }
+
+    public static void registerSimpleItem(String name, Material material, String displayName) {
+        registerItem(new CustomItem(name) {
+            @Override
+            public ItemStack getVanilla() {
+                ItemStack item = new ItemStack(material);
+                ItemMeta meta = item.getItemMeta();
+                meta.displayName(Component.text(displayName).decoration(TextDecoration.ITALIC, false));
+                item.setItemMeta(meta);
+                return item;
+            }
+        });
     }
 
     @Nullable

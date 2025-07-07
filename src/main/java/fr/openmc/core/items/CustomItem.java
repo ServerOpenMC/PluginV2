@@ -11,7 +11,7 @@ public abstract class CustomItem {
 
     public CustomItem(String name) {
         this.name = name;
-        CustomItemRegistry.register(name, this);
+//        CustomItemRegistry.register(name, this);
     }
 
     public ItemStack getItemsAdder() {
