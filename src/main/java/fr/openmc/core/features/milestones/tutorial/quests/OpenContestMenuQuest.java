@@ -74,7 +74,7 @@ public class OpenContestMenuQuest extends Quest implements Listener {
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (!message.equalsIgnoreCase("/contest")) return;
+        if (!message.equals("/contest")) return;
 
         this.incrementProgress(player.getUniqueId());
     }
