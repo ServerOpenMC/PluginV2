@@ -6,15 +6,14 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
 public class CityMoneyUpdateEvent extends Event {
 
     private static final HandlerList HANDLERS = new HandlerList();
 
-    private final double difference;
-    private final double before;
-    private final double after;
-    private final City city;
+    @Getter private double difference;
+    @Getter private double before;
+    @Getter private double after;
+    @Getter private City city;
 
     public CityMoneyUpdateEvent(City city, double before, double after) {
         this.city = city;

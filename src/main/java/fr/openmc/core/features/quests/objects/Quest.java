@@ -1,8 +1,6 @@
 package fr.openmc.core.features.quests.objects;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import fr.openmc.core.utils.messages.MessageType;
@@ -14,10 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Quest {
 
     private final String name;
-    private final List<String> baseDescription;
+    private final String baseDescription;
     private final ItemStack icon;
     private final boolean isLargeActionBar;
     private final List<QuestTier> tiers = new ArrayList<>();
@@ -47,7 +42,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - ItemStack
      */
-    public Quest(String name, List<String> baseDescription, ItemStack icon) {
+    public Quest(String name, String baseDescription, ItemStack icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = icon;
@@ -61,7 +56,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - Material
      */
-    public Quest(String name, List<String> baseDescription, Material icon) {
+    public Quest(String name, String baseDescription, Material icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = new ItemStack(icon);
@@ -76,7 +71,7 @@ public class Quest {
      * @param icon            The icon representing the quest - ItemStack
      * @param isLargeActionBar If true, the quest will be displayed in large action bar
      */
-    public Quest(String name, List<String> baseDescription, ItemStack icon, boolean isLargeActionBar) {
+    public Quest(String name, String baseDescription, ItemStack icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = icon;
@@ -91,7 +86,7 @@ public class Quest {
      * @param icon            The icon representing the quest - Material
      * @param isLargeActionBar If true, the quest will be displayed in large action bar
      */
-    public Quest(String name, List<String> baseDescription, Material icon, boolean isLargeActionBar) {
+    public Quest(String name, String baseDescription, Material icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = new ItemStack(icon);
@@ -191,24 +186,6 @@ public class Quest {
     }
 
     /**
-     * Get the name of the quest for a player.
-     * <p>
-     * The name can contain the placeholder {target} which will be replaced by the current target number.
-     * And the placeholder {s} which will be replaced by "s" if the current target is greater than 1.
-     *
-     * @param playerUUID The UUID of the player
-     * @return the name of the quest for the player
-     */
-    public String getName(UUID playerUUID) {
-        int target = this.getCurrentTarget(playerUUID);
-        String s = target > 1 ? "s" : "";
-
-        return this.name
-                .replace("{target}", String.valueOf(target))
-                .replace("{s}", s);
-    }
-
-    /**
      * Get the description of the quest for a player.
      * <p>
      * The description can contain the placeholder {target} which will be replaced by the current target number.
@@ -216,15 +193,10 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the description of the quest for the player
      */
-    public List<String> getDescription(UUID playerUUID) {
-        int target = this.getCurrentTarget(playerUUID);
-        String s = target > 1 ? "s" : "";
-
-        return this.baseDescription.stream()
-                .map(line -> line
-                        .replace("{target}", String.valueOf(target))
-                        .replace("{s}", s))
-                .toList();
+    public String getDescription(UUID playerUUID) {
+        return this.baseDescription
+                .replace("{target}", String.valueOf(this.getCurrentTarget(playerUUID)))
+                .replace("{s}", this.getCurrentTarget(playerUUID) > 1 ? "s" : "");
     }
 
     /**
@@ -235,15 +207,10 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the next tier description of the quest for the player
      */
-    public List<String> getNextTierDescription(UUID playerUUID) {
-        int target = this.getNextTierTarget(playerUUID);
-        String s = this.getNextTierTarget(playerUUID) > 1 ? "s" : "";
-
-        return this.baseDescription.stream()
-                .map(line -> line
-                        .replace("{target}", String.valueOf(target))
-                        .replace("{s}", s))
-                .toList();
+    public String getNextTierDescription(UUID playerUUID) {
+        return this.baseDescription
+                .replace("{target}", String.valueOf(this.getNextTierTarget(playerUUID)))
+                .replace("{s}", this.getNextTierTarget(playerUUID) > 1 ? "s" : "");
     }
 
     /**
@@ -263,6 +230,7 @@ public class Quest {
             boolean isLastTier = tierIndex == this.tiers.size() - 1;
 
             if (player != null && player.isOnline()) {
+
                 boolean hasEnoughSpace = true;
 
                 for (QuestReward reward : tier.getRewards()) {
@@ -280,10 +248,6 @@ public class Quest {
                     }
                 }
 
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player));
-                });
-
                 Component titleMain = Component.text(
                                 "✦ ", TextColor.color(15770808))
                         .append(Component.text(isLastTier
@@ -293,7 +257,7 @@ public class Quest {
                         .append(Component.text(" ✦", TextColor.color(15770808)));
 
                 Component titleSub = Component.text(this.name, TextColor.color(8087790));
-                String message = isLastTier ? "§6★ §aQuête terminée ! §e" + getName(uuid) + " §7est maintenant complète !" : "§e★ §aPalier " + (tierIndex + 1) + " §7de §e" + this.name + " §avalidé !";
+                String message = isLastTier ? "§6★ §aQuête terminée ! §e" + this.name + " §7est maintenant complète !" : "§e★ §aPalier " + (tierIndex + 1) + " §7de §e" + this.name + " §avalidé !";
 
                 player.showTitle(Title.title(
                         titleMain,
@@ -424,7 +388,6 @@ public class Quest {
 
         QuestStep step = currentTier.getSteps().get(stepIndex);
         if (step.isCompleted(playerUUID)) {
-
             int tierIndex = getCurrentTierIndex(playerUUID);
             String stepName = "Étape " + (stepIndex + 1);
 

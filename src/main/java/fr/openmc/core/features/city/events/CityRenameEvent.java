@@ -6,11 +6,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
 public class CityRenameEvent extends Event {
 
-    private final String oldName;
-    private final City city;
+    @Getter private String oldName;
+    @Getter private City city;
 
     public CityRenameEvent(String oldName, City city) {
         this.oldName = oldName;

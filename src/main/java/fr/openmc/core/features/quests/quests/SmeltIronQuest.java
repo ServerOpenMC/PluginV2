@@ -9,12 +9,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 
-import java.util.List;
-
 public class SmeltIronQuest extends Quest implements Listener {
 
     public SmeltIronQuest() {
-        super("Chaud devant !", List.of("Faire fondre {target} lingots de fer"), Material.IRON_ORE);
+        super("Chaud devant !", "Faire fondre {target} lingots de fer", Material.IRON_ORE);
 
         this.addTiers(
                 new QuestTier(256, new QuestMoneyReward(2000)),

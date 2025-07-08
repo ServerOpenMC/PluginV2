@@ -11,14 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.List;
-
 public class KillSuperCreeperQuest extends Quest implements Listener {
 
     public KillSuperCreeperQuest() {
         super(
                 "Le Boss des Creepers",
-                List.of("Tuer {target} creepers super chargés"),
+                "Tuer {target} creepers super chargés",
                 Material.CREEPER_HEAD
         );
 

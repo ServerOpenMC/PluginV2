@@ -1,15 +1,12 @@
 package fr.openmc.core.features.homes;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -62,9 +59,6 @@ public class HomeUpgradeManager {
 
                 int updatedHomesLimit = HomesManager.getHomeLimit(player.getUniqueId());
 
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    Bukkit.getPluginManager().callEvent(new HomeUpgradeEvent(player));
-                });
 
                 MessagesManager.sendMessage(player, Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$ et à §d" + aywenite + " d'Aywenite"), Prefix.HOME, MessageType.SUCCESS, true);
             } else {

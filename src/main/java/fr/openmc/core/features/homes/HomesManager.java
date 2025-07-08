@@ -124,9 +124,7 @@ public class HomesManager {
                 new DelHome(this),
                 new RelocateHome(this),
                 new TpHome(this),
-                new HomeWorld(disabledWorldHome),
-                new UpgradeHome()
-        );
+                new HomeWorld(disabledWorldHome));
 
         loadHomeLimit();
         loadHomes();

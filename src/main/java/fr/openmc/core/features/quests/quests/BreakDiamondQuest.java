@@ -11,14 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class BreakDiamondQuest extends Quest implements Listener {
 
     public BreakDiamondQuest() {
         super(
                 "Richou",
-                List.of("Casser {target} minerai{s} de diamant"),
+                "Casser {target} minerai{s} de diamant",
                 Material.DIAMOND
         );
 

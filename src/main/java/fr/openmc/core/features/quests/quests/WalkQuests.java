@@ -10,11 +10,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.List;
-
 public class WalkQuests extends Quest implements Listener {
     public WalkQuests() {
-        super("Le randonneur", List.of("Marcher {target} blocs"), Material.LEATHER_BOOTS, true);
+        super("Le randonneur", "Marcher {target} blocs", Material.LEATHER_BOOTS, true);
 
         this.addTiers(
                 new QuestTier(4000, new QuestMoneyReward(500)),

@@ -7,11 +7,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
 public class MemberJoinEvent extends Event {
 
-    private final OfflinePlayer player;
-    private final City city;
+    @Getter private OfflinePlayer player;
+    @Getter private City city;
 
     public MemberJoinEvent(OfflinePlayer player, City city) {
         this.player = player;

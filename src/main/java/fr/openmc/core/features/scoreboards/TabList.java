@@ -1,4 +1,4 @@
-package fr.openmc.core.features.displays;
+package fr.openmc.core.features.scoreboards;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;

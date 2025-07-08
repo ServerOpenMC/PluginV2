@@ -1,10 +1,8 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.events.HomeCreateEvent;
-import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
+import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -100,11 +98,7 @@ public class SetHome {
         }
 
         Home home = new Home(player.getUniqueId(), name, player.getLocation(), HomeIconRegistry.getDefaultIcon());
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new HomeCreateEvent(home, player));
-        });
         homesManager.addHome(home);
-
 
         MessagesManager.sendMessage(player, Component.text("§aVotre home §e" + name + " §aa été défini."), Prefix.HOME, MessageType.SUCCESS, true);
     }

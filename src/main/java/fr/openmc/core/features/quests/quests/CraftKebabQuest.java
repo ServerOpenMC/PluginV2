@@ -14,14 +14,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class CraftKebabQuest extends Quest implements Listener {
 
     public CraftKebabQuest() {
         super(
                 "Kebab",
-                List.of("Fabriquer {target} kebab{s}"),
+                "Fabriquer {target} kebab{s}",
                 Material.BREAD
         );
 

@@ -1,20 +1,23 @@
 package fr.openmc.core.features.contest;
 
-import fr.openmc.core.features.contest.models.Contest;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import fr.openmc.core.features.contest.models.Contest;
+
 import java.util.List;
 import java.util.UUID;
 
-@Getter
 public class ContestEndEvent extends Event {
 
+    @Getter
     private final Contest contestData;
     private static final HandlerList HANDLERS = new HandlerList();
+    @Getter
     private final List<UUID> winners;
+    @Getter
     private final List<UUID> losers;
 
     /**

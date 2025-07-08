@@ -11,7 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.UUID;
 
 public class CraftDiamondArmorQuest extends Quest implements Listener {
@@ -19,11 +18,11 @@ public class CraftDiamondArmorQuest extends Quest implements Listener {
     public CraftDiamondArmorQuest() {
         super(
                 "Armure précieuse",
-                List.of("Fabriquer une armure complète en diamant"),
+                "Fabriquer une armure complète en diamant",
                 new ItemStack(Material.DIAMOND_CHESTPLATE)
         );
 
-        Quest quest = new QuestBuilder("Armure précieuse", List.of("Fabriquer une armure complète en diamant"), new ItemStack(Material.DIAMOND_CHESTPLATE))
+        Quest quest = new QuestBuilder("Armure précieuse", "Fabriquer une armure complète en diamant", new ItemStack(Material.DIAMOND_CHESTPLATE))
                 .tier(4, "Fabriquer une armure complète en diamant",  new QuestItemReward(Material.DIAMOND, 10))
                 .step("Casque en diamant", 1)
                 .step("Plastron en diamant", 1)

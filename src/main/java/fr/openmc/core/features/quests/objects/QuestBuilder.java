@@ -8,8 +8,7 @@ import java.util.List;
 
 
 public class QuestBuilder {
-    private final String name;
-    private final List<String> description;
+    private final String name, description;
     private final ItemStack icon;
     private final List<QuestTier> tiers = new ArrayList<>();
     private int currentTierTarget;
@@ -18,7 +17,7 @@ public class QuestBuilder {
     private final List<QuestStep> currentTierSteps = new ArrayList<>();
     private boolean currentTierRequireSteps = false;
 
-    public QuestBuilder(String name, List<String> description, ItemStack icon) {
+    public QuestBuilder(String name, String description, ItemStack icon) {
         this.name = name;
         this.description = description;
         this.icon = icon;

@@ -1,9 +1,5 @@
 package fr.openmc.core.features.economy;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
@@ -12,8 +8,6 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.commands.BankCommands;
-import fr.openmc.core.features.economy.events.BankDepositEvent;
-import fr.openmc.core.features.economy.models.Bank;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -32,6 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.features.economy.models.Bank;
 
 public class BankManager {
     @Getter
@@ -57,10 +57,6 @@ public class BankManager {
 
     public static void addBankBalance(UUID player, double amount) {
         Bank bank = getPlayerBank(player);
-
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new BankDepositEvent(player));
-        });
 
         bank.deposit(amount);
         saveBank(bank);

@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.List;
 import java.util.UUID;
 
 public class WinContestQuest extends Quest implements Listener {
@@ -17,7 +16,7 @@ public class WinContestQuest extends Quest implements Listener {
     public WinContestQuest() {
         super(
                 "Choisir son camp",
-                List.of("Gagne {target} contest"),
+                "Gagne {target} contest",
                 Material.NAUTILUS_SHELL
         );
         

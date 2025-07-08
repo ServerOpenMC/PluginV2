@@ -13,10 +13,9 @@ import org.bukkit.entity.Player;
  * <p>
  * This class implements the QuestReward interface and provides functionality to give a specified amount of money to a player.
  */
-@Getter
 public class QuestMoneyReward implements QuestReward {
 
-    private final double amount;
+    @Getter private final double amount;
 
     /**
      * Constructor for the QuestMoneyReward class.

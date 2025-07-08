@@ -15,12 +15,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class MineAyweniteQuest extends Quest implements Listener {
 
     public MineAyweniteQuest() {
-        super("Ohhh... c'est précieux ça ?", List.of("Miner {target} Aywenite{s}"), CustomItemRegistry.getByName("omc_items:aywenite").getBest());
+        super("Ohhh... c'est précieux ça ?", "Miner {target} Aywenite{s}", CustomItemRegistry.getByName("omc_items:aywenite").getBest());
 
         this.addTiers(
                 new QuestTier(1, new QuestMoneyReward(20)),

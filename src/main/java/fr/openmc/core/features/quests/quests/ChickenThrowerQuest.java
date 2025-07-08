@@ -10,14 +10,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class ChickenThrowerQuest extends Quest implements Listener {
 
     public ChickenThrowerQuest() {
         super(
                 "Lanceur de Poules",
-                List.of("Lancer {target} oeufs"),
+                "Lancer {target} oeufs",
                 new ItemStack(Material.EGG)
         );
 

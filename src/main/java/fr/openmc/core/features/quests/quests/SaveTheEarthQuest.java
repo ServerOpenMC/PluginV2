@@ -9,12 +9,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.StructureGrowEvent;
 
-import java.util.List;
-
 public class SaveTheEarthQuest extends Quest implements Listener {
 
     public SaveTheEarthQuest() {
-        super("Sauvons la planète", List.of("Planter {target} arbres et les faire grandir avec des poudres d'os"), Material.OAK_SAPLING);
+        super("Sauvons la planète", "Planter {target} arbres et les faire grandir avec des poudres d'os", Material.OAK_SAPLING);
 
         this.addTiers(
                 new QuestTier(10, new QuestItemReward(Material.OAK_LOG, 32)),
