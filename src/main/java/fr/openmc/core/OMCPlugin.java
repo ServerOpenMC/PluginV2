@@ -1,29 +1,31 @@
 package fr.openmc.core;
 
-import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
+import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
-import fr.openmc.core.features.mainmenu.MainMenu;
-import fr.openmc.core.features.bossbar.BossbarManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
+import fr.openmc.core.features.displays.TabList;
+import fr.openmc.core.features.displays.bossbar.BossbarManager;
+import fr.openmc.core.features.displays.holograms.HologramLoader;
+import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.mainmenu.MainMenu;
+import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
-import fr.openmc.core.features.scoreboards.ScoreboardManager;
-import fr.openmc.core.features.scoreboards.TabList;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
@@ -84,12 +86,14 @@ public class OMCPlugin extends JavaPlugin {
         new HomesManager();
         new TPAManager();
         new FreezeManager();
+        new MilestonesManager();
         new QuestsManager();
         new QuestProgressSaveManager();
         new TabList();
         if (!OMCPlugin.isUnitTestVersion()) { // Tous les trucs faits par misieur qui fonctionne à peu près
             new LeaderboardManager();
             new MainMenu(this);
+            new HologramLoader();
         }
         new AdminShopManager();
         new AccountDetectionManager();
@@ -97,7 +101,7 @@ public class OMCPlugin extends JavaPlugin {
         new CompanyManager();// laisser apres Economy Manager
         new ContestManager();
         new PrivateMessageManager();
-
+        
         new MotdUtils();
         new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
         new DynamicCooldownManager();
@@ -111,6 +115,8 @@ public class OMCPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // SAUVEGARDE
+
+        HologramLoader.unloadAll();
 
         // - Settings
         PlayerSettingsManager.saveAllSettings();
@@ -128,6 +134,9 @@ public class OMCPlugin extends JavaPlugin {
 
         HomesManager.saveHomesData();
         HomeIconCacheManager.clearCache();
+
+        // - Milestones
+        MilestonesManager.saveMilestonesData();
 
         // - Contest
         ContestManager.saveContestData();

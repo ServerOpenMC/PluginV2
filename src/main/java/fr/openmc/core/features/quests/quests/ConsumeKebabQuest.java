@@ -10,10 +10,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class ConsumeKebabQuest extends Quest implements Listener {
 
     public ConsumeKebabQuest() {
-        super("Miam Miam", "Manger {target} kebab{s}", CustomItemRegistry.getByName("omc_foods:kebab").getBest());
+        super("Miam Miam", List.of("Manger {target} kebab{s}"), CustomItemRegistry.getByName("omc_foods:kebab").getBest());
 
         this.addTiers(
                 new QuestTier(10, new QuestMoneyReward(30)),

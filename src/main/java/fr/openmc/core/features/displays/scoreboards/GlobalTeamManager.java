@@ -1,4 +1,4 @@
-package fr.openmc.core.features.scoreboards;
+package fr.openmc.core.features.displays.scoreboards;
 
 import fr.openmc.core.utils.api.LuckPermsApi;
 import net.luckperms.api.LuckPerms;
