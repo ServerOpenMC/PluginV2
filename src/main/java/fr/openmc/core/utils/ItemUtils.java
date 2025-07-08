@@ -149,21 +149,14 @@ public class ItemUtils {
         return item;
     }
 
-    // IMPORT FROM AXENO
-    public static boolean hasEnoughItems(Player player, Material item, int amount) {
-        int totalItems = 0;
-        ItemStack[] contents = player.getInventory().getContents();
-
-        for (ItemStack is : contents) {
-            if (is != null && is.getType() == item) {
-                totalItems += is.getAmount();
-            }
-        }
-
-        if (amount == 0) return false;
-        return totalItems >= amount;
-    }
-
+    /**
+     * Check if the player has enough items in his inventory
+     *
+     * @param player the player to check
+     * @param item the item to check {@link ItemStack}
+     * @param amount the amount of items to check
+     * @return {@code true} if the player has enough items, {@code false} otherwise
+     */
     public static boolean hasEnoughItems(Player player, ItemStack item, int amount) {
         int totalItems = 0;
         ItemStack[] contents = player.getInventory().getContents();
@@ -198,30 +191,12 @@ public class ItemUtils {
     }
 
     /**
-     * Retirer le nombre d'objet au joueur (vérification obligatoire avant execution)
-     * @param player Joueur pour acceder a son inventaire
-     * @param item Objet a retirer
-     * @param quantity Quantité a retirer
+     * Remove a specific quantity of items from the player's inventory.
+     *
+     * @param player the player whose inventory will be modified
+     * @param item the item to remove, must be similar to the items in the inventory {@link ItemStack}
+     * @param quantity the number of items to remove
      */
-    public static void removeItemsFromInventory(Player player, Material item, int quantity) {
-        ItemStack[] contents = player.getInventory().getContents();
-        int remaining = quantity;
-
-        for (int i = 0; i < contents.length && remaining > 0; i++) {
-            ItemStack stack = contents[i];
-            if (stack != null && stack.getType() == item) {
-                int stackAmount = stack.getAmount();
-                if (stackAmount <= remaining) {
-                    player.getInventory().setItem(i, null);
-                    remaining -= stackAmount;
-                } else {
-                    stack.setAmount(stackAmount - remaining);
-                    remaining = 0;
-                }
-            }
-        }
-    }
-
     public static void removeItemsFromInventory(Player player, ItemStack item, int quantity) {
         ItemStack[] contents = player.getInventory().getContents();
         int remaining = quantity;

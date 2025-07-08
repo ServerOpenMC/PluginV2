@@ -24,9 +24,10 @@ public class CityChestAction {
         int aywenite = city.getChestPages() * UPGRADE_PER_AYWENITE;
 
         city.updateBalance((double) -price);
-        ItemUtils.removeItemsFromInventory(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), aywenite);
 
-        city.saveChestContent(city.getChestPages() + 1, null);
-        MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+        if (ItemUtils.takeAywenite(player, aywenite)) {
+            city.saveChestContent(city.getChestPages() + 1, null);
+            MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+        }
     }
 }
