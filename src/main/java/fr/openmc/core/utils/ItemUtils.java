@@ -160,6 +160,20 @@ public class ItemUtils {
         return totalItems >= amount;
     }
 
+    public static boolean hasEnoughItems(Player player, ItemStack item, int amount) {
+        int totalItems = 0;
+        ItemStack[] contents = player.getInventory().getContents();
+
+        for (ItemStack is : contents) {
+            if (is != null && is.isSimilar(item)) {
+                totalItems += is.getAmount();
+            }
+        }
+
+        if (amount == 0) return false;
+        return totalItems >= amount;
+    }
+
     /**
      * Dire si le joueur a des ou un slot de libre
      * @param player Joueur pour acceder a son inventaire
@@ -210,7 +224,7 @@ public class ItemUtils {
 
         for (int i = 0; i < contents.length && remaining > 0; i++) {
             ItemStack stack = contents[i];
-            if (stack != null && stack == item) {
+            if (stack != null && stack.isSimilar(item)) {
                 int stackAmount = stack.getAmount();
                 if (stackAmount <= remaining) {
                     player.getInventory().setItem(i, null);
