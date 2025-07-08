@@ -1,5 +1,9 @@
 package fr.openmc.core.utils;
 
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -235,6 +239,25 @@ public class ItemUtils {
                 }
             }
         }
+    }
+
+    public static boolean takeAywenite(Player player, int amount) {
+        ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        if (aywenite == null) return false;
+
+        if (!hasEnoughItems(player, aywenite, amount)) {
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas assez d'§dAywenite §f("+amount+ " nécessaires)"),
+                    Prefix.OPENMC,
+                    MessageType.ERROR,
+                    true
+            );
+            return false;
+        }
+
+        removeItemsFromInventory(player, aywenite, amount);
+        return true;
     }
 
     /**
