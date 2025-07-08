@@ -1,10 +1,7 @@
 package fr.openmc.core.items.usable;
 
 import fr.openmc.core.features.city.ProtectionsManager;
-import org.bukkit.FluidCollisionMode;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -12,13 +9,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 
-import java.util.Objects;
-
 public abstract class AbstractHammer extends CustomUsableItem {
 
     private final Material vanillaMaterial;
-    private final int radius;   // ↔ et ↕ – demi‑largeur  (1 ⇒ 3 blocs)
+    private final int radius;
     private final int depth;
+    private static final float MAX_HARDNESS = 41.0f;
 
     protected AbstractHammer(String namespacedId,
                              Material vanillaMaterial,
@@ -58,44 +54,52 @@ public abstract class AbstractHammer extends CustomUsableItem {
                                   int depth) {
 
         Material targetType = origin.getType();
+        if (targetType.isAir()) return;
+        if (targetType.getHardness() > MAX_HARDNESS) return;
+
+        World world = origin.getWorld();
+        int baseX = origin.getX();
+        int baseY = origin.getY();
+        int baseZ = origin.getZ();
+
+        IntTriConsumer apply;
+        switch (face) {
+            case NORTH:
+            case SOUTH:
+                apply = (x, y, z) -> work(world, player, tool, baseX + x, baseY + y, baseZ + z, targetType);
+                break;
+            case EAST:
+            case WEST:
+                apply = (x,y,z) -> work(world, player, tool, baseX + z, baseY + y, baseZ + x, targetType);
+                break;
+            case UP:
+            case DOWN:
+                apply = (x, y, z) -> work(world, player, tool, baseX + x, baseY + z, baseZ + y, targetType);
+                break;
+            default:
+                return;
+        }
 
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dy = -radius; dy <= radius; dy++) {
-                for (int dz = -depth;  dz <= depth;  dz++) {
-
-                    int ox = 0, oy = 0, oz = 0;
-                    switch (face) {
-                        case NORTH:
-                        case SOUTH:
-                            ox = dx; oy = dy; oz = dz;
-                            break;
-                        case EAST:
-                        case WEST:
-                            ox = dz; oy = dy; oz = dx;
-                            break;
-                        case UP:
-                        case DOWN:
-                            ox = dx; oy = dz; oz = dy;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    Block b = origin.getRelative(ox, oy, oz);
-
-                    if (Objects.equals(b, origin))
-                        continue;
-                    if (!ProtectionsManager.canInteract(player, b.getLocation()))
-                        continue;
-                    if (b.getType() != targetType)
-                        continue;
-                    if (b.getType().getHardness() > 41)
-                        continue;
-
-                    b.breakNaturally(tool);
+                for (int dz = -depth; dz <= depth; dz++) {
+                    if (dx == 0 && dy == 0 && dz == 0) continue;
+                    apply.accept(dx, dy, dz);
                 }
             }
         }
+    }
+
+    private static void work(World world,
+                             Player player,
+                             ItemStack tool,
+                             int x, int y, int z,
+                             Material targetType) {
+        Block b = world.getBlockAt(x, y, z);
+        if (b.getType() != targetType) return;
+        if (b.getType().getHardness() > MAX_HARDNESS) return;
+        if (!ProtectionsManager.canInteract(player, b.getLocation())) return;
+        b.breakNaturally(tool);
     }
 
     private static BlockFace getDestroyedBlockFace(Player player) {
@@ -105,5 +109,10 @@ public abstract class AbstractHammer extends CustomUsableItem {
         return result != null && result.getHitBlockFace() != null
                 ? result.getHitBlockFace()
                 : BlockFace.SELF;
+    }
+
+    @FunctionalInterface
+    private interface IntTriConsumer {
+        void accept(int x, int y, int z);
     }
 }
