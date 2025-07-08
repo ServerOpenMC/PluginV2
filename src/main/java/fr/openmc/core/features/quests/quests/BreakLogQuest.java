@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 public class BreakLogQuest extends Quest implements Listener {
@@ -36,7 +37,7 @@ public class BreakLogQuest extends Quest implements Listener {
 
 
     public BreakLogQuest() {
-        super("Bûcheron de l'extrême", "Casser {target} bûches", new ItemStack(Material.IRON_AXE));
+        super("Bûcheron de l'extrême", List.of("Casser {target} bûches"), new ItemStack(Material.IRON_AXE));
 
 
         this.addTiers(

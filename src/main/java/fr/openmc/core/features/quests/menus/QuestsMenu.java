@@ -186,7 +186,9 @@ public class QuestsMenu extends Menu {
         meta.displayName(Component.text(nameIcon + " §e" + quest.getName() + " " + tierDisplay));
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
-        lore.add(Component.text("§7" + quest.getDescription(playerUUID)));
+        quest.getDescription(playerUUID).forEach(string -> {
+            lore.add(Component.text("§7" + string));
+        });
         lore.add(bar);
 
         if (hasPendingRewards) {
@@ -242,8 +244,9 @@ public class QuestsMenu extends Menu {
             lore.add(Component.text(progressBar.toString()));
             lore.add(Component.text(""));
             lore.add(Component.text("§6➤ §eObjectif actuel:"));
-            lore.add(Component.text("  §f" + quest.getDescription(playerUUID)));
-
+            quest.getDescription(playerUUID).forEach(string -> {
+                lore.add(Component.text("  §f" + string));
+            });
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
                 lore.add(Component.text(""));
                 lore.add(Component.text("§6◆ §eAvancement:"));
