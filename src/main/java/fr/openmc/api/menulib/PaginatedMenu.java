@@ -27,6 +27,7 @@ public abstract class PaginatedMenu extends Menu {
 	@Getter
 	@Setter
 	private int page = 0;
+	@Getter
 	private int numberOfPages;
 	
 	/**
