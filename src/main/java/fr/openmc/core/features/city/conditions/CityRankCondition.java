@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -14,7 +15,7 @@ import org.bukkit.entity.Player;
 public class CityRankCondition {
 
     /**
-     * Retourne un booleen pour dire si un rank quelqu'on peut etre créer
+     * Retourne un booleen pour dire si un rank peut etre créer
      *
      * @param city   la ville sur laquelle on fait les actions
      * @param player le joueur sur lequel tester les permissions
@@ -25,6 +26,36 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+        if (!city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS)) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+        if (city.getRanks().size() >= City.MAX_RANKS) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Retourne un booleen pour dire si un rank peut etre renommé
+     *
+     * @param city   la ville sur laquelle on fait les actions
+     * @param player le joueur sur lequel tester les permissions
+     * @return booleen
+     */
+    public static boolean canRenameRank(City city, Player player, String oldRankName) {
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        CityRank rank = city.getRankByName(oldRankName);
+        if (rank == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         if (!city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;

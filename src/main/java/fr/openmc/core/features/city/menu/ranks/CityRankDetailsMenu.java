@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -162,10 +163,13 @@ public class CityRankDetailsMenu extends Menu {
 		map.put(4, new ItemBuilder(this, Material.OAK_SIGN, itemMeta -> {
 			itemMeta.displayName(Component.text("§3Nom du grade"));
 			itemMeta.lore(List.of(
-					Component.text("§7Vous pouvez modifier le nom du grade avec"),
-					Component.text("§6/city rank rename <ancien nom> <nouveau nom>"),
-					Component.text("§7Nom actuel : §3" + this.rank.getName())
+					Component.text("§7Vous pouvez modifier le nom du grade !"),
+					Component.text("§7Nom actuel : §3" + this.rank.getName()),
+					Component.text(""),
+					Component.text("§e§lCLIQUEZ POUR MODIFIER LE NOM")
 			));
+		}).setOnClick(inventoryClickEvent -> {
+			CityRankAction.renameRank(getOwner(), rank.getName());
 		}));
 		
 		map.put(8, new ItemBuilder(this, this.rank.getIcon(), itemMeta -> {
@@ -179,7 +183,7 @@ public class CityRankDetailsMenu extends Menu {
 			itemMeta.displayName(Component.text("§bModifier les permissions du grade"));
 			itemMeta.lore(List.of(
 					Component.text("§7Cliquez pour modifier les permissions du grade"),
-					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "§oAucune" : this.rank.getPermissionsSet().size()))
+					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "§oAucune" : this.rank.getPermissionsSet().size())).decoration(TextDecoration.ITALIC, false)
 			));
 		}).setOnClick(inventoryClickEvent -> {
 			CityRankPermsMenu.openBook(getOwner(), rank);

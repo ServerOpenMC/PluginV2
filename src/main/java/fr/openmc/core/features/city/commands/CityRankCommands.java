@@ -27,14 +27,12 @@ public class CityRankCommands {
 	@CommandPermission("omc.commands.city.rank")
 	public void rank(Player player) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
+
 		if (city == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		if (! city.hasPermission(player.getUniqueId(), CPermission.PERMS) && ! city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
+
 		new CityRanksMenu(player, city).open();
 	}
 	
@@ -121,24 +119,14 @@ public class CityRankCommands {
 	@Subcommand("rename")
 	@CommandPermission("omc.commands.city.rank.rename")
 	@AutoComplete("@city_ranks")
-	public void rename(Player player, @Named("old") String rankName, @Named("new") String newName) {
+	public void rename(Player player, @Named("old") String rankName) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		CityRank rank = city.getRankByName(rankName);
-		if (rank == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		
-		city.updateRank(rank, new CityRank(rank.getRankUUID(), city.getUUID(), newName, rank.getPriority(), rank.getPermissionsSet(), rank.getIcon()));
-		MessagesManager.sendMessage(player, Component.text("Le nom du grade a été mis à jour : " + rankName + " → " + newName), Prefix.CITY, MessageType.SUCCESS, false);
+
+		CityRankAction.renameRank(player, rankName);
 	}
 	
 	@Subcommand("delete")
