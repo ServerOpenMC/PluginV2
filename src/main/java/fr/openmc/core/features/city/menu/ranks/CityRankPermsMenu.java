@@ -27,7 +27,7 @@ public class CityRankPermsMenu {
 	 * @param sender The player who is opening the book.
 	 * @param rank   The city rank for which permissions are being managed.
 	 */
-	public static void openBook(Player sender, CityRank rank) {
+	public static void openBook(Player sender, CityRank rank, boolean canEdit) {
 		City city = CityManager.getPlayerCity(sender.getUniqueId());
 
 		if (city == null) {
@@ -42,7 +42,7 @@ public class CityRankPermsMenu {
 
 		List<Component> pages = new ArrayList<>();
 
-		Component retourButton = Component.text("⬅ Confirmer")
+		Component retourButton = Component.text("⬅ Retour")
 				.clickEvent(ClickEvent.callback(plr -> {
 					sender.closeInventory();
 					new CityRankDetailsMenu(sender, city, rank).open();
@@ -68,9 +68,11 @@ public class CityRankPermsMenu {
 					.decoration(TextDecoration.UNDERLINED, false)
 					.decoration(TextDecoration.BOLD, false)
 					.clickEvent(ClickEvent.callback(plr -> {
+						if (!canEdit) return;
+
 						CityRankCommands.swapPermission(sender, rank, permission);
 						sender.closeInventory();
-						openBook(sender, rank);
+						openBook(sender, rank, canEdit);
 					}))
 					.color(rank.getPermissionsSet().contains(permission) ? NamedTextColor.DARK_GREEN : NamedTextColor.RED)
 					.append(Component.newline());
