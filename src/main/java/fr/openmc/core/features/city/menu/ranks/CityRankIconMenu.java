@@ -98,6 +98,11 @@ public class CityRankIconMenu extends PaginatedMenu {
 	@Override
 	public Map<Integer, ItemStack> getButtons() {
 		Map<Integer, ItemStack> map = new HashMap<>();
+		map.put(45, new ItemBuilder(this, Material.BARRIER
+				, itemMeta -> itemMeta.displayName(Component.text("§cRetour"))).setOnClick(inventoryClickEvent -> {
+			new CityRankDetailsMenu(getOwner(), city, rank).open();
+		}));
+
 		if (hasPreviousPage())
 			map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
 					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setOnClick(inventoryClickEvent -> {
