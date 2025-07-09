@@ -13,12 +13,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CityRankPermsMenu {
-	
+
 	/**
 	 * Opens a book menu for the given player to manage permissions of a specific city rank.
 	 *
@@ -27,64 +29,88 @@ public class CityRankPermsMenu {
 	 */
 	public static void openBook(Player sender, CityRank rank) {
 		City city = CityManager.getPlayerCity(sender.getUniqueId());
-		
+
 		if (city == null) {
 			MessagesManager.sendMessage(sender, Component.text("Tu n'habites dans aucune ville"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		
-		if (! city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
+
+		if (!city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
 			MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-		
-		ArrayList<Component> pages = new ArrayList<>();
-		
-		Component firstPage = Component.text("  Permissions grade").append(
-						Component.text("\n\n")
-								.decorate(TextDecoration.UNDERLINED)
-								.decorate(TextDecoration.BOLD));
-		
-		ArrayList<Component> perms = new ArrayList<>();
-		
+
+		List<Component> pages = new ArrayList<>();
+
+		Component retourButton = Component.text("⬅ Confirmer")
+				.clickEvent(ClickEvent.callback(plr -> {
+					sender.closeInventory();
+					new CityRankDetailsMenu(sender, city, rank).open();
+				}))
+				.color(NamedTextColor.BLACK);
+
+		List<Component> currentLines = new ArrayList<>();
+		int currentLineCount = 3;
+
 		for (CPermission permission : CPermission.values()) {
 			if (permission == CPermission.OWNER) continue;
-			
-			perms.add(Component.text((rank.getPermissionsSet().contains(permission) ? "+ " : "- ") + permission.getDisplayName())
+
+			String display = (rank.getPermissionsSet().contains(permission) ? "+ " : "- ") + permission.getDisplayName();
+			int estimatedLines = estimateLines(display);
+
+			if (currentLineCount + estimatedLines + 1 > 12) {
+				pages.add(buildPage(currentLines, retourButton));
+				currentLines.clear();
+				currentLineCount = 3;
+			}
+
+			Component permComponent = Component.text(display)
 					.decoration(TextDecoration.UNDERLINED, false)
 					.decoration(TextDecoration.BOLD, false)
-					.clickEvent(ClickEvent.callback((plr1) -> {
+					.clickEvent(ClickEvent.callback(plr -> {
 						CityRankCommands.swapPermission(sender, rank, permission);
 						sender.closeInventory();
 						openBook(sender, rank);
 					}))
 					.color(rank.getPermissionsSet().contains(permission) ? NamedTextColor.DARK_GREEN : NamedTextColor.RED)
-					.append(Component.newline()));
+					.append(Component.newline());
+
+			currentLines.add(permComponent);
+			currentLineCount += estimatedLines;
 		}
-		
-		for (int i = 0; i < 9 && ! perms.isEmpty(); i++) {
-			firstPage = firstPage.append(perms.removeFirst());
+
+		if (!currentLines.isEmpty()) {
+			pages.add(buildPage(currentLines, retourButton));
 		}
-		
-		firstPage = firstPage.append(Component.text("⬅ Retour")
-				.clickEvent(ClickEvent.callback((plr1) -> {
-					sender.closeInventory();
-					new CityRankDetailsMenu(sender, city, rank).open();
-				}))
-				.color(NamedTextColor.BLACK));
-		
-		pages.add(firstPage);
-		
-		while (! perms.isEmpty()) {
-			Component page = Component.text("");
-			
-			for (int i = 0; i < 9 && ! perms.isEmpty(); i++) {
-				page = page.append(perms.removeFirst());
-			}
-			
-			pages.add(page);
-		}
-		
+
 		sender.openBook(Book.book(Component.text(""), Component.text(""), pages));
+	}
+
+	private static Component buildPage(List<Component> lines, Component retourButton) {
+		Component page = Component.text("")
+				.append(Component.text("Permissions Grades\n\n")
+						.decorate(TextDecoration.UNDERLINED)
+						.decorate(TextDecoration.BOLD));
+
+		int estimatedLineCount = 3;
+
+		for (Component line : lines) {
+			String plain = PlainTextComponentSerializer.plainText().serialize(line);
+			int estimatedLines = estimateLines(plain);
+			estimatedLineCount += estimatedLines;
+			page = page.append(line);
+		}
+
+		while (estimatedLineCount < 12) {
+			page = page.append(Component.newline());
+			estimatedLineCount++;
+		}
+
+		page = page.append(retourButton);
+		return page;
+	}
+
+	private static int estimateLines(String line) {
+		return (line.length() / 24) + 1;
 	}
 }
