@@ -5,7 +5,6 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.menu.ranks.CityRankDetailsMenu;
-import fr.openmc.core.features.city.menu.ranks.CityRankMemberMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRanksMenu;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.messages.MessageType;
@@ -88,28 +87,7 @@ public class CityRankCommands {
 	@CommandPermission("omc.commands.city.rank.assign")
 	@AutoComplete("@city_ranks @city_members")
 	public void assign(Player player, @Optional @Named("rank") String rankName, @Optional @Named("player") OfflinePlayer target) {
-		City city = CityManager.getPlayerCity(player.getUniqueId());
-		if (city == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		if (!city.hasPermission(player.getUniqueId(), CPermission.ASSIGN_RANKS)) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		CityRank rank = city.getRankByName(rankName);
-		if (target == null && rank == null) {
-			new CityRankMemberMenu(player, city).open();
-			return;
-		} else if (target == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOTFOUND.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		} else if (rank == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-			return;
-		}
-		
-		city.changeRank(player, target.getUniqueId(), rank);
+		CityRankAction.assignRank(player, rankName, target);
 	}
 	
 	@Subcommand("rename")

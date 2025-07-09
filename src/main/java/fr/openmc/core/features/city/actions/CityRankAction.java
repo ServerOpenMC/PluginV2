@@ -4,10 +4,12 @@ import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityRankCondition;
 import fr.openmc.core.features.city.menu.ranks.CityRankDetailsMenu;
+import fr.openmc.core.features.city.menu.ranks.CityRankMemberMenu;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -15,6 +17,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
@@ -152,5 +155,30 @@ public class CityRankAction {
 
             new CityRankDetailsMenu(player, city, rank).open();
         }, List.of(Component.text("§cCette action est irréversible")), List.of()).open();
+    }
+
+    public static void assignRank(Player player, String rankName, OfflinePlayer member) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        if (!city.hasPermission(player.getUniqueId(), CPermission.ASSIGN_RANKS)) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        CityRank rank = city.getRankByName(rankName);
+        if (member == null && rank == null) {
+            new CityRankMemberMenu(player, city).open();
+            return;
+        } else if (member == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOTFOUND.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        } else if (rank == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        city.changeRank(player, member.getUniqueId(), rank);
     }
 }

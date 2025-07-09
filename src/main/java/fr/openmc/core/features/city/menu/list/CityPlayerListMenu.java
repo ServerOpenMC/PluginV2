@@ -63,21 +63,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
         try {
             for (UUID uuid : city.getMembers()) {
                 OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+                String title = city.getRankName(uuid);
 
-                boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
-                String title = "";
-                if (hasPermissionOwner) {
-                    title = "Propriétaire ";
-                } else if (MayorManager.cityMayor.get(city.getUUID()).getUUID() == uuid) {
-                    title = "Maire ";
-                } else {
-                    title = "Membre ";
-                }
-
-                String finalTitle = title;
-                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                    itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                }));
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
             }
             return items;
         } catch (Exception e) {

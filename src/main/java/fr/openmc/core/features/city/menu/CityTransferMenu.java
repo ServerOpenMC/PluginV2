@@ -61,9 +61,9 @@ public class CityTransferMenu extends PaginatedMenu {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
             items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text("Membre " + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                itemMeta.displayName(Component.text(city.getRankName(uuid) + " " + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(List.of(
-                        Component.text("§7Voulez-vous donner à §d" + playerOffline.getName() + " §7votre ville ?"),
+                        Component.text("§7Voulez-vous donner à §d" + city.getRankName(uuid) + " " + playerOffline.getName() + " §7votre ville ?"),
                         Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                 ));
             }).setOnClick(inventoryClickEvent -> {

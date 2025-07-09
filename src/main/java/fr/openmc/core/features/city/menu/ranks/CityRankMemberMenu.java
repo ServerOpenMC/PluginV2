@@ -12,6 +12,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -24,8 +25,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class CityRankMemberMenu extends PaginatedMenu {
-	
-	private City city;
+
+	private final City city;
 	
 	public CityRankMemberMenu(Player owner, City city) {
 		super(owner);
@@ -49,23 +50,26 @@ public class CityRankMemberMenu extends PaginatedMenu {
 		for (UUID uuid : members) {
 			OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
 			if (player == null || ! player.hasPlayedBefore()) {
-				continue; // Skip if player data is not available
+				continue;
 			}
+
+			String rankName = city.getRankName(uuid);
+
 			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-				itemMeta.displayName(Component.text(player.getName() != null ? player.getName() : "§c§oJoueur inconnu"));
+				itemMeta.displayName(Component.text(player.getName() != null ? player.getName() : "§c§oJoueur inconnu").decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(List.of(
-						Component.text("§7Cliquez pour voir les détails"),
-						Component.text("§7Grade : §e" + (city.getRankOfMember(uuid) != null ? city.getRankOfMember(uuid).getName() : "§oAucun"))
+						Component.text("§7Grade : §e" + rankName).decoration(TextDecoration.ITALIC, false),
+						Component.empty(),
+						Component.text("§e§lCLIQUEZ ICI POUR ASSIGNER UN GRADE")
 				));
 			}).setOnClick(event -> {
-				if (event.getWhoClicked() instanceof Player p) {
-					if (! city.hasPermission(getOwner().getUniqueId(), CPermission.PERMS) || ! city.hasPermission(p.getUniqueId(), CPermission.OWNER)) {
-						MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-						getOwner().closeInventory();
-						return;
-					}
-					new CityRankAssignMenu(getOwner(), uuid, city).open();
+				if (!city.hasPermission(getOwner().getUniqueId(), CPermission.ASSIGN_RANKS)) {
+					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					getOwner().closeInventory();
+					return;
 				}
+
+				new CityRankAssignMenu(getOwner(), uuid, city).open();
 			}));
 		}
 		return items;
@@ -93,7 +97,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 
 	@Override
 	public @NotNull String getName() {
-		return "Liste des membres";
+		return "Liste des membres - Grades";
 	}
 	
 	@Override

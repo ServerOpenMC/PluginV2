@@ -830,6 +830,28 @@ public class City {
         }
         return null;
     }
+
+    /**
+     * Retrieves the rank of a specific member in the city. (Propriétaire, Maire, ou un grade personalisé)
+     *
+     * @param member The UUID of the member to check.
+     * @return The CityRank object representing the member's rank, or null if not found.
+     */
+    public String getRankName(UUID member) {
+        if (this.hasPermission(member, CPermission.OWNER)) {
+            return "Propriétaire";
+        } else if (this.hasMayor() && this.getMayor().getUUID().equals(member)) {
+            return "Maire";
+        } else {
+            for (CityRank rank : cityRanks) {
+                if (rank.getMembersSet().contains(member)) {
+                    return rank.getName();
+                }
+            }
+        }
+
+        return null;
+    }
     
     /**
      * Changes the rank of a member in the city.

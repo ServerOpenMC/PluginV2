@@ -123,7 +123,11 @@ public class CityRanksMenu extends PaginatedMenu {
 					itemMeta -> {
 						itemMeta.displayName(Component.text("§aAssigner des grades"));
 						itemMeta.lore(loreAssignRanks);
-					}).setOnClick(inventoryClickEvent -> new CityRankMemberMenu(player, city).open())
+					}).setOnClick(inventoryClickEvent -> {
+						if (city.getRanks().isEmpty()) return;
+
+						new CityRankMemberMenu(player, city).open();
+					})
 			);
 		}
 
