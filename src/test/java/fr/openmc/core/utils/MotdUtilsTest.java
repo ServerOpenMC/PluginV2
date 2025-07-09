@@ -18,7 +18,7 @@ public class MotdUtilsTest {
 
     @BeforeEach
     public void setUp() {
-        server = MockBukkit.mock();
+        server = OMCPluginTest.getServer();
     }
 
     @AfterEach
