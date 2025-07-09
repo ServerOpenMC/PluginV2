@@ -1,5 +1,6 @@
 package fr.openmc.core.utils;
 
+import fr.openmc.core.OMCPluginTest;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 
