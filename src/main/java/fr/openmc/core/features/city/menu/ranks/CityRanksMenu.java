@@ -69,6 +69,8 @@ public class CityRanksMenu extends PaginatedMenu {
 		List<ItemStack> map = new ArrayList<>();
 		Player player = getOwner();
 
+		boolean canManagerRanks = city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS);
+
 		Set<CityRank> cityRanks = city.getRanks();
 		if (! cityRanks.isEmpty()) {
 			for (CityRank rank : cityRanks) {
@@ -78,9 +80,12 @@ public class CityRanksMenu extends PaginatedMenu {
 
 				map.add(new ItemBuilder(this, icon,
 						itemMeta -> {
-							itemMeta.displayName(Component.text(rankName));
+							itemMeta.displayName(Component.text("§eGrade " + rankName).decoration(TextDecoration.ITALIC, false));
 							itemMeta.lore(List.of(
-									Component.text("Priorité : " + priority).decoration(TextDecoration.ITALIC, false)
+									Component.text("§7Priorité : §d" + priority).decoration(TextDecoration.ITALIC, false),
+									Component.text("§7Permissions : §b" + rank.getPermissionsSet().size()).decoration(TextDecoration.ITALIC, false),
+									Component.text(""),
+									Component.text(canManagerRanks ? "§e§lCLIQUEZ POUR MODIFIER LE ROLE" : "§e§lCLIQUEZ POUR S'Y INFORMER")
 							));
 						}
 				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(player, city, rank).open()));
@@ -94,33 +99,50 @@ public class CityRanksMenu extends PaginatedMenu {
 		Map<Integer, ItemStack> map = new HashMap<>();
 		Player player = getOwner();
 
+
 		map.put(18, new ItemBuilder(this, Material.ARROW,
 				itemMeta -> {
 					itemMeta.displayName(Component.text("§cRetour"));
 					itemMeta.lore(List.of(Component.text("§7Cliquez pour revenir en arrière")));
 				}).setOnClick(inventoryClickEvent -> new CityMenu(player).open()));
 
-		map.put(22, new ItemBuilder(this, Material.FEATHER,
-				itemMeta -> {
-					itemMeta.displayName(Component.text("§aAssigner des grades"));
-					itemMeta.lore(List.of(
-							Component.text("§7Cliquez pour assigner les grades de la ville aux membres.")
-					));
-				}).setOnClick(inventoryClickEvent -> new CityRankMemberMenu(player, city).open()));
+		boolean canAssignRanks = city.hasPermission(player.getUniqueId(), CPermission.ASSIGN_RANKS);
 
-		List<Component> loreCreateRank = new ArrayList<>();
+		if (canAssignRanks) {
+			List<Component> loreAssignRanks = new ArrayList<>();
+			if (city.getRanks().isEmpty()) {
+				loreAssignRanks.add(Component.text("§cAucun grade n'a été créé dans cette ville."));
+				loreAssignRanks.add(Component.text("§7Créez un grade pour pouvoir l'assigner aux membres."));
+			} else {
+				loreAssignRanks.add(Component.text("§fVous pouvez assigner des grades aux membres de la ville."));
+				loreAssignRanks.add(Component.text(""));
+				loreAssignRanks.add(Component.text("§e§lCLIQUEZ POUR ASSIGNER UN GRADE"));
+			}
 
-		if (city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
-			loreCreateRank.add(Component.text("§fVous pouvez faire un grade, §aun ensemble de permission !"));
-			loreCreateRank.add(Component.text(""));
-			loreCreateRank.add(Component.text("§e§lCLIQUEZ POUR CREER UN GRADE"));
+			map.put(22, new ItemBuilder(this, Material.FEATHER,
+					itemMeta -> {
+						itemMeta.displayName(Component.text("§aAssigner des grades"));
+						itemMeta.lore(loreAssignRanks);
+					}).setOnClick(inventoryClickEvent -> new CityRankMemberMenu(player, city).open())
+			);
 		}
 
-		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(),
-				itemMeta -> {
-					itemMeta.displayName(Component.text("§aAjouter un grade"));
-					itemMeta.lore(loreCreateRank);
-				}).setOnClick(inventoryClickEvent -> CityRankAction.beginCreateRank(player)));
+		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS);
+
+		if (canManageRanks) {
+			List<Component> loreCreateRank = List.of(
+					Component.text("§fVous pouvez faire un grade, §aun ensemble de permission !"),
+					Component.text(""),
+					Component.text("§e§lCLIQUEZ POUR CREER UN GRADE")
+			);
+
+			map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(),
+					itemMeta -> {
+						itemMeta.displayName(Component.text("§aAjouter un grade"));
+						itemMeta.lore(loreCreateRank);
+					}).setOnClick(inventoryClickEvent -> CityRankAction.beginCreateRank(player))
+			);
+		}
 
 		return map;
 	}

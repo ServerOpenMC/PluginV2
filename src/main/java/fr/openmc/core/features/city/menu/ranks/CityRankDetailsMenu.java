@@ -11,6 +11,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -111,7 +112,7 @@ public class CityRankDetailsMenu extends Menu {
 			itemMeta.lore(List.of(
 					Component.text("§7Cliquez pour sélectionner les permissions"),
 					Component.text("§7Modifiables plus tard"),
-					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "§oAucune" : this.rank.getPermissionsSet().size()))
+					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "§oAucune" : this.rank.getPermissionsSet().size())).decoration(TextDecoration.ITALIC, false)
 			));
 		}).setOnClick(inventoryClickEvent -> CityRankPermsMenu.openBook(getOwner(), rank)));
 		

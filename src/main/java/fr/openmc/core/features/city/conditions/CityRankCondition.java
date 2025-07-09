@@ -25,7 +25,7 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
-        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
+        if (!city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
