@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -17,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
+import java.util.List;
 
 public class CityRankAction {
 
@@ -112,5 +114,43 @@ public class CityRankAction {
         }
 
         gui.open(player);
+    }
+
+    public static void deleteRank(Player player, String rankName) {
+        City city = CityManager.getPlayerCity(player.getUniqueId());
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!CityRankCondition.canDeleteRank(city, player, rankName)) {
+            return;
+        }
+
+        CityRank rank = city.getRankByName(rankName);
+        if (rank == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        new ConfirmMenu(player, () -> {
+            try {
+                if (!CityRankCondition.canDeleteRank(city, player, rankName)) {
+                    return;
+                }
+
+                city.deleteRank(rank);
+                player.closeInventory();
+                MessagesManager.sendMessage(player, Component.text("Grade " + rank.getName() + " supprimé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
+            } catch (IllegalArgumentException e) {
+                MessagesManager.sendMessage(player, Component.text("Impossible de supprimer le grade : " + e.getMessage()), Prefix.CITY, MessageType.ERROR, false);
+            }
+        }, () -> {
+            if (!CityRankCondition.canDeleteRank(city, player, rankName)) {
+                return;
+            }
+
+            new CityRankDetailsMenu(player, city, rank).open();
+        }, List.of(Component.text("§cCette action est irréversible")), List.of()).open();
     }
 }

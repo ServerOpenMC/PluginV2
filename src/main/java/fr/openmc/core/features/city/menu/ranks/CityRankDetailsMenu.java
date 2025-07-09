@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.menu.ranks;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
@@ -203,16 +202,9 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("§7Cliquez pour supprimer ce grade"),
 					Component.text("§4Cette action est irréversible")
 			));
-		}).setOnClick(inventoryClickEvent -> new ConfirmMenu(getOwner(), () -> {
-			try {
-				city.deleteRank(rank);
-				getOwner().closeInventory();
-				MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.rank.getName() + " supprimé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
-			} catch (IllegalArgumentException e) {
-				MessagesManager.sendMessage(getOwner(), Component.text("Impossible de supprimer le grade : " + e.getMessage()), Prefix.CITY, MessageType.ERROR, false);
-			}
-		}, () -> new CityRankDetailsMenu(getOwner(), city, rank).open(),
-				List.of(Component.text("§cCette action est irréversible")), List.of()).open()));
+		}).setOnClick(inventoryClickEvent -> {
+			CityRankAction.deleteRank(getOwner(), rank.getName());
+		}));
 		
 		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
 			itemMeta.displayName(Component.text("§aEnregistrer les modifications"));

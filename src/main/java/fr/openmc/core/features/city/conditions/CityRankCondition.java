@@ -66,4 +66,30 @@ public class CityRankCondition {
         }
         return true;
     }
+
+    /**
+     * Retourne un booleen pour dire si un rank peut etre supprimé
+     *
+     * @param city   la ville sur laquelle on fait les actions
+     * @param player le joueur sur lequel tester les permissions
+     * @return booleen
+     */
+    public static boolean canDeleteRank(City city, Player player, String rankName) {
+        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+        CityRank rank = city.getRankByName(rankName);
+        if (rank == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYRANKS_NOTEXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (!city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS)) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        return true;
+    }
 }
