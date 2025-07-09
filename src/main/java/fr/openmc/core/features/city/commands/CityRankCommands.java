@@ -47,7 +47,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
+		if (!city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS)) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -93,7 +93,7 @@ public class CityRankCommands {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
-        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
+		if (!city.hasPermission(player.getUniqueId(), CPermission.ASSIGN_RANKS)) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
