@@ -82,6 +82,7 @@ public class CityMenu extends Menu {
 			itemMeta.displayName(Component.text("§6Grades de la Ville"));
 			itemMeta.lore(List.of(
 					Component.text("§7Gérer les grades de votre ville"),
+                    Component.text("Votre Grade : §d" + city.getRankName(player.getUniqueId())),
 					Component.text(""),
 					Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX GRADES")
 			));

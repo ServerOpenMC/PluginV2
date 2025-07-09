@@ -75,7 +75,9 @@ public class CityRankDetailsMenu extends Menu {
 	 */
 	private Map<Integer, ItemStack> createRank() {
 		Map<Integer, ItemStack> map = new HashMap<>();
-		
+
+		boolean canManageRanks = city.hasPermission(getOwner().getUniqueId(), CPermission.MANAGE_RANKS);
+
 		map.put(0, new ItemBuilder(this, Material.PAPER, itemMeta -> {
 			itemMeta.displayName(Component.text("§dInsérer la priorité du grade"));
 			itemMeta.lore(List.of(
@@ -124,17 +126,19 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("§7Cliquez pour annuler la création du grade")
 			));
 		}).setOnClick(inventoryClickEvent -> getOwner().closeInventory()));
-		
-		map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
-			itemMeta.displayName(Component.text("§aCréer le grade"));
-			itemMeta.lore(List.of(
-					Component.text("§7Cliquez pour créer le grade avec les paramètres définis")
-			));
-		}).setOnClick(inventoryClickEvent -> {
-			city.createRank(rank.validate(getOwner()));
-			getOwner().closeInventory();
-			MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.rank.getName() + " créé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
-		}));
+
+		if (canManageRanks) {
+			map.put(26, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), itemMeta -> {
+				itemMeta.displayName(Component.text("§aCréer le grade"));
+				itemMeta.lore(List.of(
+						Component.text("§7Cliquez pour créer le grade avec les paramètres définis")
+				));
+			}).setOnClick(inventoryClickEvent -> {
+				city.createRank(rank.validate(getOwner()));
+				getOwner().closeInventory();
+				MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.rank.getName() + " créé avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
+			}));
+		}
 		
 		return map;
 	}
@@ -193,7 +197,7 @@ public class CityRankDetailsMenu extends Menu {
 
 		List<Component> loreIcon = new ArrayList<>(
 				List.of(
-						Component.text("§7Voici votre icone actuelle : §9" + ItemUtils.getItemTranslation(rank.getIcon()))
+						Component.text("§7Voici votre icone actuelle : §9").append(ItemUtils.getItemTranslation(rank.getIcon()))
 				)
 		);
 		if (canManageRanks) {

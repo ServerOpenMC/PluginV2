@@ -850,7 +850,7 @@ public class City {
             }
         }
 
-        return null;
+        return "Aucun";
     }
     
     /**

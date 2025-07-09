@@ -14,7 +14,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -75,7 +74,10 @@ public class CityPlayerListMenu extends PaginatedMenu {
         for (UUID uuid : city.getMembers()) {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-            String title = city.getRankName(uuid);
+            String title = city.getRankName(uuid) + " ";
+            if (title.equals("Aucun ")) {
+                title = "";
+            }
 
             List<Component> lorePlayer;
             if (hasPermissionPerms && hasPermissionKick) {
@@ -116,8 +118,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
             }
 
             List<Component> finalLorePlayer = lorePlayer;
+            String finalTitle = title;
             items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text(title + " " +  playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(finalLorePlayer);
             }).setOnClick(inventoryClickEvent -> {
                 if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {

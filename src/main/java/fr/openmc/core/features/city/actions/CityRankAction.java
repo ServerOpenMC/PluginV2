@@ -35,7 +35,7 @@ public class CityRankAction {
         lines[0] = "";
         lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
         lines[2] = "Entrez votre nom";
-        lines[3] = "de ville ci dessus";
+        lines[3] = "de grade ci dessus";
 
         SignGUI gui;
         try {

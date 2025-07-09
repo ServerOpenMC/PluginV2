@@ -58,23 +58,29 @@ public class CityTransferMenu extends PaginatedMenu {
                     continue;
                 }
 
-            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text(city.getRankName(uuid) + " " + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                itemMeta.lore(List.of(
-                        Component.text("§7Voulez-vous donner à §d" + city.getRankName(uuid) + " " + playerOffline.getName() + " §7votre ville ?"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
-            }).setOnClick(inventoryClickEvent -> {
-                if (!hasPermissionOwner) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    return;
+                String title = city.getRankName(uuid) + " ";
+                if (title.equals("Aucun ")) {
+                    title = "";
                 }
 
-                CityTransferAction.transfer(player, city, playerOffline);
-            }));
-        }
+                String finalTitle = title;
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
+                    itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                    itemMeta.lore(List.of(
+                            Component.text("§7Voulez-vous donner à §d" + finalTitle + playerOffline.getName() + " §7votre ville ?"),
+                            Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                    ));
+                }).setOnClick(inventoryClickEvent -> {
+                    if (!hasPermissionOwner) {
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        return;
+                    }
+
+                    CityTransferAction.transfer(player, city, playerOffline);
+                }));
+            }
 
         return items;
     }
