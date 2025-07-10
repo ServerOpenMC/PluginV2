@@ -13,6 +13,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -116,7 +117,7 @@ public class CityRankDetailsMenu extends Menu {
 			itemMeta.lore(List.of(
 					Component.text("§7Cliquez pour sélectionner les permissions"),
 					Component.text("§7Modifiables plus tard"),
-					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "§oAucune" : this.rank.getPermissionsSet().size())).decoration(TextDecoration.ITALIC, false)
+					Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "Aucune" : this.rank.getPermissionsSet().size()))
 			));
 		}).setOnClick(inventoryClickEvent -> CityRankPermsMenu.openBook(getOwner(), rank, true)));
 		
@@ -177,7 +178,6 @@ public class CityRankDetailsMenu extends Menu {
 
 		List<Component> loreName = new ArrayList<>(
 				List.of(
-						Component.text("§7Vous pouvez modifier le nom du grade !"),
 						Component.text("§7Nom actuel : §3" + this.rank.getName()
 						)
 				));
@@ -197,7 +197,7 @@ public class CityRankDetailsMenu extends Menu {
 
 		List<Component> loreIcon = new ArrayList<>(
 				List.of(
-						Component.text("§7Voici votre icone actuelle : §9").append(ItemUtils.getItemTranslation(rank.getIcon()))
+						Component.text("§7Voici votre icone actuelle : §9").append(ItemUtils.getItemTranslation(rank.getIcon()).color(NamedTextColor.BLUE).decoration(TextDecoration.ITALIC, false))
 				)
 		);
 		if (canManageRanks) {
@@ -260,7 +260,7 @@ public class CityRankDetailsMenu extends Menu {
 				));
 			}).setOnClick(inventoryClickEvent -> {
 				city.updateRank(this.rank, rank.validate(getOwner()));
-				getOwner().closeInventory();
+				new CityRanksMenu(getOwner(), city).open();
 				MessagesManager.sendMessage(getOwner(), Component.text("Grade " + this.rank.getName() + " modifié avec succès !"), Prefix.CITY, MessageType.SUCCESS, false);
 			}));
 		}

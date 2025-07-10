@@ -70,6 +70,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
         boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
         boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
+        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
 
         for (UUID uuid : city.getMembers()) {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
@@ -77,7 +78,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
             String title = city.getRankName(uuid) + " ";
 
             List<Component> lorePlayer;
-            if (hasPermissionPerms && hasPermissionKick) {
+            if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
+                lorePlayer = List.of(
+                        Component.text("§7Le priopriétaire de la ville.")
+                );
+            } else if (hasPermissionPerms && hasPermissionKick) {
                 if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
                     lorePlayer = List.of(
                             Component.text("§7Vous ne pouvez pas éditer le propriétaire!")
