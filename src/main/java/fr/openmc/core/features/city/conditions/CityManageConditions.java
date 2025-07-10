@@ -9,6 +9,8 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 /**
  * Le but de cette classe est de regrouper toutes les conditions necessaires
  * pour modifier une ville (utile pour faire une modif sur menu et commandes).
@@ -41,6 +43,33 @@ public class CityManageConditions {
      *
      * @param city la ville sur laquelle on modifie le propriétaire
      * @param player le joueur sur lequel tester les permissions
+     * @param target le joueur cible vers lequel on veut transferer la ville
+     * @return booleen
+     */
+    public static boolean canCityTransfer(City city, Player player, UUID target) {
+        if (city == null) {
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (target.equals(player.getUniqueId())) {
+            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas te transférer la ville à toi-même"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        if (city.getPlayerWithPermission(CPermission.OWNER).equals(target)) {
+            MessagesManager.sendMessage(player, Component.text("Ce joueur est déjà le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        return canCityTransfer(city, player);
+    }
+
+    /**
+     * Retourne un booleen pour dire si la ville peut etre transferer
+     *
+     * @param city la ville sur laquelle on modifie le propriétaire
+     * @param player le joueur sur lequel tester les permissions
      * @return booleen
      */
     public static boolean canCityTransfer(City city, Player player) {
@@ -58,6 +87,7 @@ public class CityManageConditions {
             MessagesManager.sendMessage(player, Component.text("Ce joueur n'habite pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
         return true;
     }
 

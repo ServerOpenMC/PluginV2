@@ -6,7 +6,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -107,12 +107,11 @@ public class MascotsSkinMenu extends Menu {
                 itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
         }).setOnClick(event -> {
-
             if (!egg.equals(option.material())) {
                 int aywenite = option.price;
-                Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
-                if (ItemUtils.hasEnoughItems(getOwner(), matAywenite, aywenite)) {
-                    changeMascotsSkin(mascots, option.entityType(), getOwner(), matAywenite, aywenite);
+                ItemStack ISAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+                if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
+                    changeMascotsSkin(mascots, option.entityType(), getOwner(), aywenite);
                     getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                     getOwner().closeInventory();
                 } else {

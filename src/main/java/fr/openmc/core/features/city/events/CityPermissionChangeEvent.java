@@ -8,12 +8,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class CityPermissionChangeEvent extends Event {
 
-    @Getter private final City city;
-    @Getter private final OfflinePlayer member;
-    @Getter private final CPermission permission;
-    @Getter private final boolean value;
+    private final City city;
+    private final OfflinePlayer member;
+    private final CPermission permission;
+    private final boolean value;
 
     private static final HandlerList HANDLERS = new HandlerList();
 

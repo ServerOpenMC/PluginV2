@@ -10,7 +10,7 @@ import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -118,10 +118,10 @@ public class TradeMenu extends Menu {
                         }
                     }
 
-                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
+                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem(), amount)) {
                         int amountShell2 = (items / amount) * amountShell;
                         int items1 = (amountShell2 / amountShell) * amount;
-                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), items1);
+                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem(), items1);
                         int slotEmpty = ItemUtils.getSlotNull(player);
                         int stackAvailable = slotEmpty * 64;
                         int additem = Math.min(amountShell2, stackAvailable);
@@ -164,7 +164,7 @@ public class TradeMenu extends Menu {
                         MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
                 } else if (inventoryClickEvent.isLeftClick()) {
-                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
+                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem(), amount)) {
 
                         //mettre dans l'inv ou boite mail ?
                         if (Arrays.asList(player.getInventory().getStorageContents()).contains(null)) {
@@ -178,7 +178,7 @@ public class TradeMenu extends Menu {
                             MailboxManager.sendItems(player, player, shellContestArray);
                         }
 
-                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), amount);
+                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem(), amount);
                         MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + amount + " ")
                                 .append(tradeName)
                                 .append(Component.text(" §7contre§b " + amountShell + " Coquillages(s) de Contest")), Prefix.CONTEST, MessageType.SUCCESS, true);
