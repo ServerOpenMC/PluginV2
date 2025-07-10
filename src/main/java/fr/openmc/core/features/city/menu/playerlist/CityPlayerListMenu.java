@@ -75,9 +75,6 @@ public class CityPlayerListMenu extends PaginatedMenu {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
             String title = city.getRankName(uuid) + " ";
-            if (title.equals("Aucun ")) {
-                title = "";
-            }
 
             List<Component> lorePlayer;
             if (hasPermissionPerms && hasPermissionKick) {
@@ -118,9 +115,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
             }
 
             List<Component> finalLorePlayer = lorePlayer;
-            String finalTitle = title;
             items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(finalLorePlayer);
             }).setOnClick(inventoryClickEvent -> {
                 if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {

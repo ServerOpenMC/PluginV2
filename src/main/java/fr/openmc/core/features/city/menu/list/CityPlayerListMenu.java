@@ -63,12 +63,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
                 OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
                 String title = city.getRankName(uuid) + " ";
-                if (title.equals("Aucun ")) {
-                    title = "";
-                }
 
-                String finalTitle = title;
-                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
             }
             return items;
         } catch (Exception e) {

@@ -61,15 +61,11 @@ public class CityTransferMenu extends PaginatedMenu {
                 OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
                 String title = city.getRankName(uuid) + " ";
-                if (title.equals("Aucun ")) {
-                    title = "";
-                }
 
-                String finalTitle = title;
                 items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                    itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                    itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(List.of(
-                            Component.text("§7Voulez-vous donner à §d" + finalTitle + playerOffline.getName() + " §7votre ville ?"),
+                            Component.text("§7Voulez-vous donner à §d" + title + playerOffline.getName() + " §7votre ville ?"),
                             Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                     ));
                 }).setOnClick(inventoryClickEvent -> {
