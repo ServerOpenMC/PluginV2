@@ -6,7 +6,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.WorldGuardApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -74,13 +74,8 @@ public class CityClaimAction {
                 return;
             }
 
-            if (!ItemUtils.hasEnoughItems(sender, ayweniteItemStack.getType(), aywenite)) {
-                MessagesManager.sendMessage(sender, Component.text("Vous n'avez pas assez d'§dAywenite §f(" + aywenite + " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            city.updateBalance((double) (price * -1));
-            ItemUtils.removeItemsFromInventory(sender, ayweniteItemStack.getType(), aywenite);
+            if (ItemUtils.takeAywenite(sender, aywenite))
+                city.updateBalance((double) (price * -1));
         } else {
             city.updateFreeClaims(-1);
         }

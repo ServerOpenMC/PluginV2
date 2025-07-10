@@ -3,7 +3,7 @@ package fr.openmc.core.commands.utils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.scoreboards.ScoreboardManager;
+import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

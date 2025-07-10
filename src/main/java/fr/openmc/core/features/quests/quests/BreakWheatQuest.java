@@ -13,12 +13,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class BreakWheatQuest extends Quest implements Listener {
 
     public BreakWheatQuest() {
         super(
                 "Fermier Dévoué",
-                "Récolter {target} blé",
+                List.of("Récolter {target} blé"),
                 new ItemStack(Material.WHEAT)
         );
 

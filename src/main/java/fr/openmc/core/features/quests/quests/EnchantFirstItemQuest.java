@@ -10,10 +10,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class EnchantFirstItemQuest extends Quest implements Listener {
 
     public EnchantFirstItemQuest() {
-        super("Abracadabra", "Enchanter un objet pour la première fois", Material.ENCHANTING_TABLE);
+        super("Abracadabra", List.of("Enchanter un objet pour la première fois"), Material.ENCHANTING_TABLE);
 
         this.addTiers(
                 new QuestTier(1, new QuestMoneyReward(200))

@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import lombok.Getter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,8 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 public class OMCPluginTest {
 
     public OMCPlugin plugin;
-    public ServerMock server;
+    @Getter
+    public static ServerMock server;
 
     @BeforeEach
     public void setUp() {
