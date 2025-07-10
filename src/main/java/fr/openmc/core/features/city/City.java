@@ -898,4 +898,15 @@ public class City {
             CityManager.updateCityRank(newRank);
         });
     }
+
+    // ==================== City Milestone Methods ====================
+
+    /**
+     * Retrieves the power points of the city.
+     *
+     * @return The power points of the city, or 0 if not found.
+     */
+    public boolean getLevel() {
+        return WarManager.isCityInWar(cityUUID);
+    }
 }

@@ -74,10 +74,10 @@ public class CityMenu extends Menu {
     public @NotNull Map<Integer, ItemStack> getContent() {
         Map<Integer, ItemStack> inventory = new HashMap<>();
         Player player = getOwner();
-		
+
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		assert city != null;
-  
+
 		inventory.put(0, new ItemBuilder(this, Material.COMMAND_BLOCK, itemMeta -> {
 			itemMeta.displayName(Component.text("§6Grades de la Ville"));
 			itemMeta.lore(List.of(
@@ -96,23 +96,50 @@ public class CityMenu extends Menu {
 
         String mayorName = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getName() : "§7Aucun";
         NamedTextColor mayorColor = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
+
+        List<Component> loreMillestoneCity;
+
+        loreMillestoneCity = List.of(
+                Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
+                Component.text("§7Membre(s) : " + city.getMembers().size()),
+                Component.text(""),
+                Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
+        );
+
+        inventory.put(3, new ItemBuilder(this, Material.NETHER_STAR, itemMeta -> {
+            itemMeta.itemName(Component.text("§d" + city.getName()));
+            itemMeta.lore(loreMillestoneCity);
+        }).setOnClick(inventoryClickEvent -> {
+            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
+            if (cityCheck == null) {
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
+            if (hasPermissionOwner) {
+                CityModifyMenu menu = new CityModifyMenu(player);
+                menu.open();
+            }
+        }));
+
         List<Component> loreModifyCity;
 
-		if (hasPermissionRenameCity || hasPermissionOwner) {
-			loreModifyCity = List.of(
-					Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
-					Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
-					Component.text("§7Membre(s) : " + city.getMembers().size()),
-					Component.text(""),
-					Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
-			);
-		} else {
-			loreModifyCity = List.of(
-					Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
-					Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
-					Component.text("§7Membre(s) : " + city.getMembers().size())
-			);
-		}
+        if (hasPermissionRenameCity || hasPermissionOwner) {
+            loreModifyCity = List.of(
+                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
+                    Component.text("§7Membre(s) : " + city.getMembers().size()),
+                    Component.text(""),
+                    Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
+            );
+        } else {
+            loreModifyCity = List.of(
+                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
+                    Component.text("§7Membre(s) : " + city.getMembers().size())
+            );
+        }
 
         inventory.put(4, new ItemBuilder(this, Material.BOOKSHELF, itemMeta -> {
             itemMeta.itemName(Component.text("§d" + city.getName()));
@@ -174,7 +201,7 @@ public class CityMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 if (mascot == null) return;
                 if (mob == null) return;
-                
+
                 if (!mascot.isAlive()) {
                     MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
                     menu.open();
