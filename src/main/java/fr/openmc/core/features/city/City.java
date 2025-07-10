@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
@@ -17,6 +16,7 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -41,7 +41,7 @@ public class City {
     private String name;
     private final String cityUUID;
     private Set<UUID> members;
-    private Set<BlockVector2> chunks; // Liste des chunks claims par la ville
+    private Set<ChunkPos> chunks; // Liste des chunks claims par la ville
     private HashMap<UUID, Set<CPermission>> permissions;
     private HashMap<Integer, ItemStack[]> chestContent;
     @Getter
@@ -123,7 +123,7 @@ public class City {
     /**
      * Gets all the member of this city
      */
-    public Set<BlockVector2> getChunks() {
+    public Set<ChunkPos> getChunks() {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
@@ -312,12 +312,12 @@ public class City {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
-        BlockVector2 coords = BlockVector2.at(chunk.getX(), chunk.getZ());
-        if (chunks.contains(coords))
+        ChunkPos chunkPos = new ChunkPos(chunk.getX(), chunk.getZ());
+        if (chunks.contains(chunkPos))
             return;
-        chunks.add(coords);
+        chunks.add(chunkPos);
 
-        CityManager.claimChunk(this, coords);
+        CityManager.claimChunk(this, chunkPos);
     }
 
     /**
@@ -352,10 +352,10 @@ public class City {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
-        BlockVector2 coords = BlockVector2.at(chunkX, chunkZ);
-        chunks.remove(coords);
+        ChunkPos chunkPos = new ChunkPos(chunkX, chunkZ);
+        chunks.remove(chunkPos);
 
-        CityManager.unclaimChunk(this, coords);
+        CityManager.unclaimChunk(this, chunkPos);
     }
 
     /**
@@ -365,11 +365,11 @@ public class City {
      * @param z The Z coordinate of the chunk to check.
      * @return True if the chunk is claimed, false otherwise.
      */
-    public boolean hasChunk(double x, double z) {
+    public boolean hasChunk(int x, int z) {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
-        return chunks.contains(BlockVector2.at(x, z));
+        return chunks.contains(new ChunkPos(x, z));
     }
 
     /**
@@ -382,7 +382,7 @@ public class City {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
-        return chunks.contains(BlockVector2.at(chunk.getX(), chunk.getZ()));
+        return chunks.contains(new ChunkPos(chunk.getX(), chunk.getZ()));
     }
 
     // ==================== Economy Methods ====================

@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.actions;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.WorldGuardApi;
 import fr.openmc.core.utils.customitems.CustomItemRegistry;
@@ -37,10 +37,10 @@ public class CityClaimAction {
             return;
         }
 
-        BlockVector2 chunkVec2 = BlockVector2.at(chunkX, chunkZ);
+        ChunkPos chunkVec2 = new ChunkPos(chunkX, chunkZ);
 
         AtomicBoolean isFar = new AtomicBoolean(true);
-        for (BlockVector2 chnk : city.getChunks()) {
+        for (ChunkPos chnk : city.getChunks()) {
             if (chnk.distance(chunkVec2) == 1) { //Si c'est en diagonale alors ça sera sqrt(2) ≈1.41
                 isFar.set(false);
                 break;

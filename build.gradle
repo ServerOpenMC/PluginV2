@@ -57,7 +57,6 @@ dependencies {
     compileOnly 'net.luckperms:api:5.5'
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.14'
-    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.3.14'
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
     compileOnly 'de.oliver:FancyNpcs:2.6.0'
 

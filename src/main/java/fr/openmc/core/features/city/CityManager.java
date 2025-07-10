@@ -6,7 +6,6 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
@@ -22,6 +21,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class CityManager implements Listener {
     private static HashMap<String, City> cities = new HashMap<>();
     private static HashMap<UUID, City> playerCities = new HashMap<>();
-    private static HashMap<BlockVector2, City> claimedChunks = new HashMap<>();
+    private static HashMap<ChunkPos, City> claimedChunks = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
@@ -230,7 +230,7 @@ public class CityManager implements Listener {
         }
     }
 
-    public static void claimChunk(City city, BlockVector2 chunk) {
+    public static void claimChunk(City city, ChunkPos chunk) {
         claimedChunks.put(chunk, city);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -242,7 +242,7 @@ public class CityManager implements Listener {
         });
     }
 
-    public static void unclaimChunk(City city, BlockVector2 chunk) {
+    public static void unclaimChunk(City city, ChunkPos chunk) {
         claimedChunks.remove(chunk);
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
@@ -324,11 +324,11 @@ public class CityManager implements Listener {
      * @param inCity The cities whose chunks are requested
      * @return The cities claimed chunks
      */
-    public static Set<BlockVector2> getCityChunks(City inCity) {
-        Set<BlockVector2> chunks = new HashSet<>();
+    public static Set<ChunkPos> getCityChunks(City inCity) {
+        Set<ChunkPos> chunks = new HashSet<>();
 
         claimedChunks.forEach((chunk, city) -> {
-            if (city.getUUID() == inCity.getUUID())
+            if (city.getUUID().equals(inCity.getUUID()))
                 chunks.add(chunk);
         });
 
@@ -371,7 +371,7 @@ public class CityManager implements Listener {
      */
     @Nullable
     public static City getCityFromChunk(int x, int z) {
-        return claimedChunks.get(BlockVector2.at(x, z));
+        return claimedChunks.get(Bukkit.getWorld("world").getChunkAt(x, z));
     }
 
     /**
@@ -418,10 +418,10 @@ public class CityManager implements Listener {
             }
         }
 
-        Iterator<BlockVector2> iterator = claimedChunks.keySet().iterator();
+        Iterator<ChunkPos> iterator = claimedChunks.keySet().iterator();
         while (iterator.hasNext()) {
-            BlockVector2 vector = iterator.next();
-            City claimedCity = claimedChunks.get(vector);
+            ChunkPos chunkPos = iterator.next();
+            City claimedCity = claimedChunks.get(chunkPos);
             if (claimedCity != null && claimedCity.equals(city)) {
                 iterator.remove();
             }

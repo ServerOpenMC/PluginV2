@@ -3,9 +3,6 @@ version: ${version}
 main: fr.openmc.core.OMCPlugin
 api-version: '1.21.7'
 
-depend:
-  - WorldEdit
-
 softdepend:
   - FancyNpcs
   - PlaceholderAPI
