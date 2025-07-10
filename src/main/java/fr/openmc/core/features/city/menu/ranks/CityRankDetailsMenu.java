@@ -110,7 +110,7 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("§7Cliquez pour changer une icône"),
 					Component.text("§7Modifiable plus tard")
 			));
-		}).setOnClick(inventoryClickEvent -> new CityRankIconMenu(getOwner(), city, 0, rank).open()));
+		}).setOnClick(inventoryClickEvent -> new CityRankIconMenu(getOwner(), city, 0, rank, null).open()));
 		
 		map.put(13, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
 			itemMeta.displayName(Component.text("§bInsérer les permissions du grade"));
@@ -211,7 +211,7 @@ public class CityRankDetailsMenu extends Menu {
 		}).setOnClick(inventoryClickEvent -> {
 			if (!canManageRanks) return;
 
-			new CityRankIconMenu(getOwner(), city, 0, rank).open();
+			new CityRankIconMenu(getOwner(), city, 0, rank, null).open();
 		}));
 
 		List<Component> lorePerm = new ArrayList<>(
