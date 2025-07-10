@@ -51,15 +51,15 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle '1.21.7-R0.1-SNAPSHOT'
+    paperweight.paperDevBundle '1.21.5-R0.1-SNAPSHOT'
 
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
-    compileOnly 'net.luckperms:api:5.5'
+    compileOnly 'net.luckperms:api:5.4'
     compileOnly 'me.clip:placeholderapi:2.11.6'
-    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.14'
-    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.3.14'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
     compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
-    compileOnly 'de.oliver:FancyNpcs:2.6.0'
+    compileOnly 'de.oliver:FancyNpcs:2.5.0'
 
     implementation 'org.jetbrains:annotations:24.1.0'
     implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
@@ -72,6 +72,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
+    testImplementation 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
     testImplementation 'org.slf4j:slf4j-simple:2.0.16'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
