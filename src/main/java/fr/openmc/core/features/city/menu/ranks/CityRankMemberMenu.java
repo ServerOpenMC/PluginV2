@@ -55,14 +55,18 @@ public class CityRankMemberMenu extends PaginatedMenu {
 
 			String rankName = city.getRankName(uuid);
 
+			List<Component> lore = new ArrayList<>();
+			lore.add(Component.text("§7Grade : §e" + rankName).decoration(TextDecoration.ITALIC, false));
+			if (!city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+				lore.add(Component.empty());
+				lore.add(Component.text("§e§lCLIQUEZ ICI POUR ASSIGNER UN GRADE"));
+			}
 			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
 				itemMeta.displayName(Component.text(player.getName() != null ? player.getName() : "§c§oJoueur inconnu").decoration(TextDecoration.ITALIC, false));
-				itemMeta.lore(List.of(
-						Component.text("§7Grade : §e" + rankName).decoration(TextDecoration.ITALIC, false),
-						Component.empty(),
-						Component.text("§e§lCLIQUEZ ICI POUR ASSIGNER UN GRADE")
-				));
+				itemMeta.lore(lore);
 			}).setOnClick(event -> {
+				if (city.hasPermission(player.getUniqueId(), CPermission.OWNER)) return;
+
 				if (!city.hasPermission(getOwner().getUniqueId(), CPermission.ASSIGN_RANKS)) {
 					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 					getOwner().closeInventory();
