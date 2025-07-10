@@ -41,7 +41,7 @@ public class CityRankDetailsMenu extends Menu {
 	
 	@Override
 	public @NotNull String getName() {
-		return city.isRankExists(rank) ? "Créer le grade  " + rank.getName() : "Détails du grade " + rank.getName();
+		return city.isRankExists(rank) ? "Détails du grade " + rank.getName() : "Créer le grade  " + rank.getName();
 	}
 	
 	@Override
@@ -219,12 +219,11 @@ public class CityRankDetailsMenu extends Menu {
 						Component.text("§7Permissions actuelles : §b" + (this.rank.getPermissionsSet().isEmpty() ? "§oAucune" : this.rank.getPermissionsSet().size())).decoration(TextDecoration.ITALIC, false)
 				)
 		);
+		lorePerm.add(Component.empty());
 		if (canManageRanks) {
-			loreName.add(Component.empty());
-			loreName.add(Component.text("§e§lCLIQUEZ POUR CHANGER l'ICONE"));
+			lorePerm.add(Component.text("§e§lCLIQUEZ POUR CHANGER l'ICONE"));
 		} else {
-			loreName.add(Component.empty());
-			loreName.add(Component.text("§e§lCLIQUEZ POUR VOIR LES PERMISSIONS"));
+			lorePerm.add(Component.text("§e§lCLIQUEZ POUR VOIR LES PERMISSIONS"));
 		}
 		
 		map.put(13, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
