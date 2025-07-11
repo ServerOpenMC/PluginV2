@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.input.signgui.SignGUI;
 import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
 import fr.openmc.core.OMCPlugin;
@@ -32,6 +33,8 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.*;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -107,6 +110,10 @@ public class CityCommands {
             throw new RuntimeException(e);
         }
 
+
+        DialogInput.send(player, "Entrez le nom de la ville", MAX_LENGTH_CITY, input ->
+                CityCreateAction.beginCreateCity(player, input)
+        );
         gui.open(player);
     }
 
@@ -187,7 +194,7 @@ public class CityCommands {
         if (!CityManageConditions.canCityRename(playerCity, player)) return;
 
         if (!InputUtils.isInputCityName(name)) {
-            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum 24 caractères."), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum " + MAX_LENGTH_CITY + " caractères."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

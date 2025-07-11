@@ -7,10 +7,10 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -27,6 +27,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 
 public class TradeMenu extends Menu {
@@ -87,7 +89,7 @@ public class TradeMenu extends Menu {
             List<Map<String, Object>> selectedTrades = ContestManager.getTradeSelected(true).stream()
                     .sorted(Comparator.comparing(trade -> (String) trade.get("ress"))).toList();
 
-        List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
+        List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, MAX_LENGTH_CITY);
 
         for (int i = 0; i < selectedTrades.size(); i++) {
             Map<String, Object> trade = selectedTrades.get(i);
