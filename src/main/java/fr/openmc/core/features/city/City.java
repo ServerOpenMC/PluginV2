@@ -65,9 +65,9 @@ public class City {
         this.type = type;
         this.freeClaims = 15;
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.saveCity(this)
+        );
 
         CityManager.registerCity(this);
 
@@ -76,14 +76,14 @@ public class City {
         this.chunks = new HashSet<>();
         this.chestContent = new HashMap<>();
 
-        addChunk(chunk);
+        addChunk(chunk.getX(), chunk.getZ());
         addPlayer(owner.getUniqueId());
         addPermission(owner.getUniqueId(), CPermission.OWNER);
         saveChestContent(1, null);
 
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new CityCreationEvent(this, owner));
-        });
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new CityCreationEvent(this, owner))
+        );
     }
 
     /**
@@ -142,9 +142,9 @@ public class City {
     public void rename(String newName) {
         this.name = newName;
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.saveCity(this)
+        );
     }
 
     public void setType(String type) {
@@ -154,9 +154,9 @@ public class City {
             this.type = CityType.PEACE;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.saveCity(this)
+        );
     }
 
     public void changeType() {
@@ -166,9 +166,9 @@ public class City {
             this.type = CityType.WAR;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.saveCity(this)
+        );
     }
 
     // ==================== Members Methods ====================
@@ -206,9 +206,9 @@ public class City {
             this.members = CityManager.getCityMembers(this);
 
         members.add(player);
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new MemberJoinEvent(CacheOfflinePlayer.getOfflinePlayer(player), this));
-        });
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new MemberJoinEvent(CacheOfflinePlayer.getOfflinePlayer(player), this))
+        );
         CityManager.addPlayerToCity(this, player);
     }
 
@@ -223,10 +223,10 @@ public class City {
             this.members = CityManager.getCityMembers(this);
 
         members.remove(player);
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
             Bukkit.getPluginManager()
-                    .callEvent(new MemberLeaveEvent(CacheOfflinePlayer.getOfflinePlayer(player), this));
-        });
+                    .callEvent(new MemberLeaveEvent(CacheOfflinePlayer.getOfflinePlayer(player), this))
+        );
         CityManager.removePlayerFromCity(this, player);
     }
 
@@ -245,9 +245,9 @@ public class City {
      */
     public void updateFreeClaims(int diff) {
         freeClaims += diff;
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.saveCity(this)
+        );
     }
 
     // ==================== Chest Methods ====================
@@ -280,9 +280,9 @@ public class City {
 
         chestContent.put(page, content);
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveChestPage(this, page, content);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.saveChestPage(this, page, content)
+        );
     }
 
     /**
@@ -306,29 +306,19 @@ public class City {
      * Adds a chunk to the city's claimed chunks and updates the database
      * asynchronously.
      *
-     * @param chunk The chunk to be added.
+     * @param x The chunk X to be added.
+     * @param z The chunk Z to be added.
      */
-    public void addChunk(Chunk chunk) {
+    public void addChunk(int x, int z) {
         if (this.chunks == null)
             this.chunks = CityManager.getCityChunks(this);
 
-        ChunkPos chunkPos = new ChunkPos(chunk.getX(), chunk.getZ());
+        ChunkPos chunkPos = new ChunkPos(x, z);
         if (chunks.contains(chunkPos))
             return;
         chunks.add(chunkPos);
 
         CityManager.claimChunk(this, chunkPos);
-    }
-
-    /**
-     * Adds a chunk to the city's claimed chunks by specifying its coordinates and updates the database asynchronously.
-     *
-     * @param x The X coordinate of the chunk to be added.
-     * @param z The Z coordinate of the chunk to be added.
-     */
-    public void addChunk(int x, int z) {
-        Chunk chunk = Bukkit.getWorld("world").getChunkAt(x, z);
-        addChunk(chunk);
     }
 
     /**
@@ -396,12 +386,12 @@ public class City {
     public void setBalance(double value) {
         double before = balance;
         balance = value;
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-            Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, before, balance));
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.saveCity(this)
+        );
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new CityMoneyUpdateEvent(this, before, balance))
+        );
     }
 
     /**
@@ -565,14 +555,14 @@ public class City {
         playerPerms.add(permission);
         permissions.put(playerUUID, playerPerms);
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.addPlayerPermission(this, playerUUID, permission);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.addPlayerPermission(this, playerUUID, permission)
+        );
 
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
             Bukkit.getPluginManager().callEvent(
-                    new CityPermissionChangeEvent(this, CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, true));
-        });
+                    new CityPermissionChangeEvent(this, CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, true))
+        );
     }
 
     /**
@@ -597,13 +587,13 @@ public class City {
         playerPerms.remove(permission);
         permissions.put(playerUUID, playerPerms);
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.removePlayerPermission(this, playerUUID, permission);
-        });
-        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.removePlayerPermission(this, playerUUID, permission)
+        );
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
             Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
-                    CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false));
-        });
+                    CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false))
+        );
     }
 
     // ==================== Mascots Methods ====================
@@ -685,19 +675,15 @@ public class City {
         return getMascot().isImmunity() && !DynamicCooldownManager.isReady(cityUUID, "city:immunity");
     }
 
-    /**
-     * Updates the power of a City by adding or removing points.
-     *
-     * @param point The amount to be added or remove to the existing power.
-     */
+
     /**
      * Updates the power of a city
      */
     public void updatePowerPoints(int diff) {
         powerPoints += diff;
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            CityManager.saveCity(this);
-        });
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
+                CityManager.saveCity(this)
+        );
     }
 
     // ==================== City Milestone Methods ====================

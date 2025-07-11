@@ -3,10 +3,10 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.WorldGuardApi;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -80,7 +80,7 @@ public class CityClaimAction {
             city.updateFreeClaims(-1);
         }
 
-        city.addChunk(chunk);
+        city.addChunk(chunkX, chunkZ);
 
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
     }

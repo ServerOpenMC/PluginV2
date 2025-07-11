@@ -118,7 +118,7 @@ public class CityManager implements Listener {
         try {
             claimedChunks.clear();
             claimsDao.queryForAll()
-                    .forEach(claim -> claimedChunks.put(claim.getBlockVector(), getCity(claim.getCity())));
+                    .forEach(claim -> claimedChunks.put(claim.getChunkPos(), getCity(claim.getCity())));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -378,7 +378,7 @@ public class CityManager implements Listener {
      */
     @Nullable
     public static City getCityFromChunk(int x, int z) {
-        return claimedChunks.get(Bukkit.getWorld("world").getChunkAt(x, z));
+        return claimedChunks.get(new ChunkPos(x, z));
     }
 
     /**

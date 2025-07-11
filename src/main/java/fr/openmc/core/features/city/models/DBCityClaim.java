@@ -25,7 +25,7 @@ public class DBCityClaim {
         this.z = chunk.getZ();
     }
 
-    public ChunkPos getBlockVector() {
+    public ChunkPos getChunkPos() {
         return new ChunkPos(x, z);
     }
 }
