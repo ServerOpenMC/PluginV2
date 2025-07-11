@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 public class InputUtils {
 
     public static final int MAX_LENGTH_CITY = 24;
+    public static final int MAX_LENGTH_PLAYERNAME = 16;
 
     private InputUtils() {
         // for Sonar
