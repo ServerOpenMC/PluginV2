@@ -201,8 +201,8 @@ public class CityRankDetailsMenu extends Menu {
 				)
 		);
 		if (canManageRanks) {
-			loreName.add(Component.empty());
-			loreName.add(Component.text("§e§lCLIQUEZ POUR CHANGER l'ICONE"));
+			loreIcon.add(Component.empty());
+			loreIcon.add(Component.text("§e§lCLIQUEZ POUR CHANGER l'ICONE"));
 		}
 		
 		map.put(8, new ItemBuilder(this, this.rank.getIcon(), itemMeta -> {
