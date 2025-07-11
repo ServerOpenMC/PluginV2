@@ -85,11 +85,11 @@ public class CityRankPermsMenu {
 			pages.add(buildPage(currentLines, retourButton));
 		}
 
-		sender.openBook(Book.book(Component.text(""), Component.text(""), pages));
+        sender.openBook(Book.book(Component.empty(), Component.empty(), pages));
 	}
 
 	private static Component buildPage(List<Component> lines, Component retourButton) {
-		Component page = Component.text("")
+        Component page = Component.empty()
 				.append(Component.text("Permissions Grades\n\n")
 						.decorate(TextDecoration.UNDERLINED)
 						.decorate(TextDecoration.BOLD));

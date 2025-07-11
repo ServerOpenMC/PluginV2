@@ -137,7 +137,7 @@ public class CityChestMenu extends PaginatedMenu {
                         Component.text("§7Votre ville doit avoir : "),
                         Component.text("§8- §6" + city.getChestPages() * UPGRADE_PER_MONEY).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
                         Component.text("§8- §d" + city.getChestPages() * UPGRADE_PER_AYWENITE + " d'Aywenite"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE")
                 ));
             }).setOnClick(inventoryClickEvent -> {

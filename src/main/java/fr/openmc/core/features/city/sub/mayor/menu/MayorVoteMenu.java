@@ -11,10 +11,10 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -78,16 +78,16 @@ public class MayorVoteMenu extends PaginatedMenu {
             List<Component> loreMayor = new ArrayList<>(List.of(
                     Component.text("§8Candidat pour le Maire de " + city.getName())
             ));
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§7Votes : ").append(Component.text(vote).color(color).decoration(TextDecoration.ITALIC, false)));
             loreMayor.add(Component.text(" §8[" + getProgressBar(vote, totalVotes, color) + "§8] §7(" + getVotePercentage(vote, totalVotes) + "%)"));
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk2.getName()));
             loreMayor.addAll(perk2.getLore());
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk3.getName()));
             loreMayor.addAll(perk3.getLore());
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
 
             boolean ench;

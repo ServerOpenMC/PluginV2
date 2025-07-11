@@ -83,22 +83,22 @@ public class MayorElectionMenu extends Menu {
                 loreElection = List.of(
                         Component.text("§7Les Elections sont §6ouvertes§7!"),
                         Component.text("§7Vous pouvez changer votre vote !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§7Vote Actuel : ").append(
                                         Component.text(MayorManager.getPlayerVote(player).getName()))
                                 .decoration(TextDecoration.ITALIC, false)
                                 .color(MayorManager.getPlayerVote(player).getCandidateColor()),
                         Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
                 );
             } else {
                 loreElection = List.of(
                         Component.text("§7Les Elections sont §6ouvertes§7!"),
                         Component.text("§7Choissiez le Maire qui vous plait !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
                 );
             }
@@ -123,14 +123,14 @@ public class MayorElectionMenu extends Menu {
             loreCandidature = List.of(
                     Component.text("§7Vous vous êtes déjà §3présenter §7!"),
                     Component.text("§7Modifier votre couleur et regardez §3les Réformes §7que vous avez choisis"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
             );
         } else {
             loreCandidature = List.of(
                     Component.text("§7Vous pouvez vous §3inscire §7afin d'être maire !"),
                     Component.text("§7Séléctionner §3vos Réformes §7et votre couleur !"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR VOUS INSCRIRE")
             );
         }
@@ -141,7 +141,7 @@ public class MayorElectionMenu extends Menu {
                 Perks perk1 = PerkManager.getPerkById(city.getMayor().getIdPerk1());
                 lorePerkOwner = new ArrayList<>(List.of(
                         Component.text("§7Vous avez déjà choisis §3votre Réforme §7!"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text(perk1.getName())
                 ));
                 lorePerkOwner.addAll(perk1.getLore());
@@ -149,7 +149,7 @@ public class MayorElectionMenu extends Menu {
                 lorePerkOwner = List.of(
                         Component.text("§7Vous êtes le propriétaire de la §dVille§7!"),
                         Component.text("§7Vous pouvez choisir une §3Réforme événementiel §7!"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
             }

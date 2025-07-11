@@ -93,13 +93,13 @@ public class MayorLawMenu extends Menu {
             if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
                 loreLawPVP.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-pvp")))
                         )
                 );
             } else {
                 loreLawPVP.addAll(List.of(
-                                Component.text(""),
+                        Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR " + (law.isPvp() ? "ACTIVER" : "DESACTIVER") + " LE PVP")
                         )
                 );
@@ -154,14 +154,14 @@ public class MayorLawMenu extends Menu {
             if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
                 loreLawWarp.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-move-warp")))
                         )
                 );
             } else {
                 loreLawWarp.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR CHOISIR UN ENDROIT")
                         )
                 );
@@ -191,14 +191,14 @@ public class MayorLawMenu extends Menu {
             if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-announce")) {
                 loreLawAnnounce.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-announce")))
                         )
                 );
             } else {
                 loreLawAnnounce.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR ECRIRE LE MESSAGE")
                         )
                 );
@@ -248,14 +248,14 @@ public class MayorLawMenu extends Menu {
                 if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
                     lorePerkEvent.addAll(
                             List.of(
-                                    Component.text(""),
+                                    Component.empty(),
                                     Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-perk-event")))
                             )
                     );
                 } else {
                     lorePerkEvent.addAll(
                             List.of(
-                                    Component.text(""),
+                                    Component.empty(),
                                     Component.text("§e§lCLIQUEZ ICI POUR UTILISER LA REFORME")
                             )
                     );

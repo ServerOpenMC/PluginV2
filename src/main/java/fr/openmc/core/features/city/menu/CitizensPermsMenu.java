@@ -82,7 +82,7 @@ public class CitizensPermsMenu {
         pages.add(firstPage);
 
         while (!perms.isEmpty()) {
-            Component page = Component.text("");
+            Component page = Component.empty();
             
             for (int i = 0; i < 9 && ! perms.isEmpty(); i++) {
                 page = page.append(perms.removeFirst());
@@ -91,7 +91,7 @@ public class CitizensPermsMenu {
             pages.add(page);
         }
 
-        sender.openBook(Book.book(Component.text(""), Component.text(""), pages));
+        sender.openBook(Book.book(Component.empty(), Component.empty(), pages));
     }
 
     public static void openBook(Player sender) {
@@ -132,7 +132,7 @@ public class CitizensPermsMenu {
 
         // Creer une page par 14 joueurs
         while (!players.isEmpty()) {
-            Component page = Component.text("");
+            Component page = Component.empty();
 
             for (int i = 0; i < 14 && !players.isEmpty(); i++) {
                 page = page.append(players.removeFirst());
@@ -141,6 +141,6 @@ public class CitizensPermsMenu {
             pages.add(page);
         }
 
-        sender.openBook(Book.book(Component.text("Registre des permissions"), Component.text(""), pages));
+        sender.openBook(Book.book(Component.text("Registre des permissions"), Component.empty(), pages));
     }
 }

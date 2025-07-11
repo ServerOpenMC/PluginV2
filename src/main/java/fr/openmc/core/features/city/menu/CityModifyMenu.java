@@ -71,9 +71,9 @@ public class CityModifyMenu extends Menu {
         if (hasPermissionRenameCity) {
             loreRename = List.of(
                     Component.text("§7Vous pouvez renommer votre §dville§7."),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§7Nom actuel : §d" + city.getName()),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR LE MODIFIER")
             );
         } else {
@@ -130,7 +130,7 @@ public class CityModifyMenu extends Menu {
         if (hasPermissionOwner) {
             loreTransfer = List.of(
                     Component.text("§dLa Ville §7sera transferer à §dla personne §7que vous séléctionnerez"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
             );
         } else {
@@ -163,13 +163,13 @@ public class CityModifyMenu extends Menu {
                     if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
                         loreDelete = List.of(
                                 Component.text("§7Vous allez définitivement §csupprimer la ville!"),
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")) + " §7avant de pouvoir delete votre ville")
                         );
                     } else {
                         loreDelete = List.of(
                                 Component.text("§7Vous allez définitivement §csupprimer la ville!"),
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                         );
                     }
@@ -197,7 +197,7 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous allez retourner au Menu de votre Ville"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {

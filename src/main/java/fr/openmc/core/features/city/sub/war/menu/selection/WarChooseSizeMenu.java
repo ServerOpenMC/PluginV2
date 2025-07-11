@@ -63,7 +63,7 @@ public class WarChooseSizeMenu extends PaginatedMenu {
                 meta.displayName(Component.text("§c" + count + " vs " + count));
                 meta.lore(List.of(
                         Component.text("§7Affrontement entre " + count + " §7joueurs de chaque ville."),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ POUR CONTINUER")
                 ));
             }).setOnClick(event -> {

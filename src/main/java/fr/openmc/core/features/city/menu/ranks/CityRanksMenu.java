@@ -84,7 +84,7 @@ public class CityRanksMenu extends PaginatedMenu {
 							itemMeta.lore(List.of(
 									Component.text("§7Priorité : §d" + priority).decoration(TextDecoration.ITALIC, false),
 									Component.text("§7Permissions : §b" + rank.getPermissionsSet().size()).decoration(TextDecoration.ITALIC, false),
-									Component.text(""),
+									Component.empty(),
 									Component.text(canManagerRanks ? "§e§lCLIQUEZ POUR MODIFIER LE ROLE" : "§e§lCLIQUEZ POUR S'Y INFORMER")
 							));
 						}
@@ -115,7 +115,7 @@ public class CityRanksMenu extends PaginatedMenu {
 				loreAssignRanks.add(Component.text("§7Créez un grade pour pouvoir l'assigner aux membres."));
 			} else {
 				loreAssignRanks.add(Component.text("§fVous pouvez assigner des grades aux membres de la ville."));
-				loreAssignRanks.add(Component.text(""));
+				loreAssignRanks.add(Component.empty());
 				loreAssignRanks.add(Component.text("§e§lCLIQUEZ POUR ASSIGNER UN GRADE"));
 			}
 
@@ -136,7 +136,7 @@ public class CityRanksMenu extends PaginatedMenu {
 		if (canManageRanks) {
 			List<Component> loreCreateRank = List.of(
 					Component.text("§fVous pouvez faire un grade, §aun ensemble de permission !"),
-					Component.text(""),
+					Component.empty(),
 					Component.text("§e§lCLIQUEZ POUR CREER UN GRADE")
 			);
 

@@ -79,10 +79,10 @@ public class MayorNpcMenu extends Menu {
             List<Component> loreMayor = new ArrayList<>(List.of(
                     Component.text("§8§oMaire de " + city.getName())
             ));
-            loreMayor.add(Component.text(""));
+        loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk2.getName()));
             loreMayor.addAll(perk2.getLore());
-            loreMayor.add(Component.text(""));
+        loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk3.getName()));
             loreMayor.addAll(perk3.getLore());
 

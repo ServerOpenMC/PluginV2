@@ -13,9 +13,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mascots.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -84,7 +84,7 @@ public class MascotMenu extends Menu {
 
         List<Component> loreSkinMascot = List.of(
                 Component.text("§7Vous pouvez changer l'apparence de votre §cMascotte"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR CHANGER DE SKIN")
         );
         
@@ -109,13 +109,13 @@ public class MascotMenu extends Menu {
             if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
                 lorePosMascot = List.of(
                         Component.text("§7Vous ne pouvez pas changer la position de votre §cMascotte"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(this.mascot.getMascotUUID().toString(), "mascots:move")))
                 );
             } else {
                 lorePosMascot = List.of(
                         Component.text("§7Vous pouvez changer la position de votre §cMascotte"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR LA CHANGER DE POSITION")
                 );
             }
@@ -268,7 +268,7 @@ public class MascotMenu extends Menu {
                         Component.text("§cTemps restant §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity"))),
                         Component.text("§7Pour réduire le temps de 1 heure, vous devez posséder de :"),
                         Component.text("§8- §d" + AYWENITE_REDUCE + " d'Aywenite"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR REDUIRE LE TEMPS D'IMMUNITÉ")
                 );
 
