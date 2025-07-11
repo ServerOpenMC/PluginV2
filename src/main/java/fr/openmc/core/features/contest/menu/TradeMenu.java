@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 
 public class TradeMenu extends Menu {
