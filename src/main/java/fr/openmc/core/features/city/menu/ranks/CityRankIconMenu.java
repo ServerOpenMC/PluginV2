@@ -113,8 +113,8 @@ public class CityRankIconMenu extends PaginatedMenu {
 					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setOnClick(inventoryClickEvent -> {
 				new CityRankIconMenu(getOwner(), city, page + 1, rank, filter).open();
 			}));
-
-		map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:search_btn").getBest(), itemMeta -> {
+		
+		map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_search").getBest(), itemMeta -> {
 			itemMeta.displayName(Component.text("§bRechercher une icône"));
 			itemMeta.lore(List.of(Component.text("§7Cliquez pour saisir un mot-clé")));
 		}).setOnClick(event -> {
