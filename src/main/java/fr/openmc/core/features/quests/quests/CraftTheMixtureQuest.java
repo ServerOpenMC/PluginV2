@@ -4,9 +4,8 @@ import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.items.CustomItemRegistry;
-import org.bukkit.Material;
+import fr.openmc.core.utils.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,27 +15,27 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class CraftKebabQuest extends Quest implements Listener {
+public class CraftTheMixtureQuest extends Quest implements Listener {
 
-    public CraftKebabQuest() {
+    public CraftTheMixtureQuest() {
         super(
-                "Kebab",
-                List.of("Fabriquer {target} kebab{s}"),
-                Material.BREAD
+                "The Mixture",
+                List.of("Fabriquer {target} The Mixture{s}"),
+                CustomItemRegistry.getByName("omc_foods:the_mixture").getBest()
         );
 
         this.addTiers(
-                new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_foods:kebab").getBest(), 16)),
+                new QuestTier(1, new QuestItemReward(CustomItemRegistry.getByName("omc_foods:the_mixture").getBest(), 16)),
                 new QuestTier(32, new QuestMoneyReward(100)),
-                new QuestTier(128, new QuestMoneyReward(400)),
-                new QuestTier(512, new QuestMoneyReward(800))
+                new QuestTier(128, new QuestMoneyReward(500)),
+                new QuestTier(512, new QuestMoneyReward(2000))
         );
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerCraft(CraftItemEvent event) {
         ItemStack item = event.getCurrentItem();
-        if (item == null || !item.isSimilar(CustomItemRegistry.getByName("omc_foods:kebab").getBest()))
+        if (item == null || !item.isSimilar(CustomItemRegistry.getByName("omc_foods:the_mixture").getBest()))
             return;
 
         // Le joueur ne craft pas plus d'un kebab
