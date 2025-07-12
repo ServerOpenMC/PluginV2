@@ -69,7 +69,8 @@ public class MascotsManager {
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
                 new MascotsDeathListener(),
-                new MascotImmuneListener()
+                new MascotImmuneListener(),
+                new MascotsTargetListener()
         );
 
         CommandsManager.getHandler().register(
