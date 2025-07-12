@@ -115,9 +115,10 @@ public class OMCPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // SAUVEGARDE
-
-        HologramLoader.unloadAll();
-
+        if (!OMCPlugin.isUnitTestVersion()) {
+            HologramLoader.unloadAll();
+        }
+        
         // - Settings
         PlayerSettingsManager.saveAllSettings();
 
