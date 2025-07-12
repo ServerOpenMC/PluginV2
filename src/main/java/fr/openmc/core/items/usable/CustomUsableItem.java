@@ -3,6 +3,7 @@ package fr.openmc.core.items.usable;
 import fr.openmc.core.items.CustomItem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public abstract class CustomUsableItem extends CustomItem {
@@ -14,6 +15,7 @@ public abstract class CustomUsableItem extends CustomItem {
      */
     public CustomUsableItem(String name) {
         super(name);
+        CustomUsableItemRegistry.register(this);
     }
 
     /**
@@ -40,6 +42,8 @@ public abstract class CustomUsableItem extends CustomItem {
      */
     public void onSneakClick(Player player, PlayerInteractEvent event) {}
 
+    public void onBlockBreak(Player player, BlockBreakEvent event) {}
+
     /**
      * Handles the interaction with the item.
      *
@@ -64,6 +68,10 @@ public abstract class CustomUsableItem extends CustomItem {
                 onLeftClick(player, event);
                 break;
         }
+    }
+
+    public final void handleBlockBreak(Player player, BlockBreakEvent event) {
+        onBlockBreak(player, event);
     }
 
 }
