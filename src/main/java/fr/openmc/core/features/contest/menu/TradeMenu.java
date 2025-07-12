@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 
 public class TradeMenu extends Menu {
@@ -89,7 +88,7 @@ public class TradeMenu extends Menu {
             List<Map<String, Object>> selectedTrades = ContestManager.getTradeSelected(true).stream()
                     .sorted(Comparator.comparing(trade -> (String) trade.get("ress"))).toList();
 
-        List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, MAX_LENGTH_CITY);
+        List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
 
         for (int i = 0; i < selectedTrades.size(); i++) {
             Map<String, Object> trade = selectedTrades.get(i);
