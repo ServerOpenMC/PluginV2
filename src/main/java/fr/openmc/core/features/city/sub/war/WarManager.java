@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.sub.war;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
@@ -11,6 +10,7 @@ import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.features.city.sub.war.listeners.TntPlaceListener;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ChunkPos;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -319,22 +319,22 @@ public class WarManager {
     public static int transferChunksAfterWar(City winner, City loser, int claimAmount) {
         if (claimAmount <= 0) return 0;
 
-        BlockVector2 mascotVec = BlockVector2.at(
+        ChunkPos mascotVec = new ChunkPos(
                 loser.getMascot().getChunk().getX(),
                 loser.getMascot().getChunk().getZ()
         );
 
-        Set<BlockVector2> adjacentChunks = new HashSet<>();
-        for (BlockVector2 wChunk : winner.getChunks()) {
+        Set<ChunkPos> adjacentChunks = new HashSet<>();
+        for (ChunkPos wChunk : winner.getChunks()) {
             int wx = wChunk.getX(), wz = wChunk.getZ();
 
-            BlockVector2[] neighbors = {
-                    BlockVector2.at(wx + 1, wz),
-                    BlockVector2.at(wx - 1, wz),
-                    BlockVector2.at(wx, wz + 1),
-                    BlockVector2.at(wx, wz - 1)
+            ChunkPos[] neighbors = {
+                    new ChunkPos(wx + 1, wz),
+                    new ChunkPos(wx - 1, wz),
+                    new ChunkPos(wx, wz + 1),
+                    new ChunkPos(wx, wz - 1)
             };
-            for (BlockVector2 nb : neighbors) {
+            for (ChunkPos nb : neighbors) {
                 if (nb.equals(mascotVec)) continue;
 
                 if (loser.getChunks().contains(nb)) {
@@ -345,18 +345,18 @@ public class WarManager {
 
         final int[] transferred = {0};
 
-        BiConsumer<Queue<BlockVector2>, Set<BlockVector2>> bfsCapture = (queue, visited) -> {
+        BiConsumer<Queue<ChunkPos>, Set<ChunkPos>> bfsCapture = (queue, visited) -> {
             while (!queue.isEmpty() && transferred[0] < claimAmount) {
-                BlockVector2 current = queue.poll();
+                ChunkPos current = queue.poll();
                 int cx = current.getX(), cz = current.getZ();
 
-                BlockVector2[] neighs = {
-                        BlockVector2.at(cx + 1, cz),
-                        BlockVector2.at(cx - 1, cz),
-                        BlockVector2.at(cx, cz + 1),
-                        BlockVector2.at(cx, cz - 1)
+                ChunkPos[] neighs = {
+                        new ChunkPos(cx + 1, cz),
+                        new ChunkPos(cx - 1, cz),
+                        new ChunkPos(cx, cz + 1),
+                        new ChunkPos(cx, cz - 1)
                 };
-                for (BlockVector2 nb : neighs) {
+                for (ChunkPos nb : neighs) {
                     if (visited.contains(nb) || nb.equals(mascotVec)) continue;
 
                     if (loser.getChunks().contains(nb)) {
@@ -372,12 +372,12 @@ public class WarManager {
         };
 
         if (!adjacentChunks.isEmpty()) {
-            List<BlockVector2> toSteal = new ArrayList<>(adjacentChunks);
+            List<ChunkPos> toSteal = new ArrayList<>(adjacentChunks);
             int initialSteal = Math.min(toSteal.size(), claimAmount);
-            Queue<BlockVector2> queue = new LinkedList<>();
-            Set<BlockVector2> visited = new HashSet<>();
+            Queue<ChunkPos> queue = new LinkedList<>();
+            Set<ChunkPos> visited = new HashSet<>();
             for (int i = 0; i < initialSteal; i++) {
-                BlockVector2 c = toSteal.get(i);
+                ChunkPos c = toSteal.get(i);
                 loser.removeChunk(c.getX(), c.getZ());
                 winner.addChunk(c.getX(), c.getZ());
                 queue.add(c);
@@ -387,18 +387,18 @@ public class WarManager {
             bfsCapture.accept(queue, visited);
         } else {
             // Try from border
-            List<BlockVector2> borderChunks = new ArrayList<>();
-            for (BlockVector2 lChunk : loser.getChunks()) {
+            List<ChunkPos> borderChunks = new ArrayList<>();
+            for (ChunkPos lChunk : loser.getChunks()) {
                 if (lChunk.equals(mascotVec)) continue;
                 int lx = lChunk.getX(), lz = lChunk.getZ();
-                BlockVector2[] neighs = {
-                        BlockVector2.at(lx + 1, lz),
-                        BlockVector2.at(lx - 1, lz),
-                        BlockVector2.at(lx, lz + 1),
-                        BlockVector2.at(lx, lz - 1)
+                ChunkPos[] neighs = {
+                        new ChunkPos(lx + 1, lz),
+                        new ChunkPos(lx - 1, lz),
+                        new ChunkPos(lx, lz + 1),
+                        new ChunkPos(lx, lz - 1)
                 };
 
-                for (BlockVector2 nb : neighs) {
+                for (ChunkPos nb : neighs) {
                     if (!loser.getChunks().contains(nb)) {
                         borderChunks.add(lChunk);
                         break;
@@ -407,12 +407,12 @@ public class WarManager {
             }
             if (!borderChunks.isEmpty()) {
                 Collections.shuffle(borderChunks);
-                BlockVector2 seed = borderChunks.get(0);
+                ChunkPos seed = borderChunks.get(0);
 
                 loser.removeChunk(seed.getX(), seed.getZ());
                 winner.addChunk(seed.getX(), seed.getZ());
-                Queue<BlockVector2> queue = new LinkedList<>();
-                Set<BlockVector2> visited = new HashSet<>();
+                Queue<ChunkPos> queue = new LinkedList<>();
+                Set<ChunkPos> visited = new HashSet<>();
                 queue.add(seed);
                 visited.add(seed);
                 transferred[0]++;

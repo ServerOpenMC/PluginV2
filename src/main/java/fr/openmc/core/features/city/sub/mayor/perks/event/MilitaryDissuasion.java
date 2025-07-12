@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.utils.ChunkPos;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -28,13 +28,13 @@ public class MilitaryDissuasion implements Listener {
      * @param golemsToSpawn  The number of golems to spawn.
      */
     public static void spawnIronMan(City city, int golemsToSpawn) {
-        Set<BlockVector2> chunks = city.getChunks();
+        Set<ChunkPos> chunks = city.getChunks();
         if (chunks.isEmpty()) return;
 
         World world = Bukkit.getWorld("world");
         if (world == null) return;
 
-        List<BlockVector2> chunkList = new ArrayList<>(chunks);
+        List<ChunkPos> chunkList = new ArrayList<>(chunks);
         Random random = new Random();
 
         int spawned = 0;
@@ -43,10 +43,10 @@ public class MilitaryDissuasion implements Listener {
         while (spawned < golemsToSpawn && attempts < golemsToSpawn * 10) {
             attempts++;
 
-            BlockVector2 chunk = chunkList.get(spawned % chunkList.size());
+            ChunkPos chunk = chunkList.get(spawned % chunkList.size());
 
-            int chunkX = chunk.getBlockX();
-            int chunkZ = chunk.getBlockZ();
+            int chunkX = chunk.getX();
+            int chunkZ = chunk.getZ();
 
             int x = (chunkX << 4) + 8 + random.nextInt(8);
             int z = (chunkZ << 4) + 8 + random.nextInt(8);
