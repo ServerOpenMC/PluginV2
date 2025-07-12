@@ -48,7 +48,7 @@ public class MoreInfoMenu extends Menu {
                 Component.text("§7Le nombre de combattants sera le même partout !"),
                 Component.text("§8§oex. Si vous êtes 5 joueurs de connectés et 2 en face,"),
                 Component.text("§8§oalors vous aurez le choix de faire un 1vs1 ou un 2vs2"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Lorsque vous venez déclarer la §6guerre §7à une ville, les personnes concernées seront informées "),
                 Component.text("§7Vous aurez §6" + WarManager.TIME_PREPARATION + " min §7de préparation"),
                 Component.text("§7ce qui vous laisse le temps de s’équiper et d’aller au front !")

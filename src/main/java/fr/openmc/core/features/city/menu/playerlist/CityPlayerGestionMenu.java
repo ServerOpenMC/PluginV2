@@ -77,7 +77,7 @@ public class CityPlayerGestionMenu extends Menu {
             } else {
                 loreKick = List.of(
                         Component.text("§7Vous pouvez expulser" + playerTarget.getName() + "§7de votre §dville§7."),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR L'EXPLUSER")
                 );
             }

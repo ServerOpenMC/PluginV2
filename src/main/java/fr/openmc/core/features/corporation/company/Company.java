@@ -82,11 +82,14 @@ public class Company {
     }
 
     /**
-     * create a company object (use to deserliaze to DBCompany)
+     * Create a company object (use to deserialize to DBCompany)
      *
-     * @param name the name of the company
-     * @param owner the owner
-     * @param company_uuid the uuid of the company if it has one
+     * @param id The uuid of the company
+     * @param name The name of the company
+     * @param player The owner
+     * @param city The city of the company (can be null)
+     * @param cut The cut of the company
+     * @param balance The balance of the company
      */
     public Company(UUID id, String name, UUID player, String city, double cut, double balance) {
         this.name = name;
@@ -111,7 +114,7 @@ public class Company {
     /**
      * load permission in permsCache
      *
-     * @param playerUUID the uuid of the player
+     * @param player the uuid of the player
      */
     private void loadPermission(UUID player) {
         if (!permsCache.containsKey(player)) {

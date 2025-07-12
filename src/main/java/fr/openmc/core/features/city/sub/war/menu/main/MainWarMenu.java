@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.war.menu.main;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -16,8 +17,8 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.PlayerNameCache;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.PlayerNameCache;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -47,7 +48,17 @@ public class MainWarMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override
@@ -75,7 +86,7 @@ public class MainWarMenu extends PaginatedMenu {
                 Location mascotLocation = mascotMob == null ? new Location(Bukkit.getWorld("world"), 0, 0, 0) : mascotMob.getLocation();
 
                 List<Component> loreCity = new ArrayList<>(List.of(
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§7Propriétaire : §d" + ownerName),
                         Component.text("§7Population (en ligne) : §a" + onlineCount),
                         Component.text("§7Mascotte  : §4niv. " + city.getMascot().getLevel()),
@@ -96,7 +107,7 @@ public class MainWarMenu extends PaginatedMenu {
 
                 loreCity.add(Component.text("§7Richesses : §6" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
 
-                loreCity.add(Component.text(""));
+                loreCity.add(Component.empty());
                 loreCity.add(Component.text("§e§lCLIQUE DROIT POUR PLUS D'INFORMATIONS SUR LA VILLE"));
                 loreCity.add(Component.text("§e§lCLIQUE GAUCHE POUR LANCER UNE GUERRE"));
 

@@ -48,6 +48,10 @@ public class MascotsInteractionListener implements Listener {
         String city_uuid = city.getUUID();
         if (mascotsUUID.equals(city_uuid)) {
             Mascot mascot = city.getMascot();
+            if (mascot == null) {
+                MessagesManager.sendMessage(player, Component.text("§cAucune mascotte trouvée - Veuillez contacter le staff"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
             if (!mascot.isAlive()) {
                 new MascotsDeadMenu(player, city_uuid).open();
             } else {

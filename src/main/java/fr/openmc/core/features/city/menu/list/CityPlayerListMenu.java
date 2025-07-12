@@ -1,12 +1,11 @@
 package fr.openmc.core.features.city.menu.list;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -41,7 +40,17 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override
@@ -53,20 +62,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
             for (UUID uuid : city.getMembers()) {
                 OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-                boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
-                String title = "";
-                if (hasPermissionOwner) {
-                    title = "Propriétaire ";
-                } else if (MayorManager.cityMayor.get(city.getUUID()).getUUID() == uuid) {
-                    title = "Maire ";
-                } else {
-                    title = "Membre ";
-                }
+                String title = city.getRankName(uuid) + " ";
 
-                String finalTitle = title;
-                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                    itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                }));
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
             }
             return items;
         } catch (Exception e) {
