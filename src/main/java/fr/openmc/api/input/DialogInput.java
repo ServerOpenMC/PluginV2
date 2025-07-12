@@ -39,12 +39,16 @@ public class DialogInput {
                         .canCloseWithEscape(true)
                         .build()
                 )
-                .type(DialogType.notice(
+                .type(DialogType.confirmation(
                                 ActionButton.builder(Component.text(ButtonType.CONFIRM.getLabel()))
                                         .action(DialogAction.customClick((response, audience) -> {
                                             callback.accept(response.getText("inputtextomc"));
                                         }, ClickCallback.Options.builder().build()))
-                                        .build()
+                                        .build(), ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
+                                .action(DialogAction.customClick((response, audience) -> {
+                                    callback.accept(null);
+                                }, ClickCallback.Options.builder().build()))
+                                .build()
                         )
                 )
         );
