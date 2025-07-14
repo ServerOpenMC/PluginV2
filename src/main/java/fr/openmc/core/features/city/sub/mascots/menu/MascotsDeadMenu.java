@@ -81,14 +81,8 @@ public class MascotsDeadMenu extends Menu {
                     return;
                 }
 
-                ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-
-                if (!ItemUtils.hasEnoughItems(player, aywenite.getType(), AYWENITE_REDUCE)) {
-                    MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour reduire le cooldown de 1 heure (" + AYWENITE_REDUCE + " nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
-
-                ItemUtils.removeItemsFromInventory(player, aywenite.getType(), AYWENITE_REDUCE);
+                if (!ItemUtils.takeAywenite(player, AYWENITE_REDUCE)) return;
+                
                 DynamicCooldownManager.reduceCooldown(player, city_uuid, "city:immunity", COOLDOWN_REDUCE);
 
                 MessagesManager.sendMessage(player, Component.text("Vous venez de dépenser §d" + AYWENITE_REDUCE + " d'Aywenite §fpour §bréduire §fle cooldown d'une heure"), Prefix.CITY, MessageType.SUCCESS, false);
