@@ -28,6 +28,9 @@ group = 'fr.openmc'
 repositories {
     mavenCentral()
     maven {
+        url "https://mvnrepository.com/artifact/"
+    }
+    maven {
         url "https://oss.sonatype.org/content/groups/public/"
     }
     maven {
