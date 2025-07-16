@@ -65,16 +65,13 @@ public class MascotsManager {
         loadMascots();
 
         OMCPlugin.registerEvents(
+                new MascotsProtectionsListener(),
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
                 new MascotsDeathListener(),
                 new MascotImmuneListener(),
                 new MascotsTargetListener()
         );
-
-        if (!OMCPlugin.isUnitTestVersion()) {
-            OMCPlugin.registerEvents(new MascotsProtectionsListener());
-        }
 
         CommandsManager.getHandler().register(
                 new AdminMascotsCommands()

@@ -84,12 +84,9 @@ public class MayorManager {
                 new SymbiosisPerk(),
                 new ImpotCollection(),
                 new AgriculturalEssorPerk(),
+                new MineralRushPerk(),
                 new MilitaryDissuasion(),
                 new IdyllicRain());
-
-        if (!OMCPlugin.isUnitTestVersion()) {
-            OMCPlugin.registerEvents(new MineralRushPerk());
-        }
 
         if (ItemsAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
