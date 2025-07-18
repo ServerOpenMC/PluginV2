@@ -13,7 +13,6 @@ import org.mockbukkit.mockbukkit.MockBukkit;
 public class OMCPluginTest {
 
     public OMCPlugin plugin;
-    @Getter
     public static ServerMock server;
 
     @BeforeEach
