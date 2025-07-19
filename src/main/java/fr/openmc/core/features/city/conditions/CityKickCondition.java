@@ -39,13 +39,8 @@ public class CityKickCondition {
             return false;
         }
 
-        if (!(city.hasPermission(playerToKick.getUniqueId(), CPermission.KICK))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'exclure " + playerToKick.getName()), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
         if (city.hasPermission(playerToKick.getUniqueId(), CPermission.OWNER)) {
-            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas exclure le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas exclure le propriétaire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;

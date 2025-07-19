@@ -36,10 +36,10 @@ public class CityChangeAction {
         confirmLore.add(Component.text("§cEs-tu sûr de vouloir changer le type de ta §dville §7?"));
         confirmLore.add(Component.text("§7Vous allez passez d'une §dville " + cityTypeActuel + " à une §dville " + cityTypeAfter));
         if (typeChange == CityType.WAR) {
-            confirmLore.add(Component.text(""));
+            confirmLore.add(Component.empty());
             confirmLore.add(Component.text("§c⚠ Vous pourrez être exposé à des guerres contre des personnes à tout moment ! "));
         }
-        confirmLore.add(Component.text(""));
+        confirmLore.add(Component.empty());
         confirmLore.add(Component.text("§c⚠ Ta Mascotte §4§lperdera 1 niveau !"));
 
         ConfirmMenu menu = new ConfirmMenu(

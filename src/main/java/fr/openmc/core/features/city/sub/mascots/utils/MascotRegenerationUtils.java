@@ -53,12 +53,7 @@ public class MascotRegenerationUtils {
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
-                if (mascot == null) {
-                    this.cancel();
-                    return;
-                }
-
-                if (mascot.getCity().isInWar()) return;
+	            if (mascot.getCity().isInWar()) return;
 
                 LivingEntity mascots = (LivingEntity) mascot.getEntity();
                 if (mascots == null || mascots.isDead()) {

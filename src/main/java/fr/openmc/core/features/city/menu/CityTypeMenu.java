@@ -52,7 +52,7 @@ public class CityTypeMenu extends Menu {
 
         boolean enchantPeace = city.getType() == CityType.PEACE;
         peaceInfo.add(Component.text("§7Votre sécurité est §aassurée§7!"));
-        peaceInfo.add(Component.text(""));
+        peaceInfo.add(Component.empty());
         peaceInfo.add(Component.text("§6§lTIPS: Parfait pour build, et échanger en toute tranquilité!"));
 
         map.put(11, new ItemBuilder(this, Material.POPPY, itemMeta -> {
@@ -67,7 +67,7 @@ public class CityTypeMenu extends Menu {
 
         List<Component> warInfo = new ArrayList<>();
         warInfo.add(Component.text("§7Un monde de §cguerre §7et de §cconcurrence."));
-        warInfo.add(Component.text(""));
+        warInfo.add(Component.empty());
         warInfo.add(Component.text("§c§l ⚠ ATTENTION"));
         warInfo.add(Component.text("§8- §cLes villes étant dans le même status que vous, pourront vous §cdéclarer la guerre!"));
         warInfo.add(Component.text("§6§lTIPS: Idéal pour les tryhardeurs et les compétitifs"));

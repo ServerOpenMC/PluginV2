@@ -8,9 +8,9 @@ import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -83,13 +83,13 @@ public class MayorCreateMenu extends Menu {
             if (perk1 == null) {
                 lorePerk1 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
                 ;
             } else {
                 lorePerk1 = new ArrayList<>(perk1.getLore());
-                lorePerk1.add(Component.text(""));
+                lorePerk1.add(Component.empty());
                 lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(22, new ItemBuilder(this, iaPerk1, itemMeta -> {
@@ -120,13 +120,13 @@ public class MayorCreateMenu extends Menu {
             if (perk2 == null) {
                 lorePerk2 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
                 ;
             } else {
                 lorePerk2 = new ArrayList<>(perk2.getLore());
-                lorePerk2.add(Component.text(""));
+                lorePerk2.add(Component.empty());
                 lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(20, new ItemBuilder(this, iaPerk2, itemMeta -> {
@@ -144,13 +144,13 @@ public class MayorCreateMenu extends Menu {
             if (perk3 == null) {
                 lorePerk3 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
                 ;
             } else {
                 lorePerk3 = new ArrayList<>(perk3.getLore());
-                lorePerk3.add(Component.text(""));
+                lorePerk3.add(Component.empty());
                 lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
@@ -181,12 +181,12 @@ public class MayorCreateMenu extends Menu {
             if (perk1 == null) {
                 lorePerk1 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
             } else {
                 lorePerk1 = new ArrayList<>(perk1.getLore());
-                lorePerk1.add(Component.text(""));
+                lorePerk1.add(Component.empty());
                 lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(20, new ItemBuilder(this, iaPerk1, itemMeta -> {
@@ -204,13 +204,13 @@ public class MayorCreateMenu extends Menu {
             if (perk2 == null) {
                 lorePerk2 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
                 ;
             } else {
                 lorePerk2 = new ArrayList<>(perk2.getLore());
-                lorePerk2.add(Component.text(""));
+                lorePerk2.add(Component.empty());
                 lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
@@ -228,12 +228,12 @@ public class MayorCreateMenu extends Menu {
             if (perk3 == null) {
                 lorePerk3 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
             } else {
                 lorePerk3 = new ArrayList<>(perk3.getLore());
-                lorePerk3.add(Component.text(""));
+                lorePerk3.add(Component.empty());
                 lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
@@ -267,7 +267,7 @@ public class MayorCreateMenu extends Menu {
             nameConfirm = "§aConfirmer";
             loreConfirm = List.of(
                     Component.text("§7Vous avez choisis toutes §ales Réformes §7nécessaires"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CONTINUER LA CANDIDATURE")
             );
         } else {

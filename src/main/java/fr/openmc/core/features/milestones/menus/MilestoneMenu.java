@@ -79,7 +79,7 @@ public class MilestoneMenu extends Menu {
                 Material linkType = previousCompleted ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE;
 
                 content.put(linkSlot, new ItemBuilder(this, linkType, meta ->
-                        meta.displayName(Component.text(""))));
+                        meta.displayName(Component.empty())));
             }
         }
 
