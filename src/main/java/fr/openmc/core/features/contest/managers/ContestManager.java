@@ -15,10 +15,11 @@ import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -193,6 +194,8 @@ public class ContestManager {
      */
     public static void initPhase1() {
         data.setPhase(2);
+        ParticleUtils.color1 = null;
+        ParticleUtils.color2 = null;
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
@@ -249,6 +252,9 @@ public class ContestManager {
      */
     public static void initPhase3() {
         data.setPhase(4);
+
+        ParticleUtils.color1 = null;
+        ParticleUtils.color2 = null;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);

@@ -29,14 +29,16 @@ import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.items.usable.CustomUsableItemRegistry;
 import fr.openmc.core.utils.MotdUtils;
+import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.api.*;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -108,6 +110,9 @@ public class OMCPlugin extends JavaPlugin {
         HomeIconCacheManager.initialize();
 
         PlayerSettingsManager.loadAllPlayerSettings();
+
+        ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 130);
+        ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
 
         getLogger().info("Plugin activé");
     }
