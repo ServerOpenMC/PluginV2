@@ -23,6 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -31,6 +32,17 @@ import java.util.Set;
 import static fr.openmc.core.features.city.sub.mascots.MascotsManager.DEAD_MASCOT_NAME;
 
 public class MascotsDamageListener implements Listener {
+    private static final Set<EntityDamageEvent.DamageCause> BLOCKED_CAUSES = Set.of(
+            EntityDamageEvent.DamageCause.SUFFOCATION,
+            EntityDamageEvent.DamageCause.FALLING_BLOCK,
+            EntityDamageEvent.DamageCause.LIGHTNING,
+            EntityDamageEvent.DamageCause.BLOCK_EXPLOSION,
+            EntityDamageEvent.DamageCause.ENTITY_EXPLOSION,
+            EntityDamageEvent.DamageCause.FIRE_TICK,
+            EntityDamageEvent.DamageCause.ENTITY_ATTACK,
+            EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK
+    );
+
     @EventHandler
     void onMascotDamageCaused(EntityDamageEvent e) {
         Entity entity = e.getEntity();
@@ -41,10 +53,9 @@ public class MascotsDamageListener implements Listener {
 
         EntityDamageEvent.DamageCause cause = e.getCause();
 
-        if (cause.equals(EntityDamageEvent.DamageCause.SUFFOCATION) || cause.equals(EntityDamageEvent.DamageCause.FALLING_BLOCK) ||
-                cause.equals(EntityDamageEvent.DamageCause.LIGHTNING) || cause.equals(EntityDamageEvent.DamageCause.BLOCK_EXPLOSION) ||
-                cause.equals(EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) || cause.equals(EntityDamageEvent.DamageCause.FIRE_TICK)) {
+        if (BLOCKED_CAUSES.contains(cause)) {
             e.setCancelled(true);
+            return;
         }
 
         City city = MascotUtils.getCityFromEntity(entity.getUniqueId());
@@ -80,7 +91,10 @@ public class MascotsDamageListener implements Listener {
 
         if (!MascotUtils.isMascot(damageEntity)) return;
 
-        if (!(damager instanceof Player player)) return;
+        if (!(damager instanceof Player player)) {
+            e.setCancelled(true);
+            return;
+        }
 
         PersistentDataContainer data = damageEntity.getPersistentDataContainer();
         String pdcCityUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
@@ -216,4 +230,22 @@ public class MascotsDamageListener implements Listener {
 
     }
 
+    @EventHandler
+    public void onMobTargetMascot(EntityTargetLivingEntityEvent event) {
+        LivingEntity target = event.getTarget();
+
+        if (target == null) return;
+        if (!MascotUtils.isMascot(target)) return;
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onMascotTarget(EntityTargetLivingEntityEvent event) {
+        Entity entity = event.getEntity();
+
+        if (MascotUtils.isMascot(entity)) {
+            event.setCancelled(true);
+        }
+    }
 }
