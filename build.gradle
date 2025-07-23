@@ -51,7 +51,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle '1.21.7-R0.1-SNAPSHOT'
+    paperweight.paperDevBundle '1.21.8-R0.1-SNAPSHOT'
 
     compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.luckperms:api:5.5'

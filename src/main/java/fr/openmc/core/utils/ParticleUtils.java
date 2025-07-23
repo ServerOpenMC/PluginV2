@@ -50,8 +50,8 @@ public class ParticleUtils {
         BlockVector3 min = region.getMinimumPoint();
         BlockVector3 max = region.getMaximumPoint();
 
-        Location minLocation = new Location(world, min.getX(), min.getY(), min.getZ());
-        Location maxLocation = new Location(world, max.getX(), max.getY(), max.getZ());
+        Location minLocation = new Location(world, min.x(), min.y(), min.z());
+        Location maxLocation = new Location(world, max.x(), max.y(), max.z());
 
         new BukkitRunnable() {
             @Override
@@ -106,8 +106,8 @@ public class ParticleUtils {
         BlockVector3 min = region.getMinimumPoint();
         BlockVector3 max = region.getMaximumPoint();
 
-        Location minLocation = new Location(world, min.getX(), min.getY(), min.getZ());
-        Location maxLocation = new Location(world, max.getX(), max.getY(), max.getZ());
+        Location minLocation = new Location(world, min.x(), min.y(), min.z());
+        Location maxLocation = new Location(world, max.x(), max.y(), max.z());
 
         new BukkitRunnable() {
             final Random random = new Random();
