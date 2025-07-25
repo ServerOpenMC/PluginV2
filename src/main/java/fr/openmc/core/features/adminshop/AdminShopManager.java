@@ -36,8 +36,6 @@ public class AdminShopManager {
 
     /**
      * Constructs the AdminShopManager and loads the admin shop configuration.
-     *
-     * @param plugin The main plugin instance.
      */
     public AdminShopManager() {
         adminShopYAML = new AdminShopYAML();

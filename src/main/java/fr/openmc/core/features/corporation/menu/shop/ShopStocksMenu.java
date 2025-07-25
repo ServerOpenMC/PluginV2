@@ -2,6 +2,7 @@ package fr.openmc.core.features.corporation.menu.shop;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.shops.Shop;
@@ -47,13 +48,23 @@ public class ShopStocksMenu extends PaginatedMenu {
     }
 
     @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @Nullable Material getBorderMaterial() {
         return null;
     }
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override

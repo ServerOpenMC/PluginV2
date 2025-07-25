@@ -9,9 +9,9 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -70,7 +70,7 @@ public class MascotsDeadMenu extends Menu {
                         Component.text("§8 - §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city_uuid, "city:immunity"))),
                         Component.text("§7Pour réduire le temps de 1 heure, vous devez posséder de :"),
                         Component.text("§8- §d" + AYWENITE_REDUCE + " d'Aywenite"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR REDUIRE LE TEMPS DE REANIMATION")
                 ));
             }).setOnClick(inventoryClickEvent -> {

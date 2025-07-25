@@ -1,18 +1,20 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -30,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static fr.openmc.api.menulib.utils.StaticSlots.*;
+import static fr.openmc.api.menulib.utils.StaticSlots.combine;
 
 public class MayorVoteMenu extends PaginatedMenu {
     public MayorVoteMenu(Player owner) {
@@ -44,7 +46,17 @@ public class MayorVoteMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return combine(combine(RIGHT, LEFT), BOTTOM);
+        return combine(combine(StaticSlots.getRightSlots(getInventorySize()), StaticSlots.getLeftSlots(getInventorySize())), StaticSlots.getBottomSlots(getInventorySize()));
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override
@@ -66,16 +78,16 @@ public class MayorVoteMenu extends PaginatedMenu {
             List<Component> loreMayor = new ArrayList<>(List.of(
                     Component.text("§8Candidat pour le Maire de " + city.getName())
             ));
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§7Votes : ").append(Component.text(vote).color(color).decoration(TextDecoration.ITALIC, false)));
             loreMayor.add(Component.text(" §8[" + getProgressBar(vote, totalVotes, color) + "§8] §7(" + getVotePercentage(vote, totalVotes) + "%)"));
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk2.getName()));
             loreMayor.addAll(perk2.getLore());
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk3.getName()));
             loreMayor.addAll(perk3.getLore());
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
 
             boolean ench;

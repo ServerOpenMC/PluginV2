@@ -43,7 +43,7 @@ public class MailboxMenuManager {
         ItemMeta meta = item.getItemMeta();
         meta.setHideTooltip(true);
         meta.setCustomModelData(2005);
-        meta.displayName(Component.text(""));
+        meta.displayName(Component.empty());
         meta.setMaxStackSize(1);
         item.setItemMeta(meta);
         return item;

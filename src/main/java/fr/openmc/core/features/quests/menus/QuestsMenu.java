@@ -222,7 +222,7 @@ public class QuestsMenu extends Menu {
                     lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
                 }
             }
-            lore.add(Component.text(""));
+            lore.add(Component.empty());
         }
 
         if (isCompleted) {
@@ -242,13 +242,13 @@ public class QuestsMenu extends Menu {
 
             lore.add(Component.text("§fProgrès: §e" + progress + "§6/§e" + target + " §7(" + progressPercent + "%)"));
             lore.add(Component.text(progressBar.toString()));
-            lore.add(Component.text(""));
+            lore.add(Component.empty());
             lore.add(Component.text("§6➤ §eObjectif actuel:"));
             quest.getDescription(playerUUID).forEach(string -> {
                 lore.add(Component.text("  §f" + string));
             });
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
-                lore.add(Component.text(""));
+                lore.add(Component.empty());
                 lore.add(Component.text("§6◆ §eAvancement:"));
 
                 for (int i = 0; i < currentTier.getSteps().size(); i++) {

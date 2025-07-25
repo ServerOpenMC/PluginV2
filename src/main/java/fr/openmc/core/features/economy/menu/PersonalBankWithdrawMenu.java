@@ -56,9 +56,9 @@ public class PersonalBankWithdrawMenu extends Menu {
 
         List<Component> loreBankWithdrawAll = List.of(
                 Component.text("§7Tout l'argent placé dans §6Votre Banque §7vous sera donné"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
         );
 
@@ -79,9 +79,9 @@ public class PersonalBankWithdrawMenu extends Menu {
 
         List<Component> loreBankWithdrawHalf = List.of(
             Component.text("§7La Moitié de l'Argent sera pris de §6Votre Banque §7pour vous le donner"),
-            Component.text(""),
+                Component.empty(),
             Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-            Component.text(""),
+                Component.empty(),
             Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
         );
 
