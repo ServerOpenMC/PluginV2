@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.war.menu.selection;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
@@ -32,13 +33,23 @@ public class WarChooseSizeMenu extends PaginatedMenu {
     }
 
     @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @Nullable Material getBorderMaterial() {
         return Material.GRAY_STAINED_GLASS_PANE;
     }
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
@@ -52,7 +63,7 @@ public class WarChooseSizeMenu extends PaginatedMenu {
                 meta.displayName(Component.text("§c" + count + " vs " + count));
                 meta.lore(List.of(
                         Component.text("§7Affrontement entre " + count + " §7joueurs de chaque ville."),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ POUR CONTINUER")
                 ));
             }).setOnClick(event -> {

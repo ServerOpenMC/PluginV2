@@ -3,6 +3,7 @@ package fr.openmc.core.features.city;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
+import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.features.city.models.DBCity;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
@@ -26,6 +27,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +45,7 @@ public class City {
     private Set<UUID> members;
     private Set<ChunkPos> chunks; // Liste des chunks claims par la ville
     private HashMap<UUID, Set<CPermission>> permissions;
+    private Set<CityRank> cityRanks;
     private HashMap<Integer, ItemStack[]> chestContent;
     @Getter
     @Setter
@@ -55,6 +58,8 @@ public class City {
     private int powerPoints;
     @Getter
     private int freeClaims;
+    
+    public static final int MAX_RANKS = 18; // Maximum number of ranks allowed in a city
 
     /**
      * Constructor used for City creation
@@ -73,13 +78,16 @@ public class City {
 
         this.members = new HashSet<>();
         this.permissions = new HashMap<>();
+        this.cityRanks = new HashSet<>();
         this.chunks = new HashSet<>();
         this.chestContent = new HashMap<>();
-
+      
         addChunk(chunk.getX(), chunk.getZ());
+      
         addPlayer(owner.getUniqueId());
         addPermission(owner.getUniqueId(), CPermission.OWNER);
         saveChestContent(1, null);
+        CityManager.loadCityRanks(this);
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
                 Bukkit.getPluginManager().callEvent(new CityCreationEvent(this, owner))
@@ -529,9 +537,11 @@ public class City {
             this.permissions = CityManager.getCityPermissions(this);
 
         Set<CPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
-
-        if (playerPerms.contains(CPermission.OWNER))
+        
+        if (playerPerms.contains(CPermission.OWNER)) {
             return true;
+        }
+        
 
         return playerPerms.contains(permission);
     }
@@ -573,27 +583,22 @@ public class City {
      * @param permission The permission to remove.
      */
     public void removePermission(UUID playerUUID, CPermission permission) {
-        if (this.permissions == null)
-            this.permissions = CityManager.getCityPermissions(this);
+        if (this.permissions == null) this.permissions = CityManager.getCityPermissions(this);
 
         Set<CPermission> playerPerms = permissions.get(playerUUID);
-
-        if (playerPerms == null)
-            return;
-
-        if (!playerPerms.contains(permission))
-            return;
+        
+        if (playerPerms == null) return;
+        
+        if (! playerPerms.contains(permission)) return;
 
         playerPerms.remove(permission);
         permissions.put(playerUUID, playerPerms);
-
+        
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.removePlayerPermission(this, playerUUID, permission)
-        );
+                CityManager.removePlayerPermission(this, playerUUID, permission));
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
-            Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
-                    CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false))
-        );
+                Bukkit.getPluginManager().callEvent(new CityPermissionChangeEvent(this,
+                        CacheOfflinePlayer.getOfflinePlayer(playerUUID), permission, false)));
     }
 
     // ==================== Mascots Methods ====================
@@ -649,18 +654,18 @@ public class City {
     // ==================== War Methods ====================
 
     /**
-     * Retrieves the power points of the city.
+     * Checks if the city is currently in a war.
      *
-     * @return The power points of the city, or 0 if not found.
+     * @return True if the city is in war, false otherwise.
      */
     public boolean isInWar() {
         return WarManager.isCityInWar(cityUUID);
     }
 
     /**
-     * Retrieves the power points of the city.
+     * Retrieves the war associated with the city.
      *
-     * @return The power points of the city, or 0 if not found.
+     * @return The War object associated with the city or null if not in war.
      */
     public War getWar() {
         return WarManager.getWarByCity(cityUUID);
@@ -677,13 +682,213 @@ public class City {
 
 
     /**
-     * Updates the power of a city
+     * Updates the power of a City by adding or removing points.
+     *
+     * @param diff The amount to be added or remove to the existing power.
      */
     public void updatePowerPoints(int diff) {
         powerPoints += diff;
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
                 CityManager.saveCity(this)
         );
+    }
+    
+    /* =================== RANKS =================== */
+    
+    /**
+     * Retrieves the ranks of the city.
+     *
+     * @return A set of CityRank objects representing the ranks of the city.
+     */
+    public Set<CityRank> getRanks() {
+        return cityRanks;
+    }
+    
+    /**
+     * Checks if the city ranks are full.
+     *
+     * @return True if the city ranks are full, false otherwise.
+     */
+    public boolean isRanksFull() {
+        return cityRanks.size() >= MAX_RANKS;
+    }
+    
+    public CityRank getRankByName(String rankName) {
+        for (CityRank rank : cityRanks) {
+            if (rank.getName().equalsIgnoreCase(rankName)) {
+                return rank;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Checks if a specific rank exists in the city's ranks.
+     *
+     * @param rank The CityRank object to check.
+     * @return True if the rank exists, false otherwise.
+     */
+    public boolean isRankExists(CityRank rank) {
+        return cityRanks.contains(rank);
+    }
+    
+    /**
+     * Checks if a specific rank exists by the name in the city's ranks.
+     *
+     * @param rankName The name of the rank to check.
+     * @return True if the rank name exists, false otherwise.
+     */
+    public boolean isRankExists(String rankName) {
+        for (CityRank rank : cityRanks) {
+            if (rank.getName().equalsIgnoreCase(rankName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Initializes the ranks of the city if they are not already initialized.
+     */
+    public void initializeRanks() {
+        if (cityRanks == null) {
+            cityRanks = new HashSet<>();
+        }
+    }
+    
+    /**
+     * Creates a new rank for the city and saves it asynchronously.
+     *
+     * @param rank The CityRank object to be created.
+     * @throws IllegalStateException if the city already has 18 ranks.
+     */
+    public void createRank(CityRank rank) {
+        if (isRanksFull()) {
+            throw new IllegalStateException("Cannot add more than 18 ranks to a city.");
+        }
+        cityRanks.add(rank);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> CityManager.addCityRank(rank));
+    }
+    
+    /**
+     * Deletes a rank from the city and updates the database asynchronously.
+     *
+     * @param rank The CityRank object to be deleted.
+     * @throws IllegalArgumentException if the rank is not found, or if it is the default rank (priority 0).
+     */
+    public void deleteRank(CityRank rank) {
+        if (! cityRanks.contains(rank)) {
+            throw new IllegalArgumentException("Rank not found in the city's ranks.");
+        }
+        if (rank.getPriority() == 0) {
+            throw new IllegalArgumentException("Cannot delete the default rank (priority 0).");
+        }
+        cityRanks.remove(rank);
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            CityManager.removeCityRank(rank);
+        });
+    }
+    
+    /**
+     * Updates a rank in the city and saves it asynchronously.
+     *
+     * @param oldRank The old CityRank object to be replaced.
+     * @param newRank The new CityRank object to replace the old one.
+     * @throws IllegalArgumentException if the old rank is not found in the city's ranks.
+     */
+    public void updateRank(CityRank oldRank, CityRank newRank) {
+        if (cityRanks.contains(oldRank)) {
+            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+                CityManager.updateCityRank(newRank);
+            });
+            cityRanks.remove(oldRank);
+            cityRanks.add(newRank);
+        } else {
+            throw new IllegalArgumentException("Old rank not found in the city's ranks.");
+        }
+    }
+    
+    /**
+     * Retrieves the rank of a specific member in the city.
+     *
+     * @param member The UUID of the member to check.
+     * @return The CityRank object representing the member's rank, or null if not found.
+     */
+    public CityRank getRankOfMember(UUID member) {
+        for (CityRank rank : cityRanks) {
+            if (rank.getMembersSet().contains(member)) {
+                return rank;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves the rank of a specific member in the city. (Propriétaire, Maire, ou un grade personalisé)
+     *
+     * @param member The UUID of the member to check.
+     * @return The CityRank object representing the member's rank, or null if not found.
+     */
+    public String getRankName(UUID member) {
+        if (this.hasPermission(member, CPermission.OWNER)) {
+            return "Propriétaire";
+        } else if (this.hasMayor() && this.getMayor().getUUID().equals(member)) {
+            return "Maire";
+        } else {
+            for (CityRank rank : cityRanks) {
+                if (rank.getMembersSet().contains(member)) {
+                    return rank.getName();
+                }
+            }
+        }
+
+        return "Membre";
+    }
+    
+    /**
+     * Changes the rank of a member in the city.
+     *
+     * @param sender     The player who is changing the rank.
+     * @param playerUUID The UUID of the player whose rank is being changed.
+     * @param newRank    The new CityRank to assign to the player.
+     * @throws IllegalArgumentException if the specified rank does not exist in the city's ranks.
+     */
+    public void changeRank(Player sender, UUID playerUUID, CityRank newRank) {
+        if (! cityRanks.contains(newRank)) {
+            throw new IllegalArgumentException("The specified rank does not exist in the city's ranks.");
+        }
+        
+        if (hasPermission(playerUUID, CPermission.OWNER)) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERISOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+        
+        CityRank currentRank = getRankOfMember(playerUUID);
+        OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
+        
+        if (currentRank != null) {
+            currentRank.removeMember(playerUUID);
+            for (CPermission permission : currentRank.getPermissionsSet()) {
+                removePermission(playerUUID, permission);
+            }
+            MessagesManager.sendMessage(sender, Component.text("§cVous avez retiré le grade §e" + currentRank.getName() + "§c de §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+        }
+        
+        if (currentRank != newRank) {
+            newRank.addMember(playerUUID);
+            for (CPermission permission : newRank.getPermissionsSet()) {
+                addPermission(playerUUID, permission);
+            }
+            MessagesManager.sendMessage(sender, Component.text("§aVous avez assigné le grade §e" + newRank.getName() + "§a à §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
+        }
+        
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
+            if (currentRank != null) {
+                CityManager.updateCityRank(currentRank);
+            }
+            
+            CityManager.updateCityRank(newRank);
+        });
     }
 
     // ==================== City Milestone Methods ====================

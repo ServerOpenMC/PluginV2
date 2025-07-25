@@ -72,10 +72,10 @@ public class MayorMandateMenu extends Menu {
         List<Component> loreMayor = new ArrayList<>(List.of(
                 Component.text("§8§oMaire de " + city.getName())
         ));
-        loreMayor.add(Component.text(""));
+        loreMayor.add(Component.empty());
         loreMayor.add(Component.text(perk2.getName()));
         loreMayor.addAll(perk2.getLore());
-        loreMayor.add(Component.text(""));
+        loreMayor.add(Component.empty());
         loreMayor.add(Component.text(perk3.getName()));
         loreMayor.addAll(perk3.getLore());
 
@@ -96,9 +96,9 @@ public class MayorMandateMenu extends Menu {
         if (player.getUniqueId().equals(mayor.getUUID())) {
             List<Component> loreLaw = List.of(
                     Component.text("§7Vous êtes le ").append(Component.text("Maire").color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false).append(Component.text("§7!"))),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§7Vous pouvez changer les §1Lois §7et lancer des §6Evenements §7!"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR OUVRIR UN MENU")
 
             );
@@ -113,7 +113,7 @@ public class MayorMandateMenu extends Menu {
         List<Component> loreOwner = new ArrayList<>(List.of(
                 Component.text("§8§oPropriétaire de " + city.getName())
         ));
-        loreOwner.add(Component.text(""));
+        loreOwner.add(Component.empty());
         loreOwner.add(Component.text(perk1.getName()));
         loreOwner.addAll(perk1.getLore());
 

@@ -64,9 +64,9 @@ public class CityBankWithdrawMenu extends Menu {
         if (hasPermissionMoneyTake) {
             loreBankWithdrawAll = List.of(
                     Component.text("§7Tout l'argent placé dans la §6Banque de la Ville §7vous sera donné"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR PRENDRE")
             );
         } else {
@@ -96,9 +96,9 @@ public class CityBankWithdrawMenu extends Menu {
         if (hasPermissionMoneyTake) {
             loreBankWithdrawHalf = List.of(
                     Component.text("§7La Moitié de l'Argent sera pris de la §6Banque de votre Ville §7pour vous le donner"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
             );
         } else {

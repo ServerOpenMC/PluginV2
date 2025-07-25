@@ -1,5 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.Location;
@@ -21,10 +24,11 @@ public class InteractProtection implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+      
         if (event.getHand() != EquipmentSlot.HAND) return;
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
-        Player player = event.getPlayer();
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
         Location location = clickedBlock.getLocation();
@@ -36,6 +40,31 @@ public class InteractProtection implements Listener {
         boolean isMinecart = isMinecart(itemType);
         boolean isTnt = itemType == Material.TNT;
 
+        Location loc = clickedBlock.getLocation();
+
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (inHand != null && inHand.getType().isEdible()) {
+                Material type = clickedBlock.getType();
+
+                if (!type.isInteractable()) return;
+            }
+            
+            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+            if (city == null) return;
+            
+            if (city.isMember(player)) {
+                if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
+                if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
+                    ProtectionsManager.checkPermissions(player, event, city, CPermission.OPEN_CHEST);
+                } else {
+                    ProtectionsManager.checkPermissions(player, event, city, CPermission.INTERACT);
+                }
+                
+            } else {
+                ProtectionsManager.checkCity(player, event, city);
+            }
+            
+        }
         if (!clickedType.isInteractable() && !isMinecart) return;
         if (isTnt) return;
 
@@ -45,13 +74,14 @@ public class InteractProtection implements Listener {
     @EventHandler
     public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
+        
+        Entity rightClicked = event.getRightClicked();
+        if (rightClicked instanceof Player) return;
+        if (! (rightClicked instanceof ItemFrame)) return;
 
-        Entity entity = event.getRightClicked();
-        if (entity instanceof Player) return;
-        if (!(entity instanceof ItemFrame)) return;
-        if (MascotUtils.isMascot(entity)) return;
-
-        ProtectionsManager.verify(event.getPlayer(), event, entity.getLocation());
+        if (MascotUtils.isMascot(rightClicked)) return;
+        
+        ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
     }
 
     private boolean isMinecart(Material type) {

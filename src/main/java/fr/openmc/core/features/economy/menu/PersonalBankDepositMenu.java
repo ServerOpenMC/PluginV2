@@ -53,9 +53,9 @@ public class PersonalBankDepositMenu extends Menu {
 
         List<Component> loreBankDepositAll = List.of(
                 Component.text("§7Tout votre argent sera placé dans §6Votre Banque"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
         );
 
@@ -75,9 +75,9 @@ public class PersonalBankDepositMenu extends Menu {
 
         List<Component> loreBankDepositHalf = List.of(
                 Component.text("§7La moitié de votre Argent sera placé dans §6Votre Banque"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
         );
 

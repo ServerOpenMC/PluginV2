@@ -22,8 +22,6 @@ public class QuestProgressSaveManager {
 
     /**
      * Constructor for QuestProgressSaveManager.
-     * @param plugin the OMCPlugin instance
-     * @param questsManager the QuestsManager instance
      */
     public QuestProgressSaveManager() {
         File saveFolder = new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER);

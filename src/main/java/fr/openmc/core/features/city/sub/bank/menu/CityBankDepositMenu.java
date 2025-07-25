@@ -64,9 +64,9 @@ public class CityBankDepositMenu extends Menu {
         if (hasPermissionMoneyGive) {
             loreBankDepositAll = List.of(
                     Component.text("§7Tout votre argent sera placé dans la §6Banque de la Ville"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
             );
         } else {
@@ -96,9 +96,9 @@ public class CityBankDepositMenu extends Menu {
         if (hasPermissionMoneyGive) {
             loreBankDepositHalf = List.of(
                     Component.text("§7La moitié de votre Argent sera placé dans la §6Banque de la Ville"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
             );
         } else {

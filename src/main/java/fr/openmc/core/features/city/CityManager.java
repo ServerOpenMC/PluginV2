@@ -53,24 +53,33 @@ public class CityManager implements Listener {
                     .filter(uuid -> playerCities.get(uuid).getUUID().equals(playerCity))
                     .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
                     .collect(Collectors.toList());
-        }));
+        })).registerSuggestion("city_ranks", ((args, sender, command) -> {
+                    City city = playerCities.get(sender.getUniqueId());
+                    if (city == null) return List.of();
+                    
+                    return city.getRanks().stream()
+                            .map(CityRank::getName)
+                            .collect(Collectors.toList());
+                })
+        );
 
         CommandsManager.getHandler().register(
-                new CityCommands(),
-                new AdminCityCommands(),
-                new CityPermsCommands(),
-                new CityChatCommand(),
-                new CityChestCommand()
+		        new AdminCityCommands(),
+		        new CityCommands(),
+		        new CityChatCommand(),
+		        new CityPermsCommands(),
+                new CityChestCommand(),
+		        new CityRankCommands()
         );
 
         OMCPlugin.registerEvents(
                 new CityChatListener()
             );
 
-        new ProtectionsManager();
         // SUB-FEATURE
         new MascotsManager();
         new MayorManager();
+        new ProtectionsManager();
         new WarManager();
         new CityBankManager();
     }
@@ -78,6 +87,7 @@ public class CityManager implements Listener {
     private static Dao<DBCity, String> citiesDao;
     private static Dao<DBCityMember, String> membersDao;
     private static Dao<DBCityPermission, String> permissionsDao;
+    private static Dao<CityRank, String> ranksDao;
     private static Dao<DBCityClaim, String> claimsDao;
     private static Dao<DBCityChest, String> chestsDao;
 
@@ -90,6 +100,9 @@ public class CityManager implements Listener {
 
         TableUtils.createTableIfNotExists(connectionSource, DBCityPermission.class);
         permissionsDao = DaoManager.createDao(connectionSource, DBCityPermission.class);
+        
+        TableUtils.createTableIfNotExists(connectionSource, CityRank.class);
+        ranksDao = DaoManager.createDao(connectionSource, CityRank.class);
 
         TableUtils.createTableIfNotExists(connectionSource, DBCityClaim.class);
         claimsDao = DaoManager.createDao(connectionSource, DBCityClaim.class);
@@ -119,6 +132,21 @@ public class CityManager implements Listener {
             claimedChunks.clear();
             claimsDao.queryForAll()
                     .forEach(claim -> claimedChunks.put(claim.getChunkPos(), getCity(claim.getCity())));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        cities.values().forEach(City::initializeRanks);
+        
+        try {
+            ranksDao.queryForAll()
+                    .forEach(rank -> {
+                        City city = getCity(rank.getCityUUID());
+                        if (city != null) {
+                            city.getRanks().add(rank);
+                        }
+                    });
+         
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -186,6 +214,7 @@ public class CityManager implements Listener {
 
         return permissions;
     }
+	
     public static void addPlayerPermission(City city, UUID player, CPermission permission) {
         try {
             permissionsDao.create(new DBCityPermission(city.getUUID(), player, permission.name()));
@@ -334,6 +363,10 @@ public class CityManager implements Listener {
     public static Set<ChunkPos> getCityChunks(City inCity) {
         Set<ChunkPos> chunks = new HashSet<>();
 
+        claimedChunks.forEach(
+                (chunk, city) -> System.out.println(city + " - " + chunk)
+        );
+
         claimedChunks.forEach((chunk, city) -> {
             if (city.getUUID().equals(inCity.getUUID()))
                 chunks.add(chunk);
@@ -343,16 +376,16 @@ public class CityManager implements Listener {
     }
 
     /**
-     * Get a cities members
+     * Get a city member
      *
      * @param inCity The cities whose members are requested
-     * @return The cities members
+     * @return The city members
      */
     public static Set<UUID> getCityMembers(City inCity) {
         Set<UUID> members = new HashSet<>();
 
         playerCities.forEach((player, city) -> {
-            if (city.getUUID() == inCity.getUUID())
+            if (city.getUUID().equals(inCity.getUUID()))
                 members.add(player);
         });
 
@@ -380,7 +413,73 @@ public class CityManager implements Listener {
     public static City getCityFromChunk(int x, int z) {
         return claimedChunks.get(new ChunkPos(x, z));
     }
-
+    
+    
+    /* =================== RANKS =================== */
+    
+    /**
+     * Add a city rank to the database
+     *
+     * @param rank The rank to add
+     */
+    public static void addCityRank(CityRank rank) {
+        try {
+            ranksDao.create(rank);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Remove a city rank from the database
+     *
+     * @param rank The rank to remove
+     */
+    public static void removeCityRank(CityRank rank) {
+        try {
+            DeleteBuilder<CityRank, String> delete = ranksDao.deleteBuilder();
+            delete.where().eq("city_uuid", rank.getCityUUID()).and().eq("name", rank.getName());
+            ranksDao.delete(delete.prepare());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Update a city rank in the database
+     *
+     * @param rank The rank to update
+     */
+    public static void updateCityRank(CityRank rank) {
+        try {
+            ranksDao.update(rank);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Load city ranks from the database and add them to the city
+     *
+     * @param city The city to load ranks for
+     */
+    public static void loadCityRanks(City city) {
+        try {
+            QueryBuilder<CityRank, String> query = ranksDao.queryBuilder();
+            query.where().eq("city_uuid", city.getUUID());
+            List<CityRank> dbRanks = ranksDao.query(query.prepare());
+            
+            Set<CityRank> ranks = new HashSet<>();
+            
+            for (CityRank dbRank : dbRanks) {
+                city.getRanks().add(dbRank);
+                ranks.add(dbRank);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * Register a city
      *
@@ -461,6 +560,10 @@ public class CityManager implements Listener {
                 DeleteBuilder<DBCityPermission, String> permissionsDelete = permissionsDao.deleteBuilder();
                 permissionsDelete.where().eq("city", city.getUUID());
                 permissionsDao.delete(permissionsDelete.prepare());
+                
+                DeleteBuilder<CityRank, String> ranksDelete = ranksDao.deleteBuilder();
+                ranksDelete.where().eq("city", city.getUUID());
+                ranksDao.delete(ranksDelete.prepare());
 
                 DeleteBuilder<DBCityClaim, String> claimsDelete = claimsDao.deleteBuilder();
                 claimsDelete.where().eq("city", city.getUUID());

@@ -2,6 +2,7 @@ package fr.openmc.core.features.homes.menu;
 
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
@@ -45,6 +46,16 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     public HomeChangeIconMenu(Player owner, Home home) {
         this(owner, home, "");
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override

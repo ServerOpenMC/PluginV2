@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -39,7 +40,7 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
@@ -57,23 +58,25 @@ public class CityTransferMenu extends PaginatedMenu {
                     continue;
                 }
 
-            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text("Membre " + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                itemMeta.lore(List.of(
-                        Component.text("§7Voulez-vous donner à §d" + playerOffline.getName() + " §7votre ville ?"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
-            }).setOnClick(inventoryClickEvent -> {
-                if (!hasPermissionOwner) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
+                String title = city.getRankName(uuid) + " ";
 
-                CityTransferAction.transfer(player, city, playerOffline);
-            }));
-        }
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
+                    itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                    itemMeta.lore(List.of(
+                            Component.text("§7Voulez-vous donner à §d" + title + playerOffline.getName() + " §7votre ville ?"),
+                            Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                    ));
+                }).setOnClick(inventoryClickEvent -> {
+                    if (!hasPermissionOwner) {
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        return;
+                    }
+
+                    CityTransferAction.transfer(player, city, playerOffline);
+                }));
+            }
 
         return items;
     }
@@ -96,6 +99,16 @@ public class CityTransferMenu extends PaginatedMenu {
             itemMeta.displayName(Component.text("§aPage suivante"));
         }).setNextPageButton());
         return map;
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override
