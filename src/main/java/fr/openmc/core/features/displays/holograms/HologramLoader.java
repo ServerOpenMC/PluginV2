@@ -77,8 +77,6 @@ public class HologramLoader {
             for (int i = 0; i < hologram.getLines().length; i++) {
                 String rawLine = hologram.getLines()[i];
 
-                System.out.println(rawLine);
-
                 if (component == null) {
                     component = Component.text(rawLine);
                 } else {
