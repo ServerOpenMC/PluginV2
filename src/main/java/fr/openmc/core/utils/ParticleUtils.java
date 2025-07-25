@@ -40,7 +40,7 @@ public class ParticleUtils {
 
     }
 
-    public static void spawnParticlesInRegion(String regionId, World world, Particle particle, Integer amountPer2Tick, Integer maxHeight) {
+    public static void spawnParticlesInRegion(String regionId, World world, Particle particle, Integer amountPer2Tick, Integer minHeight, Integer maxHeight) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) return;
 
@@ -61,7 +61,7 @@ public class ParticleUtils {
 
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = minLocation.getX() + random.nextDouble() * (maxLocation.getX() - minLocation.getX());
-                    double y = minLocation.getY() + random.nextDouble() * (maxHeight - minLocation.getY());
+                    double y = minHeight + random.nextDouble() * (maxHeight - minHeight);
                     double z = minLocation.getZ() + random.nextDouble() * (maxLocation.getZ() - minLocation.getZ());
 
                     Location particleLocation = new Location(world, x, y, z);
