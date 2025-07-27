@@ -28,8 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-
-
 public class TradeMenu extends Menu {
 
     public TradeMenu(Player owner) {
