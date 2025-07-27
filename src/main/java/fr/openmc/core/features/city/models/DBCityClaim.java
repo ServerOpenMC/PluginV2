@@ -21,8 +21,8 @@ public class DBCityClaim {
 
     public DBCityClaim(ChunkPos chunk, String city) {
         this.city = city;
-        this.x = chunk.getX();
-        this.z = chunk.getZ();
+        this.x = chunk.x();
+        this.z = chunk.z();
     }
 
     public ChunkPos getChunkPos() {

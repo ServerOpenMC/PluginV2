@@ -45,8 +45,8 @@ public class MilitaryDissuasion implements Listener {
 
             ChunkPos chunk = chunkList.get(spawned % chunkList.size());
 
-            int chunkX = chunk.getX();
-            int chunkZ = chunk.getZ();
+            int chunkX = chunk.x();
+            int chunkZ = chunk.z();
 
             int x = (chunkX << 4) + 8 + random.nextInt(8);
             int z = (chunkZ << 4) + 8 + random.nextInt(8);

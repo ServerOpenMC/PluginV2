@@ -326,7 +326,7 @@ public class WarManager {
 
         Set<ChunkPos> adjacentChunks = new HashSet<>();
         for (ChunkPos wChunk : winner.getChunks()) {
-            int wx = wChunk.getX(), wz = wChunk.getZ();
+            int wx = wChunk.x(), wz = wChunk.z();
 
             ChunkPos[] neighbors = {
                     new ChunkPos(wx + 1, wz),
@@ -348,7 +348,7 @@ public class WarManager {
         BiConsumer<Queue<ChunkPos>, Set<ChunkPos>> bfsCapture = (queue, visited) -> {
             while (!queue.isEmpty() && transferred[0] < claimAmount) {
                 ChunkPos current = queue.poll();
-                int cx = current.getX(), cz = current.getZ();
+                int cx = current.x(), cz = current.z();
 
                 ChunkPos[] neighs = {
                         new ChunkPos(cx + 1, cz),
@@ -360,8 +360,8 @@ public class WarManager {
                     if (visited.contains(nb) || nb.equals(mascotVec)) continue;
 
                     if (loser.getChunks().contains(nb)) {
-                        loser.removeChunk(nb.getX(), nb.getZ());
-                        winner.addChunk(nb.getX(), nb.getZ());
+                        loser.removeChunk(nb.x(), nb.z());
+                        winner.addChunk(nb.x(), nb.z());
                         visited.add(nb);
                         queue.add(nb);
                         transferred[0]++;
@@ -378,8 +378,8 @@ public class WarManager {
             Set<ChunkPos> visited = new HashSet<>();
             for (int i = 0; i < initialSteal; i++) {
                 ChunkPos c = toSteal.get(i);
-                loser.removeChunk(c.getX(), c.getZ());
-                winner.addChunk(c.getX(), c.getZ());
+                loser.removeChunk(c.x(), c.z());
+                winner.addChunk(c.x(), c.z());
                 queue.add(c);
                 visited.add(c);
                 transferred[0]++;
@@ -390,7 +390,7 @@ public class WarManager {
             List<ChunkPos> borderChunks = new ArrayList<>();
             for (ChunkPos lChunk : loser.getChunks()) {
                 if (lChunk.equals(mascotVec)) continue;
-                int lx = lChunk.getX(), lz = lChunk.getZ();
+                int lx = lChunk.x(), lz = lChunk.z();
                 ChunkPos[] neighs = {
                         new ChunkPos(lx + 1, lz),
                         new ChunkPos(lx - 1, lz),
@@ -409,8 +409,8 @@ public class WarManager {
                 Collections.shuffle(borderChunks);
                 ChunkPos seed = borderChunks.get(0);
 
-                loser.removeChunk(seed.getX(), seed.getZ());
-                winner.addChunk(seed.getX(), seed.getZ());
+                loser.removeChunk(seed.x(), seed.z());
+                winner.addChunk(seed.x(), seed.z());
                 Queue<ChunkPos> queue = new LinkedList<>();
                 Set<ChunkPos> visited = new HashSet<>();
                 queue.add(seed);

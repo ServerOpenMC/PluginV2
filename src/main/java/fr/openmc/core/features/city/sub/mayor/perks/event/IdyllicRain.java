@@ -3,8 +3,8 @@ package fr.openmc.core.features.city.sub.mayor.perks.event;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -54,8 +54,8 @@ public class IdyllicRain implements Listener {
                 }
 
                 ChunkPos chunk = chunkList.get(random.nextInt(chunkList.size()));
-                int chunkX = chunk.getX();
-                int chunkZ = chunk.getZ();
+                int chunkX = chunk.x();
+                int chunkZ = chunk.z();
 
                 int x = (chunkX << 4) + random.nextInt(16);
                 int z = (chunkZ << 4) + random.nextInt(16);

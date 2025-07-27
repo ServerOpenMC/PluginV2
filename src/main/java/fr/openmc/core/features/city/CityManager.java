@@ -284,7 +284,7 @@ public class CityManager implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 DeleteBuilder<DBCityClaim, String> delete = claimsDao.deleteBuilder();
-                delete.where().eq("city", city.getUUID()).and().eq("x", chunk.getX()).and().eq("z", chunk.getZ());
+                delete.where().eq("city", city.getUUID()).and().eq("x", chunk.x()).and().eq("z", chunk.z());
 
                 claimsDao.delete(delete.prepare());
             } catch (SQLException e) {
