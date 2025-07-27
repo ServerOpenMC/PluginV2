@@ -50,8 +50,8 @@ public class ParticleUtils {
         BlockVector3 min = region.getMinimumPoint();
         BlockVector3 max = region.getMaximumPoint();
 
-        Location minLocation = new Location(world, min.x(), min.y(), min.z());
-        Location maxLocation = new Location(world, max.x(), max.y(), max.z());
+        Location minLocation = new Location(world, min.x(), minHeight, min.z());
+        Location maxLocation = new Location(world, max.x(), maxHeight, max.z());
 
         new BukkitRunnable() {
             @Override
@@ -61,7 +61,7 @@ public class ParticleUtils {
 
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = minLocation.getX() + random.nextDouble() * (maxLocation.getX() - minLocation.getX());
-                    double y = minHeight + random.nextDouble() * (maxHeight - minHeight);
+                    double y = minLocation.getY() + random.nextDouble() * (maxLocation.getY() - minLocation.getY());
                     double z = minLocation.getZ() + random.nextDouble() * (maxLocation.getZ() - minLocation.getZ());
 
                     Location particleLocation = new Location(world, x, y, z);
@@ -106,8 +106,8 @@ public class ParticleUtils {
         BlockVector3 min = region.getMinimumPoint();
         BlockVector3 max = region.getMaximumPoint();
 
-        Location minLocation = new Location(world, min.x(), min.y(), min.z());
-        Location maxLocation = new Location(world, max.x(), max.y(), max.z());
+        Location minLocation = new Location(world, min.x(), minHeight, min.z());
+        Location maxLocation = new Location(world, max.x(), maxHeight, max.z());
 
         new BukkitRunnable() {
             final Random random = new Random();
@@ -140,7 +140,7 @@ public class ParticleUtils {
 
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = minLocation.getX() + random.nextDouble() * (maxLocation.getX() - minLocation.getX());
-                    double y = minHeight + random.nextDouble() * (maxHeight - minHeight);
+                    double y = minLocation.getY() + random.nextDouble() * (maxLocation.getY() - minLocation.getY());
                     double z = minLocation.getZ() + random.nextDouble() * (maxLocation.getZ() - minLocation.getZ());
 
                     Location base = new Location(world, x, y, z);
@@ -149,7 +149,7 @@ public class ParticleUtils {
 
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = minLocation.getX() + random.nextDouble() * (maxLocation.getX() - minLocation.getX());
-                    double y = minHeight + random.nextDouble() * (maxHeight - minHeight);
+                    double y = minLocation.getY() + random.nextDouble() * (maxLocation.getY() - minLocation.getY());
                     double z = minLocation.getZ() + random.nextDouble() * (maxLocation.getZ() - minLocation.getZ());
 
                     Location base = new Location(world, x, y, z);
