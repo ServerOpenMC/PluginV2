@@ -40,7 +40,7 @@ public class ParticleUtils {
 
     }
 
-    public static void spawnParticlesInRegion(String regionId, World world, Particle particle, Integer amountPer2Tick, Integer minHeight, Integer maxHeight) {
+    public static void spawnParticlesInRegion(String regionId, World world, Particle particle, int amountPer2Tick, int minHeight, int maxHeight) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) return;
 
