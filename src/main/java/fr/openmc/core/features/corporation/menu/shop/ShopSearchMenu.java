@@ -95,7 +95,7 @@ public class ShopSearchMenu extends PaginatedMenu {
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
             buttons.put(45, searchButton.setOnClick(inventoryClick -> {
-                DialogInput.send(getOwner(), "Entrez le nom du shop ou bien du joueur pour le rechercher", 100, input -> {
+                DialogInput.send(getOwner(), Component.text("Entrez le nom du shop ou bien du joueur pour le rechercher"), 100, input -> {
                     boolean shopFind = false;
 
                     for (Shop shop : CompanyManager.shops) {

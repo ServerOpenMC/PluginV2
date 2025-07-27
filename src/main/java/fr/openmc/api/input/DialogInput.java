@@ -18,11 +18,11 @@ import java.util.function.Consumer;
 
 public class DialogInput {
 
-    public static void send(Player player, String lore, int maxLength, Consumer<String> callback) {
+    public static void send(Player player, Component lore, int maxLength, Consumer<String> callback) {
 
         List<DialogBody> body = new ArrayList<>();
 
-        body.add(DialogBody.plainMessage(Component.text(lore)));
+        body.add(DialogBody.plainMessage(lore));
 
         Dialog inputDialog = Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Component.text("Rentrer du Texte"))

@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
@@ -175,7 +174,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
             itemMeta.displayName(Component.text("§7Inviter des §dpersonnes"));
             itemMeta.lore(List.of(Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir !")));
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, "Entrez le nom du joueur", MAX_LENGTH_PLAYERNAME, input -> {
+            DialogInput.send(player, Component.text("Entrez le nom du joueur"), MAX_LENGTH_PLAYERNAME, input -> {
                 if (InputUtils.isInputPlayer(input)) {
                     Player playerToInvite = Bukkit.getPlayer(input);
                     CityCommands.invite(player, playerToInvite);

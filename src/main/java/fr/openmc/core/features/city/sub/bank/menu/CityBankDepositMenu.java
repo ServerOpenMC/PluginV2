@@ -142,7 +142,7 @@ public class CityBankDepositMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityDeposit(city, player)) return;
 
-            DialogInput.send(player, "Entrez le montant que vous voulez déposer", 100, input ->
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), 100, input ->
                     city.depositCityBank(player, input)
             );
 

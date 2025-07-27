@@ -82,7 +82,7 @@ public class CityCommands {
             return;
         }
 
-        DialogInput.send(player, "Entrez le nom de la ville", MAX_LENGTH_CITY, input ->
+        DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input ->
                 CityCreateAction.beginCreateCity(player, input)
         );
     }

@@ -144,7 +144,7 @@ public class CityBankWithdrawMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
-            DialogInput.send(player, "Entrez le montant que vous voulez retirer", 100, input ->
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), 100, input ->
                     city.withdrawCityBank(player, input)
             );
 

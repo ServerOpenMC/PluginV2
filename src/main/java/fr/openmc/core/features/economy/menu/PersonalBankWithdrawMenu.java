@@ -107,7 +107,7 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre un §6montant précis"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, "Entrez le montant que vous voulez retirer", 100, input ->
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), 100, input ->
                     BankManager.withdrawBankBalance(player, input)
             );
         }));

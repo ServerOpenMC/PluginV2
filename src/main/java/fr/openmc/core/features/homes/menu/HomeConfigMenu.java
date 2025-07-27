@@ -74,7 +74,7 @@ public class HomeConfigMenu extends Menu {
                     .build();
             itemMeta.lore(Collections.singletonList(lore));
         }).setOnClick(e -> {
-            DialogInput.send(getOwner(), "Entrez votre nouveau nom de home", MAX_LENGTH_HOME_NAME, input -> {
+            DialogInput.send(getOwner(), Component.text("Entrez votre nouveau nom de home"), MAX_LENGTH_HOME_NAME, input -> {
                 if (!HomeUtil.isValidHomeName(input)) return;
 
                 if (HomesManager.getHomesNames(getOwner().getUniqueId()).contains(input)) {

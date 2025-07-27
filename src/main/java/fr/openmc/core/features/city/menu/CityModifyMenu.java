@@ -88,7 +88,7 @@ public class CityModifyMenu extends Menu {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
-            DialogInput.send(player, "Entrez le nom de la ville", MAX_LENGTH_CITY, input -> {
+            DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input -> {
                 if (InputUtils.isInputCityName(input)) {
                     City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
