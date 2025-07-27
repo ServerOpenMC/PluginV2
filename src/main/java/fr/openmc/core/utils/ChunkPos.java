@@ -1,11 +1,9 @@
 package fr.openmc.core.utils;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 
-@Getter
 public record ChunkPos(int x, int z) {
 
     public Chunk getChunkInWorld() {
