@@ -65,7 +65,7 @@ public class HomeUtil {
                 name == null ||
                 name.trim().isEmpty() ||
                 name.length() < 3 ||
-                        name.length() > MAX_LENGTH_HOME_NAME
+                name.length() > MAX_LENGTH_HOME_NAME
         ) return false;
 
         long alphanumericCount = name.chars().filter(Character::isLetterOrDigit).count();
