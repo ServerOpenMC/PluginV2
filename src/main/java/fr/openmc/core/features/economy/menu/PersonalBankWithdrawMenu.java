@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+
 public class PersonalBankWithdrawMenu extends Menu {
 
     public PersonalBankWithdrawMenu(Player owner) {
@@ -107,7 +109,7 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre un §6montant précis"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), 100, input ->
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input ->
                     BankManager.withdrawBankBalance(player, input)
             );
         }));

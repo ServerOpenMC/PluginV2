@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+
 public class ShopSearchMenu extends PaginatedMenu {
 
     public ShopSearchMenu(Player owner) {
@@ -95,7 +97,7 @@ public class ShopSearchMenu extends PaginatedMenu {
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
             buttons.put(45, searchButton.setOnClick(inventoryClick -> {
-                DialogInput.send(getOwner(), Component.text("Entrez le nom du shop ou bien du joueur pour le rechercher"), 100, input -> {
+                DialogInput.send(getOwner(), Component.text("Entrez le nom du shop ou bien du joueur pour le rechercher"), MAX_LENGTH, input -> {
                     boolean shopFind = false;
 
                     for (Shop shop : CompanyManager.shops) {

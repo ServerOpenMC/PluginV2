@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+
 public class CityBankWithdrawMenu extends Menu {
 
     public CityBankWithdrawMenu(Player owner) {
@@ -144,7 +146,7 @@ public class CityBankWithdrawMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), 100, input ->
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input ->
                     city.withdrawCityBank(player, input)
             );
 

@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+
 public class PersonalBankDepositMenu extends Menu {
 
     public PersonalBankDepositMenu(Player owner) {
@@ -105,7 +107,7 @@ public class PersonalBankDepositMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer un §6montant précis"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), 100, input ->
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input ->
                     BankManager.addBankBalance(player, input)
             );
         }));

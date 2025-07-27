@@ -29,6 +29,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+
 public class HomeChangeIconMenu extends PaginatedMenu {
 
     private final Home home;
@@ -110,7 +112,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             if (event.getClick().isLeftClick()) {
                 getOwner().closeInventory();
 
-                DialogInput.send(getOwner(), Component.text("Entrez votre recherche pour un item"), 100, input -> {
+                DialogInput.send(getOwner(), Component.text("Entrez votre recherche pour un item"), MAX_LENGTH, input -> {
                     searchQuery = input;
                     currentCategory = IconCategory.ALL;
                     setPage(0);

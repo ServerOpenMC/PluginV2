@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
+
 public class CityBankDepositMenu extends Menu {
 
     public CityBankDepositMenu(Player owner) {
@@ -142,7 +144,7 @@ public class CityBankDepositMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityDeposit(city, player)) return;
 
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), 100, input ->
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input ->
                     city.depositCityBank(player, input)
             );
 
