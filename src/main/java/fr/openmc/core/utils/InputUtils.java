@@ -112,6 +112,10 @@ public class InputUtils {
             return false;
         }
 
+        if (input.length() > MAX_LENGTH_PLAYERNAME) {
+            return false;
+        }
+
         return Bukkit.getPlayer(input) != null;
     }
 }
