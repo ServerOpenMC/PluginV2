@@ -27,7 +27,7 @@ public class MilitaryDissuasion implements Listener {
      * @param city           The city where the golems will be spawned.
      * @param golemsToSpawn  The number of golems to spawn.
      */
-    public static void launchEvent(City city, int golemsToSpawn) {
+    public static void startEvent(City city, int golemsToSpawn) {
         Set<ChunkPos> chunks = city.getChunks();
         if (chunks.isEmpty()) return;
 
