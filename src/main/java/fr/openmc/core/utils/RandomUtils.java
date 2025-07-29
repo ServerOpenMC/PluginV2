@@ -26,4 +26,3 @@ public class RandomUtils {
         return min + random.nextInt((max - min) + 1);
     }
 }
-}

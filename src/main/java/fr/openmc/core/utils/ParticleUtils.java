@@ -20,8 +20,6 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Random;
-
 public class ParticleUtils {
 
     public static Color color1;
@@ -50,14 +48,13 @@ public class ParticleUtils {
         BlockVector3 min = region.getMinimumPoint();
         BlockVector3 max = region.getMaximumPoint();
 
-        Location minLocation = new Location(world, min.getX(), minHeight, min.getZ());
-        Location maxLocation = new Location(world, max.getX(), maxHeight, max.getZ());
+        Location minLocation = new Location(world, min.x(), minHeight, min.z());
+        Location maxLocation = new Location(world, max.x(), maxHeight, max.z());
 
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (ContestManager.data.getPhase() == 3) return;
-                Random random = new Random();
 
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
@@ -106,12 +103,10 @@ public class ParticleUtils {
         BlockVector3 min = region.getMinimumPoint();
         BlockVector3 max = region.getMaximumPoint();
 
-        Location minLocation = new Location(world, min.getX(), minHeight, min.getZ());
-        Location maxLocation = new Location(world, max.getX(), maxHeight, max.getZ());
+        Location minLocation = new Location(world, min.x(), minHeight, min.z());
+        Location maxLocation = new Location(world, max.x(), maxHeight, max.z());
 
         new BukkitRunnable() {
-            final Random random = new Random();
-
             @Override
             public void run() {
                 if (ContestManager.data.getPhase() != 3) return;
