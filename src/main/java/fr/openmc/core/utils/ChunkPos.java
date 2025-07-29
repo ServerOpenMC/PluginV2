@@ -36,9 +36,4 @@ public record ChunkPos(int x, int z) {
         int dz = other.z - z;
         return dx * dx + dz * dz;
     }
-
-    @Override
-    public String toString() {
-        return x + "," + z;
-    }
 }
