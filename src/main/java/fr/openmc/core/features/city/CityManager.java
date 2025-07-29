@@ -363,10 +363,6 @@ public class CityManager implements Listener {
     public static Set<ChunkPos> getCityChunks(City inCity) {
         Set<ChunkPos> chunks = new HashSet<>();
 
-        claimedChunks.forEach(
-                (chunk, city) -> System.out.println(city + " - " + chunk)
-        );
-
         claimedChunks.forEach((chunk, city) -> {
             if (city.getUUID().equals(inCity.getUUID()))
                 chunks.add(chunk);
