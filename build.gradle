@@ -31,9 +31,6 @@ repositories {
         url "https://maven.devs.beer/"
     }
     maven {
-        url "https://mvn.mathiasd.fr/releases"
-    }
-    maven {
         url "https://repo.fancyinnovations.com/releases"
     }
     maven {
@@ -64,7 +61,6 @@ dependencies {
     implementation 'org.jetbrains:annotations:26.0.2'
     implementation 'com.github.Revxrsal.Lamp:common:3.3.6'
     implementation 'com.github.Revxrsal.Lamp:bukkit:3.3.6'
-    implementation 'net.raidstone:wgevents:1.18.1'
     implementation 'com.j256.ormlite:ormlite-jdbc:6.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.38'
