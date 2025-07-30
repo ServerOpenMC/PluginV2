@@ -118,7 +118,7 @@ public class MailboxListener implements Listener {
     private void runTask(Runnable runnable) {
         plugin.getServer().getScheduler().runTask(plugin, runnable);
     }
-    
+
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         Inventory inv = event.getView().getTopInventory();
@@ -129,11 +129,17 @@ public class MailboxListener implements Listener {
         int row = slot / 9;
 
         if (slot >= inv.getSize()) {
-            if (event.isShiftClick()) {
-                if (holder instanceof SendingLetter sendingLetter) {
-                    if (sendingLetter.noSpace(item)) event.setCancelled(true);
-                } else if (holder instanceof MailboxInv) event.setCancelled(true);
+            if (!event.isShiftClick())
+                return;
+
+            if (holder instanceof SendingLetter sendingLetter) {
+                if (sendingLetter.noSpace(item)) {
+                    event.setCancelled(true);
+                }
+            } else if (holder instanceof MailboxInv) {
+                event.setCancelled(true);
             }
+
             return;
         }
 
@@ -141,7 +147,8 @@ public class MailboxListener implements Listener {
             if (row < 1 || row > 3) {
                 event.setCancelled(true);
             }
-        } else if (holder instanceof MailboxInv) event.setCancelled(true);
+        } else if (holder instanceof MailboxInv)
+            event.setCancelled(true);
 
         //! Buttons actions
         if (cancelBtn(item) && holder instanceof MailboxInv) {
@@ -160,41 +167,54 @@ public class MailboxListener implements Listener {
             }
         }
 
-        if (holder instanceof SendingLetter sendingLetter) {
-            if (sendBtn(item)) runTask(sendingLetter::sendLetter);
-        } else if (holder instanceof PlayerMailbox playerMailbox) {
-            if (item != null && item.getType() == Material.PLAYER_HEAD) {
+        switch (holder) {
+            case SendingLetter sendingLetter when sendBtn(item) -> {
+                runTask(sendingLetter::sendLetter);
+            }
+
+            case PlayerMailbox playerMailbox when item != null && item.getType() == Material.PLAYER_HEAD -> {
                 LetterHead letterHead = playerMailbox.getByIndex(slot);
-                if (letterHead == null) return;
+                if (letterHead == null)
+                    return;
+
                 runTask(() -> letterHead.openLetter(player));
             }
-        } else if (holder instanceof LetterMenu letter) {
-            if (acceptBtn(item)) {
-                runTask(letter::accept);
-            } else if (refuseBtn(item)) {
-                runTask(letter::refuse);
+
+            case LetterMenu letterMenu -> {
+                if (acceptBtn(item)) {
+                    runTask(letterMenu::accept);
+                } else if (refuseBtn(item)) {
+                    runTask(letterMenu::refuse);
+                }
             }
-        } else if (holder instanceof HomeMailbox) {
-            if (slot == 3) {
-                runTask(() -> HomeMailbox.openPendingMailbox(player));
-            } else if (slot == 4) {
-                runTask(() -> HomeMailbox.openPlayerMailbox(player));
-            } else if (slot == 5) {
-                runTask(() -> HomeMailbox.openPlayersList(player));
+
+            case HomeMailbox ignored -> {
+                if (slot == 3) {
+                    runTask(() -> HomeMailbox.openPendingMailbox(player));
+                } else if (slot == 4) {
+                    runTask(() -> HomeMailbox.openPlayerMailbox(player));
+                } else if (slot == 5) {
+                    runTask(() -> HomeMailbox.openPlayersList(player));
+                }
             }
-        } else if (holder instanceof PendingMailbox pendingMailbox) {
-            if (item != null && item.getType() == Material.PLAYER_HEAD) {
+
+            case PendingMailbox pendingMailbox when item != null && item.getType() == Material.PLAYER_HEAD -> {
                 runTask(() -> pendingMailbox.clickLetter(slot));
             }
-        } else if (holder instanceof PlayersList) {
-            if (item != null && item.getType() == Material.PLAYER_HEAD) {
+
+            case PlayersList ignored when item != null && item.getType() == Material.PLAYER_HEAD -> {
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
                 OfflinePlayer receiver = meta.getOwningPlayer();
-                if (receiver == null) return;
+                if (receiver == null)
+                    return;
+
                 runTask(() -> {
                     HomeMailbox.openSendingMailbox(player, receiver, OMCPlugin.getInstance());
                 });
             }
+
+            case null -> {}
+            default -> {}
         }
     }
 }
