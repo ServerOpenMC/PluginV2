@@ -20,7 +20,7 @@ public class CityChestAction {
         int price = city.getChestPages() * UPGRADE_PER_MONEY;
         int aywenite = city.getChestPages() * UPGRADE_PER_AYWENITE;
 
-        city.updateBalance((double) -price);
+        city.updateBalance(-price);
 
         if (ItemUtils.takeAywenite(player, aywenite)) {
             city.saveChestContent(city.getChestPages() + 1, null);

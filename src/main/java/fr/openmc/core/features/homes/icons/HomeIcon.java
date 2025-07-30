@@ -4,6 +4,7 @@ import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -165,7 +166,7 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
      * @return A string with icon details.
      */
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "HomeIcon{" +
                 "id='" + id + '\'' +
                 ", displayName='" + displayName + '\'' +

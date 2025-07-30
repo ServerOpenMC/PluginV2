@@ -18,7 +18,6 @@ import java.util.*;
 
 public class MilestonesManager {
     private static final Set<Milestone> milestones = new HashSet<>();
-    ;
 
     private static Dao<MilestoneModel, String> millestoneDao;
 

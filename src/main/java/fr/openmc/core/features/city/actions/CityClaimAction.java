@@ -73,7 +73,7 @@ public class CityClaimAction {
             }
 
             if (ItemUtils.takeAywenite(sender, aywenite))
-                city.updateBalance((double) (price * -1));
+                city.updateBalance(price * -1);
         } else {
             city.updateFreeClaims(-1);
         }

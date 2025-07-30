@@ -52,7 +52,6 @@ public class Restart {
         }
 
         OMCPlugin plugin = OMCPlugin.getInstance();
-        ScoreboardManager scoreboardManager = ScoreboardManager.getInstance();
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -71,7 +70,7 @@ public class Restart {
 
                 if (!announce.contains(remainingTime)) {
                     remainingTime -= 1;
-                    scoreboardManager.updateAllScoreboards();
+                    ScoreboardManager.updateAllScoreboards();
                     return;
                 }
 

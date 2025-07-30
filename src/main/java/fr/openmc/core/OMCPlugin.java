@@ -173,7 +173,6 @@ public class OMCPlugin extends JavaPlugin {
         return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     private void logLoadMessage() {
         Logger log = getLogger();
 

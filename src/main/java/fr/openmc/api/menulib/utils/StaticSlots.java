@@ -28,8 +28,8 @@ public class StaticSlots {
 		BOTTOM,
 		RIGHT,
 		LEFT,
-		STANDARD;
-	}
+		STANDARD
+    }
 
 	public static List<Integer> getTopSlots(InventorySize size) {
 		List<Integer> top = new ArrayList<>();

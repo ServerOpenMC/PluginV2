@@ -16,7 +16,7 @@ public class WarPendingDefense {
     @Getter
     private final City attacker;
     @Getter
-    private List<UUID> attackers;
+    private final List<UUID> attackers;
     @Getter
     private final Set<UUID> acceptedDefenders = new HashSet<>();
     @Getter

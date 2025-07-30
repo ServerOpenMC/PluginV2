@@ -124,12 +124,10 @@ public class MayorVoteMenu extends PaginatedMenu {
         int progressBars = 20;
         int barFill = (int) (((double) vote / totalVotes) * progressBars);
 
-        StringBuilder bar = new StringBuilder();
-        bar.append(ColorUtils.getColorCode(color));
-        bar.append("|".repeat(Math.max(0, barFill)));
-        bar.append("§7");
-        bar.append("|".repeat(Math.max(0, progressBars - barFill)));
-        return bar.toString();
+        return ColorUtils.getColorCode(color) +
+                "|".repeat(Math.max(0, barFill)) +
+                "§7" +
+                "|".repeat(Math.max(0, progressBars - barFill));
     }
 
     private int getVotePercentage(int vote, int totalVotes) {

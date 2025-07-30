@@ -27,6 +27,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -76,9 +77,9 @@ public class ScoreboardManager implements Listener {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective objective;
         if (canShowLogo) {
-            objective = scoreboard.registerNewObjective("sb_aywen", "dummy", ":openmc:");
+            objective = scoreboard.registerNewObjective("sb_aywen", Criteria.DUMMY, Component.text(":openmc:"));
         } else {
-            objective = scoreboard.registerNewObjective("sb_aywen", "dummy", Component.text("OPENMC").decorate(TextDecoration.BOLD).color(NamedTextColor.LIGHT_PURPLE));
+            objective = scoreboard.registerNewObjective("sb_aywen", Criteria.DUMMY, Component.text("OPENMC").decorate(TextDecoration.BOLD).color(NamedTextColor.LIGHT_PURPLE));
         }
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 

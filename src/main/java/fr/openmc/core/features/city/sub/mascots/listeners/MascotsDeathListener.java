@@ -77,7 +77,7 @@ public class MascotsDeathListener implements Listener {
 
             WarManager.endWar(war);
         } else {
-            // todo: systeme de vulnerabilité d'une ville, check si la ville attaqué est vulnérable, si oui la ville attaqué est supprimé
+            // TODO: systeme de vulnerabilité d'une ville, check si la ville attaqué est vulnérable, si oui la ville attaqué est supprimé
         }
     }
 

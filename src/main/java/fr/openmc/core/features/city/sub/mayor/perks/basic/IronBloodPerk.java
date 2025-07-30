@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class IronBloodPerk implements Listener {
     private static final Map<City, Long> perkIronBloodCooldown = new HashMap<>();
@@ -84,7 +83,7 @@ public class IronBloodPerk implements Listener {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
                         return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromEntity(mascotUUID).getUUID());
                     })
-                    .collect(Collectors.toList());
+                    .toList();
 
             if (nearbyEnemies.isEmpty() && golem.getTarget() == null) {
                 golem.remove();

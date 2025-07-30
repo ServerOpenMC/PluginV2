@@ -91,20 +91,20 @@ public class CityPlayerGestionMenu extends Menu {
             itemMeta.itemName(Component.text("§cExpulser " + playerTarget.getName()));
             itemMeta.lore(loreKick);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget)) {
-            } else {
-                ConfirmMenu menu = new ConfirmMenu(
-                        player,
-                        () -> {
-                            player.closeInventory();
-                            CityKickAction.startKick(player, playerTarget);
-                        },
-                        player::closeInventory,
-                        List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
-                        List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
-                menu.open();
+            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget))
+                return;
 
-            }
+            ConfirmMenu menu = new ConfirmMenu(
+                    player,
+                    () -> {
+                        player.closeInventory();
+                        CityKickAction.startKick(player, playerTarget);
+                    },
+                    player::closeInventory,
+                    List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
+                    List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
+            menu.open();
+
         }));
 
 

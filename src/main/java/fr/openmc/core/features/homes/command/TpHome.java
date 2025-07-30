@@ -21,12 +21,6 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class TpHome {
-
-    private final HomesManager homesManager;
-    public TpHome(HomesManager homesManager) {
-        this.homesManager = homesManager;
-    }
-
     @Command("home")
     @Description("Se téléporter à un home")
     @CommandPermission("omc.commands.home.teleport")

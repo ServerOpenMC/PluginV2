@@ -465,11 +465,8 @@ public class CityManager implements Listener {
             query.where().eq("city_uuid", city.getUUID());
             List<CityRank> dbRanks = ranksDao.query(query.prepare());
 
-            Set<CityRank> ranks = new HashSet<>();
-
             for (CityRank dbRank : dbRanks) {
                 city.getRanks().add(dbRank);
-                ranks.add(dbRank);
             }
         } catch (SQLException e) {
             e.printStackTrace();
