@@ -44,7 +44,7 @@ public abstract class Menu implements InventoryHolder {
 	 *
 	 * @param owner The {@link Player} who owns the menu
 	 */
-	public Menu(Player owner) {
+	protected Menu(Player owner) {
 		this.owner = owner;
 	}
 	
