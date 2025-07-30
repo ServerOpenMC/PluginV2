@@ -1,12 +1,11 @@
 package fr.openmc.core.features.economy.menu;
 
-import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -19,10 +18,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 
 public class PersonalBankDepositMenu extends Menu {
 
@@ -55,9 +55,9 @@ public class PersonalBankDepositMenu extends Menu {
 
         List<Component> loreBankDepositAll = List.of(
                 Component.text("§7Tout votre argent sera placé dans §6Votre Banque"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
         );
 
@@ -77,9 +77,9 @@ public class PersonalBankDepositMenu extends Menu {
 
         List<Component> loreBankDepositHalf = List.of(
                 Component.text("§7La moitié de votre Argent sera placé dans §6Votre Banque"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
         );
 
@@ -107,25 +107,9 @@ public class PersonalBankDepositMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer un §6montant précis"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
-
-            String[] lines = new String[4];
-            lines[0] = "";
-            lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-            lines[2] = "Entrez votre";
-            lines[3] = "montant ci dessus";
-
-            SignGUI gui = SignGUI.builder()
-                    .setLines(null, lines[1] , lines[2], lines[3])
-                    .setType(ItemUtils.getSignType(player))
-                    .setHandler((p, result) -> {
-                        String input = result.getLine(0);
-                        BankManager.addBankBalance(player, input);
-                        return Collections.emptyList();
-                    })
-                    .build();
-
-            gui.open(player);
-
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input ->
+                    BankManager.addBankBalance(player, input)
+            );
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {

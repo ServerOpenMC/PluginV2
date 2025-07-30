@@ -15,7 +15,7 @@ public class FireProtection implements Listener {
         Player player = event.getPlayer();
 
         if (player == null) return;
-
+        
         ProtectionsManager.verify(event.getPlayer(), event, loc);
     }
 }

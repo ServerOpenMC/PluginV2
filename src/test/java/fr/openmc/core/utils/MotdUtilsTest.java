@@ -1,16 +1,11 @@
 package fr.openmc.core.utils;
 
+import fr.openmc.core.OMCPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import org.mockbukkit.mockbukkit.ServerMock;
+import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
 
 public class MotdUtilsTest {
 
@@ -19,6 +14,10 @@ public class MotdUtilsTest {
     @BeforeEach
     public void setUp() {
         server = MockBukkit.mock();
+
+        server.addSimpleWorld("world");
+
+        MockBukkit.load(OMCPlugin.class);
     }
 
     @AfterEach

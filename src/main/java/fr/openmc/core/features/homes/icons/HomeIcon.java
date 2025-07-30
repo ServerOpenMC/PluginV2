@@ -1,6 +1,6 @@
 package fr.openmc.core.features.homes.icons;
 
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -123,7 +123,7 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
             String displayName = PlainTextComponentSerializer.plainText().serialize(getItemStack().displayName());
             return displayName.replaceAll("[\\[\\]]", "").trim();
         }
-        return displayName();
+        return this.displayName;
     }
 
     /**

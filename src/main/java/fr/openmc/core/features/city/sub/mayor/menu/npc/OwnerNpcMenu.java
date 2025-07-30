@@ -81,7 +81,7 @@ public class OwnerNpcMenu extends Menu {
             List<Component> loreOwner = new ArrayList<>(List.of(
                     Component.text("§8§oPropriétaire de " + city.getName())
             ));
-            loreOwner.add(Component.text(""));
+            loreOwner.add(Component.empty());
             loreOwner.add(Component.text(perk1.getName()));
             loreOwner.addAll(perk1.getLore());
 
@@ -107,13 +107,13 @@ public class OwnerNpcMenu extends Menu {
             List<Component> loreOwner = new ArrayList<>(List.of(
                     Component.text("§8§oPropriétaire de " + city.getName())
             ));
-            loreOwner.add(Component.text(""));
+            loreOwner.add(Component.empty());
             loreOwner.add(Component.text(perk1.getName()));
             loreOwner.addAll(perk1.getLore());
-            loreOwner.add(Component.text(""));
+            loreOwner.add(Component.empty());
             loreOwner.add(Component.text(perk2.getName()));
             loreOwner.addAll(perk2.getLore());
-            loreOwner.add(Component.text(""));
+            loreOwner.add(Component.empty());
             loreOwner.add(Component.text(perk3.getName()));
             loreOwner.addAll(perk3.getLore());
 

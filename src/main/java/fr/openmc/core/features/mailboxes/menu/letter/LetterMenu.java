@@ -1,7 +1,9 @@
 package fr.openmc.core.features.mailboxes.menu.letter;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
@@ -90,6 +92,11 @@ public class LetterMenu extends MailboxInv {
                     .append(Component.text(itemsCount, NamedTextColor.GREEN))
                     .append(Component.text(" " + getItemCount(itemsCount), NamedTextColor.DARK_GREEN));
             sendSuccessMessage(player, message);
+
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(player));
+            });
+
             HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(items);
             for (ItemStack item : remainingItems.values()) {
                 player.getWorld().dropItemNaturally(player.getLocation(), item);

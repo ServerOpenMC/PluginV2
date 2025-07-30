@@ -267,11 +267,11 @@ public class CityChunkMenu extends Menu {
             itemMeta.lore(List.of(
                     Component.text("§7Ville : §d" + city.getName()),
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§cVous rapporte :"),
                     Component.text("§8- §6" + CityUnclaimAction.calculatePrice(playerCity.getChunks().size())).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
                     Component.text("§8- §d" + CityUnclaimAction.calculateAywenite(playerCity.getChunks().size()) + " d'Aywenite"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ POUR UNCLAIM")
             ));
         }).setOnClick(event -> handleChunkUnclaimClick(player, chunkX, chunkZ, hasPermissionClaim));
@@ -292,20 +292,20 @@ public class CityChunkMenu extends Menu {
         if (hasFreeClaimAvailable) {
             lore = List.of(
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§cCoûte :"),
                     Component.text("§8- §6Claim Gratuit"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ POUR CLAIM")
             );
         } else {
             lore = List.of(
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§cCoûte :"),
                     Component.text("§8- §6" + price).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
                     Component.text("§8- §d" + aywenite + " d'Aywenite"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ POUR CLAIM")
             );
         }

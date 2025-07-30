@@ -1,13 +1,15 @@
 package fr.openmc.core.features.city.sub.mayor.menu.create;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkType;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -23,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static fr.openmc.api.menulib.utils.StaticSlots.*;
+import static fr.openmc.api.menulib.utils.StaticSlots.combine;
 
 public class PerkChoiceMenu extends PaginatedMenu {
     private final String perkNumber;
@@ -48,7 +50,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return combine(combine(RIGHT, LEFT), BOTTOM);
+        return combine(combine(StaticSlots.getRightSlots(getInventorySize()), StaticSlots.getLeftSlots(getInventorySize())), StaticSlots.getBottomSlots(getInventorySize()));
     }
 
     @Override
@@ -104,15 +106,15 @@ public class PerkChoiceMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Revenir en arrière"));
         }).setOnClick(inventoryClickEvent -> {
             new MayorCreateMenu(getOwner(), perk1, perk2, perk3, type).open();
         }));
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> {
+        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§cPage précédente"));
         }).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> {
+        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§aPage suivante"));
         }).setNextPageButton());
         return map;
@@ -125,6 +127,16 @@ public class PerkChoiceMenu extends PaginatedMenu {
         } else {
             return "Menu des Maires - Reformes";
         }
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override

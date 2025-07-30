@@ -1,13 +1,14 @@
 package fr.openmc.core.features.homes;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.homes.events.HomeUpgradeEvent;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class HomeUpgradeManager {
@@ -30,11 +31,9 @@ public class HomeUpgradeManager {
         int currentHomes = HomesManager.getHomes(player.getUniqueId()).size();
         int currentUpgrade = HomesManager.getHomeLimit(player.getUniqueId());
         HomeLimits nextUpgrade = getNextUpgrade(getCurrentUpgrade(player));
-        Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
         if(nextUpgrade != null) {
-            double balance = EconomyManager.getBalance(player.getUniqueId());
             int price = nextUpgrade.getPrice();
-            int aywenite = nextUpgrade.getAyweniteCost();
+            int ayweniteAmount = nextUpgrade.getAyweniteCost();
 
             if(currentHomes < currentUpgrade) {
                 MessagesManager.sendMessage(
@@ -47,20 +46,17 @@ public class HomeUpgradeManager {
                 return;
             }
 
-            if(balance >= price) {
-                if (!ItemUtils.hasEnoughItems(player, matAywenite, aywenite)) {
-                    MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite §f("+aywenite+ " nécessaires)"), Prefix.HOME, MessageType.ERROR, false);
-                    return;
-                }
-
-                ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
-                EconomyManager.withdrawBalance(player.getUniqueId(), price);
+            if (ItemUtils.takeAywenite(player, ayweniteAmount) && EconomyManager.withdrawBalance(player.getUniqueId(), price)) {
                 HomesManager.updateHomeLimit(player.getUniqueId());
 
                 int updatedHomesLimit = HomesManager.getHomeLimit(player.getUniqueId());
 
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new HomeUpgradeEvent(player));
+                });
 
-                MessagesManager.sendMessage(player, Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$ et à §d" + aywenite + " d'Aywenite"), Prefix.HOME, MessageType.SUCCESS, true);
+                MessagesManager.sendMessage(player,
+                        Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$ et à §d" + ayweniteAmount + " d'Aywenite"), Prefix.HOME, MessageType.SUCCESS, true);
             } else {
                 MessagesManager.sendMessage(
                         player,

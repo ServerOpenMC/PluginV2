@@ -6,10 +6,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
-import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -115,8 +114,8 @@ public class ContributionMenu extends Menu {
                 ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
                 int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && is.isSimilar(shellContestItem)).mapToInt(ItemStack::getAmount).sum();
 
-                if (ItemUtils.hasEnoughItems(player, shellContestItem.getType(), shellCount)) {
-                    ItemUtils.removeItemsFromInventory(player, shellContestItem.getType(), shellCount);
+                if (ItemUtils.hasEnoughItems(player, shellContestItem, shellCount)) {
+                    ItemUtils.removeItemsFromInventory(player, shellContestItem, shellCount);
 
                         int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
                         int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp());

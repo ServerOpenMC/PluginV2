@@ -87,6 +87,7 @@ public class MayorManager {
                 new MineralRushPerk(),
                 new MilitaryDissuasion(),
                 new IdyllicRain());
+
         if (ItemsAdderApi.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new UrneListener());

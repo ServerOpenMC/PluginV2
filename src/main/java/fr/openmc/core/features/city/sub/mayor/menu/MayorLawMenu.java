@@ -91,13 +91,13 @@ public class MayorLawMenu extends Menu {
             if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
                 loreLawPVP.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-pvp")))
                         )
                 );
             } else {
                 loreLawPVP.addAll(List.of(
-                                Component.text(""),
+                        Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR " + (law.isPvp() ? "ACTIVER" : "DESACTIVER") + " LE PVP")
                         )
                 );
@@ -152,14 +152,14 @@ public class MayorLawMenu extends Menu {
             if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
                 loreLawWarp.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-move-warp")))
                         )
                 );
             } else {
                 loreLawWarp.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR CHOISIR UN ENDROIT")
                         )
                 );
@@ -189,14 +189,14 @@ public class MayorLawMenu extends Menu {
             if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-announce")) {
                 loreLawAnnounce.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-announce")))
                         )
                 );
             } else {
                 loreLawAnnounce.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR ECRIRE LE MESSAGE")
                         )
                 );
@@ -246,14 +246,14 @@ public class MayorLawMenu extends Menu {
                 if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
                     lorePerkEvent.addAll(
                             List.of(
-                                    Component.text(""),
+                                    Component.empty(),
                                     Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-perk-event")))
                             )
                     );
                 } else {
                     lorePerkEvent.addAll(
                             List.of(
-                                    Component.text(""),
+                                    Component.empty(),
                                     Component.text("§e§lCLIQUEZ ICI POUR UTILISER LA REFORME")
                             )
                     );
@@ -317,7 +317,7 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eDissuasion Militaire §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
-                        MilitaryDissuasion.spawnIronMan(city, 10);
+                        MilitaryDissuasion.startEvent(city, 10);
                         DynamicCooldownManager.use(city.getUUID(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes
                         DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
 

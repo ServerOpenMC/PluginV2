@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -12,13 +12,11 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,8 +24,13 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 public class NoCityMenu extends Menu {
 
@@ -87,18 +90,18 @@ public class NoCityMenu extends Menu {
                     loreCreate = List.of(
                             Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                             Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
-                            Component.text(""),
+                            Component.empty(),
                             Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")) + " §7avant de pouvoir créer une ville")
                     );
                 } else {
                     loreCreate = List.of(
                             Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                             Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
-                            Component.text(""),
+                            Component.empty(),
                             Component.text("§cCoûte :"),
                             Component.text("§8- §6" + CityCreateConditions.MONEY_CREATE + EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
                             Component.text("§8- §d" + CityCreateConditions.AYWENITE_CREATE + " d'Aywenite"),
-                            Component.text(""),
+                            Component.empty(),
                             Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
                     );
                 }
@@ -109,27 +112,9 @@ public class NoCityMenu extends Menu {
                 }).setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) return;
 
-                    String[] lines = new String[4];
-                    lines[0] = "";
-                    lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-                    lines[2] = "Entrez votre nom";
-                    lines[3] = "de ville ci dessus";
-
-                    SignGUI gui = SignGUI.builder()
-                            .setLines(null, lines[1], lines[2], lines[3])
-                            .setType(ItemUtils.getSignType(player))
-                            .setHandler((p, result) -> {
-                                String input = result.getLine(0);
-
-                                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                                    CityCreateAction.beginCreateCity(player, input);
-                                });
-
-                                return Collections.emptyList();
-                            })
-                            .build();
-
-                    gui.open(player);
+                    DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input ->
+                            CityCreateAction.beginCreateCity(player, input)
+                    );
                 });
             };
 

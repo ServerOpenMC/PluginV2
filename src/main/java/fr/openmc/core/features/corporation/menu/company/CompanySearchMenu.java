@@ -2,13 +2,14 @@ package fr.openmc.core.features.corporation.menu.company;
 
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -36,9 +37,19 @@ public class CompanySearchMenu extends PaginatedMenu {
     @Override
     public @NotNull List<Integer> getStaticSlots() {
         if (CompanyManager.isInCompany(getOwner().getUniqueId())) {
-            return StaticSlots.combine(StaticSlots.STANDARD, List.of(12, 13, 14));
+            return StaticSlots.combine(StaticSlots.getStandardSlots(getInventorySize()), List.of(12, 13, 14));
         }
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override
@@ -78,11 +89,11 @@ public class CompanySearchMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                 .setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
+        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
                 .setNextPageButton());
         if (CompanyManager.isInCompany(getOwner().getUniqueId())) {
             map.put(4, new ItemBuilder(this, CompanyManager.getCompany(getOwner().getUniqueId()).getHead(), itemMeta -> {

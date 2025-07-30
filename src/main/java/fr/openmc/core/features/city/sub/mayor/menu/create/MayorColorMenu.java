@@ -93,7 +93,7 @@ public class MayorColorMenu extends Menu {
         colorSlot.forEach((color, slot) -> {
             List<Component> loreColor = List.of(
                     Component.text("§7Votre nom sera affiché en " + ColorUtils.getNameFromColor(color)),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             );
             inventory.put(slot, new ItemBuilder(this, ColorUtils.getMaterialFromColor(color), itemMeta -> {
@@ -103,20 +103,20 @@ public class MayorColorMenu extends Menu {
                 if (type.equals("create")) {
                     List<Component> loreAccept = new ArrayList<>(List.of(
                             Component.text("§7Vous allez vous présenter en tant que §6Maire de " + city.getName()),
-                            Component.text(""),
+                            Component.empty(),
                             Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false)
                     ));
                     if (perk1 != null) {
                         loreAccept.add(Component.text(perk1.getName()));
                         loreAccept.addAll(perk1.getLore());
-                        loreAccept.add(Component.text(""));
+                        loreAccept.add(Component.empty());
                     }
                     loreAccept.add(Component.text(perk2.getName()));
                     loreAccept.addAll(perk2.getLore());
-                    loreAccept.add(Component.text(""));
+                    loreAccept.add(Component.empty());
                     loreAccept.add(Component.text(perk3.getName()));
                     loreAccept.addAll(perk3.getLore());
-                    loreAccept.add(Component.text(""));
+                    loreAccept.add(Component.empty());
                     loreAccept.add(Component.text("§c§lAUCUN RETOUR EN ARRIERE POSSIBLE!"));
 
 

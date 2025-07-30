@@ -443,7 +443,7 @@ public class CompanyManager {
      * get the items of a marchant from the database
      *
      * @param player the uuid of the player we check
-     * @return A ItemStack[] from bytes stock in the database
+     * @return An ItemStack[] from byte stock in the database
      */
     public static ItemStack[] getMerchantItem(UUID player) {
         try {

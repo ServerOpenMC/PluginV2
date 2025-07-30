@@ -196,7 +196,7 @@ public class CityPermsCommands {
 
         sender.openBook(Book.book(
                 Component.text("Permissions de "+player.getName()+": ").decorate(TextDecoration.BOLD),
-                Component.text(""),
+                Component.empty(),
                 content
         ));
     }

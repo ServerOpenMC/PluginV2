@@ -1,8 +1,7 @@
 package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
-import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityMessages;
@@ -14,23 +13,25 @@ import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
-import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 @Command({"ville", "city"})
 public class CityCommands {
@@ -81,28 +82,9 @@ public class CityCommands {
             return;
         }
 
-        String[] lines = new String[4];
-        lines[0] = "";
-        lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-        lines[2] = "Entrez votre nom";
-        lines[3] = "de ville ci dessus";
-
-        SignGUI gui;
-        gui = SignGUI.builder()
-                .setLines(null, lines[1], lines[2], lines[3])
-                .setType(ItemUtils.getSignType(player))
-                .setHandler((p, result) -> {
-                    String input = result.getLine(0);
-
-                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                        CityCreateAction.beginCreateCity(player, input);
-                    });
-
-                    return Collections.emptyList();
-                })
-                .build();
-
-        gui.open(player);
+        DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input ->
+                CityCreateAction.beginCreateCity(player, input)
+        );
     }
 
     @Subcommand("delete")
@@ -182,7 +164,7 @@ public class CityCommands {
         if (!CityManageConditions.canCityRename(playerCity, player)) return;
 
         if (!InputUtils.isInputCityName(name)) {
-            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum 24 caractères."), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum " + MAX_LENGTH_CITY + " caractères."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

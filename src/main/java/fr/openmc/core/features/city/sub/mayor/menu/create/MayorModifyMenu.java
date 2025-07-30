@@ -74,7 +74,7 @@ public class MayorModifyMenu extends Menu {
 
         List<Component> loreColor = List.of(
                 Component.text("§7Vous pouvez rechangez la couleur de votre Nom!"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA COULEUR")
         );
         inventory.put(24, new ItemBuilder(this, ColorUtils.getMaterialFromColor(mayorCandidate.getCandidateColor()), itemMeta -> {

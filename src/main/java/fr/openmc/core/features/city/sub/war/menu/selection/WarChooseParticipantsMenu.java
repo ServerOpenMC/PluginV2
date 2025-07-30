@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.sub.war.menu.selection;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
@@ -8,8 +9,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -49,7 +50,17 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override
@@ -110,15 +121,15 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         Map<Integer, ItemStack> map = new HashMap<>();
         Player player = getOwner();
 
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), meta -> {
+        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), meta -> {
             meta.displayName(Component.text("§cPage précédente"));
         }).setPreviousPageButton());
 
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), meta -> {
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), meta -> {
             meta.displayName(Component.text("§7Fermer"));
         }).setCloseButton());
 
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), meta -> {
+        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), meta -> {
             meta.displayName(Component.text("§aPage suivante"));
         }).setNextPageButton());
 

@@ -6,9 +6,10 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+@Getter
 public class CityDeleteEvent extends Event {
 
-    @Getter private final City city;
+    private final City city;
 
     public CityDeleteEvent(City city) {
         this.city = city;

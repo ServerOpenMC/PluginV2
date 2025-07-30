@@ -88,7 +88,7 @@ public class AdminCityCommands {
             player.sendMessage(line);
         });
 
-        Component nav = Component.text("")
+        Component nav = Component.empty()
                 .append(page > 1
                         ? Component.text("« Prev").color(NamedTextColor.YELLOW)
                         .clickEvent(ClickEvent.runCommand("/cities " + (page - 1)))

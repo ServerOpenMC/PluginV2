@@ -1,6 +1,9 @@
 package fr.openmc.core.features.adminshop;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.adminshop.events.BuyEvent;
+import fr.openmc.core.features.adminshop.events.SellEvent;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
 import fr.openmc.core.features.adminshop.menus.ColorVariantsMenu;
 import fr.openmc.core.features.adminshop.menus.ConfirmMenu;
@@ -10,6 +13,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -96,6 +100,9 @@ public class AdminShopManager {
         double totalPrice = item.getActualBuyPrice() * amount;
         if (EconomyManager.withdrawBalance(player.getUniqueId(), totalPrice)) {
             player.getInventory().addItem(new ItemStack(item.getMaterial(), amount));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new BuyEvent(player, item));
+            });
             sendInfo(player, "Vous avez acheté " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
             adjustPrice(getPlayerCategory(player), itemId, amount, true);
         } else {
@@ -129,6 +136,9 @@ public class AdminShopManager {
         double totalPrice = item.getActualSellPrice() * amount; // Calculate the total price for the items
         ItemUtils.removeItemsFromInventory(player, item.getMaterial(), amount); // Remove items from the player's inventory
         EconomyManager.addBalance(player.getUniqueId(), totalPrice); // Add money to the player's balance
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new SellEvent(player, item));
+        });
         sendInfo(player, "Vous avez vendu " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
         adjustPrice(getPlayerCategory(player), itemId, amount, false); // Adjust the price based on the transaction
     }

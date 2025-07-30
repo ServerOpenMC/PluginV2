@@ -10,7 +10,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.enchantments.Enchantment;
@@ -185,7 +185,9 @@ public class QuestsMenu extends Menu {
         meta.displayName(Component.text(nameIcon + " §e" + quest.getName() + " " + tierDisplay));
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
-        lore.add(Component.text("§7" + quest.getDescription(playerUUID)));
+        quest.getDescription(playerUUID).forEach(string -> {
+            lore.add(Component.text("§7" + string));
+        });
         lore.add(bar);
 
         if (hasPendingRewards) {
@@ -219,7 +221,7 @@ public class QuestsMenu extends Menu {
                     lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.amount()) + " §f" + EconomyManager.getEconomyIcon()));
                 }
             }
-            lore.add(Component.text(""));
+            lore.add(Component.empty());
         }
 
         if (isCompleted) {
@@ -239,12 +241,13 @@ public class QuestsMenu extends Menu {
 
             lore.add(Component.text("§fProgrès: §e" + progress + "§6/§e" + target + " §7(" + progressPercent + "%)"));
             lore.add(Component.text(progressBar.toString()));
-            lore.add(Component.text(""));
+            lore.add(Component.empty());
             lore.add(Component.text("§6➤ §eObjectif actuel:"));
-            lore.add(Component.text("  §f" + quest.getDescription(playerUUID)));
-
+            quest.getDescription(playerUUID).forEach(string -> {
+                lore.add(Component.text("  §f" + string));
+            });
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
-                lore.add(Component.text(""));
+                lore.add(Component.empty());
                 lore.add(Component.text("§6◆ §eAvancement:"));
 
                 for (int i = 0; i < currentTier.getSteps().size(); i++) {

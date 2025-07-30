@@ -1,16 +1,17 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
-import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.corporation.shops.Shop;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -24,12 +25,27 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 
 public class ShopSearchMenu extends PaginatedMenu {
 
     public ShopSearchMenu(Player owner) {
         super(owner);
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override
@@ -39,7 +55,7 @@ public class ShopSearchMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
@@ -69,72 +85,57 @@ public class ShopSearchMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> buttons = new HashMap<>();
-        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
-        ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
-        ItemBuilder searchButton = new ItemBuilder(this, CustomItemRegistry.getByName("menu:search_btn").getBest().getType(), itemMeta ->
+        ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
+        ItemBuilder searchButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_search").getBest().getType(), itemMeta ->
                 itemMeta.setDisplayName("Rechercher"));
         if ((getPage() != 0 && !isLastPage()) || !CompanyManager.getShops().isEmpty()) {
-            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
             buttons.put(45, searchButton.setOnClick(inventoryClick -> {
-                String[] lines = new String[4];
-                lines[0] = "";
-                lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-                lines[2] = "Entrez le nom";
-                lines[3] = "du shop/joueur";
+                DialogInput.send(getOwner(), Component.text("Entrez le nom du shop ou bien du joueur pour le rechercher"), MAX_LENGTH, input -> {
+                    boolean shopFind = false;
 
-                SignGUI gui = SignGUI.builder()
-                        .setLines(null, lines[1] , lines[2], lines[3])
-                        .setType(ItemUtils.getSignType(getOwner()))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
+                    for (Shop shop : CompanyManager.shops) {
+                        double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
+                        double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
+                        double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
 
-                            boolean shopFind = false;
-
-                            for (Shop shop : CompanyManager.shops){
-                                double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
-                                double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
-                                double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
-
-                                if (shop.getName().contains(input)){
-                                    MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
-                                    shopFind = true;
-                                    break;
-                                }
-                                Player player = Bukkit.getPlayer(input);
-                                if (player==null) continue;
-                                if (shop.getOwner().isCompany()){
-                                    Company company = shop.getOwner().getCompany();
-                                    if (company.getAllMembers().contains(player.getUniqueId())){
-                                        MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
-                                        shopFind = true;
-                                        break;
-                                    }
-                                }
-                                if (shop.getOwner().isPlayer()){
-                                    Player shopPlayer = Bukkit.getPlayer(shop.getOwner().getPlayer());
-                                    if (shopPlayer==null){
-                                        continue;
-                                    }
-                                    if (shopPlayer.equals(player)){
-                                        MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a"+ shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
-                                        shopFind = true;
-                                        break;
-                                    }
-                                }
+                        if (shop.getName().contains(input)) {
+                            MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a" + shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
+                            shopFind = true;
+                            break;
+                        }
+                        Player player = Bukkit.getPlayer(input);
+                        if (player == null) continue;
+                        if (shop.getOwner().isCompany()) {
+                            Company company = shop.getOwner().getCompany();
+                            if (company.getAllMembers().contains(player.getUniqueId())) {
+                                MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a" + shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
+                                shopFind = true;
+                                break;
                             }
-
-                            if (!shopFind){
-                                MessagesManager.sendMessage(getOwner(), Component.text("§cAucun shop trouvé !"), Prefix.SHOP, MessageType.INFO, false);
+                        }
+                        if (shop.getOwner().isPlayer()) {
+                            Player shopPlayer = Bukkit.getPlayer(shop.getOwner().getPlayer());
+                            if (shopPlayer == null) {
+                                continue;
                             }
+                            if (shopPlayer.equals(player)) {
+                                MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a" + shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
+                                shopFind = true;
+                                break;
+                            }
+                        }
+                    }
 
-                            return Collections.emptyList();
-                        })
-                        .build();
+                    if (!shopFind) {
+                        MessagesManager.sendMessage(getOwner(), Component.text("§cAucun shop trouvé !"), Prefix.SHOP, MessageType.INFO, false);
+                    }
 
-                gui.open(getOwner());
+                });
             }));
         }
         return buttons;

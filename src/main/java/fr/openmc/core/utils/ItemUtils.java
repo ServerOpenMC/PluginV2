@@ -1,5 +1,9 @@
 package fr.openmc.core.utils;
 
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -174,13 +178,20 @@ public class ItemUtils {
         return item;
     }
 
-    // IMPORT FROM AXENO
-    public static boolean hasEnoughItems(Player player, Material item, int amount) {
+    /**
+     * Check if the player has enough items in his inventory
+     *
+     * @param player the player to check
+     * @param item the item to check {@link ItemStack}
+     * @param amount the amount of items to check
+     * @return {@code true} if the player has enough items, {@code false} otherwise
+     */
+    public static boolean hasEnoughItems(Player player, ItemStack item, int amount) {
         int totalItems = 0;
         ItemStack[] contents = player.getInventory().getContents();
 
         for (ItemStack is : contents) {
-            if (is != null && is.getType() == item) {
+            if (is != null && is.isSimilar(item)) {
                 totalItems += is.getAmount();
             }
         }
@@ -241,7 +252,7 @@ public class ItemUtils {
 
         for (int i = 0; i < contents.length && remaining > 0; i++) {
             ItemStack stack = contents[i];
-            if (stack != null && stack == item) {
+            if (stack != null && stack.isSimilar(item)) {
                 int stackAmount = stack.getAmount();
                 if (stackAmount <= remaining) {
                     player.getInventory().setItem(i, null);
@@ -252,6 +263,25 @@ public class ItemUtils {
                 }
             }
         }
+    }
+
+    public static boolean takeAywenite(Player player, int amount) {
+        ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        if (aywenite == null) return false;
+
+        if (!hasEnoughItems(player, aywenite, amount)) {
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas assez d'§dAywenite §f("+amount+ " nécessaires)"),
+                    Prefix.OPENMC,
+                    MessageType.ERROR,
+                    true
+            );
+            return false;
+        }
+
+        removeItemsFromInventory(player, aywenite, amount);
+        return true;
     }
 
     /**

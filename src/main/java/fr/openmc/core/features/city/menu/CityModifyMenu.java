@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.input.signgui.SignGUI;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -14,7 +14,6 @@ import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -26,11 +25,12 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 public class CityModifyMenu extends Menu {
 
@@ -70,9 +70,9 @@ public class CityModifyMenu extends Menu {
         if (hasPermissionRenameCity) {
             loreRename = List.of(
                     Component.text("§7Vous pouvez renommer votre §dville§7."),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§7Nom actuel : §d" + city.getName()),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR LE MODIFIER")
             );
         } else {
@@ -88,34 +88,17 @@ public class CityModifyMenu extends Menu {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (!CityManageConditions.canCityRename(cityCheck, player)) return;
 
-            String[] lines = new String[4];
-            lines[0] = "";
-            lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-            lines[2] = "Entrez votre";
-            lines[3] = "nom ci dessus";
+            DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input -> {
+                if (InputUtils.isInputCityName(input)) {
+                    City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-            SignGUI gui;
-            gui = SignGUI.builder()
-                    .setLines(null, lines[1], lines[2], lines[3])
-                    .setType(ItemUtils.getSignType(player))
-                    .setHandler((p, result) -> {
-                        String input = result.getLine(0);
+                    playerCity.rename(input);
+                    MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
 
-                        if (InputUtils.isInputCityName(input)) {
-                            City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-
-                                playerCity.rename(input);
-                                MessagesManager.sendMessage(player, Component.text("La ville a été renommée en " + input), Prefix.CITY, MessageType.SUCCESS, false);
-
-                        } else {
-                            MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                        }
-
-                        return Collections.emptyList();
-                    })
-                    .build();
-
-            gui.open(player);
+                } else {
+                    MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                }
+            });
 
         }));
 
@@ -125,7 +108,7 @@ public class CityModifyMenu extends Menu {
         if (hasPermissionOwner) {
             loreTransfer = List.of(
                     Component.text("§dLa Ville §7sera transferer à §dla personne §7que vous séléctionnerez"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
             );
         } else {
@@ -158,13 +141,13 @@ public class CityModifyMenu extends Menu {
                     if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
                         loreDelete = List.of(
                                 Component.text("§7Vous allez définitivement §csupprimer la ville!"),
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")) + " §7avant de pouvoir delete votre ville")
                         );
                     } else {
                         loreDelete = List.of(
                                 Component.text("§7Vous allez définitivement §csupprimer la ville!"),
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                         );
                     }
@@ -192,7 +175,7 @@ public class CityModifyMenu extends Menu {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous allez retourner au Menu de votre Ville"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }).setOnClick(inventoryClickEvent -> {

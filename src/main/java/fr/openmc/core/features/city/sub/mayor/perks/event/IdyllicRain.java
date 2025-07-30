@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -33,13 +33,13 @@ public class IdyllicRain implements Listener {
      * @param totalItems The total number of items to spawn.
      */
     public static void spawnAywenite(City city, int totalItems) {
-        Set<BlockVector2> chunks = city.getChunks();
+        Set<ChunkPos> chunks = city.getChunks();
         if (chunks.isEmpty()) return;
 
         World world = Bukkit.getWorld("world");
         if (world == null) return;
 
-        List<BlockVector2> chunkList = new ArrayList<>(chunks);
+        List<ChunkPos> chunkList = new ArrayList<>(chunks);
         Random random = new Random();
         NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
 
@@ -53,9 +53,9 @@ public class IdyllicRain implements Listener {
                     return;
                 }
 
-                BlockVector2 chunk = chunkList.get(random.nextInt(chunkList.size()));
-                int chunkX = chunk.getBlockX();
-                int chunkZ = chunk.getBlockZ();
+                ChunkPos chunk = chunkList.get(random.nextInt(chunkList.size()));
+                int chunkX = chunk.x();
+                int chunkZ = chunk.z();
 
                 int x = (chunkX << 4) + random.nextInt(16);
                 int z = (chunkZ << 4) + random.nextInt(16);

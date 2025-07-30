@@ -16,6 +16,7 @@ import java.util.List;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 
+@SuppressWarnings("UnstableApiUsage")
 public class MailboxMenuManager {
     public static final Key openmcKey = Key.key("openmc", "menu");
     public static final HashMap<Player, MailboxInv> playerInventories = new HashMap<>();
@@ -29,7 +30,6 @@ public class MailboxMenuManager {
         return getCustomItem(name, data, null);
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     public static ItemStack getCustomItem(Component name, int data, List<Component> lore) {
         ItemStack item = new ItemStack(customMaterial);
         item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(data).build());
@@ -100,7 +100,6 @@ public class MailboxMenuManager {
         return item != null && item.getType() != Material.AIR && item.getItemMeta() != null;
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     public static boolean isBtn(ItemStack item, int data) {
         return isNotNull(item) && item.getType() == customMaterial && item.hasData(DataComponentTypes.CUSTOM_MODEL_DATA) && item.getData(DataComponentTypes.CUSTOM_MODEL_DATA).floats().getFirst() == data;
     }

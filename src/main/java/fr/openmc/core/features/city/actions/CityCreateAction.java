@@ -12,10 +12,10 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.WorldGuardApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -93,8 +93,6 @@ public class CityCreateAction {
     }
 
     public static void finalizeCreation(Player player, Location mascotLocation) {
-        ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-
         UUID playerUUID = player.getUniqueId();
         String pendingCityName = pendingCities.remove(playerUUID);
         if (pendingCityName == null) return;
@@ -115,8 +113,12 @@ public class CityCreateAction {
             return;
         }
 
-        EconomyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE);
-        ItemUtils.removeItemsFromInventory(player, ayweniteItemStack.getType(), CityCreateConditions.AYWENITE_CREATE);
+        if (!EconomyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) {
+            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent pour créer une ville."), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!ItemUtils.takeAywenite(player, CityCreateConditions.AYWENITE_CREATE)) return;
 
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 
