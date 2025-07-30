@@ -1,10 +1,7 @@
 name: OpenMC
 version: ${version}
 main: fr.openmc.core.OMCPlugin
-api-version: '1.21.5'
-
-depend:
-  - WorldEdit
+api-version: '1.21.8'
 
 softdepend:
   - FancyNpcs

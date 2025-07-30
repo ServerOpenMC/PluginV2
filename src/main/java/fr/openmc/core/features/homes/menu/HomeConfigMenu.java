@@ -1,18 +1,16 @@
 package fr.openmc.core.features.homes.menu;
 
-import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.customfonts.CustomFonts;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.customfonts.CustomFonts;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -30,6 +28,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static fr.openmc.core.features.homes.utils.HomeUtil.MAX_LENGTH_HOME_NAME;
 
 public class HomeConfigMenu extends Menu {
 
@@ -74,49 +74,26 @@ public class HomeConfigMenu extends Menu {
                     .build();
             itemMeta.lore(Collections.singletonList(lore));
         }).setOnClick(e -> {
-            String[] lines = {
-                    "",
-                    " ᐱᐱᐱᐱᐱᐱᐱ ",
-                    "Entrez votre",
-                    "nom ci dessus"
-            };
+            DialogInput.send(getOwner(), Component.text("Entrez votre nouveau nom de home"), MAX_LENGTH_HOME_NAME, input -> {
+                if (!HomeUtil.isValidHomeName(input)) return;
 
-            SignGUI gui;
-            try {
-                gui = SignGUI.builder()
-                        .setLines(lines)
-                        .setType(ItemUtils.getSignType(player))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
+                if (HomesManager.getHomesNames(getOwner().getUniqueId()).contains(input)) {
+                    TextComponent message = Component.text("Tu as déjà un home avec ce nom.", NamedTextColor.RED);
+                    MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.ERROR, true);
+                    return;
+                }
 
-                                if (!HomeUtil.isValidHomeName(input))
-                                    return Collections.emptyList();
-
-                            if (HomesManager.getHomesNames(p.getUniqueId()).contains(input)) {
-                                TextComponent message = Component.text("Tu as déjà un home avec ce nom.", NamedTextColor.RED);
-                                MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.ERROR, true);
-                                return Collections.emptyList();
-                            }
-
-                            TextComponent message = Component.text()
-                                    .append(Component.text("Ton home ", NamedTextColor.GREEN))
-                                    .append(Component.text(home.getName(), NamedTextColor.YELLOW))
-                                    .append(Component.text(" a été renommé en ", NamedTextColor.GREEN))
-                                    .append(Component.text(input, NamedTextColor.YELLOW))
-                                    .append(Component.text(".", NamedTextColor.GREEN))
-                                    .build();
-
-                                MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
-                                HomesManager.renameHome(home, input);
-
-                            return Collections.emptyList();
-                        })
+                TextComponent message = Component.text()
+                        .append(Component.text("Ton home ", NamedTextColor.GREEN))
+                        .append(Component.text(home.getName(), NamedTextColor.YELLOW))
+                        .append(Component.text(" a été renommé en ", NamedTextColor.GREEN))
+                        .append(Component.text(input, NamedTextColor.YELLOW))
+                        .append(Component.text(".", NamedTextColor.GREEN))
                         .build();
-            } catch (SignGUIVersionException ex) {
-                throw new RuntimeException(ex);
-            }
 
-            gui.open(player);
+                MessagesManager.sendMessage(player, message, Prefix.HOME, MessageType.SUCCESS, true);
+                HomesManager.renameHome(home, input);
+            });
         }));
 
             content.put(24, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {

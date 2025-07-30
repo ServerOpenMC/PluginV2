@@ -1,13 +1,11 @@
 package fr.openmc.core.features.economy.menu;
 
-import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -20,10 +18,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 
 public class PersonalBankWithdrawMenu extends Menu {
 
@@ -110,30 +109,9 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre un §6montant précis"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
-
-            String[] lines = new String[4];
-            lines[0] = "";
-            lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-            lines[2] = "Entrez votre";
-            lines[3] = "montant ci dessus";
-
-            SignGUI gui = null;
-            try {
-                gui = SignGUI.builder()
-                        .setLines(null, lines[1] , lines[2], lines[3])
-                        .setType(ItemUtils.getSignType(player))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
-                            BankManager.withdrawBankBalance(player, input);
-                            return Collections.emptyList();
-                        })
-                        .build();
-            } catch (SignGUIVersionException e) {
-                throw new RuntimeException(e);
-            }
-
-            gui.open(player);
-
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input ->
+                    BankManager.withdrawBankBalance(player, input)
+            );
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {

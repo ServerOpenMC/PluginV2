@@ -1,7 +1,6 @@
 package fr.openmc.core.features.homes.menu;
 
-import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -10,7 +9,6 @@ import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.icons.IconCategory;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -30,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 
 public class HomeChangeIconMenu extends PaginatedMenu {
 
@@ -111,34 +111,13 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         }).setOnClick(event -> {
             if (event.getClick().isLeftClick()) {
                 getOwner().closeInventory();
-                String[] lines = {
-                        "",
-                        " ᐱᐱᐱᐱᐱᐱᐱ ",
-                        "Entrez votre",
-                        "nom ci dessus"
-                };
 
-                SignGUI gui;
-                try {
-                    gui = SignGUI.builder()
-                            .setLines(lines)
-                            .setType(ItemUtils.getSignType(getOwner()))
-                            .setHandler((p, result) -> {
-                                searchQuery = result.getLine(0);
-                                currentCategory = IconCategory.ALL;
-                                setPage(0);
-                                refresh();
-
-                                return Collections.emptyList();
-                            })
-                            .build();
-
-                    gui.open(getOwner());
-                } catch (SignGUIVersionException e) {
-                    MessagesManager.sendMessage(getOwner(),
-                            Component.text("§cUne erreur est survenue, veuillez contacter le Staff"),
-                            Prefix.OPENMC, MessageType.ERROR, false);
-                }
+                DialogInput.send(getOwner(), Component.text("Entrez votre recherche pour un item"), MAX_LENGTH, input -> {
+                    searchQuery = input;
+                    currentCategory = IconCategory.ALL;
+                    setPage(0);
+                    refresh();
+                });
             } else if (event.getClick().isRightClick()) {
                 searchQuery = "";
                 refresh();

@@ -20,9 +20,9 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Random;
-
 public class ParticleUtils {
+
+    private static final double MAX_PARTICLE_DISTANCE_SQR = 100 * 100;
 
     public static Color color1;
     public static Color color2;
@@ -40,7 +40,7 @@ public class ParticleUtils {
 
     }
 
-    public static void spawnParticlesInRegion(String regionId, World world, Particle particle, Integer amountPer2Tick, Integer maxHeight) {
+    public static void spawnParticlesInRegion(String regionId, World world, Particle particle, int amountPer2Tick, int minHeight, int maxHeight) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) return;
 
@@ -50,19 +50,18 @@ public class ParticleUtils {
         BlockVector3 min = region.getMinimumPoint();
         BlockVector3 max = region.getMaximumPoint();
 
-        Location minLocation = new Location(world, min.getX(), min.getY(), min.getZ());
-        Location maxLocation = new Location(world, max.getX(), max.getY(), max.getZ());
+        Location minLocation = new Location(world, min.x(), minHeight, min.z());
+        Location maxLocation = new Location(world, max.x(), maxHeight, max.z());
 
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (ContestManager.data.getPhase() == 3) return;
-                Random random = new Random();
 
                 for (int i = 0; i < amountPer2Tick; i++) {
-                    double x = minLocation.getX() + random.nextDouble() * (maxLocation.getX() - minLocation.getX());
-                    double y = minLocation.getY() + random.nextDouble() * (maxHeight - minLocation.getY());
-                    double z = minLocation.getZ() + random.nextDouble() * (maxLocation.getZ() - minLocation.getZ());
+                    double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
+                    double y = RandomUtils.randomBetween(minLocation.getY(), maxLocation.getY());
+                    double z = RandomUtils.randomBetween(minLocation.getZ(), maxLocation.getZ());
 
                     Location particleLocation = new Location(world, x, y, z);
 
@@ -106,12 +105,10 @@ public class ParticleUtils {
         BlockVector3 min = region.getMinimumPoint();
         BlockVector3 max = region.getMaximumPoint();
 
-        Location minLocation = new Location(world, min.getX(), min.getY(), min.getZ());
-        Location maxLocation = new Location(world, max.getX(), max.getY(), max.getZ());
+        Location minLocation = new Location(world, min.x(), minHeight, min.z());
+        Location maxLocation = new Location(world, max.x(), maxHeight, max.z());
 
         new BukkitRunnable() {
-            final Random random = new Random();
-
             @Override
             public void run() {
                 if (ContestManager.data.getPhase() != 3) return;
@@ -139,18 +136,18 @@ public class ParticleUtils {
                 }
 
                 for (int i = 0; i < amountPer2Tick; i++) {
-                    double x = minLocation.getX() + random.nextDouble() * (maxLocation.getX() - minLocation.getX());
-                    double y = minHeight + random.nextDouble() * (maxHeight - minHeight);
-                    double z = minLocation.getZ() + random.nextDouble() * (maxLocation.getZ() - minLocation.getZ());
+                    double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
+                    double y = RandomUtils.randomBetween(minLocation.getY(), maxLocation.getY());
+                    double z = RandomUtils.randomBetween(minLocation.getZ(), maxLocation.getZ());
 
                     Location base = new Location(world, x, y, z);
                     spawnRisingDustParticle(regionId, world, base, color1, 1.0f, 15, 1);
                 }
 
                 for (int i = 0; i < amountPer2Tick; i++) {
-                    double x = minLocation.getX() + random.nextDouble() * (maxLocation.getX() - minLocation.getX());
-                    double y = minHeight + random.nextDouble() * (maxHeight - minHeight);
-                    double z = minLocation.getZ() + random.nextDouble() * (maxLocation.getZ() - minLocation.getZ());
+                    double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
+                    double y = RandomUtils.randomBetween(minLocation.getY(), maxLocation.getY());
+                    double z = RandomUtils.randomBetween(minLocation.getZ(), maxLocation.getZ());
 
                     Location base = new Location(world, x, y, z);
                     spawnRisingDustParticle(regionId, world, base, color2, 1.0f, 15, 1);
@@ -189,7 +186,7 @@ public class ParticleUtils {
 
                     if (!region.contains(BukkitAdapter.asBlockVector(player.getLocation()))) continue;
 
-                    if (player.getLocation().distanceSquared(origin) > 100 * 100) continue;
+                    if (player.getLocation().distanceSquared(origin) > MAX_PARTICLE_DISTANCE_SQR) continue;
 
                     ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
                     ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(

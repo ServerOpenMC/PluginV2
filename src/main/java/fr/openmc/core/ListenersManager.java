@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ListenersManager {
     public ListenersManager() {
         registerEvents(
+                new HappyGhastListener(),
                 new SessionsListener(),
                 new JoinMessageListener(),
                 new UpdateListener(),

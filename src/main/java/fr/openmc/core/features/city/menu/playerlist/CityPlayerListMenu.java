@@ -1,7 +1,6 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
-import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -14,9 +13,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -33,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_PLAYERNAME;
 
 public class CityPlayerListMenu extends PaginatedMenu {
 
@@ -173,35 +174,14 @@ public class CityPlayerListMenu extends PaginatedMenu {
             itemMeta.displayName(Component.text("§7Inviter des §dpersonnes"));
             itemMeta.lore(List.of(Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir !")));
         }).setOnClick(inventoryClickEvent -> {
-            String[] lines = new String[4];
-            lines[0] = "";
-            lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-            lines[2] = "Entrez le nom du ";
-            lines[3] = "joueur ci dessus";
-
-            SignGUI gui;
-            try {
-                gui = SignGUI.builder()
-                        .setLines(null, lines[1], lines[2], lines[3])
-                        .setType(fr.openmc.core.utils.ItemUtils.getSignType(player))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
-
-                            if (InputUtils.isInputPlayer(input)) {
-                                Player playerToInvite = Bukkit.getPlayer(input);
-                                CityCommands.invite(player, playerToInvite);
-                            } else {
-                                MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
-                            }
-
-                            return Collections.emptyList();
-                        })
-                        .build();
-            } catch (SignGUIVersionException e) {
-                throw new RuntimeException(e);
-            }
-
-            gui.open(player);
+            DialogInput.send(player, Component.text("Entrez le nom du joueur"), MAX_LENGTH_PLAYERNAME, input -> {
+                if (InputUtils.isInputPlayer(input)) {
+                    Player playerToInvite = Bukkit.getPlayer(input);
+                    CityCommands.invite(player, playerToInvite);
+                } else {
+                    MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
+                }
+            });
         }));
         return map;
     }

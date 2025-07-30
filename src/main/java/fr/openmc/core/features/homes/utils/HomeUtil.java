@@ -1,14 +1,15 @@
 package fr.openmc.core.features.homes.utils;
 
-import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.features.homes.icons.OldHomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
+import fr.openmc.core.features.homes.icons.OldHomeIcon;
+import fr.openmc.core.features.homes.models.Home;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 public class HomeUtil {
 
+    public static final int MAX_LENGTH_HOME_NAME = 32;
     @Deprecated
     public static HomeIcon getHomeIcon(String iconId) {
         if (iconId == null || iconId.isEmpty())
@@ -64,7 +65,7 @@ public class HomeUtil {
                 name == null ||
                 name.trim().isEmpty() ||
                 name.length() < 3 ||
-                name.length() > 32
+                name.length() > MAX_LENGTH_HOME_NAME
         ) return false;
 
         long alphanumericCount = name.chars().filter(Character::isLetterOrDigit).count();

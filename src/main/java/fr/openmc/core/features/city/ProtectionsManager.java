@@ -57,6 +57,8 @@ public class ProtectionsManager {
 
         City cityAtLoc = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
 
+		if (cityAtLoc == null) return true;
+
         if (cityAtLoc.isMember(player)) return true;
 
         War war = cityAtLoc.getWar();

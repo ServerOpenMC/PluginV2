@@ -6,6 +6,10 @@ import org.bukkit.Bukkit;
 
 public class InputUtils {
 
+    public static final int MAX_LENGTH = 100;
+    public static final int MAX_LENGTH_CITY = 24;
+    public static final int MAX_LENGTH_PLAYERNAME = 16;
+
     private InputUtils() {
         // for Sonar
     }
@@ -83,7 +87,7 @@ public class InputUtils {
             return false;
         }
 
-        if (input.length() > 24) {
+        if (input.length() > MAX_LENGTH_CITY) {
             return false;
         }
 
@@ -105,6 +109,10 @@ public class InputUtils {
      */
     public static boolean isInputPlayer(String input) {
         if (input == null || input.isEmpty()) {
+            return false;
+        }
+
+        if (input.length() > MAX_LENGTH_PLAYERNAME) {
             return false;
         }
 

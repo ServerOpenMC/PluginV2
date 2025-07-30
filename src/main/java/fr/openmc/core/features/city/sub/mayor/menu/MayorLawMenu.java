@@ -320,7 +320,7 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eDissuasion Militaire §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
-                        MilitaryDissuasion.spawnIronMan(city, 10);
+                        MilitaryDissuasion.startEvent(city, 10);
                         DynamicCooldownManager.use(city.getUUID(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes
                         DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
 
