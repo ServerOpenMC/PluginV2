@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

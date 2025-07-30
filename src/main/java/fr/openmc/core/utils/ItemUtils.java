@@ -199,6 +199,28 @@ public class ItemUtils {
         if (amount == 0) return false;
         return totalItems >= amount;
     }
+    /**
+     * Check if the player has enough items in his inventory
+     *
+     * @param player the player to check
+     * @param material the material to check {@link ItemStack}
+     * @param amount the amount of items to check
+     * @return {@code true} if the player has enough items, {@code false} otherwise
+     */
+    public static boolean hasEnoughItems(Player player, Material material, int amount) {
+        int totalItems = 0;
+        ItemStack[] contents = player.getInventory().getContents();
+
+        for (ItemStack is : contents) {
+            if (is != null && is.getType() == material) {
+                totalItems += is.getAmount();
+            }
+        }
+
+        if (amount == 0) return false;
+        return totalItems >= amount;
+    }
+
 
     /**
      * Dire si le joueur a des ou un slot de libre
