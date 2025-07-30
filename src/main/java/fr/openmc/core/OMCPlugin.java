@@ -114,8 +114,10 @@ public class OMCPlugin extends JavaPlugin {
 
         PlayerSettingsManager.loadAllPlayerSettings();
 
-        ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 130);
-        ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        if (!OMCPlugin.isUnitTestVersion()) {
+            ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 130);
+            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        }
 
         getLogger().info("Plugin activé");
     }
