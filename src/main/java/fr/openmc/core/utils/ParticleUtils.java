@@ -22,6 +22,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ParticleUtils {
 
+    private static final double MAX_PARTICLE_DISTANCE_SQR = 100 * 100;
+
     public static Color color1;
     public static Color color2;
 
@@ -184,7 +186,7 @@ public class ParticleUtils {
 
                     if (!region.contains(BukkitAdapter.asBlockVector(player.getLocation()))) continue;
 
-                    if (player.getLocation().distanceSquared(origin) > 100 * 100) continue;
+                    if (player.getLocation().distanceSquared(origin) > MAX_PARTICLE_DISTANCE_SQR) continue;
 
                     ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
                     ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
