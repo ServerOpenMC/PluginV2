@@ -197,7 +197,7 @@ public class ItemInteraction implements Listener {
                 event.setCancelled(true);
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
             }
-        } else if (cursorItem != null && MaterialUtils.isBundle(cursorItem)) {
+        } else if (MaterialUtils.isBundle(cursorItem)) {
             if (isItemInteraction(clickedItem)) {
                 event.setCancelled(true);
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas déplacer cet objet dans un bundle"), Prefix.OPENMC, MessageType.ERROR, false);
