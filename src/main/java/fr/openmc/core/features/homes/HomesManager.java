@@ -123,7 +123,7 @@ public class HomesManager {
                 new RenameHome(),
                 new DelHome(),
                 new RelocateHome(this),
-                new TpHome(this),
+                new TpHome(),
                 new HomeWorld(disabledWorldHome),
                 new UpgradeHome()
         );

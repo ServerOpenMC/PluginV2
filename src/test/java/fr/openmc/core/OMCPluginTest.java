@@ -10,7 +10,7 @@ public class OMCPluginTest {
     public static ServerMock server;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         server = MockBukkit.mock();
 
         server.addSimpleWorld("world");
@@ -19,13 +19,13 @@ public class OMCPluginTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         MockBukkit.unmock();
     }
 
     @Test
     @DisplayName("Test if plugin is load")
-    public void testPluginIsEnabled() {
+    void testPluginIsEnabled() {
         Assertions.assertTrue(plugin.isEnabled());
     }
 }

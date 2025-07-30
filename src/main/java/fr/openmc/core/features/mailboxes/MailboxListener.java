@@ -25,7 +25,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.sql.SQLException;
 import java.util.Set;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
@@ -193,11 +192,7 @@ public class MailboxListener implements Listener {
                 OfflinePlayer receiver = meta.getOwningPlayer();
                 if (receiver == null) return;
                 runTask(() -> {
-	                try {
-		                HomeMailbox.openSendingMailbox(player, receiver, OMCPlugin.getInstance());
-	                } catch (SQLException e) {
-		                e.printStackTrace();
-	                }
+                    HomeMailbox.openSendingMailbox(player, receiver, OMCPlugin.getInstance());
                 });
             }
         }

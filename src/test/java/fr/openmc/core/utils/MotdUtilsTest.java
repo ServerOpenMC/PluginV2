@@ -7,12 +7,12 @@ import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
 import org.mockbukkit.mockbukkit.ServerMock;
 
-public class MotdUtilsTest {
+class MotdUtilsTest {
 
     private ServerMock server;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         server = MockBukkit.mock();
 
         server.addSimpleWorld("world");
@@ -21,7 +21,7 @@ public class MotdUtilsTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         MockBukkit.unmock();
     }
 
@@ -31,7 +31,7 @@ public class MotdUtilsTest {
 
     @Test
     @DisplayName("MOTD switch")
-    public void testMOTD() {
+    void testMOTD() {
         String motd = getComponentContent(server.motd());
 
         new MotdUtils();
