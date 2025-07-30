@@ -51,6 +51,9 @@ import java.util.logging.Logger;
 public class OMCPlugin extends JavaPlugin {
     @Getter static OMCPlugin instance;
     @Getter static FileConfiguration configs;
+    private static final String[] DEPENDENCY_PLUGIN = new String[] {
+            "WorldEdit", "WorldGuard", "LuckPerms", "ItemsAdder", "PlaceholderAPI", "FancyNpcs", "ProtocolLib"
+    };
 
     @Override
     public void onEnable() {
@@ -111,8 +114,10 @@ public class OMCPlugin extends JavaPlugin {
 
         PlayerSettingsManager.loadAllPlayerSettings();
 
-        ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 130);
-        ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        if (!OMCPlugin.isUnitTestVersion()) {
+            ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 130);
+            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        }
 
         getLogger().info("Plugin activé");
     }
@@ -188,11 +193,7 @@ public class OMCPlugin extends JavaPlugin {
         log.info("\u001B[1;35m  \\____/  |_|     |______| |_| \\_| |_|  |_| \\_____|   \u001B[0m");
         log.info("");
 
-        String[] plugins = {
-                "WorldEdit", "WorldGuard", "LuckPerms", "ItemsAdder", "PlaceholderAPI", "FancyNpcs", "ProtocolLib"
-        };
-
-        for (String pluginName : plugins) {
+        for (String pluginName : DEPENDENCY_PLUGIN) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
             if (plugin != null && plugin.isEnabled()) {
                 log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getDescription().getVersion() + " trouvé \u001B[0m");
@@ -200,5 +201,10 @@ public class OMCPlugin extends JavaPlugin {
                 log.info("  \u001B[31m✘ " + pluginName + " (facultatif)\u001B[0m");
             }
         }
+    }
+
+    public static boolean isPluginEnabled(String pluginName) {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
+        return plugin != null && plugin.isEnabled();
     }
 }
