@@ -17,9 +17,12 @@ import fr.openmc.core.features.city.sub.mayor.menu.create.MayorModifyMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -43,12 +46,16 @@ public class MayorElectionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Elections";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Menu des Elections";
+        }
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -76,22 +83,22 @@ public class MayorElectionMenu extends Menu {
                 loreElection = List.of(
                         Component.text("§7Les Elections sont §6ouvertes§7!"),
                         Component.text("§7Vous pouvez changer votre vote !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§7Vote Actuel : ").append(
                                         Component.text(MayorManager.getPlayerVote(player).getName()))
                                 .decoration(TextDecoration.ITALIC, false)
                                 .color(MayorManager.getPlayerVote(player).getCandidateColor()),
                         Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
                 );
             } else {
                 loreElection = List.of(
                         Component.text("§7Les Elections sont §6ouvertes§7!"),
                         Component.text("§7Choissiez le Maire qui vous plait !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR")
                 );
             }
@@ -108,7 +115,7 @@ public class MayorElectionMenu extends Menu {
             });
         };
 
-        MenuUtils.runDynamicItem(player, this, 11, electionItemSupplier)
+        MenuUtils.runDynamicItem(player, this, 29, electionItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
 
         List<Component> loreCandidature;
@@ -116,14 +123,14 @@ public class MayorElectionMenu extends Menu {
             loreCandidature = List.of(
                     Component.text("§7Vous vous êtes déjà §3présenter §7!"),
                     Component.text("§7Modifier votre couleur et regardez §3les Réformes §7que vous avez choisis"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
             );
         } else {
             loreCandidature = List.of(
                     Component.text("§7Vous pouvez vous §3inscire §7afin d'être maire !"),
                     Component.text("§7Séléctionner §3vos Réformes §7et votre couleur !"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR VOUS INSCRIRE")
             );
         }
@@ -134,7 +141,7 @@ public class MayorElectionMenu extends Menu {
                 Perks perk1 = PerkManager.getPerkById(city.getMayor().getIdPerk1());
                 lorePerkOwner = new ArrayList<>(List.of(
                         Component.text("§7Vous avez déjà choisis §3votre Réforme §7!"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text(perk1.getName())
                 ));
                 lorePerkOwner.addAll(perk1.getLore());
@@ -142,12 +149,12 @@ public class MayorElectionMenu extends Menu {
                 lorePerkOwner = List.of(
                         Component.text("§7Vous êtes le propriétaire de la §dVille§7!"),
                         Component.text("§7Vous pouvez choisir une §3Réforme événementiel §7!"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
             }
 
-            inventory.put(13, new ItemBuilder(this, ItemUtils.getPlayerSkull(player.getUniqueId()), itemMeta -> {
+            inventory.put(22, new ItemBuilder(this, ItemUtils.getPlayerSkull(player.getUniqueId()), itemMeta -> {
                 itemMeta.displayName(Component.text("§7Choix d'une §3Réforme"));
                 itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
@@ -162,7 +169,7 @@ public class MayorElectionMenu extends Menu {
             }));
         }
 
-        inventory.put(15, new ItemBuilder(this, Material.PAPER, itemMeta -> {
+        inventory.put(33, new ItemBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.itemName(Component.text("§7Votre §3Candidature"));
             itemMeta.lore(loreCandidature);
         }).setOnClick(inventoryClickEvent -> {
@@ -173,7 +180,7 @@ public class MayorElectionMenu extends Menu {
             }
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous allez retourner au Menu de votre ville"),
@@ -191,7 +198,7 @@ public class MayorElectionMenu extends Menu {
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
-        inventory.put(26, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+        inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));

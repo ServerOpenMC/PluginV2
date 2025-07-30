@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.perks;
 
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;

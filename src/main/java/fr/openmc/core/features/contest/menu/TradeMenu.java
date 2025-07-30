@@ -10,12 +10,13 @@ import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -59,7 +60,7 @@ public class TradeMenu extends Menu {
         Map<Integer, ItemStack> inventory = new HashMap<>();
 
             String campName = ContestPlayerManager.getPlayerCampName(player);
-            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId().toString()).getColor();
+            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
 
         // ITEM ADDER
         String namespaceShellContest = "omc_contest:contest_shell";
@@ -105,7 +106,7 @@ public class TradeMenu extends Menu {
                     return;
                 }
 
-                String m1 = String.valueOf(inventoryClickEvent.getCurrentItem().getType());
+                TranslatableComponent tradeName = ItemUtils.getItemTranslation(inventoryClickEvent.getCurrentItem().getType());
                 int amount = (int) trade.get("amount");
                 int amountShell = (int) trade.get("amount_shell");
                 ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
@@ -117,10 +118,10 @@ public class TradeMenu extends Menu {
                         }
                     }
 
-                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
+                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem(), amount)) {
                         int amountShell2 = (items / amount) * amountShell;
                         int items1 = (amountShell2 / amountShell) * amount;
-                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), items1);
+                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem(), items1);
                         int slotEmpty = ItemUtils.getSlotNull(player);
                         int stackAvailable = slotEmpty * 64;
                         int additem = Math.min(amountShell2, stackAvailable);
@@ -156,12 +157,14 @@ public class TradeMenu extends Menu {
                             MailboxManager.sendItems(player, player, shellContestArray);
                         }
 
-                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + items1 + " " + m1 + " §7contre§b " + amountShell2 + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + items1 + " ")
+                                .append(tradeName)
+                                .append(Component.text(" §7contre§b " + amountShell2 + " Coquillages(s) de Contest")), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
                         MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }
                 } else if (inventoryClickEvent.isLeftClick()) {
-                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem().getType(), amount)) {
+                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem(), amount)) {
 
                         //mettre dans l'inv ou boite mail ?
                         if (Arrays.asList(player.getInventory().getStorageContents()).contains(null)) {
@@ -175,8 +178,10 @@ public class TradeMenu extends Menu {
                             MailboxManager.sendItems(player, player, shellContestArray);
                         }
 
-                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem().getType(), amount);
-                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + amount + " " + m1 + " §7contre§b " + amountShell + " Coquillages(s) de Contest"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem(), amount);
+                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + amount + " ")
+                                .append(tradeName)
+                                .append(Component.text(" §7contre§b " + amountShell + " Coquillages(s) de Contest")), Prefix.CONTEST, MessageType.SUCCESS, true);
                     } else {
                         MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
                     }

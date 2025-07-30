@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.UUID;
 
@@ -32,6 +33,7 @@ public class Mascot {
     @DatabaseField(canBeNull = false)
     private int z;
 
+    private City city;
     Mascot() {
         // required by ORMLite
     }
@@ -56,9 +58,13 @@ public class Mascot {
     }
 
     public Material getMascotEgg() {
-        String eggName = this.getEntity().getType().name() + "_SPAWN_EGG";
+        LivingEntity entity = (LivingEntity) this.getEntity();
+        if (entity == null) {
+            return Material.BARRIER; // Default fallback
+        }
+        String eggName = entity.getType().name() + "_SPAWN_EGG";
         if (Material.matchMaterial(eggName) == null) {
-            return Material.ZOMBIE_SPAWN_EGG;
+            return Material.BARRIER;
         }
         return Material.matchMaterial(eggName);
     }
@@ -74,7 +80,7 @@ public class Mascot {
         if (mascot_uuid == null) {
             return null;
         }
-        Entity mob = Bukkit.getEntity(mascot_uuid);
+        LivingEntity mob = (LivingEntity) Bukkit.getEntity(mascot_uuid);
         if (mob == null) {
             return null;
         }
@@ -83,6 +89,10 @@ public class Mascot {
     }
 
     public City getCity() {
-        return CityManager.getCity(this.cityUUID);
+        if (this.city != null) {
+            return this.city;
+        }
+        this.city = CityManager.getCity(this.cityUUID);
+        return this.city;
     }
 }

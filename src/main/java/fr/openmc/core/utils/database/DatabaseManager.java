@@ -16,6 +16,7 @@ import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.features.friend.FriendSQLManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -46,7 +47,9 @@ public class DatabaseManager {
             String password = config.getString("database.password");
             connectionSource = new JdbcPooledConnectionSource(databaseUrl, username, password);
 
+
             MayorManager.init_db(connectionSource);
+            MilestonesManager.init_db(connectionSource);
             BankManager.init_db(connectionSource);
             TransactionsManager.init_db(connectionSource);
             AnalyticsManager.init_db(connectionSource);

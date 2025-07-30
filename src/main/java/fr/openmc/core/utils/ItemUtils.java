@@ -1,5 +1,9 @@
 package fr.openmc.core.utils;
 
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -9,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -107,15 +112,17 @@ public class ItemUtils {
      * @param player Joueur pour acceder a son inventaire
      * @param item Objet concerné
      */
-    public static int getFreePlacesForItem(Player player, ItemStack item){
+    public static int getFreePlacesForItem(Player player, ItemStack item) {
         int stackSize = item.getMaxStackSize();
         int freePlace = stackSize * getSlotNull(player);
 
         Inventory inventory = player.getInventory();
         for (ItemStack stack : inventory.getStorageContents()) {
-            if (stack != null && stack.getType()==item.getType()){
-                if (stack.getAmount() != stackSize) freePlace += stackSize - stack.getAmount();
-            }
+            if (stack == null || !item.isSimilar(stack))
+                continue;
+
+            if (stack.getAmount() != stackSize)
+                freePlace += stackSize - stack.getAmount();
         }
 
         return freePlace;
@@ -142,13 +149,20 @@ public class ItemUtils {
         return item;
     }
 
-    // IMPORT FROM AXENO
-    public static boolean hasEnoughItems(Player player, Material item, int amount) {
+    /**
+     * Check if the player has enough items in his inventory
+     *
+     * @param player the player to check
+     * @param item the item to check {@link ItemStack}
+     * @param amount the amount of items to check
+     * @return {@code true} if the player has enough items, {@code false} otherwise
+     */
+    public static boolean hasEnoughItems(Player player, ItemStack item, int amount) {
         int totalItems = 0;
         ItemStack[] contents = player.getInventory().getContents();
 
         for (ItemStack is : contents) {
-            if (is != null && is.getType() == item) {
+            if (is != null && is.isSimilar(item)) {
                 totalItems += is.getAmount();
             }
         }
@@ -177,18 +191,19 @@ public class ItemUtils {
     }
 
     /**
-     * Retirer le nombre d'objet au joueur (vérification obligatoire avant execution)
-     * @param player Joueur pour acceder a son inventaire
-     * @param item Objet a retirer
-     * @param quantity Quantité a retirer
+     * Remove a specific quantity of items from the player's inventory.
+     *
+     * @param player the player whose inventory will be modified
+     * @param item the item to remove, must be similar to the items in the inventory {@link ItemStack}
+     * @param quantity the number of items to remove
      */
-    public static void removeItemsFromInventory(Player player, Material item, int quantity) {
+    public static void removeItemsFromInventory(Player player, ItemStack item, int quantity) {
         ItemStack[] contents = player.getInventory().getContents();
         int remaining = quantity;
 
         for (int i = 0; i < contents.length && remaining > 0; i++) {
             ItemStack stack = contents[i];
-            if (stack != null && stack.getType() == item) {
+            if (stack != null && stack.isSimilar(item)) {
                 int stackAmount = stack.getAmount();
                 if (stackAmount <= remaining) {
                     player.getInventory().setItem(i, null);
@@ -201,23 +216,67 @@ public class ItemUtils {
         }
     }
 
-    public static void removeItemsFromInventory(Player player, ItemStack item, int quantity) {
-        ItemStack[] contents = player.getInventory().getContents();
-        int remaining = quantity;
+    public static boolean takeAywenite(Player player, int amount) {
+        ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        if (aywenite == null) return false;
 
-        for (int i = 0; i < contents.length && remaining > 0; i++) {
-            ItemStack stack = contents[i];
-            if (stack != null && stack == item) {
-                int stackAmount = stack.getAmount();
-                if (stackAmount <= remaining) {
-                    player.getInventory().setItem(i, null);
-                    remaining -= stackAmount;
-                } else {
-                    stack.setAmount(stackAmount - remaining);
-                    remaining = 0;
-                }
+        if (!hasEnoughItems(player, aywenite, amount)) {
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas assez d'§dAywenite §f("+amount+ " nécessaires)"),
+                    Prefix.OPENMC,
+                    MessageType.ERROR,
+                    true
+            );
+            return false;
+        }
+
+        removeItemsFromInventory(player, aywenite, amount);
+        return true;
+    }
+
+    /**
+     * Calcule le nombre maximal d'items pouvant être craftés.
+     * <p>
+     * Cette méthode récupère le résultat du craft. Si le résultat est nul, elle retourne 0.
+     * Sinon, elle détermine le nombre minimal d'items présents dans la grille de craft et
+     * renvoie le produit de la quantité du résultat par ce nombre minimal.
+     *
+     * @param inventory l'inventaire de crafting
+     * @return le nombre maximal d'items pouvant être craftés
+     */
+    public static int getMaxCraftAmount(CraftingInventory inventory) {
+        ItemStack result = inventory.getResult();
+        if (result == null)
+            return 0;
+
+        int resultCount = result.getAmount();
+        int materialCount = Integer.MAX_VALUE;
+
+        for (ItemStack itemStack : inventory.getMatrix()) {
+            if (itemStack != null && itemStack.getAmount() < materialCount)
+                materialCount = itemStack.getAmount();
+        }
+
+        return resultCount * materialCount;
+    }
+
+    /**
+     * Trouve le slot ou est l'item
+     *
+     * @param player le joueur pour l'inventaire
+     * @param item   l'item a chercher
+     * @return le slot de l'item (-1 si introuvable)
+     */
+    public static int getSlotOfItem(Player player, ItemStack item) {
+        Inventory inv = player.getInventory();
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack current = inv.getItem(i);
+            if (item.equals(current)) {
+                return i;
             }
         }
+        return -1;
     }
 
     /**
@@ -248,13 +307,5 @@ public class ItemUtils {
         Biome playerBiome = player.getWorld().getBiome(player.getLocation());
 
         return biomeToSignType.getOrDefault(playerBiome, Material.OAK_SIGN);
-    }
-
-    public static Component getDefaultItemName(Material material) {
-        return Component.translatable(material.translationKey());
-    }
-
-    public static Component getDefaultItemName(ItemStack itemStack) {
-        return getDefaultItemName(itemStack.getType());
     }
 }

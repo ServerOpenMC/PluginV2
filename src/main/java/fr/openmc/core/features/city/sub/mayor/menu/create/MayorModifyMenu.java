@@ -9,6 +9,9 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,12 +31,16 @@ public class MayorModifyMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Modification";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Menu des Maires - Modification";
+        }
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -56,30 +63,30 @@ public class MayorModifyMenu extends Menu {
         Perks perk3 = PerkManager.getPerkById(mayorCandidate.getIdChoicePerk3());
 
         assert perk2 != null;
-        inventory.put(11, new ItemBuilder(this, perk2.getItemStack(), itemMeta -> {
+        inventory.put(20, new ItemBuilder(this, perk2.getItemStack(), itemMeta -> {
             itemMeta.customName(Component.text(perk2.getName()));
             itemMeta.lore(perk2.getLore());
         }));
 
         assert perk3 != null;
-        inventory.put(13, new ItemBuilder(this, perk3.getItemStack(), itemMeta -> {
+        inventory.put(22, new ItemBuilder(this, perk3.getItemStack(), itemMeta -> {
             itemMeta.customName(Component.text(perk3.getName()));
             itemMeta.lore(perk3.getLore());
         }));
 
         List<Component> loreColor = List.of(
                 Component.text("§7Vous pouvez rechangez la couleur de votre Nom!"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA COULEUR")
         );
-        inventory.put(15, new ItemBuilder(this, ColorUtils.getMaterialFromColor(mayorCandidate.getCandidateColor()), itemMeta -> {
+        inventory.put(24, new ItemBuilder(this, ColorUtils.getMaterialFromColor(mayorCandidate.getCandidateColor()), itemMeta -> {
             itemMeta.itemName(Component.text("§7Changer votre ").append(Component.text("couleur").color(mayorCandidate.getCandidateColor())));
             itemMeta.lore(loreColor);
         }).setOnClick(inventoryClickEvent -> {
             new MayorColorMenu(player, null, null, null, "change", null).open();
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous allez retourner au Menu de votre ville"),

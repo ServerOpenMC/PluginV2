@@ -1,15 +1,16 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -39,7 +40,7 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
@@ -57,36 +58,25 @@ public class CityTransferMenu extends PaginatedMenu {
                     continue;
                 }
 
-            OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+                OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                itemMeta.displayName(Component.text("Membre " + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                itemMeta.lore(List.of(
-                        Component.text("§7Voulez-vous donner à §d" + playerOffline.getName() + " §7votre ville ?"),
-                        Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-                ));
-            }).setOnClick(inventoryClickEvent -> {
-                if (!hasPermissionOwner) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
+                String title = city.getRankName(uuid) + " ";
 
-                ConfirmMenu menu = new ConfirmMenu(player,
-                        () -> {
-                            city.changeOwner(playerOffline.getUniqueId());
-                            MessagesManager.sendMessage(player, Component.text("Le nouveau maire est " + playerOffline.getName()), Prefix.CITY, MessageType.SUCCESS, false);
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
+                    itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
+                    itemMeta.lore(List.of(
+                            Component.text("§7Voulez-vous donner à §d" + title + playerOffline.getName() + " §7votre ville ?"),
+                            Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+                    ));
+                }).setOnClick(inventoryClickEvent -> {
+                    if (!hasPermissionOwner) {
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        return;
+                    }
 
-                            if (playerOffline.isOnline()) {
-                                MessagesManager.sendMessage((Player) playerOffline, Component.text("Vous êtes devenu le maire de la ville"), Prefix.CITY, MessageType.INFO, true);
-                            }
-                            player.closeInventory();
-                        },
-                        () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez-vous vraiment donner la ville à " + playerOffline.getName() + " ?")),
-                        List.of(Component.text("§7Vous allez garder la ville " + playerOffline.getName())));
-                menu.open();
-            }));
-        }
+                    CityTransferAction.transfer(player, city, playerOffline);
+                }));
+            }
 
         return items;
     }
@@ -99,16 +89,26 @@ public class CityTransferMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemStack> getButtons() {
         Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), itemMeta -> {
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
         }).setCloseButton());
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), itemMeta -> {
+        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§cPage précédente"));
         }).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), itemMeta -> {
+        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§aPage suivante"));
         }).setNextPageButton());
         return map;
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override

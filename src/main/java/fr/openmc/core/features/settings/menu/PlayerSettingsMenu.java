@@ -1,13 +1,15 @@
 package fr.openmc.core.features.settings.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.features.settings.policy.Policy;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -36,6 +38,16 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @Nullable Material getBorderMaterial() {
         return null;
     }
@@ -53,13 +65,26 @@ public class PlayerSettingsMenu extends PaginatedMenu {
             meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }).setOnClick(event -> {
-            settings.resetAllSettings();
-            this.refresh();
-            MessagesManager.sendMessage(getOwner(),
-                    Component.text("Tous les paramètres ont été réinitialisés.", NamedTextColor.GREEN)
-                            .decoration(TextDecoration.ITALIC, false),
-                    Prefix.SETTINGS, MessageType.SUCCESS, true);
+            new ConfirmMenu(getOwner(), () -> {
+                settings.resetAllSettings();
+                this.refresh();
+                MessagesManager.sendMessage(getOwner(),
+                        Component.text("Tous les paramètres ont été réinitialisés.", NamedTextColor.GREEN)
+                                .decoration(TextDecoration.ITALIC, false),
+                        Prefix.SETTINGS, MessageType.SUCCESS, true);
+                },
+                this::open,
+                List.of(
+                    Component.text("Êtes-vous sûr de vouloir réinitialiser tous les paramètres ?",
+                            NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
+                    Component.text("Cette action est irréversible.", NamedTextColor.YELLOW)
+                            .decoration(TextDecoration.ITALIC, false)),
+                List.of(
+                    Component.text("Cliquez pour annuler", NamedTextColor.GRAY)
+                            .decoration(TextDecoration.ITALIC, false))
+            ).open();
         }));
+
         buttons.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         buttons.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
         buttons.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());

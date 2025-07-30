@@ -10,9 +10,10 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
+import fr.openmc.core.items.CustomItemRegistry;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -27,8 +28,6 @@ import java.util.*;
 public class QuestsMenu extends Menu {
     private int currentPage;
     private static String TITLE;
-    private static final ItemStack LEFT_ARROW;
-    private static final ItemStack RIGHT_ARROW;
     private final int totalPages;
     private Player target;
     private final Map<Integer, Integer> slotToQuestIndex = new HashMap<>();
@@ -37,7 +36,6 @@ public class QuestsMenu extends Menu {
         super(player);
         this.currentPage = currentPage;
         this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
-        TITLE = "Quests (" + currentPage + 1 + "/" + this.totalPages + ")";
         this.target = player;
     }
 
@@ -45,24 +43,21 @@ public class QuestsMenu extends Menu {
         super(player);
         this.currentPage = currentPage;
         this.totalPages = (int) Math.ceil(QuestsManager.getAllQuests().size() / 9.0F);
-        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
         this.target = target;
     }
 
     public QuestsMenu(Player player) {
         this(player, 0);
         this.target = player;
-        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
     }
 
     public QuestsMenu(Player player, Player target) {
         this(player, 0);
         this.target = target;
-        TITLE = "Quests (" + (currentPage + 1) + "/" + this.totalPages + ")";
     }
 
     public @NotNull String getName() {
-        return TITLE;
+        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-25%%img_quests_menu%");
     }
 
     public @NotNull InventorySize getInventorySize() {
@@ -71,10 +66,10 @@ public class QuestsMenu extends Menu {
 
     public void onInventoryClick(InventoryClickEvent event) {
         int slot = event.getSlot();
-        if (slot == 18 && this.currentPage > 0) {
+        if (slot == 19 && this.currentPage > 0) {
             --this.currentPage;
             this.refresh();
-        } else if (slot == 26 && this.currentPage < this.totalPages - 1) {
+        } else if (slot == 25 && this.currentPage < this.totalPages - 1) {
             ++this.currentPage;
             this.refresh();
         } else if (slot >= 9 && slot <= 17) {
@@ -113,11 +108,11 @@ public class QuestsMenu extends Menu {
         }
 
         if (this.currentPage > 0) {
-            content.put(18, LEFT_ARROW);
+            content.put(19, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_left_arrow")).getBest());
         }
 
         if (this.currentPage < this.totalPages - 1) {
-            content.put(26, RIGHT_ARROW);
+            content.put(25, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_right_arrow")).getBest());
         }
 
         return content;
@@ -191,7 +186,9 @@ public class QuestsMenu extends Menu {
         meta.displayName(Component.text(nameIcon + " §e" + quest.getName() + " " + tierDisplay));
         List<Component> lore = new ArrayList<>();
         lore.add(bar);
-        lore.add(Component.text("§7" + quest.getDescription(playerUUID)));
+        quest.getDescription(playerUUID).forEach(string -> {
+            lore.add(Component.text("§7" + string));
+        });
         lore.add(bar);
 
         if (hasPendingRewards) {
@@ -225,7 +222,7 @@ public class QuestsMenu extends Menu {
                     lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
                 }
             }
-            lore.add(Component.text(""));
+            lore.add(Component.empty());
         }
 
         if (isCompleted) {
@@ -245,12 +242,13 @@ public class QuestsMenu extends Menu {
 
             lore.add(Component.text("§fProgrès: §e" + progress + "§6/§e" + target + " §7(" + progressPercent + "%)"));
             lore.add(Component.text(progressBar.toString()));
-            lore.add(Component.text(""));
+            lore.add(Component.empty());
             lore.add(Component.text("§6➤ §eObjectif actuel:"));
-            lore.add(Component.text("  §f" + quest.getDescription(playerUUID)));
-
+            quest.getDescription(playerUUID).forEach(string -> {
+                lore.add(Component.text("  §f" + string));
+            });
             if (currentTier.getSteps() != null && !currentTier.getSteps().isEmpty()) {
-                lore.add(Component.text(""));
+                lore.add(Component.empty());
                 lore.add(Component.text("§6◆ §eAvancement:"));
 
                 for (int i = 0; i < currentTier.getSteps().size(); i++) {
@@ -281,16 +279,5 @@ public class QuestsMenu extends Menu {
         lore.add(bar);
         meta.lore(lore);
         item.setItemMeta(meta);
-    }
-
-    static {
-        LEFT_ARROW = new ItemStack(Material.ARROW);
-        ItemMeta leftArrowMeta = LEFT_ARROW.getItemMeta();
-        leftArrowMeta.displayName(Component.text("§aPage précédente"));
-        LEFT_ARROW.setItemMeta(leftArrowMeta);
-        RIGHT_ARROW = new ItemStack(Material.ARROW);
-        ItemMeta rightArrowMeta = RIGHT_ARROW.getItemMeta();
-        rightArrowMeta.displayName(Component.text("§aPage suivante"));
-        RIGHT_ARROW.setItemMeta(rightArrowMeta);
     }
 }

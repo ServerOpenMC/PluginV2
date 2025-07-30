@@ -3,17 +3,19 @@ package fr.openmc.core.features.quests.quests;
 import fr.openmc.core.features.quests.objects.Quest;
 import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class ConsumeKebabQuest extends Quest implements Listener {
 
     public ConsumeKebabQuest() {
-        super("Miam Miam", "Manger {target} kebab{s}", CustomItemRegistry.getByName("omc_foods:kebab").getBest());
+        super("Miam Miam", List.of("Manger {target} kebab{s}"), CustomItemRegistry.getByName("omc_foods:kebab").getBest());
 
         this.addTiers(
                 new QuestTier(10, new QuestMoneyReward(30)),

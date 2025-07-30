@@ -88,18 +88,18 @@ public class NoCityMenu extends Menu {
                     loreCreate = List.of(
                             Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                             Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
-                            Component.text(""),
+                            Component.empty(),
                             Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")) + " §7avant de pouvoir créer une ville")
                     );
                 } else {
                     loreCreate = List.of(
                             Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                             Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
-                            Component.text(""),
+                            Component.empty(),
                             Component.text("§cCoûte :"),
                             Component.text("§8- §6" + CityCreateConditions.MONEY_CREATE + EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false),
                             Component.text("§8- §d" + CityCreateConditions.AYWENITE_CREATE + " d'Aywenite"),
-                            Component.text(""),
+                            Component.empty(),
                             Component.text("§e§lCLIQUEZ ICI POUR CREER VOTRE VILLE")
                     );
                 }
@@ -108,6 +108,8 @@ public class NoCityMenu extends Menu {
                     itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
                     itemMeta.lore(loreCreate);
                 }).setOnClick(inventoryClickEvent -> {
+                    if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) return;
+
                     String[] lines = new String[4];
                     lines[0] = "";
                     lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";

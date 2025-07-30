@@ -69,7 +69,8 @@ public class MascotsManager {
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
                 new MascotsDeathListener(),
-                new MascotImmuneListener()
+                new MascotImmuneListener(),
+                new MascotsTargetListener()
         );
 
         CommandsManager.getHandler().register(
@@ -148,7 +149,7 @@ public class MascotsManager {
             }
         });
 
-        MascotUtils.removeMascotOfCity(city);
+        MascotUtils.removeMascotOfCity(mascot);
     }
 
     public static void reviveMascots(String city_uuid) {
@@ -225,7 +226,7 @@ public class MascotsManager {
         }
     }
 
-    public static void changeMascotsSkin(Mascot mascots, EntityType skin, Player player, Material matAywenite, int aywenite) {
+    public static void changeMascotsSkin(Mascot mascots, EntityType skin, Player player, int aywenite) {
         World world = Bukkit.getWorld("world");
         LivingEntity entityMascot = (LivingEntity) mascots.getEntity();
         Location mascotsLoc = entityMascot.getLocation();
@@ -281,7 +282,7 @@ public class MascotsManager {
             mascots.setMascotUUID(newMascots.getUniqueId());
         }
 
-        ItemUtils.removeItemsFromInventory(player, matAywenite, aywenite);
+        ItemUtils.takeAywenite(player, aywenite);
     }
 
 

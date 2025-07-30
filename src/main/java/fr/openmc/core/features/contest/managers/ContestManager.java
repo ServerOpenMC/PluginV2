@@ -15,10 +15,11 @@ import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -51,7 +52,7 @@ public class ContestManager {
     public static YamlConfiguration contestConfig;
 
     public static Contest data;
-    public static Map<String, ContestPlayer> dataPlayer = new HashMap<>();
+    public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
 
     private static List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
@@ -86,7 +87,7 @@ public class ContestManager {
     }
 
     private static Dao<Contest, Integer> contestDao;
-    private static Dao<ContestPlayer, String> playerDao;
+    private static Dao<ContestPlayer, UUID> playerDao;
 
     /**
      * Initialise la DB pour les Contests
@@ -156,7 +157,7 @@ public class ContestManager {
      */
     public static void loadContestPlayerData() {
         try {
-            playerDao.queryForAll().forEach(player -> dataPlayer.put(player.getName(), player));
+            playerDao.queryForAll().forEach(player -> dataPlayer.put(player.getUUID(), player));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -193,6 +194,8 @@ public class ContestManager {
      */
     public static void initPhase1() {
         data.setPhase(2);
+        ParticleUtils.color1 = null;
+        ParticleUtils.color2 = null;
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
@@ -249,6 +252,9 @@ public class ContestManager {
      */
     public static void initPhase3() {
         data.setPhase(4);
+
+        ParticleUtils.color1 = null;
+        ParticleUtils.color2 = null;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);
@@ -375,7 +381,7 @@ public class ContestManager {
         // 2EME PAGE - LES CLASSEMENTS
         final Component[] leaderboard = {Component.text("§8§lLe Classement du Contest (Jusqu'au 10eme)")};
 
-        Map<String, ContestPlayer> orderedMap = dataPlayer.entrySet()
+        Map<UUID, ContestPlayer> orderedMap = dataPlayer.entrySet()
                 .stream()
                 .sorted((entry1, entry2) -> Integer.compare(
                         entry2.getValue().getPoints(),
@@ -391,7 +397,7 @@ public class ContestManager {
 
         final int[] rankInt = {0};
 
-        dataPlayer.forEach((uuid, dataOrdered) -> {
+        orderedMap.forEach((uuid, dataOrdered) -> {
             NamedTextColor playerCampColor2 = ColorUtils.getReadableColor(dataOrdered.getColor());
 
             Component rankComponent = Component.text("\n#" + (rankInt[0] + 1) + " ").color(LeaderboardManager.getRankColor(rankInt[0] + 1))
@@ -414,9 +420,7 @@ public class ContestManager {
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
 
-            OMCPlugin.getInstance().getLogger().info(uuid + " " + dataPlayer1.getCamp() + " " + dataPlayer1.getColor() + " " + dataPlayer1.getPoints() + " " + dataPlayer1.getName());
-
-            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(UUID.fromString(uuid));
+            OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(uuid);
             int points = dataPlayer1.getPoints();
 
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());

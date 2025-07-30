@@ -1,5 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
+import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.Location;
@@ -18,54 +21,74 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class InteractProtection implements Listener {
+
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        if (event.isCancelled()) return;
         Player player = event.getPlayer();
+      
+        if (event.getHand() != EquipmentSlot.HAND) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
-        if (event.getHand() != EquipmentSlot.HAND)
-            return;
+        Block clickedBlock = event.getClickedBlock();
+        if (clickedBlock == null) return;
+        Location location = clickedBlock.getLocation();
+        Material clickedType = clickedBlock.getType();
 
         ItemStack inHand = event.getItem();
+        Material itemType = inHand != null ? inHand.getType() : Material.AIR;
 
-        if (inHand != null) {
-            Material type = inHand.getType();
+        boolean isMinecart = isMinecart(itemType);
+        boolean isTnt = itemType == Material.TNT;
 
-            if (type == Material.TNT) return;
-
-            if (type.isBlock()) return;
-
-            if (type.isEdible() && event.getAction() == Action.RIGHT_CLICK_AIR) return;
-        }
-
-        if (event.getClickedBlock() == null) return;
-
-        Location loc = event.getClickedBlock().getLocation();
+        Location loc = clickedBlock.getLocation();
 
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (inHand != null && inHand.getType().isEdible()) {
-                Block clicked = event.getClickedBlock();
-                Material type = clicked.getType();
+                Material type = clickedBlock.getType();
 
                 if (!type.isInteractable()) return;
             }
-
-            ProtectionsManager.verify(player, event, loc);
+            
+            City city = CityManager.getCityFromChunk(loc.getChunk().getX(), loc.getChunk().getZ());
+            if (city == null) return;
+            
+            if (city.isMember(player)) {
+                if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
+                if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
+                    ProtectionsManager.checkPermissions(player, event, city, CPermission.OPEN_CHEST);
+                } else {
+                    ProtectionsManager.checkPermissions(player, event, city, CPermission.INTERACT);
+                }
+                
+            } else {
+                ProtectionsManager.checkCity(player, event, city);
+            }
+            
         }
+        if (!clickedType.isInteractable() && !isMinecart) return;
+        if (isTnt) return;
+
+        ProtectionsManager.verify(player, event, location);
     }
 
-
     @EventHandler
-    void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
-        if (event.isCancelled()) return;
+    public void onInteractAtEntity(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != EquipmentSlot.HAND) return;
-        if (!(event.getRightClicked() instanceof ItemFrame)) return;
-
+        
         Entity rightClicked = event.getRightClicked();
-
         if (rightClicked instanceof Player) return;
-        if (MascotUtils.isMascot(rightClicked)) return;
+        if (! (rightClicked instanceof ItemFrame)) return;
 
+        if (MascotUtils.isMascot(rightClicked)) return;
+        
         ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
+    }
+
+    private boolean isMinecart(Material type) {
+        return switch (type) {
+            case MINECART, CHEST_MINECART, FURNACE_MINECART, HOPPER_MINECART, TNT_MINECART, COMMAND_BLOCK_MINECART ->
+                    true;
+            default -> false;
+        };
     }
 }

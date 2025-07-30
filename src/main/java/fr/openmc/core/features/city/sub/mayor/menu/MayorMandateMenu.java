@@ -12,6 +12,9 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -32,12 +35,16 @@ public class MayorMandateMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Mandat";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Menu des Maires - Mandat";
+        }
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -65,10 +72,10 @@ public class MayorMandateMenu extends Menu {
         List<Component> loreMayor = new ArrayList<>(List.of(
                 Component.text("§8§oMaire de " + city.getName())
         ));
-        loreMayor.add(Component.text(""));
+        loreMayor.add(Component.empty());
         loreMayor.add(Component.text(perk2.getName()));
         loreMayor.addAll(perk2.getLore());
-        loreMayor.add(Component.text(""));
+        loreMayor.add(Component.empty());
         loreMayor.add(Component.text(perk3.getName()));
         loreMayor.addAll(perk3.getLore());
 
@@ -89,9 +96,9 @@ public class MayorMandateMenu extends Menu {
         if (player.getUniqueId().equals(mayor.getUUID())) {
             List<Component> loreLaw = List.of(
                     Component.text("§7Vous êtes le ").append(Component.text("Maire").color(mayor.getMayorColor()).decoration(TextDecoration.ITALIC, false).append(Component.text("§7!"))),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§7Vous pouvez changer les §1Lois §7et lancer des §6Evenements §7!"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR OUVRIR UN MENU")
 
             );
@@ -106,7 +113,7 @@ public class MayorMandateMenu extends Menu {
         List<Component> loreOwner = new ArrayList<>(List.of(
                 Component.text("§8§oPropriétaire de " + city.getName())
         ));
-        loreOwner.add(Component.text(""));
+        loreOwner.add(Component.empty());
         loreOwner.add(Component.text(perk1.getName()));
         loreOwner.addAll(perk1.getLore());
 
@@ -118,7 +125,7 @@ public class MayorMandateMenu extends Menu {
         ItemStack iaPerk1 = (perk1 != null) ? perk1.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
         String namePerk1 = (perk1 != null) ? perk1.getName() : "§8Réforme Vide";
         List<Component> lorePerk1 = (perk1 != null) ? new ArrayList<>(perk1.getLore()) : null;
-        inventory.put(10, new ItemBuilder(this, iaPerk1, itemMeta -> {
+        inventory.put(29, new ItemBuilder(this, iaPerk1, itemMeta -> {
             itemMeta.customName(Component.text(namePerk1));
             itemMeta.lore(lorePerk1);
             itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -128,7 +135,7 @@ public class MayorMandateMenu extends Menu {
         ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
         String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
         List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
-        inventory.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
+        inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
             itemMeta.customName(Component.text(namePerk2));
             itemMeta.lore(lorePerk2);
             itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -138,14 +145,14 @@ public class MayorMandateMenu extends Menu {
         ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
         String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
         List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
-        inventory.put(16, new ItemBuilder(this, iaPerk3, itemMeta -> {
+        inventory.put(33, new ItemBuilder(this, iaPerk3, itemMeta -> {
             itemMeta.customName(Component.text(namePerk3));
             itemMeta.lore(lorePerk3);
             itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
                     Component.text("§7Vous allez retourner au Menu des Villes"),
@@ -161,7 +168,7 @@ public class MayorMandateMenu extends Menu {
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
-        inventory.put(26, new ItemBuilder(this, Material.BOOK, itemMeta -> {
+        inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
         }).setNextMenu(new MoreInfoMenu(getOwner())));

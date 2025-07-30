@@ -2,10 +2,12 @@ package fr.openmc.core.features.city.sub.war;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.utils.LocationUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -117,20 +119,26 @@ public class War {
                 §7
                 §8§m                                                     §r""";
 
+        Location mascotLocDefender = cityDefender.getMascot().getEntity().getLocation();
+        Location mascotLocAttacker = cityAttacker.getMascot().getEntity().getLocation();
         for (UUID uuid : attackers) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            if (player.isOnline())
+            if (player.isOnline()) {
                 player.sendMessage(Component.text(String.format(message, cityDefender.getName(), TIME_FIGHT)));
+                player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocAttacker,3));
+            }
         }
 
         for (UUID uuid : defenders) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            if (player.isOnline())
+            if (player.isOnline()) {
                 player.sendMessage(Component.text(String.format(message, cityAttacker.getName(), TIME_FIGHT)));
+                player.teleportAsync(LocationUtils.getSafeNearbySurface(mascotLocDefender,3));
+            }
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::end, (long) TIME_FIGHT * 60 * 20);

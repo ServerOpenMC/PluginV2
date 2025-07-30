@@ -12,9 +12,12 @@ import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -41,12 +44,16 @@ public class MayorNpcMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Maire - Mandat";
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        } else {
+            return "Maire - Mandat";
+        }
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.NORMAL;
+        return InventorySize.LARGEST;
     }
 
     @Override
@@ -72,10 +79,10 @@ public class MayorNpcMenu extends Menu {
             List<Component> loreMayor = new ArrayList<>(List.of(
                     Component.text("§8§oMaire de " + city.getName())
             ));
-            loreMayor.add(Component.text(""));
+        loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk2.getName()));
             loreMayor.addAll(perk2.getLore());
-            loreMayor.add(Component.text(""));
+        loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk3.getName()));
             loreMayor.addAll(perk3.getLore());
 
@@ -87,7 +94,7 @@ public class MayorNpcMenu extends Menu {
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
-            inventory.put(11, new ItemBuilder(this, iaPerk2, itemMeta -> {
+        inventory.put(20, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -97,7 +104,7 @@ public class MayorNpcMenu extends Menu {
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
-            inventory.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
+        inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
                 itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
@@ -105,7 +112,7 @@ public class MayorNpcMenu extends Menu {
             }));
 
             if (mayor.getUUID().equals(player.getUniqueId())) {
-                inventory.put(18, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
+                inventory.put(46, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                     itemMeta.itemName(Component.text("§aDéplacer ce NPC"));
                     itemMeta.lore(List.of(
                             Component.text("§7Vous allez pouvoir déplacer ce NPC"),

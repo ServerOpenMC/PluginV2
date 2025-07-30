@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.actions.CityTransferAction;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -88,7 +89,7 @@ public class AdminCityCommands {
             player.sendMessage(line);
         });
 
-        Component nav = Component.text("")
+        Component nav = Component.empty()
                 .append(page > 1
                         ? Component.text("« Prev").color(NamedTextColor.YELLOW)
                         .clickEvent(ClickEvent.runCommand("/cities " + (page - 1)))
@@ -141,8 +142,7 @@ public class AdminCityCommands {
             return;
         }
 
-        city.changeOwner(newOwner.getUniqueId());
-        MessagesManager.sendMessage(player, Component.text("Le propriété a été transférée"), Prefix.STAFF, MessageType.SUCCESS, false);
+        CityTransferAction.transfer(player, city, newOwner);
     }
 
     @Subcommand("setBalance")

@@ -17,7 +17,9 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -72,14 +74,14 @@ public class CityListDetailsMenu extends Menu {
 			Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
 			Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
-			loreOwner.add(Component.text(""));
+			loreOwner.add(Component.empty());
 			loreOwner.add(Component.text(perk1.getName()));
 			loreOwner.addAll(perk1.getLore());
 			if (electionType == ElectionType.OWNER_CHOOSE) {
-				loreOwner.add(Component.text(""));
+				loreOwner.add(Component.empty());
 				loreOwner.add(Component.text(perk2.getName()));
 				loreOwner.addAll(perk2.getLore());
-				loreOwner.add(Component.text(""));
+				loreOwner.add(Component.empty());
 				loreOwner.add(Component.text(perk3.getName()));
 				loreOwner.addAll(perk3.getLore());
 			}
@@ -93,10 +95,10 @@ public class CityListDetailsMenu extends Menu {
 
 			if (electionType == ElectionType.ELECTION) {
 				List<Component> loreMayor = new ArrayList<>();
-				loreMayor.add(Component.text(""));
+				loreMayor.add(Component.empty());
 				loreMayor.add(Component.text(perk2.getName()));
 				loreMayor.addAll(perk2.getLore());
-				loreMayor.add(Component.text(""));
+				loreMayor.add(Component.empty());
 				loreMayor.add(Component.text(perk3.getName()));
 				loreMayor.addAll(perk3.getLore());
 
@@ -118,10 +120,11 @@ public class CityListDetailsMenu extends Menu {
 					})
 			);
 		}
-
-
-		map.put(8, new ItemBuilder(this, city.getMascot().getMascotEgg(),
-				itemMeta -> itemMeta.displayName(Component.text("§dNiveau de la Mascotte : " + city.getMascot().getLevel()))));
+		
+		LivingEntity entity = (LivingEntity) city.getMascot().getEntity();
+		
+		map.put(8, new ItemBuilder(this, new ItemStack(entity != null ? Bukkit.getItemFactory().getSpawnEgg(entity.getType()) : Material.BARRIER),
+				itemMeta -> itemMeta.displayName(Component.text(entity != null ? "§dNiveau de la Mascotte : " + city.getMascot().getLevel() : "§cAucune mascotte trouvée (bug)"))));
 		
 		map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
 				itemMeta -> itemMeta.displayName(Component.text("§bTaille : " + city.getChunks().size() + " chunks"))));
@@ -130,7 +133,14 @@ public class CityListDetailsMenu extends Menu {
 				itemMeta -> itemMeta.displayName(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon()))));
 		
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
-				itemMeta -> itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")))));
+				itemMeta -> {
+					itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
+					itemMeta.lore(List.of(
+							Component.empty(),
+									Component.text("§e§lCLIQUEZ ICI POUR VOIR LES MEMBRES")
+							)
+					);
+				}).setNextMenu(new CityPlayerListMenu(getOwner(), city)));
 
 		map.put(26, new ItemBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
 				itemMeta -> itemMeta.displayName(Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")))));
