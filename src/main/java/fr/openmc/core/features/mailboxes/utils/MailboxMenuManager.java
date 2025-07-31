@@ -33,9 +33,12 @@ public class MailboxMenuManager {
     public static ItemStack getCustomItem(Component name, int data, List<Component> lore) {
         ItemStack item = new ItemStack(customMaterial);
         item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(data).build());
+
         ItemMeta meta = item.getItemMeta();
         meta.displayName(nonItalic(name));
-        if (lore != null) meta.lore(lore);
+        if (lore != null)
+            meta.lore(lore);
+
         meta.setMaxStackSize(1);
         item.setItemMeta(meta);
         return item;
@@ -44,9 +47,11 @@ public class MailboxMenuManager {
     public static ItemStack transparentItem() {
         ItemStack item = new ItemStack(customMaterial);
         item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(2005).build());
+
         ItemMeta meta = item.getItemMeta();
         meta.setHideTooltip(true);
         meta.displayName(Component.empty());
+
         meta.setMaxStackSize(1);
         item.setItemMeta(meta);
         return item;
