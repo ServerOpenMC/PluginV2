@@ -14,6 +14,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +57,7 @@ public class IronBloodPerk implements Listener {
                 Player target = nearbyEnemies.getFirst();
                 golem.setAI(true);
                 golem.setTarget(target);
-                org.bukkit.util.Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();
+                Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();
                 golem.setVelocity(direction.multiply(0.5));
             } else {
                 golem.setAI(false);
