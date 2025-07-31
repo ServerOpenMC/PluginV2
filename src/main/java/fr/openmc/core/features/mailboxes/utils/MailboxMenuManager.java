@@ -101,7 +101,10 @@ public class MailboxMenuManager {
     }
 
     public static boolean isBtn(ItemStack item, int data) {
-        return isNotNull(item) && item.getType() == customMaterial && item.hasData(DataComponentTypes.CUSTOM_MODEL_DATA) && item.getData(DataComponentTypes.CUSTOM_MODEL_DATA).floats().getFirst() == data;
+        return isNotNull(item)
+                && item.getType() == customMaterial
+                && item.hasData(DataComponentTypes.CUSTOM_MODEL_DATA)
+                && item.getData(DataComponentTypes.CUSTOM_MODEL_DATA).floats().getFirst() == data;
     }
 
     public static boolean cancelBtn(ItemStack item) {
