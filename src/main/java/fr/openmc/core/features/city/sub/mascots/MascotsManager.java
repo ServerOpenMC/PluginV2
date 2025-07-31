@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class MascotsManager {
-    private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:trans_rights_are_human_rights_:3");
+    private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:trans_rights_are_human_rights");
 
      public static final List<String> movingMascots = new ArrayList<>();
 
