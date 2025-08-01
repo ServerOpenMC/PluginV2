@@ -19,6 +19,7 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
+import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ChunkPos;
@@ -82,6 +83,7 @@ public class CityManager implements Listener {
         new ProtectionsManager();
         new WarManager();
         new CityBankManager();
+        new NotationManager();
     }
 
     private static Dao<DBCity, String> citiesDao;

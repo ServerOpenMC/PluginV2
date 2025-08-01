@@ -9,6 +9,30 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
 public class DateUtils {
+    private final static DateTimeFormatter foratterWeekFormat = DateTimeFormatter.ofPattern("u-w", Locale.FRENCH);
+
+    /**
+     * Get "Week Format"
+     * -> 2025-34 YY-w
+     * w is the week number in the year
+     */
+    public static String getWeekFormat() {
+        LocalDate currentDate = LocalDate.now();
+
+        return currentDate.format(foratterWeekFormat);
+    }
+
+    /**
+     * Get "Next Week Format"
+     * -> 2025-34 + 1 YY-w
+     * w is the week number in the year
+     */
+    public static String getNextWeekFormat() {
+        LocalDate nextWeek = LocalDate.now().plusWeeks(1);
+
+        return nextWeek.format(foratterWeekFormat);
+    }
+
     /**
      * Get Current day of week
      * @return date (MONDAY, FRIDAY, SUNDAY, ...)
