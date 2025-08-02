@@ -11,7 +11,7 @@ import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class TramplingProtection implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityInteract(EntityInteractEvent event) {
         if (event.isCancelled()) return;
         Block block = event.getBlock();
@@ -20,7 +20,7 @@ public class TramplingProtection implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerTrampling(PlayerInteractEvent event) {
         if (event.useInteractedBlock() == Event.Result.DENY) return;
         if (event.getAction() == Action.PHYSICAL) {

@@ -10,10 +10,8 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 public class HangingProtection implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        if (event.isCancelled()) return;
-
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
 
@@ -22,9 +20,8 @@ public class HangingProtection implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
-        if (event.isCancelled()) return;
         if (event.getRemover() instanceof Player player) {
             ProtectionsManager.verify(player, event, event.getEntity().getLocation());
         }

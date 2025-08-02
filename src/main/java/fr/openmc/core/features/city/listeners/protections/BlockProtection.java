@@ -11,10 +11,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockProtection implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlaceBlock(BlockPlaceEvent event) {
-        if (event.isCancelled()) return;
-        
         City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
         if (city == null) return;
         
@@ -27,9 +25,8 @@ public class BlockProtection implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     void onBlockBreak(BlockBreakEvent event) {
-        if (event.isCancelled()) return;
         City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
         if (city == null) return;
         

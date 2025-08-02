@@ -48,6 +48,7 @@ public class DatabaseManager {
             connectionSource = new JdbcPooledConnectionSource(databaseUrl, username, password);
 
 
+            // TODO: Remove _
             MayorManager.init_db(connectionSource);
             MilestonesManager.init_db(connectionSource);
             BankManager.init_db(connectionSource);
