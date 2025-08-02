@@ -114,7 +114,6 @@ public class UrneListener implements Listener {
         if (NPCManager.hasNPCS(playerCity.getUUID())) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous avez déjà des NPC"), Prefix.MAYOR, MessageType.ERROR, false);
-            return;
         }
     }
 

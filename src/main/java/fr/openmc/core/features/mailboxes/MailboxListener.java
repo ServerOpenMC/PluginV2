@@ -213,8 +213,7 @@ public class MailboxListener implements Listener {
                 });
             }
 
-            case null -> {}
-            default -> {}
+            case null, default -> {}
         }
     }
 }

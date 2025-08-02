@@ -22,7 +22,6 @@ public class TeleportProtection implements Listener {
     );
     @EventHandler(ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (event.isCancelled()) return;
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
 
         if (illegalCauses.contains(cause)) return;

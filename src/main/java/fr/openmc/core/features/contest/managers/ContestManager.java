@@ -666,8 +666,7 @@ public class ContestManager {
      * Retourne une Liste contenant toutes les couleurs possibles pour faire un Contest
      */
     public static List<String> getColorContestList() {
-        List<String> color = new ArrayList<>(colorContest);
-        return color;
+        return new ArrayList<>(colorContest);
     }
 
     /**

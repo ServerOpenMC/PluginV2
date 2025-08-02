@@ -68,9 +68,7 @@ public class WarManager {
         if (war != null) return war;
 
         war = warsByDefender.get(cityUUID);
-        if (war != null) return war;
-
-        return null;
+        return war;
     }
 
     /**

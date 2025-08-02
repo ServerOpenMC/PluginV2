@@ -96,7 +96,6 @@ public class StaticSlots {
 			case Type.LEFT -> getLeftSlots(size);
 			case Type.RIGHT -> getRightSlots(size);
 			case Type.STANDARD -> getStandardSlots(size);
-			default -> List.of(); // NONE
 		};
 	}
 

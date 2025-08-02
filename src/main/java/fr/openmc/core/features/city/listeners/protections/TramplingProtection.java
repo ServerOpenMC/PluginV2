@@ -13,7 +13,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class TramplingProtection implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onEntityInteract(EntityInteractEvent event) {
-        if (event.isCancelled()) return;
         Block block = event.getBlock();
         if (block.getType() == Material.FARMLAND) {
             ProtectionsManager.verify(event.getEntity(), event, block.getLocation());
