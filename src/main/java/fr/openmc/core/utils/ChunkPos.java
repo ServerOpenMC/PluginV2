@@ -22,7 +22,7 @@ public record ChunkPos(int x, int z) {
      * @return distance
      */
     public double distance(ChunkPos other) {
-        return Math.sqrt(distanceSq(other));
+        return Math.sqrt(distanceSquared(other));
     }
 
     /**
@@ -31,7 +31,7 @@ public record ChunkPos(int x, int z) {
      * @param other the other vector
      * @return distance
      */
-    public int distanceSq(ChunkPos other) {
+    public int distanceSquared(ChunkPos other) {
         int dx = other.x - x;
         int dz = other.z - z;
         return dx * dx + dz * dz;
