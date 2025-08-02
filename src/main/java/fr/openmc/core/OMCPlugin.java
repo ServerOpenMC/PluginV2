@@ -49,8 +49,20 @@ import java.io.File;
 import java.util.logging.Logger;
 
 public class OMCPlugin extends JavaPlugin {
-    @Getter static OMCPlugin instance;
-    @Getter static FileConfiguration configs;
+    @Getter
+    static OMCPlugin instance;
+    @Getter
+    static FileConfiguration configs;
+
+    public static void registerEvents(Listener... listeners) {
+        for (Listener listener : listeners) {
+            instance.getServer().getPluginManager().registerEvents(listener, instance);
+        }
+    }
+
+    public static boolean isUnitTestVersion() {
+        return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
+    }
 
     @Override
     public void onEnable() {
@@ -103,7 +115,7 @@ public class OMCPlugin extends JavaPlugin {
         new CompanyManager();// laisser apres Economy Manager
         new ContestManager();
         new PrivateMessageManager();
-        
+
         new MotdUtils();
         new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
         new DynamicCooldownManager();
@@ -123,7 +135,7 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion()) {
             HologramLoader.unloadAll();
         }
-        
+
         // - Settings
         PlayerSettingsManager.saveAllSettings();
 
@@ -163,16 +175,6 @@ public class OMCPlugin extends JavaPlugin {
         getLogger().info("Plugin désactivé");
     }
 
-    public static void registerEvents(Listener... listeners) {
-        for (Listener listener : listeners) {
-            instance.getServer().getPluginManager().registerEvents(listener, instance);
-        }
-    }
-
-    public static boolean isUnitTestVersion() {
-        return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
-    }
-
     private void logLoadMessage() {
         Logger log = getLogger();
 
@@ -188,17 +190,25 @@ public class OMCPlugin extends JavaPlugin {
         log.info("\u001B[1;35m  \\____/  |_|     |______| |_| \\_| |_|  |_| \\_____|   \u001B[0m");
         log.info("");
 
-        String[] plugins = {
-                "WorldEdit", "WorldGuard", "LuckPerms", "ItemsAdder", "PlaceholderAPI", "FancyNpcs", "ProtocolLib"
-        };
-
-        for (String pluginName : plugins) {
-            Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
-            if (plugin != null && plugin.isEnabled()) {
-                log.info("  \u001B[32m✔ " + pluginName + " v" + plugin.getPluginMeta().getVersion() + " trouvé \u001B[0m");
-            } else {
-                log.info("  \u001B[31m✘ " + pluginName + " (facultatif)\u001B[0m");
-            }
+        for (String requiredPlugins : getPluginMeta().getPluginDependencies()) {
+            logPluginStatus(requiredPlugins, false);
         }
+
+        for (String optionalPlugins : getPluginMeta().getPluginSoftDependencies()) {
+            logPluginStatus(optionalPlugins, true);
+        }
+    }
+
+
+    private void logPluginStatus(String name, boolean optional) {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin(name);
+        boolean enabled = plugin != null && plugin.isEnabled();
+
+        String icon = enabled ? "✔" : "✘";
+        String color = enabled ? "\u001B[32m" : "\u001B[31m";
+        String version = enabled ? " v" + plugin.getPluginMeta().getVersion() : "";
+        String label = optional ? " (facultatif)" : "";
+
+        getLogger().info("  " + color + icon + " " + name + version + label + "\u001B[0m");
     }
 }
