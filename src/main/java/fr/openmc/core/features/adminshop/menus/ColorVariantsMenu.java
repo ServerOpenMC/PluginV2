@@ -1,5 +1,6 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -69,7 +70,7 @@ public class ColorVariantsMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§r§f:offset_-11::adminshop_items:";
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop_items:");
     }
 
     @Override

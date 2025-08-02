@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -61,7 +62,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "§r§f:offset_-8::omc_homes_menus_home:";
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::omc_homes_menus_home:");
     }
 
     @Override

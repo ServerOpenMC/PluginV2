@@ -1,5 +1,6 @@
 package fr.openmc.core.features.settings.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -93,7 +94,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "§r§f:offset_-8::settings:";
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::settings:");
     }
 
     @Override

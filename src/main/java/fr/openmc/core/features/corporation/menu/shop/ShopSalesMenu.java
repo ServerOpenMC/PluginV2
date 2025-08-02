@@ -1,5 +1,6 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -90,7 +91,7 @@ public class ShopSalesMenu extends PaginatedMenu {
     @Override
     public @NotNull String getName() {
         if (ItemsAdderApi.hasItemAdder()) {
-            return "§r§f:offset_-11::large_shop_menu:";
+            return FontImageWrapper.replaceFontImages("§r§f:offset_-11::large_shop_menu:");
         } else {
             return "Ventes de " + shop.getName();
         }

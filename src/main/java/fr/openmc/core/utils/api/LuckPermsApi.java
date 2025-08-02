@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.api;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -56,7 +57,7 @@ public class LuckPermsApi {
         String formattedPrefix = prefix.replace("&", "§");
         formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", ":$1:");
 
-        return PlaceholderAPI.setPlaceholders(player, formattedPrefix) + " ";
+        return PlaceholderAPI.setPlaceholders(player, FontImageWrapper.replaceFontImages(formattedPrefix)) + " ";
     }
 
     public static @NotNull Component getFormattedPAPIPrefix(Group group) {
@@ -68,6 +69,6 @@ public class LuckPermsApi {
         String formattedPrefix = prefix.replace("&", "§");
         formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", ":$1:");
 
-        return Component.text(PlaceholderAPI.setPlaceholders(null, formattedPrefix) + " ");
+        return Component.text(PlaceholderAPI.setPlaceholders(null, FontImageWrapper.replaceFontImages(formattedPrefix)) + " ");
     }
 }

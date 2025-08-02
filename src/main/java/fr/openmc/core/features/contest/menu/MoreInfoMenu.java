@@ -1,5 +1,6 @@
 package fr.openmc.core.features.contest.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -27,7 +28,7 @@ public class MoreInfoMenu extends Menu {
     @Override
     public @NotNull String getName() {
         if (ItemsAdderApi.hasItemAdder()) {
-            return "§r§f:offset_-48::contest_menu:";
+            return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
         } else {
             return "Menu des Contests - Plus d'info";
         }

@@ -1,5 +1,6 @@
 package fr.openmc.api.menulib.default_menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -49,7 +50,7 @@ public class ConfirmMenu extends Menu {
     @Override
     public @NotNull String getName() {
         if (ItemsAdderApi.hasItemAdder()) {
-            return "§r§f:offset_-8::confirm_menu:";
+            return FontImageWrapper.replaceFontImages("§r§f:offset_-8::confirm_menu:");
         } else {
             return "Confirmation";
         }

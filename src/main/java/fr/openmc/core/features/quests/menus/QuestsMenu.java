@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -56,7 +57,7 @@ public class QuestsMenu extends Menu {
     }
 
     public @NotNull String getName() {
-        return "§r§f:offset_-25::quests_menu:";
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-25::quests_menu:");
     }
 
     public @NotNull InventorySize getInventorySize() {

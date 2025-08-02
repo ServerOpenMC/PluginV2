@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -45,7 +46,7 @@ public class MayorElectionMenu extends Menu {
     @Override
     public @NotNull String getName() {
         if (ItemsAdderApi.hasItemAdder()) {
-            return "§r§f:offset_-38::mayor:";
+            return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
         } else {
             return "Menu des Elections";
         }

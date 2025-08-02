@@ -1,6 +1,7 @@
 package fr.openmc.core.features.corporation.menu.company;
 
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -112,7 +113,7 @@ public class CompanySearchMenu extends PaginatedMenu {
     @Override
     public @NotNull String getName() {
         if (ItemsAdderApi.hasItemAdder()) {
-            return "§r§f:offset_-11::paginate_company_menu:";
+            return FontImageWrapper.replaceFontImages("§r§f:offset_-11::paginate_company_menu:");
         } else {
             return CompanyManager.isInCompany(getOwner().getUniqueId()) ? "Rechercher une entreprise" : "Pôle travail";
         }
