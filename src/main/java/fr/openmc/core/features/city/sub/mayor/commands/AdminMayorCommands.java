@@ -35,7 +35,7 @@ public class AdminMayorCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             MessagesManager.sendMessage(sender, Component.text("/adminmayor changeelection cityUUID electionType<owner_choose/election>"), Prefix.STAFF, MessageType.INFO, false);
             return;
         }

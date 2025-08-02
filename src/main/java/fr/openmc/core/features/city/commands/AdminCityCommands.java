@@ -34,7 +34,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -122,7 +122,7 @@ public class AdminCityCommands {
         // Aucune vérification de nom, mais il faut espérer que le nom est valide
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
         city.rename(newName);
@@ -136,7 +136,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -148,7 +148,7 @@ public class AdminCityCommands {
     void setBalance(Player player, @Named("uuid") String cityUUID, @Named("balance") double newBalance) {
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -161,7 +161,7 @@ public class AdminCityCommands {
     void getBalance(Player player, String cityUUID) {
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -174,7 +174,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 

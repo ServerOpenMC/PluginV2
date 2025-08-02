@@ -429,7 +429,7 @@ public class City {
                                 + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"),
                         Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(),
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(),
                         Prefix.CITY, MessageType.ERROR, false);
             }
         } else {
@@ -859,7 +859,7 @@ public class City {
         }
         
         if (hasPermission(playerUUID, CPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERISOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         

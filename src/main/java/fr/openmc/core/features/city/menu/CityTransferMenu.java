@@ -70,7 +70,7 @@ public class CityTransferMenu extends PaginatedMenu {
                     ));
                 }).setOnClick(inventoryClickEvent -> {
                     if (!hasPermissionOwner) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
 

@@ -37,7 +37,7 @@ public class CityCreateConditions {
         }
 
         if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_IN_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

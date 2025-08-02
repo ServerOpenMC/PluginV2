@@ -114,7 +114,7 @@ public class MascotsDamageListener implements Listener {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         City cityEnemy = MascotUtils.getCityFromEntity(damageEntity.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }

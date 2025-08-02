@@ -84,7 +84,7 @@ public class BankManager {
                                 + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"),
                         Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(),
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(),
                         Prefix.BANK, MessageType.ERROR, false);
             }
         } else {
