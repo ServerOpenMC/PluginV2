@@ -199,7 +199,6 @@ public class OMCPlugin extends JavaPlugin {
         }
     }
 
-
     private void logPluginStatus(String name, boolean optional) {
         Plugin plugin = Bukkit.getPluginManager().getPlugin(name);
         boolean enabled = plugin != null && plugin.isEnabled();
