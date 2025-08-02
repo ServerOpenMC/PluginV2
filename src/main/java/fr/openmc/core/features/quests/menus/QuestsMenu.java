@@ -171,8 +171,8 @@ public class QuestsMenu extends Menu {
         }
 
         Component bar = Component.text("§8§m                                §r");
-        int var10000 = quest.isFullyCompleted(playerUUID) ? currentTierIndex : currentTierIndex + 1;
-        String tierDisplay = "§7[§f" + var10000 + "§8/§f" + tiersTotal + "§7]";
+        int tierIndex = quest.isFullyCompleted(playerUUID) ? currentTierIndex : currentTierIndex + 1;
+        String tierDisplay = "§7[§f" + tierIndex + "§8/§f" + tiersTotal + "§7]";
 
         String nameIcon;
         if (hasPendingRewards)
@@ -192,10 +192,10 @@ public class QuestsMenu extends Menu {
 
         if (hasPendingRewards) {
             lore.add(Component.text("§d✶ §dRécompenses en attente:"));
-            for (Integer tierIndex : pendingQuestIndexes) {
-                if (tierIndex < quest.getTiers().size()) {
-                    QuestTier tier = quest.getTiers().get(tierIndex);
-                    lore.add(Component.text("  §5➤ §dPalier " + (tierIndex + 1) + ":"));
+            for (Integer ti : pendingQuestIndexes) {
+                if (ti < quest.getTiers().size()) {
+                    QuestTier tier = quest.getTiers().get(ti);
+                    lore.add(Component.text("  §5➤ §dPalier " + (ti + 1) + ":"));
 
                     for (QuestReward reward : tier.getRewards()) {
                         if (reward instanceof QuestItemReward itemReward) {
