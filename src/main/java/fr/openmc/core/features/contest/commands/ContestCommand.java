@@ -23,7 +23,7 @@ import java.util.*;
 public class ContestCommand {
     @Cooldown(4)
     @DefaultFor("~")
-    public static void defaultCommand(Player player) {
+    public static void mainCommand(Player player) {
         int phase = ContestManager.data.getPhase();
         if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId()) == null) || (phase == 2)) {
             VoteMenu menu = new VoteMenu(player);

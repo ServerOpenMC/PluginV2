@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// TODO: improve
 public class Page1 implements Menu {
 
     private final Component title;
@@ -66,6 +65,7 @@ public class Page1 implements Menu {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.lore(List.of(Component.text("/city", NamedTextColor.DARK_GRAY)));
         });
+
         if (playerCity != null) {
             title = Component.text(FontImageWrapper.replaceFontImages(":offset_-26::omc_main_menu_page_1:"));
             cityItem.editMeta(meta -> meta.itemName(Component.text("Ville : " + playerCity.getName(), NamedTextColor.YELLOW)));
@@ -73,14 +73,18 @@ public class Page1 implements Menu {
             title = Component.text(FontImageWrapper.replaceFontImages(":offset_-26::omc_main_menu_page_1_sans_ville:"));
             cityItem.editMeta(meta -> meta.itemName(Component.text("Vous ne faites pas partie d'une ville.", NamedTextColor.GRAY)));
         }
+
         content = new HashMap<>();
+
         ItemStack advancementsItem = new ItemStack(Material.PAPER);
         advancementsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Afficher les progrès", NamedTextColor.YELLOW));
         });
         content.put(ADVANCEMENTS_SLOT, advancementsItem);
+
         CITY_SLOTS.forEach(slot -> content.put(slot, cityItem));
+
         ItemStack questsItem = new ItemStack(Material.PAPER);
         questsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -88,6 +92,7 @@ public class Page1 implements Menu {
             meta.lore(List.of(Component.text("/quest", NamedTextColor.DARK_GRAY)));
         });
         QUEST_SLOTS.forEach(slot -> content.put(slot, questsItem));
+
         ItemStack milestonesItem = new ItemStack(Material.PAPER);
         milestonesItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -96,6 +101,7 @@ public class Page1 implements Menu {
                     Component.text("/milestones", NamedTextColor.DARK_GRAY)));
         });
         MILESTONES_SLOTS.forEach(slot -> content.put(slot, milestonesItem));
+
         ItemStack contestItem = new ItemStack(Material.PAPER);
         Contest data = ContestManager.data;
         int phase = data.getPhase();
@@ -117,6 +123,7 @@ public class Page1 implements Menu {
             });
         }
         CONTEST_SLOTS.forEach(slot -> content.put(slot, contestItem));
+
         ItemStack shopItem = new ItemStack(Material.PAPER);
         shopItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -124,6 +131,7 @@ public class Page1 implements Menu {
             meta.lore(List.of(Component.text("/adminshop", NamedTextColor.DARK_GRAY)));
         });
         SHOP_SLOTS.forEach(slot -> content.put(slot, shopItem));
+
         ItemStack homeItem = new ItemStack(Material.PAPER);
         homeItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -131,6 +139,7 @@ public class Page1 implements Menu {
             meta.lore(List.of(Component.text("/home", NamedTextColor.DARK_GRAY)));
         });
         HOME_SLOTS.forEach(slot -> content.put(slot, homeItem));
+
         ItemStack profilItem = new ItemStack(Material.PAPER);
         profilItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -141,6 +150,7 @@ public class Page1 implements Menu {
             if (slot != 60)
                 content.put(slot, profilItem);
         });
+
         ItemStack playerHeadProfilItem = CustomStack.getInstance("omc_main_menu:player_head").getItemStack();
         playerHeadProfilItem.editMeta(meta -> {
             meta.customName(Component.text("Profil", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
@@ -150,12 +160,14 @@ public class Page1 implements Menu {
             }
         });
         content.put(60, playerHeadProfilItem);
+
         ItemStack rightArrowItem = new ItemStack(Material.PAPER);
         rightArrowItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Page suivante", NamedTextColor.YELLOW));
         });
         content.put(RIGHT_ARROW_SLOT, rightArrowItem);
+
         ItemStack settingsItem = new ItemStack(Material.PAPER);
         settingsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -163,6 +175,7 @@ public class Page1 implements Menu {
             meta.lore(List.of(Component.text("/settings", NamedTextColor.DARK_GRAY)));
         });
         SETTINGS_SLOTS.forEach(slot -> content.put(slot, settingsItem));
+
         ItemStack mailboxItem = new ItemStack(Material.PAPER);
         mailboxItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -209,7 +222,7 @@ public class Page1 implements Menu {
             player.sendMessage(Component.text(FontImageWrapper.replaceFontImages("Les Milestones sont toujours en développement :sad:."), NamedTextColor.RED));
             // TODO : ajouter le menu des Milestones lorsque c'est fait
         } else if (CONTEST_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ContestCommand.defaultCommand(player));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ContestCommand.mainCommand(player));
         } else if (SHOP_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> AdminShopManager.openMainMenu(player));
         } else if (HOME_SLOTS.contains(slot)) {

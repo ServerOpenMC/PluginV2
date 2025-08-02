@@ -31,8 +31,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class Page2 implements Menu {
-
-    private final Component title;
     private static final Set<Integer> SHOPS_SLOTS = Set.of(0, 1, 2, 3, 4, 5, 6, 7, 8);
     private static final Set<Integer> COMPANY_SLOTS = Set.of(9, 10, 11, 12, 13, 14, 15, 16, 17);
     private static final Set<Integer> LEADERBOARD_SLOTS = Set.of(18, 19, 20, 21, 22, 23, 24, 25, 26);
@@ -42,28 +40,32 @@ public class Page2 implements Menu {
     private static final Set<Integer> COMING_SOON_3_SLOTS = Set.of(54, 55, 56, 57, 58, 59, 60, 61, 62);
     private static final Set<Integer> COMING_SOON_4_SLOTS = Set.of(63, 64, 65, 66, 67, 68, 69, 70, 71);
     private static final Set<Integer> COMING_SOON_5_SLOTS = Set.of(72, 73, 74, 75, 76, 77, 78, 79, 80);
-    private final Map<Integer, ItemStack> content;
     private static final int LEFT_ARROW_SLOT = 81;
     private static final int RIGHT_ARROW_SLOT = 89; // Not used in this menu, but in Page1
     private static final Set<Integer> SETTINGS_SLOTS = Set.of(82, 83, 84);
     private static final Set<Integer> MAILBOX_SLOTS = Set.of(85, 86, 87);
     private static final int ADVANCEMENTS_SLOT = 88;
+    private final Component title;
+    private final Map<Integer, ItemStack> content;
 
     public Page2() {
         title = Component.text(FontImageWrapper.replaceFontImages(":offset_-26::omc_main_menu_page_2:"));
         content = new HashMap<>();
+
         ItemStack advancementsItem = new ItemStack(Material.PAPER);
         advancementsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Afficher les progrès", NamedTextColor.YELLOW));
         });
         content.put(ADVANCEMENTS_SLOT, advancementsItem);
+
         ItemStack leftArrowItem = new ItemStack(Material.PAPER);
         leftArrowItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Page précédente", NamedTextColor.YELLOW));
         });
         content.put(LEFT_ARROW_SLOT, leftArrowItem);
+
         ItemStack settingsItem = new ItemStack(Material.PAPER);
         settingsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -71,6 +73,7 @@ public class Page2 implements Menu {
             meta.lore(List.of(Component.text("/settings", NamedTextColor.DARK_GRAY)));
         });
         SETTINGS_SLOTS.forEach(slot -> content.put(slot, settingsItem));
+
         ItemStack mailboxItem = new ItemStack(Material.PAPER);
         mailboxItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -78,6 +81,7 @@ public class Page2 implements Menu {
             meta.lore(List.of(Component.text("/mailbox home", NamedTextColor.DARK_GRAY)));
         });
         MAILBOX_SLOTS.forEach(slot -> content.put(slot, mailboxItem));
+
         ItemStack shopsItem = new ItemStack(Material.PAPER);
         shopsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -85,6 +89,7 @@ public class Page2 implements Menu {
             meta.lore(List.of(Component.text("/shops manage", NamedTextColor.DARK_GRAY)));
         });
         SHOPS_SLOTS.forEach(slot -> content.put(slot, shopsItem));
+
         ItemStack companyItem = new ItemStack(Material.PAPER);
         companyItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -92,13 +97,15 @@ public class Page2 implements Menu {
             meta.lore(List.of(Component.text("/company", NamedTextColor.DARK_GRAY)));
         });
         COMPANY_SLOTS.forEach(slot -> content.put(slot, companyItem));
+
         ItemStack leaderboardItem = new ItemStack(Material.PAPER);
         leaderboardItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Leaderboard", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/leaderboard", NamedTextColor.DARK_GRAY),Component.text("En cours de développement", NamedTextColor.RED)));
+            meta.lore(List.of(Component.text("/leaderboard", NamedTextColor.DARK_GRAY), Component.text("En cours de développement", NamedTextColor.RED)));
         });
         LEADERBOARD_SLOTS.forEach(slot -> content.put(slot, leaderboardItem));
+
         ItemStack bankItem = new ItemStack(Material.PAPER);
         bankItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
@@ -106,6 +113,7 @@ public class Page2 implements Menu {
             meta.lore(List.of(Component.text("/banque", NamedTextColor.DARK_GRAY)));
         });
         BANK_SLOTS.forEach(slot -> content.put(slot, bankItem));
+
         ItemStack comingSoonItem = new ItemStack(Material.PAPER);
         comingSoonItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
