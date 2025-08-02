@@ -86,7 +86,7 @@ public class CompanyManager {
     private static Dao<Merchant, UUID> merchantsDao;
     private static Dao<ShopSupplier, UUID> suppliersDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, CompanyPermission.class);
         permissionsDao = DaoManager.createDao(connectionSource, CompanyPermission.class);
 

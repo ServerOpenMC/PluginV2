@@ -16,7 +16,7 @@ import java.util.UUID;
 public class AnalyticsManager {
     static Dao<Statistic, String> statsDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Statistic.class);
         statsDao = DaoManager.createDao(connectionSource, Statistic.class);
     }

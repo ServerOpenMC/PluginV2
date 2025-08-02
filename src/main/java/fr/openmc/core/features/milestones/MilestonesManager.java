@@ -41,7 +41,7 @@ public class MilestonesManager {
      *
      * @param connectionSource the connection source to the database
      */
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, MilestoneModel.class);
         millestoneDao = DaoManager.createDao(connectionSource, MilestoneModel.class);
     }

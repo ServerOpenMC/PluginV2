@@ -89,7 +89,7 @@ public class MascotsManager {
 
     private static Dao<Mascot, String> mascotsDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Mascot.class);
         mascotsDao = DaoManager.createDao(connectionSource, Mascot.class);
     }

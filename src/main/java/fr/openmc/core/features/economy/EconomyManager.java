@@ -25,7 +25,7 @@ public class EconomyManager {
 
     private static Dao<EconomyPlayer, String> playersDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, EconomyPlayer.class);
         playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
     }

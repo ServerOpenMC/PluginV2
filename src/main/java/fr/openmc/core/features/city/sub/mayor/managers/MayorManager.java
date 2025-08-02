@@ -115,7 +115,7 @@ public class MayorManager {
     private static Dao<CityLaw, String> lawsDao;
     private static Dao<MayorConstant, Integer> constantsDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Mayor.class);
         mayorsDao = DaoManager.createDao(connectionSource, Mayor.class);
 

@@ -91,7 +91,7 @@ public class CityManager implements Listener {
     private static Dao<DBCityClaim, String> claimsDao;
     private static Dao<DBCityChest, String> chestsDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, DBCity.class);
         citiesDao = DaoManager.createDao(connectionSource, DBCity.class);
 

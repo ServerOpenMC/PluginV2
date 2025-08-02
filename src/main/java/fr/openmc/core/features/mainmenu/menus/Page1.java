@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+// TODO: improve
 public class Page1 implements Menu {
 
     private final Component title;

@@ -200,7 +200,7 @@ public class HomesManager {
     private static Dao<Home, UUID> homesDao;
     private static Dao<HomeLimit, UUID> limitsDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Home.class);
         homesDao = DaoManager.createDao(connectionSource, Home.class);
 

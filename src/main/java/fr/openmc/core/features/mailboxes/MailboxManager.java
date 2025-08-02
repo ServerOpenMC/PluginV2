@@ -40,7 +40,7 @@ public class MailboxManager {
 
     private static Dao<Letter, Integer> letterDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Letter.class);
         letterDao = DaoManager.createDao(connectionSource, Letter.class);
     }

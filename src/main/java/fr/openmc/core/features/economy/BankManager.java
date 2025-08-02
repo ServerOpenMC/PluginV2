@@ -39,7 +39,7 @@ public class BankManager {
 
     private static Dao<Bank, String> banksDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Bank.class);
         banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
