@@ -25,7 +25,7 @@ public class MascotsProtectionsListener implements Listener {
         Collection<Entity> nearbyEntities = loc.getWorld().getNearbyEntities(loc, 1.5, 1.5, 1.5);
 
         for (Entity entity : nearbyEntities) {
-            if (!MascotUtils.isMascot(entity)) return;
+            if (!MascotUtils.canBeAMascot(entity)) return;
 
             event.setCancelled(true);
             return;
@@ -34,7 +34,7 @@ public class MascotsProtectionsListener implements Listener {
 
     @EventHandler
     public void onEntityPickupItem(EntityPickupItemEvent event) {
-        if (!MascotUtils.isMascot(event.getEntity())) return;
+        if (!MascotUtils.canBeAMascot(event.getEntity())) return;
 
         event.setCancelled(true);
     }
@@ -46,7 +46,7 @@ public class MascotsProtectionsListener implements Listener {
         for (Entity entity : strikeLocation.getWorld().getNearbyEntities(strikeLocation, 3, 3, 3)) {
             if (!(entity instanceof LivingEntity)) continue;
 
-            if (!MascotUtils.isMascot(entity)) continue;
+            if (!MascotUtils.canBeAMascot(entity)) continue;
 
             e.setCancelled(true);
             return;
@@ -58,7 +58,7 @@ public class MascotsProtectionsListener implements Listener {
         Location pistonHeadLocation = e.getBlock().getRelative(e.getDirection()).getLocation();
         for (Entity entity : pistonHeadLocation.getWorld().getNearbyEntities(pistonHeadLocation, 0.5, 0.5, 0.5)) {
             if (!(entity instanceof LivingEntity)) continue;
-            if (!MascotUtils.isMascot(entity)) continue;
+            if (!MascotUtils.canBeAMascot(entity)) continue;
 
             e.setCancelled(true);
             return;
@@ -67,7 +67,7 @@ public class MascotsProtectionsListener implements Listener {
             Location futureLocation = block.getRelative(e.getDirection()).getLocation();
             for (Entity entity : block.getWorld().getNearbyEntities(futureLocation, 0.5, 0.5, 0.5)) {
                 if (!(entity instanceof LivingEntity)) continue;
-                if (!(MascotUtils.isMascot(entity))) continue;
+                if (!(MascotUtils.canBeAMascot(entity))) continue;
 
                 e.setCancelled(true);
                 return;
@@ -78,7 +78,7 @@ public class MascotsProtectionsListener implements Listener {
     @EventHandler
     void onTransform(EntityTransformEvent event) {
         Entity entity = event.getEntity();
-        if (!MascotUtils.isMascot(entity)) return;
+        if (!MascotUtils.canBeAMascot(entity)) return;
 
         event.setCancelled(true);
     }
@@ -86,7 +86,7 @@ public class MascotsProtectionsListener implements Listener {
     @EventHandler
     void onPortal(EntityPortalEvent event) {
         Entity entity = event.getEntity();
-        if (!MascotUtils.isMascot(entity)) return;
+        if (!MascotUtils.canBeAMascot(entity)) return;
 
         event.setCancelled(true);
     }
@@ -94,7 +94,7 @@ public class MascotsProtectionsListener implements Listener {
     @EventHandler
     void onFire(EntityCombustEvent e) {
         Entity entity = e.getEntity();
-        if (!MascotUtils.isMascot(entity)) return;
+        if (!MascotUtils.canBeAMascot(entity)) return;
 
         e.setCancelled(true);
     }
@@ -102,7 +102,7 @@ public class MascotsProtectionsListener implements Listener {
     @EventHandler
     void onPigMount(EntityMountEvent e) {
         Entity entity = e.getMount();
-        if (!MascotUtils.isMascot(entity)) return;
+        if (!MascotUtils.canBeAMascot(entity)) return;
 
         e.setCancelled(true);
     }
@@ -110,7 +110,7 @@ public class MascotsProtectionsListener implements Listener {
     @EventHandler
     void onMove(EntityMoveEvent e) {
         Entity entity = e.getEntity();
-        if (!MascotUtils.isMascot(entity)) return;
+        if (!MascotUtils.canBeAMascot(entity)) return;
 
         e.setCancelled(true);
     }
@@ -118,7 +118,7 @@ public class MascotsProtectionsListener implements Listener {
     @EventHandler
     void onAxolotlBucket(PlayerBucketEntityEvent e) {
         Entity entity = e.getEntity();
-        if (!MascotUtils.isMascot(entity)) return;
+        if (!MascotUtils.canBeAMascot(entity)) return;
 
         e.setCancelled(true);
     }

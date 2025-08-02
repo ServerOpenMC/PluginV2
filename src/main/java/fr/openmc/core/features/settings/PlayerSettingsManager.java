@@ -35,7 +35,7 @@ public class PlayerSettingsManager implements Listener {
      * @param connectionSource the database connection source
      * @throws SQLException if database initialization fails
      */
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         playerSettingDao = DaoManager.createDao(connectionSource, PlayerSettingEntity.class);
         try {
             TableUtils.createTableIfNotExists(connectionSource, PlayerSettingEntity.class);

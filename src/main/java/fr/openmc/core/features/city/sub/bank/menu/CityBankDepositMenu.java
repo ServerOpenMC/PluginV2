@@ -73,7 +73,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositAll = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -87,7 +87,7 @@ public class CityBankDepositMenu extends Menu {
                 city.updateBalance(moneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -105,7 +105,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositHalf = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -119,7 +119,7 @@ public class CityBankDepositMenu extends Menu {
                 city.updateBalance(halfMoneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -134,7 +134,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositInput = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 

@@ -77,7 +77,7 @@ public class CityModifyMenu extends Menu {
             );
         } else {
             loreRename = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -113,7 +113,7 @@ public class CityModifyMenu extends Menu {
             );
         } else {
             loreTransfer = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -153,7 +153,7 @@ public class CityModifyMenu extends Menu {
                     }
                 } else {
                     loreDelete = List.of(
-                            MessagesManager.Message.NOPERMISSION2.getMessage()
+                            MessagesManager.Message.NO_PERMISSION_2.getMessage()
                     );
                 }
                 return new ItemBuilder(this, Material.TNT, itemMeta -> {
@@ -181,7 +181,7 @@ public class CityModifyMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 

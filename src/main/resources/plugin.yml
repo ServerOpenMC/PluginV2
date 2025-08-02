@@ -3,12 +3,14 @@ version: ${version}
 main: fr.openmc.core.OMCPlugin
 api-version: '1.21.8'
 
+depend:
+  - WorldGuard
+
 softdepend:
   - FancyNpcs
   - PlaceholderAPI
   - LuckPerms
   - ItemsAdder
-  - WorldGuard
   - ProtocolLib
 
 prefix: OMC

@@ -5,7 +5,6 @@ import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopOwner;
 import fr.openmc.core.features.economy.EconomyManager;
 import lombok.Getter;
-
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 
@@ -16,7 +15,7 @@ import java.util.UUID;
 public class PlayerShopManager {
 
     @Getter
-    private static Map<UUID, Shop> playerShops = new HashMap<>();
+    private static final Map<UUID, Shop> playerShops = new HashMap<>();
 
     /**
      * create a shop

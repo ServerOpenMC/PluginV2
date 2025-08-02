@@ -20,11 +20,11 @@ public enum HomeLimits {
     ;
 
     @Getter
-    int limit;
+    private final int limit;
     @Getter
-    int price;
+    private final int price;
     @Getter
-    int ayweniteCost;
+    private final int ayweniteCost;
 
     HomeLimits(int limit, int price, int ayweniteCost) {
         this.limit = limit;

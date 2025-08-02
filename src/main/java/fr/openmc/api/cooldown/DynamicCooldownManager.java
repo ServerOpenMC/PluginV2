@@ -84,7 +84,7 @@ public class DynamicCooldownManager {
 
     private static Dao<Cooldown, String> cooldownDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Cooldown.class);
         cooldownDao = DaoManager.createDao(connectionSource, Cooldown.class);
     }

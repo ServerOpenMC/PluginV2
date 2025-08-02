@@ -1,7 +1,6 @@
 package fr.openmc.core.features.privatemessage;
 
 import fr.openmc.core.features.settings.PlayerSettingsManager;
-import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

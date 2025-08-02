@@ -48,21 +48,21 @@ public class DatabaseManager {
             connectionSource = new JdbcPooledConnectionSource(databaseUrl, username, password);
 
 
-            MayorManager.init_db(connectionSource);
-            MilestonesManager.init_db(connectionSource);
-            BankManager.init_db(connectionSource);
-            TransactionsManager.init_db(connectionSource);
-            AnalyticsManager.init_db(connectionSource);
-            MailboxManager.init_db(connectionSource);
-            ContestManager.init_db(connectionSource);
-            EconomyManager.init_db(connectionSource);
-            HomesManager.init_db(connectionSource);
-            FriendSQLManager.init_db(connectionSource);
-            DynamicCooldownManager.init_db(connectionSource);
-            CompanyManager.init_db(connectionSource);
-            CityManager.init_db(connectionSource);
-            MascotsManager.init_db(connectionSource);
-            PlayerSettingsManager.init_db(connectionSource);
+            MayorManager.initDB(connectionSource);
+            MilestonesManager.initDB(connectionSource);
+            BankManager.initDB(connectionSource);
+            TransactionsManager.initDB(connectionSource);
+            AnalyticsManager.initDB(connectionSource);
+            MailboxManager.initDB(connectionSource);
+            ContestManager.initDB(connectionSource);
+            EconomyManager.initDB(connectionSource);
+            HomesManager.initDB(connectionSource);
+            FriendSQLManager.initDB(connectionSource);
+            DynamicCooldownManager.initDB(connectionSource);
+            CompanyManager.initDB(connectionSource);
+            CityManager.initDB(connectionSource);
+            MascotsManager.initDB(connectionSource);
+            PlayerSettingsManager.initDB(connectionSource);
         } catch (SQLException e) {
             OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
             throw new RuntimeException(e);

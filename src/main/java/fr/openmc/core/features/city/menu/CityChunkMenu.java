@@ -320,12 +320,12 @@ public class CityChunkMenu extends Menu {
         City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
         if (cityCheck == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -356,12 +356,12 @@ public class CityChunkMenu extends Menu {
         City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
 
         if (cityCheck == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!hasPermissionClaim) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CLAIM.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

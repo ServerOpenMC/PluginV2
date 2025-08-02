@@ -35,7 +35,7 @@ public class Restart {
     @CommandPermission("omc.admin.commands.restart")
     public void restart(CommandSender sender) {
         if (sender instanceof Player) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -52,7 +52,6 @@ public class Restart {
         }
 
         OMCPlugin plugin = OMCPlugin.getInstance();
-        ScoreboardManager scoreboardManager = ScoreboardManager.getInstance();
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -71,7 +70,7 @@ public class Restart {
 
                 if (!announce.contains(remainingTime)) {
                     remainingTime -= 1;
-                    scoreboardManager.updateAllScoreboards();
+                    ScoreboardManager.updateAllScoreboards();
                     return;
                 }
 

@@ -22,7 +22,7 @@ public class AdminWarCommand {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
