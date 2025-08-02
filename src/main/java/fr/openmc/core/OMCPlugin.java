@@ -176,7 +176,7 @@ public class OMCPlugin extends JavaPlugin {
     private void logLoadMessage() {
         Logger log = getLogger();
 
-        String pluginVersion = getPluginMeta().getDescription();
+        String pluginVersion = getPluginMeta().getVersion();
         String javaVersion = System.getProperty("java.version");
         String server = Bukkit.getName() + " " + Bukkit.getVersion();
 
