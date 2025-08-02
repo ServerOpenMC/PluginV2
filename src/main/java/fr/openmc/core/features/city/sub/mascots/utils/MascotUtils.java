@@ -44,11 +44,11 @@ public class MascotUtils {
 	}
 
 	/**
-	 * Checks if an entity is a mascot.
+	 * Checks if an entity can be a mascot based on their type.
 	 * @param entity The entity to check.
-	 * @return true if the entity is a mascot, false otherwise.
+	 * @return true if the entity can be a mascot, false otherwise.
 	 */
-	public static boolean isMascot(Entity entity) {
+	public static boolean canBeAMascot(Entity entity) {
 		// Check if the entity is of a type that can be a mascot
 		// So it doesn't check the persistent data container that takes more time
 		if (!POSSIBLE_MASCOT_TYPES.contains(entity.getType()))

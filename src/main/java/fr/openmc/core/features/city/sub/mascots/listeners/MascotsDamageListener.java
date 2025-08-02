@@ -50,7 +50,7 @@ public class MascotsDamageListener implements Listener {
 
         if (!(entity instanceof Player mob)) return;
 
-        if (!MascotUtils.isMascot(entity)) return;
+        if (!MascotUtils.canBeAMascot(entity)) return;
 
         EntityDamageEvent.DamageCause cause = e.getCause();
 
@@ -88,7 +88,7 @@ public class MascotsDamageListener implements Listener {
         Entity damageEntity = e.getEntity();
         Entity damager = e.getDamager();
 
-        if (!MascotUtils.isMascot(damageEntity)) return;
+        if (!MascotUtils.canBeAMascot(damageEntity)) return;
 
         if (!(damager instanceof Player player)) {
             e.setCancelled(true);
@@ -228,7 +228,7 @@ public class MascotsDamageListener implements Listener {
         LivingEntity target = event.getTarget();
 
         if (target == null) return;
-        if (!MascotUtils.isMascot(target)) return;
+        if (!MascotUtils.canBeAMascot(target)) return;
 
         event.setCancelled(true);
     }
@@ -237,7 +237,7 @@ public class MascotsDamageListener implements Listener {
     public void onMascotTarget(EntityTargetLivingEntityEvent event) {
         Entity entity = event.getEntity();
 
-        if (MascotUtils.isMascot(entity)) {
+        if (MascotUtils.canBeAMascot(entity)) {
             event.setCancelled(true);
         }
     }

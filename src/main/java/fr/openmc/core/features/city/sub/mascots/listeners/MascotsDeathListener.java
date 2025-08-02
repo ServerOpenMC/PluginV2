@@ -32,7 +32,7 @@ public class MascotsDeathListener implements Listener {
         Entity entity = e.getEntity();
         Player killer = e.getEntity().getKiller();
 
-        if (!MascotUtils.isMascot(entity)) return;
+        if (!MascotUtils.canBeAMascot(entity)) return;
 
         PersistentDataContainer data = entity.getPersistentDataContainer();
         String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);

@@ -205,7 +205,7 @@ public class MascotsManager {
         LivingEntity mob = (LivingEntity) mascot.getEntity();
         if (mob == null) return;
 
-        if (!MascotUtils.isMascot(mob)) return;
+        if (!MascotUtils.canBeAMascot(mob)) return;
 
         MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + level);
         double lastHealth = mascotsLevels.getHealth();
