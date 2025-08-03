@@ -1,7 +1,5 @@
 package fr.openmc.api.menulib;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -13,6 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -29,7 +28,9 @@ import java.util.function.Consumer;
  * The {@code MenuLib} class implements the {@link Listener} interface to handle inventory-related events.
  */
 public final class MenuLib implements Listener {
-	private static final Object2ObjectMap<Player, Menu> lastMenu = new Object2ObjectOpenHashMap<>();
+	
+	private static final Map<Player, Menu> lastMenu = new HashMap<>();
+	private static final Map<Menu, Map<ItemStack, Consumer<InventoryClickEvent>>> itemClickEvents = new HashMap<>();
 	@Getter
 	private static NamespacedKey itemIdKey;
 	
@@ -68,7 +69,12 @@ public final class MenuLib implements Listener {
 	 *                  to be executed when the {@link ItemStack} is clicked within the menu.
 	 */
 	public static void setItemClickEvent(Menu menu, ItemStack itemStack, Consumer<InventoryClickEvent> e) {
-		menu.getItemClickEvents().put(itemStack, e);
+		Map<ItemStack, Consumer<InventoryClickEvent>> itemEvents = itemClickEvents.get(menu);
+		if (itemEvents == null) {
+			itemEvents = new HashMap<>();
+		}
+		itemEvents.put(itemStack, e);
+		itemClickEvents.put(menu, itemEvents);
 	}
 	
 	/**
@@ -108,34 +114,44 @@ public final class MenuLib implements Listener {
 	 */
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-        if (!(e.getInventory().getHolder(false) instanceof Menu menu))
-            return;
+		if (e.getInventory().getHolder() instanceof Menu menu) {
+			if (e.getCurrentItem() == null) {
+				return;
+			}
 
-        if (e.getCurrentItem() == null)
-            return;
+			if (menu.getTakableSlot().contains(e.getSlot())) {
+				return;
+			}
 
-        if (menu.getTakableSlot().contains(e.getSlot()))
-            return;
+			e.setCancelled(true);
+			menu.onInventoryClick(e);
+			
+			try {
+				itemClickEvents.forEach((menu1, itemStackConsumerMap) -> {
+					if (menu1.equals(menu)) {
+						itemStackConsumerMap.forEach((itemStack, inventoryClickEventConsumer) -> {
+							if (itemStack.equals(e.getCurrentItem())) {
+								inventoryClickEventConsumer.accept(e);
+							}
+						});
+					}
+				});
+			} catch (Exception ignore) {
 
-        e.setCancelled(true);
-        menu.onInventoryClick(e);
-
-        Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = menu.getItemClickEvents();
-        if (itemClickEvents.isEmpty())
-            return;
-
-        for (Map.Entry<ItemStack, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
-            if (entry.getKey().equals(e.getCurrentItem()))
-                entry.getValue().accept(e);
-        }
-    }
+			}
+		}
+	}
 
 	/**
 	 * Handles the event that occurs when a player closes an inventory associated with a {@link Menu}.
 	 */
 	@EventHandler
 	public void onClose(InventoryCloseEvent e) {
-		if (e.getInventory().getHolder(false) instanceof Menu menu)
+		if (e.getInventory().getHolder() instanceof PaginatedMenu menu) {
 			menu.onClose(e);
+		}
+		if (e.getInventory().getHolder() instanceof Menu menu) {
+			menu.onClose(e);
+		}
 	}
 }

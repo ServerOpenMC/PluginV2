@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 
 public class FishProtection implements Listener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     void onFish(PlayerFishEvent event) {
         ProtectionsManager.verify(event.getPlayer(), event, event.getHook().getLocation());
     }

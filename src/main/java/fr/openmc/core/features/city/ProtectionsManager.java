@@ -30,6 +30,7 @@ public class ProtectionsManager {
                 new ExplodeProtection(),
                 new FireProtection(),
                 new FishProtection(),
+                new FoodProtection(),
                 new HangingProtection(),
                 new InteractProtection(),
                 new LeashProtection(),

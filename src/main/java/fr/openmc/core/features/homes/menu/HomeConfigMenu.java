@@ -1,6 +1,5 @@
 package fr.openmc.core.features.homes.menu;
 
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -15,6 +14,7 @@ import fr.openmc.core.utils.customfonts.CustomFonts;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -42,7 +42,7 @@ public class HomeConfigMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::omc_homes_menus_home_settings:");
+        return PlaceholderAPI.setPlaceholders(this.getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home_settings%");
     }
 
     @Override

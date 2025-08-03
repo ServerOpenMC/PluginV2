@@ -24,7 +24,7 @@ import static fr.openmc.core.features.city.listeners.protections.ExplodeProtecti
 import static fr.openmc.core.features.city.listeners.protections.ExplodeProtection.explosionDataMap;
 
 public class TntPlaceListener implements Listener {
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onPlaceTNT(BlockPlaceEvent event) {
         if (event.getBlock().getType() != Material.TNT) return;
 

@@ -23,7 +23,7 @@ public class CityDeleteAction {
         City city = CityManager.getPlayerCity(uuid);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, true);
             player.closeInventory();
             return;
         }

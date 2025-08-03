@@ -10,9 +10,10 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.features.city.sub.mascots.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -45,10 +46,10 @@ public class MascotMenu extends Menu {
 
     private static final int AYWENITE_REDUCE = 15;
     private static final long COOLDOWN_REDUCE = 3600000L;
-
+    
     private final Mascot mascot;
     private City city;
-
+    
     public MascotMenu(Player owner, Mascot mascot) {
         super(owner);
         this.mascot = mascot;
@@ -87,7 +88,7 @@ public class MascotMenu extends Menu {
                 Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR CHANGER DE SKIN")
         );
-
+        
         map.put(11, new ItemBuilder(this, this.mascot.getMascotEgg(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Le Skin de la §cMascotte"));
             itemMeta.lore(loreSkinMascot);
@@ -96,7 +97,7 @@ public class MascotMenu extends Menu {
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         }).setOnClick(inventoryClickEvent -> {
             if (!city.hasPermission(player.getUniqueId(), CPermission.MASCOT_SKIN)) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 player.closeInventory();
                 return;
             }
@@ -105,7 +106,7 @@ public class MascotMenu extends Menu {
 
         Supplier<ItemStack> moveMascotItemSupplier = () -> {
             List<Component> lorePosMascot;
-
+            
             if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
                 lorePosMascot = List.of(
                         Component.text("§7Vous ne pouvez pas changer la position de votre §cMascotte"),
@@ -131,7 +132,7 @@ public class MascotMenu extends Menu {
                     return;
                 }
                 if (!city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)) {
-                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                     return;
                 }
 
@@ -142,7 +143,7 @@ public class MascotMenu extends Menu {
 
                 city = CityManager.getPlayerCity(getOwner().getUniqueId());
                 if (city == null) {
-                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                     getOwner().closeInventory();
                     return;
                 }
@@ -223,14 +224,14 @@ public class MascotMenu extends Menu {
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP); // Pour ça il faut l'entièreté de la lib de xernas, je le ferais une autre fois
+            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
             itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         }).setOnClick(inventoryClickEvent -> {
 
             if (mascotsLevels.equals(MascotsLevels.level10)) return;
 
             if (city == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 player.closeInventory();
                 return;
             }
@@ -246,7 +247,7 @@ public class MascotMenu extends Menu {
                 MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
 
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -275,11 +276,11 @@ public class MascotMenu extends Menu {
                     itemMeta.lore(lore);
                 }).setOnClick(inventoryClickEvent -> {
                     if (city == null) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;
                     }
-
+                    
                     if (!ItemUtils.takeAywenite(player, AYWENITE_REDUCE)) return;
                     DynamicCooldownManager.reduceCooldown(player, city.getUUID(), "city:immunity", COOLDOWN_REDUCE);
 

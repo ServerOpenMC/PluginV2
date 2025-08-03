@@ -14,6 +14,7 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 @Command({"adminmayor"})
@@ -21,7 +22,7 @@ import java.util.Objects;
 public class AdminMayorCommands {
     @Subcommand({"setphase"})
     @CommandPermission("omc.admins.commands.adminmayor")
-    public void setPhase(Player sender, int phase) {
+    public void setPhase(Player sender, int phase) throws SQLException {
         if (phase == 1) {
             MayorManager.initPhase1();
         } else if (phase == 2){
@@ -31,11 +32,11 @@ public class AdminMayorCommands {
 
     @Subcommand({"changeelection"})
     @CommandPermission("omc.admins.commands.adminmayor")
-    public void changeElection(Player sender, @Named("uuid") String cityUUID, String electionType) {
+    public void changeElection(Player sender, @Named("uuid") String cityUUID, String electionType) throws SQLException {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             MessagesManager.sendMessage(sender, Component.text("/adminmayor changeelection cityUUID electionType<owner_choose/election>"), Prefix.STAFF, MessageType.INFO, false);
             return;
         }

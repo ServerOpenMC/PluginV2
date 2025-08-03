@@ -1,13 +1,13 @@
 package fr.openmc.core.features.friend;
 
-import fr.openmc.core.CommandsManager;
+import fr.openmc.core.features.settings.PlayerSettings;
+import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.CommandsManager;
 import lombok.Getter;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.sql.*;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class FriendManager {

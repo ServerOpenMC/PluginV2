@@ -2,6 +2,7 @@ package fr.openmc.core.utils;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 public class DirectionUtils {
     /**
@@ -12,33 +13,26 @@ public class DirectionUtils {
      * @return Emoji directionnel
      */
     public static String getDirectionArrow(Player player, Location target) {
-        // On ne tient pas compte de la hauteur
-        double dx = target.getX() - player.getLocation().getX();
-        double dz = target.getZ() - player.getLocation().getZ();
-        if (dx == 0 && dz == 0) {
+        Vector delta = target.toVector().subtract(player.getLocation().toVector());
+        delta.setY(0);
+        if (delta.lengthSquared() == 0) {
             return "•";
         }
 
-        double playerYaw = (player.getLocation().getYaw() % 360 + 360) % 360;
-        double targetYaw = Math.toDegrees(Math.atan2(dx, dz));
-        if (targetYaw < 0) {
-            targetYaw += 360;
-        }
+        double yawRad = Math.toRadians(player.getLocation().getYaw());
+        Vector forward = new Vector(-Math.sin(yawRad), 0, Math.cos(yawRad));
+        delta = delta.normalize();
+        double dot = forward.dot(delta);
+        Vector cross = forward.clone().crossProduct(delta);
+        double angle = Math.toDegrees(Math.atan2(-cross.getY(), dot));
 
-        double deltaYaw = (targetYaw - playerYaw + 360) % 360;
-        final String[] ARROWS = {
-                "↑", // 0° +/- 22.5°
-                "↗", // 45°
-                "→", // 90°
-                "↘", // 135°
-                "↓", // 180°
-                "↙", // 225°
-                "←", // 270°
-                "↖"  // 315°
-        };
-
-        // On ajoute 22.5 pour centrer les secteurs, puis on divise par 45°
-        int index = (int) ((deltaYaw + 22.5) / 45) % 8;
-        return ARROWS[index];
+        if (angle > 157.5 || angle <= -157.5) return "↓";
+        if (angle > 112.5) return "↘";
+        if (angle > 67.5) return "→";
+        if (angle > 22.5) return "↗";
+        if (angle > -22.5) return "↑";
+        if (angle > -67.5) return "↖";
+        if (angle > -112.5) return "←";
+        return "↙";
     }
 }

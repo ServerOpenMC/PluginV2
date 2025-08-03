@@ -14,7 +14,7 @@ public class MascotsTargetListener implements Listener {
         LivingEntity target = event.getTarget();
 
         if (target == null) return;
-        if (!MascotUtils.canBeAMascot(target)) return;
+        if (!MascotUtils.isMascot(target)) return;
 
         event.setCancelled(true);
     }
@@ -23,7 +23,7 @@ public class MascotsTargetListener implements Listener {
     public void onMascotTarget(EntityTargetLivingEntityEvent event) {
         Entity entity = event.getEntity();
 
-        if (MascotUtils.canBeAMascot(entity)) {
+        if (MascotUtils.isMascot(entity)) {
             event.setCancelled(true);
         }
     }

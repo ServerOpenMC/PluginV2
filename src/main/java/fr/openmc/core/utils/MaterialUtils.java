@@ -1,14 +1,30 @@
 package fr.openmc.core.utils;
 
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Set;
 
 public class MaterialUtils {
 
-    private static final Set<Material> BUNDLES = Tag.ITEMS_BUNDLES.getValues();
+    private static final Set<Material> BUNDLES = Set.of(
+            Material.BUNDLE,
+            Material.WHITE_BUNDLE,
+            Material.BLUE_BUNDLE,
+            Material.BROWN_BUNDLE,
+            Material.CYAN_BUNDLE,
+            Material.GRAY_BUNDLE,
+            Material.GREEN_BUNDLE,
+            Material.LIME_BUNDLE,
+            Material.MAGENTA_BUNDLE,
+            Material.ORANGE_BUNDLE,
+            Material.YELLOW_BUNDLE,
+            Material.LIGHT_BLUE_BUNDLE,
+            Material.LIGHT_GRAY_BUNDLE,
+            Material.PINK_BUNDLE,
+            Material.RED_BUNDLE,
+            Material.PURPLE_BUNDLE
+    );
 
     /**
      * Retourne si l'Item est un Bundle
@@ -18,7 +34,16 @@ public class MaterialUtils {
         return BUNDLES.contains(item.getType());
     }
 
-    private static final Set<Material> CROPS = Tag.CROPS.getValues();
+    private static final Set<Material> CROPS = Set.of(
+            Material.WHEAT,
+            Material.CARROTS,
+            Material.POTATOES,
+            Material.BEETROOTS,
+            Material.NETHER_WART,
+            Material.COCOA,
+            Material.TORCHFLOWER,
+            Material.PITCHER_CROP
+    );
 
     public static boolean isCrop(Material type) {
         return CROPS.contains(type);

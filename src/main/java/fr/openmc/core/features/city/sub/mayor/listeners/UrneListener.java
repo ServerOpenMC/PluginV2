@@ -1,9 +1,10 @@
 package fr.openmc.core.features.city.sub.mayor.listeners;
 
+import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
-import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
-import dev.lone.itemsadder.api.Events.FurniturePrePlaceEvent;
+import dev.lone.itemsadder.api.Events.FurniturePlaceSuccessEvent;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -11,32 +12,30 @@ import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
-import fr.openmc.core.utils.LocationUtils;
 import fr.openmc.core.utils.api.FancyNpcsApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.Objects;
 
+import static fr.openmc.core.utils.LocationUtils.getSafeNearbySurface;
+
 public class UrneListener implements Listener {
 
     @EventHandler
-    public void onUrneInteractEvent(FurnitureInteractEvent event) {
-        if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
+    private void onUrneInteractEvent(FurnitureInteractEvent furniture) {
+        if (!Objects.equals(furniture.getNamespacedID(), "omc_blocks:urne")) return;
 
-        Player player = event.getPlayer();
+        Player player = furniture.getPlayer();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-        Chunk chunk = event.getFurniture().getEntity().getChunk();
+        Chunk chunk = furniture.getFurniture().getEntity().getChunk();
         City city = CityManager.getCityFromChunk(chunk.getX(), chunk.getZ());
 
         if (playerCity == null) {
@@ -45,10 +44,7 @@ public class UrneListener implements Listener {
         }
 
         if (city == null) {
-            if (player.getGameMode() != GameMode.CREATIVE) {
-                event.getFurniture().remove(false);
-            }
-
+            removeUrne(player, furniture.getFurniture());
             MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
@@ -58,8 +54,8 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (playerCity.getElectionType() == ElectionType.OWNER_CHOOSE) {
-            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
+        if (playerCity.getElectionType().equals(ElectionType.OWNER_CHOOSE)) {
+            MessagesManager.sendMessage(player, Component.text("§8§o*vous devez avoir au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §8membres afin de pouvoir faire une éléction*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
 
@@ -79,54 +75,57 @@ public class UrneListener implements Listener {
 
     }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onUrnePrePlaceEvent(FurniturePrePlaceEvent event) {
-        if (!"omc_blocks:urne".equals(event.getNamespacedID())) return;
+    @EventHandler
+    private void onUrnePlaceSuccessEvent(FurniturePlaceSuccessEvent event) {
+        if (!Objects.equals(event.getNamespacedID(), "omc_blocks:urne")) return;
+
         Player player = event.getPlayer();
 
         if (!player.getWorld().getName().equals("world")) {
-            event.setCancelled(true);
-            MessagesManager.sendMessage(player, Component.text("Vous devez être dans l'overworld pour poser ceci !"), Prefix.MAYOR, MessageType.WARNING, false);
+            removeUrne(player, event.getFurniture());
             return;
         }
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
-            event.setCancelled(true);
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous devez avoir une ville pour poser ceci !"), Prefix.MAYOR, MessageType.WARNING, false);
             return;
         }
 
-        Chunk placedInChunk = event.getLocation().getChunk();
-        City chunkCity = CityManager.getCityFromChunk(placedInChunk.getX(), placedInChunk.getZ());
+        City chunkCity = CityManager.getCityFromChunk(event.getFurniture().getEntity().getChunk().getX(), event.getFurniture().getEntity().getChunk().getZ());
+
         if (chunkCity == null) {
-            event.setCancelled(true);
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous devez poser ceci dans votre ville!"), Prefix.MAYOR, MessageType.WARNING, false);
             return;
         }
 
+        if (!chunkCity.getUUID().equals(playerCity.getUUID())) {
+            removeUrne(player, event.getFurniture());
+            MessagesManager.sendMessage(player, Component.text("Vous devez la poser dans votre ville"), Prefix.MAYOR, MessageType.ERROR, false);
+            return;
+        }
+
         if (!playerCity.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
-            event.setCancelled(true);
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le propriétaire !"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
         if (NPCManager.hasNPCS(playerCity.getUUID())) {
-            event.setCancelled(true);
+            removeUrne(player, event.getFurniture());
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous avez déjà des NPC"), Prefix.MAYOR, MessageType.ERROR, false);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    private void onUrnePlaceSuccessEvent(FurniturePlacedEvent event) {
-        Location urneLocation = event.getFurniture().getEntity().getLocation();
-        if (!FancyNpcsApi.hasFancyNpc())
             return;
+        }
 
-        Player player = event.getPlayer();
-        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        Location locationMayor = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
-        Location locationOwner = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
+        Location urneLocation = event.getFurniture().getEntity().getLocation();
+
+        if (!FancyNpcsApi.hasFancyNpc()) return;
+
+        Location locationMayor = getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
+
+        Location locationOwner = getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
 
         NPCManager.createNPCS(playerCity.getUUID(), locationMayor, locationOwner, player.getUniqueId());
     }
@@ -163,4 +162,17 @@ public class UrneListener implements Listener {
 
         NPCManager.removeNPCS(playerCity.getUUID());
     }
+
+    private void removeUrne(Player player, CustomFurniture furniture) {
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (furniture != null) {
+                furniture.remove(!player.getGameMode().equals(GameMode.CREATIVE));
+                if (furniture.getEntity() != null && !furniture.getEntity().isDead()) {
+                    furniture.getEntity().remove();
+                }
+            }
+        }, 1L);
+    }
+
+
 }

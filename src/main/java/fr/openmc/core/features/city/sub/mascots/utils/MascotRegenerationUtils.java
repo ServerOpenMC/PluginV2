@@ -4,7 +4,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import net.kyori.adventure.text.Component;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -64,25 +63,24 @@ public class MascotRegenerationUtils {
                 }
 
 
-                double maxHealth = mascots.getAttribute(Attribute.MAX_HEALTH).getValue();
-                if (mascots.getHealth() >= maxHealth) {
+                if (mascots.getHealth() >= mascots.getMaxHealth()) {
 
                     mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
                             mascot.getCity().getName(),
                             mascots.getHealth(),
-                            maxHealth
+                            mascots.getMaxHealth()
                     )));
                     regenTasks.remove(mascot.getMascotUUID());
                     this.cancel();
                     return;
                 }
 
-                double newHealth = Math.min(mascots.getHealth() + 1, maxHealth);
+                double newHealth = Math.min(mascots.getHealth() + 1, mascots.getMaxHealth());
                 mascots.setHealth(newHealth);
                 mascots.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
                         mascot.getCity().getName(),
                         mascots.getHealth(),
-                        maxHealth
+                        mascots.getMaxHealth()
                 )));
             }
         };

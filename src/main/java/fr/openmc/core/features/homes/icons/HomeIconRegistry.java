@@ -40,7 +40,7 @@ public class HomeIconRegistry {
         for (Material material : Material.values()) {
             if (material.isItem() && !material.isAir()) {
                 HomeIcon icon = HomeIcon.vanilla(material);
-                icons.put(icon.id(), icon);
+                icons.put(icon.getId(), icon);
                 vanillaIcons.add(icon);
             }
         }
@@ -55,7 +55,7 @@ public class HomeIconRegistry {
      */
     private static void registerCustomIcon(String id, String displayName, String customId) {
         HomeIcon icon = HomeIcon.custom(id, displayName, customId);
-        icons.put(icon.id(), icon);
+        icons.put(icon.getId(), icon);
         customIcons.add(icon);
     }
 
@@ -140,8 +140,8 @@ public class HomeIconRegistry {
         String lowerQuery = query.toLowerCase();
         return icons.values().stream()
                 .filter(icon ->
-                        icon.displayName().toLowerCase().contains(lowerQuery) ||
-                                icon.id().toLowerCase().contains(lowerQuery) ||
+                        icon.getDisplayName().toLowerCase().contains(lowerQuery) ||
+                                icon.getId().toLowerCase().contains(lowerQuery) ||
                                 (icon.isVanilla() && icon.getMaterial().name().toLowerCase().contains(lowerQuery))
                 )
                 .collect(Collectors.toList());
@@ -166,7 +166,7 @@ public class HomeIconRegistry {
      */
     public static OldHomeIcon toLegacyHomeIcon(HomeIcon icon) {
         if (icon.isCustom()) {
-            String iconName = icon.id().replace("custom:", "").toUpperCase();
+            String iconName = icon.getId().replace("custom:", "").toUpperCase();
             try {
                 return OldHomeIcon.valueOf(iconName);
             } catch (IllegalArgumentException e) {

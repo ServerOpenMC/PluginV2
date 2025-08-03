@@ -8,14 +8,15 @@ import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
 import fr.openmc.core.features.adminshop.menus.ColorVariantsMenu;
 import fr.openmc.core.features.adminshop.menus.ConfirmMenu;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import java.text.DecimalFormat;
 import java.util.Collection;
@@ -68,7 +69,7 @@ public class AdminShopManager {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        if (ItemUtils.hasEnoughItems(player, item.getMaterial(), 1)) {
+        if (playerHasItem(player, item.getMaterial(), 1)) {
             sendError(player, "Vous n'avez pas cet item dans votre inventaire !");
             return;
         }
@@ -87,7 +88,7 @@ public class AdminShopManager {
         ShopItem item = getCurrentItem(player, itemId);
         if (item == null) return;
 
-        if (!ItemUtils.hasEnoughSpace(player, item.getMaterial(), amount)) {
+        if (!hasEnoughSpace(player, item.getMaterial(), amount)) {
             sendError(player, "Votre inventaire est plein !");
             return;
         }
@@ -128,13 +129,13 @@ public class AdminShopManager {
         }
 
         // Check if the player has enough items to sell
-        if (!ItemUtils.hasEnoughItems(player, item.getMaterial(), amount)) {
+        if (playerHasItem(player, item.getMaterial(), amount)) {
             sendError(player, "Vous n'avez pas assez de " + item.getName() + " à vendre !");
             return;
         }
 
         double totalPrice = item.getActualSellPrice() * amount; // Calculate the total price for the items
-        ItemUtils.removeItemsFromInventory(player, item.getMaterial(), amount); // Remove items from the player's inventory
+        removeItems(player, item.getMaterial(), amount); // Remove items from the player's inventory
         EconomyManager.addBalance(player.getUniqueId(), totalPrice); // Add money to the player's balance
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new SellEvent(player, item));
@@ -165,6 +166,122 @@ public class AdminShopManager {
         item.setActualBuyPrice(Math.max(newBuy, item.getInitialBuyPrice() * 0.5)); // Set new buy price
 
         adminShopYAML.saveConfig(); // Save the updated configuration
+    }
+
+    /**
+     * Checks the number of available inventory slots or stack capacity for an item.
+     *
+     * @param player       The player whose inventory is checked.
+     * @param itemToAdd    The material to check for.
+     * @param amountToAdd  The amount of items to check.
+     * @return -1 if space is available, otherwise number of empty slots.
+     */
+    private static int checkInventorySpace(Player player, Material itemToAdd, int amountToAdd) {
+        PlayerInventory inventory = player.getInventory();
+        int emptySlots = 0;
+        int availableAmount = 0;
+
+        for (int i = 0; i < 36; i++) {
+            ItemStack item = inventory.getItem(i);
+            ItemStack itemToAddStack = itemToAdd != null ? new ItemStack(itemToAdd) : null;
+
+            // Check if the slot is empty or if it can stack with the item to add
+            if (item == null || item.getType() == Material.AIR) {
+                emptySlots++; // Count empty slots
+                if (itemToAddStack != null) availableAmount += itemToAddStack.getMaxStackSize(); // Count available space
+            } else if (itemToAddStack != null && item.isSimilar(new ItemStack(itemToAddStack))) { // Check if the item is similar to the item to add
+                int remainingSpace = item.getMaxStackSize() - item.getAmount(); // Count remaining space in existing stacks
+                if (remainingSpace > 0) availableAmount += remainingSpace; // Count available space in existing stacks
+            }
+        }
+
+        if (itemToAdd != null) {
+            if (availableAmount >= amountToAdd) return -1;
+            else return emptySlots;
+        }
+
+        return emptySlots;
+    }
+
+    /**
+     * Determines whether a player has enough space in their inventory for a given item.
+     *
+     * @param player      The player.
+     * @param itemToAdd   The material.
+     * @param amountToAdd The amount.
+     * @return True if there's enough space, false otherwise.
+     */
+    public static boolean hasEnoughSpace(Player player, Material itemToAdd, int amountToAdd) {
+        int result = checkInventorySpace(player, itemToAdd, amountToAdd);
+        return result == -1 || result > 0;
+    }
+
+    public static boolean hasEnoughSpace(Player player, ItemStack itemToAdd) {
+        return hasEnoughSpace(player, itemToAdd.getType(), itemToAdd.getAmount());
+    }
+
+    /**
+     * Determines whether a player has enough item in their inventory for remove this.
+     *
+     * @param player      The player.
+     * @param material   The material.
+     * @param amount The amount.
+     * @return True if there's enough space, false otherwise.
+     */
+    public static boolean hasEnoughItems(Player player, Material material, int amount) {
+        int count = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && item.getType() == material) {
+                count += item.getAmount();
+                if (count >= amount) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the player has fewer than the specified amount of a material.
+     *
+     * @param player   The player.
+     * @param material The material.
+     * @param amount   The required amount.
+     * @return True if the player has less than the amount, false otherwise.
+     */
+    private static boolean playerHasItem(Player player, Material material, int amount) {
+        int count = 0;
+        for (ItemStack item : player.getInventory().getContents()) { // Check each item in the player's inventory
+            if (item != null && item.getType() == material && (count += item.getAmount()) >= amount) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Removes a specified amount of material from the player's inventory.
+     *
+     * @param player   The player.
+     * @param material The material to remove.
+     * @param amount   The amount to remove.
+     */
+    private static void removeItems(Player player, Material material, int amount) {
+        int remaining = amount;
+
+        for (int i = 0; i < player.getInventory().getSize() && remaining > 0; i++) {
+            ItemStack item = player.getInventory().getItem(i); // Get the item in the current slot
+            if (item == null || item.getType() != material) continue; // Skip if not the right material
+
+            int amt = item.getAmount();
+            if (amt <= remaining) {
+                player.getInventory().clear(i); // Remove the item
+                remaining -= amt; // Reduce the remaining amount
+            } else {
+                item.setAmount(amt - remaining); // Reduce the amount
+                remaining = 0; // All items removed
+            }
+        }
+
+        player.updateInventory();
     }
 
     /**

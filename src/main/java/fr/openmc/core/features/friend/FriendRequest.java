@@ -24,7 +24,7 @@ public class FriendRequest extends BukkitRunnable {
     }
 
     public UUID getSenderUUID() {
-        return uuids.getFirst();
+        return uuids.get(0);
     }
 
     public UUID getReceiverUUID() {

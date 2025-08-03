@@ -4,6 +4,7 @@ import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.PlayerUtils;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -47,7 +48,7 @@ public class Rtp {
     @CommandPermission("omc.commands.rtp")
     @DynamicCooldown(group="player:rtp", message = "§cTu dois attendre avant de pouvoir te rtp (%sec% secondes)")
     public void rtp(Player player) {
-        DynamicCooldownManager.use(player.getUniqueId().toString(), "player:rtp", rtpCooldown * 1000L); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
+        DynamicCooldownManager.use(player.getUniqueId().toString(), "player:rtp", 1000 * 15); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
         rtpPlayer(player, 0);
     }
 
@@ -101,7 +102,7 @@ public class Rtp {
 
     public void tpPlayer(Player player, Location loc) {
         PlayerUtils.sendFadeTitleTeleport(player, loc);
-        player.sendMessage("§aVous avez été téléporté à §6X: §e" + loc.getBlockX() + "§6, Y:§e" + loc.getBlockY() + "§6, Z: §e" + loc.getBlockZ());
+        player.sendMessage(PlaceholderAPI.setPlaceholders(player, "§aVous avez été téléporté à §6X: §e" + loc.getBlockX() + "§6, Y:§e" + loc.getBlockY() + "§6, Z: §e" + loc.getBlockZ()));
     }
 
 }

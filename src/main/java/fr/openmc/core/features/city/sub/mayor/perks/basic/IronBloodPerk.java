@@ -14,12 +14,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class IronBloodPerk implements Listener {
     private static final Map<City, Long> perkIronBloodCooldown = new HashMap<>();
@@ -45,19 +45,19 @@ public class IronBloodPerk implements Listener {
                 return;
             }
             List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
-                    .filter(Player.class::isInstance)
-                    .map(Player.class::cast)
+                    .filter(ent -> ent instanceof Player)
+                    .map(ent -> (Player) ent)
                     .filter(nearbyPlayer -> {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
                         return enemyCity != null && !enemyCity.getUUID().equals(city.getUUID());
                     })
-                    .toList();
+                    .collect(Collectors.toList());
 
             if (!nearbyEnemies.isEmpty()) {
-                Player target = nearbyEnemies.getFirst();
+                Player target = nearbyEnemies.get(0);
                 golem.setAI(true);
                 golem.setTarget(target);
-                Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();
+                org.bukkit.util.Vector direction = target.getLocation().toVector().subtract(golem.getLocation().toVector()).normalize();
                 golem.setVelocity(direction.multiply(0.5));
             } else {
                 golem.setAI(false);
@@ -84,7 +84,7 @@ public class IronBloodPerk implements Listener {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
                         return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromEntity(mascotUUID).getUUID());
                     })
-                    .toList();
+                    .collect(Collectors.toList());
 
             if (nearbyEnemies.isEmpty() && golem.getTarget() == null) {
                 golem.remove();

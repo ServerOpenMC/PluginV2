@@ -3,8 +3,8 @@ package fr.openmc.core.features.mailboxes.menu;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
-import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
+import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class PlayerMailbox extends PaginatedMailbox<LetterHead> {
 
     public boolean fetchMailbox() {
         List<Letter> letters = MailboxManager.getReceivedLetters(player);
-        if (letters.isEmpty()) {
+        if (letters.size() < 1) {
             MailboxUtils.sendFailureMessage(player, "Vous n'avez aucune lettre.");
             return false;
         }

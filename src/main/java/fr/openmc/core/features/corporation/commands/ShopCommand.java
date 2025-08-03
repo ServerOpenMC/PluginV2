@@ -1,13 +1,13 @@
 package fr.openmc.core.features.corporation.commands;
 
 
-import fr.openmc.core.features.corporation.CorpPermission;
-import fr.openmc.core.features.corporation.MethodState;
+import fr.openmc.core.features.corporation.*;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.PlayerShopManager;
 import fr.openmc.core.features.corporation.menu.company.ShopManageMenu;
 import fr.openmc.core.features.corporation.menu.shop.ShopMenu;
+import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.menu.shop.ShopSearchMenu;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;

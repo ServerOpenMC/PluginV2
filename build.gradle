@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "com.github.johnrengelman.shadow" version "8.1.1"
-    id "io.papermc.paperweight.userdev" version "2.0.0-beta.18"
+    id "io.papermc.paperweight.userdev" version "2.0.0-beta.17"
 }
 
 def getLatestGitTag() {
@@ -12,7 +12,7 @@ def getLatestGitTag() {
             standardOutput = stdout
         }
         return stdout.toString().trim()
-    } catch (Exception ignored) {
+    } catch (Exception e) {
         return "unknown" // Default value if no tags exist
     }
 }
@@ -28,7 +28,10 @@ group = 'fr.openmc'
 repositories {
     mavenCentral()
     maven {
-        url "https://maven.devs.beer/"
+        url "https://oss.sonatype.org/content/groups/public/"
+    }
+    maven {
+        url "https://mvn.mathiasd.fr/releases"
     }
     maven {
         url "https://repo.fancyinnovations.com/releases"
@@ -50,26 +53,28 @@ repositories {
 dependencies {
     paperweight.paperDevBundle '1.21.8-R0.1-SNAPSHOT'
 
-    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.10'
-    compileOnly 'dev.lone:api-itemsadder:4.0.10'
+    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
     compileOnly 'net.luckperms:api:5.5'
     compileOnly 'me.clip:placeholderapi:2.11.6'
-    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
+
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.14'
+    compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
     compileOnly 'de.oliver:FancyNpcs:2.6.0'
     compileOnly 'com.github.dmulloy2:ProtocolLib:5.3.0'
-
-    implementation 'org.jetbrains:annotations:26.0.2'
-    implementation 'com.github.Revxrsal.Lamp:common:3.3.6'
-    implementation 'com.github.Revxrsal.Lamp:bukkit:3.3.6'
+    
+    implementation 'org.jetbrains:annotations:24.1.0'
+    implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
+    implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
+    implementation 'net.raidstone:wgevents:1.18.1'
     implementation 'com.j256.ormlite:ormlite-jdbc:6.1'
 
-    compileOnly 'org.projectlombok:lombok:1.18.38'
-    annotationProcessor 'org.projectlombok:lombok:1.18.38'
-    testCompileOnly 'org.projectlombok:lombok:1.18.38'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.38'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    testImplementation 'org.slf4j:slf4j-simple:2.0.17'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.13.1'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.16'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.50.0'
     testImplementation 'com.h2database:h2:2.3.232'
@@ -85,7 +90,7 @@ paperweight {
   addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { [it] as Set }
 }
 
-tasks.withType(JavaCompile).configureEach {
+tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
     options.release = targetJavaVersion
 }

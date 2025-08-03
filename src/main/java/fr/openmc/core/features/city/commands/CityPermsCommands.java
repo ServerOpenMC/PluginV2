@@ -23,7 +23,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(playerUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -44,7 +44,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -83,7 +83,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -111,7 +111,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -139,7 +139,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -167,7 +167,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

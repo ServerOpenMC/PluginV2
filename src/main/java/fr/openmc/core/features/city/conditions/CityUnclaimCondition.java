@@ -26,7 +26,7 @@ public class CityUnclaimCondition {
         if (player.getWorld() != Bukkit.getWorld("world")) return false;
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

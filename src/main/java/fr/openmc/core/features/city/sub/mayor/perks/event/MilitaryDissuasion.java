@@ -90,7 +90,7 @@ public class MilitaryDissuasion implements Listener {
 
                     if (!nearbyEnemies.isEmpty()) {
                         Collections.shuffle(nearbyEnemies);
-                        Player target = nearbyEnemies.getFirst();
+                        Player target = nearbyEnemies.get(0);
                         golem.setAI(true);
                         golem.setTarget(target);
                     } else {

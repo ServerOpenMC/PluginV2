@@ -9,8 +9,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityMountEvent;
 
 public class MountProtection implements Listener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityMount(EntityMountEvent event) {
+        if (event.isCancelled()) return;
         if (!(event.getEntity() instanceof Player player)) return;
 
         Entity mount = event.getMount();

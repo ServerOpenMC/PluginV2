@@ -78,7 +78,7 @@ public class ShopItem {
         if (itemStack.hasItemMeta()) {
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta.hasDisplayName()) {
-                return itemMeta.displayName();
+                return Component.text(itemMeta.getDisplayName());
             }
         }
         // If no custom name, return default name

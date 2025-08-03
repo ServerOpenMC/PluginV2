@@ -15,6 +15,8 @@ import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 
 public class CityClaimAction {
     private static final ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
@@ -37,15 +39,15 @@ public class CityClaimAction {
 
         ChunkPos chunkVec2 = new ChunkPos(chunkX, chunkZ);
 
-        boolean isFar = true;
+        AtomicBoolean isFar = new AtomicBoolean(true);
         for (ChunkPos chnk : city.getChunks()) {
             if (chnk.distance(chunkVec2) == 1) { //Si c'est en diagonale alors ça sera sqrt(2) ≈1.41
-                isFar = false;
+                isFar.set(false);
                 break;
             }
         }
 
-        if (isFar) {
+        if (isFar.get()) {
             MessagesManager.sendMessage(sender, Component.text("Ce chunk n'est pas adjacent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -73,7 +75,7 @@ public class CityClaimAction {
             }
 
             if (ItemUtils.takeAywenite(sender, aywenite))
-                city.updateBalance(price * -1);
+                city.updateBalance((double) (price * -1));
         } else {
             city.updateFreeClaims(-1);
         }

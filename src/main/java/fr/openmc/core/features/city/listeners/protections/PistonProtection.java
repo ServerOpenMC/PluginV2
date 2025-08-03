@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class PistonProtection implements Listener {
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent event) {
         Block piston = event.getBlock();
         Chunk fromChunk = piston.getChunk();
@@ -31,7 +31,7 @@ public class PistonProtection implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent event) {
         if (!event.isSticky()) return;
 

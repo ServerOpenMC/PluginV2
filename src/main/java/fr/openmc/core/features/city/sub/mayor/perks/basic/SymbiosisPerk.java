@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class SymbiosisPerk implements Listener {
 
-    private static final double SQUARED_RADIUS = 10.0 * 10.0;
+    private static final double RADIUS = 10.0;
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
@@ -30,7 +30,7 @@ public class SymbiosisPerk implements Listener {
 
         if (!player.getLocation().getWorld().equals(mascot.getLocation().getWorld())) return;
 
-        if (player.getLocation().distanceSquared(mascot.getLocation()) <= SQUARED_RADIUS) {
+        if (player.getLocation().distance(mascot.getLocation()) <= RADIUS) {
             double originalDamage = event.getDamage();
             double reducedDamage = originalDamage * 0.85;
             event.setDamage(reducedDamage);

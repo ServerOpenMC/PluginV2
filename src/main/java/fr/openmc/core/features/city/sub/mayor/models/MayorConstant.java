@@ -7,7 +7,7 @@ import lombok.Getter;
 @DatabaseTable(tableName = "mayor_constants")
 public class MayorConstant {
     @DatabaseField(id = true)
-    private final int id = 1;
+    private int id = 1;
     @DatabaseField(canBeNull = false)
     @Getter
     private int phase;

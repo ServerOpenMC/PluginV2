@@ -1,6 +1,5 @@
 package fr.openmc.core.features.corporation.menu.company;
 
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -8,8 +7,10 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
 import fr.openmc.core.features.corporation.shops.Shop;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
+import fr.openmc.core.items.CustomItemRegistry;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -59,9 +60,9 @@ public class ShopManageMenu extends PaginatedMenu {
         for (Shop shop : company.getShops()) {
 
             List<Component> loc = new ArrayList<>();
-            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
-            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
-            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
 
             loc.add(Component.text("§lLocation : §r x : " + x + " y : " + y + " z : " + z));
 
@@ -93,8 +94,8 @@ public class ShopManageMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-11::paginate_company_menu:");
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_paginate_company_menu%");
         } else {
             return "Shop Management";
         }

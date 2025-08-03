@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockIgniteEvent;
 
 public class FireProtection implements Listener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onFireIgnite(BlockIgniteEvent event) {
         Location loc = event.getBlock().getLocation();
         Player player = event.getPlayer();

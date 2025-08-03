@@ -123,7 +123,7 @@ public class ColorUtils {
         colorCode.put(LIGHT_PURPLE, "§d");
         colorCode.put(YELLOW, "§e");
         colorCode.put(WHITE, "§f");
-    }
+    };
 
     /**
      * Retourne un code couleur en § en fonction de la couleur donnée

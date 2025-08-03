@@ -6,11 +6,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ItemsUtilTest {
+public class ItemsUtilTest {
 
     @Test
     @DisplayName("getItemTranslation with ItemStack")
-    void testGetTranslationWithStack() {
+    public void testGetTranslationWithStack() {
         Assertions.assertEquals(
                 "block.minecraft.chest",
                 ItemUtils.getItemTranslation(new ItemStack(Material.CHEST)).key()
@@ -19,7 +19,7 @@ class ItemsUtilTest {
 
     @Test
     @DisplayName("getItemTranslation with Material")
-    void testGetTranslationWithMaterial() {
+    public void testGetTranslationWithMaterial() {
         Assertions.assertEquals(
                 "block.minecraft.dirt",
                 ItemUtils.getItemTranslation(Material.DIRT).key()

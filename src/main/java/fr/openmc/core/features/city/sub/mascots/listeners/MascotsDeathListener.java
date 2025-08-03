@@ -23,6 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.city.sub.mascots.MascotsManager.DEAD_MASCOT_NAME;
 
@@ -32,7 +33,7 @@ public class MascotsDeathListener implements Listener {
         Entity entity = e.getEntity();
         Player killer = e.getEntity().getKiller();
 
-        if (!MascotUtils.canBeAMascot(entity)) return;
+        if (!MascotUtils.isMascot(entity)) return;
 
         PersistentDataContainer data = entity.getPersistentDataContainer();
         String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
@@ -65,9 +66,9 @@ public class MascotsDeathListener implements Listener {
             spawnFireworkExplosion(entity.getLocation());
 
             List<Player> nearbyEnemies = entity.getNearbyEntities(5, 5, 5).stream()
-                    .filter(Player.class::isInstance)
-                    .map(Player.class::cast)
-                    .toList();
+                    .filter(ent -> ent instanceof Player)
+                    .map(ent -> (Player) ent)
+                    .collect(Collectors.toList());
 
             for (Player player : nearbyEnemies) {
                 Vector direction = player.getLocation().toVector().subtract(entity.getLocation().toVector()).normalize();
@@ -77,7 +78,7 @@ public class MascotsDeathListener implements Listener {
 
             WarManager.endWar(war);
         } else {
-            // TODO: systeme de vulnerabilité d'une ville, check si la ville attaqué est vulnérable, si oui la ville attaqué est supprimé
+            // todo: systeme de vulnerabilité d'une ville, check si la ville attaqué est vulnérable, si oui la ville attaqué est supprimé
         }
     }
 
