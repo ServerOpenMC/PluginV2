@@ -128,29 +128,29 @@ public class CityPlayerListMenu extends PaginatedMenu {
                 if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
                     return;
                 }
+
                 if (hasPermissionPerms && hasPermissionKick) {
                     CityPlayerGestionMenu menu = new CityPlayerGestionMenu(player, playerOffline);
                     menu.open();
                 } else if (hasPermissionPerms) {
                     CitizensPermsMenu.openBookFor(player, playerOffline.getUniqueId());
                 } else if (hasPermissionKick) {
-                    if (player.getUniqueId().equals(playerOffline.getUniqueId())) {
+                    if (player.getUniqueId().equals(playerOffline.getUniqueId()))
                         return;
-                    } else if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
-                        return;
-                    } else {
-                        ConfirmMenu menu = new ConfirmMenu(
-                                player,
-                                () -> {
-                                    player.closeInventory();
-                                    CityKickAction.startKick(player, playerOffline);
-                                },
-                                () -> player.closeInventory(),
-                                List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
-                                List.of(Component.text("§7Ne pas expulser " + playerOffline.getName())));
-                        menu.open();
 
-                    }
+                    if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER))
+                        return;
+
+                    ConfirmMenu menu = new ConfirmMenu(
+                            player,
+                            () -> {
+                                player.closeInventory();
+                                CityKickAction.startKick(player, playerOffline);
+                            },
+                            player::closeInventory,
+                            List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
+                            List.of(Component.text("§7Ne pas expulser " + playerOffline.getName())));
+                    menu.open();
                 }
             }));
         }

@@ -31,7 +31,7 @@ public class CityInviteConditions {
 	 */
 	public static boolean canCityInvitePlayer(City city, Player player, Player target) {
 		if (city == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 		
@@ -88,7 +88,7 @@ public class CityInviteConditions {
 			
 			List<Player> playerInvitations = CityCommands.invitations.get(invitedPlayer);
 			playerInvitations.remove(inviter);
-			if (playerInvitations.size() == 0) {
+			if (playerInvitations.isEmpty()) {
 				CityCommands.invitations.remove(invitedPlayer);
 			}
 			return false;

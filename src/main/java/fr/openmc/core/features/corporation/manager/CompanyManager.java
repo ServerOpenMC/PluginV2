@@ -48,10 +48,10 @@ public class CompanyManager {
     @Getter
     public static List<Shop> shops = new ArrayList<>();
 
-    public static NamespacedKey SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
+    public static final NamespacedKey SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
 
     // File d'attente des candidatures en attente, avec une limite de 100
-    private static Queue<UUID, Company> pendingApplications = new Queue<>(100);
+    private static final Queue<UUID, Company> pendingApplications = new Queue<>(100);
 
     public CompanyManager() {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms",
@@ -86,7 +86,7 @@ public class CompanyManager {
     private static Dao<Merchant, UUID> merchantsDao;
     private static Dao<ShopSupplier, UUID> suppliersDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, CompanyPermission.class);
         permissionsDao = DaoManager.createDao(connectionSource, CompanyPermission.class);
 
@@ -317,9 +317,9 @@ public class CompanyManager {
                     cityUuid = UUID.fromString(company.getOwner().getCity().getUUID());
                 }
 
-                double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-                double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-                double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+                double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
+                double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
+                double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
 
                 dbShops.add(new DBShop(shop.getUuid(), shop.getSupremeOwner(), cityUuid, companyId, x, y, z));
 
@@ -359,9 +359,9 @@ public class CompanyManager {
         for (Map.Entry<UUID, Shop> entry : playerShops.entrySet()) {
             Shop shop = entry.getValue();
             UUID owner = entry.getKey();
-            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
 
             for (ShopItem shopItem : shop.getItems()) {
                 byte[] item = shopItem.getItem().serializeAsBytes();

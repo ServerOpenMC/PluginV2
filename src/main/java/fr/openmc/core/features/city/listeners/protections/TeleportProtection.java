@@ -20,9 +20,8 @@ public class TeleportProtection implements Listener {
             PlayerTeleportEvent.TeleportCause.END_GATEWAY,
             PlayerTeleportEvent.TeleportCause.EXIT_BED
     );
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (event.isCancelled()) return;
         PlayerTeleportEvent.TeleportCause cause = event.getCause();
 
         if (illegalCauses.contains(cause)) return;

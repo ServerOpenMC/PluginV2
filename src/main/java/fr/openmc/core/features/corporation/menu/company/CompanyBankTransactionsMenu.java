@@ -1,6 +1,7 @@
 package fr.openmc.core.features.corporation.menu.company;
 
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -8,10 +9,8 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.data.TransactionData;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.items.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
+import fr.openmc.core.utils.api.ItemsAdderApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -102,8 +101,8 @@ public class CompanyBankTransactionsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_paginate_company_menu%");
+        if (ItemsAdderApi.hasItemAdder()) {
+            return FontImageWrapper.replaceFontImages("§r§f:offset_-11::paginate_company_menu:");
         } else {
             return "Transactions de l'entreprise";
         }

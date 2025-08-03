@@ -26,7 +26,7 @@ public class BossBarCommand {
     @DefaultFor("~")
     public void mainCommand(CommandSender sender) {
         if (!(sender instanceof Player player)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 

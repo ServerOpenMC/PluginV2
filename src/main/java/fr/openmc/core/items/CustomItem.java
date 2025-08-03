@@ -19,19 +19,19 @@ public abstract class CustomItem {
     }
 
     @Override
-    public boolean equals(Object anotherObject) {
-        if (anotherObject instanceof ItemStack anotherItem) {
+    public boolean equals(Object object) {
+        if (object instanceof ItemStack anotherItem) {
             CustomItem citem = CustomItemRegistry.getByItemStack(anotherItem);
 
             if (citem == null) return false;
             return citem.getName().equals(this.getName());
         }
 
-        if (anotherObject instanceof String name) {
-            return this.getName().equals(name);
+        if (object instanceof String otherObjectName) {
+            return this.getName().equals(otherObjectName);
         }
 
-        if (anotherObject instanceof CustomItem citem) {
+        if (object instanceof CustomItem citem) {
             return citem.getName().equals(this.getName());
         }
 

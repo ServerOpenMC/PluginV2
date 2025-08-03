@@ -30,7 +30,7 @@ public class MascotsInteractionListener implements Listener {
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
 
-        if (!MascotUtils.isMascot(clickEntity)) return;
+        if (!MascotUtils.canBeAMascot(clickEntity)) return;
 
         PersistentDataContainer data = clickEntity.getPersistentDataContainer();
         String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
@@ -39,7 +39,7 @@ public class MascotsInteractionListener implements Listener {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

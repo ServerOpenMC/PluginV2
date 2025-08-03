@@ -249,7 +249,7 @@ public class CityListMenu extends PaginatedMenu {
 	/**
 	 * Enum representing the sorting types for the city list.
 	 */
-	private enum SortType {
+	public enum SortType {
 		NAME,
 		WEALTH,
 		POPULATION,

@@ -9,8 +9,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.CityTransferAction;
-import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -70,7 +70,7 @@ public class CityTransferMenu extends PaginatedMenu {
                     ));
                 }).setOnClick(inventoryClickEvent -> {
                     if (!hasPermissionOwner) {
-                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
 

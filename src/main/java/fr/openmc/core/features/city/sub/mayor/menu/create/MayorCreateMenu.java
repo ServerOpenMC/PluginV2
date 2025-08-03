@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu.create;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -10,11 +11,9 @@ import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,8 +44,8 @@ public class MayorCreateMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        if (ItemsAdderApi.hasItemAdder()) {
+            return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
         } else {
             return "Menu des Maires - Creation";
         }
@@ -86,7 +85,6 @@ public class MayorCreateMenu extends Menu {
                         Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk1 = new ArrayList<>(perk1.getLore());
                 lorePerk1.add(Component.empty());
@@ -123,7 +121,6 @@ public class MayorCreateMenu extends Menu {
                         Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk2 = new ArrayList<>(perk2.getLore());
                 lorePerk2.add(Component.empty());
@@ -147,7 +144,6 @@ public class MayorCreateMenu extends Menu {
                         Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk3 = new ArrayList<>(perk3.getLore());
                 lorePerk3.add(Component.empty());
@@ -207,7 +203,6 @@ public class MayorCreateMenu extends Menu {
                         Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk2 = new ArrayList<>(perk2.getLore());
                 lorePerk2.add(Component.empty());

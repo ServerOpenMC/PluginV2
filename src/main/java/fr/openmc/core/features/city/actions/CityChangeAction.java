@@ -6,14 +6,17 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
-import fr.openmc.core.features.city.sub.mascots.MascotsLevels;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -22,6 +25,7 @@ import java.util.List;
 
 public class CityChangeAction {
     private static final long COOLDOWN_CHANGE_TYPE = 2 * 24 * 60 * 60 * 1000L; // 2 jours
+    private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:mascot_max_health");
 
     public static void beginChangeCity(Player player, CityType typeChange) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -61,7 +65,7 @@ public class CityChangeAction {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityTypeConditions.canCityChangeType(city, sender)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -101,7 +105,8 @@ public class CityChangeAction {
 
         try {
             double maxHealth = mascotsLevels.getHealth();
-            mob.setMaxHealth(maxHealth);
+            mob.getAttribute(Attribute.MAX_HEALTH).removeModifier(MAX_HEALTH_KEY);
+            mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
             if (mob.getHealth() >= lastHealth) {
                 mob.setHealth(maxHealth);
             }

@@ -69,7 +69,7 @@ public class PersonalBankDepositMenu extends Menu {
                 BankManager.addBankBalance(player.getUniqueId(), moneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.BANK, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.BANK, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -91,7 +91,7 @@ public class PersonalBankDepositMenu extends Menu {
                 BankManager.addBankBalance(player.getUniqueId(), halfMoneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.BANK, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.BANK, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
