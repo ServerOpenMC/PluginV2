@@ -1,10 +1,10 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.core.items.CustomItemRegistry;
+import lombok.Getter;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -13,7 +13,28 @@ import java.util.regex.Pattern;
 /**
  * Represents an icon used for homes, which can be either a vanilla Minecraft material or a custom item.
  */
-public record HomeIcon(String id, String displayName, IconType type, String materialOrCustomId) {
+@Getter
+public class HomeIcon {
+    private final String id;
+    private final String displayName;
+    private final IconType type;
+    private final String materialOrCustomId;
+
+    /**
+     * Constructs a new HomeIcon.
+     *
+     * @param id                 Unique identifier for the icon.
+     * @param displayName        Display name of the icon.
+     * @param type               Type of the icon (CUSTOM or VANILLA).
+     * @param materialOrCustomId Material name or custom ID for the icon.
+     */
+    public HomeIcon(String id, String displayName, IconType type, String materialOrCustomId) {
+        this.id = id;
+        this.displayName = displayName;
+        this.type = type;
+        this.materialOrCustomId = materialOrCustomId;
+    }
+
     /**
      * Creates a custom HomeIcon.
      *
@@ -124,7 +145,7 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
             String displayName = PlainTextComponentSerializer.plainText().serialize(getItemStack().displayName());
             return displayName.replaceAll("[\\[\\]]", "").trim();
         }
-        return this.displayName;
+        return getDisplayName();
     }
 
     /**
@@ -166,7 +187,7 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
      * @return A string with icon details.
      */
     @Override
-    public @NotNull String toString() {
+    public String toString() {
         return "HomeIcon{" +
                 "id='" + id + '\'' +
                 ", displayName='" + displayName + '\'' +

@@ -3,7 +3,6 @@ package fr.openmc.api.cooldown;
 import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
 public class CooldownStartEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
@@ -21,7 +20,7 @@ public class CooldownStartEvent extends Event {
     }
 
     @Override
-    public @NotNull HandlerList getHandlers() {
+    public HandlerList getHandlers() {
         return HANDLERS;
     }
 

@@ -94,7 +94,7 @@ public class JoinMessageListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(player.getUniqueId()));
+        QuestsManager.saveQuests(player.getUniqueId());
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {

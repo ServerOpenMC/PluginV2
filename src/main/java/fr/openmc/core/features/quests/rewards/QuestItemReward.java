@@ -1,11 +1,10 @@
 package fr.openmc.core.features.quests.rewards;
 
+import fr.openmc.core.features.adminshop.AdminShopManager;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Map;
 
 @Getter
 public class QuestItemReward implements QuestReward {
@@ -52,8 +51,11 @@ public class QuestItemReward implements QuestReward {
             ItemStack item = itemStack.clone();
             item.setAmount(stackAmount);
 
-            Map<Integer, ItemStack> leftOverItems = player.getInventory().addItem(item);
-            leftOverItems.forEach((index, stack) -> player.getWorld().dropItem(player.getLocation(), stack));
+            if (AdminShopManager.hasEnoughSpace(player, item)) {
+                player.getInventory().addItem(item);
+            } else {
+                player.getWorld().dropItem(player.getLocation(), item);
+            }
 
             remaining -= stackAmount;
         }

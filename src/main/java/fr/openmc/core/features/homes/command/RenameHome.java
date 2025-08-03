@@ -1,7 +1,7 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
+import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -18,6 +18,11 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class RenameHome {
+    private final HomesManager homesManager;
+    public RenameHome(HomesManager homesManager) {
+        this.homesManager = homesManager;
+    }
+
     @Command("renamehome")
     @Description("Renomme votre home")
     @CommandPermission("omc.commands.home.rename")
@@ -51,7 +56,7 @@ public class RenameHome {
                 }
 
                 MessagesManager.sendMessage(player, Component.text("§aLe home §e" + h.getName() + " §aa été renommé en §e" + newName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
-                HomesManager.renameHome(h, newName);
+                homesManager.renameHome(h, newName);
                 return;
             }
 
@@ -75,7 +80,7 @@ public class RenameHome {
                 return;
             }
             MessagesManager.sendMessage(player, Component.text("§aTon home §e" + h.getName() + " §aa été renommé en §e" + newName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
-            HomesManager.renameHome(h, newName);
+            homesManager.renameHome(h, newName);
             return;
         }
 

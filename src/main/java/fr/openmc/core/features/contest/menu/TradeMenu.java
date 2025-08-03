@@ -1,7 +1,6 @@
 package fr.openmc.core.features.contest.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -11,9 +10,11 @@ import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -35,8 +36,8 @@ public class TradeMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
         } else {
             return "Menu des Contests - Trades";
         }
@@ -141,7 +142,7 @@ public class TradeMenu extends Menu {
                                 if (remain2 != 0) {
                                     newshellContestItem.setAmount(remain2);
                                     List<ItemStack> itemlist = ItemUtils.splitAmountIntoStack(newshellContestItem);
-                                    ItemStack[] shellContestArray = itemlist.toArray(new ItemStack[0]);
+                                    ItemStack[] shellContestArray = itemlist.toArray(new ItemStack[itemlist.size()]);
                                     MailboxManager.sendItems(player, player, shellContestArray);
                                 }
                             }

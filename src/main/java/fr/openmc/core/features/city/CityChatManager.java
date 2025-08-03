@@ -18,7 +18,7 @@ public class CityChatManager {
 	/**
 	 * Liste des joueurs dans le chat de ville
 	 */
-	public static final List<Player> cityChatMembers = new ArrayList<>();
+	public static List<Player> cityChatMembers = new ArrayList<>();
 	
 	/**
 	 * Ajoute un joueur au chat de ville

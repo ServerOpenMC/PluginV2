@@ -3,8 +3,8 @@ package fr.openmc.core.commands.admin.freeze;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import io.papermc.paper.ban.BanListType;
 import net.kyori.adventure.text.Component;
+import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -35,7 +35,7 @@ public class FreezeListener implements Listener {
 				return;
 			}
 			Date banDuration = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30));
-			Bukkit.getBanList(BanListType.PROFILE).addBan(player.getPlayerProfile(), "Déconnexion en étant freeze !", banDuration, "Anti Déco Freeze");
+			Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(), "Déconnexion en étant freeze !", banDuration, "Anti Déco Freeze");
 			FreezeManager.FROZEN_PLAYERS.remove(player);
 		}
 	}
@@ -75,7 +75,7 @@ public class FreezeListener implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof Player player && FreezeManager.FROZEN_PLAYERS.contains(player)) {
+		if (entity instanceof Player && FreezeManager.FROZEN_PLAYERS.contains(((Player) entity).getPlayer())) {
 			event.setCancelled(true);
 		}
 	}

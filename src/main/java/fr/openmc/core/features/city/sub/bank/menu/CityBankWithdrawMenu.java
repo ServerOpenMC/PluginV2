@@ -73,7 +73,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawAll = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -105,7 +105,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawHalf = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -136,7 +136,7 @@ public class CityBankWithdrawMenu extends Menu {
             );
         } else {
             loreBankWithdrawInput = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 

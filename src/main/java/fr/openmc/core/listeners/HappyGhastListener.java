@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
 
 public class HappyGhastListener implements Listener {
-    private static final double DEFAULT_FLYING_SPEED = 0.05;
+    private final double DEFAULT_FLYING_SPEED = 0.05;
 
     @EventHandler(ignoreCancelled = true)
     public void onHappyGhastSpawn(EntitySpawnEvent event) {

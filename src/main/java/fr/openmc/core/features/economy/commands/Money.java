@@ -27,13 +27,13 @@ public class Money {
             MessagesManager.sendMessage(player, Component.text("§aVous avez §e" + EconomyManager.getFormattedBalance(player.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO,  true);
         } else {
             if(target == null) {
-                MessagesManager.sendMessage(sender, MessagesManager.Message.MISSING_ARGUMENT.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(sender, MessagesManager.Message.MISSINGARGUMENT.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
                 return;
             }
             if(!(sender instanceof Player player) || player.hasPermission("omc.admin.commands.money.others")) {
                 MessagesManager.sendMessage(sender, Component.text("§e" + target.getName() + "§a a §e" + EconomyManager.getFormattedBalance(target.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO, true);
             } else {
-                MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+                MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
             }
         }
     }

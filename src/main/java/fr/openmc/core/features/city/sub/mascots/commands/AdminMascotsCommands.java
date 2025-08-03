@@ -13,13 +13,15 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.sql.SQLException;
+
 @Command("admmascot")
 @CommandPermission("omc.admins.commands.adminmascot")
 public class AdminMascotsCommands {
 
     @Subcommand("remove")
     @CommandPermission("omc.admins.commands.adminmascot.remove")
-    public void forceRemoveMascots(Player sender, @Named("player") Player target) {
+    public void forceRemoveMascots(Player sender, @Named("player") Player target) throws SQLException {
         City city = CityManager.getPlayerCity(target.getUniqueId());
 
         if (city == null) {

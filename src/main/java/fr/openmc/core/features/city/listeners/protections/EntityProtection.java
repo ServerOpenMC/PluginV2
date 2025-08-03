@@ -12,17 +12,17 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.Merchant;
 
 public class EntityProtection implements Listener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
         ProtectionsManager.verify(event.getPlayer(), event, event.getRightClicked().getLocation());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     void onShear(PlayerShearEntityEvent event) {
         ProtectionsManager.verify(event.getPlayer(), event, event.getEntity().getLocation());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityInventoryOpen(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();

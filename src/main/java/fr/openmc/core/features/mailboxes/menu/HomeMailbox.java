@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
+
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.getCustomItem;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 
@@ -34,7 +36,7 @@ public class HomeMailbox extends MailboxInv {
         playersList.openInventory();
     }
 
-    public static void openSendingMailbox(Player player, OfflinePlayer receiver, OMCPlugin plugin) {
+    public static void openSendingMailbox(Player player, OfflinePlayer receiver, OMCPlugin plugin) throws SQLException {
         SendingLetter sendingLetter = new SendingLetter(player, receiver, plugin);
         sendingLetter.openInventory();
     }

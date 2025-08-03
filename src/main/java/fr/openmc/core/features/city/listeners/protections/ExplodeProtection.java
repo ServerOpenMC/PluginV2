@@ -37,7 +37,7 @@ public class ExplodeProtection implements Listener {
             EntityType.DRAGON_FIREBALL
     );
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
         Entity entity = event.getEntity();
 
@@ -55,7 +55,7 @@ public class ExplodeProtection implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
         event.blockList().removeIf(block -> {
             City blockCity = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
@@ -64,7 +64,7 @@ public class ExplodeProtection implements Listener {
         });
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onEntityChangeBlock(EntityChangeBlockEvent event) {
         Entity entity = event.getEntity();
 
@@ -84,7 +84,7 @@ public class ExplodeProtection implements Listener {
             City blockCity = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
             if (blockCity == null) return false;
 
-            if (blockCity.equals(playerCity) || blockCity.isMember(player)) {
+            if ((playerCity != null && blockCity.equals(playerCity)) || blockCity.isMember(player)) {
                 return false;
             }
 

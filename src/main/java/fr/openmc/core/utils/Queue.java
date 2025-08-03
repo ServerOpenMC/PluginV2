@@ -11,7 +11,7 @@ public class Queue<K, V> {
     private final LinkedHashMap<K, V> queue;
 
     public Queue(int size) {
-        this.queue = new LinkedHashMap<>() {
+        this.queue = new LinkedHashMap<K, V>() {
             @Override
             protected boolean removeEldestEntry(final Map.Entry eldest) {
                 return size() > size;

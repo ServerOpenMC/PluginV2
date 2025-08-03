@@ -39,7 +39,7 @@ public class BankManager {
 
     private static Dao<Bank, String> banksDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Bank.class);
         banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
@@ -84,7 +84,7 @@ public class BankManager {
                                 + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"),
                         Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(),
+                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(),
                         Prefix.BANK, MessageType.ERROR, false);
             }
         } else {

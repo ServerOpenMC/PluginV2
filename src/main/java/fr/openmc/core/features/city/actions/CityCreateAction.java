@@ -12,10 +12,10 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.WorldGuardApi;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -37,7 +37,7 @@ import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE
 
 public class CityCreateAction {
 
-    public static final long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L;
+    public static long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L;
 
     private static final Map<UUID, String> pendingCities = new HashMap<>();
 
@@ -100,7 +100,7 @@ public class CityCreateAction {
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
         Chunk chunk = mascotLocation.getChunk();
 
-        // on le refait pour voir si le nb d'item n'a pas changé, d'argent, si le mec n'a pas rej une ville
+        // on le refait pour voir si le nb d'item n'a pas changé, d'argent, si le mec na pas rej une ville
         if (!CityCreateConditions.canCityCreate(player, pendingCityName)) return;
 
         if (WorldGuardApi.doesChunkContainWGRegion(chunk)) {

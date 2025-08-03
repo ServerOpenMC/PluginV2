@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class CustomItemRegistry {
-    static final HashMap<String, CustomItem> items = new HashMap<>();
-    static final NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
+    static HashMap<String, CustomItem> items = new HashMap<>();
+    static NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
 
     public CustomItemRegistry() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());

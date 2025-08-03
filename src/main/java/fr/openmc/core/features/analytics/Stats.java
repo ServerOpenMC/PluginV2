@@ -7,7 +7,7 @@ public enum Stats {
     TOTAL_TRANSACTIONS("total_transactions"),
     ;
 
-    private final String scope;
+    private String scope;
 
     Stats(String scope) {
         this.scope = scope;

@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -36,7 +35,7 @@ public class Chronometer{
         }
 
         @Override
-        public @NotNull HandlerList getHandlers() {
+        public HandlerList getHandlers() {
             return HANDLERS;
         }
     }

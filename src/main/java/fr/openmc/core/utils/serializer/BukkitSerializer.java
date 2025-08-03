@@ -11,7 +11,6 @@ import java.io.IOException;
 
 public class BukkitSerializer {
     public static byte[] serializeItemStacks(ItemStack[] inv) throws IOException {
-        // TODO: Replace by ItemStack.serializeItemsAsBytes(inv)
         @Cleanup ByteArrayOutputStream os = new ByteArrayOutputStream();
         @Cleanup BukkitObjectOutputStream bos = new BukkitObjectOutputStream(os);
         bos.writeObject(inv);
@@ -19,7 +18,6 @@ public class BukkitSerializer {
     }
 
     public static ItemStack[] deserializeItemStacks(byte[] b) throws Exception {
-        // TODO: Replace by ItemStack.deserializeItemsFromBytes(b)
         @Cleanup ByteArrayInputStream bais = new ByteArrayInputStream(b);
         @Cleanup BukkitObjectInputStream bois = new BukkitObjectInputStream(bais);
         return (ItemStack[]) bois.readObject();

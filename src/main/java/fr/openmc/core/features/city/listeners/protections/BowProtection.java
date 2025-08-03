@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class BowProtection implements Listener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     void onLaunchProjectile(PlayerLaunchProjectileEvent event) {
         ProtectionsManager.verify(event.getPlayer(), event, event.getPlayer().getLocation());
     }
@@ -17,7 +17,6 @@ public class BowProtection implements Listener {
     @EventHandler
     public void onEntityShootBow(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-        if (event.getConsumable() == null) return;
         
         ProtectionsManager.verify(player, event, event.getEntity().getLocation());
 

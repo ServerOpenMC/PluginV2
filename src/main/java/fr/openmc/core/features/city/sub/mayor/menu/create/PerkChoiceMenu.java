@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.sub.mayor.menu.create;
 
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -9,11 +8,13 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.perks.PerkType;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -123,8 +124,8 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
         } else {
             return "Menu des Maires - Reformes";
         }

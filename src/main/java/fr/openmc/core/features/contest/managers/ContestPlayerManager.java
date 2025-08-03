@@ -145,8 +145,10 @@ public class ContestPlayerManager  {
         if (points1 > points2 && playerCamp == 1) {
             return true;
         }
-
-        return points2 > points1 && playerCamp == 2;
+        if (points2 > points1 && playerCamp == 2) {
+            return true;
+        }
+        return false;
     }
 
     /**

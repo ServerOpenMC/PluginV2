@@ -94,6 +94,7 @@ public class Company {
     public Company(UUID id, String name, UUID player, String city, double cut, double balance) {
         this.name = name;
         this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city));
+        assert id != null;
         this.company_uuid = id;
         this.cut = cut;
         this.balance = balance;

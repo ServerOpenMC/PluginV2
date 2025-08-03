@@ -10,6 +10,10 @@ import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -25,9 +29,14 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Set;
+import java.util.UUID;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 
 public class MailboxListener implements Listener {
     private final OMCPlugin plugin = OMCPlugin.getInstance();
@@ -74,13 +83,13 @@ public class MailboxListener implements Listener {
 
     @EventHandler
     public void onInventoryOpen(InventoryCloseEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder(false);
+        InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof MailboxInv mailboxInv) mailboxInv.addInventory();
     }
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
-        InventoryHolder holder = event.getInventory().getHolder(false);
+        InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof SendingLetter sendingLetter) sendingLetter.giveItems();
         if (holder instanceof MailboxInv mailboxInv) mailboxInv.removeInventory();
     }
@@ -95,7 +104,7 @@ public class MailboxListener implements Listener {
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
         Inventory inv = event.getView().getTopInventory();
-        InventoryHolder holder = inv.getHolder(false);
+        InventoryHolder holder = inv.getHolder();
         Set<Integer> slots = event.getRawSlots();
 
         if (holder instanceof SendingLetter) {
@@ -118,28 +127,22 @@ public class MailboxListener implements Listener {
     private void runTask(Runnable runnable) {
         plugin.getServer().getScheduler().runTask(plugin, runnable);
     }
-
+    
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         Inventory inv = event.getView().getTopInventory();
-        InventoryHolder holder = inv.getHolder(false);
+        InventoryHolder holder = inv.getHolder();
         ItemStack item = event.getCurrentItem();
         Player player = (Player) event.getWhoClicked();
         int slot = event.getRawSlot();
         int row = slot / 9;
 
         if (slot >= inv.getSize()) {
-            if (!event.isShiftClick())
-                return;
-
-            if (holder instanceof SendingLetter sendingLetter) {
-                if (sendingLetter.noSpace(item)) {
-                    event.setCancelled(true);
-                }
-            } else if (holder instanceof MailboxInv) {
-                event.setCancelled(true);
+            if (event.isShiftClick()) {
+                if (holder instanceof SendingLetter sendingLetter) {
+                    if (sendingLetter.noSpace(item)) event.setCancelled(true);
+                } else if (holder instanceof MailboxInv) event.setCancelled(true);
             }
-
             return;
         }
 
@@ -147,8 +150,7 @@ public class MailboxListener implements Listener {
             if (row < 1 || row > 3) {
                 event.setCancelled(true);
             }
-        } else if (holder instanceof MailboxInv)
-            event.setCancelled(true);
+        } else if (holder instanceof MailboxInv) event.setCancelled(true);
 
         //! Buttons actions
         if (cancelBtn(item) && holder instanceof MailboxInv) {
@@ -167,53 +169,45 @@ public class MailboxListener implements Listener {
             }
         }
 
-        switch (holder) {
-            case SendingLetter sendingLetter when sendBtn(item) -> {
-                runTask(sendingLetter::sendLetter);
-            }
-
-            case PlayerMailbox playerMailbox when item != null && item.getType() == Material.PLAYER_HEAD -> {
+        if (holder instanceof SendingLetter sendingLetter) {
+            if (sendBtn(item)) runTask(sendingLetter::sendLetter);
+        } else if (holder instanceof PlayerMailbox playerMailbox) {
+            if (item != null && item.getType() == Material.PLAYER_HEAD) {
                 LetterHead letterHead = playerMailbox.getByIndex(slot);
-                if (letterHead == null)
-                    return;
-
+                if (letterHead == null) return;
                 runTask(() -> letterHead.openLetter(player));
             }
-
-            case LetterMenu letterMenu -> {
-                if (acceptBtn(item)) {
-                    runTask(letterMenu::accept);
-                } else if (refuseBtn(item)) {
-                    runTask(letterMenu::refuse);
-                }
+        } else if (holder instanceof LetterMenu letter) {
+            if (acceptBtn(item)) {
+                runTask(letter::accept);
+            } else if (refuseBtn(item)) {
+                runTask(letter::refuse);
             }
-
-            case HomeMailbox ignored -> {
-                if (slot == 3) {
-                    runTask(() -> HomeMailbox.openPendingMailbox(player));
-                } else if (slot == 4) {
-                    runTask(() -> HomeMailbox.openPlayerMailbox(player));
-                } else if (slot == 5) {
-                    runTask(() -> HomeMailbox.openPlayersList(player));
-                }
+        } else if (holder instanceof HomeMailbox) {
+            if (slot == 3) {
+                runTask(() -> HomeMailbox.openPendingMailbox(player));
+            } else if (slot == 4) {
+                runTask(() -> HomeMailbox.openPlayerMailbox(player));
+            } else if (slot == 5) {
+                runTask(() -> HomeMailbox.openPlayersList(player));
             }
-
-            case PendingMailbox pendingMailbox when item != null && item.getType() == Material.PLAYER_HEAD -> {
+        } else if (holder instanceof PendingMailbox pendingMailbox) {
+            if (item != null && item.getType() == Material.PLAYER_HEAD) {
                 runTask(() -> pendingMailbox.clickLetter(slot));
             }
-
-            case PlayersList ignored when item != null && item.getType() == Material.PLAYER_HEAD -> {
+        } else if (holder instanceof PlayersList) {
+            if (item != null && item.getType() == Material.PLAYER_HEAD) {
                 SkullMeta meta = (SkullMeta) item.getItemMeta();
                 OfflinePlayer receiver = meta.getOwningPlayer();
-                if (receiver == null)
-                    return;
-
+                if (receiver == null) return;
                 runTask(() -> {
-                    HomeMailbox.openSendingMailbox(player, receiver, OMCPlugin.getInstance());
+	                try {
+		                HomeMailbox.openSendingMailbox(player, receiver, OMCPlugin.getInstance());
+	                } catch (SQLException e) {
+		                e.printStackTrace();
+	                }
                 });
             }
-
-            case null, default -> {}
         }
     }
 }

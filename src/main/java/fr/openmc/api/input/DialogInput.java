@@ -12,10 +12,10 @@ import net.kyori.adventure.text.event.ClickCallback;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-@SuppressWarnings("UnstableApiUsage")
 public class DialogInput {
 
     public static void send(Player player, Component lore, int maxLength, Consumer<String> callback) {
@@ -27,7 +27,7 @@ public class DialogInput {
         Dialog inputDialog = Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Component.text("Rentrer du Texte"))
                         .body(body)
-                        .inputs(List.of(
+                        .inputs(Arrays.asList(
                                         io.papermc.paper.registry.data.dialog.input.DialogInput
                                                 .text("inputtextomc",
                                                         Component.text("Rentrer du texte ici")

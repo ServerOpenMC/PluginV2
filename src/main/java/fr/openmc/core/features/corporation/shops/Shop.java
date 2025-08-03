@@ -2,6 +2,7 @@ package fr.openmc.core.features.corporation.shops;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.corporation.manager.ShopBlocksManager;
@@ -64,13 +65,13 @@ public class Shop {
             return;
         }
 
-        Block stockBlock = multiblock.stockBlock().getBlock();
+        Block stockBlock = multiblock.getStockBlock().getBlock();
         if (stockBlock.getType() != Material.BARREL) {
             ShopBlocksManager.removeShop(shop);
             return;
         }
 
-        if (stockBlock.getState(false) instanceof Barrel barrel) {
+        if (stockBlock.getState() instanceof Barrel barrel) {
 
             Inventory inventory = barrel.getInventory();
             for (ItemStack item : inventory.getContents()) {
@@ -177,7 +178,14 @@ public class Shop {
      */
     public void removeItem(ShopItem item) {
         items.remove(item);
-        suppliers.entrySet().removeIf(entry -> entry.getValue().getItemId().equals(item.getItemID()));
+
+        Iterator<Map.Entry<Long, Supply>> iterator = suppliers.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Long, Supply> entry = iterator.next();
+            if (entry.getValue().getItemId().equals(item.getItemID())) {
+                iterator.remove();
+            }
+        }
     }
 
     public int recoverItemOf(ShopItem item, Player supplier) {
@@ -441,7 +449,15 @@ public class Shop {
         return shop.getUuid();
     }
 
-    public record Multiblock(Location stockBlock, Location cashBlock) {
+    @Getter
+    public static class Multiblock {
 
+        private final Location stockBlock;
+        private final Location cashBlock;
+
+        public Multiblock(Location stockBlock, Location cashBlock) {
+            this.stockBlock = stockBlock;
+            this.cashBlock = cashBlock;
+        }
     }
 }

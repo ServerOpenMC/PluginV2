@@ -22,13 +22,13 @@ Le système de quêtes permet d'implémenter des objectifs pour les joueurs dans
 
 Le système est composé des éléments suivants :
 
-| Composant           | Description                                                                             |
-|---------------------|-----------------------------------------------------------------------------------------|
-| **Quête**           | Objet principal qui contient un nom, une description, une icône et une liste de paliers |
-| **Palier de Quête** | Niveau de progression avec un objectif et des récompenses                               |
-| **Étape de Quête**  | Sous-objectifs optionnels au sein d'un palier                                           |
-| **Récompenses**     | Objets ou argent attribués lorsqu'un palier est complété                                |
-| **Progression**     | Système de suivi et sauvegarde de l'avancement des joueurs                              |
+| Composant | Description |
+|-----------|-------------|
+| **Quête** | Objet principal qui contient un nom, une description, une icône et une liste de paliers |
+| **Palier de Quête** | Niveau de progression avec un objectif et des récompenses |
+| **Étape de Quête** | Sous-objectifs optionnels au sein d'un palier |
+| **Récompenses** | Objets ou argent attribués lorsqu'un palier est complété |
+| **Progression** | Système de suivi et sauvegarde de l'avancement des joueurs |
 
 ## Guide d'implémentation
 

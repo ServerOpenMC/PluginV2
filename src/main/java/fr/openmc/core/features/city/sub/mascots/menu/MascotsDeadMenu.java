@@ -9,6 +9,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.menu.CityMenu;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -75,7 +76,7 @@ public class MascotsDeadMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 City city = CityManager.getCity(city_uuid);
                 if (city == null) {
-                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                     player.closeInventory();
                     return;
                 }

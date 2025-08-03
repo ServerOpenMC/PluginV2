@@ -1,17 +1,19 @@
 package fr.openmc.core.features.economy;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -25,13 +27,13 @@ public class EconomyManager {
 
     private static Dao<EconomyPlayer, String> playersDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, EconomyPlayer.class);
         playersDao = DaoManager.createDao(connectionSource, EconomyPlayer.class);
     }
 
-    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
-    private static final NavigableMap<Long, String> suffixes = new TreeMap<>(Map.of(
+    private static DecimalFormat decimalFormat = new DecimalFormat("#.##");;
+    private static NavigableMap<Long, String> suffixes = new TreeMap<>(Map.of(
             1_000L, "k",
             1_000_000L, "M",
             1_000_000_000L, "B",
@@ -151,10 +153,10 @@ public class EconomyManager {
     }
 
     public static String getEconomyIcon() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return "§f:aywenito:";
-        } else {
-            return "Ⓐ";
+        if (Bukkit.getPluginManager().getPlugin("ItemsAdder") != null
+                && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            return "§f" + PlaceholderAPI.setPlaceholders(null, "%img_aywenito%");
         }
+        return "Ⓐ";
     }
 }

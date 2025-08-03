@@ -20,12 +20,12 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class WarManager {
-    public static final int TIME_PREPARATION = 5; // in minutes
-    public static final int TIME_FIGHT = 30; // in minutes
+    public static int TIME_PREPARATION = 5; // in minutes
+    public static int TIME_FIGHT = 30; // in minutes
 
-    public static final long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
-    public static final long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
-    public static final long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
+    public static long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
+    public static long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
+    public static long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
 
     public static final Map<String, War> warsByAttacker = new HashMap<>();
     public static final Map<String, War> warsByDefender = new HashMap<>();
@@ -59,7 +59,6 @@ public class WarManager {
 
     /**
      * Retrieves the war associated with a given city UUID.
-     *
      * @param cityUUID The UUID of the city.
      * @return The War object if found, null otherwise.
      */
@@ -68,12 +67,13 @@ public class WarManager {
         if (war != null) return war;
 
         war = warsByDefender.get(cityUUID);
-        return war;
+        if (war != null) return war;
+
+        return null;
     }
 
     /**
      * Starts a war between two cities.
-     *
      * @param attacker The city that is attacking.
      * @param defender The city that is defending.
      * @param attackers The list of UUIDs of the players in the attacking city.
@@ -94,9 +94,9 @@ public class WarManager {
      * @param war The War object representing the war to be ended.
      */
     public static void endWar(War war) {
-        War warRemoved = warsByAttacker.remove(war.getCityAttacker().getUUID());
-        if (warRemoved == null)
-            warRemoved = warsByDefender.remove(war.getCityDefender().getUUID());
+        War warRemoved;
+        warRemoved = warsByAttacker.remove(war.getCityAttacker().getUUID());
+        warRemoved = warsByDefender.remove(war.getCityDefender().getUUID());
 
         if (warRemoved == null) return;
 
@@ -213,16 +213,16 @@ public class WarManager {
 
         if (reason == WinReason.DRAW) {
             String message = String.format("""
-                            §8§m                                                     §r
-                            §7
-                            §c§lGUERRE!§r §7C'est la fin des combats!§7
-                            §8§oIl y a eu égalité !
-                            §7
-                            §7Statistiques globales:
-                            §7 - §cKills de %s : §f%d
-                            §7 - §9Kills de %s : §f%d
-                            §7
-                                    §8§m                                                     §r""",
+                    §8§m                                                     §r
+                    §7
+                    §c§lGUERRE!§r §7C'est la fin des combats!§7
+                    §8§oIl y a eu égalité !
+                    §7
+                    §7Statistiques globales:
+                    §7 - §cKills de %s : §f%d
+                    §7 - §9Kills de %s : §f%d
+                    §7
+                            §8§m                                                     §r""",
                     war.getCityAttacker().getName(), killsWinner, war.getCityDefender().getName(), killsLoser);
 
 
@@ -407,7 +407,7 @@ public class WarManager {
             }
             if (!borderChunks.isEmpty()) {
                 Collections.shuffle(borderChunks);
-                ChunkPos seed = borderChunks.getFirst();
+                ChunkPos seed = borderChunks.get(0);
 
                 loser.removeChunk(seed.x(), seed.z());
                 winner.addChunk(seed.x(), seed.z());

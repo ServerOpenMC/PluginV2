@@ -8,9 +8,9 @@ import org.bukkit.Location;
 public class MayorNPC {
 
     @Getter
-    private final Npc npc;
+    private Npc npc;
     @Getter
-    private final String cityUUID;
+    private String cityUUID;
     @Getter
     @Setter
     private Location location;

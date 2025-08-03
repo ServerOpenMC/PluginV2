@@ -35,11 +35,11 @@ import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 @Command({"ville", "city"})
 public class CityCommands {
-    public static final HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
+    public static HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
     public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     @DefaultFor("~")
-    public static void mainCommand(Player player) {
+    public static void main(Player player) {
         if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:chest")) {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());
                 if (playerCity == null) {
@@ -61,7 +61,7 @@ public class CityCommands {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -180,7 +180,7 @@ public class CityCommands {
         City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityManageConditions.canCityTransfer(playerCity, sender, player.getUniqueId())) return;
-
+      
         if (playerCity == null) return;
 
         CityTransferAction.transfer(sender, playerCity, player);

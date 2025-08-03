@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MainWarMenu extends PaginatedMenu {
 
@@ -67,7 +68,7 @@ public class MainWarMenu extends PaginatedMenu {
 
             List<City> warCities = CityManager.getCities().stream()
                     .sorted((c1, c2) -> Integer.compare(c2.getOnlineMembers().size(), c1.getOnlineMembers().size()))
-                    .toList();
+                    .collect(Collectors.toList());
 
             for (City city : warCities) {
                 if (Objects.equals(city.getUUID(), CityManager.getPlayerCity(player.getUniqueId()).getUUID())) continue;

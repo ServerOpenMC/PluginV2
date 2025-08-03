@@ -1,8 +1,10 @@
 package fr.openmc.core.features.city.listeners.protections;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.ProtectionsManager;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -11,8 +13,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BlockProtection implements Listener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlaceBlock(BlockPlaceEvent event) {
+        if (event.isCancelled()) return;
+        
         City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
         if (city == null) return;
         
@@ -25,8 +29,9 @@ public class BlockProtection implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     void onBlockBreak(BlockBreakEvent event) {
+        if (event.isCancelled()) return;
         City city = CityManager.getCityFromChunk(event.getBlock().getLocation().getChunk().getX(), event.getBlock().getLocation().getChunk().getZ());
         if (city == null) return;
         

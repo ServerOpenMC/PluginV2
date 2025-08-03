@@ -21,6 +21,7 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -100,6 +101,7 @@ public class AdminCityCommands {
                         : Component.text("      "));
 
         player.sendMessage(nav);
+        return;
     }
 
     @Subcommand("info")
@@ -122,7 +124,7 @@ public class AdminCityCommands {
         // Aucune vérification de nom, mais il faut espérer que le nom est valide
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
         city.rename(newName);
@@ -136,7 +138,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -148,7 +150,7 @@ public class AdminCityCommands {
     void setBalance(Player player, @Named("uuid") String cityUUID, @Named("balance") double newBalance) {
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -161,7 +163,7 @@ public class AdminCityCommands {
     void getBalance(Player player, String cityUUID) {
         City city = CityManager.getCity(cityUUID);
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -174,7 +176,7 @@ public class AdminCityCommands {
         City city = CityManager.getCity(cityUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.CITYNOTFOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -221,7 +223,13 @@ public class AdminCityCommands {
     @CommandPermission("omc.admins.commands.admincity.claim.bypass")
     public void bypass(Player player) {
         UUID uuid = player.getUniqueId();
-        boolean canBypass = ProtectionsManager.canBypassPlayer.contains(uuid);
+        Boolean canBypass = ProtectionsManager.canBypassPlayer.contains(uuid);
+
+        if (canBypass == null) {
+            ProtectionsManager.canBypassPlayer.add(uuid);
+            MessagesManager.sendMessage(player, Component.text("Vous pouvez bypass les claims"), Prefix.STAFF, MessageType.SUCCESS, false);
+            return;
+        }
 
         if (canBypass) {
             ProtectionsManager.canBypassPlayer.remove(uuid);
@@ -270,12 +278,11 @@ public class AdminCityCommands {
 
     @Subcommand("mascots remove")
     @CommandPermission("omc.admins.commands.admcity.mascots.remove")
-    public void forceRemoveMascots (Player sender, @Named("player") Player target) {
+    public void forceRemoveMascots (Player sender, @Named("player") Player target) throws SQLException {
         City city = CityManager.getPlayerCity(target.getUniqueId());
 
         if (city == null) {
             MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
-            return;
         }
 
         MascotsManager.removeMascotsFromCity(city);

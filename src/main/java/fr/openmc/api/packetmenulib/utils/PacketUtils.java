@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PacketUtils {
 
-    private static final ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+    private static ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
     public static void sendOpenInventoryPacket(Player player, int containerId, MenuType<?> type, net.kyori.adventure.text.Component title) {
         try {

@@ -3,16 +3,22 @@ package fr.openmc.core.utils;
 import fr.openmc.core.OMCPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.junit.jupiter.api.*;
-import org.mockbukkit.mockbukkit.MockBukkit;
-import org.mockbukkit.mockbukkit.ServerMock;
 
-class MotdUtilsTest {
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.MockBukkit;
+
+public class MotdUtilsTest {
 
     private ServerMock server;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         server = MockBukkit.mock();
 
         server.addSimpleWorld("world");
@@ -21,7 +27,7 @@ class MotdUtilsTest {
     }
 
     @AfterEach
-    void tearDown() {
+    public void tearDown() {
         MockBukkit.unmock();
     }
 
@@ -31,7 +37,7 @@ class MotdUtilsTest {
 
     @Test
     @DisplayName("MOTD switch")
-    void testMOTD() {
+    public void testMOTD() {
         String motd = getComponentContent(server.motd());
 
         new MotdUtils();

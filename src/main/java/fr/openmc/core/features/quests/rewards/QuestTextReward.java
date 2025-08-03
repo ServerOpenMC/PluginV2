@@ -4,6 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,7 +14,24 @@ import org.bukkit.entity.Player;
  * <p>
  * This class implements the QuestReward interface and provides functionality to give a specified amount of money to a player.
  */
-public record QuestTextReward(String text, Prefix prefix, MessageType messageType) implements QuestReward {
+@Getter
+public class QuestTextReward implements QuestReward {
+
+    private final String text;
+    private final Prefix prefix;
+    private final MessageType messageType;
+
+    /**
+     * Constructor for the QuestTextReward class.
+     *
+     * @param text The text to be sended.
+     */
+    public QuestTextReward(String text, Prefix prefix, MessageType messageType) {
+        this.text = text;
+        this.prefix = prefix;
+        this.messageType = messageType;
+    }
+
     /**
      * Gives the specified amount of money to the player.
      *

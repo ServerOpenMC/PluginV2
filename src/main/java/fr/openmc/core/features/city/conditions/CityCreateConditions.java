@@ -3,9 +3,9 @@ package fr.openmc.core.features.city.conditions;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.ItemUtils;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -21,8 +21,8 @@ import java.util.Objects;
  */
 public class CityCreateConditions {
 
-    public static final double MONEY_CREATE = 3500.0;
-    public static final int AYWENITE_CREATE = 30;
+    public static double MONEY_CREATE = 3500.0;
+    public static int AYWENITE_CREATE = 30;
 
     /**
      * Retourne un booleen pour dire si le joueur peut faire une ville
@@ -37,7 +37,7 @@ public class CityCreateConditions {
         }
 
         if (CityManager.getPlayerCity(player.getUniqueId()) != null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_IN_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERINCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

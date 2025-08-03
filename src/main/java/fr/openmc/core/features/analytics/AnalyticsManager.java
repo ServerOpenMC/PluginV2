@@ -1,22 +1,24 @@
 package fr.openmc.core.features.analytics;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.analytics.models.Statistic;
-import org.bukkit.Bukkit;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+
 public class AnalyticsManager {
     static Dao<Statistic, String> statsDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+    public static void init_db(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Statistic.class);
         statsDao = DaoManager.createDao(connectionSource, Statistic.class);
     }
@@ -42,10 +44,10 @@ public class AnalyticsManager {
             QueryBuilder<Statistic, String> query = statsDao.queryBuilder();
             query.where().eq("player", player).or().eq("scope", scope);
             List<Statistic> stats = statsDao.query(query.prepare());
-            if (stats.isEmpty())
+            if (stats.size() == 0)
                 return 0;
 
-            return stats.getFirst().getValue();
+            return stats.get(0).getValue();
         } catch (SQLException e) {
             e.printStackTrace();
             return defaultValue;
@@ -75,7 +77,7 @@ public class AnalyticsManager {
                     return;
                 statsDao.delete(stats);
 
-                Statistic statistic = new Statistic(player, scope, stats.getFirst().getValue() + value);
+                Statistic statistic = new Statistic(player, scope, stats.get(0).getValue() + value);
                 statsDao.create(statistic);
             } catch (SQLException e) {
                 e.printStackTrace();

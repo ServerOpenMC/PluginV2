@@ -20,12 +20,12 @@ import org.bukkit.util.Vector;
 // Les Restes du Cube. Aucun mouvement possible, juste pour le lore, les souvenirs, l'easter egg, bref :)
 // - iambibi_
 public class CubeListener implements Listener {
-    private final OMCPlugin plugin;
+    private OMCPlugin plugin;
     private static final int CUBE_SIZE = 5;
     private static final Material CUBE_MATERIAL = Material.LAPIS_BLOCK;
-    private final BossBar bossBar;
-    static final double currentX = -171.0;
-    static final double currentZ = -117.0;
+    private BossBar bossBar;
+    static double currentX = -171.0;
+    static double currentZ = -117.0;
     public static Location currentLocation;
 
 
@@ -50,9 +50,9 @@ public class CubeListener implements Listener {
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (player.getWorld().equals(currentLocation.getWorld())) {
-                        double distance = player.getLocation().distanceSquared(currentLocation);
+                        double distance = player.getLocation().distance(currentLocation);
 
-                        if (distance <= 50 * 50) { // 50 blocks radius but squared for performance
+                        if (distance <= 50) {
                             if (!bossBar.getPlayers().contains(player)) {
                                 bossBar.addPlayer(player);
                             }
@@ -85,7 +85,7 @@ public class CubeListener implements Listener {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            this.plugin.getLogger().severe("Failed to create the cube at " + location);
+            Bukkit.getLogger().severe("Failed to create the cube at " + location);
         }
     }
 

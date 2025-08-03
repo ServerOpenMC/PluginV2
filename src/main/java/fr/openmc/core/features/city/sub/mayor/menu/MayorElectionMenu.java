@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
-import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -19,9 +18,11 @@ import fr.openmc.core.features.city.sub.mayor.menu.create.MenuType;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -45,8 +46,8 @@ public class MayorElectionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
+        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
+            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
         } else {
             return "Menu des Elections";
         }
@@ -158,7 +159,12 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
                 if (!MayorManager.hasChoicePerkOwner(player)) {
-                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new MayorCreateMenu(player, null, null, null, MenuType.OWNER_1).open());
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), new Runnable() {
+                        @Override
+                        public void run() {
+                            new MayorCreateMenu(player, null, null, null, MenuType.OWNER_1).open();
+                        }
+                    });
                 }
             }));
         }

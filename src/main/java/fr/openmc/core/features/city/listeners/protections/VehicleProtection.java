@@ -17,7 +17,7 @@ public class VehicleProtection implements Listener {
     public void onVehicleDestroy(VehicleDestroyEvent event) {
         if (!(event.getAttacker() instanceof Player player)) return;
 
-        if (MascotUtils.canBeAMascot(event.getVehicle())) return;
+        if (MascotUtils.isMascot(event.getVehicle())) return;
 
         ProtectionsManager.verify(player, event, event.getVehicle().getLocation());
     }
@@ -28,7 +28,7 @@ public class VehicleProtection implements Listener {
         if (!(victim instanceof Vehicle)) return;
 
         // Ignore les mascottes
-        if (MascotUtils.canBeAMascot(victim)) return;
+        if (MascotUtils.isMascot(victim)) return;
 
         Entity damager = event.getDamager();
         Player player = null;

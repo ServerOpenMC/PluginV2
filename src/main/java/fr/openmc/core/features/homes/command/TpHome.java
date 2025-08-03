@@ -1,9 +1,9 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.menu.HomeMenu;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -21,6 +21,12 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class TpHome {
+
+    private final HomesManager homesManager;
+    public TpHome(HomesManager homesManager) {
+        this.homesManager = homesManager;
+    }
+
     @Command("home")
     @Description("Se téléporter à un home")
     @CommandPermission("omc.commands.home.teleport")

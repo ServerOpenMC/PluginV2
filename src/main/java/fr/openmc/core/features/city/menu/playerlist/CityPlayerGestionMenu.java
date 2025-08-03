@@ -83,7 +83,7 @@ public class CityPlayerGestionMenu extends Menu {
             }
         } else {
             loreKick = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -91,20 +91,21 @@ public class CityPlayerGestionMenu extends Menu {
             itemMeta.itemName(Component.text("§cExpulser " + playerTarget.getName()));
             itemMeta.lore(loreKick);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget))
+            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget)) {
                 return;
+            } else {
+                ConfirmMenu menu = new ConfirmMenu(
+                        player,
+                        () -> {
+                            player.closeInventory();
+                            CityKickAction.startKick(player, playerTarget);
+                        },
+                        () -> player.closeInventory(),
+                        List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
+                        List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
+                menu.open();
 
-            ConfirmMenu menu = new ConfirmMenu(
-                    player,
-                    () -> {
-                        player.closeInventory();
-                        CityKickAction.startKick(player, playerTarget);
-                    },
-                    player::closeInventory,
-                    List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
-                    List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
-            menu.open();
-
+            }
         }));
 
 
@@ -126,7 +127,7 @@ public class CityPlayerGestionMenu extends Menu {
             );
         } else {
             lorePermission = List.of(
-                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
+                    MessagesManager.Message.NOPERMISSION2.getMessage()
             );
         }
 
@@ -144,7 +145,7 @@ public class CityPlayerGestionMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
