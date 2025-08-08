@@ -1,8 +1,9 @@
 package fr.openmc.api.menulib.utils;
 
-import lombok.Getter;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The StaticSlots class provides predefined static lists of integers representing
@@ -27,8 +28,8 @@ public class StaticSlots {
 		BOTTOM,
 		RIGHT,
 		LEFT,
-		STANDARD;
-	}
+		STANDARD
+    }
 
 	public static List<Integer> getTopSlots(InventorySize size) {
 		List<Integer> top = new ArrayList<>();
@@ -95,7 +96,6 @@ public class StaticSlots {
 			case Type.LEFT -> getLeftSlots(size);
 			case Type.RIGHT -> getRightSlots(size);
 			case Type.STANDARD -> getStandardSlots(size);
-			default -> List.of(); // NONE
 		};
 	}
 

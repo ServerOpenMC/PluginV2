@@ -1,5 +1,6 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -7,7 +8,7 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
+import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,7 +42,7 @@ public class ConfirmMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§f" + PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop:");
     }
 
     @Override
@@ -91,7 +92,7 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
-            if (!isBuying && AdminShopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 1)) {
+            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 1)) {
                 quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
             } else if (quantity < maxQuantity) {
                 quantity++;
@@ -100,7 +101,7 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> {
-            if (!isBuying && AdminShopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 10)) {
+            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 10)) {
                 quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
             } else if (quantity < maxQuantity) {
                 quantity += 10;
@@ -109,7 +110,7 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
-            if (!isBuying && AdminShopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 64)) {
+            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 64)) {
                 quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
             } else if (quantity < maxQuantity) {
                 quantity += 64;

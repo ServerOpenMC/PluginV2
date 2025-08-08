@@ -1,22 +1,18 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.UUID;
 
 public class CityTransferAction {
     public static void transfer(Player player, City city, OfflinePlayer playerToTransfer) {

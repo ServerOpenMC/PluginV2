@@ -1,5 +1,6 @@
 package fr.openmc.core.utils.api;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -22,10 +23,9 @@ public class LuckPermsApi {
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null) {
             hasLuckPerms = false;
             return;
-        } else {
-            hasLuckPerms = true;
         }
 
+        hasLuckPerms = true;
         api = OMCPlugin.getInstance().getServer().getServicesManager().load(LuckPerms.class);
     }
 
@@ -55,9 +55,9 @@ public class LuckPermsApi {
         String prefix = getPrefix(player);
         if (prefix == null || prefix.isEmpty()) return "";
         String formattedPrefix = prefix.replace("&", "§");
-        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
+        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", ":$1:");
 
-        return PlaceholderAPI.setPlaceholders(player, formattedPrefix) + " ";
+        return PlaceholderAPI.setPlaceholders(player, FontImageWrapper.replaceFontImages(formattedPrefix)) + " ";
     }
 
     public static @NotNull Component getFormattedPAPIPrefix(Group group) {
@@ -67,8 +67,8 @@ public class LuckPermsApi {
         if (prefix == null || prefix.isEmpty()) return Component.empty();
 
         String formattedPrefix = prefix.replace("&", "§");
-        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
+        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", ":$1:");
 
-        return Component.text(PlaceholderAPI.setPlaceholders(null, formattedPrefix) + " ");
+        return Component.text(PlaceholderAPI.setPlaceholders(null, FontImageWrapper.replaceFontImages(formattedPrefix)) + " ");
     }
 }

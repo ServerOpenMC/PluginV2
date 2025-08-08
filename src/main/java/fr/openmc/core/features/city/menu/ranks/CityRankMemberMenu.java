@@ -68,7 +68,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				if (city.hasPermission(player.getUniqueId(), CPermission.OWNER)) return;
 
 				if (!city.hasPermission(getOwner().getUniqueId(), CPermission.ASSIGN_RANKS)) {
-					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYERNOACCESSPERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 					getOwner().closeInventory();
 					return;
 				}
