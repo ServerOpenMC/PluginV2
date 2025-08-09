@@ -68,7 +68,7 @@ public class CityListMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		cities.forEach(city -> {
 			UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
@@ -110,8 +110,8 @@ public class CityListMenu extends PaginatedMenu {
 	}
 
 	@Override
-	public Map<Integer, ItemStack> getButtons() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 		map.put(49, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
 			itemMeta.displayName(Component.text("Trier"));
 			itemMeta.lore(generateSortLoreText());

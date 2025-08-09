@@ -16,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -48,9 +47,9 @@ public class VoteMenu extends Menu {
 
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
         Player player = getOwner();
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
             String camp1Name = ContestManager.data.getCamp1();
             String camp2Name = ContestManager.data.getCamp2();
@@ -174,7 +173,7 @@ public class VoteMenu extends Menu {
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(player)));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(player).open()));
 
         return inventory;
     }

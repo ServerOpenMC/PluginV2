@@ -47,8 +47,8 @@ public class CityRankAssignMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull Map<Integer, ItemStack> getContent() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 		
 		Set<CityRank> availableRanks = city.getRanks();
 		for (CityRank rank : availableRanks) {

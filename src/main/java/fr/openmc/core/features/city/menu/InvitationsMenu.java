@@ -47,7 +47,7 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
         List<Player> invitations = CityCommands.invitations.get(player);
@@ -105,14 +105,13 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
+    public Map<Integer, ItemBuilder> getButtons() {
         Player player = getOwner();
-        Map<Integer, ItemStack> map = new HashMap<>();
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49,
                 new ItemBuilder(this,
                         Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(),
-                        itemMeta -> itemMeta.displayName(Component.text("§7Retour au menu des villes")))
-                        .setOnClick(InventoryClickEvent -> new NoCityMenu(player).open()));
+                        itemMeta -> itemMeta.displayName(Component.text("§7Retour au menu précédent")), true));
         map.put(48,
                 new ItemBuilder(this,
                         Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(),

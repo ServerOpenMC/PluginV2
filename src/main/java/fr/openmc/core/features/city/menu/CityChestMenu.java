@@ -62,7 +62,7 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         ItemStack[] contents = city.getChestContent(this.page);
 
         if (contents == null) {
@@ -88,12 +88,12 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
+    public Map<Integer, ItemBuilder> getButtons() {
         if (Restart.isRestarting) return null;
 
         Player player = getOwner();
 
-        Map<Integer, ItemStack> map = new HashMap<>();
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
         }).setOnClick(inventoryClickEvent -> {

@@ -12,7 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -51,8 +50,8 @@ public class MoreInfoMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
         List<Component> lore0 = Arrays.asList(
                 Component.text("§7Tous les §6Mercredi§7, les §6Elections §7commencent"),
@@ -99,7 +98,7 @@ public class MoreInfoMenu extends Menu {
             itemMeta.setEnchantmentGlintOverride(ench1);
         }));
 
-        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
+        inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
 
         return inventory;
     }

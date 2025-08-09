@@ -1,6 +1,7 @@
 package fr.openmc.api.menulib;
 
 import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -98,7 +99,7 @@ public abstract class Menu implements InventoryHolder {
 	 * and the value is the {@link ItemStack} present in that slot.
 	 */
 	@NotNull
-	public abstract Map<Integer, ItemStack> getContent();
+	public abstract Map<Integer, ItemBuilder> getContent();
 
 	/**
 	 * Retrieves a list of inventory slot indices that can be taken from the menu.
@@ -126,14 +127,27 @@ public abstract class Menu implements InventoryHolder {
 					return;
 				}
 			}
+
+			Menu current = MenuLib.getCurrentLastMenu(owner);
+			if (current != this) {
+				MenuLib.pushMenu(owner, this);
+			}
+
 			Inventory inventory = getInventory();
-			getContent().forEach(inventory::setItem);
+			getContent().forEach((slot, item) -> {
+				setItem(owner, inventory, slot, item);
+			});
 			owner.openInventory(inventory);
 		} catch (Exception e) {
 			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
 			owner.closeInventory();
 			e.printStackTrace();
 		}
+	}
+
+	public final void setItem(Player player, Inventory inventory, int slot, ItemBuilder item) {
+		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) return;
+		inventory.setItem(slot, item);
 	}
 	
 	/**
@@ -167,22 +181,6 @@ public abstract class Menu implements InventoryHolder {
 			return Objects.equals(dataContainer.get(MenuLib.getItemIdKey(), PersistentDataType.STRING), itemId);
 		}
 		return false;
-	}
-	
-	/**
-	 * Opens the previously viewed menu for the owner of the current menu.
-	 * This method retrieves the last menu accessed by the owner using {@link MenuLib#getLastMenu(Player)}
-	 * and opens it by calling its {@code open} method.
-	 */
-	public final void back() {
-		try {
-			Menu lastMenu = MenuLib.getLastMenu(owner);
-			lastMenu.open();
-		} catch (Exception e) {
-			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-			owner.closeInventory();
-			e.printStackTrace();
-		}
 	}
 	
 	/**

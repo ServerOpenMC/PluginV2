@@ -68,8 +68,8 @@ public class MayorCreateMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         boolean canConfirmPerk;
@@ -107,10 +107,7 @@ public class MayorCreateMenu extends Menu {
                         Component.text("§7Vous allez retourner au Menu des Elections"),
                         Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                 ));
-            }).setOnClick(inventoryClickEvent -> {
-                MayorElectionMenu menu = new MayorElectionMenu(player);
-                menu.open();
-            }));
+            }, true));
         } else if (type == MenuType.CANDIDATE) {
             canConfirmPerk = perk2 != null && perk3 != null;
 

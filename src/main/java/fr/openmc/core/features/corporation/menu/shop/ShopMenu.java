@@ -11,10 +11,10 @@ import fr.openmc.core.features.corporation.manager.PlayerShopManager;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -84,8 +84,8 @@ public class ShopMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
         Company company = null;
 
         if (shop.getOwner().isCompany()){
@@ -97,11 +97,11 @@ public class ShopMenu extends Menu {
 
         content.put(39, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§cItem précédent");
-        }).setNextMenu(new ShopMenu(getOwner(), shop, onFirstItem() ? itemIndex : itemIndex - 1)));
+        }).setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, onFirstItem() ? itemIndex : itemIndex - 1).open()));
 
         content.put(41, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aItem suivant");
-        }).setNextMenu(new ShopMenu(getOwner(), shop, onLastItem() ? itemIndex : itemIndex + 1)));
+        }).setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, onLastItem() ? itemIndex : itemIndex + 1).open()));
 
         content.put(40, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§7Fermer");
@@ -144,7 +144,7 @@ public class ShopMenu extends Menu {
                 lore.add("§7■ En stock: " + EconomyManager.getFormattedSimplifiedNumber(getCurrentItem().getAmount()));
                 lore.add("§7■ Cliquez pour en acheter §f" + EconomyManager.getFormattedSimplifiedNumber(amountToBuy));
                 itemMeta.setLore(lore);
-            }).setNextMenu(new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat")))));
+            }).setOnClick(inventoryClickEvent -> new ConfirmMenu(getOwner(), this::buyAccept, this::refuse, List.of(Component.text("§aAcheter")), List.of(Component.text("§cAnnuler l'achat"))).open()));
 
         content.put(23, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§aAjouter 1");
@@ -172,7 +172,7 @@ public class ShopMenu extends Menu {
 
         content.put(44, new ItemBuilder(this, CustomItemRegistry.getByName("omc_company:company_box").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§7Catalogue");
-        }).setNextMenu(new ShopCatalogueMenu(getOwner(), shop, itemIndex)));
+        }).setOnClick(inventoryClickEvent -> new ShopCatalogueMenu(getOwner(), shop, itemIndex).open()));
 
         return content;
     }
@@ -182,11 +182,11 @@ public class ShopMenu extends Menu {
         return List.of();
     }
 
-    private void putOwnerItems(Map<Integer, ItemStack> content) {
+    private void putOwnerItems(Map<Integer, ItemBuilder> content) {
 
         content.put(0, new ItemBuilder(this, CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red").getBest(), itemMeta -> {
             itemMeta.setDisplayName("§c§lSupprimer le shop");
-        }).setNextMenu(new ConfirmMenu(getOwner(), this::accept, this::refuse, List.of(Component.text("§aSupprimer")), List.of(Component.text("§cAnnuler la suppression")))));
+        }).setOnClick(inventoryClickEvent -> new ConfirmMenu(getOwner(), this::accept, this::refuse, List.of(Component.text("§aSupprimer")), List.of(Component.text("§cAnnuler la suppression"))).open()));
 
         content.put(3, new ItemBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.setDisplayName("§a§lVos ventes");
@@ -194,7 +194,7 @@ public class ShopMenu extends Menu {
             lore.add("§7■ Ventes: §f" + shop.getSales().size());
             lore.add("§7■ Cliquer pour voir vos ventes sur ce shop");
             itemMeta.setLore(lore);
-        }).setNextMenu(new ShopSalesMenu(getOwner(), shop, itemIndex)));
+        }).setOnClick(inventoryClickEvent -> new ShopSalesMenu(getOwner(), shop, itemIndex).open()));
 
         content.put(4, shop.getIcon(this, true));
 
@@ -204,7 +204,7 @@ public class ShopMenu extends Menu {
             lore.add("§7■ Stocks: §f" + shop.getAllItemsAmount());
             lore.add("§7■ Cliquer pour voir les stocks de ce shop");
             itemMeta.setLore(lore);
-        }).setNextMenu(new ShopStocksMenu(getOwner(), shop, itemIndex)));
+        }).setOnClick(inventoryClickEvent -> new ShopStocksMenu(getOwner(), shop, itemIndex).open()));
 
         content.put(8, new ItemBuilder(this, Material.LIME_WOOL, itemMeta -> {
             itemMeta.setDisplayName("§aCe shop vous appartient");
