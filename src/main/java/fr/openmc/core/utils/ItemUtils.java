@@ -1,5 +1,6 @@
 package fr.openmc.core.utils;
 
+import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -179,24 +180,37 @@ public class ItemUtils {
     }
 
     /**
-     * Check if the player has enough items in his inventory
+     * Check if the player has enough of a given item in their inventory.
+     * Supports both vanilla items and custom ItemAdder items.
      *
-     * @param player the player to check
-     * @param item the item to check {@link ItemStack}
-     * @param amount the amount of items to check
-     * @return {@code true} if the player has enough items, {@code false} otherwise
+     * @param player The player to check
+     * @param item   The reference item
+     * @param amount The required amount
+     * @return true if the player has at least the required amount, false otherwise
      */
     public static boolean hasEnoughItems(Player player, ItemStack item, int amount) {
-        int totalItems = 0;
-        ItemStack[] contents = player.getInventory().getContents();
+        if (amount <= 0) return false;
 
-        for (ItemStack is : contents) {
-            if (is != null && is.isSimilar(item)) {
+        int totalItems = 0;
+        CustomStack customItem = CustomStack.byItemStack(item);
+
+        for (ItemStack is : player.getInventory().getContents()) {
+            if (is == null) continue;
+
+            boolean matches;
+            if (customItem != null) {
+                CustomStack customIs = CustomStack.byItemStack(is);
+                matches = customIs != null && customIs.getId().equals(customItem.getId());
+            } else {
+                matches = is.getType().equals(item.getType());
+            }
+
+            if (matches) {
                 totalItems += is.getAmount();
+                if (totalItems >= amount) return true;
             }
         }
 
-        if (amount == 0) return false;
         return totalItems >= amount;
     }
     /**
@@ -272,9 +286,22 @@ public class ItemUtils {
         ItemStack[] contents = player.getInventory().getContents();
         int remaining = quantity;
 
+        CustomStack customItem = CustomStack.byItemStack(item);
+
         for (int i = 0; i < contents.length && remaining > 0; i++) {
             ItemStack stack = contents[i];
-            if (stack != null && stack.isSimilar(item)) {
+            if (stack == null) continue;
+
+            boolean matches = false;
+
+            if (customItem != null) {
+                CustomStack customStack = CustomStack.byItemStack(stack);
+                matches = customStack != null && customStack.getId().equals(customItem.getId());
+            } else {
+                matches = stack.getType().equals(item.getType());
+            }
+
+            if (matches) {
                 int stackAmount = stack.getAmount();
                 if (stackAmount <= remaining) {
                     player.getInventory().setItem(i, null);

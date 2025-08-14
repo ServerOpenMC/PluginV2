@@ -16,9 +16,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
 public class FreezeListener implements Listener {
 	
 	/**
@@ -32,11 +29,7 @@ public class FreezeListener implements Listener {
 		if (FreezeManager.FROZEN_PLAYERS.contains(player)) {
 			if (event.getReason() != PlayerQuitEvent.QuitReason.DISCONNECTED) {
 				FreezeManager.contactFreezer(event.getReason());
-				return;
 			}
-			Date banDuration = new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30));
-			Bukkit.getBanList(BanListType.PROFILE).addBan(player.getPlayerProfile(), "Déconnexion en étant freeze !", banDuration, "Anti Déco Freeze");
-			FreezeManager.FROZEN_PLAYERS.remove(player);
 		}
 	}
 	
