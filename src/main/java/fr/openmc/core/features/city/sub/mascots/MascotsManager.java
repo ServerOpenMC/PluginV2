@@ -42,17 +42,14 @@ import java.util.List;
 import java.util.UUID;
 
 public class MascotsManager {
-    private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:trans_rights_are_human_rights");
-
-     public static final List<String> movingMascots = new ArrayList<>();
-
-    public static NamespacedKey mascotsKey;
-
+    public static final List<String> movingMascots = new ArrayList<>();
     public static final HashMap<String, Mascot> mascotsByCityUUID = new HashMap<>();
     public static final HashMap<UUID, Mascot> mascotsByEntityUUID = new HashMap<>();
-
     public static final String PLACEHOLDER_MASCOT_NAME = "§l%s §c%.0f/%.0f❤";
     public static final String DEAD_MASCOT_NAME = "☠ §cMascotte Morte";
+    private static final NamespacedKey MAX_HEALTH_KEY = NamespacedKey.fromString("openmc:trans_rights_are_human_rights");
+    public static NamespacedKey mascotsKey;
+    private static Dao<Mascot, String> mascotsDao;
 
     public MascotsManager() {
         //changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
@@ -89,8 +86,6 @@ public class MascotsManager {
             MascotRegenerationUtils.mascotsRegeneration(mascot);
         }
     }
-
-    private static Dao<Mascot, String> mascotsDao;
 
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Mascot.class);
@@ -185,15 +180,11 @@ public class MascotsManager {
 
         mascotsLevels = MascotsLevels.valueOf("level" + level);
 
-        try {
-            double maxHealth = mascotsLevels.getHealth();
-            mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
+        double maxHealth = mascotsLevels.getHealth();
+        mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
 
-            if (mob.getHealth() == lastHealth) {
-                mob.setHealth(maxHealth);
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        if (mob.getHealth() == lastHealth) {
+            mob.setHealth(maxHealth);
         }
 
         mob.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
