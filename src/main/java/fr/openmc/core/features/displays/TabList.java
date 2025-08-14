@@ -5,6 +5,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -36,7 +37,7 @@ public class TabList {
             }
         }
 
-        String header = "\n\n\n\n\n\n\n:openmc:\n\n  §eJoueurs en ligne §7: §6" + visibleOnlinePlayers + "§7/§e" + Bukkit.getMaxPlayers() + "  \n";
+        String header = "\n\n\n\n\n\n\n" + FontImageWrapper.replaceFontImages(":openmc:") + "\n\n  §eJoueurs en ligne §7: §6" + visibleOnlinePlayers + "§7/§e" + Bukkit.getMaxPlayers() + "  \n";
         String footer = "\n§dplay.openmc.fr\n";
 
         updateHeaderFooter(player, header, footer);

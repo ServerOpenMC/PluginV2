@@ -55,7 +55,7 @@ public class LuckPermsApi {
         String prefix = getPrefix(player);
         if (prefix == null || prefix.isEmpty()) return "";
         String formattedPrefix = prefix.replace("&", "§");
-        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", ":$1:");
+        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
 
         return PlaceholderAPI.setPlaceholders(player, FontImageWrapper.replaceFontImages(formattedPrefix)) + " ";
     }
@@ -67,7 +67,7 @@ public class LuckPermsApi {
         if (prefix == null || prefix.isEmpty()) return Component.empty();
 
         String formattedPrefix = prefix.replace("&", "§");
-        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", ":$1:");
+        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
 
         return Component.text(PlaceholderAPI.setPlaceholders(null, FontImageWrapper.replaceFontImages(formattedPrefix)) + " ");
     }

@@ -4,6 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
@@ -152,7 +153,7 @@ public class EconomyManager {
 
     public static String getEconomyIcon() {
         if (ItemsAdderApi.hasItemAdder()) {
-            return "§f:aywenito:";
+            return FontImageWrapper.replaceFontImages("§f:aywenito:");
         } else {
             return "Ⓐ";
         }

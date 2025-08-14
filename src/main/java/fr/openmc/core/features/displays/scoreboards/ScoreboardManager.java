@@ -1,5 +1,6 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
@@ -77,7 +78,7 @@ public class ScoreboardManager implements Listener {
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         Objective objective;
         if (canShowLogo) {
-            objective = scoreboard.registerNewObjective("sb_aywen", Criteria.DUMMY, Component.text(":openmc:"));
+            objective = scoreboard.registerNewObjective("sb_aywen", Criteria.DUMMY, Component.text(FontImageWrapper.replaceFontImages(":openmc:")));
         } else {
             objective = scoreboard.registerNewObjective("sb_aywen", Criteria.DUMMY, Component.text("OPENMC").decorate(TextDecoration.BOLD).color(NamedTextColor.LIGHT_PURPLE));
         }
