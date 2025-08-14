@@ -18,7 +18,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BossbarManager {
     @Getter
@@ -160,31 +159,35 @@ public class BossbarManager {
      */
     public static void toggleBossBar(Player player) {
         UUID uuid = player.getUniqueId();
-        AtomicBoolean enabled = new AtomicBoolean(false);
-        AtomicBoolean disabled = new AtomicBoolean(false);
+        boolean enabled = false;
 
-        activeBossBars.forEach((type, bossBarData) -> {
+        for (Map.Entry<BossbarsType, Map<UUID, BossBar>> activeBossBar : activeBossBars.entrySet()) {
+            BossbarsType type = activeBossBar.getKey();
+            Map<UUID, BossBar> bossBarData = activeBossBar.getValue();
             if (bossBarData.containsKey(uuid)) {
                 removeBossBar(type, player);
-                disabled.set(true);
+                enabled = false;
                 playerPreferences.put(uuid, false);
             } else {
                 switch (type) {
-                    case HELP:
+                    case HELP -> {
                         addBossBar(type, bossBarHelp, player);
-                        enabled.set(true);
+                        enabled = true;
                         playerPreferences.put(uuid, true);
-                    case TUTORIAL:
+                    }
+
+                    case TUTORIAL -> {
                         TutorialUtils.setBossBar(player);
-                        enabled.set(true);
+                        enabled = true;
                         playerPreferences.put(uuid, true);
+                    }
                 }
             }
-        });
+        }
 
-        if (enabled.get()) {
+        if (enabled) {
             MessagesManager.sendMessage(player, Component.text("Bossbar activée"), Prefix.OPENMC, MessageType.SUCCESS, true);
-        } else if (disabled.get()) {
+        } else {
             MessagesManager.sendMessage(player, Component.text("Bossbar désactivée"), Prefix.OPENMC, MessageType.WARNING, true);
         }
     }

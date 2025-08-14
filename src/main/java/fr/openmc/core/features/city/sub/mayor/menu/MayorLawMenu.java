@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.menulib.Menu;
@@ -19,11 +20,9 @@ import fr.openmc.core.features.city.sub.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.sub.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,8 +50,8 @@ public class MayorLawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        if (ItemsAdderApi.hasItemAdder()) {
+            return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
         } else {
             return "Menu des Lois";
         }
@@ -285,7 +284,6 @@ public class MayorLawMenu extends Menu {
 
                         }
                         DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
-                        return;
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) {
                         // Essor agricole (id : 11) - Perk Event
                         for (UUID uuid : city.getMembers()) {

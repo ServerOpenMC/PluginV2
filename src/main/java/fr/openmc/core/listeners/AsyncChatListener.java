@@ -4,16 +4,16 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.api.LuckPermsApi;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.cacheddata.CachedMetaData;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,15 +33,21 @@ public class AsyncChatListener implements Listener {
         final Player player = event.getPlayer();
         final CachedMetaData metaData = this.luckperms.getPlayerAdapter(Player.class).getMetaData(player);
 
+        String message = ((TextComponent) event.message()).content();
         String rawMessage = plugin.getConfig().getString("chat.message", "{prefix}{name}§7: {message}")
                 .replace("{prefix}", LuckPermsApi.getFormattedPAPIPrefix(player))
                 .replace("{suffix}", metaData.getSuffix() != null ? metaData.getSuffix() : "")
                 .replace("{name}", player.getName())
-                .replace("{message}", PlainTextComponentSerializer.plainText().serialize(event.message()));
+                .replace("{message}", message);
 
         final String formattedMessage = colorize(translateHexColorCodes(rawMessage));
 
-        event.renderer((source, sourceDisplayName, message, viewer) -> Component.text(formattedMessage));
+        event.renderer((source, sourceDisplayName, component, viewer) -> Component.text(formattedMessage));
+
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (message.contains(p.getName()))
+                p.playSound(p.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.PLAYERS, 1, 1);
+        }
     }
 
     private String colorize(final String message) {
@@ -49,7 +55,7 @@ public class AsyncChatListener implements Listener {
     }
 
     private String translateHexColorCodes(final String message) {
-        final char colorChar = NamedTextColor.HEX_CHARACTER;
+        final char colorChar = TextColor.HEX_CHARACTER;
 
         final Matcher matcher = Pattern.compile("&#([A-Fa-f0-9]{6})").matcher(message);
         final StringBuilder buffer = new StringBuilder(message.length() + 4 * 8);
@@ -64,14 +70,5 @@ public class AsyncChatListener implements Listener {
         }
 
         return matcher.appendTail(buffer).toString();
-    }
-    
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-        OMCPlugin.getInstance().getServer().getOnlinePlayers().forEach(player -> {
-            if (event.getMessage().contains(player.getName())) {
-                player.playSound(player.getEyeLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, SoundCategory.PLAYERS, 1, 1);
-            }
-        });
     }
 }

@@ -66,6 +66,8 @@ public class InteractProtection implements Listener {
             
         }
         if (!clickedType.isInteractable() && !isMinecart) return;
+
+        if (!isMinecart) return;
         if (isTnt) return;
 
         ProtectionsManager.verify(player, event, location);
@@ -79,7 +81,7 @@ public class InteractProtection implements Listener {
         if (rightClicked instanceof Player) return;
         if (! (rightClicked instanceof ItemFrame)) return;
 
-        if (MascotUtils.isMascot(rightClicked)) return;
+        if (MascotUtils.canBeAMascot(rightClicked)) return;
         
         ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
     }

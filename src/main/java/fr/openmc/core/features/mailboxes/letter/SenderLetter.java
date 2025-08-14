@@ -1,5 +1,6 @@
 package fr.openmc.core.features.mailboxes.letter;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
 
+@Getter
 public class SenderLetter extends ItemStack {
     private final int id;
 
@@ -39,7 +41,4 @@ public class SenderLetter extends ItemStack {
         return nonItalic(status);
     }
 
-    public int getId() {
-        return id;
-    }
 }

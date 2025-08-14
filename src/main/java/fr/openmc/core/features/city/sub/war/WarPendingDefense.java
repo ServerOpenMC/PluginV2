@@ -4,7 +4,10 @@ import fr.openmc.core.features.city.City;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class WarPendingDefense {
 
@@ -13,7 +16,7 @@ public class WarPendingDefense {
     @Getter
     private final City attacker;
     @Getter
-    private List<UUID> attackers = new ArrayList<>();
+    private final List<UUID> attackers;
     @Getter
     private final Set<UUID> acceptedDefenders = new HashSet<>();
     @Getter

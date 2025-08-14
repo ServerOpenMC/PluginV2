@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.sub.mascots;
+package fr.openmc.core.features.city.sub.mascots.models;
 
 import lombok.Getter;
 import org.bukkit.Material;

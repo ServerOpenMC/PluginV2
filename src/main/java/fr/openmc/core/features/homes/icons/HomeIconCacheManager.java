@@ -1,8 +1,8 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
+import fr.openmc.core.features.homes.models.Home;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -56,7 +56,7 @@ public class HomeIconCacheManager {
                 ItemStack baseItem = icon.getItemStack().clone();
                 cachedItems.add(new CachedIconItem(icon, baseItem));
             } catch (Exception e) {
-                OMCPlugin.getInstance().getLogger().warning("Failed to create base item for icon: " + icon.getId() + " - " + e.getMessage());
+                OMCPlugin.getInstance().getLogger().warning("Failed to create base item for icon: " + icon.id() + " - " + e.getMessage());
             }
         }
 
@@ -81,7 +81,7 @@ public class HomeIconCacheManager {
             cachedItems = CACHED_ITEMS.get(category);
         }
 
-        String cacheKey = category.name() + "_" + home.getIcon().getId();
+        String cacheKey = category.name() + "_" + home.getIcon().id();
 
         List<ItemStack> cachedRenderedItems = RENDERED_ITEMS_CACHE.get(cacheKey);
         if (cachedRenderedItems != null && cachedRenderedItems.size() == cachedItems.size()) {
@@ -112,7 +112,7 @@ public class HomeIconCacheManager {
         if (query == null || query.trim().isEmpty()) return new ArrayList<>();
 
         String normalizedQuery = query.toLowerCase().trim();
-        String cacheKey = "search_" + normalizedQuery + "_" + home.getIcon().getId();
+        String cacheKey = "search_" + normalizedQuery + "_" + home.getIcon().id();
 
         List<ItemStack> cachedRenderedItems = RENDERED_ITEMS_CACHE.get(cacheKey);
         if (cachedRenderedItems != null) {
@@ -129,7 +129,7 @@ public class HomeIconCacheManager {
                     ItemStack baseItem = icon.getItemStack().clone();
                     cachedItems.add(new CachedIconItem(icon, baseItem));
                 } catch (Exception e) {
-                    OMCPlugin.getInstance().getLogger().warning("Failed to create base item for icon: " + icon.getId() + " - " + e.getMessage());
+                    OMCPlugin.getInstance().getLogger().warning("Failed to create base item for icon: " + icon.id() + " - " + e.getMessage());
                 }
             }
 
@@ -243,7 +243,7 @@ public class HomeIconCacheManager {
 
         if (startIndex >= cachedItems.size()) return Collections.emptyList();
 
-        String cacheKey = category.name() + "_" + home.getIcon().getId() + "_page_" + page;
+        String cacheKey = category.name() + "_" + home.getIcon().id() + "_page_" + page;
         List<ItemStack> cachedPage = RENDERED_ITEMS_CACHE.get(cacheKey);
 
         if (cachedPage != null) return cloneItemList(cachedPage);

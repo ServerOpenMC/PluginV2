@@ -40,7 +40,7 @@ public class MailboxManager {
 
     private static Dao<Letter, Integer> letterDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Letter.class);
         letterDao = DaoManager.createDao(connectionSource, Letter.class);
     }
@@ -93,11 +93,9 @@ public class MailboxManager {
                 letters.add(letter);
             }
             letterDao.create(letters);
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             Logger.getLogger(MailboxManager.class.getName()).log(Level.SEVERE,
                     "Erreur lors de l'envoi des items batch à des joueurs hors ligne", e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -108,8 +106,6 @@ public class MailboxManager {
             query.setCountOf(true);
 
             long count = letterDao.countOf(query.prepare());
-
-
             if (count == 0)
                 return;
 

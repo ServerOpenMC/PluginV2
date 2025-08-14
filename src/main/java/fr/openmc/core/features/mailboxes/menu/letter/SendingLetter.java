@@ -9,7 +9,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class SendingLetter extends MailboxInv {
     private final OfflinePlayer receiver;
     private final OMCPlugin plugin;
 
-    public SendingLetter(Player player, OfflinePlayer receiver, OMCPlugin plugin) throws SQLException {
+    public SendingLetter(Player player, OfflinePlayer receiver, OMCPlugin plugin) {
         super(player);
         this.receiver = receiver;
         this.plugin = plugin;
