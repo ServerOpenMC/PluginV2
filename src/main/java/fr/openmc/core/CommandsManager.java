@@ -12,7 +12,6 @@ import fr.openmc.core.features.friend.FriendCommand;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
-import fr.openmc.core.features.privatemessage.SocialSpyManager;
 import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
 import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
 import fr.openmc.core.features.quests.command.QuestCommand;
@@ -54,7 +53,9 @@ public class CommandsManager {
                 new MainMenuCommand(),
                 new PrivateMessageCommand(),
                 new SocialSpyCommand(),
-                new SettingsCommand());
+                new SettingsCommand(),
+                new Cooldowns()
+        );
     }
 
     private static void registerSuggestions() {
