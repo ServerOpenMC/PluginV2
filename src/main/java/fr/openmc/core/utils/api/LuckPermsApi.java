@@ -20,10 +20,8 @@ public class LuckPermsApi {
     private static boolean hasLuckPerms;
 
     public LuckPermsApi() {
-        if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null) {
-            hasLuckPerms = false;
+        if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null)
             return;
-        }
 
         hasLuckPerms = true;
         api = OMCPlugin.getInstance().getServer().getServicesManager().load(LuckPerms.class);
