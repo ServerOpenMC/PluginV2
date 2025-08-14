@@ -46,26 +46,41 @@ public class HomeUpgradeManager {
                 return;
             }
 
-            if (ItemUtils.takeAywenite(player, ayweniteAmount) && EconomyManager.withdrawBalance(player.getUniqueId(), price)) {
-                HomesManager.updateHomeLimit(player.getUniqueId());
-
-                int updatedHomesLimit = HomesManager.getHomeLimit(player.getUniqueId());
-
-                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    Bukkit.getPluginManager().callEvent(new HomeUpgradeEvent(player));
-                });
-
-                MessagesManager.sendMessage(player,
-                        Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$ et à §d" + ayweniteAmount + " d'Aywenite"), Prefix.HOME, MessageType.SUCCESS, true);
-            } else {
+            if (!ItemUtils.hasEnoughItems(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest(), ayweniteAmount)) {
                 MessagesManager.sendMessage(
                         player,
-                        Component.text("§cVous n'avez pas assez d'argent pour acheter cette amélioration."),
+                        Component.text("Vous n'avez pas assez d'§dAywenite §f(" + ayweniteAmount + " nécessaires)"),
+                        Prefix.OPENMC,
+                        MessageType.ERROR,
+                        true
+                );
+                return;
+            }
+
+            if (EconomyManager.getBalance(player.getUniqueId()) < price) {
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("La ville n'as pas assez d'argent (" + price + EconomyManager.getEconomyIcon() + " nécessaires)"),
                         Prefix.HOME,
                         MessageType.ERROR,
                         true
                 );
+                return;
             }
+
+            ItemUtils.takeAywenite(player, ayweniteAmount);
+            EconomyManager.withdrawBalance(player.getUniqueId(), price);
+
+            HomesManager.updateHomeLimit(player.getUniqueId());
+
+            int updatedHomesLimit = HomesManager.getHomeLimit(player.getUniqueId());
+
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new HomeUpgradeEvent(player));
+            });
+
+            MessagesManager.sendMessage(player,
+                    Component.text("§aVous avez amélioré votre limite de homes à " + updatedHomesLimit + " pour " + nextUpgrade.getPrice() + "$ et à §d" + ayweniteAmount + " d'Aywenite"), Prefix.HOME, MessageType.SUCCESS, true);
         } else {
             MessagesManager.sendMessage(
                     player,

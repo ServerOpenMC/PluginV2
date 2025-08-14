@@ -125,6 +125,14 @@ public class DynamicCooldownManager {
     }
 
     /**
+     * @param uuid Entity UUID to check
+     * @return Map of cooldowns for the entity, or null if no cooldowns
+     */
+    public static HashMap<String, Cooldown> getCooldowns(String uuid) {
+        return cooldowns.get(uuid);
+    }
+
+    /**
      * @param uuid  Entity UUID to check
      * @param group Cooldown group
      * @return true if entity can perform action

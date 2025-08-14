@@ -1,6 +1,8 @@
 package fr.openmc.core.features.settings;
 
-import fr.openmc.core.features.settings.policy.*;
+import fr.openmc.core.features.settings.policy.CityPolicy;
+import fr.openmc.core.features.settings.policy.FriendPolicy;
+import fr.openmc.core.features.settings.policy.GlobalPolicy;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -14,6 +16,8 @@ public enum SettingType {
     // - City settings
     CITY_JOIN_REQUESTS_POLICY(ValueType.ENUM, CityPolicy.EVERYONE, "Politique des demandes de rejoindre une ville",
             Material.PAPER, "Qui peut te demander à rejoindre une ville:"),
+    MASCOT_PLAY_SOUND_POLICY(ValueType.BOOLEAN, true, "Recevoir les sons venant des Mascottes",
+            Material.MUSIC_DISC_LAVA_CHICKEN, Material.GRAY_DYE, "Activer ou désactiver les sons des Mascottes"),
 
     // - Mailbox settings
     MAILBOX_RECEIVE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "Politique de réception des mailbox",

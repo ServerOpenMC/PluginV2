@@ -53,7 +53,8 @@ public class CommandsManager {
                 new MainMenuCommand(),
                 new PrivateMessageCommand(),
                 new SocialSpyCommand(),
-                new SettingsCommand()
+                new SettingsCommand(),
+                new Cooldowns()
         );
     }
 

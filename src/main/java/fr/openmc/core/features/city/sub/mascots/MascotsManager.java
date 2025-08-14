@@ -77,6 +77,9 @@ public class MascotsManager {
                 new MascotImmuneListener(),
                 new MascotsTargetListener()
         );
+        if (!OMCPlugin.isUnitTestVersion()) {
+            new MascotsSoundListener();
+        }
 
         CommandsManager.getHandler().register(
                 new AdminMascotsCommands()
@@ -157,41 +160,6 @@ public class MascotsManager {
         MascotUtils.removeMascotOfCity(mascot);
     }
 
-    public static void reviveMascots(String city_uuid) {
-        City city = CityManager.getCity(city_uuid);
-
-        Mascot mascot = city.getMascot();
-        if (mascot == null) return;
-
-        mascot.setAlive(true);
-        mascot.setImmunity(false);
-
-        int level = mascot.getLevel();
-
-        LivingEntity entity = (LivingEntity) mascot.getEntity();
-
-        if (entity == null) return;
-
-        double maxHealth = entity.getAttribute(Attribute.MAX_HEALTH).getValue();
-        entity.setHealth(Math.floor(0.10 * maxHealth));
-        entity.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
-                city.getName(),
-                0.10 * maxHealth,
-                maxHealth
-        )));
-        entity.setGlowing(false);
-
-        MascotRegenerationUtils.mascotsRegeneration(mascot);
-
-        for (UUID townMember : city.getMembers()) {
-            if (!(Bukkit.getEntity(townMember) instanceof Player player)) return;
-
-            for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getMalus()) {
-                player.removePotionEffect(potionEffect.getType());
-            }
-        }
-    }
-
     public static void upgradeMascots(String city_uuid) {
         City city = CityManager.getCity(city_uuid);
         if (city == null) return;
@@ -212,6 +180,9 @@ public class MascotsManager {
         if (mascotsLevels == MascotsLevels.level10) return;
 
         mascot.setLevel(level + 1);
+
+        level = mascot.getLevel();
+
         mascotsLevels = MascotsLevels.valueOf("level" + level);
 
         try {
@@ -221,15 +192,15 @@ public class MascotsManager {
             if (mob.getHealth() == lastHealth) {
                 mob.setHealth(maxHealth);
             }
-
-            mob.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
-                    city.getName(),
-                    mob.getHealth(),
-                    maxHealth
-            )));
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+
+        mob.customName(Component.text(PLACEHOLDER_MASCOT_NAME.formatted(
+                city.getName(),
+                mob.getHealth(),
+                maxHealth
+        )));
     }
 
     public static void changeMascotsSkin(Mascot mascots, EntityType skin, Player player, int aywenite) {
