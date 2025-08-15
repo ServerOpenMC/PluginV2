@@ -2,6 +2,7 @@ package fr.openmc.core.features.quests.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
@@ -57,6 +58,11 @@ public class QuestsMenu extends Menu {
     }
 
     public @NotNull String getName() {
+        return "Menu des Quêtes";
+    }
+
+    @Override
+    public String getTexture() {
         return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-25%%img_quests_menu%");
     }
 
@@ -91,8 +97,8 @@ public class QuestsMenu extends Menu {
         }
     }
 
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
         slotToQuestIndex.clear();
 
         int startIndex = this.currentPage * 9;
@@ -102,17 +108,17 @@ public class QuestsMenu extends Menu {
         for(int i = startIndex; i < endIndex; ++i) {
             Quest quest = QuestsManager.getAllQuests().get(i);
             ItemStack item = this.createQuestItem(quest);
-            content.put(slotIndex, item);
+            content.put(slotIndex, new ItemBuilder(this, item));
             this.slotToQuestIndex.put(slotIndex, i);
             ++slotIndex;
         }
 
         if (this.currentPage > 0) {
-            content.put(19, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_left_arrow")).getBest());
+            content.put(19, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_left_arrow")).getBest()));
         }
 
         if (this.currentPage < this.totalPages - 1) {
-            content.put(25, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_right_arrow")).getBest());
+            content.put(25, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_quests:quests_right_arrow")).getBest()));
         }
 
         return content;
@@ -130,9 +136,9 @@ public class QuestsMenu extends Menu {
 
     private void updateInventory() {
         this.getInventory().clear();
-        Map<Integer, ItemStack> content = this.getContent();
+        Map<Integer, ItemBuilder> content = this.getContent();
 
-        for(Map.Entry<Integer, ItemStack> entry : content.entrySet()) {
+        for (Map.Entry<Integer, ItemBuilder> entry : content.entrySet()) {
             this.getInventory().setItem(entry.getKey(), entry.getValue());
         }
     }

@@ -32,7 +32,12 @@ public class PersonalBankWithdrawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Banques - Banque Personel";
+        return "Menu des Banques - Retirer";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -46,8 +51,8 @@ public class PersonalBankWithdrawMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         double moneyBankPlayer = BankManager.getBankBalance(player.getUniqueId());
@@ -120,9 +125,7 @@ public class PersonalBankWithdrawMenu extends Menu {
                     Component.text("§7Vous allez retourner au Menu de votre Banque"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> {
-            new PersonalBankMenu(player).open();
-        }));
+        }, true));
 
         return inventory;
     }

@@ -13,6 +13,8 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.notation.NotationManager;
+import fr.openmc.core.features.city.sub.notation.models.CityNotation;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -889,6 +891,34 @@ public class City {
             
             CityManager.updateCityRank(newRank);
         });
+    }
+
+    /* =================== NOTATION =================== */
+
+    /**
+     * Retrieves the notation of the city for a specific week.
+     * * @param weekStr The week string in the format "YYYY-WW" (e.g., "2023-01").
+     *
+     * @return The CityNotation object representing the city's notation for the specified week, or null if not found.
+     */
+    public CityNotation getNotationOfWeek(String weekStr) {
+        if (!NotationManager.notationPerWeek.containsKey(weekStr)) {
+            return null;
+        }
+        return NotationManager.notationPerWeek.get(weekStr).stream()
+                .filter(notation -> notation.getCityUUID().equals(cityUUID))
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Retrieves the notation of the city for a specific week.
+     * * @param weekStr The week string in the format "YYYY-WW" (e.g., "2023-01").
+     *
+     * @return The CityNotation object representing the city's notation for the specified week, or null if not found.
+     */
+    public void setNotationOfWeek(String weekStr, double architecturalNote, double coherenceNote, String description) {
+        NotationManager.createOrUpdateNotation(new CityNotation(cityUUID, architecturalNote, coherenceNote, description, weekStr));
     }
 
     // ==================== City Milestone Methods ====================

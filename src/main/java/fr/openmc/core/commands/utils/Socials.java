@@ -46,7 +46,7 @@ public class Socials {
         ));
         sender.sendMessage(parseText(
                 "§5Wiki §8: §f",
-                OMCPlugin.getConfigs().getString("homepage", "INVALID CONFIG")
+                OMCPlugin.getConfigs().getString("wiki", "INVALID CONFIG")
         ));
         sender.sendMessage(parseText(
                 "§0Github §8: §f",

@@ -62,6 +62,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
+        return "Menu des Homes - Changer l'icône";
+    }
+
+    @Override
+    public String getTexture() {
         return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home%");
     }
 
@@ -76,7 +81,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         Player player = getOwner();
 
         if (!searchQuery.isEmpty()) return HomeIconCacheManager.searchIcons(searchQuery, this, home, player);
@@ -89,11 +94,11 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 
         map.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(),
-                itemMeta -> itemMeta.displayName(Component.text("§7Retour"))).setBackButton());
+                itemMeta -> itemMeta.displayName(Component.text("§7Retour")), true));
 
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());

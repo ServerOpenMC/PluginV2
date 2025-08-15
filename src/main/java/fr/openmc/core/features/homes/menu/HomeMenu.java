@@ -53,6 +53,11 @@ public class HomeMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
+        return "Menu des Homes";
+    }
+
+    @Override
+    public String getTexture() {
         return PlaceholderAPI.setPlaceholders(this.getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home%");
     }
 
@@ -74,7 +79,7 @@ public class HomeMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         for(Home home : HomesManager.getHomes(target.getUniqueId())) {
             HomeIcon homeIcon = home.getIcon();
@@ -114,8 +119,8 @@ public class HomeMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 
             if(!wasTarget) {
                 map.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information")).getBest(),

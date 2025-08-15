@@ -8,7 +8,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
@@ -21,7 +20,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -37,7 +35,12 @@ public class CityBankMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes - Banque de Ville";
+        return "Menu des Villes - Banque";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -51,8 +54,8 @@ public class CityBankMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -86,7 +89,7 @@ public class CityBankMenu extends Menu {
 
         if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE)) {
 
-            Supplier<ItemStack> interestItemSupplier = () -> {
+            Supplier<ItemBuilder> interestItemSupplier = () -> {
                 return new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
                     itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
                     itemMeta.lore(List.of(
@@ -130,13 +133,11 @@ public class CityBankMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au menu des villes"),
+                    Component.text("§7Vous allez retourner au Menu Précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
 
-        }).setOnClick(inventoryClickEvent -> {
-            new CityMenu(player).open();
-        }));
+        }, true));
 
         return inventory;
     }

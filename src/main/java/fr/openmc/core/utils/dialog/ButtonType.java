@@ -2,14 +2,15 @@ package fr.openmc.core.utils.dialog;
 
 import lombok.Getter;
 
+@Getter
 public enum ButtonType {
+    SAVE("Sauvegarder"),
     CONFIRM("Confirmer"),
     CANCEL("Annuler"),
     BACK("Retour"),
     NEXT("Suivant"),
     PREVIOUS("Précédent");
 
-    @Getter
     private final String label;
 
     ButtonType(String label) {

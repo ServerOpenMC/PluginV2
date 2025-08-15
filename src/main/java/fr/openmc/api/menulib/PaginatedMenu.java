@@ -1,6 +1,7 @@
 package fr.openmc.api.menulib;
 
 import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import lombok.Getter;
@@ -69,22 +70,21 @@ public abstract class PaginatedMenu extends Menu {
 	 * @return A non-null {@link List} of {@link ItemStack} instances representing the items
 	 * available for pagination in the menu.
 	 */
-	@NotNull
 	public abstract List<ItemStack> getItems();
 
 	/**
-	 * Retrieves a mapping of button slots to their corresponding {@link ItemStack} instances
+	 * Retrieves a mapping of button slots to their corresponding {@link ItemBuilder} instances
 	 * for the current menu. Each entry in the map represents a specific button within the menu,
 	 * where the key is the slot index and the value is the item displayed as the button.
 	 *
 	 * @return A {@link Map} where keys are slot indices (integers) and values are the
-	 * {@link ItemStack} objects representing the buttons in the inventory.
+	 * {@link ItemBuilder} objects representing the buttons in the inventory.
 	 */
-	public abstract Map<Integer, ItemStack> getButtons();
+	public abstract Map<Integer, ItemBuilder> getButtons();
 	
 	/**
 	 * Retrieves the contents of the current page in the paginated menu.
-	 * The method generates a mapping of slot indices to {@link ItemStack} instances,
+	 * The method generates a mapping of slot indices to {@link ItemBuilder} instances,
 	 * including static slots, dynamic items for the current page, and any additional buttons.
 	 * <p>
 	 * The static slots always contain either the specified border material or {@link Material#AIR}
@@ -92,14 +92,13 @@ public abstract class PaginatedMenu extends Menu {
 	 * pagination logic, and buttons are placed in the static slots if applicable.
 	 *
 	 * @return A non-null {@link Map} where keys are slot indices (integers) and values are
-	 * {@link ItemStack} objects representing the items displayed in the menu for the current page.
+	 * {@link ItemBuilder} objects representing the items displayed in the menu for the current page.
 	 */
 	@Override
-	@NotNull
-	public final Map<Integer, ItemStack> getContent() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+	public final @NotNull Map<Integer, ItemBuilder> getContent() {
+		Map<Integer, ItemBuilder> map = new HashMap<>();
 		for (Integer staticSlot : getStaticSlots()) {
-			map.put(staticSlot, ItemUtils.createItem(" ", getBorderMaterial() == null ? Material.AIR : getBorderMaterial()));
+			map.put(staticSlot, new ItemBuilder(this, ItemUtils.createItem(" ", getBorderMaterial() == null ? Material.AIR : getBorderMaterial())));
 		}
 		List<Integer> staticSlots = StaticSlots.removeRecurringIntegers(getStaticSlots(), getInventorySize().getSize());
 		int maxItems = getInventorySize().getSize() - staticSlots.size();
@@ -110,16 +109,16 @@ public abstract class PaginatedMenu extends Menu {
 		for (int i = 0; i < getInventory().getSize(); i++) {
 			if (! staticSlots.contains(i)) {
 				if (index + maxItems * page < getItems().size()) {
-					map.put(i, getItems().get(index + maxItems * page));
+					map.put(i, new ItemBuilder(this, getItems().get(index + maxItems * page)));
 					index++;
 				}
 			}
 		}
 		
 		if (getButtons() != null) {
-			getButtons().forEach((integer, itemStack) -> {
+			getButtons().forEach((integer, itemBuilder) -> {
 				if (staticSlots.contains(integer)) {
-					map.put(integer, itemStack);
+					map.put(integer, new ItemBuilder(this, itemBuilder, itemBuilder.isBackButton()));
 				}
 			});
 		}

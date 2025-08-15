@@ -73,7 +73,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 	private static final List<Material> paginableMaterials = List.of();
 
 	@Override
-	public @NotNull List<ItemStack> getItems() {
+	public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		List<Material> filtered = getFilteredMaterials();
 
@@ -95,12 +95,10 @@ public class CityRankIconMenu extends PaginatedMenu {
 
 	
 	@Override
-	public Map<Integer, ItemStack> getButtons() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+	public Map<Integer, ItemBuilder> getButtons() {
+		Map<Integer, ItemBuilder> map = new HashMap<>();
 		map.put(45, new ItemBuilder(this, Material.BARRIER
-				, itemMeta -> itemMeta.displayName(Component.text("§cRetour"))).setOnClick(inventoryClickEvent -> {
-			new CityRankDetailsMenu(getOwner(), city, rank).open();
-		}));
+				, itemMeta -> itemMeta.displayName(Component.text("§cRetour")), true));
 
 		if (hasPreviousPage())
 			map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
@@ -135,9 +133,14 @@ public class CityRankIconMenu extends PaginatedMenu {
 	
 	@Override
 	public @NotNull String getName() {
-		return "Choisir une icône - Page " + (page + 1);
+		return "Menu de choix d'une icône - Page " + (page + 1);
 	}
-	
+
+	@Override
+	public String getTexture() {
+		return null;
+	}
+
 	@Override
 	public void onInventoryClick(InventoryClickEvent e) {
 	}

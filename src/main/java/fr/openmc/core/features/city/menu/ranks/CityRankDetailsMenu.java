@@ -19,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -41,9 +40,14 @@ public class CityRankDetailsMenu extends Menu {
 	
 	@Override
 	public @NotNull String getName() {
-		return city.isRankExists(rank) ? "Détails du grade " + rank.getName() : "Créer le grade  " + rank.getName();
+		return city.isRankExists(rank) ? "Menu des détails du grade " + rank.getName() : "Menu de création du grade  " + rank.getName();
 	}
-	
+
+	@Override
+	public String getTexture() {
+		return null;
+	}
+
 	@Override
 	public @NotNull InventorySize getInventorySize() {
 		return InventorySize.NORMAL;
@@ -60,7 +64,7 @@ public class CityRankDetailsMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull Map<Integer, ItemStack> getContent() {
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
 		return city.isRankExists(rank) ? editRank() : createRank();
 	}
 	
@@ -74,8 +78,8 @@ public class CityRankDetailsMenu extends Menu {
 	 *
 	 * @return A map of slot indices to ItemStacks for the rank creation menu.
 	 */
-	private Map<Integer, ItemStack> createRank() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+    private Map<Integer, ItemBuilder> createRank() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 
 		boolean canManageRanks = city.hasPermission(getOwner().getUniqueId(), CPermission.MANAGE_RANKS);
 
@@ -149,8 +153,8 @@ public class CityRankDetailsMenu extends Menu {
 	 *
 	 * @return A map of slot indices to ItemStacks for the rank editing menu.
 	 */
-	private @NotNull Map<Integer, ItemStack> editRank() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+    private @NotNull Map<Integer, ItemBuilder> editRank() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 		Player player = getOwner();
 
 

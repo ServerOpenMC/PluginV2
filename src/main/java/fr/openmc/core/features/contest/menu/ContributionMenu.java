@@ -6,11 +6,10 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -35,11 +34,12 @@ public class ContributionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
-        } else {
-            return "Menu des Contests - Contribution";
-        }
+        return "Menu des Contests - Contribution";
+    }
+
+    @Override
+    public String getTexture() {
+        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
     }
 
     @Override
@@ -53,9 +53,9 @@ public class ContributionMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
         Player player = getOwner();
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
             String campName = ContestPlayerManager.getPlayerCampName(player);
             NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
@@ -102,7 +102,7 @@ public class ContributionMenu extends Menu {
         inventory.put(11, new ItemBuilder(this, shellContest, itemMeta -> {
             itemMeta.displayName(Component.text("§7Les Trades"));
             itemMeta.lore(loreTrade);
-        }).setNextMenu(new TradeMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new TradeMenu(getOwner()).open()));
 
         inventory.put(15, new ItemBuilder(this, m, itemMeta -> {
             itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
@@ -143,7 +143,7 @@ public class ContributionMenu extends Menu {
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
         return inventory;
     }

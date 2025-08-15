@@ -6,9 +6,9 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -26,9 +26,10 @@ import java.util.function.Consumer;
  */
 public class ItemBuilder extends ItemStack {
 	private final Menu itemMenu;
+	@Getter
+	private boolean backButton;
 	private ItemMeta meta;
-	
-	
+
 	/**
 	 * Constructs an {@code ItemBuilder} with the specified {@link Menu} and {@link Material}.
 	 * This constructor initializes the {@code ItemBuilder} to create items using the given menu and material,
@@ -40,7 +41,22 @@ public class ItemBuilder extends ItemStack {
 	 *                 of the item being created.
 	 */
 	public ItemBuilder(Menu itemMenu, Material material) {
-		this(itemMenu, material, null);
+		this(itemMenu, material, null, false);
+	}
+
+	/**
+	 * Constructs an {@code ItemBuilder} with the specified {@link Menu} and {@link Material}.
+	 * This constructor initializes the {@code ItemBuilder} to create items using the given menu and material,
+	 * with no additional customizations for the {@link ItemMeta}.
+	 *
+	 * @param itemMenu The {@link Menu} this item will be associated with. It represents the context in which
+	 *                 the item exists, such as a specific inventory or menu framework.
+	 * @param material The {@link Material} of the item. It determines the base appearance and behavior
+	 *                 of the item being created.
+	 */
+	public ItemBuilder(Menu itemMenu, Material material, boolean isBackButton) {
+		this(itemMenu, material, null, isBackButton);
+		this.backButton = isBackButton;
 	}
 	
 	/**
@@ -56,7 +72,22 @@ public class ItemBuilder extends ItemStack {
 	public ItemBuilder(Menu itemMenu, ItemStack item) {
 		this(itemMenu, item, null);
 	}
-	
+
+	/**
+	 * Constructs an {@code ItemBuilder} with the specified {@link Menu} and {@link ItemStack}.
+	 * This constructor initializes the {@code ItemBuilder} to create items with the given menu and item,
+	 * while not applying any additional customizations to the {@link ItemMeta}.
+	 *
+	 * @param itemMenu The {@link Menu} that this item will be associated with. This parameter represents
+	 *                 the context in which the item will exist, such as an inventory or menu framework.
+	 * @param item     The {@link ItemStack} defining the base item configuration. It includes the material,
+	 *                 amount, and current metadata of the item.
+	 */
+	public ItemBuilder(Menu itemMenu, ItemStack item, boolean isBackButton) {
+		this(itemMenu, item, null, isBackButton);
+		this.backButton = isBackButton;
+	}
+
 	/**
 	 * Constructs an {@code ItemBuilder} with the specified {@link Menu}, {@link Material},
 	 * and an {@link Consumer} for customizing the {@link ItemMeta}.
@@ -73,7 +104,25 @@ public class ItemBuilder extends ItemStack {
 	public ItemBuilder(Menu itemMenu, Material material, Consumer<ItemMeta> itemMeta) {
 		this(itemMenu, new ItemStack(material), itemMeta);
 	}
-	
+
+	/**
+	 * Constructs an {@code ItemBuilder} with the specified {@link Menu}, {@link Material},
+	 * and an {@link Consumer} for customizing the {@link ItemMeta}.
+	 * This constructor initializes the {@code ItemBuilder} with a menu, a material to define the base item,
+	 * and a consumer for applying additional metadata customization to the item.
+	 *
+	 * @param itemMenu The {@link Menu} this item will be associated with. It represents the context in which
+	 *                 the item exists, such as a specific inventory or menu framework.
+	 * @param material The {@link Material} of the item. It determines the base appearance and behavior
+	 *                 of the item being created.
+	 * @param itemMeta A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
+	 *                 modification of properties such as the display name, lore, enchantments, and more.
+	 */
+	public ItemBuilder(Menu itemMenu, Material material, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
+		this(itemMenu, new ItemStack(material), itemMeta);
+		this.backButton = isBackButton;
+	}
+
 	/**
 	 * Constructs an {@code ItemBuilder} with the specified {@link Menu}, {@link ItemStack},
 	 * and an {@link Consumer} for customizing the {@link ItemMeta}.
@@ -90,13 +139,37 @@ public class ItemBuilder extends ItemStack {
 	public ItemBuilder(Menu itemMenu, ItemStack item, Consumer<ItemMeta> itemMeta) {
 		super(item);
 		this.itemMenu = itemMenu;
+		meta = item.getItemMeta();
+		if (itemMeta != null) {
+			itemMeta.accept(meta);
+		}
+		setItemMeta(meta);
+	}
+
+	/**
+	 * Constructs an {@code ItemBuilder} with the specified {@link Menu}, {@link ItemStack},
+	 * and an {@link Consumer} for customizing the {@link ItemMeta}.
+	 * This constructor initializes the {@code ItemBuilder} with a menu, a specific item to define
+	 * the base configuration, and a consumer for applying additional metadata customizations to the item.
+	 *
+	 * @param itemMenu The {@link Menu} this item will be associated with. It represents the context in which
+	 *                 the item exists, such as a specific inventory or menu framework.
+	 * @param item     The {@link ItemStack} defining the base item configuration. It includes the material,
+	 *                 amount, and current metadata of the item.
+	 * @param itemMeta A {@link Consumer} that customizes the {@link ItemMeta} of the item. It allows further
+	 *                 modification of properties such as the display name, lore, enchantments, and more.
+	 */
+	public ItemBuilder(Menu itemMenu, ItemStack item, Consumer<ItemMeta> itemMeta, boolean isBackButton) {
+		super(item);
+		this.itemMenu = itemMenu;
+		this.backButton = isBackButton;
 		meta = getItemMeta();
 		if (itemMeta != null) {
 			itemMeta.accept(meta);
 		}
 		setItemMeta(meta);
 	}
-	
+
 	/**
 	 * Sets the unique identifier for the item using the specified {@code itemId}.
 	 * The identifier is stored in the item's {@link PersistentDataContainer} as a
@@ -135,32 +208,6 @@ public class ItemBuilder extends ItemStack {
 	}
 	
 	/**
-	 * Sets the next menu to be displayed when the associated item is clicked.
-	 * This method assigns a click event consumer that transitions the player
-	 * to the specified menu and updates the last accessed menu.
-	 *
-	 * @param menu The {@link Menu} that will be opened upon clicking the item.
-	 * @return The current instance of {@link ItemBuilder}, enabling method chaining
-	 * for additional configurations.
-	 */
-	public ItemBuilder setNextMenu(Menu menu) {
-		try {
-			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> {
-				Player player = (Player) inventoryClickEvent.getWhoClicked();
-				MenuLib.setLastMenu(player, itemMenu);
-				menu.open();
-			};
-			setOnClick(clickEventConsumer);
-			return this;
-		} catch (Exception e) {
-			MessagesManager.sendMessage(menu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-			menu.getOwner().closeInventory();
-			e.printStackTrace();
-		}
-		return this;
-	}
-	
-	/**
 	 * Sets the item to act as a close button. When the item is clicked, it closes
 	 * the inventory of the menu owner.
 	 *
@@ -170,26 +217,6 @@ public class ItemBuilder extends ItemStack {
 	public ItemBuilder setCloseButton() {
 		try {
 			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> itemMenu.getOwner().closeInventory();
-			setOnClick(clickEventConsumer);
-			return this;
-		} catch (Exception e) {
-			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-			itemMenu.getOwner().closeInventory();
-			e.printStackTrace();
-		}
-		return this;
-	}
-	
-	/**
-	 * Sets the item to act as a back button. When the item is clicked, it navigates the user
-	 * to the previously viewed menu associated with the current menu owner.
-	 *
-	 * @return The current instance of {@link ItemBuilder}, enabling method chaining
-	 * for additional configurations.
-	 */
-	public ItemBuilder setBackButton() {
-		try {
-			Consumer<InventoryClickEvent> clickEventConsumer = inventoryClickEvent -> itemMenu.back();
 			setOnClick(clickEventConsumer);
 			return this;
 		} catch (Exception e) {
