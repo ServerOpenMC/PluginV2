@@ -1,5 +1,6 @@
 package fr.openmc.core;
 
+import com.j256.ormlite.logger.LoggerFactory;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
@@ -33,6 +34,7 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.items.usable.CustomUsableItemRegistry;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.ParticleUtils;
+import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.api.*;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
@@ -62,6 +64,11 @@ public class OMCPlugin extends JavaPlugin {
 
     public static boolean isUnitTestVersion() {
         return OMCPlugin.instance.getServer().getVersion().contains("MockBukkit");
+    }
+
+    @Override
+    public void onLoad() {
+        LoggerFactory.setLogBackendFactory(ShutUpOrmLite::new);
     }
 
     @Override
