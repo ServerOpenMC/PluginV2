@@ -69,8 +69,6 @@ public class CustomItemRegistry {
     }
 
     public static void register(String name, CustomItem item) {
-        System.out.println(items.size() + " all items:" + items.keySet());
-
         if (!name.matches("[a-zA-Z0-9_:]+")) {
             throw new IllegalArgumentException("Custom item name dont match regex \"[a-zA-Z0-9_:]+\"");
         }
