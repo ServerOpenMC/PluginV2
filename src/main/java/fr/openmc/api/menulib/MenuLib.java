@@ -150,13 +150,17 @@ public final class MenuLib implements Listener {
             return;
         }
 
-        Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = menu.getItemClickEvents();
-        if (itemClickEvents.isEmpty())
-            return;
+        try {
+            Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = menu.getItemClickEvents();
+            if (itemClickEvents.isEmpty())
+                return;
 
-        for (Map.Entry<ItemStack, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
-            if (entry.getKey().equals(e.getCurrentItem()))
-                entry.getValue().accept(e);
+            for (Map.Entry<ItemStack, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
+                if (entry.getKey().equals(e.getCurrentItem()))
+                    entry.getValue().accept(e);
+            }
+        } catch (Exception ex) {
+            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while handling a click event in a menu: {}", ex.getMessage(), ex);
         }
     }
 
