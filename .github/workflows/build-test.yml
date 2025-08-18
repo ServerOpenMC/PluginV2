@@ -7,12 +7,14 @@ on:
       - '.gitignore'
       - 'LICENSE'
       - 'README.md'
+      - 'CODE_OF_CONDUCT.md'
   push:
     paths-ignore:
       - '.github/**'
       - '.gitignore'
       - 'LICENSE'
       - 'README.md'
+      - 'CODE_OF_CONDUCT.md'
 
 jobs:
   test:
