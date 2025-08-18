@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 @Getter
 public class PlayerSettingsManager implements Listener {
@@ -41,7 +40,7 @@ public class PlayerSettingsManager implements Listener {
             TableUtils.createTableIfNotExists(connectionSource, PlayerSettingEntity.class);
         } catch (SQLException e) {
             if (!e.getMessage().contains("Duplicate key")) {
-                OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to create PlayerSettingEntity table", e);
+                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to create PlayerSettingEntity table", e);
             }
             OMCPlugin.getInstance().getSLF4JLogger().error("Table for PlayerSettingEntity already exists, skipping creation.");
         }
