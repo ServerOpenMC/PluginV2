@@ -6,7 +6,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.WorldGuardApi;
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -51,7 +51,7 @@ public class CityClaimAction {
         }
 
         Chunk chunk = sender.getWorld().getChunkAt(chunkX, chunkZ);
-        if (WorldGuardApi.doesChunkContainWGRegion(chunk)) {
+        if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
             MessagesManager.sendMessage(sender, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, true);
             return;
         }

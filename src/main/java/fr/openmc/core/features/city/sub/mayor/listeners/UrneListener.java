@@ -12,7 +12,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
 import fr.openmc.core.utils.LocationUtils;
-import fr.openmc.core.utils.api.FancyNpcsApi;
+import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -120,7 +120,7 @@ public class UrneListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onUrnePlaceSuccessEvent(FurniturePlacedEvent event) {
         Location urneLocation = event.getFurniture().getEntity().getLocation();
-        if (!FancyNpcsApi.hasFancyNpc())
+        if (!FancyNpcsHook.hasFancyNpc())
             return;
 
         Player player = event.getPlayer();
@@ -159,7 +159,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!FancyNpcsApi.hasFancyNpc()) return;
+        if (!FancyNpcsHook.hasFancyNpc()) return;
 
         NPCManager.removeNPCS(playerCity.getUUID());
     }

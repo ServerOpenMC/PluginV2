@@ -1,6 +1,7 @@
 package fr.openmc.core;
 
 import com.j256.ormlite.logger.LoggerFactory;
+import fr.openmc.api.hooks.*;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
@@ -36,7 +37,6 @@ import fr.openmc.core.items.usable.CustomUsableItemRegistry;
 import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
-import fr.openmc.core.utils.api.*;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
@@ -83,11 +83,11 @@ public class OMCPlugin extends JavaPlugin {
         /* EXTERNALS */
         MenuLib.init(this);
 
-        new LuckPermsApi();
-        new PapiApi();
-        new WorldGuardApi();
-        new ItemsAdderApi();
-        new FancyNpcsApi();
+        new LuckPermsHook();
+        new PapiHook();
+        new WorldGuardHook();
+        new ItemsAdderHook();
+        new FancyNpcsHook();
         if (!OMCPlugin.isUnitTestVersion())
             new PacketMenuLib(this);
 
@@ -131,8 +131,10 @@ public class OMCPlugin extends JavaPlugin {
 
         PlayerSettingsManager.loadAllPlayerSettings();
 
-        ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
-        ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        if (WorldGuardHook.hasWorldGuard()) {
+            ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
+            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        }
 
         getLogger().info("Plugin activé");
     }

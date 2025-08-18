@@ -19,7 +19,7 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.ParticleUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -63,7 +63,7 @@ public class ContestManager {
     public ContestManager() {
         // LISTENERS
         OMCPlugin.registerEvents(new ContestListener(OMCPlugin.getInstance()));
-        if (ItemsAdderApi.hasItemAdder()) {
+        if (ItemsAdderHook.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );

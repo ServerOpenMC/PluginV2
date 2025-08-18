@@ -1,7 +1,7 @@
 package fr.openmc.core.items;
 
 import dev.lone.itemsadder.api.CustomStack;
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
@@ -45,6 +45,6 @@ public abstract class CustomItem {
      * @return Best ItemStack to use for the server
      */
     public ItemStack getBest() {
-        return !ItemsAdderApi.hasItemAdder() || getItemsAdder() == null ? getVanilla() : getItemsAdder();
+        return !ItemsAdderHook.hasItemAdder() || getItemsAdder() == null ? getVanilla() : getItemsAdder();
     }
 }

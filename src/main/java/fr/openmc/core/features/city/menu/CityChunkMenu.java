@@ -14,7 +14,7 @@ import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
 import fr.openmc.core.utils.ChunkPos;
-import fr.openmc.core.utils.api.WorldGuardApi;
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -120,7 +120,7 @@ public class CityChunkMenu extends Menu {
 
                         if (!newChunkInfoMap.containsKey(pos)) {
                             Chunk chunk = player.getWorld().getChunkAt(chunkX, chunkZ);
-                            boolean isProtected = WorldGuardApi.doesChunkContainWGRegion(chunk);
+                            boolean isProtected = WorldGuardHook.doesChunkContainWGRegion(chunk);
                             if (isProtected) {
                                 newChunkInfoMap.put(pos, new ChunkInfo(null, true));
                             } else {

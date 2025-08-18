@@ -1,11 +1,11 @@
-package fr.openmc.core.utils.api;
+package fr.openmc.api.hooks;
 
 import org.bukkit.Bukkit;
 
-public class ItemsAdderApi {
+public class ItemsAdderHook {
     private static boolean hasItemAdder;
 
-    public ItemsAdderApi() {
+    public ItemsAdderHook() {
         hasItemAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
     }
 

@@ -15,10 +15,10 @@ import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.LuckPermsApi;
-import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.utils.api.WorldGuardApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
+import fr.openmc.api.hooks.LuckPermsHook;
+import fr.openmc.api.hooks.PapiHook;
+import fr.openmc.api.hooks.WorldGuardHook;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -45,7 +45,7 @@ public class ScoreboardManager implements Listener {
 
     public static final Set<UUID> disabledPlayers = new HashSet<>();
     public static final HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private static final boolean canShowLogo = PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder();
+    private static final boolean canShowLogo = PapiHook.hasPAPI() && ItemsAdderHook.hasItemAdder();
     final OMCPlugin plugin = OMCPlugin.getInstance();
     private static GlobalTeamManager globalTeamManager = null;
 
@@ -71,7 +71,7 @@ public class ScoreboardManager implements Listener {
                 updateScoreboard(player);
             }
         }, 0L, 20L); // 1s
-        if (LuckPermsApi.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
+        if (LuckPermsHook.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
     }
 
     public static Scoreboard createNewScoreboard(Player player) {
@@ -236,7 +236,7 @@ public class ScoreboardManager implements Listener {
             objective.getScore("  ").setScore(7);
 
             City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
-            boolean isInRegion = WorldGuardApi.isRegionConflict(player.getLocation());
+            boolean isInRegion = WorldGuardHook.isRegionConflict(player.getLocation());
             String location = isInRegion ? "§6Région Protégé" : "Nature";
             location = (chunkCity != null) ? chunkCity.getName() : location;
             objective.getScore("§8• §fLocation§7: " + location).setScore(6);
@@ -264,6 +264,6 @@ public class ScoreboardManager implements Listener {
         objective.getScore("   ").setScore(1);
         objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
 
-        if (LuckPermsApi.hasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
+        if (LuckPermsHook.hasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
     }
 }

@@ -11,7 +11,7 @@ import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -152,7 +152,7 @@ public class EconomyManager {
     }
 
     public static String getEconomyIcon() {
-        if (ItemsAdderApi.hasItemAdder()) {
+        if (ItemsAdderHook.hasItemAdder()) {
             return FontImageWrapper.replaceFontImages("§f:aywenito:");
         } else {
             return "Ⓐ";

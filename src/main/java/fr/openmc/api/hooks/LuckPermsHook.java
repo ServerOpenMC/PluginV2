@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.api;
+package fr.openmc.api.hooks;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class LuckPermsApi {
+public class LuckPermsHook {
     @Getter private static LuckPerms api;
     private static boolean hasLuckPerms;
 
-    public LuckPermsApi() {
+    public LuckPermsHook() {
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null)
             return;
 

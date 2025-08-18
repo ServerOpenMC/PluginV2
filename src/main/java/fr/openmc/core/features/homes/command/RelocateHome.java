@@ -2,7 +2,7 @@ package fr.openmc.core.features.homes.command;
 
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.core.utils.api.WorldGuardApi;
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -68,7 +68,7 @@ public class RelocateHome {
 
         List<Home> homes = HomesManager.getHomes(player.getUniqueId());
 
-        if(WorldGuardApi.isRegionConflict(location)) {
+        if(WorldGuardHook.isRegionConflict(location)) {
             MessagesManager.sendMessage(player, Component.text("§cTu ne peux pas définir un home ici, tu es dans une région protégée."), Prefix.HOME, MessageType.ERROR, true);
             return;
         }

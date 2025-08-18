@@ -6,7 +6,7 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
@@ -36,7 +36,7 @@ public class MineAyweniteQuest extends Quest implements Listener {
             return; // Ne pas compter si le joueur utilise Silk Touch
         }
 
-        if (!ItemsAdderApi.hasItemAdder())
+        if (!ItemsAdderHook.hasItemAdder())
             return;
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());

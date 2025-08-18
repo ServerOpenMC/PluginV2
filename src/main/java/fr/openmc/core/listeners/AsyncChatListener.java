@@ -1,7 +1,7 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.api.LuckPermsApi;
+import fr.openmc.api.hooks.LuckPermsHook;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -25,7 +25,7 @@ public class AsyncChatListener implements Listener {
 
     public AsyncChatListener(OMCPlugin plugin) {
         this.plugin = plugin;
-        this.luckperms = LuckPermsApi.getApi();
+        this.luckperms = LuckPermsHook.getApi();
     }
 
     @EventHandler
@@ -35,7 +35,7 @@ public class AsyncChatListener implements Listener {
 
         String message = ((TextComponent) event.message()).content();
         String rawMessage = plugin.getConfig().getString("chat.message", "{prefix}{name}§7: {message}")
-                .replace("{prefix}", LuckPermsApi.getFormattedPAPIPrefix(player))
+                .replace("{prefix}", LuckPermsHook.getFormattedPAPIPrefix(player))
                 .replace("{suffix}", metaData.getSuffix() != null ? metaData.getSuffix() : "")
                 .replace("{name}", player.getName())
                 .replace("{message}", message);

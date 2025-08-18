@@ -15,7 +15,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.WorldGuardApi;
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -103,7 +103,7 @@ public class CityCreateAction {
         // on le refait pour voir si le nb d'item n'a pas changé, d'argent, si le mec n'a pas rej une ville
         if (!CityCreateConditions.canCityCreate(player, pendingCityName)) return;
 
-        if (WorldGuardApi.doesChunkContainWGRegion(chunk)) {
+        if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
             MessagesManager.sendMessage(player, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

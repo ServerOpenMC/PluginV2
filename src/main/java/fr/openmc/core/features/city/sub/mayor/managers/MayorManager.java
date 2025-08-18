@@ -22,8 +22,8 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.api.FancyNpcsApi;
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.FancyNpcsHook;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -88,11 +88,11 @@ public class MayorManager {
                 new MilitaryDissuasion(),
                 new IdyllicRain());
 
-        if (ItemsAdderApi.hasItemAdder()) {
+        if (ItemsAdderHook.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new UrneListener());
         }
-        if (FancyNpcsApi.hasFancyNpc()) {
+        if (FancyNpcsHook.hasFancyNpc()) {
             OMCPlugin.registerEvents(
                     new NPCManager());
         }
