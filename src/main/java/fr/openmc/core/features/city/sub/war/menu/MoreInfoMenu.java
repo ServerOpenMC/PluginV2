@@ -47,7 +47,7 @@ public class MoreInfoMenu extends Menu {
         Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
         List<Component> lore0 = Arrays.asList(
-                Component.text("§7Choisissez une §6ville §7a attaquer ! "),
+                Component.text("§7Choisissez une §6ville §7a attaquer !"),
                 Component.text("§7Le nombre de combattants sera le même partout !"),
                 Component.text("§8§oex. Si vous êtes 5 joueurs de connectés et 2 en face,"),
                 Component.text("§8§oalors vous aurez le choix de faire un 1vs1 ou un 2vs2"),
