@@ -7,8 +7,6 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.items.CustomItemRegistry;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -57,7 +55,7 @@ public class ShopSalesMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new java.util.ArrayList<>();
         for (ShopItem sale : shop.getSales()) {
             items.add(new ItemBuilder(this, sale.getItem().getType(), itemMeta -> {
@@ -72,14 +70,14 @@ public class ShopSalesMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> buttons = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> buttons = new HashMap<>();
         buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
         ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
         if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
             buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cRetour"))
-                    .setNextMenu(new ShopMenu(getOwner(), shop, itemIndex)));
+                    .setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, itemIndex).open()));
             buttons.put(50, nextPageButton);
         } else {
             buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
@@ -91,11 +89,12 @@ public class ShopSalesMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
-        } else {
-            return "Ventes de " + shop.getName();
-        }
+        return "Ventes de " + shop.getName();
+    }
+
+    @Override
+    public String getTexture() {
+        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
     }
 
     @Override

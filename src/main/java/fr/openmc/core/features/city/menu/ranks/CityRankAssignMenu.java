@@ -30,9 +30,14 @@ public class CityRankAssignMenu extends Menu {
 	
 	@Override
 	public @NotNull String getName() {
-		return "Assigner un grade";
+		return "Menu des Villes - Assigner un grade";
 	}
-	
+
+	@Override
+	public String getTexture() {
+		return null;
+	}
+
 	@Override
 	public @NotNull InventorySize getInventorySize() {
 		return InventorySize.SMALL;
@@ -47,8 +52,8 @@ public class CityRankAssignMenu extends Menu {
 	}
 	
 	@Override
-	public @NotNull Map<Integer, ItemStack> getContent() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 		
 		Set<CityRank> availableRanks = city.getRanks();
 		for (CityRank rank : availableRanks) {

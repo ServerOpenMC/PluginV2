@@ -3,10 +3,9 @@ package fr.openmc.core.features.city.sub.mascots.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -47,6 +46,11 @@ public class MascotsSkinMenu extends Menu {
     }
 
     @Override
+    public String getTexture() {
+        return null;
+    }
+
+    @Override
     public @NotNull InventorySize getInventorySize() {
         return InventorySize.NORMAL;
     }
@@ -57,9 +61,8 @@ public class MascotsSkinMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> map = new HashMap<>();
-        Player player = getOwner();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 
         List<MascotOption> mascotsOptions = List.of(
                 // price : 10 taille normale, 15 taille petite, 20 taille très petite
@@ -82,8 +85,8 @@ public class MascotsSkinMenu extends Menu {
 
         map.put(18, new ItemBuilder(this, Material.ARROW, meta -> {
             meta.displayName(Component.text("§aRetour"));
-            meta.lore(List.of(Component.text("§7Retourner au menu de votre mascotte")));
-        }).setOnClick(event -> new CityMenu(getOwner()).open()));
+            meta.lore(List.of(Component.text("§7Retourner au Menu Précédent")));
+        }, true));
 
         return map;
     }
@@ -98,7 +101,7 @@ public class MascotsSkinMenu extends Menu {
         return List.of();
     }
 
-    private ItemStack createMascotButton(MascotOption option) {
+    private ItemBuilder createMascotButton(MascotOption option) {
         return new ItemBuilder(this, option.material(), itemMeta -> {
             itemMeta.displayName(Component.text("§7" + option.displayName()));
             itemMeta.lore(List.of(Component.text("§7Nécessite §d" + option.price + " d'Aywenites")));

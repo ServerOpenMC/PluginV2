@@ -9,8 +9,6 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -45,11 +43,12 @@ public class MayorCreateMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
-        } else {
-            return "Menu des Maires - Creation";
-        }
+        return "Menu des Maires - Creation";
+    }
+
+    @Override
+    public String getTexture() {
+        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
     }
 
     @Override
@@ -68,8 +67,8 @@ public class MayorCreateMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         boolean canConfirmPerk;
@@ -107,10 +106,7 @@ public class MayorCreateMenu extends Menu {
                         Component.text("§7Vous allez retourner au Menu des Elections"),
                         Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                 ));
-            }).setOnClick(inventoryClickEvent -> {
-                MayorElectionMenu menu = new MayorElectionMenu(player);
-                menu.open();
-            }));
+            }, true));
         } else if (type == MenuType.CANDIDATE) {
             canConfirmPerk = perk2 != null && perk3 != null;
 

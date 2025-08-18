@@ -9,8 +9,8 @@ import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
-import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -64,7 +64,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
@@ -117,8 +117,8 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), meta -> {
@@ -157,7 +157,12 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu de Guerre - Participants";
+        return "Menu des Guerre - Participants";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override

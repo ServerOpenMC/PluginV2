@@ -3,8 +3,8 @@ package fr.openmc.core.features.homes.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -14,7 +14,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -33,6 +32,11 @@ public class HomeDeleteConfirmMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
+        return "Menu des Homes - Confirmation";
+    }
+
+    @Override
+    public String getTexture() {
         return PlaceholderAPI.setPlaceholders(this.getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home_delete%");
     }
 
@@ -42,8 +46,8 @@ public class HomeDeleteConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
         Player player = getOwner();
 
             content.put(2, new ItemBuilder(
@@ -72,7 +76,7 @@ public class HomeDeleteConfirmMenu extends Menu {
                     this,
                     Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin")).getBest(),
                     itemMeta ->
-                    itemMeta.displayName(Component.text("§aAnnuler la suppression"))).setBackButton()
+                            itemMeta.displayName(Component.text("§aAnnuler la suppression")), true)
             );
 
             return content;

@@ -44,7 +44,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		Set<UUID> members = city.getMembers();
 		for (UUID uuid : members) {
@@ -80,8 +80,8 @@ public class CityRankMemberMenu extends PaginatedMenu {
 	}
 	
 	@Override
-	public Map<Integer, ItemStack> getButtons() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 		map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
 				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
 		map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
@@ -101,9 +101,14 @@ public class CityRankMemberMenu extends PaginatedMenu {
 
 	@Override
 	public @NotNull String getName() {
-		return "Liste des membres - Grades";
+		return "Menu du choix des membres - Grades";
 	}
-	
+
+	@Override
+	public String getTexture() {
+		return null;
+	}
+
 	@Override
 	public void onInventoryClick(InventoryClickEvent e) {
 	

@@ -10,7 +10,6 @@ import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -36,11 +35,12 @@ public class TradeMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
-        } else {
-            return "Menu des Contests - Trades";
-        }
+        return "Menu des Contests - Trades";
+    }
+
+    @Override
+    public String getTexture() {
+        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
     }
 
     @Override
@@ -54,9 +54,9 @@ public class TradeMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
         Player player = getOwner();
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
             String campName = ContestPlayerManager.getPlayerCampName(player);
             NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
@@ -188,12 +188,12 @@ public class TradeMenu extends Menu {
             }));
         }
 
-        inventory.put(27, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
+        inventory.put(27, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
 
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
         return inventory;
     }

@@ -26,7 +26,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -146,6 +145,11 @@ public class CityChunkMenu extends Menu {
     }
 
     @Override
+    public String getTexture() {
+        return null;
+    }
+
+    @Override
     public @NotNull InventorySize getInventorySize() {
         return InventorySize.LARGEST;
     }
@@ -156,8 +160,8 @@ public class CityChunkMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         long startTime = System.currentTimeMillis();
 
         addNavigationButtons(inventory);
@@ -195,15 +199,12 @@ public class CityChunkMenu extends Menu {
         return List.of();
     }
 
-    private void addNavigationButtons(Map<Integer, ItemStack> inventory) {
+    private void addNavigationButtons(Map<Integer, ItemBuilder> inventory) {
         if (playerCity != null) {
             inventory.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.displayName(Component.text("§aRetour"));
-                itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
-            }).setOnClick(event -> {
-                CityMenu menu = new CityMenu(player);
-                menu.open();
-            }));
+                itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+            }, true));
 
             if (hasFreeClaimAvailable) {
                 inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
@@ -225,7 +226,7 @@ public class CityChunkMenu extends Menu {
         }));
     }
 
-    private ItemStack createChunkItem(int chunkX, int chunkZ, ChunkInfo info) {
+    private ItemBuilder createChunkItem(int chunkX, int chunkZ, ChunkInfo info) {
         Material material = Material.GRAY_STAINED_GLASS_PANE;
         City city = info.city();
         boolean isProtected = info.isProtected();
@@ -251,7 +252,7 @@ public class CityChunkMenu extends Menu {
         }
     }
 
-    private ItemStack createProtectedChunkItem(Material material, int chunkX, int chunkZ) {
+    private ItemBuilder createProtectedChunkItem(Material material, int chunkX, int chunkZ) {
         return new ItemBuilder(this, material, itemMeta -> {
             itemMeta.displayName(Component.text("§cClaim dans une région protégée"));
             itemMeta.lore(List.of(
@@ -261,7 +262,7 @@ public class CityChunkMenu extends Menu {
         });
     }
 
-    private ItemStack createPlayerCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
+    private ItemBuilder createPlayerCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
         return new ItemBuilder(this, material, itemMeta -> {
             itemMeta.displayName(Component.text("§9Claim de votre ville"));
             itemMeta.lore(List.of(
@@ -277,7 +278,7 @@ public class CityChunkMenu extends Menu {
         }).setOnClick(event -> handleChunkUnclaimClick(player, chunkX, chunkZ, hasPermissionClaim));
     }
 
-    private ItemStack createOtherCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
+    private ItemBuilder createOtherCityChunkItem(Material material, City city, int chunkX, int chunkZ) {
         return new ItemBuilder(this, material, itemMeta -> {
             itemMeta.displayName(Component.text("§cClaim d'une ville adverse"));
             itemMeta.lore(List.of(
@@ -287,7 +288,7 @@ public class CityChunkMenu extends Menu {
         });
     }
 
-    private ItemStack createUnclaimedChunkItem(Material material, int chunkX, int chunkZ) {
+    private ItemBuilder createUnclaimedChunkItem(Material material, int chunkX, int chunkZ) {
         List<Component> lore;
         if (hasFreeClaimAvailable) {
             lore = List.of(

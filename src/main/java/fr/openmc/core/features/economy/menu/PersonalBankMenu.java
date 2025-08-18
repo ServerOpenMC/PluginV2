@@ -14,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -30,7 +29,12 @@ public class PersonalBankMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des banques - Banque Personel";
+        return "Menu des Banques";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -44,8 +48,8 @@ public class PersonalBankMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         List<Component> loreBankDeposit = List.of(
@@ -60,7 +64,7 @@ public class PersonalBankMenu extends Menu {
             new PersonalBankDepositMenu(player).open();
         }));
 
-        Supplier<ItemStack> interestItemSupplier = () -> {
+        Supplier<ItemBuilder> interestItemSupplier = () -> {
             return new ItemBuilder(this, Material.DIAMOND_BLOCK, itemMeta -> {
             itemMeta.itemName(Component.text("§6Votre argent"));
             itemMeta.lore(List.of(
