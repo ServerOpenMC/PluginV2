@@ -83,14 +83,14 @@ public class MascotsSkinMenu extends Menu {
         return List.of();
     }
 
-    private ItemStack createMascotButton(MascotType type) {
+    private ItemBuilder createMascotButton(MascotType type) {
         return new ItemBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg())))
                 .setOnClick(event -> {
                     if (!egg.equals(type.getSpawnEgg())) {
                         int aywenite = type.getPrice();
                         ItemStack ISAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
                         if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
-                            changeMascotsSkin(mascots, type.entityType(), getOwner(), aywenite);
+                            changeMascotsSkin(mascots, type.getEntityType(), getOwner(), aywenite);
                             getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
                             getOwner().closeInventory();
                         } else {

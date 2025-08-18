@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Getter
-
 public enum MascotType {
     PIG(3, 15),
     PANDA(4, 10),

@@ -199,10 +199,10 @@ public class QuestsMenu extends Menu {
 
         if (hasPendingRewards) {
             lore.add(Component.text("§d✶ §dRécompenses en attente:"));
-            for (Integer tierIndex : pendingQuestIndexes) {
-                if (tierIndex < quest.getTiers().size()) {
-                    QuestTier tier = quest.getTiers().get(tierIndex);
-                    lore.add(Component.text("  §5➤ §dPalier " + (tierIndex + 1) + ":"));
+            for (Integer ti : pendingQuestIndexes) {
+                if (ti < quest.getTiers().size()) {
+                    QuestTier tier = quest.getTiers().get(ti);
+                    lore.add(Component.text("  §5➤ §dPalier " + (ti + 1) + ":"));
 
                     for (QuestReward reward : tier.getRewards()) {
                         if (reward instanceof QuestItemReward itemReward) {

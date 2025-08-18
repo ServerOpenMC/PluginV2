@@ -29,167 +29,153 @@ import java.util.function.Consumer;
  * The {@code MenuLib} class implements the {@link Listener} interface to handle inventory-related events.
  */
 public final class MenuLib implements Listener {
+    private static final Map<Player, Deque<Menu>> menuHistory = new HashMap<>();
+    @Getter
+    private static NamespacedKey itemIdKey;
 
-	private static final Map<Menu, Map<ItemBuilder, Consumer<InventoryClickEvent>>> itemClickEvents = new HashMap<>();
-	@Getter
-	private static NamespacedKey itemIdKey;
+    /**
+     * Constructs a new {@code MenuLib} instance and registers it as an event listener.
+     * Also initializes the {@link NamespacedKey} used for item identification.
+     *
+     * @param plugin The {@link JavaPlugin} instance used to register events and create the {@link NamespacedKey}
+     */
+    private MenuLib(JavaPlugin plugin) {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+        itemIdKey = new NamespacedKey(plugin, "itemId");
+    }
 
-	private static final Map<Player, Deque<Menu>> menuHistory = new HashMap<>();
+    /**
+     * Initializes the {@code MenuLib} library for the given plugin.
+     * This method sets up necessary event handling and utilities
+     * required for managing custom menus.
+     *
+     * @param plugin The {@link JavaPlugin} instance representing the plugin
+     *               that integrates the {@code MenuLib} library. This is used
+     *               to register event listeners and initialize key functionality.
+     */
+    public static void init(JavaPlugin plugin) {
+        new MenuLib(plugin);
+    }
 
-	/**
-	 * Constructs a new {@code MenuLib} instance and registers it as an event listener.
-	 * Also initializes the {@link NamespacedKey} used for item identification.
-	 *
-	 * @param plugin The {@link JavaPlugin} instance used to register events and create the {@link NamespacedKey}
-	 */
-	private MenuLib(JavaPlugin plugin) {
-		Bukkit.getPluginManager().registerEvents(this, plugin);
-		itemIdKey = new NamespacedKey(plugin, "itemId");
-	}
-	
-	/**
-	 * Initializes the {@code MenuLib} library for the given plugin.
-	 * This method sets up necessary event handling and utilities
-	 * required for managing custom menus.
-	 *
-	 * @param plugin The {@link JavaPlugin} instance representing the plugin
-	 *               that integrates the {@code MenuLib} library. This is used
-	 *               to register event listeners and initialize key functionality.
-	 */
-	public static void init(JavaPlugin plugin) {
-		new MenuLib(plugin);
-	}
-	
-	/**
-	 * Associates a click event handler with a specific item in a given menu.
-	 * When a player clicks on the specified {@link ItemStack} in the menu,
-	 * the provided {@link Consumer} is executed to handle the {@link InventoryClickEvent}.
-	 *
-	 * @param menu      The {@link Menu} in which the click event will be associated.
-	 * @param itemStack The {@link ItemStack} that will trigger the event when clicked.
-	 * @param e         A {@link Consumer} of {@link InventoryClickEvent} representing the event handler
-	 *                  to be executed when the {@link ItemStack} is clicked within the menu.
-	 */
-	public static void setItemClickEvent(Menu menu, ItemStack itemStack, Consumer<InventoryClickEvent> e) {
-		Map<ItemBuilder, Consumer<InventoryClickEvent>> itemEvents = itemClickEvents.get(menu);
-		if (itemEvents == null) {
-			itemEvents = new HashMap<>();
-		}
-		itemEvents.put(new ItemBuilder(menu, itemStack), e);
-		itemClickEvents.put(menu, itemEvents);
-	}
+    /**
+     * Associates a click event handler with a specific item in a given menu.
+     * When a player clicks on the specified {@link ItemStack} in the menu,
+     * the provided {@link Consumer} is executed to handle the {@link InventoryClickEvent}.
+     *
+     * @param menu      The {@link Menu} in which the click event will be associated.
+     * @param itemStack The {@link ItemStack} that will trigger the event when clicked.
+     * @param e         A {@link Consumer} of {@link InventoryClickEvent} representing the event handler
+     *                  to be executed when the {@link ItemStack} is clicked within the menu.
+     */
+    public static void setItemClickEvent(Menu menu, ItemStack itemStack, Consumer<InventoryClickEvent> e) {
+        menu.getItemClickEvents().put(itemStack, e);
+    }
 
-	public static void clearHistory(Player player) {
-		menuHistory.remove(player);
-	}
+    public static void clearHistory(Player player) {
+        menuHistory.remove(player);
+    }
 
-	public static void pushMenu(Player player, Menu menu) {
-		menuHistory.computeIfAbsent(player, k -> new ArrayDeque<>()).push(menu);
-	}
+    public static void pushMenu(Player player, Menu menu) {
+        menuHistory.computeIfAbsent(player, k -> new ArrayDeque<>()).push(menu);
+    }
 
-	public static Menu getCurrentLastMenu(Player player) {
-		Deque<Menu> history = menuHistory.get(player);
+    public static Menu getCurrentLastMenu(Player player) {
+        Deque<Menu> history = menuHistory.get(player);
 
-		if (history == null || history.isEmpty()) {
-			return null;
-		}
+        if (history == null || history.isEmpty()) {
+            return null;
+        }
 
-		return history.peek();
-	}
+        return history.peek();
+    }
 
-	public static Menu getLastMenu(Player player) {
-		Deque<Menu> history = menuHistory.get(player);
+    public static Menu getLastMenu(Player player) {
+        Deque<Menu> history = menuHistory.get(player);
 
-		if (history == null || history.isEmpty() || history.size() < 2) {
-			return null;
-		}
+        if (history == null || history.isEmpty() || history.size() < 2) {
+            return null;
+        }
 
-		Iterator<Menu> iterator = history.iterator();
+        Iterator<Menu> iterator = history.iterator();
 
-		iterator.next();
+        iterator.next();
 
-		return iterator.next();
-	}
+        return iterator.next();
+    }
 
-	public static Menu popAndGetPreviousMenu(Player player) {
-		Deque<Menu> history = menuHistory.get(player);
-		if (history == null || history.size() < 2) return null;
-		history.pop();
-		return history.peek();
-	}
+    public static Menu popAndGetPreviousMenu(Player player) {
+        Deque<Menu> history = menuHistory.get(player);
+        if (history == null || history.size() < 2) return null;
+        history.pop();
+        return history.peek();
+    }
 
-	public static boolean hasPreviousMenu(Player player) {
-		Deque<Menu> history = menuHistory.get(player);
-		return history != null && history.size() > 1;
-	}
+    public static boolean hasPreviousMenu(Player player) {
+        Deque<Menu> history = menuHistory.get(player);
+        return history != null && history.size() > 1;
+    }
 
-	/**
-	 * Handles click events in an inventory associated with a {@link Menu}.
-	 * This method ensures that clicks within the menu's inventory are canceled,
-	 * and delegates further handling to the menu's implementation of {@code onInventoryClick}.
-	 * Additionally, it triggers any registered item-specific click event handlers.
-	 *
-	 * @param e The {@link InventoryClickEvent} representing the inventory interaction
-	 *          triggered by the player. Contains information about the clicked
-	 *          inventory, the clicked item, and other event details.
-	 */
-	@EventHandler
-	public void onInventoryClick(InventoryClickEvent e) {
-		if (e.getInventory().getHolder() instanceof Menu menu) {
-			if (e.getCurrentItem() == null) {
-				return;
-			}
+    /**
+     * Handles click events in an inventory associated with a {@link Menu}.
+     * This method ensures that clicks within the menu's inventory are canceled,
+     * and delegates further handling to the menu's implementation of {@code onInventoryClick}.
+     * Additionally, it triggers any registered item-specific click event handlers.
+     *
+     * @param e The {@link InventoryClickEvent} representing the inventory interaction
+     *          triggered by the player. Contains information about the clicked
+     *          inventory, the clicked item, and other event details.
+     */
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        if (!(e.getInventory().getHolder() instanceof Menu menu))
+            return;
 
-			if (menu.getTakableSlot().contains(e.getSlot())) {
-				return;
-			}
+        if (e.getCurrentItem() == null)
+            return;
 
-			e.setCancelled(true);
-			menu.onInventoryClick(e);
+        if (menu.getTakableSlot().contains(e.getSlot()))
+            return;
 
-			ItemBuilder itemClicked = menu.getContent().get(e.getSlot());
+        e.setCancelled(true);
+        menu.onInventoryClick(e);
 
-			if (itemClicked != null && itemClicked.isBackButton()) {
-				Player player = (Player) e.getWhoClicked();
-				Menu previous = MenuLib.popAndGetPreviousMenu(player);
-				if (previous != null) {
-					previous.open();
-				}
-				return;
-			}
+        ItemBuilder itemClicked = menu.getContent().get(e.getSlot());
 
-			try {
-				itemClickEvents.forEach((menu1, itemStackConsumerMap) -> {
-					if (menu1.equals(menu)) {
-						itemStackConsumerMap.forEach((itemBuilder, inventoryClickEventConsumer) -> {
-							if (itemBuilder.equals(e.getCurrentItem())) {
-								inventoryClickEventConsumer.accept(e);
-							}
-						});
-					}
-				});
-			} catch (Exception ignore) {
+        if (itemClicked != null && itemClicked.isBackButton()) {
+            Player player = (Player) e.getWhoClicked();
+            Menu previous = MenuLib.popAndGetPreviousMenu(player);
+            if (previous != null) {
+                previous.open();
+            }
+            return;
+        }
 
-			}
-		}
-	}
+        Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = menu.getItemClickEvents();
+        if (itemClickEvents.isEmpty())
+            return;
 
-	/**
-	 * Handles the event that occurs when a player closes an inventory associated with a {@link Menu}.
-	 */
-	@EventHandler
-	public void onClose(InventoryCloseEvent e) {
-		if (e.getInventory().getHolder() instanceof PaginatedMenu menu) {
-			menu.onClose(e);
-		}
-		if (e.getInventory().getHolder() instanceof Menu menu) {
-			menu.onClose(e);
-			Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-				if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Menu)) {
-					Player player = (Player) e.getPlayer();
-					MenuLib.clearHistory(player);
-				}
-			}, 1L);
-		}
-	}
+        for (Map.Entry<ItemStack, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
+            if (entry.getKey().equals(e.getCurrentItem()))
+                entry.getValue().accept(e);
+        }
+    }
+
+    /**
+     * Handles the event that occurs when a player closes an inventory associated with a {@link Menu}.
+     */
+    @EventHandler
+    public void onClose(InventoryCloseEvent e) {
+        if (e.getInventory().getHolder(false) instanceof PaginatedMenu menu)
+            menu.onClose(e);
+
+        if (e.getInventory().getHolder(false) instanceof Menu menu) {
+            menu.onClose(e);
+            Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+                if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Menu)) {
+                    Player player = (Player) e.getPlayer();
+                    MenuLib.clearHistory(player);
+                }
+            }, 1L);
+        }
+    }
 }
