@@ -46,9 +46,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Pre-warm Gradle dependencies
-        run: ./gradlew dependencies --no-daemon --stacktrace --build-cache
-
       - name: Run Tests with Gradle
         run: ./gradlew test --no-daemon --stacktrace
 
@@ -92,9 +89,6 @@ jobs:
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
-
-      - name: Pre-warm Gradle dependencies
-        run: ./gradlew dependencies --no-daemon --stacktrace --build-cache
 
       - name: Build with snapshot version
         env:
