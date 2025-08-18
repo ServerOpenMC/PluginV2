@@ -94,7 +94,7 @@ jobs:
         env:
           SNAPSHOT: true
           GITHUB_SHA: ${{ github.sha }}
-        run: ./gradlew jar --no-daemon --stacktrace
+        run: ./gradlew jar --no-daemon --stacktrace --build-cache --parallel --configure-on-demand -x test -x check
 
       - name: Upload Plugin JAR
         uses: actions/upload-artifact@v4
