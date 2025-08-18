@@ -19,7 +19,6 @@ import fr.openmc.core.features.city.sub.mayor.perks.event.IdyllicRain;
 import fr.openmc.core.features.city.sub.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.sub.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -50,11 +49,12 @@ public class MayorLawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
-        } else {
-            return "Menu des Lois";
-        }
+        return "Menu des Lois";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -73,8 +73,8 @@ public class MayorLawMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -82,7 +82,7 @@ public class MayorLawMenu extends Menu {
 
         CityLaw law = city.getLaw();
 
-        Supplier<ItemStack> pvpItemSupplier = () -> {
+        Supplier<ItemBuilder> pvpItemSupplier = () -> {
             String nameLawPVP = law.isPvp() ? "§cDésactiver §7le PVP" : "§4Activer §7le PVP";
             List<Component> loreLawPVP = new ArrayList<>(List.of(
                     Component.text("§7Cette §1loi " + (law.isPvp() ? "§4active" : "§cdésactive") + " §7le PVP dans toute la §dVille"),
@@ -129,7 +129,7 @@ public class MayorLawMenu extends Menu {
             inventory.put(19, pvpItemSupplier.get());
         }
 
-        Supplier<ItemStack> warpItemSupplier = () -> {
+        Supplier<ItemBuilder> warpItemSupplier = () -> {
             Location warpLoc = law.getWarp();
 
             List<Component> loreLawWarp;
@@ -182,7 +182,7 @@ public class MayorLawMenu extends Menu {
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         }
 
-        Supplier<ItemStack> announceItemSupplier = () -> {
+        Supplier<ItemBuilder> announceItemSupplier = () -> {
             List<Component> loreLawAnnounce = new ArrayList<>(List.of(
                     Component.text("§7Cette §1loi §7permet d'émettre un message dans toute la ville!")
             ));
@@ -240,7 +240,7 @@ public class MayorLawMenu extends Menu {
 
         Perks perkEvent = PerkManager.getPerkEvent(mayor);
         if (PerkManager.getPerkEvent(mayor) != null) {
-            Supplier<ItemStack> perkEventItemSupplier = () -> {
+            Supplier<ItemBuilder> perkEventItemSupplier = () -> {
                 ItemStack iaPerkEvent = perkEvent.getItemStack();
                 String namePerkEvent = perkEvent.getName();
                 List<Component> lorePerkEvent = new ArrayList<>(perkEvent.getLore());
@@ -356,12 +356,10 @@ public class MayorLawMenu extends Menu {
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu du Mandat du Maire"),
+                    Component.text("§7Vous allez retourner au Menu Précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> {
-            new MayorMandateMenu(player).open();
-        }));
+        }, true));
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Maires !"),
@@ -372,7 +370,7 @@ public class MayorLawMenu extends Menu {
         inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
         return inventory;
     }

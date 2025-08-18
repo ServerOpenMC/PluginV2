@@ -70,6 +70,11 @@ public class ColorVariantsMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
+        return "Menu des variantes de couleur pour " + originalItem.getName();
+    }
+
+    @Override
+    public String getTexture() {
         return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop_items:");
     }
 
@@ -82,8 +87,8 @@ public class ColorVariantsMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
 
         String baseType = originalItem.getBaseType();
         List<Material> variants;
@@ -108,7 +113,7 @@ public class ColorVariantsMenu extends Menu {
         ItemMeta baseMeta = baseItemStack.getItemMeta();
         baseMeta.displayName(Component.text("§7" + getFormattedTypeName(baseType)));
         baseItemStack.setItemMeta(baseMeta);
-        content.put(4, baseItemStack);
+        content.put(4, new ItemBuilder(this, baseItemStack));
 
         for (int i = 0; i < maxVariants; i++) {
             Material variant = variants.get(i);

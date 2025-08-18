@@ -24,7 +24,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -42,6 +41,11 @@ public class HomeConfigMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
+        return "Menu des Homes - Configuration";
+    }
+
+    @Override
+    public String getTexture() {
         return FontImageWrapper.replaceFontImages("§r§f:offset_-8::omc_homes_menus_home_settings:");
     }
 
@@ -51,16 +55,16 @@ public class HomeConfigMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
         Player player = getOwner();
 
-        content.put(4, home.getIconItem());
+        content.put(4, new ItemBuilder(this, home.getIconItem()));
 
         content.put(20, new ItemBuilder(this, HomeIconRegistry.getRandomIcon().getItemStack(), itemMeta -> {
             itemMeta.displayName(Component.text("§aChanger l'icône"));
             itemMeta.lore(List.of(Component.text("§7■ §aClique §2gauche §apour changer l'icône de votre home")));
-        }).setNextMenu(new HomeChangeIconMenu(player, home)));
+        }).setOnClick(inventoryClickEvent -> new HomeChangeIconMenu(player, home).open()));
 
         content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
             itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
@@ -99,9 +103,9 @@ public class HomeConfigMenu extends Menu {
             content.put(24, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), itemMeta -> {
                 itemMeta.displayName(Component.text(CustomFonts.getBest("omc_homes:bin", "§c🗑") + " §cSupprimer le home"));
                 itemMeta.lore(List.of(Component.text("§7■ §cClique §4gauche §cpour supprimer votre home")));
-            }).setNextMenu(new HomeDeleteConfirmMenu(getOwner(), home)));
+            }).setOnClick(inventoryClickEvent -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
 
-        content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setNextMenu(new HomeMenu(player)));
+        content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn(), true));
         content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
 
         return content;

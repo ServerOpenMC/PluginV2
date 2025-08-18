@@ -34,11 +34,12 @@ public class ContributionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
-        } else {
-            return "Menu des Contests - Contribution";
-        }
+        return "Menu des Contests - Contribution";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
     }
 
     @Override
@@ -52,9 +53,9 @@ public class ContributionMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
         Player player = getOwner();
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
             String campName = ContestPlayerManager.getPlayerCampName(player);
             NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
@@ -101,7 +102,7 @@ public class ContributionMenu extends Menu {
         inventory.put(11, new ItemBuilder(this, shellContest, itemMeta -> {
             itemMeta.displayName(Component.text("§7Les Trades"));
             itemMeta.lore(loreTrade);
-        }).setNextMenu(new TradeMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new TradeMenu(getOwner()).open()));
 
         inventory.put(15, new ItemBuilder(this, m, itemMeta -> {
             itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
@@ -142,7 +143,7 @@ public class ContributionMenu extends Menu {
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
         return inventory;
     }

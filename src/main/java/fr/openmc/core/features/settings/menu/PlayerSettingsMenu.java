@@ -58,8 +58,8 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> buttons = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> buttons = new HashMap<>();
 
         buttons.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), meta -> {
             meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
@@ -94,11 +94,16 @@ public class PlayerSettingsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
+        return "Menu des Paramètres";
+    }
+
+    @Override
+    public String getTexture() {
         return FontImageWrapper.replaceFontImages("§r§f:offset_-8::settings:");
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> content = new ArrayList<>();
 
         for (SettingType settingType : SettingType.values()) {

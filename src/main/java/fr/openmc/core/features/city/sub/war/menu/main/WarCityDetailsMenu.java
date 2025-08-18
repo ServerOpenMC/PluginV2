@@ -39,7 +39,12 @@ public class WarCityDetailsMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu de guerre - " + city.getName();
+        return "Menu de Guerre - Details de " + city.getName();
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -53,8 +58,8 @@ public class WarCityDetailsMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
@@ -120,10 +125,10 @@ public class WarCityDetailsMenu extends Menu {
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de Guerre"),
+                    Component.text("§7Vous allez retourner au Menu Précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> new MainWarMenu(getOwner()).open()));
+        }, true));
 
         return map;
     }

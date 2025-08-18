@@ -42,6 +42,11 @@ public class ConfirmMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
+        return "Menu de Confirmation de l'AdminShop";
+    }
+
+    @Override
+    public String getTexture() {
         return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop:");
     }
 
@@ -54,8 +59,8 @@ public class ConfirmMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
         double pricePerUnit = isBuying ? shopItem.getActualBuyPrice() : shopItem.getActualSellPrice();
         double totalPrice = pricePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
@@ -68,7 +73,9 @@ public class ConfirmMenu extends Menu {
 
         content.put(9, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(Component.text("§cAnnuler"));
-        }).setNextMenu(previousMenu));
+        }).setOnClick(inventoryClickEvent -> {
+            previousMenu.open();
+        }));
 
         content.put(10, createQuantityButton("-64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
             if (quantity > 64) quantity -= 64;
@@ -141,7 +148,7 @@ public class ConfirmMenu extends Menu {
      * @param action    The action to perform when the button is clicked.
      * @return The created item stack.
      */
-    private ItemStack createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
+    private ItemBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
         return new ItemBuilder(this, itemStack, meta ->
             meta.displayName(Component.text((text.contains("+") ? "§aAjouter " : "§cRetirer ") + text.replace("+", "").replace("-", ""))))
             .setItemId("quantity_" + text.replace("+", "plus").replace("-", "minus"))

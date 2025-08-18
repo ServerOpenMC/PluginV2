@@ -7,7 +7,6 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -15,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -28,11 +26,12 @@ public class VoteMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
-        } else {
-            return "Menu des Contests - Vote";
-        }
+        return "Menu des Contests - Vote";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
     }
 
     @Override
@@ -47,9 +46,9 @@ public class VoteMenu extends Menu {
 
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
         Player player = getOwner();
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
             String camp1Name = ContestManager.data.getCamp1();
             String camp2Name = ContestManager.data.getCamp2();
@@ -173,7 +172,7 @@ public class VoteMenu extends Menu {
         inventory.put(35, new ItemBuilder(this, Material.EMERALD, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(player)));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(player).open()));
 
         return inventory;
     }

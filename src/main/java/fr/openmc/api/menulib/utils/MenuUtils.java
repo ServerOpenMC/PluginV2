@@ -68,7 +68,7 @@ public class MenuUtils {
 	 * @param itemSupplier Supplier of Item
 	 * @return The ItemBuilder with the name set
 	 */
-	public static BukkitRunnable runDynamicItem(Player player, Menu menu, int slot, Supplier<ItemStack> itemSupplier) {
+	public static BukkitRunnable runDynamicItem(Player player, Menu menu, int slot, Supplier<ItemBuilder> itemSupplier) {
 		return new BukkitRunnable() {
 			@Override
 			public void run() {

@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -24,7 +23,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -47,11 +45,12 @@ public class MayorColorMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
-        } else {
-            return "Menu des Maires - Couleur";
-        }
+        return "Menu des Maires - Couleur";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -70,8 +69,8 @@ public class MayorColorMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());

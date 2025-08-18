@@ -54,7 +54,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
@@ -81,8 +81,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
         map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
         map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
@@ -91,7 +91,12 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Détails des membres de " + city.getName();
+        return "Menu des détails des Membres de " + city.getName();
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override

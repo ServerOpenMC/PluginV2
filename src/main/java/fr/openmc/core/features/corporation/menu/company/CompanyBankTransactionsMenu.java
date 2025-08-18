@@ -10,7 +10,6 @@ import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.data.TransactionData;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -56,7 +55,7 @@ public class CompanyBankTransactionsMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         List<Long> timestamps = new ArrayList<>(company.getTransactions().getQueue().keySet());
         List<TransactionData> transactions = new ArrayList<>(company.getTransactions().getQueue().values());
@@ -82,14 +81,14 @@ public class CompanyBankTransactionsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> buttons = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> buttons = new HashMap<>();
         buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
                 .setCloseButton());
         ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
         if ((getPage() == 0 && isLastPage()) || company.getShops().isEmpty()) {
             buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cRetour"))
-                    .setNextMenu(new CompanyMenu(getOwner(), company, false)));
+                    .setOnClick(inventoryClickEvent -> new CompanyMenu(getOwner(), company, false).open()));
             buttons.put(50, nextPageButton);
         } else {
             buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
@@ -101,11 +100,12 @@ public class CompanyBankTransactionsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-11::paginate_company_menu:");
-        } else {
-            return "Transactions de l'entreprise";
-        }
+        return "Transactions de l'entreprise";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::paginate_company_menu:");
     }
 
     @Override

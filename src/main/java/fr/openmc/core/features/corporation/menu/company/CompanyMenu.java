@@ -10,7 +10,6 @@ import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -54,7 +53,7 @@ public class CompanyMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         Set<UUID> merchants = company.getMerchants().keySet();
         List<ItemStack> items = new ArrayList<>();
         for (UUID merchant : merchants) {
@@ -71,11 +70,11 @@ public class CompanyMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> buttons = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> buttons = new HashMap<>();
 
         ItemBuilder closeButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer")).setCloseButton();
-        ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§7Retour")).setBackButton();
+        ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§7Retour"), true);
 
         buttons.put(49, isBackButton ? backButton : closeButton);
 
@@ -85,7 +84,7 @@ public class CompanyMenu extends PaginatedMenu {
         buttons.put(50, new ItemBuilder(this,  CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"))
                 .setNextPageButton());
 
-        ItemStack ownerItem;
+        ItemBuilder ownerItem;
 
         if (company.getOwner().isPlayer()) {
             ownerItem = new ItemBuilder(this, company.getHead(), itemMeta -> {
@@ -125,8 +124,8 @@ public class CompanyMenu extends PaginatedMenu {
         });
 
         if (company.isIn(getOwner().getUniqueId())) {
-            buttons.put(26, bankButton.setNextMenu(new CompanyBankTransactionsMenu(getOwner(), company)));
-            buttons.put(35, shopsButton.setNextMenu(new ShopManageMenu(getOwner(), company)));
+            buttons.put(26, bankButton.setOnClick(inventoryClickEvent -> new CompanyBankTransactionsMenu(getOwner(), company).open()));
+            buttons.put(35, shopsButton.setOnClick(inventoryClickEvent -> new ShopManageMenu(getOwner(), company).open()));
         } else {
             buttons.put(26, bankButton);
             buttons.put(35, shopsButton);
@@ -137,11 +136,12 @@ public class CompanyMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-11::company_baltop_menu:");
-        } else {
-            return company.getName();
-        }
+        return "Menu de " + company.getName();
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::company_baltop_menu:");
     }
 
     @Override

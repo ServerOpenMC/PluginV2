@@ -10,7 +10,6 @@ import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,11 +32,12 @@ public class CompanyBaltopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-11::company_baltop_menu:");
-        } else {
-            return "Baltop des entreprises";
-        }
+        return "Baltop des entreprises";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::company_baltop_menu:");
     }
 
     @Override
@@ -56,10 +56,10 @@ public class CompanyBaltopMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
         List<Company> companies = CompanyManager.companies;
         companies.sort((company1, company2) -> Double.compare(company2.getTurnover(), company1.getTurnover()));
-        Map<Integer, ItemStack> content = new HashMap<>();
+        Map<Integer, ItemBuilder> content = new HashMap<>();
         content.put(37, new ItemBuilder(this, Material.BARREL, itemMeta -> {
             itemMeta.setDisplayName("§6§l" + "Baltop des entreprises");
             itemMeta.lore(List.of(

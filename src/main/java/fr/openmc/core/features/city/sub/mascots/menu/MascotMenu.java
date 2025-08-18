@@ -10,7 +10,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -57,7 +56,12 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§cMascotte (niv. " + city.getMascot().getLevel() + ")";
+        return "Menu des §cMascotte (niv. " + city.getMascot().getLevel() + ")";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -71,8 +75,8 @@ public class MascotMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         Mascot mascot = city.getMascot();
@@ -103,7 +107,7 @@ public class MascotMenu extends Menu {
             new MascotsSkinMenu(player, this.mascot.getMascotEgg(), this.mascot).open();
         }));
 
-        Supplier<ItemStack> moveMascotItemSupplier = () -> {
+        Supplier<ItemBuilder> moveMascotItemSupplier = () -> {
             List<Component> lorePosMascot;
 
             if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
@@ -253,14 +257,11 @@ public class MascotMenu extends Menu {
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au menu des villes")));
-        }).setOnClick(event -> {
-            CityMenu menu = new CityMenu(player);
-            menu.open();
-        }));
+            itemMeta.lore(List.of(Component.text("§7Retourner au Menu Précédent")));
+        }, true));
 
         if (city.isImmune()) {
-            Supplier<ItemStack> immunityItemSupplier = () -> {
+            Supplier<ItemBuilder> immunityItemSupplier = () -> {
                 List<Component> lore = List.of(
                         Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),
                         Component.text("§cTemps restant §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity"))),

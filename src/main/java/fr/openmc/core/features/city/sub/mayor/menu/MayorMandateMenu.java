@@ -8,12 +8,10 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -34,11 +32,12 @@ public class MayorMandateMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
-        } else {
-            return "Menu des Maires - Mandat";
-        }
+        return "Menu des Maires - Mandat";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -57,8 +56,8 @@ public class MayorMandateMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -154,12 +153,10 @@ public class MayorMandateMenu extends Menu {
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu des Villes"),
+                    Component.text("§7Vous allez retourner au Menu Précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> {
-            new CityMenu(player).open();
-        }));
+        }, true));
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Maires !"),
@@ -170,7 +167,7 @@ public class MayorMandateMenu extends Menu {
         inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
         return inventory;
     }

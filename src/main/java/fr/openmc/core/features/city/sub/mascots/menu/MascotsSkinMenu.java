@@ -3,7 +3,6 @@ package fr.openmc.core.features.city.sub.mascots.menu;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotType;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -28,8 +27,8 @@ import static fr.openmc.core.features.city.sub.mascots.MascotsManager.changeMasc
 
 public class MascotsSkinMenu extends Menu {
 
-    final Sound selectSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
-    final Sound deniedSound = Sound.BLOCK_NOTE_BLOCK_BASS;
+    private final Sound selectSound = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+    private final Sound deniedSound = Sound.BLOCK_NOTE_BLOCK_BASS;
     private final Material egg;
     private final Mascot mascots;
 
@@ -45,6 +44,11 @@ public class MascotsSkinMenu extends Menu {
     }
 
     @Override
+    public String getTexture() {
+        return null;
+    }
+
+    @Override
     public @NotNull InventorySize getInventorySize() {
         return InventorySize.NORMAL;
     }
@@ -55,16 +59,16 @@ public class MascotsSkinMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         for (MascotType mascotType : MascotType.values()) {
             map.put(mascotType.getSlot(), createMascotButton(mascotType));
         }
 
         map.put(18, new ItemBuilder(this, Material.ARROW, meta -> {
             meta.displayName(Component.text("§aRetour"));
-            meta.lore(List.of(Component.text("§7Retourner au menu de votre mascotte")));
-        }).setOnClick(event -> new CityMenu(getOwner()).open()));
+            meta.lore(List.of(Component.text("§7Retourner au Menu Précédent")));
+        }, true));
 
         return map;
     }
@@ -80,23 +84,22 @@ public class MascotsSkinMenu extends Menu {
     }
 
     private ItemStack createMascotButton(MascotType type) {
-        return new ItemBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg()))).setOnClick(event -> {
-            if (!egg.equals(type.getSpawnEgg())) {
-                int aywenite = type.getPrice();
-                Material matAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest().getType();
-
-                ItemStack ISAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
-                if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
-                    changeMascotsSkin(mascots, type.getEntityType(), getOwner(), aywenite);
-                    getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
-                    getOwner().closeInventory();
-                } else {
-                    MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
-                    getOwner().closeInventory();
-                }
-            } else {
-                getOwner().playSound(getOwner().getLocation(), deniedSound, 1, 1);
-            }
+        return new ItemBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg())))
+                .setOnClick(event -> {
+                    if (!egg.equals(type.getSpawnEgg())) {
+                        int aywenite = type.getPrice();
+                        ItemStack ISAywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+                        if (ItemUtils.hasEnoughItems(getOwner(), ISAywenite, aywenite)) {
+                            changeMascotsSkin(mascots, type.entityType(), getOwner(), aywenite);
+                            getOwner().playSound(getOwner().getLocation(), selectSound, 1, 1);
+                            getOwner().closeInventory();
+                        } else {
+                            MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
+                            getOwner().closeInventory();
+                        }
+                    } else {
+                        getOwner().playSound(getOwner().getLocation(), deniedSound, 1, 1);
+                    }
         });
     }
 }

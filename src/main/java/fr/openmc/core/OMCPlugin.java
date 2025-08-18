@@ -11,6 +11,7 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.displays.TabList;
@@ -145,6 +146,9 @@ public class OMCPlugin extends JavaPlugin {
 
         // - Settings
         PlayerSettingsManager.saveAllSettings();
+
+        // Notation des Villes
+        NotationManager.saveNotations();
 
         // - Maires
         MayorManager.saveMayorConstant();

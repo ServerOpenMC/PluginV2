@@ -5,7 +5,6 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -49,11 +48,12 @@ public class ConfirmMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (ItemsAdderApi.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§r§f:offset_-8::confirm_menu:");
-        } else {
-            return "Confirmation";
-        }
+        return "Menu de Confirmation";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::confirm_menu:");
     }
 
     @Override
@@ -72,8 +72,8 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);

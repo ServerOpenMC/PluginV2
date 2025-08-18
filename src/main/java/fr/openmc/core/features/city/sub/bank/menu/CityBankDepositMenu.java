@@ -35,7 +35,12 @@ public class CityBankDepositMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Banque de Ville - Remplir";
+        return "Menu de la banque de Ville - Remplir";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -49,8 +54,8 @@ public class CityBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -153,13 +158,10 @@ public class CityBankDepositMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de la Banque de votre ville"),
+                    Component.text("§7Vous allez retourner au Menu Précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> {
-            CityBankMenu menu = new CityBankMenu(player);
-            menu.open();
-        }));
+        }, true));
 
         return inventory;
     }

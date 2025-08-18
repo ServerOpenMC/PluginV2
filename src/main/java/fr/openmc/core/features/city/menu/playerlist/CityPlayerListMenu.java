@@ -62,7 +62,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
@@ -164,10 +164,16 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
+    public Map<Integer, ItemBuilder> getButtons() {
         Player player = getOwner();
-        Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
+        Map<Integer, ItemBuilder> map = new HashMap<>();
+        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> {
+            itemMeta.itemName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(
+                    Component.text("§7Vous allez retourner au menu précédent"),
+                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+            ));
+        }, true));
         map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
         map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
         map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_search")).getBest(), itemMeta -> {
@@ -189,6 +195,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public @NotNull String getName() {
         return "Menu des Villes - Membres";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
