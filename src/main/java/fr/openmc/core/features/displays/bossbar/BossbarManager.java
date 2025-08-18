@@ -74,7 +74,7 @@ public class BossbarManager {
         }
 
         if (helpMessages.isEmpty()) {
-            OMCPlugin.getInstance().getLogger().warning("Aucun message trouvé - vérifiez bossbars.yml");
+            OMCPlugin.getInstance().getSLF4JLogger().warn("No messages found in bossbars.yml.");
         }
     }
 
@@ -233,7 +233,7 @@ public class BossbarManager {
             config.set("messages", serializedMessages);
             config.save(configFile);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().severe("Erreur lors de la sauvegarde des messages: " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save bossbar messages to config: {}", e.getMessage(), e);
         }
     }
 

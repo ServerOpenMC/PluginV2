@@ -1,5 +1,6 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
@@ -7,7 +8,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
-import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -46,7 +46,7 @@ public class JoinMessageListener implements Listener {
                 }
             }
         }).exceptionally(throwable -> {
-            OMCPlugin.getInstance().getLogger().severe("An error occurred while loading friends of " + player.getName() + " : " + throwable.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 
@@ -104,7 +104,7 @@ public class JoinMessageListener implements Listener {
                 }
             }
         }).exceptionally(throwable -> {
-            OMCPlugin.getInstance().getLogger().severe("An error occurred while loading friends of " + player.getName() + " : " + throwable.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 

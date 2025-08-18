@@ -143,7 +143,7 @@ public class AccountDetectionManager implements Listener {
         try {
             DiscordWebhook.sendMessage(webhookUrl, "Double compte détecté: `" + firstPlayer.getName() + "` et `" + secondPlayer.getName() + "`");
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("Impossible d'envoyer le message sur Discord: " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Unable to send message to Discord: {}", e.getMessage(), e);
         }
     }
 
@@ -163,7 +163,7 @@ public class AccountDetectionManager implements Listener {
                     "Vpn détecté: `" + player.getName() + "` (flags: " + detectedFlags + "). Pour plus d'information exécutez `/accountdetection check " + player.getName() + "` sur le serveur minecraft."
             );
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("Impossible d'envoyer le message sur Discord: " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Unable to send message to Discord: {}", e.getMessage(), e);
         }
     }
 
@@ -190,7 +190,7 @@ public class AccountDetectionManager implements Listener {
                         handleVpn(player, flags.toString());
                     }
                 } catch (Exception e) {
-                    OMCPlugin.getInstance().getLogger().warning("Impossible de vérifier l'adresse IP: " + e.getMessage());
+                    OMCPlugin.getInstance().getSLF4JLogger().warn("An error occurred while verifying IP address for {}: {}", player.getName(), e.getMessage(), e);
                 }
             }
         }.runTaskAsynchronously(OMCPlugin.getInstance());

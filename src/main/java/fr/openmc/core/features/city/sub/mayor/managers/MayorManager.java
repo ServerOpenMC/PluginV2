@@ -6,6 +6,8 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.hooks.FancyNpcsHook;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CPermission;
@@ -22,8 +24,6 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.api.hooks.FancyNpcsHook;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -342,12 +342,12 @@ public class MayorManager {
     }
 
     public static void initPhase2() {
-        OMCPlugin.getInstance().getLogger().info("MAYOR - INIT PHASE 2");
+        OMCPlugin.getInstance().getSLF4JLogger().debug("MAYOR - INIT PHASE 2");
         phaseMayor = 2;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : CityManager.getCities()) {
-            OMCPlugin.getInstance().getLogger().info("- City : " + city.getName());
+            OMCPlugin.getInstance().getSLF4JLogger().debug("- City : " + city.getName());
             runSetupMayor(city);
 
             for (UUID uuid : city.getMembers()) {

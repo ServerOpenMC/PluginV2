@@ -103,7 +103,7 @@ public class HologramLoader {
         String hologramName = file.getName().replace(".yml", "");
         Location hologramLocation = hologramConfig.getLocation("location");
         if (hologramLocation == null) {
-            OMCPlugin.getInstance().getLogger().warning("Hologram file " + file.getName() + " has invalid or missing location.");
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Hologram {} has no location set in its config file, skipping.", hologramName);
             return;
         }
 

@@ -1,8 +1,8 @@
 package fr.openmc.core;
 
 import com.j256.ormlite.logger.LoggerFactory;
-import fr.openmc.api.hooks.*;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.hooks.*;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
@@ -47,9 +47,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.slf4j.Logger;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 public class OMCPlugin extends JavaPlugin {
     @Getter
@@ -135,8 +135,6 @@ public class OMCPlugin extends JavaPlugin {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
-
-        getLogger().info("Plugin activé");
     }
 
     @Override
@@ -184,20 +182,18 @@ public class OMCPlugin extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.closeInventory();
         }
-
-        getLogger().info("Plugin désactivé");
     }
 
     private void logLoadMessage() {
-        Logger log = getLogger();
+        Logger log = getSLF4JLogger();
 
         String pluginVersion = getPluginMeta().getVersion();
         String javaVersion = System.getProperty("java.version");
         String server = Bukkit.getName() + " " + Bukkit.getVersion();
 
-        log.info("\u001B[1;35m   ____    _____   ______   _   _   __  __   _____       " + "\u001B[0;90mOpenMC " + pluginVersion + "\u001B[0m");
-        log.info("\u001B[1;35m  / __ \\  |  __ \\ |  ____| | \\ | | |  \\/  | / ____|      " + "\u001B[0;90m" + server + "\u001B[0m");
-        log.info("\u001B[1;35m | |  | | | |__) || |__    |  \\| | | \\  / || |           " + "\u001B[0;90mJava " + javaVersion + "\u001B[0m");
+        log.info("\u001B[1;35m   ____    _____   ______   _   _   __  __   _____       \u001B[0;90mOpenMC {}\u001B[0m", pluginVersion);
+        log.info("\u001B[1;35m  / __ \\  |  __ \\ |  ____| | \\ | | |  \\/  | / ____|      \u001B[0;90m{}\u001B[0m", server);
+        log.info("\u001B[1;35m | |  | | | |__) || |__    |  \\| | | \\  / || |           \u001B[0;90mJava {}\u001B[0m", javaVersion);
         log.info("\u001B[1;35m | |  | | |  ___/ |  __|   | . ` | | |\\/| || |          \u001B[0m");
         log.info("\u001B[1;35m | |__| | | |     | |____  | |\\  | | |  | || |____      \u001B[0m");
         log.info("\u001B[1;35m  \\____/  |_|     |______| |_| \\_| |_|  |_| \\_____|   \u001B[0m");
@@ -221,6 +217,6 @@ public class OMCPlugin extends JavaPlugin {
         String version = enabled ? " v" + plugin.getPluginMeta().getVersion() : "";
         String label = optional ? " (facultatif)" : "";
 
-        getLogger().info("  " + color + icon + " " + name + version + label + "\u001B[0m");
+        getSLF4JLogger().info("  {}{} {}{}{}\u001B[0m", color, icon, name, version, label);
     }
 }

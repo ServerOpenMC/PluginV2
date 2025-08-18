@@ -184,10 +184,10 @@ public class BankManager {
         if (OMCPlugin.isUnitTestVersion()) return; // cette méthode bloque totalement le flux des tests. si quelqu'un fait les unit test des banques, merci de le prendre en compte.
         
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
+            OMCPlugin.getInstance().getSLF4JLogger().info("Applying all player interests...");
             applyAllPlayerInterests();
             CityBankManager.applyAllCityInterests();
-            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
+            OMCPlugin.getInstance().getSLF4JLogger().info("All player interests applied successfully.");
             updateInterestTimer();
 
         }, getSecondsUntilInterest() * 20); // 20 ticks per second (ideally)

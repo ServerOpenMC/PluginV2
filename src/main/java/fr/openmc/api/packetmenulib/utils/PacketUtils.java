@@ -27,7 +27,7 @@ public class PacketUtils {
             packet.getStructures().withType(Component.class).write(0, PaperAdventure.asVanilla(title));
             manager.sendServerPacket(player, packet);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("An error occurred while sending the open inventory packet to " + player.getName() + ": " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("An error occurred while sending the open inventory packet to {}: {}", player.getName(), e.getMessage(), e);
         }
 
     }
@@ -50,7 +50,7 @@ public class PacketUtils {
 
             manager.sendServerPacket(player, packet);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("An error occurred while sending the container content packet to " + player.getName() + ": " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("An error occurred while sending the container content packet to {}: {}", player.getName(), e.getMessage(), e);
         }
     }
 
@@ -62,8 +62,7 @@ public class PacketUtils {
 
             manager.sendServerPacket(player, packet);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("An error occurred while sending the close inventory packet to " + player.getName() + ": " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("An error occurred while sending the close inventory packet to {}: {}", player.getName(), e.getMessage(), e);
         }
-
     }
 }

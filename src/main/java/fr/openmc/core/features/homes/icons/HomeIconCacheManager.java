@@ -35,7 +35,7 @@ public class HomeIconCacheManager {
                     initializeCategoryCache(category);
 
                 initialized = true;
-                OMCPlugin.getInstance().getLogger().info("Initialized icon cache manager");
+                OMCPlugin.getInstance().getSLF4JLogger().info("Initialized icon cache manager");
             } catch (Exception e) {
                 throw new RuntimeException("Failed to initialize icon cache manager", e);
             }
@@ -56,7 +56,7 @@ public class HomeIconCacheManager {
                 ItemStack baseItem = icon.getItemStack().clone();
                 cachedItems.add(new CachedIconItem(icon, baseItem));
             } catch (Exception e) {
-                OMCPlugin.getInstance().getLogger().warning("Failed to create base item for icon: " + icon.id() + " - " + e.getMessage());
+                OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to create base item for icon: {} - {}", icon.id(), e.getMessage(), e);
             }
         }
 
@@ -129,7 +129,7 @@ public class HomeIconCacheManager {
                     ItemStack baseItem = icon.getItemStack().clone();
                     cachedItems.add(new CachedIconItem(icon, baseItem));
                 } catch (Exception e) {
-                    OMCPlugin.getInstance().getLogger().warning("Failed to create base item for icon: " + icon.id() + " - " + e.getMessage());
+                    OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to create base item for icon: {} - {}", icon.id(), e.getMessage(), e);
                 }
             }
 

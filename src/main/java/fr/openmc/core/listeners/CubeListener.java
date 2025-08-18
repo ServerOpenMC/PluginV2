@@ -84,8 +84,7 @@ public class CubeListener implements Listener {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            this.plugin.getLogger().severe("Failed to create the cube at " + location);
+            plugin.getSLF4JLogger().error("Error while creating cube at {}: {}", location, e.getMessage(), e);
         }
     }
 

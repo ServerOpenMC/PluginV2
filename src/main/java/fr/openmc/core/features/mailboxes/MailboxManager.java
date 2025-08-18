@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
@@ -30,8 +31,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 
@@ -94,8 +93,7 @@ public class MailboxManager {
             }
             letterDao.create(letters);
         } catch (SQLException | IOException e) {
-            Logger.getLogger(MailboxManager.class.getName()).log(Level.SEVERE,
-                    "Erreur lors de l'envoi des items batch à des joueurs hors ligne", e);
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline players: {}", e.getMessage(), e);
         }
     }
 

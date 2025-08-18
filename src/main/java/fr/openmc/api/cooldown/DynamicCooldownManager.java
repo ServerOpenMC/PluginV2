@@ -108,7 +108,7 @@ public class DynamicCooldownManager {
     }
 
     public static void saveCooldowns() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Saving cooldowns...");
 
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
@@ -121,7 +121,7 @@ public class DynamicCooldownManager {
             });
         });
 
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns réussie.");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Cooldowns saved successfully.");
     }
 
     /**
