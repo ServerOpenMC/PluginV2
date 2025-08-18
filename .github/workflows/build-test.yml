@@ -8,6 +8,7 @@ on:
       - "LICENSE"
       - "README.md"
       - "CODE_OF_CONDUCT.md"
+      - "CONTRIBUTING.md"
   push:
     paths-ignore:
       - ".github/**"
@@ -15,6 +16,7 @@ on:
       - "LICENSE"
       - "README.md"
       - "CODE_OF_CONDUCT.md"
+      - "CONTRIBUTING.md"
 
 jobs:
   test:
