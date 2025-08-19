@@ -263,7 +263,7 @@ public class CompanyManager {
             TableUtils.clearTable(connectionSource, CompanyMerchant.class);
             TableUtils.clearTable(connectionSource, Merchant.class);
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error clearing company tables: " + e.getMessage(), e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error clearing company tables: {}", e.getMessage(), e);
         }
 
         List<DBCompany> dbCompanies = new ArrayList<>();
@@ -288,7 +288,7 @@ public class CompanyManager {
             companyMerchantsDao.create(dbCompanyMerchants);
             merchantsDao.create(dbMerchants);
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving company data: " + e.getMessage(), e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving company data: {}", e.getMessage(), e);
         }
 
         OMCPlugin.getInstance().getSLF4JLogger().info("Company data saved successfully.");
@@ -304,7 +304,7 @@ public class CompanyManager {
             TableUtils.clearTable(connectionSource, DBShopSale.class);
             TableUtils.clearTable(connectionSource, ShopSupplier.class);
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error clearing shop tables: " + e.getMessage(), e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error clearing shop tables: {}", e.getMessage(), e);
         }
 
         List<DBShop> dbShops = new ArrayList<>();
@@ -390,7 +390,7 @@ public class CompanyManager {
                 }
             });
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving shop data: " + e.getMessage(), e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving shop data: {}", e.getMessage(), e);
         }
 
         OMCPlugin.getInstance().getSLF4JLogger().info("Shop data saved successfully.");

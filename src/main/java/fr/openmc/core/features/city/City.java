@@ -912,10 +912,12 @@ public class City {
     }
 
     /**
-     * Retrieves the notation of the city for a specific week.
-     * * @param weekStr The week string in the format "YYYY-WW" (e.g., "2023-01").
+     * Sets the notation of the city for a specific week.
      *
-     * @return The CityNotation object representing the city's notation for the specified week, or null if not found.
+     * @param weekStr          The week string in the format "YYYY-WW" (e.g., "2023-01").
+     * @param architecturalNote The architectural note for the city.
+     * @param coherenceNote    The coherence note for the city.
+     * @param description      A description of the notation.
      */
     public void setNotationOfWeek(String weekStr, double architecturalNote, double coherenceNote, String description) {
         NotationManager.createOrUpdateNotation(new CityNotation(cityUUID, architecturalNote, coherenceNote, description, weekStr));

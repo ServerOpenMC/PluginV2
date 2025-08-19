@@ -347,7 +347,7 @@ public class MayorManager {
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : CityManager.getCities()) {
-            OMCPlugin.getInstance().getSLF4JLogger().debug("- City : " + city.getName());
+            OMCPlugin.getInstance().getSLF4JLogger().debug("- City : {}", city.getName());
             runSetupMayor(city);
 
             for (UUID uuid : city.getMembers()) {

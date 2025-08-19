@@ -40,6 +40,7 @@ import java.util.function.Supplier;
 import static fr.openmc.core.features.city.sub.mascots.MascotsManager.movingMascots;
 import static fr.openmc.core.features.city.sub.mascots.MascotsManager.upgradeMascots;
 
+@SuppressWarnings("UnstableApiUsage")
 public class MascotMenu extends Menu {
 
     private static final int AYWENITE_REDUCE = 15;

@@ -296,7 +296,7 @@ public class CityTopMenu extends PaginatedMenu {
     /**
      * Enum representing the sorting types for the city top.
      */
-    private enum SortType {
+    public enum SortType {
         MONEY,
         CLAIM,
         POPULATION,

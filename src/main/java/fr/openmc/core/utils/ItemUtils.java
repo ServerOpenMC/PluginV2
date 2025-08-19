@@ -295,7 +295,7 @@ public class ItemUtils {
             ItemStack stack = contents[i];
             if (stack == null) continue;
 
-            boolean matches = false;
+            boolean matches;
 
             if (customItem != null) {
                 CustomStack customStack = CustomStack.byItemStack(stack);

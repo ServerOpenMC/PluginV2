@@ -53,12 +53,12 @@ public class MascotsSoundListener {
                         .map(entity -> MascotsManager.mascotsByEntityUUID.get(entity.getUniqueId()))
                         .toList();
 
-                mascotsNear.forEach(mascot -> {
-                    if (mascot.getEntity().getType().equals(EntityType.fromName(splitedSound[1].toUpperCase()))) {
+                for (Mascot mascot : mascotsNear) {
+                    if (mascot.getEntity().getType().equals(EntityType.valueOf(splitedSound[1].toUpperCase()))) {
                         event.setCancelled(true);
-                        return;
+                        break;
                     }
-                });
+                }
             }
         });
     }

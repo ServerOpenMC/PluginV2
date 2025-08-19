@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+@SuppressWarnings("UnstableApiUsage")
 @Getter
 public enum Perks {
     FOU_DE_RAGE(
@@ -56,7 +57,7 @@ public enum Perks {
             ),
             ItemStack.of(Material.CHORUS_FRUIT)
     ),
-    BUISNESS_MAN(
+    BUSINESS_MAN(
             5,
             PerkType.BASIC,
             0,
