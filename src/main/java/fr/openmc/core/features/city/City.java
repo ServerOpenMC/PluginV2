@@ -920,15 +920,4 @@ public class City {
     public void setNotationOfWeek(String weekStr, double architecturalNote, double coherenceNote, String description) {
         NotationManager.createOrUpdateNotation(new CityNotation(cityUUID, architecturalNote, coherenceNote, description, weekStr));
     }
-
-    // ==================== City Milestone Methods ====================
-
-    /**
-     * Retrieves the power points of the city.
-     *
-     * @return The power points of the city, or 0 if not found.
-     */
-    public boolean getLevel() {
-        return WarManager.isCityInWar(cityUUID);
-    }
 }
