@@ -13,7 +13,7 @@ public class ShutUpOrmLite extends LocalLogBackend {
 
     @Override
     public boolean isLevelEnabled(Level level) {
-        return true;
+        return Level.INFO.isEnabled(level);
     }
 
     @Override
