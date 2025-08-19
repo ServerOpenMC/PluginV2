@@ -2,17 +2,18 @@ package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -63,13 +64,14 @@ public class CachedIconItem {
      * @param baseItem The base ItemStack to clone and modify.
      * @return A new ItemStack with the display name, lore, and enchantments applied.
      */
+    @SuppressWarnings("UnstableApiUsage")
     private ItemStack createSelectedItemWithBuilder(ItemStack baseItem) {
         ItemStack item = baseItem.clone();
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             meta.displayName(displayName);
             meta.addEnchant(Enchantment.SHARPNESS, 5, true);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.ENCHANTMENTS).build());
             meta.lore(List.of(selectedLore));
             item.setItemMeta(meta);
         }

@@ -18,7 +18,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -73,9 +72,9 @@ public class PerkChoiceMenu extends PaginatedMenu {
             ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
                 itemMeta.customName(Component.text(newPerk.getName()));
                 itemMeta.lore(newPerk.getLore());
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
+            })
+                    .hide(newPerk.getToHide())
+                    .setOnClick(inventoryClickEvent -> {
                 boolean isPerkEvent = (newPerk.getType() == PerkType.EVENT) &&
                         (
                                 ("perk1".equals(perkNumber) && ((perk2 != null && perk2.getType() == PerkType.EVENT) || (perk3 != null && perk3.getType() == PerkType.EVENT))) ||

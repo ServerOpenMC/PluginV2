@@ -429,7 +429,7 @@ public class ItemUtils {
     /**
      * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
      * Deux items sont considérés similaires s'ils ont le même type, la même quantité,
-     * et les mêmes métadonnées (nom, lore, etc.). Permet de ne pas vérifier les ItemFlags.
+     * et les mêmes métadonnées (nom, lore, etc.). Permet de ne pas vérifier le component TooltipDisplay.
      *
      * @param item1 le premier item à comparer
      * @param item2 le second item à comparer

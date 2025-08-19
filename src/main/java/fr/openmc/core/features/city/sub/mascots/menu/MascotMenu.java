@@ -18,6 +18,7 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -26,7 +27,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -96,21 +96,21 @@ public class MascotMenu extends Menu {
             itemMeta.displayName(Component.text("§7Le Skin de la §cMascotte"));
             itemMeta.lore(loreSkinMascot);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        }).setOnClick(inventoryClickEvent -> {
-            if (!city.hasPermission(player.getUniqueId(), CPermission.MASCOT_SKIN)) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                player.closeInventory();
-                return;
-            }
-            new MascotsSkinMenu(player, this.mascot.getMascotEgg(), this.mascot).open();
-        }));
+        })
+                .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
+                .setOnClick(inventoryClickEvent -> {
+                    if (!city.hasPermission(player.getUniqueId(), CPermission.MASCOT_SKIN)) {
+                        MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        player.closeInventory();
+                        return;
+                    }
+                    new MascotsSkinMenu(player, this.mascot.getMascotEgg(), this.mascot).open();
+                }));
 
         Supplier<ItemBuilder> moveMascotItemSupplier = () -> {
             List<Component> lorePosMascot;
 
-            if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
+            if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
                 lorePosMascot = List.of(
                         Component.text("§7Vous ne pouvez pas changer la position de votre §cMascotte"),
                         Component.empty(),
@@ -128,84 +128,84 @@ public class MascotMenu extends Menu {
                 itemMeta.displayName(Component.text("§7Déplacer votre §cMascotte"));
                 itemMeta.lore(lorePosMascot);
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
-                    return;
-                }
-                if (!city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)) {
-                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
+            })
+                    .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
+                    .setOnClick(inventoryClickEvent -> {
+                        if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
+                            return;
+                        }
+                        if (!city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)) {
+                            MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            return;
+                        }
 
-                if (!ItemUtils.hasAvailableSlot(getOwner())) {
-                    MessagesManager.sendMessage(getOwner(), Component.text("Libérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
-                    return;
-                }
+                        if (!ItemUtils.hasAvailableSlot(getOwner())) {
+                            MessagesManager.sendMessage(getOwner(), Component.text("Libérez de la place dans votre inventaire"), Prefix.CITY, MessageType.ERROR, false);
+                            return;
+                        }
 
-                city = CityManager.getPlayerCity(getOwner().getUniqueId());
-                if (city == null) {
-                    MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                    getOwner().closeInventory();
-                    return;
-                }
+                        city = CityManager.getPlayerCity(getOwner().getUniqueId());
+                        if (city == null) {
+                            MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                            getOwner().closeInventory();
+                            return;
+                        }
 
-                String city_uuid = city.getUUID();
-                if (movingMascots.contains(city_uuid)) return;
+                        String city_uuid = city.getUUID();
+                        if (movingMascots.contains(city_uuid)) return;
 
-                movingMascots.add(city_uuid);
+                        movingMascots.add(city_uuid);
 
-                ItemStack mascotsMoveItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
-                ItemMeta meta = mascotsMoveItem.getItemMeta();
+                        ItemStack mascotsMoveItem = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
+                        ItemMeta meta = mascotsMoveItem.getItemMeta();
 
-                if (meta != null) {
-                    List<Component> info = new ArrayList<>();
-                    info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
-                    info.add(Component.text("§cCe coffre n'est pas retirable"));
-                    meta.displayName(Component.text("§7Déplacer votre §lMascotte"));
-                    meta.lore(info);
-                }
-                mascotsMoveItem.setItemMeta(meta);
+                        if (meta != null) {
+                            List<Component> info = new ArrayList<>();
+                            info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
+                            info.add(Component.text("§cCe coffre n'est pas retirable"));
+                            meta.displayName(Component.text("§7Déplacer votre §lMascotte"));
+                            meta.lore(info);
+                        }
+                        mascotsMoveItem.setItemMeta(meta);
 
-                ItemInteraction.runLocationInteraction(
-                        player,
-                        mascotsMoveItem,
-                        "mascots:moveInteraction",
-                        120,
-                        "Temps Restant : %sec%s",
-                        "§cDéplacement de la Mascotte annulée",
-                        mascotMove -> {
-                            if (mascotMove == null) return true;
-                            if (!movingMascots.contains(city_uuid)) return false;
+                        ItemInteraction.runLocationInteraction(
+                                player,
+                                mascotsMoveItem,
+                                "mascots:moveInteraction",
+                                120,
+                                "Temps Restant : %sec%s",
+                                "§cDéplacement de la Mascotte annulée",
+                                mascotMove -> {
+                                    if (mascotMove == null) return true;
+                                    if (!movingMascots.contains(city_uuid)) return false;
 
-                            if (mascot == null) return false;
+                                    if (mascot == null) return false;
 
-                            Entity mob = mascot.getEntity();
-                            if (mob == null) return false;
+                                    Entity mob = mascot.getEntity();
+                                    if (mob == null) return false;
 
-                            Chunk chunk = mascotMove.getChunk();
-                            int chunkX = chunk.getX();
-                            int chunkZ = chunk.getZ();
+                                    Chunk chunk = mascotMove.getChunk();
+                                    int chunkX = chunk.getX();
+                                    int chunkZ = chunk.getZ();
 
-                            if (!city.hasChunk(chunkX, chunkZ)) {
-                                MessagesManager.sendMessage(player, Component.text("§cImpossible de déplacer la mascotte ici car ce chunk ne vous appartient pas ou est adjacent à une autre ville"), Prefix.CITY, MessageType.INFO, false);
-                                return false;
-                            }
+                                    if (!city.hasChunk(chunkX, chunkZ)) {
+                                        MessagesManager.sendMessage(player, Component.text("§cImpossible de déplacer la mascotte ici car ce chunk ne vous appartient pas ou est adjacent à une autre ville"), Prefix.CITY, MessageType.INFO, false);
+                                        return false;
+                                    }
 
-                            mob.teleport(mascotMove);
-                            movingMascots.remove(city_uuid);
-                            mascot.setChunk(mascotMove.getChunk());
+                                    mob.teleport(mascotMove);
+                                    movingMascots.remove(city_uuid);
+                                    mascot.setChunk(mascotMove.getChunk());
 
-                            DynamicCooldownManager.use(mascot.getMascotUUID().toString(), "mascots:move", 5 * 3600 * 1000L);
-                            return true;
-                        },
-                        null
-                );
-                player.closeInventory();
-            });
+                                    DynamicCooldownManager.use(mascot.getMascotUUID().toString(), "mascots:move", 5 * 3600 * 1000L);
+                                    return true;
+                                },
+                                null
+                        );
+                        player.closeInventory();
+                    });
         };
-        if (! DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
+        if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
             MenuUtils.runDynamicItem(player, this, 13, moveMascotItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
@@ -225,35 +225,33 @@ public class MascotMenu extends Menu {
             itemMeta.displayName(Component.text("§7Améliorer votre §cMascotte"));
             itemMeta.lore(requiredAmount);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP); // Pour ça il faut refaire l'entièreté de la lib de xernas, je le ferais une autre fois
-            itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
-        }).setOnClick(inventoryClickEvent -> {
+        })
+                .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS, DataComponentTypes.TRIM)
+                .setOnClick(inventoryClickEvent -> {
 
-            if (mascotsLevels.equals(MascotsLevels.level10)) return;
+                    if (mascotsLevels.equals(MascotsLevels.level10)) return;
 
-            if (city == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                player.closeInventory();
-                return;
-            }
-            if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_UPGRADE)) {
-                String city_uuid = city.getUUID();
-                int aywenite = mascotsLevels.getUpgradeCost();
-                if (ItemUtils.takeAywenite(player, aywenite)) {
-                    upgradeMascots(city_uuid);
-                    MessagesManager.sendMessage(player, Component.text("Vous avez amélioré votre mascotte au §cNiveau " + mascot.getLevel()), Prefix.CITY, MessageType.ERROR, false);
+                    if (city == null) {
+                        MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                        player.closeInventory();
+                        return;
+                    }
+                    if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_UPGRADE)) {
+                        String city_uuid = city.getUUID();
+                        int aywenite = mascotsLevels.getUpgradeCost();
+                        if (ItemUtils.takeAywenite(player, aywenite)) {
+                            upgradeMascots(city_uuid);
+                            MessagesManager.sendMessage(player, Component.text("Vous avez amélioré votre mascotte au §cNiveau " + mascot.getLevel()), Prefix.CITY, MessageType.ERROR, false);
+                            player.closeInventory();
+                            return;
+                        }
+                        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
+
+                    } else {
+                        MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                    }
                     player.closeInventory();
-                    return;
-                }
-                MessagesManager.sendMessage(player, Component.text("Vous n'avez pas assez d'§dAywenite"), Prefix.CITY, MessageType.ERROR, false);
-
-            } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-            }
-            player.closeInventory();
-        }));
+                }));
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(Component.text("§aRetour"));

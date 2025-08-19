@@ -18,7 +18,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -126,9 +125,7 @@ public class MayorMandateMenu extends Menu {
         inventory.put(29, new ItemBuilder(this, iaPerk1, itemMeta -> {
             itemMeta.customName(Component.text(namePerk1));
             itemMeta.lore(lorePerk1);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        }));
+        }).hide(perk1.getToHide()));
 
         ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
         String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
@@ -136,9 +133,7 @@ public class MayorMandateMenu extends Menu {
         inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
             itemMeta.customName(Component.text(namePerk2));
             itemMeta.lore(lorePerk2);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        }));
+        }).hide(perk2.getToHide()));
 
         ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
         String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
@@ -146,9 +141,7 @@ public class MayorMandateMenu extends Menu {
         inventory.put(33, new ItemBuilder(this, iaPerk3, itemMeta -> {
             itemMeta.customName(Component.text(namePerk3));
             itemMeta.lore(lorePerk3);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        }));
+        }).hide(perk3.getToHide()));
 
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));

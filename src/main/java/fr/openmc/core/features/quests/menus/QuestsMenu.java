@@ -13,13 +13,14 @@ import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import fr.openmc.core.items.CustomItemRegistry;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -155,6 +156,7 @@ public class QuestsMenu extends Menu {
         return item;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void createItems(Quest quest, ItemStack item, ItemMeta meta) {
         UUID playerUUID = this.target.getUniqueId();
         int currentTierIndex = quest.getCurrentTierIndex(playerUUID);
@@ -174,7 +176,7 @@ public class QuestsMenu extends Menu {
 
         if (isCompleted) {
             meta.addEnchant(Enchantment.SHARPNESS, 1, true);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.ENCHANTMENTS).build());
         }
 
         Component bar = Component.text("§8§m                                §r");

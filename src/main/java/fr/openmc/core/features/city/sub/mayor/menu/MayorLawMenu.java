@@ -29,7 +29,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -262,9 +261,9 @@ public class MayorLawMenu extends Menu {
                 return new ItemBuilder(this, iaPerkEvent, itemMeta -> {
                     itemMeta.itemName(Component.text(namePerkEvent));
                     itemMeta.lore(lorePerkEvent);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                }).setOnClick(inventoryClickEvent -> {
+                })
+                        .hide(perkEvent.getToHide())
+                        .setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
                         MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de pouvoir utiliser cette §3Réforme"), Prefix.MAYOR, MessageType.ERROR, false);
                         return;
