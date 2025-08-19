@@ -477,8 +477,8 @@ public class City {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.phaseMayor == 2) {
-            if (PerkManager.hasPerk(getMayor(), Perks.BUISNESS_MAN.getId())) {
-                interest = .03; // interest is 3% when perk Buisness Man actived
+            if (PerkManager.hasPerk(getMayor(), Perks.BUSINESS_MAN.getId())) {
+                interest = .03; // interest is 3% when perk Business Man enabled
             }
         }
 
