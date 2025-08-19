@@ -3,7 +3,6 @@ package fr.openmc.api.hooks;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
@@ -53,9 +52,8 @@ public class LuckPermsHook {
         String prefix = getPrefix(player);
         if (prefix == null || prefix.isEmpty()) return "";
         String formattedPrefix = prefix.replace("&", "§");
-        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
 
-        return PlaceholderAPI.setPlaceholders(player, FontImageWrapper.replaceFontImages(formattedPrefix)) + " ";
+        return FontImageWrapper.replaceFontImages(formattedPrefix);
     }
 
     public static @NotNull Component getFormattedPAPIPrefix(Group group) {
@@ -65,8 +63,7 @@ public class LuckPermsHook {
         if (prefix == null || prefix.isEmpty()) return Component.empty();
 
         String formattedPrefix = prefix.replace("&", "§");
-        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
 
-        return Component.text(PlaceholderAPI.setPlaceholders(null, FontImageWrapper.replaceFontImages(formattedPrefix)) + " ");
+        return Component.text(FontImageWrapper.replaceFontImages(formattedPrefix));
     }
 }
