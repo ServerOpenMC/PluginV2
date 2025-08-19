@@ -2,6 +2,7 @@ package fr.openmc.api.menulib;
 
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -68,7 +69,7 @@ public final class MenuLib implements Listener {
      *                  to be executed when the {@link ItemStack} is clicked within the menu.
      */
     public static void setItemClickEvent(Menu menu, ItemStack itemStack, Consumer<InventoryClickEvent> e) {
-        menu.getItemClickEvents().put(itemStack, e);
+        menu.getItemClickEvents().put(new ItemBuilder(menu, itemStack), e);
     }
 
     public static void clearHistory(Player player) {
@@ -151,12 +152,12 @@ public final class MenuLib implements Listener {
         }
 
         try {
-            Map<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = menu.getItemClickEvents();
+            Map<ItemBuilder, Consumer<InventoryClickEvent>> itemClickEvents = menu.getItemClickEvents();
             if (itemClickEvents.isEmpty())
                 return;
 
-            for (Map.Entry<ItemStack, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
-                if (entry.getKey().equals(e.getCurrentItem()))
+            for (Map.Entry<ItemBuilder, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
+                if (ItemUtils.isSimilar(entry.getKey(), e.getCurrentItem()))
                     entry.getValue().accept(e);
             }
         } catch (Exception ex) {

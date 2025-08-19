@@ -5,6 +5,7 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -423,5 +424,30 @@ public class ItemUtils {
      */
     public static boolean hasEnoughSpace(Player player, Material item) {
         return hasEnoughSpace(player, item, 1);
+    }
+
+    /**
+     * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
+     * Deux items sont considérés similaires s'ils ont le même type, la même quantité,
+     * et les mêmes métadonnées (nom, lore, etc.). Permet de ne pas vérifier les ItemFlags.
+     *
+     * @param item1 le premier item à comparer
+     * @param item2 le second item à comparer
+     * @return true si les items sont similaires, false sinon
+     */
+    @SuppressWarnings("UnstableApiUsage")
+    public static boolean isSimilar(ItemStack item1, ItemStack item2) {
+        if (item1 == null || item2 == null) return false;
+        if (item1.getType() != item2.getType()) return false;
+        if (item1.getAmount() != item2.getAmount()) return false;
+        if (item1.hasItemMeta() != item2.hasItemMeta()) return false;
+        if (item1.hasItemMeta() && item2.hasItemMeta()) {
+            if (!Objects.equals(item1.getItemMeta().displayName(), item2.getItemMeta().displayName())) return false;
+            if (!Objects.equals(item1.getItemMeta().lore(), item2.getItemMeta().lore())) return false;
+            if (!Objects.equals(item1.getItemMeta().getPersistentDataContainer(), item2.getItemMeta().getPersistentDataContainer())) return false;
+            if (!Objects.equals(item1.getData(DataComponentTypes.ENCHANTMENTS), item2.getData(DataComponentTypes.ENCHANTMENTS))) return false;
+        }
+
+        return true;
     }
 }

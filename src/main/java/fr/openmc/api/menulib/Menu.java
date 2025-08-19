@@ -35,7 +35,7 @@ import java.util.function.Consumer;
  */
 public abstract class Menu implements InventoryHolder {
 	@Getter
-	private final Object2ObjectMap<ItemStack, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
+	private final Object2ObjectMap<ItemBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
 	
 	@Getter
 	private final Player owner;
