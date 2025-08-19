@@ -12,14 +12,16 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 
@@ -421,36 +423,5 @@ public class ItemUtils {
      */
     public static boolean hasEnoughSpace(Player player, Material item) {
         return hasEnoughSpace(player, item, 1);
-    }
-
-    /**
-     * Donner le Type de Panneau en fonction du biome ou il se trouve
-     *
-     * @param player Joueur pour acceder au biome ou il est
-     */
-    public static Material getSignType(Player player) {
-        HashMap<Biome, Material> biomeToSignType = new HashMap<>();
-        biomeToSignType.put(Biome.BAMBOO_JUNGLE, Material.BAMBOO_SIGN);
-        biomeToSignType.put(Biome.BIRCH_FOREST, Material.BIRCH_SIGN);
-        biomeToSignType.put(Biome.OLD_GROWTH_BIRCH_FOREST, Material.BIRCH_SIGN);
-        biomeToSignType.put(Biome.JUNGLE, Material.JUNGLE_SIGN);
-        biomeToSignType.put(Biome.SPARSE_JUNGLE, Material.JUNGLE_SIGN);
-        biomeToSignType.put(Biome.PALE_GARDEN, Material.PALE_OAK_SIGN);
-        biomeToSignType.put(Biome.CHERRY_GROVE, Material.CHERRY_SIGN);
-        biomeToSignType.put(Biome.CRIMSON_FOREST, Material.CRIMSON_SIGN);
-        biomeToSignType.put(Biome.WARPED_FOREST, Material.WARPED_SIGN);
-        biomeToSignType.put(Biome.MANGROVE_SWAMP, Material.MANGROVE_SIGN);
-        biomeToSignType.put(Biome.SAVANNA, Material.ACACIA_SIGN);
-        biomeToSignType.put(Biome.SAVANNA_PLATEAU, Material.ACACIA_SIGN);
-        biomeToSignType.put(Biome.WINDSWEPT_SAVANNA, Material.ACACIA_SIGN);
-        biomeToSignType.put(Biome.DARK_FOREST, Material.DARK_OAK_SIGN);
-        biomeToSignType.put(Biome.TAIGA, Material.SPRUCE_SIGN);
-        biomeToSignType.put(Biome.OLD_GROWTH_PINE_TAIGA, Material.SPRUCE_SIGN);
-        biomeToSignType.put(Biome.SNOWY_TAIGA, Material.SPRUCE_SIGN);
-        biomeToSignType.put(Biome.OLD_GROWTH_SPRUCE_TAIGA, Material.SPRUCE_SIGN);
-
-        Biome playerBiome = player.getWorld().getBiome(player.getLocation());
-
-        return biomeToSignType.getOrDefault(playerBiome, Material.OAK_SIGN);
     }
 }
