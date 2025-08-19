@@ -227,7 +227,7 @@ public class MascotMenu extends Menu {
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP); // Pour ça il faut l'entièreté de la lib de xernas, je le ferais une autre fois
+            itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP); // Pour ça il faut refaire l'entièreté de la lib de xernas, je le ferais une autre fois
             itemMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         }).setOnClick(inventoryClickEvent -> {
 
