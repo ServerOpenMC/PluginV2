@@ -126,7 +126,7 @@ public class NotationManager {
 
         return notations.stream()
                 .sorted(Comparator.comparingDouble(
-                        n -> ((CityNotation) n).getNoteArchitectural() + ((CityNotation) n).getNoteCoherence()
+                        (CityNotation n) -> n.getNoteArchitectural() + n.getNoteCoherence()
                 ).reversed())
                 .toList();
     }
