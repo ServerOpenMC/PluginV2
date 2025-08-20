@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CityTransferAction {
     public static void transfer(Player player, City city, OfflinePlayer playerToTransfer) {
-        OfflinePlayer owner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER));
+        OfflinePlayer owner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER));
 
         if (owner.isOnline()) {
             if (!CityManageConditions.canCityTransfer(city, owner.getPlayer())) return;

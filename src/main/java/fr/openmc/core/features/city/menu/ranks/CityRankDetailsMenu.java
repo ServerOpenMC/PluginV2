@@ -3,8 +3,8 @@ package fr.openmc.core.features.city.menu.ranks;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -81,7 +81,7 @@ public class CityRankDetailsMenu extends Menu {
     private Map<Integer, ItemBuilder> createRank() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
-		boolean canManageRanks = city.hasPermission(getOwner().getUniqueId(), CPermission.MANAGE_RANKS);
+		boolean canManageRanks = city.hasPermission(getOwner().getUniqueId(), CityPermission.MANAGE_RANKS);
 
 		map.put(0, new ItemBuilder(this, Material.PAPER, itemMeta -> {
 			itemMeta.displayName(Component.text("§dInsérer la priorité du grade"));
@@ -158,7 +158,7 @@ public class CityRankDetailsMenu extends Menu {
 		Player player = getOwner();
 
 
-		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS);
+		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
 
 		List<Component> lorePriority = new ArrayList<>(List.of(Component.text("§7Priorité actuelle : §d" + this.rank.getPriority())));
 		if (canManageRanks) {

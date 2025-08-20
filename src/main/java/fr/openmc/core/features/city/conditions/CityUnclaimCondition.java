@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -30,7 +30,7 @@ public class CityUnclaimCondition {
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.CLAIM))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.CLAIM))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de unclaim"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

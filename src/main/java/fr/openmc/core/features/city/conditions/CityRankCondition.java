@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -26,7 +26,7 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
-        if (!city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -56,7 +56,7 @@ public class CityRankCondition {
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -75,7 +75,7 @@ public class CityRankCondition {
      * @return booleen
      */
     public static boolean canDeleteRank(City city, Player player, String rankName) {
-        if (!city.hasPermission(player.getUniqueId(), CPermission.PERMS)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -85,7 +85,7 @@ public class CityRankCondition {
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import lombok.Getter;
 
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class DBCityPermission {
         this.permission = permission;
     }
 
-    public CPermission getPermission() {
-        return CPermission.valueOf(permission);
+    public CityPermission getPermission() {
+        return CityPermission.valueOf(permission);
     }
 }

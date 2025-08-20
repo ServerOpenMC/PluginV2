@@ -8,9 +8,9 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
@@ -98,11 +98,11 @@ public class CityMenu extends Menu {
 			));
 		}).setOnClick(inventoryClickEvent -> new CityRanksMenu(getOwner(), city).open()));
 
-		boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
-		boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
-		boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
-		boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CPermission.SEE_CHUNKS);
-		boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CPermission.TYPE);
+		boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CityPermission.RENAME);
+		boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CityPermission.CHEST);
+		boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
+		boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CityPermission.SEE_CHUNKS);
+		boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CityPermission.TYPE);
 
         String mayorName = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getName() : "§7Aucun";
         NamedTextColor mayorColor = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
@@ -110,7 +110,7 @@ public class CityMenu extends Menu {
         List<Component> loreMillestoneCity;
 
         loreMillestoneCity = List.of(
-                Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
                 Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                 Component.text("§7Membre(s) : " + city.getMembers().size()),
                 Component.empty(),
@@ -137,7 +137,7 @@ public class CityMenu extends Menu {
 
         if (hasPermissionRenameCity || hasPermissionOwner) {
             loreModifyCity = List.of(
-                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
                     Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                     Component.text("§7Membre(s) : " + city.getMembers().size()),
                     Component.empty(),
@@ -145,7 +145,7 @@ public class CityMenu extends Menu {
             );
         } else {
             loreModifyCity = List.of(
-                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
                     Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                     Component.text("§7Membre(s) : " + city.getMembers().size())
             );
@@ -382,7 +382,7 @@ public class CityMenu extends Menu {
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("§7Votre ville est en §5" + typeStr));
 
-            if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CPermission.LAUNCH_WAR)) {
+            if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
                 lore.add(Component.empty());
                 lore.add(Component.text("§7Vous pouvez lancer une guerre avec §c/war"));
             }
@@ -402,7 +402,7 @@ public class CityMenu extends Menu {
                 meta.itemName(Component.text("§5Le Statut de votre Ville"));
                 meta.lore(lore);
             }).setOnClick(inventoryClickEvent -> {
-                if (!(city.hasPermission(player.getUniqueId(), CPermission.TYPE))) return;
+                if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) return;
 
                 new CityTypeMenu(player).open();
             });

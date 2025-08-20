@@ -1,20 +1,20 @@
 package fr.openmc.core.features.city.menu;
 
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.ChunkDataCache;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityClaimAction;
 import fr.openmc.core.features.city.actions.CityUnclaimAction;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkInfo;
 import fr.openmc.core.utils.ChunkPos;
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -64,7 +64,7 @@ public class CityChunkMenu extends Menu {
         String tempPlayerCityUUID = null;
 
         if (playerCity != null) {
-            tempHasPermissionClaim = playerCity.hasPermission(player.getUniqueId(), CPermission.CLAIM);
+            tempHasPermissionClaim = playerCity.hasPermission(player.getUniqueId(), CityPermission.CLAIM);
             tempPlayerCityUUID = playerCity.getUUID();
 
             int nbChunk = playerCity.getChunks().size();

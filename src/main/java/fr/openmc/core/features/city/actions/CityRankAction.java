@@ -2,9 +2,9 @@ package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.conditions.CityRankCondition;
 import fr.openmc.core.features.city.menu.ranks.CityRankDetailsMenu;
 import fr.openmc.core.features.city.menu.ranks.CityRankMemberMenu;
@@ -112,7 +112,7 @@ public class CityRankAction {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
-        if (!city.hasPermission(player.getUniqueId(), CPermission.ASSIGN_RANKS)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

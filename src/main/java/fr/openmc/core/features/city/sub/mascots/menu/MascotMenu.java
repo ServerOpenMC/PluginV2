@@ -7,9 +7,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -100,7 +100,7 @@ public class MascotMenu extends Menu {
         })
                 .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS)
                 .setOnClick(inventoryClickEvent -> {
-                    if (!city.hasPermission(player.getUniqueId(), CPermission.MASCOT_SKIN)) {
+                    if (!city.hasPermission(player.getUniqueId(), CityPermission.MASCOT_SKIN)) {
                         MessagesManager.sendMessage(player, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                         player.closeInventory();
                         return;
@@ -135,7 +135,7 @@ public class MascotMenu extends Menu {
                         if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID().toString(), "mascots:move")) {
                             return;
                         }
-                        if (!city.hasPermission(getOwner().getUniqueId(), CPermission.MASCOT_MOVE)) {
+                        if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.MASCOT_MOVE)) {
                             MessagesManager.sendMessage(getOwner(), MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                             return;
                         }
@@ -237,7 +237,7 @@ public class MascotMenu extends Menu {
                         player.closeInventory();
                         return;
                     }
-                    if (city.hasPermission(player.getUniqueId(), CPermission.MASCOT_UPGRADE)) {
+                    if (city.hasPermission(player.getUniqueId(), CityPermission.MASCOT_UPGRADE)) {
                         String city_uuid = city.getUUID();
                         int aywenite = mascotsLevels.getUpgradeCost();
                         if (ItemUtils.takeAywenite(player, aywenite)) {

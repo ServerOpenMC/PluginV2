@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
@@ -36,7 +36,7 @@ public class CityChestConditions {
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CPermission.CHEST)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.CHEST)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas les permissions de voir le coffre"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -61,7 +61,7 @@ public class CityChestConditions {
             return false;
         }
 
-        if (!city.hasPermission(player.getUniqueId(), CPermission.CHEST_UPGRADE)) {
+        if (!city.hasPermission(player.getUniqueId(), CityPermission.CHEST_UPGRADE)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas les permissions d'améliorer le coffre de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

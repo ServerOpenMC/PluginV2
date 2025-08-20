@@ -5,7 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -61,7 +61,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
         List<UUID> sortedMembers = city.getMembers().stream()
                 .sorted(Comparator.comparing((UUID uuid) -> !Bukkit.getPlayer(uuid).isOnline())
                         .thenComparing(uuid -> {
-                            if (city.hasPermission(uuid, CPermission.OWNER)) return 0;
+                            if (city.hasPermission(uuid, CityPermission.OWNER)) return 0;
                             else if (MayorManager.cityMayor.get(city.getUUID()).getUUID().equals(uuid))
                                 return 1;
                             else return 2;
@@ -71,7 +71,7 @@ public class WarPlayerListMenu extends PaginatedMenu {
         for (UUID uuid : sortedMembers) {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-            boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
+            boolean hasPermissionOwner = city.hasPermission(uuid, CityPermission.OWNER);
             String title;
             if (hasPermissionOwner) {
                 title = "Propriétaire ";

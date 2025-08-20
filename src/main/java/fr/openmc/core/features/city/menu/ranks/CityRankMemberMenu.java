@@ -5,8 +5,8 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -57,7 +57,7 @@ public class CityRankMemberMenu extends PaginatedMenu {
 
 			List<Component> lore = new ArrayList<>();
 			lore.add(Component.text("§7Grade : §e" + rankName).decoration(TextDecoration.ITALIC, false));
-			if (!city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+			if (!city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
 				lore.add(Component.empty());
 				lore.add(Component.text("§e§lCLIQUEZ ICI POUR ASSIGNER UN GRADE"));
 			}
@@ -65,9 +65,9 @@ public class CityRankMemberMenu extends PaginatedMenu {
 				itemMeta.displayName(Component.text(player.getName() != null ? player.getName() : "§c§oJoueur inconnu").decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(lore);
 			}).setOnClick(event -> {
-				if (city.hasPermission(player.getUniqueId(), CPermission.OWNER)) return;
+				if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) return;
 
-				if (!city.hasPermission(getOwner().getUniqueId(), CPermission.ASSIGN_RANKS)) {
+				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) {
 					MessagesManager.sendMessage(getOwner(), MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 					getOwner().closeInventory();
 					return;

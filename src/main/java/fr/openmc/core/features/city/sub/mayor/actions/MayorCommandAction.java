@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.actions;
 
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
@@ -32,7 +32,7 @@ public class MayorCommandAction {
                 MayorMandateMenu menu = new MayorMandateMenu(player);
                 menu.open();
             } else if (MayorManager.phaseMayor == 1) {
-                if (city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+                if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
                     if (!city.hasMayor()) {
                         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                             new MayorCreateMenu(player, null, null, null, MenuType.OWNER).open();

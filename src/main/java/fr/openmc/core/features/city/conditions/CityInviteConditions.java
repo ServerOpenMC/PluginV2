@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -35,7 +35,7 @@ public class CityInviteConditions {
 			return false;
 		}
 		
-		if (! (city.hasPermission(player.getUniqueId(), CPermission.INVITE))) {
+		if (! (city.hasPermission(player.getUniqueId(), CityPermission.INVITE))) {
 			MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'inviter des joueurs dans la ville"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}

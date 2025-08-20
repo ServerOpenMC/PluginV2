@@ -10,9 +10,9 @@ import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.commands.AdminMayorCommands;
 import fr.openmc.core.features.city.sub.mayor.commands.MayorCommands;
@@ -389,7 +389,7 @@ public class MayorManager {
      * @param city The city to update mayor
      */
     public static void runSetupMayor(City city) {
-        UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
+        UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getName();
         Mayor mayor = city.getMayor();
 

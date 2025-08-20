@@ -22,7 +22,7 @@ public class CityMessages {
     public static void sendInfo(CommandSender sender, City city) {
         String mascotLife = "dead";
         String cityName = city.getName();
-        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
+        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName();
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
@@ -62,7 +62,7 @@ public class CityMessages {
 
         String money = EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon();
         if (sender instanceof Player player) {
-            if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE))) return;
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE))) return;
             sendLine(sender, "Banque", money);
         } else {
             sendLine(sender, "Banque", money);

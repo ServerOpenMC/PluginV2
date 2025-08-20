@@ -196,7 +196,7 @@ public class AdminCityCommands {
             return;
         }
 
-        if (city.hasPermission(member.getUniqueId(), CPermission.OWNER)) {
+        if (city.hasPermission(member.getUniqueId(), CityPermission.OWNER)) {
             MessagesManager.sendMessage(player, Component.text("Le joueur est le propriétaire de la ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }

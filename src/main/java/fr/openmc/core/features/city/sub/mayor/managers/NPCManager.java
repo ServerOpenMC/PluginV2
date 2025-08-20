@@ -7,7 +7,7 @@ import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -90,7 +90,7 @@ public class NPCManager implements Listener {
         Npc npcMayor = FancyNpcsPlugin.get().getNpcAdapter().apply(dataMayor);
 
         NpcData dataOwner = new NpcData("owner-" + cityUUID, creatorUUID, locationOwner);
-        String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
+        String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName();
         dataOwner.setSkin(ownerName);
         dataOwner.setDisplayName("<yellow>Propriétaire " + ownerName + "</yellow>");
 
@@ -209,7 +209,7 @@ public class NPCManager implements Listener {
             }
 
             if (MayorManager.phaseMayor == 1) {
-                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CPermission.OWNER))) {
+                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
                     MessagesManager.sendMessage(player, Component.text("§8§o*mhh cette ville n'a pas encore élu un maire*"), Prefix.MAYOR, MessageType.INFO, true);
                     return;
                 }
@@ -291,7 +291,7 @@ public class NPCManager implements Listener {
             }
 
             if (MayorManager.phaseMayor == 1) {
-                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CPermission.OWNER))) return;
+                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) return;
 
                 Component message = Component.text("§8§o*Bonjour ? Tu veux me bouger ? Clique ici !*")
                         .clickEvent(ClickEvent.callback(audience -> {

@@ -4,9 +4,9 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
@@ -77,7 +77,7 @@ public class CityTopMenu extends PaginatedMenu {
         AtomicInteger rank = new AtomicInteger(1);
 
         cities.forEach(city -> {
-            UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
+            UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
             String ownerName = PlayerNameCache.getName(ownerUUID);
 
             List<Component> cityLore = new ArrayList<>();

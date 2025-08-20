@@ -5,7 +5,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
@@ -71,7 +71,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         List<UUID> sortedMembers = cityLaunch.getOnlineMembers().stream()
                 .sorted(Comparator.comparing((UUID uuid) -> !Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline())
                         .thenComparing(uuid -> {
-                            if (cityLaunch.hasPermission(uuid, CPermission.OWNER)) return 0;
+                            if (cityLaunch.hasPermission(uuid, CityPermission.OWNER)) return 0;
                             else if (MayorManager.cityMayor.get(cityLaunch.getUUID()).getUUID().equals(uuid))
                                 return 1;
                             else return 2;
@@ -81,7 +81,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         for (UUID uuid : sortedMembers) {
             OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(uuid);
             boolean isSelected = selected.contains(uuid);
-            boolean isOwner = cityLaunch.hasPermission(uuid, CPermission.OWNER);
+            boolean isOwner = cityLaunch.hasPermission(uuid, CityPermission.OWNER);
             boolean isMayor = MayorManager.phaseMayor == 2 && cityLaunch.getMayor().getUUID().equals(uuid);
 
             String prefix = isOwner ? "Propriétaire " : isMayor ? "Maire " : "Membre ";

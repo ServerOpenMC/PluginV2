@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -34,7 +34,7 @@ public class CityRank {
 	@DatabaseField(canBeNull = false)
 	private int priority;
 
-	private Set<CPermission> permissionsSet;
+	private Set<CityPermission> permissionsSet;
 	private Set<UUID> membersSet;
 	
 	public CityRank() {
@@ -51,7 +51,7 @@ public class CityRank {
 	 * @param permissionsSet Set of permissions associated with this rank.
 	 * @param icon           Icon representing the rank.
 	 */
-	public CityRank(UUID rankUUID, String cityUUID, String name, int priority, Set<CPermission> permissionsSet, Material icon) {
+	public CityRank(UUID rankUUID, String cityUUID, String name, int priority, Set<CityPermission> permissionsSet, Material icon) {
 		this.rankUUID = rankUUID;
 		this.cityUUID = cityUUID;
 		this.name = name;
@@ -112,7 +112,7 @@ public class CityRank {
 	 * @param permissionsSet The new set of permissions for the rank.
 	 * @return A new CityRank instance with the new permissions.
 	 */
-	public CityRank withPermissions(Set<CPermission> permissionsSet) {
+	public CityRank withPermissions(Set<CityPermission> permissionsSet) {
 		this.permissionsSet = permissionsSet;
 		return this;
 	}
@@ -133,7 +133,7 @@ public class CityRank {
 	 *
 	 * @param permission The permission to toggle.
 	 */
-	public void swapPermission(CPermission permission) {
+	public void swapPermission(CityPermission permission) {
 		if (permissionsSet.contains(permission)) {
 			permissionsSet.remove(permission);
 		} else {
@@ -163,7 +163,7 @@ public class CityRank {
 	
 	public String getPermissions() {
 		return permissionsSet.stream()
-				.map(CPermission::name)
+				.map(CityPermission::name)
 				.reduce((a, b) -> a + "," + b)
 				.orElse("");
 	}
@@ -175,7 +175,7 @@ public class CityRank {
 			String[] perms = permissions.split(",");
 			for (String perm : perms) {
 				try {
-					permissionsSet.add(CPermission.valueOf(perm.trim()));
+					permissionsSet.add(CityPermission.valueOf(perm.trim()));
 				} catch (IllegalArgumentException e) {
 					// Ignore invalid permissions
 				}

@@ -197,8 +197,8 @@ public class CityManager implements Listener {
         });
     }
 
-    public static HashMap<UUID, Set<CPermission>> getCityPermissions(City city) {
-        HashMap<UUID, Set<CPermission>> permissions = new HashMap<>();
+    public static HashMap<UUID, Set<CityPermission>> getCityPermissions(City city) {
+        HashMap<UUID, Set<CityPermission>> permissions = new HashMap<>();
 
         try {
             QueryBuilder<DBCityPermission, String> query = permissionsDao.queryBuilder();
@@ -206,7 +206,7 @@ public class CityManager implements Listener {
             List<DBCityPermission> dbPermissions = permissionsDao.query(query.prepare());
 
             dbPermissions.forEach(dbPermission -> {
-                Set<CPermission> playerPermissions = permissions.getOrDefault(dbPermission.getPlayer(),
+                Set<CityPermission> playerPermissions = permissions.getOrDefault(dbPermission.getPlayer(),
                         new HashSet<>());
                 playerPermissions.add(dbPermission.getPermission());
                 permissions.put(dbPermission.getPlayer(), playerPermissions);
@@ -218,7 +218,7 @@ public class CityManager implements Listener {
         return permissions;
     }
 
-    public static void addPlayerPermission(City city, UUID player, CPermission permission) {
+    public static void addPlayerPermission(City city, UUID player, CityPermission permission) {
         try {
             permissionsDao.create(new DBCityPermission(city.getUUID(), player, permission.name()));
         } catch (SQLException e) {
@@ -226,7 +226,7 @@ public class CityManager implements Listener {
         }
     }
 
-    public static void removePlayerPermission(City city, UUID player, CPermission permission) {
+    public static void removePlayerPermission(City city, UUID player, CityPermission permission) {
         try {
             DeleteBuilder<DBCityPermission, String> delete = permissionsDao.deleteBuilder();
             delete.where()

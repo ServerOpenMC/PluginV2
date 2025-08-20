@@ -2,7 +2,7 @@ package fr.openmc.core.features.city;
 
 import lombok.Getter;
 
-public enum CPermission {
+public enum CityPermission {
     OWNER("Propriétaire"), //Impossible à donner sauf avec un transfert
     INVITE("Inviter"),
     KICK("Expulser"),
@@ -32,7 +32,7 @@ public enum CPermission {
     @Getter
     private final String displayName;
 
-    CPermission(String displayName) {
+    CityPermission(String displayName) {
         this.displayName = displayName;
     }
 }

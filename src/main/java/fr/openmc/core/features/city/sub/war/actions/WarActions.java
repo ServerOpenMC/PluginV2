@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.war.actions;
 
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
@@ -56,7 +56,7 @@ public class WarActions {
             return;
         }
 
-        if (!launchCity.hasPermission(player.getUniqueId(), CPermission.LAUNCH_WAR)) {
+        if (!launchCity.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
             MessagesManager.sendMessage(player,
                     Component.text("Vous n'avez pas la permission de lancer une guerre pour la ville"),
                     Prefix.CITY, MessageType.ERROR, false);

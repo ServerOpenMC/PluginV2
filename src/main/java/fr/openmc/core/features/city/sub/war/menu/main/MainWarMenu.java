@@ -5,9 +5,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -76,7 +76,7 @@ public class MainWarMenu extends PaginatedMenu {
 
                 long onlineCount = city.getOnlineMembers().size();
 
-                UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
+                UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
                 String ownerName = PlayerNameCache.getName(ownerUUID);
 
                 Mascot mascot = city.getMascot();

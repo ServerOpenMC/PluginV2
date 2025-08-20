@@ -4,7 +4,7 @@ import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import dev.lone.itemsadder.api.Events.FurniturePrePlaceEvent;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -105,7 +105,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!playerCity.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (!playerCity.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le propriétaire !"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
@@ -153,7 +153,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!playerCity.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (!playerCity.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous êtes pas le propriétaire"), Prefix.MAYOR, MessageType.ERROR, false);
             event.setCancelled(true);
             return;
