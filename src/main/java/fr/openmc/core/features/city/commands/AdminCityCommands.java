@@ -270,7 +270,7 @@ public class AdminCityCommands {
 
     @Subcommand("mascots remove")
     @CommandPermission("omc.admins.commands.admcity.mascots.remove")
-    public void forceRemoveMascots (Player sender, @Named("player") Player target) {
+    public void forceRemoveMascots(Player sender, @Named("player") Player target) {
         City city = CityManager.getPlayerCity(target.getUniqueId());
 
         if (city == null) {
