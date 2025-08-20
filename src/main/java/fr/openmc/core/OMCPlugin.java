@@ -182,6 +182,10 @@ public class OMCPlugin extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.closeInventory();
         }
+
+        // If the plugin crashes, shutdown the server
+        if (!Bukkit.isStopping())
+            Bukkit.shutdown();
     }
 
     private void logLoadMessage() {
