@@ -1,23 +1,24 @@
 package fr.openmc.core.features.city.actions;
 
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 
 public class CityClaimAction {
-    private static final ItemStack ayweniteItemStack = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+    private static final int[][] CARDINAL_OFFSETS = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 
     public static int calculatePrice(int chunkCount) {
         return 5000 + (chunkCount * 1000);
@@ -37,15 +38,7 @@ public class CityClaimAction {
 
         ChunkPos chunkVec2 = new ChunkPos(chunkX, chunkZ);
 
-        boolean isFar = true;
-        for (ChunkPos chnk : city.getChunks()) {
-            if (chnk.distance(chunkVec2) == 1) { //Si c'est en diagonale alors ça sera sqrt(2) ≈1.41
-                isFar = false;
-                break;
-            }
-        }
-
-        if (isFar) {
+        if (!isAdjacentToOwnCity(chunkVec2, city.getChunks())) {
             MessagesManager.sendMessage(sender, Component.text("Ce chunk n'est pas adjacent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -81,5 +74,19 @@ public class CityClaimAction {
         city.addChunk(chunkX, chunkZ);
 
         MessagesManager.sendMessage(sender, Component.text("Ta ville a été étendue"), Prefix.CITY, MessageType.SUCCESS, false);
+    }
+
+    private static boolean isAdjacentToOwnCity(@NotNull ChunkPos newClaim, Set<ChunkPos> cityClaims) {
+        for (int[] offset : CARDINAL_OFFSETS) {
+            ChunkPos adjacentClaim = new ChunkPos(
+                    newClaim.x() + offset[0],
+                    newClaim.z() + offset[1]
+            );
+
+            if (cityClaims.contains(adjacentClaim))
+                return true;
+        }
+
+        return false;
     }
 }
