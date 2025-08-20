@@ -184,7 +184,7 @@ public class OMCPlugin extends JavaPlugin {
         }
 
         // If the plugin crashes, shutdown the server
-        if (!Bukkit.isStopping())
+        if (!isUnitTestVersion() || !Bukkit.isStopping())
             Bukkit.shutdown();
     }
 
