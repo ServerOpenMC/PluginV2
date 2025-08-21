@@ -4,6 +4,10 @@ import fr.openmc.api.cooldown.DynamicCooldown;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.PlayerUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -62,11 +66,11 @@ public class RTPCommands {
 
                 if ((tries + 1) >= maxTries) {
                     // On a déjà mis le cooldown au début
-                    player.sendActionBar("Échec du RTP réessayez plus tard...");
+                    player.sendActionBar(Component.text("Échec du RTP réessayez plus tard..."));
                     return;
                 }
 
-                player.sendActionBar("RTP: Tentative " + (tries + 1) + "/" + maxTries + " §cÉchec§r...");
+                player.sendActionBar(Component.text("RTP: Tentative " + (tries + 1) + "/" + maxTries + " §cÉchec§r..."));
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -103,7 +107,7 @@ public class RTPCommands {
 
     public void tpPlayer(Player player, Location loc) {
         PlayerUtils.sendFadeTitleTeleport(player, loc);
-        player.sendMessage("§aVous avez été téléporté à §6X: §e" + loc.getBlockX() + "§6, Y:§e" + loc.getBlockY() + "§6, Z: §e" + loc.getBlockZ());
+        MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté à §6X: §e" + loc.getBlockX() + "§6, Y: §e" + loc.getBlockY() + "§6, Z: §e" + loc.getBlockZ()), Prefix.OPENMC, MessageType.SUCCESS, true);
     }
 
 }
