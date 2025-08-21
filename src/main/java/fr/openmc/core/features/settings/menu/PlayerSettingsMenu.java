@@ -1,5 +1,6 @@
 package fr.openmc.core.features.settings.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -13,7 +14,6 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -99,7 +99,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return "§r" + PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_settings%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::settings:");
     }
 
     @Override

@@ -1,11 +1,12 @@
 package fr.openmc.core.features.city.sub.mayor.menu.npc;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -17,14 +18,12 @@ import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +48,7 @@ public class OwnerNpcMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -73,9 +72,9 @@ public class OwnerNpcMenu extends Menu {
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
-        UUID uuidOwner = city.getPlayerWithPermission((CPermission.OWNER));
+        UUID uuidOwner = city.getPlayerWithPermission((CityPermission.OWNER));
 
-        String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CPermission.OWNER))).getName();
+        String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CityPermission.OWNER))).getName();
 
         if (electionType == ElectionType.ELECTION) {
             Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
@@ -97,9 +96,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(31, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }));
+            }).hide(perk1.getToHide()));
         } else {
             Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
             Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
@@ -129,9 +126,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(20, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }));
+            }).hide(perk1.getToHide()));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
@@ -139,9 +134,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }));
+            }).hide(perk2.getToHide()));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
@@ -149,9 +142,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }));
+            }).hide(perk3.getToHide()));
         }
 
         if (mayor.getUUID().equals(player.getUniqueId())) {

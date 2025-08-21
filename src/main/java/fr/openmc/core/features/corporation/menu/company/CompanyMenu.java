@@ -1,5 +1,6 @@
 package fr.openmc.core.features.corporation.menu.company;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -9,7 +10,6 @@ import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -141,8 +141,7 @@ public class CompanyMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_company_baltop_menu%");
-
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::company_baltop_menu:");
     }
 
     @Override

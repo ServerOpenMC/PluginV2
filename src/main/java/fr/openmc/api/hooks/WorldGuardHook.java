@@ -1,4 +1,4 @@
-package fr.openmc.core.utils.api;
+package fr.openmc.api.hooks;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -15,11 +15,11 @@ import org.bukkit.Location;
 import java.util.Collection;
 import java.util.Collections;
 
-public class WorldGuardApi {
+public class WorldGuardHook {
 
     private static boolean hasWorldGuard;
 
-    public WorldGuardApi() {
+    public WorldGuardHook() {
         hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     }
 

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.quests.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -12,14 +13,14 @@ import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
 import fr.openmc.core.items.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +64,7 @@ public class QuestsMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-25%%img_quests_menu%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-25::quests_menu:");
     }
 
     public @NotNull InventorySize getInventorySize() {
@@ -155,6 +156,7 @@ public class QuestsMenu extends Menu {
         return item;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     private void createItems(Quest quest, ItemStack item, ItemMeta meta) {
         UUID playerUUID = this.target.getUniqueId();
         int currentTierIndex = quest.getCurrentTierIndex(playerUUID);
@@ -174,12 +176,12 @@ public class QuestsMenu extends Menu {
 
         if (isCompleted) {
             meta.addEnchant(Enchantment.SHARPNESS, 1, true);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            item.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.ENCHANTMENTS).build());
         }
 
         Component bar = Component.text("§8§m                                §r");
-        int var10000 = quest.isFullyCompleted(playerUUID) ? currentTierIndex : currentTierIndex + 1;
-        String tierDisplay = "§7[§f" + var10000 + "§8/§f" + tiersTotal + "§7]";
+        int tierIndex = quest.isFullyCompleted(playerUUID) ? currentTierIndex : currentTierIndex + 1;
+        String tierDisplay = "§7[§f" + tierIndex + "§8/§f" + tiersTotal + "§7]";
 
         String nameIcon;
         if (hasPendingRewards)
@@ -199,18 +201,18 @@ public class QuestsMenu extends Menu {
 
         if (hasPendingRewards) {
             lore.add(Component.text("§d✶ §dRécompenses en attente:"));
-            for (Integer tierIndex : pendingQuestIndexes) {
-                if (tierIndex < quest.getTiers().size()) {
-                    QuestTier tier = quest.getTiers().get(tierIndex);
-                    lore.add(Component.text("  §5➤ §dPalier " + (tierIndex + 1) + ":"));
+            for (Integer ti : pendingQuestIndexes) {
+                if (ti < quest.getTiers().size()) {
+                    QuestTier tier = quest.getTiers().get(ti);
+                    lore.add(Component.text("  §5➤ §dPalier " + (ti + 1) + ":"));
 
                     for (QuestReward reward : tier.getRewards()) {
                         if (reward instanceof QuestItemReward itemReward) {
                             ItemStack rewardItem = itemReward.getItemStack();
                             String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
                             lore.add(Component.text("    §7- §f" + itemName + " §7x" + itemReward.getAmount()));
-                        } else if (reward instanceof QuestMoneyReward moneyReward) {
-                            lore.add(Component.text("    §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
+                        } else if (reward instanceof QuestMoneyReward(double amount)) {
+                            lore.add(Component.text("    §7- §6" + EconomyManager.getFormattedSimplifiedNumber(amount) + " §f" + EconomyManager.getEconomyIcon()));
                         }
                     }
                 }
@@ -224,8 +226,8 @@ public class QuestsMenu extends Menu {
                     ItemStack rewardItem = itemReward.getItemStack();
                     String itemName = PlainTextComponentSerializer.plainText().serialize(rewardItem.displayName());
                     lore.add(Component.text("  §7- §f" + itemName + " §7x" + itemReward.getAmount()));
-                } else if (reward instanceof QuestMoneyReward moneyReward) {
-                    lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(moneyReward.getAmount()) + " §f" + EconomyManager.getEconomyIcon()));
+                } else if (reward instanceof QuestMoneyReward(double amount)) {
+                    lore.add(Component.text("  §7- §6" + EconomyManager.getFormattedSimplifiedNumber(amount) + " §f" + EconomyManager.getEconomyIcon()));
                 }
             }
             lore.add(Component.empty());

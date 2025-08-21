@@ -13,19 +13,18 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 
 public class Letter extends MailboxInv {
-    private final static String INV_NAME = "\uF990\uE003";
+    private static final String INV_NAME = "\uF990\uE003";
 
     static {
         invErrorMessage = "Erreur lors de la récupération de votre boite aux lettres.";
     }
 
     private final int id;
-    private ItemStack[] items;
 
     public Letter(Player player, LetterHead letterHead) {
         super(player);
         this.id = letterHead.getId();
-        this.items = letterHead.getItems();
+        ItemStack[] items = letterHead.getItems();
 
         inventory = Bukkit.createInventory(this, 54, MailboxMenuManager.getInvTitle(INV_NAME));
         inventory.setItem(45, homeBtn());

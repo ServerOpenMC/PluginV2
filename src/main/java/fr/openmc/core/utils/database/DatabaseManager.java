@@ -22,6 +22,7 @@ import fr.openmc.core.features.settings.PlayerSettingsManager;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.nio.channels.ConnectionPendingException;
 import java.sql.SQLException;
 
 public class DatabaseManager {
@@ -36,7 +37,7 @@ public class DatabaseManager {
                 Class.forName("com.mysql.cj.jdbc.Driver");
             }
         } catch (ClassNotFoundException e) {
-            OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
+            OMCPlugin.getInstance().getSLF4JLogger().error("Database driver not found. Please ensure the MySQL or H2 driver is included in the classpath.");
             throw new RuntimeException(e);
         }
 
@@ -49,23 +50,26 @@ public class DatabaseManager {
             connectionSource = new JdbcPooledConnectionSource(databaseUrl, username, password);
 
             NotationManager.initDB(connectionSource);
-            MayorManager.init_db(connectionSource);
-            MilestonesManager.init_db(connectionSource);
-            BankManager.init_db(connectionSource);
-            TransactionsManager.init_db(connectionSource);
-            AnalyticsManager.init_db(connectionSource);
-            MailboxManager.init_db(connectionSource);
-            ContestManager.init_db(connectionSource);
-            EconomyManager.init_db(connectionSource);
-            HomesManager.init_db(connectionSource);
-            FriendSQLManager.init_db(connectionSource);
-            DynamicCooldownManager.init_db(connectionSource);
-            CompanyManager.init_db(connectionSource);
-            CityManager.init_db(connectionSource);
-            MascotsManager.init_db(connectionSource);
-            PlayerSettingsManager.init_db(connectionSource);
+            MayorManager.initDB(connectionSource);
+            MilestonesManager.initDB(connectionSource);
+            BankManager.initDB(connectionSource);
+            TransactionsManager.initDB(connectionSource);
+            AnalyticsManager.initDB(connectionSource);
+            MailboxManager.initDB(connectionSource);
+            ContestManager.initDB(connectionSource);
+            EconomyManager.initDB(connectionSource);
+            HomesManager.initDB(connectionSource);
+            FriendSQLManager.initDB(connectionSource);
+            DynamicCooldownManager.initDB(connectionSource);
+            CompanyManager.initDB(connectionSource);
+            CityManager.initDB(connectionSource);
+            MascotsManager.initDB(connectionSource);
+            PlayerSettingsManager.initDB(connectionSource);
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getLogger().severe("Impossible d'initialiser la base de données");
+            OMCPlugin.getInstance().getSLF4JLogger().error("Failed to initialize the database connection.", e);
+            throw new RuntimeException(e);
+        } catch (ConnectionPendingException e) {
+            OMCPlugin.getInstance().getSLF4JLogger().error("Database connection is pending. Please check your database configuration.");
             throw new RuntimeException(e);
         }
     }

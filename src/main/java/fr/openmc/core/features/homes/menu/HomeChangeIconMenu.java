@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -13,7 +14,6 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -35,7 +35,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     private final Home home;
     private IconCategory currentCategory = IconCategory.ALL;
-    private String searchQuery = "";
+    private String searchQuery;
 
     private static final Map<UUID, Long> CATEGORY_COOLDOWNS = new ConcurrentHashMap<>();
     private static final long CATEGORY_COOLDOWN_TIME = 500; // 2 seconds cooldown
@@ -67,7 +67,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::omc_homes_menus_home:");
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.ContestEndEvent;
@@ -19,7 +20,6 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.ParticleUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -54,7 +54,7 @@ public class ContestManager {
     public static Contest data;
     public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
 
-    private static List<String> colorContest = Arrays.asList(
+    private static final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
             "DARK_GREEN","DARK_BLUE","BLACK"
@@ -63,7 +63,7 @@ public class ContestManager {
     public ContestManager() {
         // LISTENERS
         OMCPlugin.registerEvents(new ContestListener(OMCPlugin.getInstance()));
-        if (ItemsAdderApi.hasItemAdder()) {
+        if (ItemsAdderHook.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );
@@ -92,7 +92,7 @@ public class ContestManager {
     /**
      * Initialise la DB pour les Contests
      */
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Contest.class);
         contestDao = DaoManager.createDao(connectionSource, Contest.class);
 
@@ -119,8 +119,7 @@ public class ContestManager {
         try {
             contestConfig.save(contestFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getLogger().severe("Impossible de sauvegarder le fichier de configuration des contests");
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save contest configuration file: {}", e.getMessage(), e);
         }
     }
 
@@ -167,16 +166,15 @@ public class ContestManager {
      * Sauvegarder les données des Joueurs du Contests
      */
     public static void saveContestPlayerData() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Joueurs du Contest...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Saving contest player data...");
         dataPlayer.forEach((player, data) -> {
             try {
                 playerDao.createOrUpdate(data);
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getLogger().severe("Echec de la sauvegarde des données des Joueurs du Contest.");
-                e.printStackTrace();
+                OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save contest player data for {}: {}", player, e.getMessage(), e);
             }
         });
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Joueurs du Contest réussi.");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Contest player data saved successfully.");
     }
 
     public static void clearDB() {
@@ -210,8 +208,6 @@ public class ContestManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
         }
-
-        OMCPlugin.getInstance().getLogger().info("[CONTEST] Ouverture des votes");
     }
     //PHASE 2
     /**
@@ -243,8 +239,6 @@ public class ContestManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1.0F, 0.3F);
         }
-
-        OMCPlugin.getInstance().getLogger().info("[CONTEST] Ouverture des trades");
     }
     //PHASE 3
     /**
@@ -441,8 +435,8 @@ public class ContestManager {
             List<ItemStack> itemListRewards = new ArrayList<>();
             String textRewards = "§8§lRécompenses";
 
-            int money = 0;
-            int aywenite = 0;
+            int money;
+            int aywenite;
 
             double multiplicator = ContestPlayerManager.getMultiplicatorFromRank(ContestPlayerManager.getRankContestFromOfflineInt(player));
             if(ContestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
@@ -505,7 +499,7 @@ public class ContestManager {
             itemListRewards.add(bookPlayer);
             itemListRewards.add(ayweniteItemStack);
 
-            ItemStack[] rewards = itemListRewards.toArray(new ItemStack[itemListRewards.size()]);
+            ItemStack[] rewards = itemListRewards.toArray(new ItemStack[0]);
             playerItemsMap.put(player, rewards);
             rank.getAndIncrement();
         });
@@ -528,8 +522,6 @@ public class ContestManager {
                     dataPlayer=new HashMap<>(); // on supprime les données précédentes du joueurs
                     MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
         });
-
-        OMCPlugin.getInstance().getLogger().info("[CONTEST] Fermeture du Contest");
     }
 
     // TRADE METHODE
@@ -625,12 +617,6 @@ public class ContestManager {
 
         for (Map<?, ?> contest : contestList) {
             if (contest.get("camp1").equals(camps)) {
-                Map<String, Object> result = new HashMap<>();
-                for (Map.Entry<?, ?> entry : contest.entrySet()) {
-                    if (entry.getKey() instanceof String) {
-                        result.put((String) entry.getKey(), entry.getValue());
-                    }
-                }
                 updateSelected(camps);
             }
         }
@@ -672,11 +658,7 @@ public class ContestManager {
      * Retourne une Liste contenant toutes les couleurs possibles pour faire un Contest
      */
     public static List<String> getColorContestList() {
-        List<String> color = new ArrayList<>();
-        for (String colorName : colorContest) {
-            color.add(colorName);
-        }
-        return color;
+        return new ArrayList<>(colorContest);
     }
 
     /**

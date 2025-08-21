@@ -39,7 +39,7 @@ public class BankManager {
 
     private static Dao<Bank, String> banksDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Bank.class);
         banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
@@ -84,7 +84,7 @@ public class BankManager {
                                 + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"),
                         Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(),
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(),
                         Prefix.BANK, MessageType.ERROR, false);
             }
         } else {
@@ -149,8 +149,8 @@ public class BankManager {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.phaseMayor == 2) {
-            if (PerkManager.hasPerk(CityManager.getPlayerCity(player).getMayor(), Perks.BUISNESS_MAN.getId())) {
-                interest = .03; // interest is 3% when perk Buisness Man actived
+            if (PerkManager.hasPerk(CityManager.getPlayerCity(player).getMayor(), Perks.BUSINESS_MAN.getId())) {
+                interest = .03; // interest is 3% when perk Business Man enabled
             }
         }
 
@@ -184,10 +184,10 @@ public class BankManager {
         if (OMCPlugin.isUnitTestVersion()) return; // cette méthode bloque totalement le flux des tests. si quelqu'un fait les unit test des banques, merci de le prendre en compte.
         
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
+            OMCPlugin.getInstance().getSLF4JLogger().info("Applying all player interests...");
             applyAllPlayerInterests();
             CityBankManager.applyAllCityInterests();
-            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
+            OMCPlugin.getInstance().getSLF4JLogger().info("All player interests applied successfully.");
             updateInterestTimer();
 
         }, getSecondsUntilInterest() * 20); // 20 ticks per second (ideally)

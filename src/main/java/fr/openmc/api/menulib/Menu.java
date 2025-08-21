@@ -6,6 +6,8 @@ import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Represents an abstract Menu framework for managing custom player inventories.
@@ -31,6 +34,8 @@ import java.util.Objects;
  * handling inventory interactions, and managing permissions.
  */
 public abstract class Menu implements InventoryHolder {
+	@Getter
+	private final Object2ObjectMap<ItemBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
 	
 	@Getter
 	private final Player owner;
@@ -40,7 +45,7 @@ public abstract class Menu implements InventoryHolder {
 	 *
 	 * @param owner The {@link Player} who owns the menu
 	 */
-	public Menu(Player owner) {
+	protected Menu(Player owner) {
 		this.owner = owner;
 	}
 	

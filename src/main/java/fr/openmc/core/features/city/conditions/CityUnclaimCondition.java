@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -26,11 +26,11 @@ public class CityUnclaimCondition {
         if (player.getWorld() != Bukkit.getWorld("world")) return false;
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.CLAIM))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.CLAIM))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de unclaim"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

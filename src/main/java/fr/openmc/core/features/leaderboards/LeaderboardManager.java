@@ -357,7 +357,7 @@ public class LeaderboardManager {
             }
             con.disconnect();
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("Erreur lors de la récupération de la liste des contributeurs: " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Could not fetch contributors: {}", e.getMessage(), e);
         }
 
         return contributors;
@@ -412,7 +412,7 @@ public class LeaderboardManager {
             }
             con.disconnect();
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("Erreur lors de la récupération des stats: " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Could not fetch contributor stats: {}", e.getMessage(), e);
         }
     }
 

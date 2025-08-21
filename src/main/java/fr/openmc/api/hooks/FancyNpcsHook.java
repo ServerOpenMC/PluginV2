@@ -1,11 +1,11 @@
-package fr.openmc.core.utils.api;
+package fr.openmc.api.hooks;
 
 import org.bukkit.Bukkit;
 
-public class FancyNpcsApi {
+public class FancyNpcsHook {
     private static boolean hasFancyNpc = false;
 
-    public FancyNpcsApi() {
+    public FancyNpcsHook() {
         hasFancyNpc = Bukkit.getPluginManager().isPluginEnabled("FancyNpcs");
     }
 
@@ -22,6 +22,6 @@ public class FancyNpcsApi {
      * @param hasFancyNpc true if the instance has FancyNpc, false otherwise
      */
     public static void setHasFancyNpc(boolean hasFancyNpc) {
-        FancyNpcsApi.hasFancyNpc = hasFancyNpc;
+        FancyNpcsHook.hasFancyNpc = hasFancyNpc;
     }
 }

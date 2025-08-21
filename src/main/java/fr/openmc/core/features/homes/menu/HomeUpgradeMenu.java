@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -8,7 +9,6 @@ import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.items.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,7 +30,7 @@ public class HomeUpgradeMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(this.getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home_upgrade%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::omc_homes_menus_home_upgrade:");
     }
 
     @Override

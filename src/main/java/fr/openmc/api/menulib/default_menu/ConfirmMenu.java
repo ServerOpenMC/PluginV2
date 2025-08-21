@@ -1,5 +1,6 @@
 package fr.openmc.api.menulib.default_menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -7,7 +8,6 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -53,8 +53,7 @@ public class ConfirmMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_confirm_menu%");
-
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::confirm_menu:");
     }
 
     @Override

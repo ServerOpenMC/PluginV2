@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("UnstableApiUsage")
 public class NotationEditionDialog {
 
     public static void send(Player player, String weekStr, List<City> cities, Integer cityEditIndex) {
@@ -112,7 +113,7 @@ public class NotationEditionDialog {
         );
 
 
-        Integer finalCityEditIndex = cityEditIndex;
+        int finalCityEditIndex = cityEditIndex;
         Dialog dialog = Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Component.text("Classement des Notations Semaine " + weekStr + " - Edition de la ville : " + cityEdited.getName() + " (" + (finalCityEditIndex + 1) + "/" + cities.size() + ")"))
                         .body(body)

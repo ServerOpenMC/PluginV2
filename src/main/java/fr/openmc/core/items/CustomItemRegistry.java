@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class CustomItemRegistry {
-    static HashMap<String, CustomItem> items = new HashMap<>();
-    static NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
+    static final HashMap<String, CustomItem> items = new HashMap<>();
+    static final NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
 
     public CustomItemRegistry() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
@@ -69,8 +69,6 @@ public class CustomItemRegistry {
     }
 
     public static void register(String name, CustomItem item) {
-        System.out.println(items.size() + " all items:" + items.keySet());
-
         if (!name.matches("[a-zA-Z0-9_:]+")) {
             throw new IllegalArgumentException("Custom item name dont match regex \"[a-zA-Z0-9_:]+\"");
         }

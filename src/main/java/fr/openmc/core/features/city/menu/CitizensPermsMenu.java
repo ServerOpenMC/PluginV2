@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.menu;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityPermsCommands;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
@@ -40,7 +40,7 @@ public class CitizensPermsMenu {
             return;
         }
 
-        if (!city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
+        if (!city.hasPermission(sender.getUniqueId(), CityPermission.PERMS)) {
             MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -54,8 +54,8 @@ public class CitizensPermsMenu {
 
         ArrayList<Component> perms = new ArrayList<>();
 
-        for (CPermission permission: CPermission.values()) {
-            if (permission == CPermission.OWNER) continue;
+        for (CityPermission permission: CityPermission.values()) {
+            if (permission == CityPermission.OWNER) continue;
 
             perms.add(Component.text((city.hasPermission(player, permission) ? "+ ": "- ")+permission.getDisplayName())
                     .decoration(TextDecoration.UNDERLINED, false)
@@ -102,7 +102,7 @@ public class CitizensPermsMenu {
             return;
         }
 
-        if (!city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
+        if (!city.hasPermission(sender.getUniqueId(), CityPermission.PERMS)) {
             MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

@@ -5,9 +5,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
@@ -63,7 +63,7 @@ public class CityBankMenu extends Menu {
 
         List<Component> loreBankDeposit;
 
-        if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE)) {
+        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE)) {
             loreBankDeposit = List.of(
                     Component.text("§7Votre argent sera placé dans la §6Banque de la Ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
@@ -78,7 +78,7 @@ public class CityBankMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer de l'§6Argent"));
             itemMeta.lore(loreBankDeposit);
         }).setOnClick(inventoryClickEvent -> {
-            if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE))) {
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE))) {
                 MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de donner de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
@@ -87,7 +87,7 @@ public class CityBankMenu extends Menu {
             menu.open();
         }));
 
-        if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE)) {
+        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE)) {
 
             Supplier<ItemBuilder> interestItemSupplier = () -> {
                 return new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
@@ -106,7 +106,7 @@ public class CityBankMenu extends Menu {
 
         List<Component> loreBankTake;
 
-        if (city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE)) {
+        if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE)) {
             loreBankTake = List.of(
                     Component.text("§7L'argent sera pris dans la §6Banque de la Ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
@@ -121,7 +121,7 @@ public class CityBankMenu extends Menu {
             itemMeta.itemName(Component.text("§7Retirer de l'§6Argent"));
             itemMeta.lore(loreBankTake);
         }).setOnClick(inventoryClickEvent -> {
-            if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_TAKE))) {
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_TAKE))) {
                 MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }

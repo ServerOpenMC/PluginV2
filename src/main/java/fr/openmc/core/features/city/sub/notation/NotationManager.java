@@ -29,11 +29,11 @@ public class NotationManager {
 
     private static final DayOfWeek APPLY_NOTATION_DAY = DayOfWeek.MONDAY;
 
-    public static final HashMap<String, List<CityNotation>> notationPerWeek = new HashMap<>(); // weekStr -> List of CityNotation
-    public static final HashMap<String, List<CityNotation>> cityNotations = new HashMap<>(); // cityUUID -> List of CityNotation
+    public static final Map<String, List<CityNotation>> notationPerWeek = new HashMap<>(); // weekStr -> List of CityNotation
+    public static final Map<String, List<CityNotation>> cityNotations = new HashMap<>(); // cityUUID -> List of CityNotation
 
 
-    public static final HashMap<UUID, Long> activityNotation = new HashMap<>();
+    public static final Map<UUID, Long> activityNotation = new HashMap<>();
 
 
     private static Dao<CityNotation, String> notationDao;
@@ -126,9 +126,9 @@ public class NotationManager {
 
         return notations.stream()
                 .sorted(Comparator.comparingDouble(
-                        n -> ((CityNotation) n).getNoteArchitectural() + ((CityNotation) n).getNoteCoherence()
+                        (CityNotation n) -> n.getNoteArchitectural() + n.getNoteCoherence()
                 ).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public static double getActivityScore(City city) {

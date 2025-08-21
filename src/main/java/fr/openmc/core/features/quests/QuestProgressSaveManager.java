@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 /**
  * Manages the saving and loading of quest progress for players.
@@ -119,7 +118,7 @@ public class QuestProgressSaveManager {
         try {
             config.save(playerFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not save quest progress for player " + playerUUID, e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Could not save quest progress for player {}", playerUUID, e);
         }
     }
 
@@ -153,7 +152,9 @@ public class QuestProgressSaveManager {
                     UUID playerUUID = UUID.fromString(playerFile.getName().replace(".yml", ""));
                     loadPlayerQuestProgress(playerUUID);
                 } catch (IllegalArgumentException e) {
-                    OMCPlugin.getInstance().getLogger().warning("Invalid player file: " + playerFile.getName());
+                    OMCPlugin.getInstance().getSLF4JLogger().warn("Invalid UUID in quest progress file: {}", playerFile.getName(), e);
+                } catch (Exception e) {
+                    OMCPlugin.getInstance().getSLF4JLogger().error("Error loading quest progress for file: {}", playerFile.getName(), e);
                 }
             }
         }

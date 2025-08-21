@@ -1,15 +1,15 @@
 package fr.openmc.core.features.corporation.menu.company;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.corporation.company.Company;
 import fr.openmc.core.features.corporation.data.MerchantData;
 import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -37,7 +37,7 @@ public class CompanyBaltopMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_company_baltop_menu%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::company_baltop_menu:");
     }
 
     @Override
@@ -77,7 +77,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDFirst;
-        if (companies.getFirst().getOwner().isCity()) ownerUUIDFirst = companies.getFirst().getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
+        if (companies.getFirst().getOwner().isCity()) ownerUUIDFirst = companies.getFirst().getOwner().getCity().getPlayerWithPermission(CityPermission.OWNER);
         else ownerUUIDFirst = companies.getFirst().getOwner().getPlayer();
         content.put(12, new ItemBuilder(this, companies.getFirst().getHead(), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.getFirst().getOwner().isCity() ? companies.getFirst().getOwner().getCity().getName() : Bukkit.getOfflinePlayer(ownerUUIDFirst).getName()));
@@ -115,7 +115,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDSecond;
-        if (companies.get(1).getOwner().isCity()) ownerUUIDSecond = companies.get(1).getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
+        if (companies.get(1).getOwner().isCity()) ownerUUIDSecond = companies.get(1).getOwner().getCity().getPlayerWithPermission(CityPermission.OWNER);
         else ownerUUIDSecond = companies.get(1).getOwner().getPlayer();
         content.put(21, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDSecond), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(1).getOwner().isCity() ? companies.get(1).getName() : Bukkit.getOfflinePlayer(ownerUUIDSecond).getName()));
@@ -154,7 +154,7 @@ public class CompanyBaltopMenu extends Menu {
             ));
         }));
         UUID ownerUUIDThird;
-        if (companies.get(2).getOwner().isCity()) ownerUUIDThird = companies.get(2).getOwner().getCity().getPlayerWithPermission(CPermission.OWNER);
+        if (companies.get(2).getOwner().isCity()) ownerUUIDThird = companies.get(2).getOwner().getCity().getPlayerWithPermission(CityPermission.OWNER);
         else ownerUUIDThird = companies.get(2).getOwner().getPlayer();
         content.put(30, new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUIDThird), itemMeta -> {
             itemMeta.setDisplayName("§6" + (companies.get(2).getOwner().isCity() ? companies.get(2).getName() : Bukkit.getOfflinePlayer(ownerUUIDThird).getName()));

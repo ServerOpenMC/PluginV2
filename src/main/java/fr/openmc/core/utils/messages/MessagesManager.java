@@ -1,9 +1,8 @@
 package fr.openmc.core.utils.messages;
 
-import lombok.Getter;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,10 +26,9 @@ public class MessagesManager {
      */
 
     public static void sendMessage(CommandSender sender, Component message, Prefix prefix, MessageType type, float soundVolume, boolean sound) {
-        MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(MiniMessage.miniMessage().deserialize(prefix.getPrefix()))
+                        .append(prefix.getPrefix())
                         .append(Component.text(" §7» ")
                         .append(message)
                 );
@@ -67,10 +65,9 @@ public class MessagesManager {
      * @param type    The type of message (information, error, success, warning)
      */
     public static void broadcastMessage(Component message, Prefix prefix, MessageType type) {
-        MiniMessage.miniMessage().deserialize("e");
         Component messageComponent =
                 Component.text(type == MessageType.NONE ? "" : "§7(" + type.getPrefix() + "§7) ")
-                        .append(MiniMessage.miniMessage().deserialize(prefix.getPrefix()))
+                        .append(prefix.getPrefix())
                         .append(Component.text(" §7» ")
                         .append(message)
                 );
@@ -102,35 +99,35 @@ public class MessagesManager {
     @Getter
     public enum Message {
         // Command messages
-        NOPERMISSION(Component.text("§cVous n'avez pas la permission d'exécuter cette commande.")),
-        NOPERMISSION2(Component.text("§cVous n'avez pas le droit de faire ceci")),
-        MISSINGARGUMENT(Component.text("§cVous devez spécifier un argument.")),
-        
+        NO_PERMISSION(Component.text("§cVous n'avez pas la permission d'exécuter cette commande.")),
+        NO_PERMISSION_2(Component.text("§cVous n'avez pas le droit de faire ceci")),
+        MISSING_ARGUMENT(Component.text("§cVous devez spécifier un argument.")),
+
         // Player messages
-        PLAYERNOTFOUND(Component.text("§cLe joueur n'a pas été trouvé.")),
-        
+        PLAYER_NOT_FOUND(Component.text("§cLe joueur n'a pas été trouvé.")),
+
         // General messages
-        MONEYPLAYERMISSING(Component.text("Tu n'as pas assez d'argent")),
+        PLAYER_MISSING_MONEY(Component.text("Tu n'as pas assez d'argent")),
 
         // City messages
-        PLAYERNOCITY(Component.text("Tu n'es pas dans une ville")),
-        PLAYERINCITY(Component.text("Tu es déjà dans une ville")),
-        CITYNOFREECLAIM(Component.text("Cette ville n'a pas de claims gratuits")),
-        
-        PLAYERNOACCESSPERMS(Component.text("Tu n'as pas la permission d'accéder aux permissions ou grades de cette ville")),
-        PLAYERNOCLAIM(Component.text("Tu n'as pas la permission d'agrandir ta ville")),
-        PLAYERNOOWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire")),
-        PLAYERNORENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
-        PLAYERNOMONEYGIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),
-        PLAYERNOMONEYTAKE(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville")),
-        PLAYERISOWNER(Component.text("Le propriétaire a tous les pouvoirs.")),
-        
-        CITYRANKS_NOTEXIST(Component.text("Ce grade n'existe pas.")),
-        CITYRANKS_MAX(Component.text("Le nombre maximum de grades a été atteint, tu ne peux pas en ajouter d'autres.")),
-        CITYRANKS_ALREADYEXIST(Component.text("Ce grade existe déjà.")),
-        CITYRANKS_CANNOTDELETE(Component.text("Tu ne peux pas supprimer le grade de propriétaire.")),
-        
-        CITYNOTFOUND(Component.text("La ville n'existe pas")),
+        PLAYER_NO_CITY(Component.text("Tu n'es pas dans une ville")),
+        PLAYER_IN_CITY(Component.text("Tu es déjà dans une ville")),
+        CITY_NO_FREE_CLAIM(Component.text("Cette ville n'a pas de claims gratuits")),
+
+        PLAYER_NO_ACCESS_PERMS(Component.text("Tu n'as pas la permission d'accéder aux permissions ou grades de cette ville")),
+        PLAYER_NO_CLAIM(Component.text("Tu n'as pas la permission d'agrandir ta ville")),
+        PLAYER_NO_OWNER(Component.text("Tu n'as pas la permission car tu n'es pas maire")),
+        PLAYER_NO_RENAME(Component.text("Tu n'as pas la permission de renommer ta ville")),
+        PLAYER_NO_MONEY_GIVE(Component.text("Tu n'as pas la permission de donner de l'argent à ta ville")),
+        PLAYER_NO_MONEY_TAKE(Component.text("Tu n'as pas la permission de prendre de l'argent à ta ville")),
+        PLAYER_IS_OWNER(Component.text("Le propriétaire a tous les pouvoirs.")),
+
+        CITY_RANKS_NOT_EXIST(Component.text("Ce grade n'existe pas.")),
+        CITY_RANKS_MAX(Component.text("Le nombre maximum de grades a été atteint, tu ne peux pas en ajouter d'autres.")),
+        CITY_RANKS_ALREADY_EXIST(Component.text("Ce grade existe déjà.")),
+        CITY_RANKS_CANNOT_DELETE(Component.text("Tu ne peux pas supprimer le grade de propriétaire.")),
+
+        CITY_NOT_FOUND(Component.text("La ville n'existe pas")),
 
         ;
 

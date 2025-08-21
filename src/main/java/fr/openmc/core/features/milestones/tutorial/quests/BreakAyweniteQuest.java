@@ -10,8 +10,8 @@ import fr.openmc.core.features.quests.objects.QuestTier;
 import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.event.EventHandler;
@@ -53,7 +53,7 @@ public class BreakAyweniteQuest extends Quest implements Listener {
     public void onPlayerBreakBlock(BlockBreakEvent event) {
         if (MilestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
 
-        if (!ItemsAdderApi.hasItemAdder())
+        if (!ItemsAdderHook.hasItemAdder())
             return;
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());

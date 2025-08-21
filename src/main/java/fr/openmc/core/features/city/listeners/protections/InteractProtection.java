@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.listeners.protections;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.sub.mascots.utils.MascotUtils;
 import org.bukkit.Location;
@@ -55,9 +55,9 @@ public class InteractProtection implements Listener {
             if (city.isMember(player)) {
                 if (clickedBlock.getType().name().endsWith("SHULKER_BOX")) return;
                 if (clickedBlock.getType().name().endsWith("CHEST") || clickedBlock.getType().name().endsWith("BARREL")) {
-                    ProtectionsManager.checkPermissions(player, event, city, CPermission.OPEN_CHEST);
+                    ProtectionsManager.checkPermissions(player, event, city, CityPermission.OPEN_CHEST);
                 } else {
-                    ProtectionsManager.checkPermissions(player, event, city, CPermission.INTERACT);
+                    ProtectionsManager.checkPermissions(player, event, city, CityPermission.INTERACT);
                 }
                 
             } else {
@@ -66,6 +66,8 @@ public class InteractProtection implements Listener {
             
         }
         if (!clickedType.isInteractable() && !isMinecart) return;
+
+        if (!isMinecart) return;
         if (isTnt) return;
 
         ProtectionsManager.verify(player, event, location);
@@ -79,7 +81,7 @@ public class InteractProtection implements Listener {
         if (rightClicked instanceof Player) return;
         if (! (rightClicked instanceof ItemFrame)) return;
 
-        if (MascotUtils.isMascot(rightClicked)) return;
+        if (MascotUtils.canBeAMascot(rightClicked)) return;
         
         ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
     }

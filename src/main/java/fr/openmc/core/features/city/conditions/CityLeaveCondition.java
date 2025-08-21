@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -23,11 +23,11 @@ public class CityLeaveCondition {
      */
     public static boolean canCityLeave(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (city.hasPermission(player.getUniqueId(), CPermission.OWNER)) {
+        if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
             MessagesManager.sendMessage(player, Component.text("Tu ne peux pas quitter la ville car tu en es le maire, supprime la ou transfère la propriété"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

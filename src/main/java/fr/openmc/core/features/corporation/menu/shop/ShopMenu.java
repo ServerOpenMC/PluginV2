@@ -1,5 +1,6 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -16,7 +17,6 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -59,12 +59,12 @@ public class ShopMenu extends Menu {
         //            if (shop.getOwner().isCompany()){
 //                Company company = shop.getOwner().getCompany();
 //                if (company.getAllMembers().contains(getOwner().getUniqueId())){
-//                    return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+//                    return FontImageWrapper.replaceFontImages("§r§f:offset_-11::shop_menu:");
 //                }
 //            }
 //            if (!shop.isOwner(getOwner().getUniqueId()))
-//                return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_sell_shop_menu%");
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_shop_menu%");
+//                return FontImageWrapper.replaceFontImages("§r§f:offset_-11::shop_menu:");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::shop_menu:");
     }
 
     @Override
@@ -226,15 +226,21 @@ public class ShopMenu extends Menu {
                 meta.setTitle("Guide des Shop");
                 meta.setAuthor("Nocolm");
                 meta.addPage(
-                        "Comment utiliser les shops !\n\n" +
-                                "§l§6Stock§r :\n" +
-                                "1. Utilisez la commande §d§l/shop sell §r§7<prix> §r en tenant l'item en main\n" +
-                                "2. Ajoutez les items dans le barril §c§l* le raccourci avec les chiffres ne fonctionnera pas *\n"
+                        """
+                                Comment utiliser les shops !
+                                
+                                §l§6Stock§r :
+                                1. Utilisez la commande §d§l/shop sell §r§7<prix> §r en tenant l'item en main
+                                2. Ajoutez les items dans le barril §c§l* le raccourci avec les chiffres ne fonctionnera pas *
+                                """
                 );
                 meta.addPage(
-                        "3. Ouvrez une fois le shop pour renouveler son stock\n\n" +
-                                "Et voilà comment utiliser votre shops\n\n" +
-                                "§6▪ Pour plus d'info : /shop help§r"
+                        """
+                                3. Ouvrez une fois le shop pour renouveler son stock
+                                
+                                Et voilà comment utiliser votre shops
+                                
+                                §6▪ Pour plus d'info : /shop help§r"""
                 );
 
                 book.setItemMeta(meta);

@@ -6,9 +6,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -71,7 +71,7 @@ public class CityListMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		cities.forEach(city -> {
-			UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
+			UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
 			String ownerName = PlayerNameCache.getName(ownerUUID);
 
 			List<Component> cityLore = new ArrayList<>();
@@ -254,7 +254,7 @@ public class CityListMenu extends PaginatedMenu {
 	/**
 	 * Enum representing the sorting types for the city list.
 	 */
-	private enum SortType {
+	public enum SortType {
 		NAME,
 		WEALTH,
 		POPULATION,

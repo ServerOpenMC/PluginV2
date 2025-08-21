@@ -1,6 +1,7 @@
 package fr.openmc.core.features.contest.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -9,11 +10,10 @@ import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -40,7 +40,7 @@ public class TradeMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
     }
 
     @Override
@@ -100,7 +100,7 @@ public class TradeMenu extends Menu {
             );
 
             inventory.put(slot, new ItemBuilder(this, m, itemMeta -> itemMeta.lore(loreTrades)).setOnClick(inventoryClickEvent -> {
-                if (!ItemsAdderApi.hasItemAdder()) {
+                if (!ItemsAdderHook.hasItemAdder()) {
                     MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                     return;
                 }
@@ -142,7 +142,7 @@ public class TradeMenu extends Menu {
                                 if (remain2 != 0) {
                                     newshellContestItem.setAmount(remain2);
                                     List<ItemStack> itemlist = ItemUtils.splitAmountIntoStack(newshellContestItem);
-                                    ItemStack[] shellContestArray = itemlist.toArray(new ItemStack[itemlist.size()]);
+                                    ItemStack[] shellContestArray = itemlist.toArray(new ItemStack[0]);
                                     MailboxManager.sendItems(player, player, shellContestArray);
                                 }
                             }

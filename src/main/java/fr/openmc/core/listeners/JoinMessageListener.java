@@ -1,5 +1,6 @@
 package fr.openmc.core.listeners;
 
+import fr.openmc.api.hooks.LuckPermsHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.displays.TabList;
@@ -7,7 +8,6 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
-import fr.openmc.core.utils.api.LuckPermsApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -42,11 +42,11 @@ public class JoinMessageListener implements Listener {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§aVotre ami §r" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName() +" §as'est connecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
-            OMCPlugin.getInstance().getLogger().severe("An error occurred while loading friends of " + player.getName() + " : " + throwable.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 
@@ -69,7 +69,7 @@ public class JoinMessageListener implements Listener {
             }
         });
 
-        event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName()));
+        event.joinMessage(Component.text("§8[§a§l+§8] §r" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()));
 
         // Adjust player's spawn location
         if (!player.hasPlayedBefore()) {
@@ -94,21 +94,21 @@ public class JoinMessageListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 
-        QuestsManager.saveQuests(player.getUniqueId());
+        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> QuestsManager.saveQuests(player.getUniqueId()));
 
         FriendManager.getFriendsAsync(player.getUniqueId()).thenAccept(friendsUUIDS -> {
             for (UUID friendUUID : friendsUUIDS) {
                 final Player friend = player.getServer().getPlayer(friendUUID);
                 if (friend != null && friend.isOnline()) {
-                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
+                    MessagesManager.sendMessage(friend, Component.text("§cVotre ami §e" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName() +" §cs'est déconnecté(e)"), Prefix.FRIEND, MessageType.NONE, true);
                 }
             }
         }).exceptionally(throwable -> {
-            OMCPlugin.getInstance().getLogger().severe("An error occurred while loading friends of " + player.getName() + " : " + throwable.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
 
-        event.quitMessage(Component.text("§8[§c§l-§8] §r" + "§r" + LuckPermsApi.getFormattedPAPIPrefix(player) + player.getName()));
+        event.quitMessage(Component.text("§8[§c§l-§8] §r" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()));
     }
 
 }

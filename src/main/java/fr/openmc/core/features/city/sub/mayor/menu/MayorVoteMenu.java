@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -16,7 +17,6 @@ import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -88,12 +88,7 @@ public class MayorVoteMenu extends PaginatedMenu {
             loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
 
-            boolean ench;
-            if (candidate == playerVote) {
-                ench = true;
-            } else {
-                ench = false;
-            }
+            boolean ench = candidate == playerVote;
 
 
                 ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getUUID()), itemMeta -> {
@@ -105,7 +100,7 @@ public class MayorVoteMenu extends PaginatedMenu {
                         if (candidate == playerVote) {
                             MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6Maire"), Prefix.MAYOR, MessageType.ERROR, false);
                             return;
-                        };
+                        }
 
                         playerVote.setVote(playerVote.getVote()-1);
                         MayorManager.removeVotePlayer(player);
@@ -129,16 +124,10 @@ public class MayorVoteMenu extends PaginatedMenu {
         int progressBars = 20;
         int barFill = (int) (((double) vote / totalVotes) * progressBars);
 
-        StringBuilder bar = new StringBuilder();
-        bar.append(ColorUtils.getColorCode(color));
-        for (int i = 0; i < barFill; i++) {
-            bar.append("|");
-        }
-        bar.append("§7");
-        for (int i = barFill; i < progressBars; i++) {
-            bar.append("|");
-        }
-        return bar.toString();
+        return ColorUtils.getColorCode(color) +
+                "|".repeat(Math.max(0, barFill)) +
+                "§7" +
+                "|".repeat(Math.max(0, progressBars - barFill));
     }
 
     private int getVotePercentage(int vote, int totalVotes) {
@@ -179,7 +168,7 @@ public class MayorVoteMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override

@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TransactionsMenu extends Menu {
-    Player owner;
-    UUID target;
+    final Player owner;
+    final UUID target;
 
     public TransactionsMenu(Player owner, UUID target) {
         super(owner);

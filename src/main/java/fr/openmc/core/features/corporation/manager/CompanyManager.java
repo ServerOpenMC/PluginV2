@@ -5,6 +5,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -23,7 +24,6 @@ import fr.openmc.core.features.corporation.shops.Shop;
 import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.corporation.shops.Supply;
 import fr.openmc.core.utils.Queue;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
@@ -48,10 +48,10 @@ public class CompanyManager {
     @Getter
     public static List<Shop> shops = new ArrayList<>();
 
-    public static NamespacedKey SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
+    public static final NamespacedKey SUPPLIER_KEY = new NamespacedKey(OMCPlugin.getInstance(), "supplier");
 
     // File d'attente des candidatures en attente, avec une limite de 100
-    private static Queue<UUID, Company> pendingApplications = new Queue<>(100);
+    private static final Queue<UUID, Company> pendingApplications = new Queue<>(100);
 
     public CompanyManager() {
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("company_perms",
@@ -68,7 +68,7 @@ public class CompanyManager {
         OMCPlugin.registerEvents(
                 new ShopListener());
 
-        if (ItemsAdderApi.hasItemAdder()) {
+        if (ItemsAdderHook.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new CustomItemsCompanyListener());
         }
@@ -86,7 +86,7 @@ public class CompanyManager {
     private static Dao<Merchant, UUID> merchantsDao;
     private static Dao<ShopSupplier, UUID> suppliersDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, CompanyPermission.class);
         permissionsDao = DaoManager.createDao(connectionSource, CompanyPermission.class);
 
@@ -113,7 +113,7 @@ public class CompanyManager {
     }
 
     public static List<Company> getAllCompany() {
-        OMCPlugin.getInstance().getLogger().info("Chargement des Companies...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Loading companies...");
         List<Company> companies = new ArrayList<>();
 
         try {
@@ -136,16 +136,17 @@ public class CompanyManager {
                 }
                 companies.add(company);
             }
-            OMCPlugin.getInstance().getLogger().info("Chargement terminé avec succes");
+            OMCPlugin.getInstance().getSLF4JLogger().info("Companies loaded successfully.");
         } catch (SQLException e) {
-            e.printStackTrace();
-            OMCPlugin.getInstance().getLogger().info("Erreur lors du chargement");
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading companies from database: {}", e.getMessage());
+            throw new RuntimeException(e);
         }
+
         return companies;
     }
 
     public static List<Shop> loadAllShops() {
-        OMCPlugin.getInstance().getLogger().info("Chargement des Shops...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Loading shops...");
         Map<UUID, List<ShopItem>> shopItems = new HashMap<>();
         Map<UUID, List<ShopItem>> shopSales = new HashMap<>();
         List<Shop> allShop = new ArrayList<>();
@@ -161,7 +162,7 @@ public class CompanyManager {
                 shopItems.computeIfAbsent(dbShopItem.getShop(), k -> new ArrayList<>()).add(dbShopItem.deserialize());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading shop items from database: {}", e.getMessage(), e);
         }
 
         try {
@@ -175,7 +176,7 @@ public class CompanyManager {
                 shopSales.computeIfAbsent(dbShopSale.getShop(), k -> new ArrayList<>()).add(dbShopSale.deserialize());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading shop sales from database: {}", e.getMessage(), e);
         }
 
         try {
@@ -228,7 +229,8 @@ public class CompanyManager {
                 allShop.add(shop);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading shops from database: {}", e.getMessage(), e);
+            throw new RuntimeException(e);
         }
 
         try {
@@ -243,16 +245,17 @@ public class CompanyManager {
                 }
             }
         } catch (SQLException e) {
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading shop suppliers from database: {}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
-        OMCPlugin.getInstance().getLogger().info("Chargement terminé avec succes");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Shops loaded successfully.");
 
         return allShop;
     }
 
     @SneakyThrows
     public static void saveAllCompanies() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Companies...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Saving company data...");
 
         try {
             ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
@@ -260,7 +263,7 @@ public class CompanyManager {
             TableUtils.clearTable(connectionSource, CompanyMerchant.class);
             TableUtils.clearTable(connectionSource, Merchant.class);
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error clearing company tables: {}", e.getMessage(), e);
         }
 
         List<DBCompany> dbCompanies = new ArrayList<>();
@@ -285,14 +288,14 @@ public class CompanyManager {
             companyMerchantsDao.create(dbCompanyMerchants);
             merchantsDao.create(dbMerchants);
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving company data: {}", e.getMessage(), e);
         }
 
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Companies finie.");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Company data saved successfully.");
     }
 
     public static void saveAllShop() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Shops...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Saving shop data...");
 
         try {
             ConnectionSource connectionSource = DatabaseManager.getConnectionSource();
@@ -301,7 +304,7 @@ public class CompanyManager {
             TableUtils.clearTable(connectionSource, DBShopSale.class);
             TableUtils.clearTable(connectionSource, ShopSupplier.class);
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error clearing shop tables: {}", e.getMessage(), e);
         }
 
         List<DBShop> dbShops = new ArrayList<>();
@@ -317,9 +320,9 @@ public class CompanyManager {
                     cityUuid = UUID.fromString(company.getOwner().getCity().getUUID());
                 }
 
-                double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-                double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-                double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+                double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
+                double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
+                double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
 
                 dbShops.add(new DBShop(shop.getUuid(), shop.getSupremeOwner(), cityUuid, companyId, x, y, z));
 
@@ -359,9 +362,9 @@ public class CompanyManager {
         for (Map.Entry<UUID, Shop> entry : playerShops.entrySet()) {
             Shop shop = entry.getValue();
             UUID owner = entry.getKey();
-            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
 
             for (ShopItem shopItem : shop.getItems()) {
                 byte[] item = shopItem.getItem().serializeAsBytes();
@@ -387,10 +390,10 @@ public class CompanyManager {
                 }
             });
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving shop data: {}", e.getMessage(), e);
         }
 
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Shops finie.");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Shop data saved successfully.");
     }
 
     public static Set<CorpPermission> getPermissions(Company company, UUID player) {

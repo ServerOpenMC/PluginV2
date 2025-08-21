@@ -1,8 +1,8 @@
-package fr.openmc.core.utils.api;
+package fr.openmc.api.hooks;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.model.group.Group;
@@ -14,18 +14,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class LuckPermsApi {
+public class LuckPermsHook {
     @Getter private static LuckPerms api;
     private static boolean hasLuckPerms;
 
-    public LuckPermsApi() {
-        if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null) {
-            hasLuckPerms = false;
+    public LuckPermsHook() {
+        if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null)
             return;
-        } else {
-            hasLuckPerms = true;
-        }
 
+        hasLuckPerms = true;
         api = OMCPlugin.getInstance().getServer().getServicesManager().load(LuckPerms.class);
     }
 
@@ -55,9 +52,8 @@ public class LuckPermsApi {
         String prefix = getPrefix(player);
         if (prefix == null || prefix.isEmpty()) return "";
         String formattedPrefix = prefix.replace("&", "§");
-        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
 
-        return PlaceholderAPI.setPlaceholders(player, formattedPrefix) + " ";
+        return FontImageWrapper.replaceFontImages(formattedPrefix);
     }
 
     public static @NotNull Component getFormattedPAPIPrefix(Group group) {
@@ -67,8 +63,7 @@ public class LuckPermsApi {
         if (prefix == null || prefix.isEmpty()) return Component.empty();
 
         String formattedPrefix = prefix.replace("&", "§");
-        formattedPrefix = formattedPrefix.replaceAll(":([a-zA-Z0-9_]+):", "%img_$1%");
 
-        return Component.text(PlaceholderAPI.setPlaceholders(null, formattedPrefix) + " ");
+        return Component.text(FontImageWrapper.replaceFontImages(formattedPrefix));
     }
 }

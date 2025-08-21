@@ -1,5 +1,6 @@
 package fr.openmc.core.features.corporation.menu.shop;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -14,7 +15,6 @@ import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -67,9 +67,9 @@ public class ShopSearchMenu extends PaginatedMenu {
             if (shops==null){continue;}
 
             List<Component> loc = new ArrayList<>();
-            double x = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockX();
-            double y = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockY();
-            double z = ShopBlocksManager.getMultiblock(shops.getUuid()).getStockBlock().getBlockZ();
+            double x = ShopBlocksManager.getMultiblock(shops.getUuid()).stockBlock().getBlockX();
+            double y = ShopBlocksManager.getMultiblock(shops.getUuid()).stockBlock().getBlockY();
+            double z = ShopBlocksManager.getMultiblock(shops.getUuid()).stockBlock().getBlockZ();
 
             loc.add(Component.text("§lLocation : §r x : " + x + " y : " + y + " z : " + z));
 
@@ -99,9 +99,9 @@ public class ShopSearchMenu extends PaginatedMenu {
                     boolean shopFind = false;
 
                     for (Shop shop : CompanyManager.shops) {
-                        double x = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockX();
-                        double y = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockY();
-                        double z = ShopBlocksManager.getMultiblock(shop.getUuid()).getStockBlock().getBlockZ();
+                        double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
+                        double y = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockY();
+                        double z = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockZ();
 
                         if (shop.getName().contains(input)) {
                             MessagesManager.sendMessage(getOwner(), Component.text("§lLocation du shop §a" + shop.getName() + " : §r x : " + x + " y : " + y + " z : " + z), Prefix.SHOP, MessageType.INFO, false);
@@ -148,7 +148,7 @@ public class ShopSearchMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_large_shop_menu%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::large_shop_menu:");
     }
 
     @Override

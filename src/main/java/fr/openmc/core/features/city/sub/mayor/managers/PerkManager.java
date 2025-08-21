@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.sub.mayor.perks.PerkType;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -27,11 +28,11 @@ public class PerkManager {
      * Get a random list of perks
      */
     public static List<Perks> getRandomPerksAll() {
-        List<Perks> eventPerks = List.of(Perks.values()).stream()
+        List<Perks> eventPerks = Arrays.stream(Perks.values())
                 .filter(perk -> perk.getType() == PerkType.EVENT)
                 .toList();
 
-        List<Perks> basicPerks = List.of(Perks.values()).stream()
+        List<Perks> basicPerks = Arrays.stream(Perks.values())
                 .filter(perk -> perk.getType() == PerkType.BASIC)
                 .toList();
 
@@ -56,7 +57,7 @@ public class PerkManager {
      * Get a random list of basic perks
      */
     public static List<Perks> getRandomPerksBasic() {
-        List<Perks> basicPerks = List.of(Perks.values()).stream()
+        List<Perks> basicPerks = Arrays.stream(Perks.values())
                 .filter(perk -> perk.getType() == PerkType.BASIC)
                 .toList();
 
@@ -68,17 +69,14 @@ public class PerkManager {
             }
         }
 
-        List<Perks> finalSelection = new ArrayList<>();
-        finalSelection.addAll(selectedBasicPerks);
-
-        return finalSelection;
+        return new ArrayList<>(selectedBasicPerks);
     }
 
     /**
      * Get a random list of event perks
      */
     public static Perks getRandomPerkEvent() {
-        List<Perks> eventPerks = List.of(Perks.values()).stream()
+        List<Perks> eventPerks = Arrays.stream(Perks.values())
                 .filter(perk -> perk.getType() == PerkType.EVENT)
                 .toList();
 
@@ -93,10 +91,10 @@ public class PerkManager {
      */
     public static boolean hasPerk(Mayor mayor, int idPerk) {
         if (mayor == null) return false;
-        if ((mayor.getIdPerk1() == idPerk) || (mayor.getIdPerk2() == idPerk) || (mayor.getIdPerk3() == idPerk)) {
-            return true;
-        }
-        return false;
+
+        return mayor.getIdPerk1() == idPerk
+                || mayor.getIdPerk2() == idPerk
+                || mayor.getIdPerk3() == idPerk;
     }
 
     public static Perks getPerkEvent(Mayor mayor) {

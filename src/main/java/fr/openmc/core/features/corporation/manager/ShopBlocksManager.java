@@ -3,7 +3,7 @@ package fr.openmc.core.features.corporation.manager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.corporation.ItemsAdderIntegration;
 import fr.openmc.core.features.corporation.shops.Shop;
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
 import org.bukkit.Location;
@@ -20,8 +20,8 @@ import java.util.UUID;
 
 public class ShopBlocksManager {
 
-    private static Map<UUID, Shop.Multiblock> multiblocks = new HashMap<>();
-    private static Map<Location, Shop> shopsByLocation = new HashMap<>();
+    private static final Map<UUID, Shop.Multiblock> multiblocks = new HashMap<>();
+    private static final Map<Location, Shop> shopsByLocation = new HashMap<>();
 
     /**
      * Registers a shop's multiblock structure and maps its key locations.
@@ -31,8 +31,8 @@ public class ShopBlocksManager {
      */
     public static void registerMultiblock(Shop shop, Shop.Multiblock multiblock) {
         multiblocks.put(shop.getUuid(), multiblock);
-        Location stockLoc = multiblock.getStockBlock();
-        Location cashLoc = multiblock.getCashBlock();
+        Location stockLoc = multiblock.stockBlock();
+        Location cashLoc = multiblock.cashBlock();
         shopsByLocation.put(stockLoc, shop);
         shopsByLocation.put(cashLoc, shop);
     }
@@ -70,10 +70,10 @@ public class ShopBlocksManager {
         if (multiblock == null) {
             return;
         }
-        Block cashBlock = multiblock.getCashBlock().getBlock();
+        Block cashBlock = multiblock.cashBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
 
-        if (ItemsAdderApi.hasItemAdder()) {
+        if (ItemsAdderHook.hasItemAdder()) {
             boolean placed = ItemsAdderIntegration.placeShopFurniture(cashBlock);
             if (!placed) {
                 cashBlock.setType(Material.OAK_SIGN);
@@ -101,10 +101,10 @@ public class ShopBlocksManager {
         if (multiblock == null) {
             return false;
         }
-        Block cashBlock = multiblock.getCashBlock().getBlock();
-        Block stockBlock = multiblock.getStockBlock().getBlock();
+        Block cashBlock = multiblock.cashBlock().getBlock();
+        Block stockBlock = multiblock.stockBlock().getBlock();
 
-        if (ItemsAdderApi.hasItemAdder()) {
+        if (ItemsAdderHook.hasItemAdder()) {
 
             if (!ItemsAdderIntegration.hasFurniture(cashBlock)) {
                 return false;

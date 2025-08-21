@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu.create;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -12,13 +13,11 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -73,9 +72,9 @@ public class PerkChoiceMenu extends PaginatedMenu {
             ItemStack perkItem = new ItemBuilder(this, newPerk.getItemStack(), itemMeta -> {
                 itemMeta.customName(Component.text(newPerk.getName()));
                 itemMeta.lore(newPerk.getLore());
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
+            })
+                    .hide(newPerk.getToHide())
+                    .setOnClick(inventoryClickEvent -> {
                 boolean isPerkEvent = (newPerk.getType() == PerkType.EVENT) &&
                         (
                                 ("perk1".equals(perkNumber) && ((perk2 != null && perk2.getType() == PerkType.EVENT) || (perk3 != null && perk3.getType() == PerkType.EVENT))) ||
@@ -128,7 +127,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override

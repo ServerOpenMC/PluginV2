@@ -1,14 +1,15 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.menu.create.MayorCreateMenu;
@@ -19,7 +20,6 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -47,7 +47,7 @@ public class MayorElectionMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MayorElectionMenu extends Menu {
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
-        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
+        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         Supplier<ItemBuilder> electionItemSupplier = () -> {
             List<Component> loreElection;
@@ -156,12 +156,7 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
                 if (!MayorManager.hasChoicePerkOwner(player)) {
-                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), new Runnable() {
-                        @Override
-                        public void run() {
-                            new MayorCreateMenu(player, null, null, null, MenuType.OWNER_1).open();
-                        }
-                    });
+                    Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new MayorCreateMenu(player, null, null, null, MenuType.OWNER_1).open());
                 }
             }));
         }

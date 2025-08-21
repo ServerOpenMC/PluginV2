@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.menulib.Menu;
@@ -21,7 +22,6 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,7 +29,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +53,7 @@ public class MayorLawMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -262,9 +261,9 @@ public class MayorLawMenu extends Menu {
                 return new ItemBuilder(this, iaPerkEvent, itemMeta -> {
                     itemMeta.itemName(Component.text(namePerkEvent));
                     itemMeta.lore(lorePerkEvent);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                }).setOnClick(inventoryClickEvent -> {
+                })
+                        .hide(perkEvent.getToHide())
+                        .setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
                         MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de pouvoir utiliser cette §3Réforme"), Prefix.MAYOR, MessageType.ERROR, false);
                         return;
@@ -284,7 +283,6 @@ public class MayorLawMenu extends Menu {
 
                         }
                         DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
-                        return;
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) {
                         // Essor agricole (id : 11) - Perk Event
                         for (UUID uuid : city.getMembers()) {

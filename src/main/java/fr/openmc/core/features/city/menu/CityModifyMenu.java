@@ -7,9 +7,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityDeleteAction;
 import fr.openmc.core.features.city.conditions.CityManageConditions;
 import fr.openmc.core.utils.DateUtils;
@@ -65,8 +65,8 @@ public class CityModifyMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
-        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
+        boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CityPermission.RENAME);
+        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
 
         List<Component> loreRename;
@@ -81,7 +81,7 @@ public class CityModifyMenu extends Menu {
             );
         } else {
             loreRename = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -117,7 +117,7 @@ public class CityModifyMenu extends Menu {
             );
         } else {
             loreTransfer = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -157,7 +157,7 @@ public class CityModifyMenu extends Menu {
                     }
                 } else {
                     loreDelete = List.of(
-                            MessagesManager.Message.NOPERMISSION2.getMessage()
+                            MessagesManager.Message.NO_PERMISSION_2.getMessage()
                     );
                 }
                 return new ItemBuilder(this, Material.TNT, itemMeta -> {

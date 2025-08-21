@@ -7,9 +7,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
@@ -69,9 +69,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
-        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
-        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
+        boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
+        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.PERMS);
+        boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
 
         for (UUID uuid : city.getMembers()) {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
@@ -79,12 +79,12 @@ public class CityPlayerListMenu extends PaginatedMenu {
             String title = city.getRankName(uuid) + " ";
 
             List<Component> lorePlayer;
-            if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
+            if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                 lorePlayer = List.of(
                         Component.text("§7Le priopriétaire de la ville.")
                 );
             } else if (hasPermissionPerms && hasPermissionKick) {
-                if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
+                if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                     lorePlayer = List.of(
                             Component.text("§7Vous ne pouvez pas éditer le propriétaire!")
                     );
@@ -104,7 +104,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                     lorePlayer = List.of(
                             Component.text("§7Vous ne pouvez pas vous §aexclure §7vous même!")
                     );
-                } else if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
+                } else if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                     lorePlayer = List.of(
                             Component.text("§7Vous ne pouvez pas §aexclure §7le propriétaire!")
                     );
@@ -125,32 +125,32 @@ public class CityPlayerListMenu extends PaginatedMenu {
                 itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                 itemMeta.lore(finalLorePlayer);
             }).setOnClick(inventoryClickEvent -> {
-                if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
+                if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                     return;
                 }
+
                 if (hasPermissionPerms && hasPermissionKick) {
                     CityPlayerGestionMenu menu = new CityPlayerGestionMenu(player, playerOffline);
                     menu.open();
                 } else if (hasPermissionPerms) {
                     CitizensPermsMenu.openBookFor(player, playerOffline.getUniqueId());
                 } else if (hasPermissionKick) {
-                    if (player.getUniqueId().equals(playerOffline.getUniqueId())) {
+                    if (player.getUniqueId().equals(playerOffline.getUniqueId()))
                         return;
-                    } else if (city.hasPermission(playerOffline.getUniqueId(), CPermission.OWNER)) {
-                        return;
-                    } else {
-                        ConfirmMenu menu = new ConfirmMenu(
-                                player,
-                                () -> {
-                                    player.closeInventory();
-                                    CityKickAction.startKick(player, playerOffline);
-                                },
-                                () -> player.closeInventory(),
-                                List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
-                                List.of(Component.text("§7Ne pas expulser " + playerOffline.getName())));
-                        menu.open();
 
-                    }
+                    if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER))
+                        return;
+
+                    ConfirmMenu menu = new ConfirmMenu(
+                            player,
+                            () -> {
+                                player.closeInventory();
+                                CityKickAction.startKick(player, playerOffline);
+                            },
+                            player::closeInventory,
+                            List.of(Component.text("§7Voulez vous vraiment expulser " + playerOffline.getName() + " ?")),
+                            List.of(Component.text("§7Ne pas expulser " + playerOffline.getName())));
+                    menu.open();
                 }
             }));
         }

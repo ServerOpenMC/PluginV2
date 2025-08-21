@@ -1,23 +1,10 @@
 package fr.openmc.core.features.quests.rewards;
 
-import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.util.function.Consumer;
 
-@Getter
-public class QuestMethodsReward implements QuestReward {
-    private final Consumer<Player> runnable;
-
-    /**
-     * Create a new QuestItemReward.
-     *
-     * @param runnable The runnable
-     */
-    public QuestMethodsReward(Consumer<Player> runnable) {
-        this.runnable = runnable;
-    }
-
+public record QuestMethodsReward(Consumer<Player> runnable) implements QuestReward {
     /**
      * Gives the reward to the specified player.
      * <p>

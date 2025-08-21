@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.menu.ranks;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityRankCommands;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.messages.MessageType;
@@ -35,7 +35,7 @@ public class CityRankPermsMenu {
 			return;
 		}
 
-		if (!city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
+		if (!city.hasPermission(sender.getUniqueId(), CityPermission.PERMS)) {
 			MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
@@ -52,8 +52,8 @@ public class CityRankPermsMenu {
 		List<Component> currentLines = new ArrayList<>();
 		int currentLineCount = 3;
 
-		for (CPermission permission : CPermission.values()) {
-			if (permission == CPermission.OWNER) continue;
+		for (CityPermission permission : CityPermission.values()) {
+			if (permission == CityPermission.OWNER) continue;
 
 			String display = (rank.getPermissionsSet().contains(permission) ? "+ " : "- ") + permission.getDisplayName();
 			int estimatedLines = estimateLines(display);

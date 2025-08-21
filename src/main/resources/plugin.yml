@@ -1,15 +1,15 @@
 name: OpenMC
 version: ${version}
 main: fr.openmc.core.OMCPlugin
-api-version: '1.21.8'
+api-version: ${minecraftVersion}
 
 softdepend:
   - FancyNpcs
   - PlaceholderAPI
   - LuckPerms
   - ItemsAdder
-  - WorldGuard
   - ProtocolLib
+  - WorldGuard
 
 prefix: OMC
 authors: [ La communauté ]

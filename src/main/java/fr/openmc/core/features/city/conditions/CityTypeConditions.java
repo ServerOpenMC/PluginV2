@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -27,11 +27,11 @@ public class CityTypeConditions {
     public static boolean canCityChangeType(City city, Player player) {
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.TYPE))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de changer le status de ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }

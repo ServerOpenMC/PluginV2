@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -12,7 +13,6 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -58,7 +58,7 @@ public class HomeMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(this.getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::omc_homes_menus_home:");
     }
 
     @Override
@@ -88,7 +88,7 @@ public class HomeMenu extends PaginatedMenu {
                 home.setIcon(homeIcon);
             }
             try {
-                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().getId()).getItemStack(), itemMeta -> {
+                items.add(new ItemBuilder(this, HomeIconRegistry.getIconOrDefault(home.getIcon().id()).getItemStack(), itemMeta -> {
                     itemMeta.displayName(Component.text("§e" + home.getName()));
                     itemMeta.lore(List.of(
                             Component.text("§7■ §aClique §2gauche pour vous téléporter"),
@@ -97,8 +97,9 @@ public class HomeMenu extends PaginatedMenu {
                 }).setOnClick(event -> {
                     if(event.isLeftClick()) {
                         this.getInventory().close();
-                        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez été téléporté à votre home §e" + home.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
-                        getOwner().teleport(home.getLocation());
+                        getOwner().teleportAsync(home.getLocation()).thenAccept(success -> {
+                            MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez été téléporté à votre home §e" + home.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
+                        });
                     } else if(event.isRightClick()) {
                         Player player = (Player) event.getWhoClicked();
                         new HomeConfigMenu(player, home).open();

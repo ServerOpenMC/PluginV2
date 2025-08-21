@@ -1,11 +1,11 @@
-package fr.openmc.core.utils.api;
+package fr.openmc.api.hooks;
 
 import org.bukkit.Bukkit;
 
-public class PapiApi {
+public class PapiHook {
     private static boolean hasPAPI;
 
-    public PapiApi() {
+    public PapiHook() {
         hasPAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 

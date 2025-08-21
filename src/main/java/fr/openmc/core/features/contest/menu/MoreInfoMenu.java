@@ -1,10 +1,10 @@
 package fr.openmc.core.features.contest.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,7 +30,7 @@ public class MoreInfoMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
     }
 
     @Override
@@ -70,26 +70,8 @@ public class MoreInfoMenu extends Menu {
 
             int phase = ContestManager.data.getPhase();
 
-        boolean ench0;
-        boolean ench1;
-
-        switch (phase) {
-            case 2: {
-                ench1 = false;
-                ench0 = true;
-                break;
-            }
-            case 3: {
-                ench0 = false;
-                ench1 = true;
-                break;
-            }
-            default: {
-                ench1 = false;
-                ench0 = false;
-                break;
-            }
-        }
+        boolean ench0 = phase == 2;
+        boolean ench1 = phase == 3;
 
         inventory.put(11, new ItemBuilder(this, Material.BLUE_STAINED_GLASS_PANE, itemMeta -> {
             itemMeta.displayName(Component.text("§r§1Les Votes - Vendredi"));

@@ -1,6 +1,7 @@
 package fr.openmc.core.features.contest.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -9,11 +10,10 @@ import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -39,7 +39,7 @@ public class ContributionMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-48%%img_contest_menu%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:");
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ContributionMenu extends Menu {
             itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
-            if (!ItemsAdderApi.hasItemAdder()) {
+            if (!ItemsAdderHook.hasItemAdder()) {
                 MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                 return;
             }

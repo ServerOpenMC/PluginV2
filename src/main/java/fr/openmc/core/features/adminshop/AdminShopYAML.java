@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * Handles loading and saving the admin shop data from a YAML file.
@@ -117,7 +116,7 @@ public class AdminShopYAML {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not save shop config", e);
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save admin shop configuration file: {}", e.getMessage(), e);
         }
     }
 

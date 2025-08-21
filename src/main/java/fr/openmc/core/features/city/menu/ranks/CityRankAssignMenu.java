@@ -3,8 +3,8 @@ package fr.openmc.core.features.city.menu.ranks;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -63,7 +63,7 @@ public class CityRankAssignMenu extends Menu {
 						Component.text("§7Permissions : " + (rank.getPermissionsSet().isEmpty() ? "§cAucune" : "§a" + rank.getPermissionsSet().size() + " permission(s)"))
 				));
 			}).setOnClick(event -> {
-				if (!city.hasPermission(getOwner().getUniqueId(), CPermission.ASSIGN_RANKS)) return;
+				if (!city.hasPermission(getOwner().getUniqueId(), CityPermission.ASSIGN_RANKS)) return;
 
 				CityRankAction.assignRank(getOwner(), rank.getName(), CacheOfflinePlayer.getOfflinePlayer(playerUUID));
 				getOwner().closeInventory();

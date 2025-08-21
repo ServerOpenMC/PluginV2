@@ -3,14 +3,17 @@ package fr.openmc.api.menulib.utils;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import io.papermc.paper.datacomponent.DataComponentType;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -202,7 +205,7 @@ public class ItemBuilder extends ItemStack {
 		try {
 			MenuLib.setItemClickEvent(itemMenu, this, e);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the click event: {}", ex.getMessage(), ex);
 		}
 		return this;
 	}
@@ -221,8 +224,8 @@ public class ItemBuilder extends ItemStack {
 			return this;
 		} catch (Exception e) {
 			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the close button: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
-			e.printStackTrace();
 		}
 		return this;
 	}
@@ -247,8 +250,8 @@ public class ItemBuilder extends ItemStack {
 			return this;
 		} catch (Exception e) {
 			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the next page button: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
-			e.printStackTrace();
 		}
 		return this;
 	}
@@ -272,29 +275,46 @@ public class ItemBuilder extends ItemStack {
 			setOnClick(clickEventConsumer);
 			return this;
 		} catch (Exception e) {
-			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
 			itemMenu.getOwner().closeInventory();
-			e.printStackTrace();
+			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the previous page button: {}", e.getMessage(), e);
 		}
 		return this;
 	}
-	
+
 	/**
-	 * Sets the {@link ItemFlag}s to be applied to the item. This method first clears all
-	 * existing item flags from the item's metadata, then applies the specified flags.
-	 * Item flags control specific visual and functional attributes of the item, such as
-	 * hiding enchantments or attributes.
+	 * Hides the tooltip of the item for the specified data component types.
+	 * If the tooltip is already hidden, this method will not change its state.
 	 *
-	 * @param itemFlags The {@link ItemFlag}s to be added to the item. Multiple flags
-	 *                  can be specified, allowing for a combination of attributes to
-	 *                  be hidden or modified.
-	 * @return The current instance of {@link ItemBuilder}, enabling method chaining for
-	 * further customization of the item.
+	 * @param typesToHide The array of {@link DataComponentType} that should be hidden in the tooltip.
+	 * @return The current instance of {@link ItemBuilder}, allowing for method chaining
+	 *         to further customize the item.
 	 */
-	public ItemBuilder setItemFlags(ItemFlag... itemFlags) {
-		meta.getItemFlags().forEach(meta::removeItemFlags);
-		meta.addItemFlags(itemFlags);
-		setItemMeta(meta);
+	@SuppressWarnings("UnstableApiUsage")
+    public ItemBuilder hide(DataComponentType... typesToHide) {
+		if (this.hasData(DataComponentTypes.TOOLTIP_DISPLAY) && this.getData(DataComponentTypes.TOOLTIP_DISPLAY).hideTooltip())
+			return this;
+
+		TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().addHiddenComponents(typesToHide).build();
+		this.setData(DataComponentTypes.TOOLTIP_DISPLAY, tooltipDisplay);
+
+		return this;
+	}
+
+	/**
+	 * Hides the tooltip of the item based on the specified boolean value.
+	 * If {@code hideTooltip} is {@code true}, the tooltip will be hidden;
+	 * otherwise, it will be displayed normally.
+	 *
+	 * @param hideTooltip A boolean indicating whether to hide the tooltip ({@code true}) or not ({@code false}).
+	 * @return The current instance of {@link ItemBuilder}, allowing for method chaining
+	 *         to further customize the item.
+	 */
+	@SuppressWarnings("UnstableApiUsage")
+	public ItemBuilder hideTooltip(boolean hideTooltip) {
+		TooltipDisplay tooltipDisplay = TooltipDisplay.tooltipDisplay().hideTooltip(hideTooltip).build();
+		this.setData(DataComponentTypes.TOOLTIP_DISPLAY, tooltipDisplay);
+
 		return this;
 	}
 	
@@ -312,8 +332,8 @@ public class ItemBuilder extends ItemStack {
 			return super.setItemMeta(itemMeta);
 		} catch (Exception e) {
 			MessagesManager.sendMessage(itemMenu.getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+			OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while setting the item meta: {}", e.getMessage(), e);
 			itemMenu.getOwner().closeInventory();
-			e.printStackTrace();
 		}
 		return false;
 	}

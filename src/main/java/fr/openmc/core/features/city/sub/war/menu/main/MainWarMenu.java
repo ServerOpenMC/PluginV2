@@ -5,9 +5,9 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -33,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MainWarMenu extends PaginatedMenu {
 
@@ -68,7 +67,7 @@ public class MainWarMenu extends PaginatedMenu {
 
             List<City> warCities = CityManager.getCities().stream()
                     .sorted((c1, c2) -> Integer.compare(c2.getOnlineMembers().size(), c1.getOnlineMembers().size()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (City city : warCities) {
                 if (Objects.equals(city.getUUID(), CityManager.getPlayerCity(player.getUniqueId()).getUUID())) continue;
@@ -77,7 +76,7 @@ public class MainWarMenu extends PaginatedMenu {
 
                 long onlineCount = city.getOnlineMembers().size();
 
-                UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
+                UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
                 String ownerName = PlayerNameCache.getName(ownerUUID);
 
                 Mascot mascot = city.getMascot();

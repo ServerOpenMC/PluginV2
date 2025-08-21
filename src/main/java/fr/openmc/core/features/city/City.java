@@ -46,7 +46,7 @@ public class City {
     private final String cityUUID;
     private Set<UUID> members;
     private Set<ChunkPos> chunks; // Liste des chunks claims par la ville
-    private HashMap<UUID, Set<CPermission>> permissions;
+    private HashMap<UUID, Set<CityPermission>> permissions;
     private Set<CityRank> cityRanks;
     private HashMap<Integer, ItemStack[]> chestContent;
     @Getter
@@ -87,7 +87,7 @@ public class City {
         addChunk(chunk.getX(), chunk.getZ());
       
         addPlayer(owner.getUniqueId());
-        addPermission(owner.getUniqueId(), CPermission.OWNER);
+        addPermission(owner.getUniqueId(), CityPermission.OWNER);
         saveChestContent(1, null);
         CityManager.loadCityRanks(this);
 
@@ -246,8 +246,8 @@ public class City {
      * @param player The UUID of the new owner.
      */
     public void changeOwner(UUID player) {
-        removePermission(getPlayerWithPermission(CPermission.OWNER), CPermission.OWNER);
-        addPermission(player, CPermission.OWNER);
+        removePermission(getPlayerWithPermission(CityPermission.OWNER), CityPermission.OWNER);
+        addPermission(player, CityPermission.OWNER);
     }
 
     /**
@@ -304,7 +304,7 @@ public class City {
         if (this.chestContent == null)
             this.chestContent = CityManager.getCityChestContent(this);
 
-        if (this.chestContent.size() < 1)
+        if (this.chestContent.isEmpty())
             saveChestContent(1, null);
 
         return chestContent.size();
@@ -431,7 +431,7 @@ public class City {
                                 + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"),
                         Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(),
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(),
                         Prefix.CITY, MessageType.ERROR, false);
             }
         } else {
@@ -477,8 +477,8 @@ public class City {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.phaseMayor == 2) {
-            if (PerkManager.hasPerk(getMayor(), Perks.BUISNESS_MAN.getId())) {
-                interest = .03; // interest is 3% when perk Buisness Man actived
+            if (PerkManager.hasPerk(getMayor(), Perks.BUSINESS_MAN.getId())) {
+                interest = .03; // interest is 3% when perk Business Man enabled
             }
         }
 
@@ -502,7 +502,7 @@ public class City {
      * @param permission The permission to check for.
      * @return The UUID of the player with the permission, or null if not found.
      */
-    public UUID getPlayerWithPermission(CPermission permission) {
+    public UUID getPlayerWithPermission(CityPermission permission) {
         if (this.permissions == null)
             this.permissions = CityManager.getCityPermissions(this);
 
@@ -520,7 +520,7 @@ public class City {
      * @param player The UUID of the player to retrieve permissions for.
      * @return A set of permissions for the player.
      */
-    public Set<CPermission> getPermissions(UUID player) {
+    public Set<CityPermission> getPermissions(UUID player) {
         if (this.permissions == null)
             this.permissions = CityManager.getCityPermissions(this);
 
@@ -534,13 +534,13 @@ public class City {
      * @param permission The permission to check for.
      * @return True if the player has the permission, false otherwise.
      */
-    public boolean hasPermission(UUID uuid, CPermission permission) {
+    public boolean hasPermission(UUID uuid, CityPermission permission) {
         if (this.permissions == null)
             this.permissions = CityManager.getCityPermissions(this);
 
-        Set<CPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
+        Set<CityPermission> playerPerms = permissions.getOrDefault(uuid, new HashSet<>());
         
-        if (playerPerms.contains(CPermission.OWNER)) {
+        if (playerPerms.contains(CityPermission.OWNER)) {
             return true;
         }
         
@@ -555,11 +555,11 @@ public class City {
      * @param playerUUID       The UUID of the player to add the permission to.
      * @param permission The permission to add.
      */
-    public void addPermission(UUID playerUUID, CPermission permission) {
+    public void addPermission(UUID playerUUID, CityPermission permission) {
         if (this.permissions == null)
             this.permissions = CityManager.getCityPermissions(this);
 
-        Set<CPermission> playerPerms = permissions.getOrDefault(playerUUID, new HashSet<>());
+        Set<CityPermission> playerPerms = permissions.getOrDefault(playerUUID, new HashSet<>());
 
         if (playerPerms.contains(permission))
             return;
@@ -584,10 +584,10 @@ public class City {
      * @param playerUUID       The UUID of the player to remove the permission from.
      * @param permission The permission to remove.
      */
-    public void removePermission(UUID playerUUID, CPermission permission) {
+    public void removePermission(UUID playerUUID, CityPermission permission) {
         if (this.permissions == null) this.permissions = CityManager.getCityPermissions(this);
 
-        Set<CPermission> playerPerms = permissions.get(playerUUID);
+        Set<CityPermission> playerPerms = permissions.get(playerUUID);
         
         if (playerPerms == null) return;
         
@@ -832,7 +832,7 @@ public class City {
      * @return The CityRank object representing the member's rank, or null if not found.
      */
     public String getRankName(UUID member) {
-        if (this.hasPermission(member, CPermission.OWNER)) {
+        if (this.hasPermission(member, CityPermission.OWNER)) {
             return "Propriétaire";
         } else if (this.hasMayor() && this.getMayor().getUUID().equals(member)) {
             return "Maire";
@@ -860,8 +860,8 @@ public class City {
             throw new IllegalArgumentException("The specified rank does not exist in the city's ranks.");
         }
         
-        if (hasPermission(playerUUID, CPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERISOWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+        if (hasPermission(playerUUID, CityPermission.OWNER)) {
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_IS_OWNER.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
         
@@ -870,7 +870,7 @@ public class City {
         
         if (currentRank != null) {
             currentRank.removeMember(playerUUID);
-            for (CPermission permission : currentRank.getPermissionsSet()) {
+            for (CityPermission permission : currentRank.getPermissionsSet()) {
                 removePermission(playerUUID, permission);
             }
             MessagesManager.sendMessage(sender, Component.text("§cVous avez retiré le grade §e" + currentRank.getName() + "§c de §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
@@ -878,7 +878,7 @@ public class City {
         
         if (currentRank != newRank) {
             newRank.addMember(playerUUID);
-            for (CPermission permission : newRank.getPermissionsSet()) {
+            for (CityPermission permission : newRank.getPermissionsSet()) {
                 addPermission(playerUUID, permission);
             }
             MessagesManager.sendMessage(sender, Component.text("§aVous avez assigné le grade §e" + newRank.getName() + "§a à §6" + player.getName()), Prefix.CITY, MessageType.SUCCESS, true);
@@ -912,23 +912,14 @@ public class City {
     }
 
     /**
-     * Retrieves the notation of the city for a specific week.
-     * * @param weekStr The week string in the format "YYYY-WW" (e.g., "2023-01").
+     * Sets the notation of the city for a specific week.
      *
-     * @return The CityNotation object representing the city's notation for the specified week, or null if not found.
+     * @param weekStr          The week string in the format "YYYY-WW" (e.g., "2023-01").
+     * @param architecturalNote The architectural note for the city.
+     * @param coherenceNote    The coherence note for the city.
+     * @param description      A description of the notation.
      */
     public void setNotationOfWeek(String weekStr, double architecturalNote, double coherenceNote, String description) {
         NotationManager.createOrUpdateNotation(new CityNotation(cityUUID, architecturalNote, coherenceNote, description, weekStr));
-    }
-
-    // ==================== City Milestone Methods ====================
-
-    /**
-     * Retrieves the power points of the city.
-     *
-     * @return The power points of the city, or 0 if not found.
-     */
-    public boolean getLevel() {
-        return WarManager.isCityInWar(cityUUID);
     }
 }

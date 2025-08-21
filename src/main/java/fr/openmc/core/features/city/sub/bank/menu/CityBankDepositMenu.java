@@ -4,9 +4,9 @@ import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.bank.conditions.CityBankConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -61,7 +61,7 @@ public class CityBankDepositMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CPermission.MONEY_GIVE);
+        boolean hasPermissionMoneyGive = city.hasPermission(player.getUniqueId(), CityPermission.MONEY_GIVE);
 
         double moneyPlayer = EconomyManager.getBalance(player.getUniqueId());
         double halfMoneyPlayer = moneyPlayer / 2;
@@ -78,7 +78,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositAll = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -92,7 +92,7 @@ public class CityBankDepositMenu extends Menu {
                 city.updateBalance(moneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -110,7 +110,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositHalf = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -124,7 +124,7 @@ public class CityBankDepositMenu extends Menu {
                 city.updateBalance(halfMoneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta ville"), Prefix.CITY, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -139,7 +139,7 @@ public class CityBankDepositMenu extends Menu {
             );
         } else {
             loreBankDepositInput = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 

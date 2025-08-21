@@ -4,8 +4,8 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.models.CityRank;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -73,7 +73,7 @@ public class CityRanksMenu extends PaginatedMenu {
 		List<ItemStack> map = new ArrayList<>();
 		Player player = getOwner();
 
-		boolean canManagerRanks = city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS);
+		boolean canManagerRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
 
 		Set<CityRank> cityRanks = city.getRanks();
 		if (! cityRanks.isEmpty()) {
@@ -110,7 +110,7 @@ public class CityRanksMenu extends PaginatedMenu {
 					itemMeta.lore(List.of(Component.text("§7Cliquez pour revenir en arrière")));
                 }, true));
 
-		boolean canAssignRanks = city.hasPermission(player.getUniqueId(), CPermission.ASSIGN_RANKS);
+		boolean canAssignRanks = city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS);
 
 		if (canAssignRanks) {
 			List<Component> loreAssignRanks = new ArrayList<>();
@@ -135,7 +135,7 @@ public class CityRanksMenu extends PaginatedMenu {
 			);
 		}
 
-		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CPermission.MANAGE_RANKS);
+		boolean canManageRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
 
 		if (canManageRanks) {
 			List<Component> loreCreateRank = List.of(

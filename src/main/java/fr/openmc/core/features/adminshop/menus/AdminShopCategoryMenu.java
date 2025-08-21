@@ -1,5 +1,6 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -7,7 +8,6 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.items.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -35,7 +35,7 @@ public class AdminShopCategoryMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop_items%");
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop_items:");
     }
 
     @Override

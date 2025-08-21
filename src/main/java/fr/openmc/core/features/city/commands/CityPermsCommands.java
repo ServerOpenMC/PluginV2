@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -23,7 +23,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(playerUUID);
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -32,7 +32,7 @@ public class CityPermsCommands {
             return false;
         }
 
-        if (city.hasPermission(playerUUID, CPermission.OWNER)) {
+        if (city.hasPermission(playerUUID, CityPermission.OWNER)) {
             MessagesManager.sendMessage(sender, Component.text("Le maire a déjà les pleins pouvoirs"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -40,20 +40,20 @@ public class CityPermsCommands {
         return true;
     }
 
-    private static boolean verificationForModif(Player sender, CPermission permission) {
+    private static boolean verificationForModif(Player sender, CityPermission permission) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(sender.getUniqueId(), CPermission.PERMS))) {
+        if (!(city.hasPermission(sender.getUniqueId(), CityPermission.PERMS))) {
             MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission de gérer les permissions"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!city.hasPermission(sender.getUniqueId(), permission) && permission == CPermission.PERMS) {
+        if (!city.hasPermission(sender.getUniqueId(), permission) && permission == CityPermission.PERMS) {
             MessagesManager.sendMessage(sender, Component.text("Seul le maire peut modifier cette permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -77,13 +77,13 @@ public class CityPermsCommands {
     @CommandPermission("omc.commands.city.perm.switch")
     @Description("Inverse la permission d'un joueur")
     @AutoComplete("@city_members")
-    public static void swap(Player sender, OfflinePlayer player, CPermission permission) {
+    public static void swap(Player sender, OfflinePlayer player, CityPermission permission) {
         if (!verification(sender, player.getUniqueId())) return;
         if (!verificationForModif(sender, permission)) return;
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -105,13 +105,13 @@ public class CityPermsCommands {
     @CommandPermission("omc.commands.city.perm.add")
     @Description("Ajouter des permissions à un membre")
     @AutoComplete("@city_members")
-    void add(Player sender, OfflinePlayer player, CPermission permission) {
+    void add(Player sender, OfflinePlayer player, CityPermission permission) {
         if (!verification(sender, player.getUniqueId())) return;
         if (!verificationForModif(sender, permission)) return;
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -133,13 +133,13 @@ public class CityPermsCommands {
     @CommandPermission("omc.commands.city.perm.remove")
     @Description("Retirer des permissions à un membre")
     @AutoComplete("@city_members")
-    void remove(Player sender, OfflinePlayer player, CPermission permission) {
+    void remove(Player sender, OfflinePlayer player, CityPermission permission) {
         if (!verification(sender, player.getUniqueId())) return;
         if (!verificationForModif(sender, permission)) return;
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -167,7 +167,7 @@ public class CityPermsCommands {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -176,7 +176,7 @@ public class CityPermsCommands {
             return;
         }
 
-        if (!(city.hasPermission(sender.getUniqueId(), CPermission.PERMS))) {
+        if (!(city.hasPermission(sender.getUniqueId(), CityPermission.PERMS))) {
             MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission de consulter les permissions de "+player.getName()), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -188,7 +188,7 @@ public class CityPermsCommands {
 
         Component content = Component.text(player.getName()).decorate(TextDecoration.UNDERLINED).append(Component.newline());
 
-        for (CPermission permission : CPermission.values()) {
+        for (CityPermission permission : CityPermission.values()) {
             if (city.hasPermission(player.getUniqueId(), permission)) {
                 content = content.append(Component.text(permission.toString()).append(Component.newline()));
             }

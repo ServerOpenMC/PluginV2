@@ -65,7 +65,7 @@ public class InvitationsMenu extends PaginatedMenu {
 
             if (inviterCity == null) {
                 invitations.remove(inviter);
-                if (invitations.size() == 0) {
+                if (invitations.isEmpty()) {
                     CityCommands.invitations.remove(player);
                 }
                 return getItems();

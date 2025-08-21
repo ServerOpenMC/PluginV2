@@ -8,9 +8,9 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityLeaveAction;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
@@ -38,6 +38,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -97,11 +98,11 @@ public class CityMenu extends Menu {
 			));
 		}).setOnClick(inventoryClickEvent -> new CityRanksMenu(getOwner(), city).open()));
 
-		boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CPermission.RENAME);
-		boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CPermission.CHEST);
-		boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CPermission.OWNER);
-		boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CPermission.SEE_CHUNKS);
-		boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CPermission.TYPE);
+		boolean hasPermissionRenameCity = city.hasPermission(player.getUniqueId(), CityPermission.RENAME);
+		boolean hasPermissionChest = city.hasPermission(player.getUniqueId(), CityPermission.CHEST);
+		boolean hasPermissionOwner = city.hasPermission(player.getUniqueId(), CityPermission.OWNER);
+		boolean hasPermissionChunkSee = city.hasPermission(player.getUniqueId(), CityPermission.SEE_CHUNKS);
+		boolean hasPermissionChangeType = city.hasPermission(player.getUniqueId(), CityPermission.TYPE);
 
         String mayorName = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getName() : "§7Aucun";
         NamedTextColor mayorColor = (city.getMayor() != null && city.getMayor().getName() != null) ? city.getMayor().getMayorColor() : NamedTextColor.DARK_GRAY;
@@ -109,7 +110,7 @@ public class CityMenu extends Menu {
         List<Component> loreMillestoneCity;
 
         loreMillestoneCity = List.of(
-                Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
                 Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                 Component.text("§7Membre(s) : " + city.getMembers().size()),
                 Component.empty(),
@@ -122,7 +123,7 @@ public class CityMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -136,7 +137,7 @@ public class CityMenu extends Menu {
 
         if (hasPermissionRenameCity || hasPermissionOwner) {
             loreModifyCity = List.of(
-                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
                     Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                     Component.text("§7Membre(s) : " + city.getMembers().size()),
                     Component.empty(),
@@ -144,7 +145,7 @@ public class CityMenu extends Menu {
             );
         } else {
             loreModifyCity = List.of(
-                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName()),
+                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
                     Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                     Component.text("§7Membre(s) : " + city.getMembers().size())
             );
@@ -156,7 +157,7 @@ public class CityMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -194,9 +195,10 @@ public class CityMenu extends Menu {
                 mob = (LivingEntity) mascot.getEntity();
 
                 if (mob != null) {
-                    if (! mascot.isAlive()) {
+                    double maxHealth = mob.getAttribute(Attribute.MAX_HEALTH).getValue();
+                    if (!mascot.isAlive()) {
 		                loreMascots = List.of(
-				                Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
+				                Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
 				                Component.text("§7Status : §cMorte"),
 				                Component.text("§7Réapparition dans : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity"))),
 				                Component.text("§7Niveau : §c" + mascot.getLevel()),
@@ -205,7 +207,7 @@ public class CityMenu extends Menu {
 		                );
 	                } else {
 		                loreMascots = List.of(
-				                Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + mob.getMaxHealth()),
+				                Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
 				                Component.text("§7Status : §aEn Vie"),
 				                Component.text("§7Niveau : §c" + mascot.getLevel()),
                                 Component.empty(),
@@ -223,6 +225,7 @@ public class CityMenu extends Menu {
                         Component.text("§cMascotte Inexistante")
                 );
             }
+
             return new ItemBuilder(this, mascot != null ? mascot.getMascotEgg() : Material.BARRIER, itemMeta -> {
                 itemMeta.itemName(Component.text("§cVotre Mascotte"));
                 itemMeta.lore(loreMascots);
@@ -327,7 +330,7 @@ public class CityMenu extends Menu {
                             if (city.hasMayor()) {
                                 loreElections = List.of(
                                         Component.text("§7Les Elections sont §6désactivées"),
-                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                         Component.empty(),
                                         Component.text("§7Vous avez déjà choisis vos §3Réformes §7!"),
                                         Component.text("§7Cependant vous pouvez changer votre couleur !"),
@@ -337,7 +340,7 @@ public class CityMenu extends Menu {
                             } else {
                                 loreElections = List.of(
                                         Component.text("§7Les Elections sont §6désactivées"),
-                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                        Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                         Component.empty(),
                                         Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
                                         Component.empty(),
@@ -349,7 +352,7 @@ public class CityMenu extends Menu {
                         } else {
                             loreElections = List.of(
                                     Component.text("§7Les Elections sont §6désactivées"),
-                                    Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQ_ELECTION + " §cmembres"),
+                                    Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                     Component.empty(),
                                     Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
                                     Component.empty(),
@@ -369,23 +372,17 @@ public class CityMenu extends Menu {
         MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L * 60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
 
-        CityType type = city.getType();
-        String typeStr;
-        if (type.equals(CityType.WAR)) {
-            typeStr = "guerre";
-        } else if (type.equals(CityType.PEACE)) {
-            typeStr = "paix";
-        } else {
-            typeStr = "inconnu";
-        }
-        String finalType = typeStr;
+        String typeStr = switch(city.getType()) {
+            case WAR -> "guerre";
+            case PEACE -> "paix";
+        };
 
         Supplier<ItemBuilder> typeItemSupplier = () -> {
 
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("§7Votre ville est en §5" + finalType));
+            lore.add(Component.text("§7Votre ville est en §5" + typeStr));
 
-            if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CPermission.LAUNCH_WAR)) {
+            if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
                 lore.add(Component.empty());
                 lore.add(Component.text("§7Vous pouvez lancer une guerre avec §c/war"));
             }
@@ -405,7 +402,7 @@ public class CityMenu extends Menu {
                 meta.itemName(Component.text("§5Le Statut de votre Ville"));
                 meta.lore(lore);
             }).setOnClick(inventoryClickEvent -> {
-                if (!(city.hasPermission(player.getUniqueId(), CPermission.TYPE))) return;
+                if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) return;
 
                 new CityTypeMenu(player).open();
             });
@@ -464,7 +461,7 @@ public class CityMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
             if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 

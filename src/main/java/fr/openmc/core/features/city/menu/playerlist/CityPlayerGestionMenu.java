@@ -5,9 +5,9 @@ import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
@@ -61,8 +61,8 @@ public class CityPlayerGestionMenu extends Menu {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
-        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
+        boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
+        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.PERMS);
 
         List<Component> loreKick;
 
@@ -71,7 +71,7 @@ public class CityPlayerGestionMenu extends Menu {
                 loreKick = List.of(
                         Component.text("§cVous pouvez pas vous expulser")
                 );
-            } else if (city.hasPermission(playerTarget.getUniqueId(), CPermission.OWNER)) {
+            } else if (city.hasPermission(playerTarget.getUniqueId(), CityPermission.OWNER)) {
                 loreKick = List.of(
                         Component.text("§cVous pouvez pas expulser le propriétaire")
                 );
@@ -84,7 +84,7 @@ public class CityPlayerGestionMenu extends Menu {
             }
         } else {
             loreKick = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -92,21 +92,19 @@ public class CityPlayerGestionMenu extends Menu {
             itemMeta.itemName(Component.text("§cExpulser " + playerTarget.getName()));
             itemMeta.lore(loreKick);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget)) {
+            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget))
                 return;
-            } else {
-                ConfirmMenu menu = new ConfirmMenu(
-                        player,
-                        () -> {
-                            player.closeInventory();
-                            CityKickAction.startKick(player, playerTarget);
-                        },
-                        () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
-                        List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
-                menu.open();
 
-            }
+            ConfirmMenu menu = new ConfirmMenu(
+                    player,
+                    () -> {
+                        player.closeInventory();
+                        CityKickAction.startKick(player, playerTarget);
+                    },
+                    player::closeInventory,
+                    List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
+                    List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
+            menu.open();
         }));
 
 
@@ -128,7 +126,7 @@ public class CityPlayerGestionMenu extends Menu {
             );
         } else {
             lorePermission = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 

@@ -66,7 +66,7 @@ public class FreezeListener implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		Entity entity = event.getEntity();
-		if (entity instanceof Player && FreezeManager.FROZEN_PLAYERS.contains(((Player) entity).getPlayer())) {
+		if (entity instanceof Player player && FreezeManager.FROZEN_PLAYERS.contains(player)) {
 			event.setCancelled(true);
 		}
 	}

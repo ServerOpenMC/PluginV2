@@ -2,9 +2,9 @@ package fr.openmc.core.features.corporation.company;
 
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.corporation.CorpPermission;
 import fr.openmc.core.features.corporation.MethodState;
 import fr.openmc.core.features.corporation.data.MerchantData;
@@ -94,7 +94,6 @@ public class Company {
     public Company(UUID id, String name, UUID player, String city, double cut, double balance) {
         this.name = name;
         this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city));
-        assert id != null;
         this.company_uuid = id;
         this.cut = cut;
         this.balance = balance;
@@ -425,7 +424,7 @@ public class Company {
             return owner.getPlayer().equals(uuid);
         }
         else {
-            return owner.getCity().getPlayerWithPermission(CPermission.OWNER).equals(uuid);
+            return owner.getCity().getPlayerWithPermission(CityPermission.OWNER).equals(uuid);
         }
     }
 
@@ -458,7 +457,7 @@ public class Company {
             return ItemUtils.getPlayerSkull(owner.getPlayer());
         }
         else {
-            return ItemUtils.getPlayerSkull(owner.getCity().getPlayerWithPermission(CPermission.OWNER));
+            return ItemUtils.getPlayerSkull(owner.getCity().getPlayerWithPermission(CityPermission.OWNER));
         }
     }
 

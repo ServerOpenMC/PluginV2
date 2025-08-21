@@ -28,6 +28,7 @@ import java.util.List;
 
 import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
+@SuppressWarnings("UnstableApiUsage")
 public class NotationDialog {
     private final static String FONT = "minecraft:mono";
     private final static int LENGTH_CASE = 9;
