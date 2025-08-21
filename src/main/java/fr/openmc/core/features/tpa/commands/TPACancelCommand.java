@@ -9,15 +9,15 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-public class TPCancelCommand {
+public class TPACancelCommand {
 	
 	/**
 	 * Command to cancel a teleport request.
 	 * @param player The player who wants to cancel the request.
 	 */
-	@Command("tpcancel")
+	@Command("tpacancel")
 	@CommandPermission("omc.commands.tpa")
-	public void tpCancel(Player player) {
+	public void tpaCancel(Player player) {
 		if (!TPAQueue.QUEUE.requesterHasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;

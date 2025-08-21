@@ -11,16 +11,16 @@ import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-public class TPDenyCommand {
+public class TPADenyCommand {
 	
 	/**
 	 * Command to deny a teleportation request
 	 * @param target The player denying the request.
 	 * @param player The player who sent the teleportation request (optional).
 	 */
-	@Command("tpdeny")
+	@Command("tpadeny")
 	@CommandPermission("omc.commands.tpa")
-	public void tpDeny(Player target, @Optional @Named("player") Player player) {
+	public void tpaDeny(Player target, @Optional @Named("player") Player player) {
 		if (!TPAQueue.QUEUE.hasPendingRequest(target)) {
 			MessagesManager.sendMessage(target, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
