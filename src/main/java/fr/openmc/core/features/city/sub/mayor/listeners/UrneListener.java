@@ -76,7 +76,6 @@ public class UrneListener implements Listener {
         new MayorVoteMenu(player).open();
 
         player.playSound(player.getLocation(), Sound.BLOCK_LANTERN_PLACE, 1.0F, 1.7F);
-
     }
 
     @EventHandler(ignoreCancelled = true)
