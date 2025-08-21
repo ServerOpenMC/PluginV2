@@ -7,7 +7,6 @@ import fr.openmc.api.menulib.MenuLib;
 import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
-import fr.openmc.core.features.accountdetection.AccountDetectionManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
@@ -118,7 +117,6 @@ public class OMCPlugin extends JavaPlugin {
             new HologramLoader();
         }
         new AdminShopManager();
-        new AccountDetectionManager();
         new BossbarManager();
         new CompanyManager();// laisser apres Economy Manager
         new ContestManager();
