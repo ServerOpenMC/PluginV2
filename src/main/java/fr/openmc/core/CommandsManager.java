@@ -38,7 +38,7 @@ public class CommandsManager {
                 new Socials(),
                 new Spawn(),
                 new UpdateCommand(),
-                new Rtp(),
+                new RTPCommands(),
                 new SetSpawn(),
                 new Playtime(),
                 new Diceroll(),

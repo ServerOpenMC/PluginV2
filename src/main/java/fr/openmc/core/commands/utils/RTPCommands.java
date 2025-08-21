@@ -16,7 +16,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.File;
 
-public class Rtp {
+public class RTPCommands {
 
     private final File rtpFile;
     private int minRadius;
@@ -24,7 +24,7 @@ public class Rtp {
     private int maxTries;
     private int rtpCooldown;
 
-    public Rtp() {
+    public RTPCommands() {
         this.rtpFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "rtp.yml");
         loadRTPConfig();
     }
