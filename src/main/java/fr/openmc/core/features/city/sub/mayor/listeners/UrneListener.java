@@ -4,15 +4,15 @@ import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
 import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
 import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import dev.lone.itemsadder.api.Events.FurniturePrePlaceEvent;
-import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorVoteMenu;
 import fr.openmc.core.utils.LocationUtils;
-import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -53,7 +53,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (playerCity.equals(city)) {
+        if (!playerCity.equals(city)) {
             MessagesManager.sendMessage(player, Component.text("§8§o*Mhh... Ce n'est pas votre urne*"), Prefix.MAYOR, MessageType.INFO, false);
             return;
         }
