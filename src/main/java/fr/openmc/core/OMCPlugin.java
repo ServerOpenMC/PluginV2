@@ -133,10 +133,10 @@ public class OMCPlugin extends JavaPlugin {
 
     public void loadWithItemsAdder()
     {
-        new MilestonesManager();
-        new QuestsManager();
         new CustomItemRegistry();
         new CustomUsableItemRegistry();
+        new MilestonesManager();
+        new QuestsManager();
     }
 
     @Override
