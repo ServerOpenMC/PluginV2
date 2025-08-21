@@ -3,6 +3,8 @@ package fr.openmc.core.features.settings;
 import fr.openmc.core.features.settings.policy.CityPolicy;
 import fr.openmc.core.features.settings.policy.FriendPolicy;
 import fr.openmc.core.features.settings.policy.GlobalPolicy;
+import io.papermc.paper.datacomponent.DataComponentType;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -17,7 +19,7 @@ public enum SettingType {
     CITY_JOIN_REQUESTS_POLICY(ValueType.ENUM, CityPolicy.EVERYONE, "Politique des demandes de rejoindre une ville",
             Material.PAPER, "Qui peut te demander à rejoindre une ville:"),
     MASCOT_PLAY_SOUND_POLICY(ValueType.BOOLEAN, true, "Recevoir les sons venant des Mascottes",
-            Material.MUSIC_DISC_LAVA_CHICKEN, Material.GRAY_DYE, "Activer ou désactiver les sons des Mascottes"),
+            Material.MUSIC_DISC_LAVA_CHICKEN, Material.GRAY_DYE, "Activer ou désactiver les sons des Mascottes", DataComponentTypes.JUKEBOX_PLAYABLE),
 
     // - Mailbox settings
     MAILBOX_RECEIVE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "Politique de réception des mailbox",
@@ -39,6 +41,7 @@ public enum SettingType {
     private final Material enabledMaterial;
     private final Material disabledMaterial;
     private final String enumDescription;
+    private final DataComponentType[] dataComponentType;
 
     /**
      * Enum representing the type of setting, its default value, name, materials for enabled/disabled states,
@@ -52,13 +55,14 @@ public enum SettingType {
      * @param enumDescription    Description for enum values.
      */
     SettingType(ValueType valueType, Object defaultValue, String name,
-                Material enabledMaterial, Material disabledMaterial, String enumDescription) {
+                Material enabledMaterial, Material disabledMaterial, String enumDescription, DataComponentType... dataToHide) {
         this.valueType = valueType;
         this.defaultValue = defaultValue;
         this.name = name;
         this.enabledMaterial = enabledMaterial;
         this.disabledMaterial = disabledMaterial;
         this.enumDescription = enumDescription;
+        this.dataComponentType = dataToHide;
     }
 
     /**
@@ -71,9 +75,11 @@ public enum SettingType {
      * @param enumDescription    Description for enum values.
      */
     SettingType(ValueType valueType, Object defaultValue, String name, Material enabledMaterial,
-                String enumDescription) {
-        this(valueType, defaultValue, name, enabledMaterial, enabledMaterial, enumDescription);
+                String enumDescription, DataComponentType... dataToHide) {
+        this(valueType, defaultValue, name, enabledMaterial, enabledMaterial, enumDescription, dataToHide);
     }
+
+
 
     /**
      * Checks if the provided value is valid for this setting type.
