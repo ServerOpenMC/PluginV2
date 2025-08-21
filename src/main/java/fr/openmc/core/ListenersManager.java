@@ -31,7 +31,8 @@ public class ListenersManager {
                 new AsyncChatListener(OMCPlugin.getInstance()),
                 new BossbarListener(),
                 new PlayerSettingsManager(),
-                new InteractListener()
+                new InteractListener(),
+                new ItemsAddersListener()
         );
     }
 

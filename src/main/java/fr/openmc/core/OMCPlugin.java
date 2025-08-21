@@ -95,8 +95,6 @@ public class OMCPlugin extends JavaPlugin {
         /* MANAGERS */
         new DatabaseManager();
         new CommandsManager();
-        new CustomItemRegistry();
-        new CustomUsableItemRegistry();
         new SpawnManager();
         new UpdateManager();
         new CityManager();
@@ -107,8 +105,6 @@ public class OMCPlugin extends JavaPlugin {
         new HomesManager();
         new TPAManager();
         new FreezeManager();
-        new MilestonesManager();
-        new QuestsManager();
         new QuestProgressSaveManager();
         new TabList();
         if (!OMCPlugin.isUnitTestVersion()) { // Tous les trucs faits par misieur qui fonctionne à peu près
@@ -118,7 +114,7 @@ public class OMCPlugin extends JavaPlugin {
         }
         new AdminShopManager();
         new BossbarManager();
-        new CompanyManager();// laisser apres Economy Manager
+        new CompanyManager(); // laisser apres Economy Manager
         new ContestManager();
         new PrivateMessageManager();
 
@@ -133,6 +129,14 @@ public class OMCPlugin extends JavaPlugin {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
+    }
+
+    public void loadWithItemsAdder()
+    {
+        new MilestonesManager();
+        new QuestsManager();
+        new CustomItemRegistry();
+        new CustomUsableItemRegistry();
     }
 
     @Override
