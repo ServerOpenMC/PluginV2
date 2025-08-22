@@ -137,7 +137,7 @@ public class CityTopMenu extends PaginatedMenu {
             itemMeta.displayName(Component.text("Trier"));
             itemMeta.lore(generateSortLoreText());
         }).setOnClick(inventoryClickEvent -> {
-            changeSortType();
+            changeSortType(inventoryClickEvent.isLeftClick());
             new CityTopMenu(getOwner(), sortType).open();
         }));
 
@@ -198,25 +198,27 @@ public class CityTopMenu extends PaginatedMenu {
     private void setSortType(SortType sortType) {
         this.sortType = sortType;
         switch (this.sortType) {
+            case GLOBAL -> sortByGlobal(cities);
+            case POWER -> sortByPower(cities);
             case MONEY -> sortByMoney(cities);
             case CLAIM -> sortByClaim(cities);
             case POPULATION -> sortByPopulation(cities);
-            case POWER -> sortByPower(cities);
-            case GLOBAL -> sortByGlobal(cities);
         }
     }
 
     /**
      * Changes the sorting type to the next one in the enum and sorts the cities accordingly.
      */
-    private void changeSortType() {
-        sortType = SortType.values()[(sortType.ordinal() + 1) % SortType.values().length];
+    private void changeSortType(boolean isLeftClick) {
+        sortType = isLeftClick
+                ? SortType.values()[(sortType.ordinal() + 1) % SortType.values().length]
+                : SortType.values()[(sortType.ordinal() - 1 + SortType.values().length) % SortType.values().length];
 
         switch (sortType) {
+            case POWER -> sortByPower(cities);
             case MONEY -> sortByMoney(cities);
             case CLAIM -> sortByClaim(cities);
             case POPULATION -> sortByPopulation(cities);
-            case POWER -> sortByPower(cities);
             default -> sortByGlobal(cities);
         }
     }
@@ -297,10 +299,10 @@ public class CityTopMenu extends PaginatedMenu {
      * Enum representing the sorting types for the city top.
      */
     public enum SortType {
+        GLOBAL,
+        POWER,
         MONEY,
         CLAIM,
         POPULATION,
-        POWER,
-        GLOBAL
     }
 }
