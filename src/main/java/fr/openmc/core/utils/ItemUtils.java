@@ -1,6 +1,7 @@
 package fr.openmc.core.utils;
 
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -324,7 +325,7 @@ public class ItemUtils {
         if (!hasEnoughItems(player, aywenite, amount)) {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("Vous n'avez pas assez d'§dAywenite §f("+amount+ " nécessaires)"),
+                    Component.text("Vous n'avez pas assez d'§dAywenite §f(" + amount + " nécessaires)"),
                     Prefix.OPENMC,
                     MessageType.ERROR,
                     true

@@ -46,20 +46,24 @@ public class CityCreateAction {
 
         pendingCities.put(player.getUniqueId(), cityName);
 
+        if (!ItemUtils.takeAywenite(player, CityCreateConditions.AYWENITE_CREATE)) return;
+        if (!EconomyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) return;
+
         ItemInteraction.runLocationInteraction(
                 player,
                 getMascotStick(),
-                "Mascot:chest",
+                "Mascot:stick",
                 300,
-                "Vous avez reçu un coffre pour poser votre mascotte",
+                "Vous avez reçu un baton pour poser votre mascotte",
                 "§cCréation annulée",
                 location -> {
                     if (!isValidLocation(player, location)) return false;
-                    finalizeCreation(player, location);
-                    return true;
+                    return finalizeCreation(player, location);
                 },
                 () -> {
                     pendingCities.remove(player.getUniqueId());
+                    ItemUtils.giveAywenite(player, CityCreateConditions.AYWENITE_CREATE);
+                    EconomyManager.addBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE);
                 }
         );
     }
@@ -71,7 +75,7 @@ public class CityCreateAction {
             meta.displayName(Component.text("§lMascotte"));
             meta.lore(List.of(
                     Component.text("§cVotre mascotte sera posée à l'emplacement du coffre."),
-                    Component.text("§cCe coffre n'est pas retirable."),
+                    Component.text("§cCe baton n'est pas retirable."),
                     Component.text("§cDéconnexion = annulation.")
             ));
             stick.setItemMeta(meta);
@@ -92,33 +96,23 @@ public class CityCreateAction {
         return true;
     }
 
-    public static void finalizeCreation(Player player, Location mascotLocation) {
+    public static boolean finalizeCreation(Player player, Location mascotLocation) {
         UUID playerUUID = player.getUniqueId();
         String pendingCityName = pendingCities.remove(playerUUID);
-        if (pendingCityName == null) return;
+        if (pendingCityName == null) return false;
 
         String cityUUID = UUID.randomUUID().toString().substring(0, 8);
         Chunk chunk = mascotLocation.getChunk();
 
-        // on le refait pour voir si le nb d'item n'a pas changé, d'argent, si le mec n'a pas rej une ville
-        if (!CityCreateConditions.canCityCreate(player, pendingCityName)) return;
-
         if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
             MessagesManager.sendMessage(player, Component.text("Ce chunk est dans une région protégée"), Prefix.CITY, MessageType.ERROR, false);
-            return;
+            return false;
         }
 
         if (CityManager.isChunkClaimedInRadius(chunk, 1)) {
             MessagesManager.sendMessage(player, Component.text("Une des parcelles autour de ce chunk est claim!"), Prefix.CITY, MessageType.ERROR, false);
-            return;
+            return false;
         }
-
-        if (!EconomyManager.withdrawBalance(player.getUniqueId(), CityCreateConditions.MONEY_CREATE)) {
-            MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent pour créer une ville."), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (!ItemUtils.takeAywenite(player, CityCreateConditions.AYWENITE_CREATE)) return;
 
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 
@@ -145,5 +139,7 @@ public class CityCreateAction {
 
         DynamicCooldownManager.use(playerUUID.toString(), "city:big", 60000);
         DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
+
+        return true;
     }
 }

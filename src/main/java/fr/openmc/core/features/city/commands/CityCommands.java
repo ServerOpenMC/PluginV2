@@ -40,7 +40,7 @@ public class CityCommands {
 
     @DefaultFor("~")
     public static void mainCommand(Player player) {
-        if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:chest")) {
+        if (!Chronometer.containsChronometer(player.getUniqueId(), "Mascot:stick")) {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());
                 if (playerCity == null) {
                     NoCityMenu menu = new NoCityMenu(player);
