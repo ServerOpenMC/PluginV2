@@ -336,6 +336,28 @@ public class ItemUtils {
         return true;
     }
 
+    public static boolean giveAywenite(Player player, int amount) {
+        ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
+        if (aywenite == null) return false;
+
+        aywenite.setAmount(amount);
+
+        if (!hasEnoughSpace(player, aywenite)) {
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas assez de place dans votre inventaire pour recevoir " + amount + " d'§dAywenite§f. L'aywenite est disponible dans votre mailbox"),
+                    Prefix.OPENMC,
+                    MessageType.ERROR,
+                    true
+            );
+            MailboxManager.sendItems(player, player, new ItemStack[]{ aywenite });
+            return false;
+        }
+
+        player.getInventory().addItem(aywenite);
+        return true;
+    }
+
     /**
      * Calcule le nombre maximal d'items pouvant être craftés.
      * <p>
