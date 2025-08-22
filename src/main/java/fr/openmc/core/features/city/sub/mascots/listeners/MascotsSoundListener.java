@@ -11,11 +11,13 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
+import fr.openmc.core.utils.EnumUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class MascotsSoundListener {
@@ -54,7 +56,7 @@ public class MascotsSoundListener {
                         .toList();
 
                 for (Mascot mascot : mascotsNear) {
-                    if (mascot.getEntity().getType().equals(EntityType.valueOf(splitedSound[1].toUpperCase()))) {
+                    if (mascot.getEntity().getType().equals(EnumUtils.match(splitedSound[1].toUpperCase(Locale.ROOT), EntityType.class))) {
                         event.setCancelled(true);
                         break;
                     }
