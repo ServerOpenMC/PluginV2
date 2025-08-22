@@ -181,6 +181,7 @@ public class MascotsManager {
         mascotsLevels = MascotsLevels.valueOf("level" + level);
 
         double maxHealth = mascotsLevels.getHealth();
+        mob.getAttribute(Attribute.MAX_HEALTH).removeModifier(MAX_HEALTH_KEY);
         mob.getAttribute(Attribute.MAX_HEALTH).addModifier(new AttributeModifier(MAX_HEALTH_KEY, maxHealth, AttributeModifier.Operation.ADD_NUMBER));
 
         if (mob.getHealth() == lastHealth) {
