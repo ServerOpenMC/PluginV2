@@ -43,7 +43,7 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
                 new QuestMoneyReward(500),
                 new QuestTextReward(
                         "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §9Paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, etc." +
-                                "Sujet à part, vous pouvez passer en mode compétition grâce aux §6Contests§f, une sorte de concours hebdomadaire !",
+                                " Sujet à part, vous pouvez passer en mode compétition grâce aux §6Contests§f, une sorte de concours hebdomadaire !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
