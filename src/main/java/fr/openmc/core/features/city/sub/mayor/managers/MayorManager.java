@@ -6,11 +6,13 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.hooks.FancyNpcsHook;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.commands.AdminMayorCommands;
 import fr.openmc.core.features.city.sub.mayor.commands.MayorCommands;
@@ -22,8 +24,6 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.api.FancyNpcsApi;
-import fr.openmc.core.utils.api.ItemsAdderApi;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -41,7 +41,7 @@ public class MayorManager {
     @Getter
     private static ConnectionSource connectionSource;
 
-    public static int MEMBER_REQ_ELECTION = 3;
+    public static final int MEMBER_REQUEST_ELECTION = 3;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
@@ -63,7 +63,7 @@ public class MayorManager {
 
     public static int phaseMayor;
     public static HashMap<String, Mayor> cityMayor = new HashMap<>();
-    public static HashMap<String, CityLaw> cityLaws = new HashMap<>();
+    public static final HashMap<String, CityLaw> cityLaws = new HashMap<>();
     public static Map<String, List<MayorCandidate>> cityElections = new HashMap<>();
     public static Map<String, List<MayorVote>> playerVote = new HashMap<>();
 
@@ -87,11 +87,12 @@ public class MayorManager {
                 new MineralRushPerk(),
                 new MilitaryDissuasion(),
                 new IdyllicRain());
-        if (ItemsAdderApi.hasItemAdder()) {
+
+        if (ItemsAdderHook.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new UrneListener());
         }
-        if (FancyNpcsApi.hasFancyNpc()) {
+        if (FancyNpcsHook.hasFancyNpc()) {
             OMCPlugin.registerEvents(
                     new NPCManager());
         }
@@ -114,7 +115,7 @@ public class MayorManager {
     private static Dao<CityLaw, String> lawsDao;
     private static Dao<MayorConstant, Integer> constantsDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Mayor.class);
         mayorsDao = DaoManager.createDao(connectionSource, Mayor.class);
 
@@ -321,7 +322,7 @@ public class MayorManager {
                 }
             }
 
-            if (city.getMembers().size() >= MEMBER_REQ_ELECTION) {
+            if (city.getMembers().size() >= MEMBER_REQUEST_ELECTION) {
                 createMayor(null, null, city, null, null, null, null, ElectionType.ELECTION);
             }
             createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
@@ -341,12 +342,12 @@ public class MayorManager {
     }
 
     public static void initPhase2() {
-        Bukkit.getLogger().info("MAYOR - INIT PHASE 2");
+        OMCPlugin.getInstance().getSLF4JLogger().debug("MAYOR - INIT PHASE 2");
         phaseMayor = 2;
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : CityManager.getCities()) {
-            Bukkit.getLogger().info("- City : " + city.getName());
+            OMCPlugin.getInstance().getSLF4JLogger().debug("- City : {}", city.getName());
             runSetupMayor(city);
 
             for (UUID uuid : city.getMembers()) {
@@ -388,7 +389,7 @@ public class MayorManager {
      * @param city The city to update mayor
      */
     public static void runSetupMayor(City city) {
-        UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
+        UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
         String ownerName = CacheOfflinePlayer.getOfflinePlayer(ownerUUID).getName();
         Mayor mayor = city.getMayor();
 

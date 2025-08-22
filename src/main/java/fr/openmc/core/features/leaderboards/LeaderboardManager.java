@@ -8,8 +8,8 @@ import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
-import fr.openmc.core.utils.entities.TextDisplay;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.entities.TextDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -37,7 +37,7 @@ import java.util.*;
 
 public class LeaderboardManager {
     @Getter
-    private static final Map<Integer, Map.Entry<String, Integer>> githubContributorsMap = new TreeMap<>();
+    private static final Map<Integer, Map.Entry<String, ContributorStats>> githubContributorsMap = new TreeMap<>();
     @Getter
     private static final Map<Integer, Map.Entry<String, String>> playerMoneyMap = new TreeMap<>();
     @Getter
@@ -82,13 +82,17 @@ public class LeaderboardManager {
         for (var entry : contributorsMap.entrySet()) {
             int rank = entry.getKey();
             String contributorName = entry.getValue().getKey();
-            int lines = entry.getValue().getValue();
+            ContributorStats stats = entry.getValue().getValue();
+            int addLines = stats.added();
+            int removeLines = stats.removed();
             Component line = Component.text("\n#")
                     .color(getRankColor(rank))
                     .append(Component.text(rank).color(getRankColor(rank)))
                     .append(Component.text(" ").append(Component.text(contributorName).color(NamedTextColor.LIGHT_PURPLE)))
-                    .append(Component.text(" - ").color(NamedTextColor.GRAY))
-                    .append(Component.text(lines + " lignes crées").color(NamedTextColor.WHITE));
+                    .append(Component.text(" + ").color(NamedTextColor.GREEN))
+                    .append(Component.text(addLines).color(NamedTextColor.WHITE)
+                            .append(Component.text(" - ").color(NamedTextColor.RED))
+                            .append(Component.text(removeLines).color(NamedTextColor.WHITE)));
             text = text.append(line);
         }
         text = text.append(Component.text("\n-----------------------------------------")
@@ -353,7 +357,7 @@ public class LeaderboardManager {
             }
             con.disconnect();
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("Erreur lors de la récupération de la liste des contributeurs: " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Could not fetch contributors: {}", e.getMessage(), e);
         }
 
         return contributors;
@@ -369,7 +373,7 @@ public class LeaderboardManager {
 
             if (con.getResponseCode() == 200) {
                 JSONArray statsArray = (JSONArray) new JSONParser().parse(new InputStreamReader(con.getInputStream()));
-                List<Map.Entry<String, Integer>> statsList = new ArrayList<>();
+                List<Map.Entry<String, ContributorStats>> statsList = new ArrayList<>();
 
                 for (Object obj : statsArray) {
                     JSONObject contributor = (JSONObject) obj;
@@ -382,18 +386,24 @@ public class LeaderboardManager {
                     // Calcul des contributions
                     JSONArray weeks = (JSONArray) contributor.get("weeks");
                     int totalNetLines = 0;
+                    int totalAddLines = 0;
+                    int totalRemoveLines = 0;
+
                     for (Object wObj : weeks) {
                         JSONObject week = (JSONObject) wObj;
                         totalNetLines += ((Long) week.get("a")).intValue() - ((Long) week.get("d")).intValue();
+                        totalAddLines += ((Long) week.get("a")).intValue();
+                        totalRemoveLines += ((Long) week.get("d")).intValue();
                     }
 
-                    if (totalNetLines > 0) {
-                        statsList.add(new AbstractMap.SimpleEntry<>(login, totalNetLines));
-                    }
+                    statsList.add(new AbstractMap.SimpleEntry<>(login, new ContributorStats(totalAddLines, totalRemoveLines)));
                 }
 
                 // Tri et affichage du classement
-                statsList.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+                statsList.sort((e1, e2) ->
+                        Integer.compare(e2.getValue().getTotalLines(), e1.getValue().getTotalLines())
+                );
+
                 githubContributorsMap.clear();
 
                 for (int i = 0; i < Math.min(10, statsList.size()); i++) {
@@ -402,7 +412,7 @@ public class LeaderboardManager {
             }
             con.disconnect();
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().warning("Erreur lors de la récupération des stats: " + e.getMessage());
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Could not fetch contributor stats: {}", e.getMessage(), e);
         }
     }
 

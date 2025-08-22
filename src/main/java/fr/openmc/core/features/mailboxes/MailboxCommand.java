@@ -15,8 +15,6 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.sql.SQLException;
-
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendFailureMessage;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendWarningMessage;
 
@@ -24,7 +22,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendWarningMe
 @CommandPermission("omc.commands.mailbox")
 public class MailboxCommand {
     
-    private OMCPlugin plugin;
+    private final OMCPlugin plugin;
     
     public MailboxCommand(OMCPlugin plugin) {
         this.plugin = plugin;
@@ -40,7 +38,7 @@ public class MailboxCommand {
     @Subcommand("send")
     @Description("Envoyer une lettre à un joueur")
     @AutoComplete("@players")
-    public void sendMailbox(Player player, @Named("player") String receiver) throws SQLException {
+    public void sendMailbox(Player player, @Named("player") String receiver) {
         OfflinePlayer receiverPlayer = Bukkit.getPlayerExact(receiver);
         if (receiverPlayer == null) receiverPlayer = Bukkit.getOfflinePlayerIfCached(receiver);
         if (receiverPlayer == null || !(receiverPlayer.hasPlayedBefore() || receiverPlayer.isOnline())) {

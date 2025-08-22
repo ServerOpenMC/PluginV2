@@ -1,13 +1,11 @@
 package fr.openmc.core.features.economy.menu;
 
-import fr.openmc.api.input.signgui.SignGUI;
-import fr.openmc.api.input.signgui.exception.SignGUIVersionException;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -20,10 +18,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 
 public class PersonalBankDepositMenu extends Menu {
 
@@ -33,7 +32,12 @@ public class PersonalBankDepositMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des banques - Banque Personel";
+        return "Menu des Banques - Deposer";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -47,8 +51,8 @@ public class PersonalBankDepositMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         double moneyPlayer = EconomyManager.getBalance(player.getUniqueId());
@@ -56,9 +60,9 @@ public class PersonalBankDepositMenu extends Menu {
 
         List<Component> loreBankDepositAll = List.of(
                 Component.text("§7Tout votre argent sera placé dans §6Votre Banque"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
         );
 
@@ -70,7 +74,7 @@ public class PersonalBankDepositMenu extends Menu {
                 BankManager.addBankBalance(player.getUniqueId(), moneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.BANK, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.BANK, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -78,9 +82,9 @@ public class PersonalBankDepositMenu extends Menu {
 
         List<Component> loreBankDepositHalf = List.of(
                 Component.text("§7La moitié de votre Argent sera placé dans §6Votre Banque"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR DEPOSER")
         );
 
@@ -92,7 +96,7 @@ public class PersonalBankDepositMenu extends Menu {
                 BankManager.addBankBalance(player.getUniqueId(), halfMoneyPlayer);
                 MessagesManager.sendMessage(player, Component.text("Tu as transféré §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"), Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(), Prefix.BANK, MessageType.ERROR, false);
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(), Prefix.BANK, MessageType.ERROR, false);
             }
             player.closeInventory();
         }));
@@ -108,30 +112,9 @@ public class PersonalBankDepositMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer un §6montant précis"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
-
-            String[] lines = new String[4];
-            lines[0] = "";
-            lines[1] = " ᐱᐱᐱᐱᐱᐱᐱ ";
-            lines[2] = "Entrez votre";
-            lines[3] = "montant ci dessus";
-
-            SignGUI gui = null;
-            try {
-                gui = SignGUI.builder()
-                        .setLines(null, lines[1] , lines[2], lines[3])
-                        .setType(ItemUtils.getSignType(player))
-                        .setHandler((p, result) -> {
-                            String input = result.getLine(0);
-                            BankManager.addBankBalance(player, input);
-                            return Collections.emptyList();
-                        })
-                        .build();
-            } catch (SignGUIVersionException e) {
-                throw new RuntimeException(e);
-            }
-
-            gui.open(player);
-
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input ->
+                    BankManager.addBankBalance(player, input)
+            );
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
@@ -140,10 +123,7 @@ public class PersonalBankDepositMenu extends Menu {
                     Component.text("§7Vous allez retourner au Menu de votre banque"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> {
-            PersonalBankMenu menu = new PersonalBankMenu(player);
-            menu.open();
-        }));
+        }, true));
 
         return inventory;
     }

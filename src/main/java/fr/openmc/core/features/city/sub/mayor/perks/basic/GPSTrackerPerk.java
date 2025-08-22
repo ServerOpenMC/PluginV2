@@ -10,13 +10,12 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,11 +33,12 @@ public class GPSTrackerPerk implements Listener {
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if (event.getFrom().getChunk().equals(event.getTo().getChunk())) return;
+        Chunk newChunk = event.getTo().getChunk();
+        if (event.getFrom().getChunk().equals(newChunk)) return;
 
         City newCity = CityManager.getCityFromChunk(
-                event.getTo().getChunk().getX(),
-                event.getTo().getChunk().getZ()
+                newChunk.getX(),
+                newChunk.getZ()
         );
 
         City oldCity = lastCityMap.get(uuid);
@@ -67,22 +67,15 @@ public class GPSTrackerPerk implements Listener {
 
     private boolean hasGpsTrackerPerk(City city) {
         Mayor mayor = city.getMayor();
-        return mayor != null && PerkManager.hasPerk(mayor, Perks.GPS_TRACKER.getId());
+        return PerkManager.hasPerk(mayor, Perks.GPS_TRACKER.getId());
     }
 
     private void applyGlowing(Player player) {
-        player.addPotionEffect(new PotionEffect(
-                PotionEffectType.GLOWING,
-                Integer.MAX_VALUE,
-                0,
-                false,
-                false,
-                false
-        ));
+        player.setGlowing(true);
     }
 
     private void removeGlowing(Player player) {
-        player.removePotionEffect(PotionEffectType.GLOWING);
+        player.setGlowing(false);
     }
 
     @EventHandler

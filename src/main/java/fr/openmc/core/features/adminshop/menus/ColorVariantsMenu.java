@@ -1,5 +1,6 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -7,7 +8,6 @@ import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.items.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -70,7 +70,12 @@ public class ColorVariantsMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop_items%");
+        return "Menu des variantes de couleur pour " + originalItem.getName();
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop_items:");
     }
 
     @Override
@@ -82,8 +87,8 @@ public class ColorVariantsMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
 
         String baseType = originalItem.getBaseType();
         List<Material> variants;
@@ -108,7 +113,7 @@ public class ColorVariantsMenu extends Menu {
         ItemMeta baseMeta = baseItemStack.getItemMeta();
         baseMeta.displayName(Component.text("§7" + getFormattedTypeName(baseType)));
         baseItemStack.setItemMeta(baseMeta);
-        content.put(4, baseItemStack);
+        content.put(4, new ItemBuilder(this, baseItemStack));
 
         for (int i = 0; i < maxVariants; i++) {
             Material variant = variants.get(i);

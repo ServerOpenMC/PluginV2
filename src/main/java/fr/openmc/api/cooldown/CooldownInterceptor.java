@@ -1,5 +1,6 @@
 package fr.openmc.api.cooldown;
 
+import fr.openmc.core.utils.DateUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import revxrsal.commands.command.CommandActor;
@@ -20,6 +21,7 @@ public class CooldownInterceptor implements CommandCondition {
         if (!DynamicCooldownManager.isReady(actor.getUniqueId().toString(), cooldown.group())) {
             long remaining = DynamicCooldownManager.getRemaining(actor.getUniqueId().toString(), cooldown.group());
             String message = cooldown.message();
+            message = message.replace("%formatTime%", DateUtils.convertSecondToTime(remaining / 1000));
             message = message.replace("%sec%", String.valueOf(remaining / 1000));
             message = message.replace("%ms%", String.valueOf(remaining));
             actor.reply(message);

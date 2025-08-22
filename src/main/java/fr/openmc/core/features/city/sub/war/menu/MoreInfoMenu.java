@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -25,7 +24,12 @@ public class MoreInfoMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des guerres - Plus d'info";
+        return "Menu des Guerres - Plus d'info";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -39,16 +43,15 @@ public class MoreInfoMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
-        Player player = getOwner();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
         List<Component> lore0 = Arrays.asList(
-                Component.text("§7Choisissez une §6ville §7a attaquer ! "),
+                Component.text("§7Choisissez une §6ville §7a attaquer !"),
                 Component.text("§7Le nombre de combattants sera le même partout !"),
                 Component.text("§8§oex. Si vous êtes 5 joueurs de connectés et 2 en face,"),
                 Component.text("§8§oalors vous aurez le choix de faire un 1vs1 ou un 2vs2"),
-                Component.text(""),
+                Component.empty(),
                 Component.text("§7Lorsque vous venez déclarer la §6guerre §7à une ville, les personnes concernées seront informées "),
                 Component.text("§7Vous aurez §6" + WarManager.TIME_PREPARATION + " min §7de préparation"),
                 Component.text("§7ce qui vous laisse le temps de s’équiper et d’aller au front !")
@@ -81,7 +84,7 @@ public class MoreInfoMenu extends Menu {
             itemMeta.lore(lore2);
         }));
 
-        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour"))).setBackButton());
+        inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
 
         return inventory;
     }

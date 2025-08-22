@@ -1,14 +1,13 @@
 package fr.openmc.core.utils.translation;
 
-import org.bukkit.configuration.file.YamlConfiguration;
+import fr.openmc.core.OMCPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import fr.openmc.core.OMCPlugin;
 
 
 public class TranslationManager {
@@ -73,16 +72,17 @@ public class TranslationManager {
         if (!languageFile.exists()) {
             try {
                 OMCPlugin.getInstance().saveResource(translationFolder.getPath() + language + ".yml", false);
-                OMCPlugin.getInstance().getLogger().info("Language loaded : " + language);
+                OMCPlugin.getInstance().getSLF4JLogger().info("Language {} not found, creating a new one from default template.", language);
             }
             catch (Exception ignored) {
-                OMCPlugin.getInstance().getLogger().warning("Language " + language + " does not exist");
+                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load the default language file: {}.yml. Please ensure it exists in the translations folder in the jar file.", language);
+                return;
             }
         }
 
         if (languageFile.exists()) {
             loadedLanguages.put(language, YamlConfiguration.loadConfiguration(languageFile));
-            OMCPlugin.getInstance().getLogger().info("Language " + language + " loaded");
+            OMCPlugin.getInstance().getSLF4JLogger().info("Language {} loaded successfully.", language);
         }
     }
 

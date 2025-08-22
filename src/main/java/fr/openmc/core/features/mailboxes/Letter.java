@@ -1,23 +1,21 @@
 package fr.openmc.core.features.mailboxes;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.UUID;
-
-import org.bukkit.OfflinePlayer;
-import org.bukkit.inventory.ItemStack;
-
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.ItemStack;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.UUID;
 
 @Getter
 @DatabaseTable(tableName = "mail")
@@ -53,10 +51,6 @@ public class Letter {
     public boolean refuse() {
         refused = true;
         return MailboxManager.saveLetter(this);
-    }
-
-    public boolean isRefused() {
-        return refused;
     }
 
     public LetterHead toLetterHead() {

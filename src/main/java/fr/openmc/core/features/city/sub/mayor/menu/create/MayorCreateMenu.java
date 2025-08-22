@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu.create;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -8,19 +9,15 @@ import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.menu.MayorElectionMenu;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,11 +42,12 @@ public class MayorCreateMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
-        } else {
-            return "Menu des Maires - Creation";
-        }
+        return "Menu des Maires - Creation";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -68,8 +66,8 @@ public class MayorCreateMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         boolean canConfirmPerk;
@@ -83,23 +81,22 @@ public class MayorCreateMenu extends Menu {
             if (perk1 == null) {
                 lorePerk1 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk1 = new ArrayList<>(perk1.getLore());
-                lorePerk1.add(Component.text(""));
+                lorePerk1.add(Component.empty());
                 lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(22, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
-            }));
+            })
+                    .hide(perk1.getToHide())
+                    .setOnClick(inventoryClickEvent -> {
+                        new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
+                    }));
 
             inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
@@ -107,10 +104,7 @@ public class MayorCreateMenu extends Menu {
                         Component.text("§7Vous allez retourner au Menu des Elections"),
                         Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                 ));
-            }).setOnClick(inventoryClickEvent -> {
-                MayorElectionMenu menu = new MayorElectionMenu(player);
-                menu.open();
-            }));
+            }, true));
         } else if (type == MenuType.CANDIDATE) {
             canConfirmPerk = perk2 != null && perk3 != null;
 
@@ -120,23 +114,22 @@ public class MayorCreateMenu extends Menu {
             if (perk2 == null) {
                 lorePerk2 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk2 = new ArrayList<>(perk2.getLore());
-                lorePerk2.add(Component.text(""));
+                lorePerk2.add(Component.empty());
                 lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(20, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open();
-            }));
+            })
+                    .hide(perk2.getToHide())
+                    .setOnClick(inventoryClickEvent -> {
+                        new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open();
+                    }));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
@@ -144,23 +137,22 @@ public class MayorCreateMenu extends Menu {
             if (perk3 == null) {
                 lorePerk3 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk3 = new ArrayList<>(perk3.getLore());
-                lorePerk3.add(Component.text(""));
+                lorePerk3.add(Component.empty());
                 lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
-            }));
+            })
+                    .hide(perk3.getToHide())
+                    .setOnClick(inventoryClickEvent -> {
+                        new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
+                    }));
 
             inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
@@ -181,22 +173,22 @@ public class MayorCreateMenu extends Menu {
             if (perk1 == null) {
                 lorePerk1 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
             } else {
                 lorePerk1 = new ArrayList<>(perk1.getLore());
-                lorePerk1.add(Component.text(""));
+                lorePerk1.add(Component.empty());
                 lorePerk1.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(20, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
-            }));
+            })
+                    .hide(perk1.getToHide())
+                    .setOnClick(inventoryClickEvent -> {
+                        new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
+                    }));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
@@ -204,23 +196,22 @@ public class MayorCreateMenu extends Menu {
             if (perk2 == null) {
                 lorePerk2 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
-                ;
             } else {
                 lorePerk2 = new ArrayList<>(perk2.getLore());
-                lorePerk2.add(Component.text(""));
+                lorePerk2.add(Component.empty());
                 lorePerk2.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open();
-            }));
+            })
+                    .hide(perk2.getToHide())
+                    .setOnClick(inventoryClickEvent -> {
+                        new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open();
+                    }));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
@@ -228,22 +219,22 @@ public class MayorCreateMenu extends Menu {
             if (perk3 == null) {
                 lorePerk3 = List.of(
                         Component.text("§7Choissiez §3votre Réforme §7que vous voulez voir !"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
             } else {
                 lorePerk3 = new ArrayList<>(perk3.getLore());
-                lorePerk3.add(Component.text(""));
+                lorePerk3.add(Component.empty());
                 lorePerk3.add(Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA REFORME"));
             }
             inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }).setOnClick(inventoryClickEvent -> {
-                new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
-            }));
+            })
+                    .hide(perk3.getToHide())
+                    .setOnClick(inventoryClickEvent -> {
+                        new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
+                    }));
 
             inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
                 itemMeta.itemName(Component.text("§aRetour"));
@@ -267,7 +258,7 @@ public class MayorCreateMenu extends Menu {
             nameConfirm = "§aConfirmer";
             loreConfirm = List.of(
                     Component.text("§7Vous avez choisis toutes §ales Réformes §7nécessaires"),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CONTINUER LA CANDIDATURE")
             );
         } else {

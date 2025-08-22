@@ -13,10 +13,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class DamageProtection implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.isCancelled()) return;
-
         Entity victim = event.getEntity();
         Entity damager = event.getDamager();
 
@@ -45,10 +43,9 @@ public class DamageProtection implements Listener {
 
         if (victim instanceof Player victimPlayer) {
             ProtectionsManager.verify(victimPlayer, event, victimPlayer.getLocation());
-            if (event.isCancelled()) return;
         }
 
-        if (MascotUtils.isMascot(victim)) return;
+        if (MascotUtils.canBeAMascot(victim)) return;
 
         if (attacker != null) {
             ProtectionsManager.verify(attacker, event, victim.getLocation());

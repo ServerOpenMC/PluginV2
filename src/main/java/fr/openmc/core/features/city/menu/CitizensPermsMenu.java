@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.menu;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityPermsCommands;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 public class CitizensPermsMenu {
     public static void openBookFor(Player sender, UUID player) {
-        City hisCity = CityManager.getPlayerCity(sender.getUniqueId());
+        City hisCity = CityManager.getPlayerCity(player);
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (hisCity == null) {
@@ -40,22 +40,22 @@ public class CitizensPermsMenu {
             return;
         }
 
-        if (!city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
+        if (!city.hasPermission(sender.getUniqueId(), CityPermission.PERMS)) {
             MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         ArrayList<Component> pages = new ArrayList<>();
-
-        Component firstPage = Component.text("        Permissions").append(
+        
+        Component firstPage = Component.text("       Permissions").append(
                 Component.text("\n\n")
                         .decorate(TextDecoration.UNDERLINED)
                         .decorate(TextDecoration.BOLD));
 
         ArrayList<Component> perms = new ArrayList<>();
 
-        for (CPermission permission: CPermission.values()) {
-            if (permission == CPermission.OWNER) continue;
+        for (CityPermission permission: CityPermission.values()) {
+            if (permission == CityPermission.OWNER) continue;
 
             perms.add(Component.text((city.hasPermission(player, permission) ? "+ ": "- ")+permission.getDisplayName())
                     .decoration(TextDecoration.UNDERLINED, false)
@@ -72,7 +72,7 @@ public class CitizensPermsMenu {
         for (int i = 0; i < 9 && !perms.isEmpty(); i++) {
             firstPage = firstPage.append(perms.removeFirst());
         }
-        firstPage = firstPage.append(Component.text("\n\n\n⬅ Retour")
+        firstPage = firstPage.append(Component.text("⬅ Retour")
                 .clickEvent(ClickEvent.callback((plr1) -> {
                     sender.closeInventory();
                     openBook(sender);
@@ -82,16 +82,16 @@ public class CitizensPermsMenu {
         pages.add(firstPage);
 
         while (!perms.isEmpty()) {
-            Component page = Component.text("");
-
-            for (int i = 0; i < 14 && !perms.isEmpty(); i++) {
+            Component page = Component.empty();
+            
+            for (int i = 0; i < 9 && ! perms.isEmpty(); i++) {
                 page = page.append(perms.removeFirst());
             }
 
             pages.add(page);
         }
 
-        sender.openBook(Book.book(Component.text(""), Component.text(""), pages));
+        sender.openBook(Book.book(Component.empty(), Component.empty(), pages));
     }
 
     public static void openBook(Player sender) {
@@ -102,7 +102,7 @@ public class CitizensPermsMenu {
             return;
         }
 
-        if (!city.hasPermission(sender.getUniqueId(), CPermission.PERMS)) {
+        if (!city.hasPermission(sender.getUniqueId(), CityPermission.PERMS)) {
             MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission d'ouvrir ce menu"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -132,7 +132,7 @@ public class CitizensPermsMenu {
 
         // Creer une page par 14 joueurs
         while (!players.isEmpty()) {
-            Component page = Component.text("");
+            Component page = Component.empty();
 
             for (int i = 0; i < 14 && !players.isEmpty(); i++) {
                 page = page.append(players.removeFirst());
@@ -141,6 +141,6 @@ public class CitizensPermsMenu {
             pages.add(page);
         }
 
-        sender.openBook(Book.book(Component.text("Registre des permissions"), Component.text(""), pages));
+        sender.openBook(Book.book(Component.text("Registre des permissions"), Component.empty(), pages));
     }
 }

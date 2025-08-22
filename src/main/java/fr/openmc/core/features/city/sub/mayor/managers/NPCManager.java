@@ -7,7 +7,7 @@ import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
@@ -15,9 +15,9 @@ import fr.openmc.core.features.city.sub.mayor.menu.npc.MayorNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.OwnerNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.npcs.MayorNPC;
 import fr.openmc.core.features.city.sub.mayor.npcs.OwnerNPC;
-import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.api.FancyNpcsApi;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -66,7 +66,7 @@ public class NPCManager implements Listener {
     }
 
     public static void createNPCS(String cityUUID, Location locationMayor, Location locationOwner, UUID creatorUUID) {
-        if (!FancyNpcsApi.hasFancyNpc()) return;
+        if (!FancyNpcsHook.hasFancyNpc()) return;
 
 
         City city = CityManager.getCity(cityUUID);
@@ -90,7 +90,7 @@ public class NPCManager implements Listener {
         Npc npcMayor = FancyNpcsPlugin.get().getNpcAdapter().apply(dataMayor);
 
         NpcData dataOwner = new NpcData("owner-" + cityUUID, creatorUUID, locationOwner);
-        String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
+        String ownerName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName();
         dataOwner.setSkin(ownerName);
         dataOwner.setDisplayName("<yellow>Propriétaire " + ownerName + "</yellow>");
 
@@ -110,7 +110,7 @@ public class NPCManager implements Listener {
     }
 
     public static void removeNPCS(String cityUUID) {
-        if (!FancyNpcsApi.hasFancyNpc()) return;
+        if (!FancyNpcsHook.hasFancyNpc()) return;
         if (!ownerNpcMap.containsKey(cityUUID) || !mayorNpcMap.containsKey(cityUUID)) return;
 
         Npc ownerNpc = ownerNpcMap.remove(cityUUID).getNpc();
@@ -124,7 +124,7 @@ public class NPCManager implements Listener {
     }
 
     public static void updateNPCS(String cityUUID) {
-        if (!FancyNpcsApi.hasFancyNpc()) return;
+        if (!FancyNpcsHook.hasFancyNpc()) return;
 
         OwnerNPC ownerNPC = ownerNpcMap.get(cityUUID);
         MayorNPC mayorNPC = mayorNpcMap.get(cityUUID);
@@ -139,7 +139,7 @@ public class NPCManager implements Listener {
     }
 
     public static void updateAllNPCS() {
-        if (!FancyNpcsApi.hasFancyNpc()) return;
+        if (!FancyNpcsHook.hasFancyNpc()) return;
 
         Set<String> cityUUIDs = new HashSet<>(ownerNpcMap.keySet()); // Copie
 
@@ -158,7 +158,7 @@ public class NPCManager implements Listener {
     }
 
     public static void moveNPC(String type, Location location, String city_uuid) {
-        if (!FancyNpcsApi.hasFancyNpc()) return;
+        if (!FancyNpcsHook.hasFancyNpc()) return;
 
         if (type.equalsIgnoreCase("owner")) {
             OwnerNPC ownerNPC = ownerNpcMap.get(city_uuid);
@@ -176,14 +176,14 @@ public class NPCManager implements Listener {
     }
 
     public static boolean hasNPCS(String cityUUID) {
-        if (!FancyNpcsApi.hasFancyNpc()) return false;
+        if (!FancyNpcsHook.hasFancyNpc()) return false;
 
         return ownerNpcMap.containsKey(cityUUID) && mayorNpcMap.containsKey(cityUUID);
     }
 
     @EventHandler
     public void onInteractWithMayorNPC(NpcInteractEvent event) {
-        if (!FancyNpcsApi.hasFancyNpc()) return;
+        if (!FancyNpcsHook.hasFancyNpc()) return;
 
         Player player = event.getPlayer();
 
@@ -209,7 +209,7 @@ public class NPCManager implements Listener {
             }
 
             if (MayorManager.phaseMayor == 1) {
-                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CPermission.OWNER))) {
+                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) {
                     MessagesManager.sendMessage(player, Component.text("§8§o*mhh cette ville n'a pas encore élu un maire*"), Prefix.MAYOR, MessageType.INFO, true);
                     return;
                 }
@@ -291,7 +291,7 @@ public class NPCManager implements Listener {
             }
 
             if (MayorManager.phaseMayor == 1) {
-                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CPermission.OWNER))) return;
+                if (!event.getPlayer().getUniqueId().equals(city.getPlayerWithPermission(CityPermission.OWNER))) return;
 
                 Component message = Component.text("§8§o*Bonjour ? Tu veux me bouger ? Clique ici !*")
                         .clickEvent(ClickEvent.callback(audience -> {

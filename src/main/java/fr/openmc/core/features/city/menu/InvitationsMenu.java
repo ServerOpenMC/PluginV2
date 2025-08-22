@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
@@ -27,7 +28,12 @@ public class InvitationsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes - Invitations";
+        return "Menu des Villes - Invitations";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -42,11 +48,11 @@ public class InvitationsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
         List<Player> invitations = CityCommands.invitations.get(player);
@@ -59,7 +65,7 @@ public class InvitationsMenu extends PaginatedMenu {
 
             if (inviterCity == null) {
                 invitations.remove(inviter);
-                if (invitations.size() == 0) {
+                if (invitations.isEmpty()) {
                     CityCommands.invitations.remove(player);
                 }
                 return getItems();
@@ -94,14 +100,23 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
+    public Map<Integer, ItemBuilder> getButtons() {
         Player player = getOwner();
-        Map<Integer, ItemStack> map = new HashMap<>();
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49,
                 new ItemBuilder(this,
                         Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(),
-                        itemMeta -> itemMeta.displayName(Component.text("§7Retour au menu des villes")))
-                        .setOnClick(InventoryClickEvent -> new NoCityMenu(player).open()));
+                        itemMeta -> itemMeta.displayName(Component.text("§7Retour au menu précédent")), true));
         map.put(48,
                 new ItemBuilder(this,
                         Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(),

@@ -1,22 +1,22 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
-import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static fr.openmc.api.menulib.utils.StaticSlots.*;
+import static fr.openmc.api.menulib.utils.StaticSlots.combine;
 
 public class MayorVoteMenu extends PaginatedMenu {
     public MayorVoteMenu(Player owner) {
@@ -44,11 +44,21 @@ public class MayorVoteMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return combine(combine(RIGHT, LEFT), BOTTOM);
+        return combine(combine(StaticSlots.getRightSlots(getInventorySize()), StaticSlots.getLeftSlots(getInventorySize())), StaticSlots.getBottomSlots(getInventorySize()));
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
@@ -66,24 +76,19 @@ public class MayorVoteMenu extends PaginatedMenu {
             List<Component> loreMayor = new ArrayList<>(List.of(
                     Component.text("§8Candidat pour le Maire de " + city.getName())
             ));
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§7Votes : ").append(Component.text(vote).color(color).decoration(TextDecoration.ITALIC, false)));
             loreMayor.add(Component.text(" §8[" + getProgressBar(vote, totalVotes, color) + "§8] §7(" + getVotePercentage(vote, totalVotes) + "%)"));
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk2.getName()));
             loreMayor.addAll(perk2.getLore());
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text(perk3.getName()));
             loreMayor.addAll(perk3.getLore());
-            loreMayor.add(Component.text(""));
+            loreMayor.add(Component.empty());
             loreMayor.add(Component.text("§e§lCLIQUEZ ICI POUR LE VOTER"));
 
-            boolean ench;
-            if (candidate == playerVote) {
-                ench = true;
-            } else {
-                ench = false;
-            }
+            boolean ench = candidate == playerVote;
 
 
                 ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getUUID()), itemMeta -> {
@@ -95,7 +100,7 @@ public class MayorVoteMenu extends PaginatedMenu {
                         if (candidate == playerVote) {
                             MessagesManager.sendMessage(player, Component.text("§7Vous avez déjà voté pour ce §6Maire"), Prefix.MAYOR, MessageType.ERROR, false);
                             return;
-                        };
+                        }
 
                         playerVote.setVote(playerVote.getVote()-1);
                         MayorManager.removeVotePlayer(player);
@@ -119,16 +124,10 @@ public class MayorVoteMenu extends PaginatedMenu {
         int progressBars = 20;
         int barFill = (int) (((double) vote / totalVotes) * progressBars);
 
-        StringBuilder bar = new StringBuilder();
-        bar.append(ColorUtils.getColorCode(color));
-        for (int i = 0; i < barFill; i++) {
-            bar.append("|");
-        }
-        bar.append("§7");
-        for (int i = barFill; i < progressBars; i++) {
-            bar.append("|");
-        }
-        return bar.toString();
+        return ColorUtils.getColorCode(color) +
+                "|".repeat(Math.max(0, barFill)) +
+                "§7" +
+                "|".repeat(Math.max(0, progressBars - barFill));
     }
 
     private int getVotePercentage(int vote, int totalVotes) {
@@ -137,8 +136,8 @@ public class MayorVoteMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§cFermer"));
         }).setCloseButton());
@@ -158,17 +157,18 @@ public class MayorVoteMenu extends PaginatedMenu {
         map.put(54, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
         return map;
     }
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
-        } else {
-            return "Menu des Maires - Votes";
-        }
+        return "Menu des Maires - Votes";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override

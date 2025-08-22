@@ -1,12 +1,13 @@
 package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.commands.utils.Restart;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityChestAction;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -57,11 +58,11 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.BOTTOM;
+        return StaticSlots.getBottomSlots(getInventorySize());
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         ItemStack[] contents = city.getChestContent(this.page);
 
         if (contents == null) {
@@ -87,12 +88,12 @@ public class CityChestMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
+    public Map<Integer, ItemBuilder> getButtons() {
         if (Restart.isRestarting) return null;
 
         Player player = getOwner();
 
-        Map<Integer, ItemStack> map = new HashMap<>();
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
         }).setOnClick(inventoryClickEvent -> {
@@ -129,14 +130,14 @@ public class CityChestMenu extends PaginatedMenu {
             }));
         }
 
-        if (city.hasPermission(getOwner().getUniqueId(), CPermission.CHEST_UPGRADE) && city.getChestPages() < 5) {
+        if (city.hasPermission(getOwner().getUniqueId(), CityPermission.CHEST_UPGRADE) && city.getChestPages() < 5) {
             map.put(47, new ItemBuilder(this, Material.ENDER_CHEST, itemMeta -> {
                 itemMeta.displayName(Component.text("§aAméliorer le coffre"));
                 itemMeta.lore(List.of(
                         Component.text("§7Votre ville doit avoir : "),
                         Component.text("§8- §6" + city.getChestPages() * UPGRADE_PER_MONEY).append(Component.text(EconomyManager.getEconomyIcon())).decoration(TextDecoration.ITALIC, false),
                         Component.text("§8- §d" + city.getChestPages() * UPGRADE_PER_AYWENITE + " d'Aywenite"),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE")
                 ));
             }).setOnClick(inventoryClickEvent -> {
@@ -152,11 +153,26 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Coffre de " + this.city.getName() + " - Page " + this.page;
+        return "Menu du Coffre de " + this.city.getName() + " - Page " + this.page;
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
     }
 
     @Override

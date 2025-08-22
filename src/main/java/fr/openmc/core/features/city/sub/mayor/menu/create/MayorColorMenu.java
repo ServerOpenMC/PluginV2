@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu.create;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -12,12 +13,9 @@ import fr.openmc.core.features.city.sub.mayor.models.MayorCandidate;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -25,7 +23,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -48,11 +45,12 @@ public class MayorColorMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
-        } else {
-            return "Menu des Maires - Couleur";
-        }
+        return "Menu des Maires - Couleur";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -71,8 +69,8 @@ public class MayorColorMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -95,30 +93,30 @@ public class MayorColorMenu extends Menu {
         colorSlot.forEach((color, slot) -> {
             List<Component> loreColor = List.of(
                     Component.text("§7Votre nom sera affiché en " + ColorUtils.getNameFromColor(color)),
-                    Component.text(""),
+                    Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             );
             inventory.put(slot, new ItemBuilder(this, ColorUtils.getMaterialFromColor(color), itemMeta -> {
                 itemMeta.displayName(Component.text("§7Mettez du " + ColorUtils.getNameFromColor(color)));
                 itemMeta.lore(loreColor);
             }).setOnClick(inventoryClickEvent -> {
-                if (type == "create") {
+                if (type.equals("create")) {
                     List<Component> loreAccept = new ArrayList<>(List.of(
                             Component.text("§7Vous allez vous présenter en tant que §6Maire de " + city.getName()),
-                            Component.text(""),
+                            Component.empty(),
                             Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false)
                     ));
                     if (perk1 != null) {
                         loreAccept.add(Component.text(perk1.getName()));
                         loreAccept.addAll(perk1.getLore());
-                        loreAccept.add(Component.text(""));
+                        loreAccept.add(Component.empty());
                     }
                     loreAccept.add(Component.text(perk2.getName()));
                     loreAccept.addAll(perk2.getLore());
-                    loreAccept.add(Component.text(""));
+                    loreAccept.add(Component.empty());
                     loreAccept.add(Component.text(perk3.getName()));
                     loreAccept.addAll(perk3.getLore());
-                    loreAccept.add(Component.text(""));
+                    loreAccept.add(Component.empty());
                     loreAccept.add(Component.text("§c§lAUCUN RETOUR EN ARRIERE POSSIBLE!"));
 
 
@@ -146,16 +144,14 @@ public class MayorColorMenu extends Menu {
                                     e.printStackTrace();
                                 }
                             },
-                            () -> {
-                                player.closeInventory();
-                            },
+                            player::closeInventory,
                             loreAccept,
                             List.of(
                                     Component.text("§7Ne pas se présenter en tant que §6Maire de " + city.getName())
                             )
                     );
                     menu.open();
-                } else if (type == "change") {
+                } else if (type.equals("change")) {
                     if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
                         if (city.getMayor() == null) {
                             MessagesManager.sendMessage(player, Component.text("Votre ville n'a pas de maire !"), Prefix.MAYOR, MessageType.ERROR, false);
@@ -168,9 +164,7 @@ public class MayorColorMenu extends Menu {
                                     MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.MAYOR, MessageType.SUCCESS, false);
                                     player.closeInventory();
                                 },
-                                () -> {
-                                    player.closeInventory();
-                                },
+                                player::closeInventory,
                                 List.of(
                                         Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
                                 ),
@@ -188,9 +182,7 @@ public class MayorColorMenu extends Menu {
                                     MessagesManager.sendMessage(player, Component.text("§7Vous avez changer votre ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color)), Prefix.CITY, MessageType.SUCCESS, false);
                                     player.closeInventory();
                                 },
-                                () -> {
-                                    player.closeInventory();
-                                },
+                                player::closeInventory,
                                 List.of(
                                         Component.text("§7Changer sa ").append(Component.text("couleur ").decoration(TextDecoration.ITALIC, false).color(thisColor)).append(Component.text("§7en ")).append(Component.text("celle ci").decoration(TextDecoration.ITALIC, false).color(color))
                                 ),

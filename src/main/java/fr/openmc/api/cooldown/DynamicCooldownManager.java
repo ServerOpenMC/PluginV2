@@ -84,7 +84,7 @@ public class DynamicCooldownManager {
 
     private static Dao<Cooldown, String> cooldownDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Cooldown.class);
         cooldownDao = DaoManager.createDao(connectionSource, Cooldown.class);
     }
@@ -108,7 +108,7 @@ public class DynamicCooldownManager {
     }
 
     public static void saveCooldowns() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Saving cooldowns...");
 
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
@@ -121,7 +121,15 @@ public class DynamicCooldownManager {
             });
         });
 
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns réussie.");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Cooldowns saved successfully.");
+    }
+
+    /**
+     * @param uuid Entity UUID to check
+     * @return Map of cooldowns for the entity, or null if no cooldowns
+     */
+    public static HashMap<String, Cooldown> getCooldowns(String uuid) {
+        return cooldowns.get(uuid);
     }
 
     /**

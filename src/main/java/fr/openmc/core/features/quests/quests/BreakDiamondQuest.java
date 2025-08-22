@@ -11,12 +11,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class BreakDiamondQuest extends Quest implements Listener {
 
     public BreakDiamondQuest() {
         super(
                 "Richou",
-                "Casser {target} minerai{s} de diamant",
+                List.of("Casser {target} minerai{s} de diamant"),
                 Material.DIAMOND
         );
 
@@ -34,8 +36,9 @@ public class BreakDiamondQuest extends Quest implements Listener {
             return; // Ne pas compter si le joueur utilise Silk Touch
         }
 
-        if (event.getBlock().getType().equals(Material.DIAMOND_ORE)
-                || event.getBlock().getType().equals(Material.DEEPSLATE_DIAMOND_ORE)
+        Material type = event.getBlock().getType();
+        if (type.equals(Material.DIAMOND_ORE)
+                || type.equals(Material.DEEPSLATE_DIAMOND_ORE)
         ) {
             this.incrementProgress(event.getPlayer().getUniqueId());
         }

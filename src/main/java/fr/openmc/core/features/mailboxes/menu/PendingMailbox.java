@@ -57,7 +57,7 @@ public class PendingMailbox extends PaginatedMailbox<SenderLetter> {
 
     public boolean fetchMailbox() {
         List<Letter> letters = MailboxManager.getSentLetters(player);
-        if (letters.size() < 1) {
+        if (letters.isEmpty()) {
             sendFailureMessage(player, "Vous n'avez aucune lettre.");
             return false;
         }

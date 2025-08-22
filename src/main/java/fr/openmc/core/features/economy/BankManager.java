@@ -1,5 +1,9 @@
 package fr.openmc.core.features.economy;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.CityManager;
@@ -8,6 +12,8 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.economy.commands.BankCommands;
+import fr.openmc.core.features.economy.events.BankDepositEvent;
+import fr.openmc.core.features.economy.models.Bank;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -27,19 +33,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-import fr.openmc.core.features.economy.models.Bank;
-
 public class BankManager {
     @Getter
     private static Map<UUID, Bank> banks;
 
     private static Dao<Bank, String> banksDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Bank.class);
         banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
@@ -57,6 +57,10 @@ public class BankManager {
 
     public static void addBankBalance(UUID player, double amount) {
         Bank bank = getPlayerBank(player);
+
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+            Bukkit.getPluginManager().callEvent(new BankDepositEvent(player));
+        });
 
         bank.deposit(amount);
         saveBank(bank);
@@ -80,7 +84,7 @@ public class BankManager {
                                 + "§r" + EconomyManager.getEconomyIcon() + " à ta banque"),
                         Prefix.BANK, MessageType.ERROR, false);
             } else {
-                MessagesManager.sendMessage(player, MessagesManager.Message.MONEYPLAYERMISSING.getMessage(),
+                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_MISSING_MONEY.getMessage(),
                         Prefix.BANK, MessageType.ERROR, false);
             }
         } else {
@@ -145,8 +149,8 @@ public class BankManager {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.phaseMayor == 2) {
-            if (PerkManager.hasPerk(CityManager.getPlayerCity(player).getMayor(), Perks.BUISNESS_MAN.getId())) {
-                interest = .03; // interest is 3% when perk Buisness Man actived
+            if (PerkManager.hasPerk(CityManager.getPlayerCity(player).getMayor(), Perks.BUSINESS_MAN.getId())) {
+                interest = .03; // interest is 3% when perk Business Man enabled
             }
         }
 
@@ -177,11 +181,13 @@ public class BankManager {
     }
 
     private static void updateInterestTimer() {
+        if (OMCPlugin.isUnitTestVersion()) return; // cette méthode bloque totalement le flux des tests. si quelqu'un fait les unit test des banques, merci de le prendre en compte.
+        
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts...");
+            OMCPlugin.getInstance().getSLF4JLogger().info("Applying all player interests...");
             applyAllPlayerInterests();
             CityBankManager.applyAllCityInterests();
-            OMCPlugin.getInstance().getLogger().info("Distribution des intérèts réussie.");
+            OMCPlugin.getInstance().getSLF4JLogger().info("All player interests applied successfully.");
             updateInterestTimer();
 
         }, getSecondsUntilInterest() * 20); // 20 ticks per second (ideally)

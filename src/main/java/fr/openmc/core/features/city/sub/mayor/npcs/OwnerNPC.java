@@ -8,9 +8,9 @@ import org.bukkit.Location;
 public class OwnerNPC {
 
     @Getter
-    private Npc npc;
+    private final Npc npc;
     @Getter
-    private String cityUUID;
+    private final String cityUUID;
     @Getter
     @Setter
     private Location location;

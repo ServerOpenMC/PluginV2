@@ -5,22 +5,19 @@ import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
-import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -38,7 +35,12 @@ public class CityPlayerGestionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes - Modifier un Joueur";
+        return "Menu des Villes - Modifier un Joueur";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -52,16 +54,15 @@ public class CityPlayerGestionMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
         assert city != null;
 
-        boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CPermission.KICK);
-        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CPermission.PERMS);
-
+        boolean hasPermissionKick = city.hasPermission(player.getUniqueId(), CityPermission.KICK);
+        boolean hasPermissionPerms = city.hasPermission(player.getUniqueId(), CityPermission.PERMS);
 
         List<Component> loreKick;
 
@@ -70,20 +71,20 @@ public class CityPlayerGestionMenu extends Menu {
                 loreKick = List.of(
                         Component.text("§cVous pouvez pas vous expulser")
                 );
-            } else if (city.hasPermission(playerTarget.getUniqueId(), CPermission.OWNER)) {
+            } else if (city.hasPermission(playerTarget.getUniqueId(), CityPermission.OWNER)) {
                 loreKick = List.of(
                         Component.text("§cVous pouvez pas expulser le propriétaire")
                 );
             } else {
                 loreKick = List.of(
                         Component.text("§7Vous pouvez expulser" + playerTarget.getName() + "§7de votre §dville§7."),
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR L'EXPLUSER")
                 );
             }
         } else {
             loreKick = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -91,21 +92,19 @@ public class CityPlayerGestionMenu extends Menu {
             itemMeta.itemName(Component.text("§cExpulser " + playerTarget.getName()));
             itemMeta.lore(loreKick);
         }).setOnClick(inventoryClickEvent -> {
-            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget)) {
+            if (!CityKickCondition.canCityKickPlayer(city, player, playerTarget))
                 return;
-            } else {
-                ConfirmMenu menu = new ConfirmMenu(
-                        player,
-                        () -> {
-                            player.closeInventory();
-                            CityKickAction.startKick(player, playerTarget);
-                        },
-                        () -> player.closeInventory(),
-                        List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
-                        List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
-                menu.open();
 
-            }
+            ConfirmMenu menu = new ConfirmMenu(
+                    player,
+                    () -> {
+                        player.closeInventory();
+                        CityKickAction.startKick(player, playerTarget);
+                    },
+                    player::closeInventory,
+                    List.of(Component.text("§7Voulez vous vraiment expulser " + playerTarget.getName() + " ?")),
+                    List.of(Component.text("§7Ne pas expulser " + playerTarget.getName())));
+            menu.open();
         }));
 
 
@@ -127,7 +126,7 @@ public class CityPlayerGestionMenu extends Menu {
             );
         } else {
             lorePermission = List.of(
-                    MessagesManager.Message.NOPERMISSION2.getMessage()
+                    MessagesManager.Message.NO_PERMISSION_2.getMessage()
             );
         }
 
@@ -139,19 +138,10 @@ public class CityPlayerGestionMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de votre Ville"),
+                    Component.text("§7Vous allez retourner au menu précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> {
-            City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
-            if (cityCheck == null) {
-                MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
-                return;
-            }
-
-            CityPlayerListMenu menu = new CityPlayerListMenu(player);
-            menu.open();
-        }));
+        }, true));
 
         return inventory;
     }

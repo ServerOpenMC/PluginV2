@@ -26,9 +26,9 @@ import java.util.UUID;
 @Getter
 public class HomesManager {
 
-    public static List<Home> homes = new ArrayList<>();
-    public static List<HomeLimit> homeLimits = new ArrayList<>();
-    public DisabledWorldHome disabledWorldHome;
+    public static final List<Home> homes = new ArrayList<>();
+    public static final List<HomeLimit> homeLimits = new ArrayList<>();
+    public final DisabledWorldHome disabledWorldHome;
 
     public HomesManager() {
         disabledWorldHome = new DisabledWorldHome(OMCPlugin.getInstance());
@@ -67,7 +67,7 @@ public class HomesManager {
                                 String[] split = arg.split(":", 2);
                                 OfflinePlayer target = Bukkit.getOfflinePlayer(split[0]);
 
-                                if (target != null && target.hasPlayedBefore()) {
+                                if (target.hasPlayedBefore()) {
                                     String prefix = split[0] + ":";
                                     suggestions.addAll(getHomesNames(target.getUniqueId())
                                             .stream()
@@ -120,11 +120,13 @@ public class HomesManager {
 
         CommandsManager.getHandler().register(
                 new SetHome(this),
-                new RenameHome(this),
-                new DelHome(this),
+                new RenameHome(),
+                new DelHome(),
                 new RelocateHome(this),
-                new TpHome(this),
-                new HomeWorld(disabledWorldHome));
+                new TpHome(),
+                new HomeWorld(disabledWorldHome),
+                new UpgradeHome()
+        );
 
         loadHomeLimit();
         loadHomes();
@@ -198,7 +200,7 @@ public class HomesManager {
     private static Dao<Home, UUID> homesDao;
     private static Dao<HomeLimit, UUID> limitsDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Home.class);
         homesDao = DaoManager.createDao(connectionSource, Home.class);
 

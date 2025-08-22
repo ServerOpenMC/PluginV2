@@ -3,14 +3,11 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.conditions.CityChestConditions;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
-
-import java.util.Objects;
 
 import static fr.openmc.core.features.city.conditions.CityChestConditions.UPGRADE_PER_AYWENITE;
 import static fr.openmc.core.features.city.conditions.CityChestConditions.UPGRADE_PER_MONEY;
@@ -23,10 +20,11 @@ public class CityChestAction {
         int price = city.getChestPages() * UPGRADE_PER_MONEY;
         int aywenite = city.getChestPages() * UPGRADE_PER_AYWENITE;
 
-        city.updateBalance((double) -price);
-        ItemUtils.removeItemsFromInventory(player, Objects.requireNonNull(CustomItemRegistry.getByName("omc_items:aywenite")).getBest().getType(), aywenite);
+        city.updateBalance(-price);
 
-        city.saveChestContent(city.getChestPages() + 1, null);
-        MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+        if (ItemUtils.takeAywenite(player, aywenite)) {
+            city.saveChestContent(city.getChestPages() + 1, null);
+            MessagesManager.sendMessage(player, Component.text("Le coffre a été amélioré"), Prefix.CITY, MessageType.SUCCESS, true);
+        }
     }
 }

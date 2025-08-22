@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id "com.github.johnrengelman.shadow" version "8.1.1"
-    id "io.papermc.paperweight.userdev" version "2.0.0-beta.17"
+    id "com.gradleup.shadow" version "9.0.1"
+    id "io.papermc.paperweight.userdev" version "${paperWeightUserDevVersion}"
 }
 
 def getLatestGitTag() {
@@ -12,7 +12,7 @@ def getLatestGitTag() {
             standardOutput = stdout
         }
         return stdout.toString().trim()
-    } catch (Exception e) {
+    } catch (Exception ignored) {
         return "unknown" // Default value if no tags exist
     }
 }
@@ -28,10 +28,7 @@ group = 'fr.openmc'
 repositories {
     mavenCentral()
     maven {
-        url "https://oss.sonatype.org/content/groups/public/"
-    }
-    maven {
-        url "https://mvn.mathiasd.fr/releases"
+        url "https://maven.devs.beer/"
     }
     maven {
         url "https://repo.fancyinnovations.com/releases"
@@ -51,33 +48,31 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle '1.21.5-R0.1-SNAPSHOT'
+    paperweight.paperDevBundle "${minecraftVersion}-R0.1-SNAPSHOT"
 
-    compileOnly 'com.github.LoneDev6:API-ItemsAdder:3.6.3-beta-14'
-    compileOnly 'net.luckperms:api:5.4'
-    compileOnly 'me.clip:placeholderapi:2.11.6'
-    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
-    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
-    compileOnly 'com.github.dmulloy2:ProtocolLib:-SNAPSHOT'
-    compileOnly 'de.oliver:FancyNpcs:2.5.0'
+    compileOnly "com.sk89q.worldguard:worldguard-bukkit:${worldguardVersion}"
+    compileOnly "dev.lone:api-itemsadder:${itemsAdderVersion}"
+    compileOnly "net.luckperms:api:${luckpermsVersion}"
+    compileOnly "me.clip:placeholderapi:${placeholderApiVersion}"
+    compileOnly "com.sk89q.worldedit:worldedit-bukkit:${worldeditVersion}"
+    compileOnly "de.oliver:FancyNpcs:${fancyNpcsVersion}"
+    compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
 
-    implementation 'org.jetbrains:annotations:24.1.0'
-    implementation 'com.github.Revxrsal.Lamp:common:3.2.1'
-    implementation 'com.github.Revxrsal.Lamp:bukkit:3.2.1'
-    implementation 'net.raidstone:wgevents:1.18.1'
-    implementation 'com.j256.ormlite:ormlite-jdbc:6.1'
+    implementation "org.jetbrains:annotations:${jetbrainsAnnotationsVersion}"
+    implementation "com.github.Revxrsal.Lamp:common:${revxrsalLampVersion}"
+    implementation "com.github.Revxrsal.Lamp:bukkit:${revxrsalLampVersion}"
+    implementation "com.j256.ormlite:ormlite-jdbc:${ormVersion}"
 
-    compileOnly 'org.projectlombok:lombok:1.18.34'
-    annotationProcessor 'org.projectlombok:lombok:1.18.34'
-    testCompileOnly 'org.projectlombok:lombok:1.18.34'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
-    testImplementation 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
-    testImplementation 'org.slf4j:slf4j-simple:2.0.16'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.0'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.50.0'
-    testImplementation 'com.h2database:h2:2.3.232'
+    testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "org.mockbukkit.mockbukkit:mockbukkit-v1.21:${mockbukkitVersion}"
+    testImplementation "com.h2database:h2:${h2DatabaseVersion}"
 }
 
 def targetJavaVersion = 21
@@ -90,7 +85,7 @@ paperweight {
   addServerDependencyTo = configurations.named(JavaPlugin.COMPILE_ONLY_CONFIGURATION_NAME).map { [it] as Set }
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = targetJavaVersion
 }
@@ -98,9 +93,14 @@ tasks.withType(JavaCompile) {
 processResources {
     filteringCharset = 'UTF-8'
 
-    def pluginProps = ["version": version]
+    def pluginProps = ["version": version, "minecraftVersion": minecraftVersion]
     inputs.properties(pluginProps)
+
     filesMatching('plugin.yml') {
+        expand(pluginProps)
+    }
+
+    filesMatching('data/motd.yml') {
         expand(pluginProps)
     }
 }
@@ -119,6 +119,11 @@ tasks.clean {
 tasks.shadowJar {
     destinationDirectory.set(file('./builds/'))
     archiveFileName.set('OpenMC.jar')
+
+    relocate("org.jetbrains.annotations", "fr.openmc.shaded.org.jetbrains.annotations")
+    relocate("org.intellij", "fr.openmc.shaded.org.intellij")
+    relocate("revxrsal.commands", "fr.openmc.shaded.revxrsal.commands")
+    relocate("com.j256.ormlite", "fr.openmc.shaded.com.j256.ormlite")
 }
 
 tasks.test {

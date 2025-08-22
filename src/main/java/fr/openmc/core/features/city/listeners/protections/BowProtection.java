@@ -9,15 +9,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 
 public class BowProtection implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     void onLaunchProjectile(PlayerLaunchProjectileEvent event) {
         ProtectionsManager.verify(event.getPlayer(), event, event.getPlayer().getLocation());
     }
-
+    
     @EventHandler
     public void onEntityShootBow(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-
+        if (event.getConsumable() == null) return;
+        
         ProtectionsManager.verify(player, event, event.getEntity().getLocation());
 
         if (event.isCancelled() && !player.getGameMode().equals(GameMode.CREATIVE)) {

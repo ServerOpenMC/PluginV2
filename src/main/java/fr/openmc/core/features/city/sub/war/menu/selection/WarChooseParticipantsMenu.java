@@ -1,15 +1,16 @@
 package fr.openmc.core.features.city.sub.war.menu.selection;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
-import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -49,18 +50,28 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
         List<UUID> sortedMembers = cityLaunch.getOnlineMembers().stream()
                 .sorted(Comparator.comparing((UUID uuid) -> !Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline())
                         .thenComparing(uuid -> {
-                            if (cityLaunch.hasPermission(uuid, CPermission.OWNER)) return 0;
+                            if (cityLaunch.hasPermission(uuid, CityPermission.OWNER)) return 0;
                             else if (MayorManager.cityMayor.get(cityLaunch.getUUID()).getUUID().equals(uuid))
                                 return 1;
                             else return 2;
@@ -70,7 +81,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
         for (UUID uuid : sortedMembers) {
             OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(uuid);
             boolean isSelected = selected.contains(uuid);
-            boolean isOwner = cityLaunch.hasPermission(uuid, CPermission.OWNER);
+            boolean isOwner = cityLaunch.hasPermission(uuid, CityPermission.OWNER);
             boolean isMayor = MayorManager.phaseMayor == 2 && cityLaunch.getMayor().getUUID().equals(uuid);
 
             String prefix = isOwner ? "Propriétaire " : isMayor ? "Maire " : "Membre ";
@@ -106,8 +117,8 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), meta -> {
@@ -146,7 +157,12 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu de Guerre - Participants";
+        return "Menu des Guerre - Participants";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override

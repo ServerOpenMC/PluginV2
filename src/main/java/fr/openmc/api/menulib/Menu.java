@@ -1,10 +1,13 @@
 package fr.openmc.api.menulib;
 
 import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -23,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Represents an abstract Menu framework for managing custom player inventories.
@@ -30,6 +34,8 @@ import java.util.Objects;
  * handling inventory interactions, and managing permissions.
  */
 public abstract class Menu implements InventoryHolder {
+	@Getter
+	private final Object2ObjectMap<ItemBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
 	
 	@Getter
 	private final Player owner;
@@ -39,7 +45,7 @@ public abstract class Menu implements InventoryHolder {
 	 *
 	 * @param owner The {@link Player} who owns the menu
 	 */
-	public Menu(Player owner) {
+	protected Menu(Player owner) {
 		this.owner = owner;
 	}
 	
@@ -51,6 +57,13 @@ public abstract class Menu implements InventoryHolder {
 	 */
 	@NotNull
 	public abstract String getName();
+
+	/**
+	 * Retrieves the textures of the menu.
+	 *
+	 * @return A {@link String} representing the texture of the menu
+	 */
+	public abstract String getTexture();
 	
 	/**
 	 * Retrieves the size of the inventory for the menu.
@@ -64,8 +77,8 @@ public abstract class Menu implements InventoryHolder {
 		return null;
 	}
 	
-	public String getNoPermissionMessage() {
-		return "";
+	public Component getNoPermissionMessage() {
+		return Component.text("§cVous n'avez pas la permission d'ouvrir ce menu.");
 	}
 	
 	/**
@@ -98,7 +111,7 @@ public abstract class Menu implements InventoryHolder {
 	 * and the value is the {@link ItemStack} present in that slot.
 	 */
 	@NotNull
-	public abstract Map<Integer, ItemStack> getContent();
+	public abstract Map<Integer, ItemBuilder> getContent();
 
 	/**
 	 * Retrieves a list of inventory slot indices that can be taken from the menu.
@@ -108,7 +121,7 @@ public abstract class Menu implements InventoryHolder {
 	 */
 
 	public abstract List<Integer> getTakableSlot();
-	
+
 	/**
 	 * Opens the menu for the owner player. If the menu specifies a required permission,
 	 * the method checks if the owner has the necessary permission. If not, a "no permission"
@@ -126,14 +139,41 @@ public abstract class Menu implements InventoryHolder {
 					return;
 				}
 			}
+
+			Menu current = MenuLib.getCurrentLastMenu(owner);
+			if (current != this) {
+				MenuLib.pushMenu(owner, this);
+			}
+
 			Inventory inventory = getInventory();
-			getContent().forEach(inventory::setItem);
+
+			getContent().forEach((slot, item) -> {
+				setItem(owner, inventory, slot, item);
+			});
+
 			owner.openInventory(inventory);
 		} catch (Exception e) {
 			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
 			owner.closeInventory();
 			e.printStackTrace();
 		}
+	}
+
+	public final void setItem(Player player, Inventory inventory, int slot, ItemBuilder item) {
+		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) return;
+
+		if (item.isBackButton()) {
+			item = new ItemBuilder(this, item, itemMeta -> {
+				itemMeta.displayName(Component.text("§aRetour"));
+				itemMeta.lore(List.of(
+						Component.text("§7Vous allez retourner au §a" +
+								(MenuLib.getLastMenu(player) != null ? MenuLib.getLastMenu(player).getName() : "Menu Précédent") + "§7."),
+						Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
+				));
+			}, true);
+		}
+
+		inventory.setItem(slot, item);
 	}
 	
 	/**
@@ -170,22 +210,6 @@ public abstract class Menu implements InventoryHolder {
 	}
 	
 	/**
-	 * Opens the previously viewed menu for the owner of the current menu.
-	 * This method retrieves the last menu accessed by the owner using {@link MenuLib#getLastMenu(Player)}
-	 * and opens it by calling its {@code open} method.
-	 */
-	public final void back() {
-		try {
-			Menu lastMenu = MenuLib.getLastMenu(owner);
-			lastMenu.open();
-		} catch (Exception e) {
-			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
-			owner.closeInventory();
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * Creates and returns the inventory associated with this menu.
 	 * The inventory is created with the size specified by {@link #getInventorySize()}
 	 * and named using {@link #getName()}. The menu itself is set as the inventory holder.
@@ -195,7 +219,10 @@ public abstract class Menu implements InventoryHolder {
 	@NotNull
 	@Override
 	public final Inventory getInventory() {
-		return Bukkit.createInventory(this, getInventorySize().getSize(), Component.text(getName()));
+		String title = (getTexture() != null && !getTexture().isEmpty()) && getTexture() != null && !getTexture().isEmpty()
+				? getTexture()
+				: getName();
+		return Bukkit.createInventory(this, getInventorySize().getSize(), Component.text(title));
 	}
 
 }

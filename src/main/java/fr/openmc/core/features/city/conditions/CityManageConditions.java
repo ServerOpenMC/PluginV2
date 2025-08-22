@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -26,11 +26,11 @@ public class CityManageConditions {
      */
     public static boolean canCityRename(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.RENAME))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.RENAME))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de renommer ta ville."), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -48,7 +48,7 @@ public class CityManageConditions {
      */
     public static boolean canCityTransfer(City city, Player player, UUID target) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -57,7 +57,7 @@ public class CityManageConditions {
             return false;
         }
 
-        if (city.getPlayerWithPermission(CPermission.OWNER).equals(target)) {
+        if (city.getPlayerWithPermission(CityPermission.OWNER).equals(target)) {
             MessagesManager.sendMessage(player, Component.text("Ce joueur est déjà le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -74,11 +74,11 @@ public class CityManageConditions {
      */
     public static boolean canCityTransfer(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.OWNER))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.OWNER))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -100,7 +100,7 @@ public class CityManageConditions {
      */
     public static boolean canCityDelete(City city, Player player) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -114,7 +114,7 @@ public class CityManageConditions {
             return false;
         }
 
-        if (!city.getPlayerWithPermission(CPermission.OWNER).equals(player.getUniqueId())) {
+        if (!city.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
             MessagesManager.sendMessage(player, Component.text("Tu n'es pas le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
