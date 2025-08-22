@@ -9,16 +9,12 @@ import fr.openmc.core.items.usable.CustomUsableItemRegistry;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class ItemsAddersListener implements Listener
-{
+public class ItemsAddersListener implements Listener {
 
     @EventHandler
-    public void onItemsRegistry(ItemsAdderLoadDataEvent event)
-    {
+    public void onItemsRegistry(ItemsAdderLoadDataEvent event) {
         if (event.getCause().equals(ItemsAdderLoadDataEvent.Cause.FIRST_LOAD))
-        {
             OMCPlugin.getInstance().loadWithItemsAdder();
-        }
     }
 
 }
