@@ -367,6 +367,7 @@ public class CityManager implements Listener {
         Set<ChunkPos> chunks = new HashSet<>();
 
         claimedChunks.forEach((chunk, city) -> {
+            if (city == null) return;
             if (city.getUUID().equals(inCity.getUUID()))
                 chunks.add(chunk);
         });
