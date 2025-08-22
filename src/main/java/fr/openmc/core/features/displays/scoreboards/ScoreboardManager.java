@@ -10,8 +10,6 @@ import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.models.Contest;
-import fr.openmc.core.features.corporation.company.Company;
-import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
@@ -240,12 +238,6 @@ public class ScoreboardManager implements Listener {
             String location = isInRegion ? "§6Région Protégé" : "Nature";
             location = (chunkCity != null) ? chunkCity.getName() : location;
             objective.getScore("§8• §fLocation§7: " + location).setScore(6);
-        }
-
-        if (CompanyManager.isInCompany(player.getUniqueId())){
-            Company company = CompanyManager.getCompany(player.getUniqueId());
-            String compName = company != null ? company.getName() : "Introuvable";
-            objective.getScore("§8• §fEntreprise§7: "+compName).setScore(9);
         }
 
         String balance = EconomyManager.getMiniBalance(player.getUniqueId());

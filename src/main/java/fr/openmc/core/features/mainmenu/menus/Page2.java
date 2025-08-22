@@ -8,12 +8,13 @@ import fr.openmc.api.packetmenulib.menu.ClickType;
 import fr.openmc.api.packetmenulib.menu.InventoryType;
 import fr.openmc.api.packetmenulib.menu.Menu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.corporation.commands.CompanyCommand;
-import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.features.economy.commands.BankCommands;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
 import fr.openmc.core.features.settings.command.SettingsCommand;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
@@ -85,16 +86,14 @@ public class Page2 implements Menu {
         ItemStack shopsItem = new ItemStack(Material.PAPER);
         shopsItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Shops", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/shops manage", NamedTextColor.DARK_GRAY)));
+            meta.itemName(Component.text("Shops (Désactivé)", NamedTextColor.YELLOW));
         });
         SHOPS_SLOTS.forEach(slot -> content.put(slot, shopsItem));
 
         ItemStack companyItem = new ItemStack(Material.PAPER);
         companyItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
-            meta.itemName(Component.text("Entreprises", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("/company", NamedTextColor.DARK_GRAY)));
+            meta.itemName(Component.text("Entreprises (Désactivé)", NamedTextColor.YELLOW));
         });
         COMPANY_SLOTS.forEach(slot -> content.put(slot, companyItem));
 
@@ -176,10 +175,8 @@ public class Page2 implements Menu {
                         .append(Component.text("' pour ouvrir le menu des Avancements.", NamedTextColor.GREEN));
                 player.sendActionBar(message);
             });
-        } else if (SHOPS_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ShopCommand.manageShop(player));
-        } else if (COMPANY_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> CompanyCommand.onCommand(player));
+        } else if (COMPANY_SLOTS.contains(slot) || SHOPS_SLOTS.contains(slot)) {
+            MessagesManager.sendMessage(player, Component.text("Les entreprises et shops on été désactivé :sad:.", NamedTextColor.RED), Prefix.OPENMC, MessageType.ERROR, true);
         } else if (LEADERBOARD_SLOTS.contains(slot)) {
             // TODO: Ajouter un menu de classement
             PacketMenuLib.closeMenu(player);

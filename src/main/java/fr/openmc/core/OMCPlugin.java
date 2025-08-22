@@ -13,7 +13,6 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.corporation.manager.CompanyManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
@@ -114,7 +113,6 @@ public class OMCPlugin extends JavaPlugin {
         }
         new AdminShopManager();
         new BossbarManager();
-        new CompanyManager(); // laisser apres Economy Manager
         new ContestManager();
         new PrivateMessageManager();
 
@@ -158,10 +156,6 @@ public class OMCPlugin extends JavaPlugin {
         MayorManager.saveMayorCandidates();
         MayorManager.saveCityMayors();
         MayorManager.saveCityLaws();
-
-        // - Companies & Shop
-        CompanyManager.saveAllCompanies();
-        CompanyManager.saveAllShop();
 
         HomesManager.saveHomesData();
         HomeIconCacheManager.clearCache();
