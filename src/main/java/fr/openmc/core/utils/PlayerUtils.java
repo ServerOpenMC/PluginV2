@@ -5,6 +5,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,7 +19,7 @@ public class PlayerUtils {
 		if (PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
             player.showTitle(Title.title(
                     Component.text(FontImageWrapper.replaceFontImages(":tp_effect:")),
-                    Component.text("§a§lTéléportation..."),
+                    Component.text("Téléportation...", NamedTextColor.GREEN, TextDecoration.BOLD),
                     Title.Times.times(Duration.ofMillis(20 * 50), Duration.ofMillis(10 * 50), Duration.ofMillis(10 * 50))
             ));
 			new BukkitRunnable() {
