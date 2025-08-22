@@ -129,8 +129,7 @@ public class OMCPlugin extends JavaPlugin {
         }
     }
 
-    public void loadWithItemsAdder()
-    {
+    public void loadWithItemsAdder() {
         new CustomItemRegistry();
         new CustomUsableItemRegistry();
         new MilestonesManager();
