@@ -41,7 +41,7 @@ public class ClaimLetterQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + "Et maintenant ? Vous pouvez lier votre compte Discord à votre compte Minecraft afin d'assurer la sécurité de votre compte !",
+                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §fEt maintenant ? Vous pouvez lier votre compte Discord à votre compte Minecraft afin d'assurer la sécurité de votre compte !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),
