@@ -95,9 +95,11 @@ public class Chronometer{
                         player.spigot().sendMessage(finishMessageType.getChatMessageType(), new TextComponent(finishMessage != null ? finishMessage : "Le chronomètre est terminé !"));
                     }
                     Bukkit.getPluginManager().callEvent(new ChronometerEndEvent(entity, group));
-                    chronometer.get(entityUUID).remove(group);
-                    if (chronometer.get(entityUUID).isEmpty()){
-                        chronometer.remove(entityUUID);
+                    if (chronometer.containsKey(entityUUID)) {
+                        chronometer.get(entityUUID).remove(group);
+                        if (chronometer.get(entityUUID).isEmpty()){
+                            chronometer.remove(entityUUID);
+                        }
                     }
                     cancel();
                     return;
