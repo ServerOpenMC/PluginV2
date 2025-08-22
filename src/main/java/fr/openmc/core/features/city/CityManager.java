@@ -506,9 +506,9 @@ public class CityManager implements Listener {
             if (member == null)
                 continue;
 
-            if (Chronometer.containsChronometer(memberId, "Mascot:stick"))
+            if (Chronometer.containsChronometer(memberId, "mascot:stick"))
                 if (Bukkit.getEntity(memberId) != null)
-                    Chronometer.stopChronometer(member, "Mascot:stick", null, "%null%");
+                    Chronometer.stopChronometer(member, "mascot:stick", null, "%null%");
 
             Mascot mascot = city.getMascot();
             if (mascot == null)

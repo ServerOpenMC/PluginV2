@@ -52,7 +52,7 @@ public class CityCreateAction {
         ItemInteraction.runLocationInteraction(
                 player,
                 getMascotStick(),
-                "Mascot:stick",
+                "mascot:stick",
                 300,
                 "Vous avez reçu un baton pour poser votre mascotte",
                 "§cCréation annulée",
