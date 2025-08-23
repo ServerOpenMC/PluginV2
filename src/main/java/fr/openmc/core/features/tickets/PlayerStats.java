@@ -10,16 +10,14 @@ public class PlayerStats {
 
     public UUID uniqueID;
     public int timePlayed;
-    @Setter
-    public boolean ticketGiven;
+    @Setter public int ticketRemaining;
+    @Setter public boolean ticketGiven;
 
-    PlayerStats(UUID uuid, int timePlayed, boolean hasTicketGiven) {
+    PlayerStats(UUID uuid, int timePlayed, int ticketRemaining, boolean hasTicketGiven) {
         this.uniqueID = uuid;
         this.timePlayed = timePlayed;
-    }
-
-    PlayerStats(UUID uuid, int timePlayed) {
-        this(uuid, timePlayed, false);
+        this.ticketRemaining = ticketRemaining;
+        this.ticketGiven = hasTicketGiven;
     }
 
 }

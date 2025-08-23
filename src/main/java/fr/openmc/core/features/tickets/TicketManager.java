@@ -13,6 +13,7 @@ public class TicketManager {
     // INFO: ticks -> seconds : 20 ticks = 1 second -> ticks / 20 = seconds
     // INFO: seconds -> ticks : 1 second = 20 ticks -> seconds * 20 = ticks
 
+    public int hoursPerTicket = 8;
     public static TicketManager instance;
     public final List<PlayerStats> timePlayed = new ArrayList<>();
 
@@ -21,6 +22,11 @@ public class TicketManager {
 
     public TicketManager() { }
 
+    /**
+     * Get the singleton instance of the TicketManager.
+     *
+     * @return The {@link TicketManager} instance.
+     */
     public static TicketManager getInstance() {
         if (instance == null) {
             instance = new TicketManager();
@@ -28,6 +34,11 @@ public class TicketManager {
         return instance;
     }
 
+    /**
+     * Load player statistics from JSON files in the specified directory.
+     *
+     * @param statsDirectory The {@link File} directory containing player stats JSON files.
+     */
     public void loadPlayerStats(File statsDirectory) {
         this.statsDirectory = statsDirectory;
 
@@ -47,6 +58,12 @@ public class TicketManager {
         }
     }
 
+
+    /**
+     * Load a single player's statistics from a JSON file.
+     *
+     * @param statFile The {@link File} containing the player's stats.
+     */
     private void loadPlayerStat(File statFile) {
         try {
             String fileName = statFile.getName();
@@ -72,7 +89,12 @@ public class TicketManager {
                                 hasTicketGiven = custom.get("openmc:ticket_given").getAsBoolean();
                             }
 
-                            PlayerStats playerStats = new PlayerStats(playerUUID, playTimeSeconds, hasTicketGiven);
+                            int ticketsRemaining = 0;
+                            if (custom.has("openmc:tickets_remaining")) {
+                                ticketsRemaining = custom.get("openmc:tickets_remaining").getAsInt();
+                            }
+
+                            PlayerStats playerStats = new PlayerStats(playerUUID, playTimeSeconds, ticketsRemaining, hasTicketGiven);
                             timePlayed.add(playerStats);
                         }
                     }
@@ -85,10 +107,25 @@ public class TicketManager {
         }
     }
 
-    public int getTotalPlayTime() {
-        return timePlayed.stream().mapToInt(PlayerStats::getTimePlayed).sum();
+    /**
+     * Get the PlayerStats for a given UUID.
+     *
+     * @param uuid The {@link UUID} of the player.
+     * @return The {@link PlayerStats} if found, otherwise null.
+     */
+    public PlayerStats getPlayerStats(UUID uuid) {
+        return timePlayed.stream()
+                .filter(stats -> stats.getUniqueID().equals(uuid))
+                .findFirst()
+                .orElse(null);
     }
 
+    /**
+     * Get the playtime in seconds for a given UUID.
+     *
+     * @param uuid The {@link UUID} of the player.
+     * @return The playtime in seconds, or 0 if not found.
+     */
     public int getPlayTimeFromUUID(UUID uuid) {
         return timePlayed.stream()
                 .filter(stats -> stats.getUniqueID().equals(uuid))
@@ -97,22 +134,33 @@ public class TicketManager {
                 .orElse(0);
     }
 
-    public boolean ticketGiven(UUID uuid) {
-        return timePlayed.stream().anyMatch(stats -> stats.getUniqueID().equals(uuid) && stats.isTicketGiven());
-    }
-
-    public void setTicketGiven(UUID uuid, boolean given) {
+    /**
+     * Set the ticket information for a player and update their JSON stats file.
+     *
+     * @param uuid         The {@link UUID} of the player.
+     * @param ticketToGive The number of tickets to set.
+     * @param given        Whether the ticket has been given.
+     */
+    public void setTicketGiven(UUID uuid, int ticketToGive, boolean given) {
         for (PlayerStats stats : timePlayed) {
             if (stats.getUniqueID().equals(uuid)) {
+                stats.setTicketRemaining(ticketToGive);
                 stats.setTicketGiven(given);
                 break;
             }
         }
 
-        updatePlayerJsonFile(uuid, given);
+        updatePlayerJsonFile(uuid, ticketToGive, given);
     }
 
-    private void updatePlayerJsonFile(UUID uuid, boolean given) {
+    /**
+     * Update the player's JSON stats file with the new ticket information.
+     *
+     * @param uuid         The {@link UUID} of the player.
+     * @param ticketToGive The number of tickets to set.
+     * @param given        Whether the ticket has been given.
+     */
+    private void updatePlayerJsonFile(UUID uuid, int ticketToGive, boolean given) {
         File playerFile = new File(statsDirectory, uuid.toString() + ".json");
         if (!playerFile.exists()) {
             OMCPlugin.getInstance().getSLF4JLogger().warn("Player stats file not found for UUID: {}", uuid);
@@ -137,6 +185,7 @@ public class TicketManager {
 
             JsonObject custom = stats.getAsJsonObject("minecraft:custom");
 
+            custom.addProperty("openmc:tickets_remaining", ticketToGive);
             custom.addProperty("openmc:ticket_given", given);
 
             try (FileWriter writer = new FileWriter(playerFile)) {
@@ -150,11 +199,44 @@ public class TicketManager {
         }
     }
 
+    /**
+     * Attempt to use a ticket for the player with the given UUID.
+     *
+     * @param uuid The UUID of the player.
+     * @return true if a ticket was used, false if no tickets are remaining or player not found.
+     */
+    public boolean useTicket(UUID uuid) {
+        for (PlayerStats stats : timePlayed) {
+            if (stats.getUniqueID().equals(uuid)) {
+                if (stats.getTicketRemaining() > 0) {
+                    stats.setTicketRemaining(stats.getTicketRemaining() - 1);
+                    updatePlayerJsonFile(uuid, stats.getTicketRemaining(), stats.isTicketGiven());
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Calculate and give tickets based on playtime if not already given.
+     *
+     * @param uuid The UUID of the player.
+     * @return true if tickets were given, false if already given or player not found.
+     */
     public boolean giveTicket(UUID uuid) {
         for (PlayerStats stats : timePlayed) {
             if (stats.getUniqueID().equals(uuid)) {
                 if (!stats.isTicketGiven()) {
-                    setTicketGiven(uuid, true);
+                    int playtime = getPlayTimeFromUUID(uuid);
+                    float secondsPerTicket = hoursPerTicket * 3600;
+                    float ticketsToGiveF = playtime / secondsPerTicket;
+
+                    int ticketsToGive = (int) Math.ceil(ticketsToGiveF);
+
+                    stats.setTicketRemaining(ticketsToGive);
+                    setTicketGiven(uuid, ticketsToGive, true);
                     return true;
                 }
                 return false;
