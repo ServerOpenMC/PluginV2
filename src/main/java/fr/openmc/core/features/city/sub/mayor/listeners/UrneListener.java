@@ -122,6 +122,9 @@ public class UrneListener implements Listener {
         if (!FancyNpcsHook.hasFancyNpc())
             return;
 
+        if (!"omc_blocks:urne".equals(event.getNamespacedID()))
+            return;
+
         Player player = event.getPlayer();
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         Location locationMayor = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
