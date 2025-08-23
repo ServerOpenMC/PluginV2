@@ -42,7 +42,7 @@ public class TicketManager {
     public void loadPlayerStats(File statsDirectory) {
         this.statsDirectory = statsDirectory;
 
-        if (!statsDirectory.exists() || ! statsDirectory.isDirectory()) {
+        if (!statsDirectory.exists() || !statsDirectory.isDirectory()) {
             OMCPlugin.getInstance().getSLF4JLogger().info("Stats directory does not exist or is not a directory.");
             return;
         }
