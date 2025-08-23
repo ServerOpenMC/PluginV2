@@ -37,6 +37,7 @@ public class CustomItemRegistry {
         registerSimpleItem("omc_menus:64_btn", Material.PAPER);
         registerSimpleItem("omc_menus:minus_btn", Material.PAPER);
         registerSimpleItem("omc_menus:plus_btn", Material.PAPER);
+        registerSimpleItem("omc_plush:peluche_seinyy", Material.PAPER);
 
         /* Items */
         registerSimpleItem("omc_contest:contest_shell", Material.NAUTILUS_SHELL);
