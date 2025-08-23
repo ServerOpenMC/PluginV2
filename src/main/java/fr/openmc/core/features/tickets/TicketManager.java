@@ -10,19 +10,6 @@ import java.util.*;
 @Getter
 public class TicketManager {
 
-    // INFO: ticks -> seconds : 20 ticks = 1 second -> ticks / 20 = seconds
-    // INFO: seconds -> ticks : 1 second = 20 ticks -> seconds * 20 = ticks
-
-    // DROP:
-    // 10% peluche seinyy -> drop 1 fois
-    // 3 diamants
-    // 10 de fer
-    // 0.5% netherite -> drop 2 fois
-    // 32 buches
-    // 16 steaks
-    // 16 coals
-
-
     public int hoursPerTicket = 8;
     public static TicketManager instance;
     public final List<PlayerStats> timePlayed = new ArrayList<>();
@@ -104,7 +91,17 @@ public class TicketManager {
                                 ticketsRemaining = custom.get("openmc:tickets_remaining").getAsInt();
                             }
 
-                            PlayerStats playerStats = new PlayerStats(playerUUID, playTimeSeconds, ticketsRemaining, hasTicketGiven);
+                            Map<String, Integer> maxItemsGiven = new HashMap<>();
+                            if (custom.has("openmc:max_items_given")) {
+                                JsonObject itemsGiven = custom.getAsJsonObject("openmc:max_items_given");
+                                Map<String, Integer> givenMap = new HashMap<>();
+                                for (Map.Entry<String, JsonElement> entry : itemsGiven.entrySet()) {
+                                    givenMap.put(entry.getKey(), entry.getValue().getAsInt());
+                                }
+                                maxItemsGiven = givenMap;
+                            }
+
+                            PlayerStats playerStats = new PlayerStats(playerUUID, playTimeSeconds, ticketsRemaining, hasTicketGiven, maxItemsGiven);
                             timePlayed.add(playerStats);
                         }
                     }
@@ -198,6 +195,16 @@ public class TicketManager {
             custom.addProperty("openmc:tickets_remaining", ticketToGive);
             custom.addProperty("openmc:ticket_given", given);
 
+            JsonObject itemsGiven = new JsonObject();
+            PlayerStats ps = getPlayerStats(uuid);
+            if (ps != null && ps.getMaxItemsGiven() != null) {
+                for (Map.Entry<String, Integer> entry : ps.getMaxItemsGiven().entrySet()) {
+                    itemsGiven.addProperty(entry.getKey(), entry.getValue());
+                }
+            }
+            custom.add("openmc:max_items_given", itemsGiven);
+
+
             try (FileWriter writer = new FileWriter(playerFile)) {
                 gson.toJson(jsonObject, writer);
             }
@@ -254,5 +261,4 @@ public class TicketManager {
         }
         return 0;
     }
-
 }

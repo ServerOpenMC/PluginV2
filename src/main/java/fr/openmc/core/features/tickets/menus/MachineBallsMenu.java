@@ -3,6 +3,7 @@ package fr.openmc.core.features.tickets.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -83,7 +84,12 @@ public class MachineBallsMenu extends Menu {
         ).setOnClick(
                 e -> {
                     e.getWhoClicked().closeInventory();
-                    TicketManager.getInstance().useTicket(getOwner().getUniqueId());
+                    if (TicketManager.getInstance().getPlayerStats(getOwner().getUniqueId()).getTicketRemaining() <= 0) {
+                        MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez de tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
+                        return;
+                    }
+                    MachineBallsOpenMenu menu = new MachineBallsOpenMenu(getOwner());
+                    menu.open();
                 }
         ));
 
