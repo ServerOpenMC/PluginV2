@@ -28,6 +28,7 @@ import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.features.tpa.TPAManager;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -92,6 +93,7 @@ public class OMCPlugin extends JavaPlugin {
         logLoadMessage();
 
         /* MANAGERS */
+        TicketManager.getInstance().loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
         new DatabaseManager();
         new CommandsManager();
         new SpawnManager();
