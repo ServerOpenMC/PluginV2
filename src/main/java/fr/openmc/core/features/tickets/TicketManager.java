@@ -13,6 +13,16 @@ public class TicketManager {
     // INFO: ticks -> seconds : 20 ticks = 1 second -> ticks / 20 = seconds
     // INFO: seconds -> ticks : 1 second = 20 ticks -> seconds * 20 = ticks
 
+    // DROP:
+    // 10% peluche seinyy -> drop 1 fois
+    // 3 diamants
+    // 10 de fer
+    // 0.5% netherite -> drop 2 fois
+    // 32 buches
+    // 16 steaks
+    // 16 coals
+
+
     public int hoursPerTicket = 8;
     public static TicketManager instance;
     public final List<PlayerStats> timePlayed = new ArrayList<>();
@@ -223,9 +233,9 @@ public class TicketManager {
      * Calculate and give tickets based on playtime if not already given.
      *
      * @param uuid The UUID of the player.
-     * @return true if tickets were given, false if already given or player not found.
+     * @return The number of tickets given, or 0 if already given or player not found.
      */
-    public boolean giveTicket(UUID uuid) {
+    public int giveTicket(UUID uuid) {
         for (PlayerStats stats : timePlayed) {
             if (stats.getUniqueID().equals(uuid)) {
                 if (!stats.isTicketGiven()) {
@@ -237,12 +247,12 @@ public class TicketManager {
 
                     stats.setTicketRemaining(ticketsToGive);
                     setTicketGiven(uuid, ticketsToGive, true);
-                    return true;
+                    return ticketsToGive;
                 }
-                return false;
+                return 0;
             }
         }
-        return false;
+        return 0;
     }
 
 }
