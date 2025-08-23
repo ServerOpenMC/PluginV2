@@ -64,8 +64,8 @@ public class MachineBallsMenu extends Menu {
                         MessagesManager.sendMessage(getOwner(), Component.text("§cVous avez déjà récupéré vos tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
-                    TicketManager.getInstance().giveTicket(getOwner().getUniqueId());
-                    MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez bien récupéré vos tickets !"), Prefix.OPENMC, MessageType.SUCCESS, true);
+                    int ticketsToGive = TicketManager.getInstance().giveTicket(getOwner().getUniqueId());
+                    MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez reçu §e%s §atickets !".formatted(ticketsToGive)), Prefix.OPENMC, MessageType.SUCCESS, true);
                 }
         ));
 
