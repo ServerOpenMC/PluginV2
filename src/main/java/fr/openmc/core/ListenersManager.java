@@ -5,6 +5,7 @@ import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
 import fr.openmc.core.features.mailboxes.MailboxListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.tickets.TicketListener;
 import fr.openmc.core.features.updates.UpdateListener;
 import fr.openmc.core.listeners.*;
 import org.bukkit.Bukkit;
@@ -32,7 +33,8 @@ public class ListenersManager {
                 new BossbarListener(),
                 new PlayerSettingsManager(),
                 new InteractListener(),
-                new ItemsAddersListener()
+                new ItemsAddersListener(),
+                new TicketListener()
         );
     }
 
