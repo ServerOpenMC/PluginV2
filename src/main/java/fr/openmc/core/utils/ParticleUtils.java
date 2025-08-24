@@ -7,15 +7,13 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.managers.ContestManager;
-import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
+import org.bukkit.craftbukkit.CraftParticle;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -26,19 +24,6 @@ public class ParticleUtils {
 
     public static Color color1;
     public static Color color2;
-
-    @Getter
-    public enum ParticleNms {
-        CHERRY_LEAVES(ParticleTypes.CHERRY_LEAVES);
-        // mettez les particules NMS que vous souhaitez utiliser ici
-
-        private final ParticleOptions particleType;
-
-        ParticleNms(ParticleOptions particleType) {
-            this.particleType = particleType;
-        }
-
-    }
 
     public static void spawnParticlesInRegion(String regionId, World world, Particle particle, int amountPer2Tick, int minHeight, int maxHeight) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
@@ -80,16 +65,30 @@ public class ParticleUtils {
     public static void sendParticlePacket(Player player, Particle particle, Location loc) {
         ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 
-        ParticleOptions particleType = ParticleNms.valueOf(particle.name().toUpperCase()).getParticleType();
-
         ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
-                particleType,
+                CraftParticle.createParticleParam(particle, null),
                 false,
                 false,
                 loc.getX(), loc.getY(), loc.getZ(),
                 0.2f, 0.2f, 0.2f,
                 0.01f,
                 3
+        );
+
+        nmsPlayer.connection.send(packet);
+    }
+
+    public static <T> void sendParticlePacket(Player player, Location location, Particle particle, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
+        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+
+        ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
+                CraftParticle.createParticleParam(particle, data),
+                false,
+                false,
+                location.x(), location.y(), location.z(),
+                (float) offsetX, (float) offsetY, (float) offsetZ,
+                (float) speed,
+                count
         );
 
         nmsPlayer.connection.send(packet);

@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
+import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.utils.InputUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -22,21 +23,18 @@ import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Chunk;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 
 @Command({"ville", "city"})
 public class CityCommands {
     public static final HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
-    public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     @DefaultFor("~")
     public static void mainCommand(Player player) {
@@ -207,6 +205,7 @@ public class CityCommands {
     @Subcommand("claim")
     @CommandPermission("omc.commands.city.claim")
     @Description("Claim un chunk pour votre ville")
+    @DefaultFor("~")
     void claim(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
@@ -228,6 +227,13 @@ public class CityCommands {
         Chunk chunk = sender.getLocation().getChunk();
 
         CityUnclaimAction.startUnclaim(sender, chunk.getX(), chunk.getZ());
+    }
+
+    @Subcommand("claim view")
+    @Description("Voir les villes aux alentours")
+    @CommandPermission("omc.commands.city.view")
+    void view(Player player) {
+        CityViewManager.startView(player);
     }
 
     @Subcommand("map")
