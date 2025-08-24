@@ -23,7 +23,7 @@ public class TicketListener implements Listener {
     @EventHandler
     public void onMachineBallsInteraction(FurnitureInteractEvent furniture) {
         if (furniture.getNamespacedID().equals("omc_blocks:ball_machine")) {
-            furniture.getPlayer().playSound(net.kyori.adventure.sound.Sound.sound(Key.key("minecraft", "block.barrel.open"), Sound.Source.BLOCK, 1f, 1f));
+            furniture.getPlayer().playSound(Sound.sound(Key.key("minecraft", "block.barrel.open"), Sound.Source.BLOCK, 1f, 1f));
             new MachineBallsMenu(furniture.getPlayer()).open();
         }
     }
