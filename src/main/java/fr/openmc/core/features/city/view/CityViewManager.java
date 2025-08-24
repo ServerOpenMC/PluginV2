@@ -30,7 +30,6 @@ public class CityViewManager {
     private static final long VIEW_INTERVAL_SECONDS = 1L;
     private static final int CHUNK_SIZE = 16;
     private static final int[][] ADJACENT_OFFSETS = {{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
-    private static final Particle.DustOptions RED_DUST = new Particle.DustOptions(Color.RED, 3F);
 
     private static final Map<UUID, CityViewData> activeViewers = new ConcurrentHashMap<>();
 
@@ -135,8 +134,8 @@ public class CityViewManager {
     private static void showChunkBorders(@NotNull Player player, @NotNull ChunkPos chunkPos, @NotNull City city, boolean isPlayerCity, int playerY) {
         List<Location> particleLocations = calculateParticleLocations(chunkPos, city, playerY);
 
-        Particle particle = isPlayerCity ? Particle.CHERRY_LEAVES : Particle.DUST;
-        Particle.DustOptions data = isPlayerCity ? null : RED_DUST;
+        Particle particle = isPlayerCity ? Particle.CHERRY_LEAVES : Particle.TINTED_LEAVES;
+        Object data = isPlayerCity ? null : Color.RED;
         particleLocations.forEach(location ->
                 ParticleUtils.sendParticlePacket(
                         player,
