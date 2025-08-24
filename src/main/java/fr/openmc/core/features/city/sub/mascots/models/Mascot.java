@@ -95,4 +95,17 @@ public class Mascot {
         this.city = CityManager.getCity(this.cityUUID);
         return this.city;
     }
+
+    @Override
+    public String toString() {
+        return "Mascot{" +
+                "cityUUID='" + cityUUID + '\'' +
+                ", level=" + level +
+                ", mascotUUID=" + mascotUUID +
+                ", immunity=" + immunity +
+                ", alive=" + alive +
+                ", x=" + x +
+                ", z=" + z +
+                '}';
+    }
 }
