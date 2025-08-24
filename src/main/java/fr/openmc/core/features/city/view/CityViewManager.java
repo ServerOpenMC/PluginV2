@@ -75,7 +75,7 @@ public class CityViewManager {
         activeViewers.keySet().forEach(CityViewManager::updateView);
     }
 
-    private static void updateView(@NotNull UUID playerUUID) {
+    public static void updateView(@NotNull UUID playerUUID) {
         CityViewData viewData = activeViewers.get(playerUUID);
         if (viewData == null)
             return;
