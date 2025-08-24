@@ -5,19 +5,16 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class CooldownStartEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final String uuid;
-    @Getter
-    private final String group;
+    @Getter private final UUID cooldownUUID;
+    @Getter private final String group;
 
-    public CooldownStartEvent(String uuid, String group) {
-        this.uuid = uuid;
+    public CooldownStartEvent(UUID cooldownUUID, String group) {
+        this.cooldownUUID = cooldownUUID;
         this.group = group;
-    }
-
-    public String getUUID() {
-        return uuid;
     }
 
     @Override
