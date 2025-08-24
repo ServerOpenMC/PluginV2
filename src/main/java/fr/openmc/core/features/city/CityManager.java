@@ -414,6 +414,17 @@ public class CityManager implements Listener {
         return claimedChunks.get(new ChunkPos(x, z));
     }
 
+    /**
+     * Get a city from a chunk
+     *
+     * @param chunkPos The chunk position
+     * @return The city object, or null if not found
+     */
+    @Nullable
+    public static City getCityFromChunk(ChunkPos chunkPos) {
+        return claimedChunks.get(chunkPos);
+    }
+
 
     /* =================== RANKS =================== */
 
