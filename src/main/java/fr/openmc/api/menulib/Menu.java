@@ -188,7 +188,7 @@ public abstract class Menu implements InventoryHolder {
 	public final Map<Integer, ItemBuilder> fill(Material material) {
 		Map<Integer, ItemBuilder> map = new HashMap<>();
 		for (int i = 0; i < getInventorySize().getSize(); i++) {
-            ItemBuilder filler = new ItemBuilder(this, material, itemMeta -> itemMeta.displayName(Component.text(" ")));
+            ItemBuilder filler = new ItemBuilder(this, material, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
 			map.put(i, filler);
 		}
 		return map;

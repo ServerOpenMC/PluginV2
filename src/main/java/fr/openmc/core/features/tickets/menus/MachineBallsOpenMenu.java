@@ -61,7 +61,7 @@ public class MachineBallsOpenMenu extends Menu {
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.LARGEST;
+        return InventorySize.LARGER;
     }
 
     @Override
@@ -346,7 +346,7 @@ public class MachineBallsOpenMenu extends Menu {
             for (int i : displaySlots) {
                 if (i != 22) {
                     inv.setItem(i, new ItemBuilder(this, Material.GRAY_STAINED_GLASS_PANE,
-                            meta -> meta.displayName(Component.text(" "))));
+                            meta -> meta.displayName(Component.text(" "))).hideTooltip(true));
                 }
             }
         }
