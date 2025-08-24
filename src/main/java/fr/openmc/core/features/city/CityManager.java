@@ -66,18 +66,19 @@ public class CityManager implements Listener {
         );
 
         CommandsManager.getHandler().register(
-		        new AdminCityCommands(),
-		        new CityCommands(),
-		        new CityChatCommand(),
-		        new CityPermsCommands(),
+                new AdminCityCommands(),
+                new CityCommands(),
+                new CityChatCommand(),
+                new CityPermsCommands(),
                 new CityChestCommand(),
                 new CityRankCommands(),
-                new CityTopCommands()
+                new CityTopCommands(),
+                new CityClaimViewCommand()
         );
 
         OMCPlugin.registerEvents(
                 new CityChatListener()
-            );
+        );
 
         // SUB-FEATURE
         new MascotsManager();
