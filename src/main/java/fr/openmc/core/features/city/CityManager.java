@@ -358,6 +358,21 @@ public class CityManager implements Listener {
     }
 
     /**
+     * Get a city by its name
+     *
+     * @param name The name of the city
+     * @return The city object, or null if not found
+     */
+    public static City getCityByName(String name) {
+        for (City city : cities.values()) {
+            if (city.getName().equalsIgnoreCase(name)) {
+                return city;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Get a cities claimed chunks
      *
      * @param inCity The cities whose chunks are requested
