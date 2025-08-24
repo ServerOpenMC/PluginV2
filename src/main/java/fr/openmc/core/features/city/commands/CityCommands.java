@@ -205,6 +205,7 @@ public class CityCommands {
     @Subcommand("claim")
     @CommandPermission("omc.commands.city.claim")
     @Description("Claim un chunk pour votre ville")
+    @DefaultFor("~")
     void claim(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
@@ -228,7 +229,7 @@ public class CityCommands {
         CityUnclaimAction.startUnclaim(sender, chunk.getX(), chunk.getZ());
     }
 
-    @Subcommand("view")
+    @Subcommand("claim view")
     @Description("Voir les villes aux alentours")
     @CommandPermission("omc.commands.city.view")
     void view(Player player) {
