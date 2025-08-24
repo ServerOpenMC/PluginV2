@@ -306,7 +306,7 @@ public class MachineBallsOpenMenu extends Menu {
         Iterator<LootItem> iterator = items.iterator();
         while (iterator.hasNext()) {
             LootItem item = iterator.next();
-            String itemKey = item.displayName().toString();
+            String itemKey = item.displayName();
             int alreadyWon = ps.getMaxItemsGiven().getOrDefault(itemKey, 0);
             if (item.maxRewards() > 0 && alreadyWon >= item.maxRewards()) {
                 iterator.remove();
