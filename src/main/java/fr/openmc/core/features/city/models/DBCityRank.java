@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @DatabaseTable(tableName = "city_ranks")
 @Getter
-public class CityRank {
+public class DBCityRank {
 	
 	@DatabaseField(useGetSet = true)
 	public String permissions;
@@ -37,7 +37,7 @@ public class CityRank {
 	private Set<CityPermission> permissionsSet;
 	private Set<UUID> membersSet;
 	
-	public CityRank() {
+	public DBCityRank() {
 		// Default constructor for ORMLite
 	}
 	
@@ -51,7 +51,7 @@ public class CityRank {
 	 * @param permissionsSet Set of permissions associated with this rank.
 	 * @param icon           Icon representing the rank.
 	 */
-	public CityRank(UUID rankUUID, String cityUUID, String name, int priority, Set<CityPermission> permissionsSet, Material icon) {
+	public DBCityRank(UUID rankUUID, UUID cityUUID, String name, int priority, Set<CityPermission> permissionsSet, Material icon) {
 		this.rankUUID = rankUUID;
 		this.cityUUID = cityUUID;
 		this.name = name;
@@ -68,7 +68,7 @@ public class CityRank {
 	 * @return The validated CityRank instance.
 	 * @throws IllegalArgumentException if any validation fails.
 	 */
-	public CityRank validate(Player player) throws IllegalArgumentException {
+	public DBCityRank validate(Player player) throws IllegalArgumentException {
 		if (name == null || name.isEmpty()) {
 			MessagesManager.sendMessage(player, Component.text("Le nom du grade ne peut pas être vide"), Prefix.CITY, MessageType.ERROR, false);
 			throw new IllegalArgumentException("Rank name cannot be null or empty");
@@ -90,7 +90,7 @@ public class CityRank {
 	 * @param name The new name for the rank.
 	 * @return A new CityRank instance with the new name.
 	 */
-	public CityRank withName(String name) {
+	public DBCityRank withName(String name) {
 		this.name = name;
 		return this;
 	}
@@ -101,7 +101,7 @@ public class CityRank {
 	 * @param priority The new priority for the rank.
 	 * @return A new CityRank instance with the new priority.
 	 */
-	public CityRank withPriority(int priority) {
+	public DBCityRank withPriority(int priority) {
 		this.priority = priority;
 		return this;
 	}
@@ -112,7 +112,7 @@ public class CityRank {
 	 * @param permissionsSet The new set of permissions for the rank.
 	 * @return A new CityRank instance with the new permissions.
 	 */
-	public CityRank withPermissions(Set<CityPermission> permissionsSet) {
+	public DBCityRank withPermissions(Set<CityPermission> permissionsSet) {
 		this.permissionsSet = permissionsSet;
 		return this;
 	}
@@ -123,7 +123,7 @@ public class CityRank {
 	 * @param icon The new icon for the rank.
 	 * @return A new CityRank instance with the new icon.
 	 */
-	public CityRank withIcon(Material icon) {
+	public DBCityRank withIcon(Material icon) {
 		this.icon = icon;
 		return this;
 	}

@@ -59,7 +59,7 @@ public class CityManager implements Listener {
                     if (city == null) return List.of();
 
                     return city.getRanks().stream()
-                            .map(CityRank::getName)
+                            .map(DBCityRank::getName)
                             .collect(Collectors.toList());
                 })
         );
@@ -90,7 +90,7 @@ public class CityManager implements Listener {
     private static Dao<DBCity, String> citiesDao;
     private static Dao<DBCityMember, String> membersDao;
     private static Dao<DBCityPermission, String> permissionsDao;
-    private static Dao<CityRank, String> ranksDao;
+    private static Dao<DBCityRank, String> ranksDao;
     private static Dao<DBCityClaim, String> claimsDao;
     private static Dao<DBCityChest, String> chestsDao;
 
@@ -104,8 +104,8 @@ public class CityManager implements Listener {
         TableUtils.createTableIfNotExists(connectionSource, DBCityPermission.class);
         permissionsDao = DaoManager.createDao(connectionSource, DBCityPermission.class);
 
-        TableUtils.createTableIfNotExists(connectionSource, CityRank.class);
-        ranksDao = DaoManager.createDao(connectionSource, CityRank.class);
+        TableUtils.createTableIfNotExists(connectionSource, DBCityRank.class);
+        ranksDao = DaoManager.createDao(connectionSource, DBCityRank.class);
 
         TableUtils.createTableIfNotExists(connectionSource, DBCityClaim.class);
         claimsDao = DaoManager.createDao(connectionSource, DBCityClaim.class);
@@ -437,7 +437,7 @@ public class CityManager implements Listener {
      *
      * @param rank The rank to add
      */
-    public static void addCityRank(CityRank rank) {
+    public static void addCityRank(DBCityRank rank) {
         try {
             ranksDao.create(rank);
         } catch (SQLException e) {
@@ -450,9 +450,9 @@ public class CityManager implements Listener {
      *
      * @param rank The rank to remove
      */
-    public static void removeCityRank(CityRank rank) {
+    public static void removeCityRank(DBCityRank rank) {
         try {
-            DeleteBuilder<CityRank, String> delete = ranksDao.deleteBuilder();
+            DeleteBuilder<DBCityRank, String> delete = ranksDao.deleteBuilder();
             delete.where().eq("city_uuid", rank.getCityUUID()).and().eq("name", rank.getName());
             ranksDao.delete(delete.prepare());
         } catch (SQLException e) {
@@ -465,7 +465,7 @@ public class CityManager implements Listener {
      *
      * @param rank The rank to update
      */
-    public static void updateCityRank(CityRank rank) {
+    public static void updateCityRank(DBCityRank rank) {
         try {
             ranksDao.update(rank);
         } catch (SQLException e) {
@@ -480,11 +480,11 @@ public class CityManager implements Listener {
      */
     public static void loadCityRanks(City city) {
         try {
-            QueryBuilder<CityRank, String> query = ranksDao.queryBuilder();
+            QueryBuilder<DBCityRank, String> query = ranksDao.queryBuilder();
             query.where().eq("city_uuid", city.getUUID());
-            List<CityRank> dbRanks = ranksDao.query(query.prepare());
+            List<DBCityRank> dbRanks = ranksDao.query(query.prepare());
 
-            for (CityRank dbRank : dbRanks) {
+            for (DBCityRank dbRank : dbRanks) {
                 city.getRanks().add(dbRank);
             }
         } catch (SQLException e) {
@@ -573,7 +573,7 @@ public class CityManager implements Listener {
                 permissionsDelete.where().eq("city", city.getUUID());
                 permissionsDao.delete(permissionsDelete.prepare());
 
-                DeleteBuilder<CityRank, String> ranksDelete = ranksDao.deleteBuilder();
+                DeleteBuilder<DBCityRank, String> ranksDelete = ranksDao.deleteBuilder();
                 ranksDelete.where().eq("city_uuid", city.getUUID());
                 ranksDao.delete(ranksDelete.prepare());
 

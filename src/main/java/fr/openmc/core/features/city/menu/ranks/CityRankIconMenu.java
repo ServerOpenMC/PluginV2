@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.models.CityRank;
+import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
@@ -26,12 +26,12 @@ import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 
 public class CityRankIconMenu extends PaginatedMenu {
 	
-	private final CityRank rank;
+	private final DBCityRank rank;
 	private final City city;
 	private final int page;
 	private static String filter = null;
 
-	public CityRankIconMenu(Player owner, City city, int page, CityRank rank, String filter) {
+	public CityRankIconMenu(Player owner, City city, int page, DBCityRank rank, String filter) {
 		super(owner);
 		this.rank = rank;
 		this.city = city;

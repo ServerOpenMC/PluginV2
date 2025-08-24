@@ -6,7 +6,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityRankAction;
-import fr.openmc.core.features.city.models.CityRank;
+import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -55,8 +55,8 @@ public class CityRankAssignMenu extends Menu {
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 		
-		Set<CityRank> availableRanks = city.getRanks();
-		for (CityRank rank : availableRanks) {
+		Set<DBCityRank> availableRanks = city.getRanks();
+		for (DBCityRank rank : availableRanks) {
 			map.put(map.size(), new ItemBuilder(this, new ItemStack(rank.getIcon()), itemMeta -> {
 				itemMeta.displayName(Component.text(rank.getName()));
 				itemMeta.lore(List.of(

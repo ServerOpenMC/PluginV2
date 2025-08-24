@@ -3,7 +3,7 @@ package fr.openmc.core.features.city;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.events.*;
-import fr.openmc.core.features.city.models.CityRank;
+import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.models.DBCity;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
@@ -47,7 +47,7 @@ public class City {
     private Set<UUID> members;
     private Set<ChunkPos> chunks; // Liste des chunks claims par la ville
     private HashMap<UUID, Set<CityPermission>> permissions;
-    private Set<CityRank> cityRanks;
+    private Set<DBCityRank> cityRanks;
     private HashMap<Integer, ItemStack[]> chestContent;
     @Getter
     @Setter
@@ -702,7 +702,7 @@ public class City {
      *
      * @return A set of CityRank objects representing the ranks of the city.
      */
-    public Set<CityRank> getRanks() {
+    public Set<DBCityRank> getRanks() {
         return cityRanks;
     }
     
@@ -715,8 +715,8 @@ public class City {
         return cityRanks.size() >= MAX_RANKS;
     }
     
-    public CityRank getRankByName(String rankName) {
-        for (CityRank rank : cityRanks) {
+    public DBCityRank getRankByName(String rankName) {
+        for (DBCityRank rank : cityRanks) {
             if (rank.getName().equalsIgnoreCase(rankName)) {
                 return rank;
             }
@@ -730,7 +730,7 @@ public class City {
      * @param rank The CityRank object to check.
      * @return True if the rank exists, false otherwise.
      */
-    public boolean isRankExists(CityRank rank) {
+    public boolean isRankExists(DBCityRank rank) {
         return cityRanks.contains(rank);
     }
     
@@ -741,7 +741,7 @@ public class City {
      * @return True if the rank name exists, false otherwise.
      */
     public boolean isRankExists(String rankName) {
-        for (CityRank rank : cityRanks) {
+        for (DBCityRank rank : cityRanks) {
             if (rank.getName().equalsIgnoreCase(rankName)) {
                 return true;
             }
@@ -764,7 +764,7 @@ public class City {
      * @param rank The CityRank object to be created.
      * @throws IllegalStateException if the city already has 18 ranks.
      */
-    public void createRank(CityRank rank) {
+    public void createRank(DBCityRank rank) {
         if (isRanksFull()) {
             throw new IllegalStateException("Cannot add more than 18 ranks to a city.");
         }
@@ -778,7 +778,7 @@ public class City {
      * @param rank The CityRank object to be deleted.
      * @throws IllegalArgumentException if the rank is not found, or if it is the default rank (priority 0).
      */
-    public void deleteRank(CityRank rank) {
+    public void deleteRank(DBCityRank rank) {
         if (! cityRanks.contains(rank)) {
             throw new IllegalArgumentException("Rank not found in the city's ranks.");
         }
@@ -798,7 +798,7 @@ public class City {
      * @param newRank The new CityRank object to replace the old one.
      * @throws IllegalArgumentException if the old rank is not found in the city's ranks.
      */
-    public void updateRank(CityRank oldRank, CityRank newRank) {
+    public void updateRank(DBCityRank oldRank, DBCityRank newRank) {
         if (cityRanks.contains(oldRank)) {
             Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
                 CityManager.updateCityRank(newRank);
@@ -816,8 +816,8 @@ public class City {
      * @param member The UUID of the member to check.
      * @return The CityRank object representing the member's rank, or null if not found.
      */
-    public CityRank getRankOfMember(UUID member) {
-        for (CityRank rank : cityRanks) {
+    public DBCityRank getRankOfMember(UUID member) {
+        for (DBCityRank rank : cityRanks) {
             if (rank.getMembersSet().contains(member)) {
                 return rank;
             }
@@ -837,7 +837,7 @@ public class City {
         } else if (this.hasMayor() && this.getMayor().getUUID().equals(member)) {
             return "Maire";
         } else {
-            for (CityRank rank : cityRanks) {
+            for (DBCityRank rank : cityRanks) {
                 if (rank.getMembersSet().contains(member)) {
                     return rank.getName();
                 }
@@ -855,7 +855,7 @@ public class City {
      * @param newRank    The new CityRank to assign to the player.
      * @throws IllegalArgumentException if the specified rank does not exist in the city's ranks.
      */
-    public void changeRank(Player sender, UUID playerUUID, CityRank newRank) {
+    public void changeRank(Player sender, UUID playerUUID, DBCityRank newRank) {
         if (! cityRanks.contains(newRank)) {
             throw new IllegalArgumentException("The specified rank does not exist in the city's ranks.");
         }
@@ -865,7 +865,7 @@ public class City {
             return;
         }
         
-        CityRank currentRank = getRankOfMember(playerUUID);
+        DBCityRank currentRank = getRankOfMember(playerUUID);
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(playerUUID);
         
         if (currentRank != null) {
