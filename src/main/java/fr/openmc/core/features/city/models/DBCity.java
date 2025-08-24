@@ -10,7 +10,7 @@ public class DBCity {
     @DatabaseField(id = true, columnName = "uuid")
     @Getter
     private String UUID;
-    @DatabaseField
+    @DatabaseField(unique = true)
     private String name;
     @DatabaseField(defaultValue = "0")
     private double balance;
