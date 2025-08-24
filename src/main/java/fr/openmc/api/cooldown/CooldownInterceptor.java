@@ -18,8 +18,8 @@ public class CooldownInterceptor implements CommandCondition {
             return;
         }
 
-        if (!DynamicCooldownManager.isReady(actor.getUniqueId(), cooldown.group())) {
-            long remaining = DynamicCooldownManager.getRemaining(actor.getUniqueId(), cooldown.group());
+        if (!DynamicCooldownManager.isReady(actor.getUniqueId().toString(), cooldown.group())) {
+            long remaining = DynamicCooldownManager.getRemaining(actor.getUniqueId().toString(), cooldown.group());
             String message = cooldown.message();
             message = message.replace("%formatTime%", DateUtils.convertSecondToTime(remaining / 1000));
             message = message.replace("%sec%", String.valueOf(remaining / 1000));
