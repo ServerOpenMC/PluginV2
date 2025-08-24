@@ -16,6 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,14 +110,14 @@ public class CityViewManager {
         return claims;
     }
 
-    private static ScheduledTask createViewTask(@NotNull Player player, @NotNull City playerCity) {
+    private static ScheduledTask createViewTask(@NotNull Player player, @Nullable City playerCity) {
         return Bukkit.getAsyncScheduler().runAtFixedRate(OMCPlugin.getInstance(), task -> {
             CityViewData viewData = activeViewers.get(player.getUniqueId());
             if (viewData == null)
                 return;
 
             viewData.claims().forEach((chunkPos, city) -> {
-                showChunkBorders(player, chunkPos, city, playerCity.equals(city), player.getLocation().getBlockY());
+                showChunkBorders(player, chunkPos, city, city.equals(playerCity), player.getLocation().getBlockY());
             });
         }, 0L, VIEW_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
@@ -153,8 +154,8 @@ public class CityViewManager {
     private static List<Location> calculateParticleLocations(@NotNull ChunkPos chunkPos, @NotNull City city, int y) {
         List<Location> locations = new ArrayList<>();
         World world = chunkPos.getChunkInWorld().getWorld();
-        int baseX = chunkPos.x();
-        int baseZ = chunkPos.z();
+        int baseX = chunkPos.x() * 16;
+        int baseZ = chunkPos.z() * 16;
         boolean[] borders = checkBorders(chunkPos, city);
 
         // borders[0]: bord haut (nord) → ligne z = baseZ
