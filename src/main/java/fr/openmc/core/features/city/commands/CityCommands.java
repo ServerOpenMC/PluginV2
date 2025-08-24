@@ -37,7 +37,6 @@ import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 @Command({"ville", "city"})
 public class CityCommands {
     public static final HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
-    public static Map<String, BukkitRunnable> balanceCooldownTasks = new HashMap<>();
 
     @DefaultFor("~")
     public static void mainCommand(Player player) {
