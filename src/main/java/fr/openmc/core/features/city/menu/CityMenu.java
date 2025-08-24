@@ -200,7 +200,7 @@ public class CityMenu extends Menu {
 		                loreMascots = List.of(
 				                Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
 				                Component.text("§7Status : §cMorte"),
-				                Component.text("§7Réapparition dans : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:immunity"))),
+				                Component.text("§7Réapparition dans : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))),
 				                Component.text("§7Niveau : §c" + mascot.getLevel()),
                                 Component.empty(),
 				                Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
@@ -234,7 +234,7 @@ public class CityMenu extends Menu {
                 if (mob == null) return;
 
                 if (!mascot.isAlive()) {
-                    MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUUID());
+                    MascotsDeadMenu menu = new MascotsDeadMenu(player, city.getUniqueId());
                     menu.open();
                     return;
                 }
@@ -387,10 +387,10 @@ public class CityMenu extends Menu {
                 lore.add(Component.text("§7Vous pouvez lancer une guerre avec §c/war"));
             }
 
-            if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+            if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
                 lore.add(Component.empty());
                 lore.add(Component.text("§cCooldown §7: " +
-                        DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type"))));
+                        DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type"))));
             }
 
             if (hasPermissionChangeType) {
@@ -408,7 +408,7 @@ public class CityMenu extends Menu {
             });
         };
 
-        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
+        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
             MenuUtils.runDynamicItem(player, this, 25, typeItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {

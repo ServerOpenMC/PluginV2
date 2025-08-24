@@ -21,6 +21,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.UUID;
+
 public class MascotsInteractionListener implements Listener {
     @SneakyThrows
     @EventHandler
@@ -45,15 +47,15 @@ public class MascotsInteractionListener implements Listener {
 
         if (city.isInWar()) return;
 
-        String city_uuid = city.getUUID();
-        if (mascotsUUID.equals(city_uuid)) {
+        UUID cityUUID = city.getUniqueId();
+        if (mascotsUUID.equals(cityUUID)) {
             Mascot mascot = city.getMascot();
             if (mascot == null) {
                 MessagesManager.sendMessage(player, Component.text("§cAucune mascotte trouvée - Veuillez contacter le staff"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
             if (!mascot.isAlive()) {
-                new MascotsDeadMenu(player, city_uuid).open();
+                new MascotsDeadMenu(player, cityUUID).open();
             } else {
                 new MascotMenu(player, mascot).open();
             }

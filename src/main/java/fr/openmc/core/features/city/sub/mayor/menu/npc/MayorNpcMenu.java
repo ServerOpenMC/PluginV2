@@ -105,7 +105,7 @@ public class MayorNpcMenu extends Menu {
                 itemMeta.lore(lorePerk3);
             }).hide(perk3.getToHide()));
 
-            if (mayor.getUUID().equals(player.getUniqueId())) {
+            if (mayor.getMayorUUID().equals(player.getUniqueId())) {
                 inventory.put(46, new ItemBuilder(this, Material.ENDER_PEARL, itemMeta -> {
                     itemMeta.itemName(Component.text("§aDéplacer ce NPC"));
                     itemMeta.lore(List.of(
@@ -146,13 +146,13 @@ public class MayorNpcMenu extends Menu {
                                     return false;
                                 }
 
-                                if (!cityByChunk.getUUID().equals(playerCity.getUUID())) {
+                                if (!cityByChunk.getUniqueId().equals(playerCity.getUniqueId())) {
                                     MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le NPC en dehors de votre ville"), Prefix.CITY, MessageType.ERROR, false);
                                     return false;
                                 }
 
-                                NPCManager.moveNPC("mayor", locationClick, city.getUUID());
-                                NPCManager.updateNPCS(city.getUUID());
+                                NPCManager.moveNPC("mayor", locationClick, city.getUniqueId());
+                                NPCManager.updateNPCS(city.getUniqueId());
                                 return true;
                             },
                             null

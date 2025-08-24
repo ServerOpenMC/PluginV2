@@ -9,10 +9,12 @@ import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @DatabaseTable(tableName = "city_chests")
 public class DBCityChest {
-    @DatabaseField(canBeNull = false)
-    private String city;
+    @DatabaseField(columnName = "city", canBeNull = false)
+    private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     @Getter
     private int page;
@@ -23,8 +25,8 @@ public class DBCityChest {
         // required for ORMLite
     }
 
-    public DBCityChest(String city, int page, ItemStack[] content) {
-        this.city = city;
+    public DBCityChest(UUID cityUUID, int page, ItemStack[] content) {
+        this.cityUUID = cityUUID;
         this.page = page;
 
         try {

@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 public class City {
     @Getter
     private String name;
-    private final String cityUUID;
+    @Getter private final UUID uniqueId;
     private Set<UUID> members;
     private Set<ChunkPos> chunks; // Liste des chunks claims par la ville
     private HashMap<UUID, Set<CityPermission>> permissions;
@@ -66,8 +66,8 @@ public class City {
     /**
      * Constructor used for City creation
      */
-    public City(String id, String name, Player owner, CityType type, Chunk chunk) {
-        this.cityUUID = id;
+    public City(UUID uniqueId, String name, Player owner, CityType type, Chunk chunk) {
+        this.uniqueId = uniqueId;
         this.name = name;
         this.type = type;
         this.freeClaims = 15;
@@ -99,8 +99,8 @@ public class City {
     /**
      * Constructor used to deserialize City database object
      */
-    public City(String id, String name, double balance, String type, int power, int freeClaims) {
-        this.cityUUID = id;
+    public City(UUID uniqueId, String name, double balance, String type, int power, int freeClaims) {
+        this.uniqueId = uniqueId;
         this.name = name;
         this.balance = balance;
         this.freeClaims = freeClaims;
@@ -115,7 +115,7 @@ public class City {
      * Serialize a city to be saved in the database
      */
     public DBCity serialize() {
-        return new DBCity(cityUUID, name, balance, type.name(), powerPoints, freeClaims);
+        return new DBCity(uniqueId, name, balance, type.name(), powerPoints, freeClaims);
     }
 
     // ==================== Global Methods ====================
@@ -138,15 +138,6 @@ public class City {
             this.chunks = CityManager.getCityChunks(this);
 
         return this.chunks;
-    }
-
-    /**
-     * Retrieves the UUID of a city.
-     *
-     * @return The UUID of the city.
-     */
-    public String getUUID() {
-        return cityUUID;
     }
 
     public void rename(String newName) {
@@ -606,7 +597,7 @@ public class City {
     // ==================== Mascots Methods ====================
 
     public Mascot getMascot() {
-        return MascotsManager.mascotsByCityUUID.get(cityUUID);
+        return MascotsManager.mascotsByCityUUID.get(this.getUniqueId());
     }
 
     // ==================== Mayor Methods ====================
@@ -617,7 +608,7 @@ public class City {
      * @return The mayor of the city, or null if not found.
      */
     public Mayor getMayor() {
-        return MayorManager.cityMayor.get(this.getUUID());
+        return MayorManager.cityMayor.get(this.getUniqueId());
     }
 
     /**
@@ -626,10 +617,10 @@ public class City {
      * @return True if the city has a mayor, false otherwise.
      */
     public boolean hasMayor() {
-        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
+        Mayor mayor = MayorManager.cityMayor.get(this.getUniqueId());
         if (mayor == null) return false;
 
-        return mayor.getUUID() != null;
+        return mayor.getMayorUUID() != null;
     }
 
     /**
@@ -638,7 +629,7 @@ public class City {
      * @return The election type of the city, or null if not found.
      */
     public ElectionType getElectionType() {
-        Mayor mayor = MayorManager.cityMayor.get(this.getUUID());
+        Mayor mayor = MayorManager.cityMayor.get(this.getUniqueId());
         if (mayor == null) return null;
 
         return mayor.getElectionType();
@@ -650,7 +641,7 @@ public class City {
      * @return The law of the city, or null if not found.
      */
     public CityLaw getLaw() {
-        return MayorManager.cityLaws.get(cityUUID);
+        return MayorManager.cityLaws.get(this.getUniqueId());
     }
 
     // ==================== War Methods ====================
@@ -661,7 +652,7 @@ public class City {
      * @return True if the city is in war, false otherwise.
      */
     public boolean isInWar() {
-        return WarManager.isCityInWar(cityUUID);
+        return WarManager.isCityInWar(this.getUniqueId());
     }
 
     /**
@@ -670,7 +661,7 @@ public class City {
      * @return The War object associated with the city or null if not in war.
      */
     public War getWar() {
-        return WarManager.getWarByCity(cityUUID);
+        return WarManager.getWarByCity(this.getUniqueId());
     }
 
     /**
@@ -679,7 +670,7 @@ public class City {
      * @return True if the city is immune, false otherwise.
      */
     public boolean isImmune() {
-        return getMascot().isImmunity() && !DynamicCooldownManager.isReady(cityUUID, "city:immunity");
+        return getMascot().isImmunity() && !DynamicCooldownManager.isReady(this.getUniqueId(), "city:immunity");
     }
 
 
@@ -834,7 +825,7 @@ public class City {
     public String getRankName(UUID member) {
         if (this.hasPermission(member, CityPermission.OWNER)) {
             return "Propriétaire";
-        } else if (this.hasMayor() && this.getMayor().getUUID().equals(member)) {
+        } else if (this.hasMayor() && this.getMayor().getMayorUUID().equals(member)) {
             return "Maire";
         } else {
             for (DBCityRank rank : cityRanks) {
@@ -906,7 +897,7 @@ public class City {
             return null;
         }
         return NotationManager.notationPerWeek.get(weekStr).stream()
-                .filter(notation -> notation.getCityUUID().equals(cityUUID))
+                .filter(notation -> notation.getCityUUID().equals(this.getUniqueId()))
                 .findFirst()
                 .orElse(null);
     }
@@ -920,6 +911,6 @@ public class City {
      * @param description      A description of the notation.
      */
     public void setNotationOfWeek(String weekStr, double architecturalNote, double coherenceNote, String description) {
-        NotationManager.createOrUpdateNotation(new CityNotation(cityUUID, architecturalNote, coherenceNote, description, weekStr));
+        NotationManager.createOrUpdateNotation(new CityNotation(this.getUniqueId(), architecturalNote, coherenceNote, description, weekStr));
     }
 }

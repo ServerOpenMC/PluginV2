@@ -36,8 +36,8 @@ public class CityTypeConditions {
             return false;
         }
 
-        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
+            MessagesManager.sendMessage(player, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

@@ -63,7 +63,7 @@ public class CityRankAction {
                 return;
             }
 
-            city.updateRank(rank, new DBCityRank(rank.getRankUUID(), city.getUUID(), input, rank.getPriority(), rank.getPermissionsSet(), rank.getIcon()));
+            city.updateRank(rank, new DBCityRank(rank.getRankUUID(), city.getUniqueId(), input, rank.getPriority(), rank.getPermissionsSet(), rank.getIcon()));
             MessagesManager.sendMessage(player, Component.text("Le nom du grade a été mis à jour : " + oldName + " → " + input), Prefix.CITY, MessageType.SUCCESS, false);
         });
     }

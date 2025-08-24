@@ -101,7 +101,7 @@ public class CityCreateAction {
         String pendingCityName = pendingCities.remove(playerUUID);
         if (pendingCityName == null) return false;
 
-        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
+        UUID cityUUID = UUID.randomUUID();
         Chunk chunk = mascotLocation.getChunk();
 
         if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
@@ -137,7 +137,7 @@ public class CityCreateAction {
         MessagesManager.sendMessage(player, Component.text("§aVotre ville a été crée : " + pendingCityName), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("§7+ §615 chunks gratuits"), Prefix.CITY, MessageType.INFO, false);
 
-        DynamicCooldownManager.use(playerUUID.toString(), "city:big", 60000);
+        DynamicCooldownManager.use(playerUUID, "city:big", 60000);
         DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
 
         return true;

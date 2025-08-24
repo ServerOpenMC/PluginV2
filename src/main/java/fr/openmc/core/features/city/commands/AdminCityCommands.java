@@ -70,11 +70,11 @@ public class AdminCityCommands {
         );
 
         sub.forEach(city -> {
-            String id = city.getUUID();
+            UUID cityUUID = city.getUniqueId();
             String name = city.getName();
 
             Component line = Component.text("- ")
-                    .append(Component.text(id).color(NamedTextColor.GRAY))
+                    .append(Component.text(cityUUID.toString()).color(NamedTextColor.GRAY))
                     .append(Component.text(" • "))
                     .append(Component.text(name).color(NamedTextColor.WHITE))
                     .append(Component.text(" [copier]")
@@ -82,7 +82,7 @@ public class AdminCityCommands {
                             .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(
                                     Component.text("Clique pour copier l’UUID"))
                             )
-                            .clickEvent(ClickEvent.copyToClipboard(id))
+                            .clickEvent(ClickEvent.copyToClipboard(cityUUID.toString()))
                     );
 
             player.sendMessage(line);
@@ -214,7 +214,7 @@ public class AdminCityCommands {
             return;
         }
 
-        MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville " + city.getName() + " (" + city.getUniqueId() + ")"), Prefix.STAFF, MessageType.INFO, false);
     }
 
     @Subcommand("claim bypass")
@@ -302,7 +302,7 @@ public class AdminCityCommands {
         if (mascot.isImmunity()) {
             mascot.setImmunity(false);
         }
-        DynamicCooldownManager.clear(city.getUUID(), "city:immunity");
+        DynamicCooldownManager.clear(city.getUniqueId(), "city:immunity");
         UUID mascotUUID = mascot.getMascotUUID();
         if (mascotUUID!=null){
             Entity mob = Bukkit.getEntity(mascotUUID);

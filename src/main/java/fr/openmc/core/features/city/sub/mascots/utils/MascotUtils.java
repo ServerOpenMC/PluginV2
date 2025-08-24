@@ -28,8 +28,8 @@ public class MascotUtils {
 	 *                   This method creates a new Mascot object and adds it to the mascotsByCityUUID and mascotsByEntityUUID maps.
 	 */
 	public static void addMascotForCity(City city, UUID mascotUUID, Chunk chunk) {
-        Mascot newMascot = new Mascot(city.getUUID(), mascotUUID, 1, true, true, chunk.getX(), chunk.getZ());
-		MascotsManager.mascotsByCityUUID.put(city.getUUID(), newMascot);
+        Mascot newMascot = new Mascot(city.getUniqueId(), mascotUUID, 1, true, true, chunk.getX(), chunk.getZ());
+		MascotsManager.mascotsByCityUUID.put(city.getUniqueId(), newMascot);
 		MascotsManager.mascotsByEntityUUID.put(mascotUUID, newMascot);
 	}
 

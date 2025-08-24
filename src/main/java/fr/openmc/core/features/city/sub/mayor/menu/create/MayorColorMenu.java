@@ -124,7 +124,7 @@ public class MayorColorMenu extends Menu {
                             () -> {
                                 try {
                                     if (menuType == MenuType.CANDIDATE) {
-                                        MayorCandidate candidate = new MayorCandidate(city.getUUID(), player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
+                                        MayorCandidate candidate = new MayorCandidate(city.getUniqueId(), player.getName(), player.getUniqueId(), color, perk2.getId(), perk3.getId(), 0);
                                         MayorManager.createCandidate(city, candidate);
 
                                         for (UUID uuid : city.getMembers()) {

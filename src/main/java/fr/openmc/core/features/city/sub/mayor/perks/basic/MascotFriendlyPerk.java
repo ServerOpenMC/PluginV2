@@ -35,11 +35,11 @@ public class MascotFriendlyPerk implements Listener {
         if (phase == 2) {
             if (!PerkManager.hasPerk(playerCity.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) return;
 
-            for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
+            for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
                 player.addPotionEffect(potionEffect);
             }
         } else {
-            for (PotionEffect potionEffect : MascotsLevels.valueOf("level"+level).getBonus()){
+            for (PotionEffect potionEffect : MascotsLevels.valueOf("level" + level).getBonus()) {
                 player.removePotionEffect(potionEffect.getType());
             }
         }

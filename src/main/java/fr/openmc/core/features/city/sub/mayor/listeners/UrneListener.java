@@ -68,7 +68,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (MayorManager.cityElections.get(playerCity.getUUID()) == null) {
+        if (MayorManager.cityElections.get(playerCity.getUniqueId()) == null) {
             MessagesManager.sendMessage(player, Component.text("§8§o*personne ne s'est présenté ! Présenter vous ! /city*"), Prefix.MAYOR, MessageType.INFO, true);
             return;
         }
@@ -110,7 +110,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (NPCManager.hasNPCS(playerCity.getUUID())) {
+        if (NPCManager.hasNPCS(playerCity.getUniqueId())) {
             event.setCancelled(true);
             MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas poser ceci car vous avez déjà des NPC"), Prefix.MAYOR, MessageType.ERROR, false);
         }
@@ -130,7 +130,7 @@ public class UrneListener implements Listener {
         Location locationMayor = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(2, 0, 0), 2);
         Location locationOwner = LocationUtils.getSafeNearbySurface(urneLocation.clone().add(-2, 0, 0), 2);
 
-        NPCManager.createNPCS(playerCity.getUUID(), locationMayor, locationOwner, player.getUniqueId());
+        NPCManager.createNPCS(playerCity.getUniqueId(), locationMayor, locationOwner, player.getUniqueId());
     }
 
     @EventHandler
@@ -150,7 +150,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (playerCity.getMayor().getUUID() == null) {
+        if (playerCity.getMayor().getMayorUUID() == null) {
             event.setCancelled(true);
             return;
         }
@@ -163,6 +163,6 @@ public class UrneListener implements Listener {
 
         if (!FancyNpcsHook.hasFancyNpc()) return;
 
-        NPCManager.removeNPCS(playerCity.getUUID());
+        NPCManager.removeNPCS(playerCity.getUniqueId());
     }
 }
