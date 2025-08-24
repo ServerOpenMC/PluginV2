@@ -51,7 +51,7 @@ public class DBCityRank {
 	 * @param permissionsSet Set of permissions associated with this rank.
 	 * @param icon           Icon representing the rank.
 	 */
-	public DBCityRank(UUID rankUUID, UUID cityUUID, String name, int priority, Set<CityPermission> permissionsSet, Material icon) {
+	public DBCityRank(UUID rankUUID, String cityUUID, String name, int priority, Set<CityPermission> permissionsSet, Material icon) {
 		this.rankUUID = rankUUID;
 		this.cityUUID = cityUUID;
 		this.name = name;
