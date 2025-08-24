@@ -62,7 +62,7 @@ public class MascotsSoundListener {
                 for (Mascot mascot : mascotsNear) {
                     EntityType entityType = mascot.getEntity().getType();
 
-                    if (entityType == soundEntity || (SOUND_TO_ENTITY.containsKey(soundEntity) && SOUND_TO_ENTITY.get(soundEntity) == entityType)) {
+                    if (entityType.equals(soundEntity) || (SOUND_TO_ENTITY.containsKey(soundEntity) && SOUND_TO_ENTITY.get(soundEntity) == entityType)) {
                         event.setCancelled(true);
                         break;
                     }
