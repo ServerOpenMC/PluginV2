@@ -61,11 +61,11 @@ public class MachineBallsMenu extends Menu {
         ).setOnClick(
                 e -> {
                     e.getWhoClicked().closeInventory();
-                    if (TicketManager.getInstance().getPlayerStats(getOwner().getUniqueId()).isTicketGiven()) {
+                    if (TicketManager.getPlayerStats(getOwner().getUniqueId()).isTicketGiven()) {
                         MessagesManager.sendMessage(getOwner(), Component.text("§cVous avez déjà récupéré vos tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
-                    int ticketsToGive = TicketManager.getInstance().giveTicket(getOwner().getUniqueId());
+                    int ticketsToGive = TicketManager.giveTicket(getOwner().getUniqueId());
                     MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez reçu §e%s §atickets !".formatted(ticketsToGive)), Prefix.OPENMC, MessageType.SUCCESS, true);
                 }
         ));
@@ -78,13 +78,13 @@ public class MachineBallsMenu extends Menu {
                     itemMeta.lore(
                         List.of(
                             Component.text("§7Ouvrir une box avec 1 ticket."),
-                            Component.text("§7Vous avez actuellement §e%s §7tickets.".formatted(TicketManager.getInstance().getPlayerStats(getOwner().getUniqueId()).getTicketRemaining()))
+                            Component.text("§7Vous avez actuellement §e%s §7tickets.".formatted(TicketManager.getPlayerStats(getOwner().getUniqueId()).getTicketRemaining()))
                     ));
                 }
         ).setOnClick(
                 e -> {
                     e.getWhoClicked().closeInventory();
-                    if (TicketManager.getInstance().getPlayerStats(getOwner().getUniqueId()).getTicketRemaining() <= 0) {
+                    if (TicketManager.getPlayerStats(getOwner().getUniqueId()).getTicketRemaining() <= 0) {
                         MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez de tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }

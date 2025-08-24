@@ -93,7 +93,7 @@ public class OMCPlugin extends JavaPlugin {
         logLoadMessage();
 
         /* MANAGERS */
-        TicketManager.getInstance().loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
+        TicketManager.loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
         new DatabaseManager();
         new CommandsManager();
         new SpawnManager();

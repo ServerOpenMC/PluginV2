@@ -3,6 +3,7 @@ package fr.openmc.core.features.tickets;
 import com.google.gson.*;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.*;
 import java.util.*;
@@ -10,34 +11,21 @@ import java.util.*;
 @Getter
 public class TicketManager {
 
-    public int hoursPerTicket = 8;
-    public static TicketManager instance;
-    public final List<PlayerStats> timePlayed = new ArrayList<>();
+    public static int hoursPerTicket = 8;
+    public static final List<PlayerStats> timePlayed = new ArrayList<>();
 
-    private final Gson gson = new Gson();
-    private File statsDirectory;
+    private static final Gson gson = new Gson();
+    @Setter private static File statsDirectory;
 
     public TicketManager() { }
-
-    /**
-     * Get the singleton instance of the TicketManager.
-     *
-     * @return The {@link TicketManager} instance.
-     */
-    public static TicketManager getInstance() {
-        if (instance == null) {
-            instance = new TicketManager();
-        }
-        return instance;
-    }
 
     /**
      * Load player statistics from JSON files in the specified directory.
      *
      * @param statsDirectory The {@link File} directory containing player stats JSON files.
      */
-    public void loadPlayerStats(File statsDirectory) {
-        this.statsDirectory = statsDirectory;
+    public static void loadPlayerStats(File statsDirectory) {
+        TicketManager.setStatsDirectory(statsDirectory);
 
         if (!statsDirectory.exists() || !statsDirectory.isDirectory()) {
             OMCPlugin.getInstance().getSLF4JLogger().info("Stats directory does not exist or is not a directory.");
@@ -61,7 +49,7 @@ public class TicketManager {
      *
      * @param statFile The {@link File} containing the player's stats.
      */
-    private void loadPlayerStat(File statFile) {
+    private static void loadPlayerStat(File statFile) {
         try {
             String fileName = statFile.getName();
             String uuidString = fileName.substring(0, fileName.lastIndexOf('.'));
@@ -120,7 +108,7 @@ public class TicketManager {
      * @param uuid The {@link UUID} of the player.
      * @return The {@link PlayerStats} if found, otherwise null.
      */
-    public PlayerStats getPlayerStats(UUID uuid) {
+    public static PlayerStats getPlayerStats(UUID uuid) {
         return timePlayed.stream()
                 .filter(stats -> stats.getUniqueID().equals(uuid))
                 .findFirst()
@@ -133,7 +121,7 @@ public class TicketManager {
      * @param uuid The {@link UUID} of the player.
      * @return The playtime in seconds, or 0 if not found.
      */
-    public int getPlayTimeFromUUID(UUID uuid) {
+    public static int getPlayTimeFromUUID(UUID uuid) {
         return timePlayed.stream()
                 .filter(stats -> stats.getUniqueID().equals(uuid))
                 .mapToInt(PlayerStats::getTimePlayed)
@@ -148,7 +136,7 @@ public class TicketManager {
      * @param ticketToGive The number of tickets to set.
      * @param given        Whether the ticket has been given.
      */
-    public void setTicketGiven(UUID uuid, int ticketToGive, boolean given) {
+    public static void setTicketGiven(UUID uuid, int ticketToGive, boolean given) {
         for (PlayerStats stats : timePlayed) {
             if (stats.getUniqueID().equals(uuid)) {
                 stats.setTicketRemaining(ticketToGive);
@@ -167,7 +155,7 @@ public class TicketManager {
      * @param ticketToGive The number of tickets to set.
      * @param given        Whether the ticket has been given.
      */
-    private void updatePlayerJsonFile(UUID uuid, int ticketToGive, boolean given) {
+    private static void updatePlayerJsonFile(UUID uuid, int ticketToGive, boolean given) {
         File playerFile = new File(statsDirectory, uuid.toString() + ".json");
         if (!playerFile.exists()) {
             OMCPlugin.getInstance().getSLF4JLogger().warn("Player stats file not found for UUID: {}", uuid);
@@ -222,7 +210,7 @@ public class TicketManager {
      * @param uuid The UUID of the player.
      * @return true if a ticket was used, false if no tickets are remaining or player not found.
      */
-    public boolean useTicket(UUID uuid) {
+    public static boolean useTicket(UUID uuid) {
         for (PlayerStats stats : timePlayed) {
             if (stats.getUniqueID().equals(uuid)) {
                 if (stats.getTicketRemaining() > 0) {
@@ -242,7 +230,7 @@ public class TicketManager {
      * @param uuid The UUID of the player.
      * @return The number of tickets given, or 0 if already given or player not found.
      */
-    public int giveTicket(UUID uuid) {
+    public static int giveTicket(UUID uuid) {
         for (PlayerStats stats : timePlayed) {
             if (stats.getUniqueID().equals(uuid)) {
                 if (!stats.isTicketGiven()) {

@@ -165,7 +165,7 @@ public class MachineBallsOpenMenu extends Menu {
         winningItem = selectRandomLoot();
         finished = true;
 
-        if (!TicketManager.getInstance().useTicket(getOwner().getUniqueId())) {
+        if (!TicketManager.useTicket(getOwner().getUniqueId())) {
             MessagesManager.sendMessage(getOwner(),
                     Component.text("§cVous n'avez pas assez de tickets !"),
                     Prefix.OPENMC, MessageType.ERROR, true);
@@ -221,7 +221,7 @@ public class MachineBallsOpenMenu extends Menu {
     }
 
     private void giveReward(LootItem wonItem) {
-        PlayerStats ps = TicketManager.getInstance().getPlayerStats(getOwner().getUniqueId());
+        PlayerStats ps = TicketManager.getPlayerStats(getOwner().getUniqueId());
         if (ps == null) return;
 
         String itemKey = wonItem.displayName();
@@ -247,7 +247,7 @@ public class MachineBallsOpenMenu extends Menu {
             ps.getMaxItemsGiven().put(itemKey, alreadyWon + 1);
         }
 
-        TicketManager.getInstance().setTicketGiven(getOwner().getUniqueId(), ps.getTicketRemaining(), ps.isTicketGiven());
+        TicketManager.setTicketGiven(getOwner().getUniqueId(), ps.getTicketRemaining(), ps.isTicketGiven());
         MessagesManager.sendMessage(getOwner(),
                 Component.text("§aVous avez gagné : ")
                         .append(Component.text(wonItem.displayName()))
@@ -302,7 +302,7 @@ public class MachineBallsOpenMenu extends Menu {
                 14.5,
                 List.of(new ItemStack(Material.COAL, 16))));
 
-        PlayerStats ps = TicketManager.getInstance().getPlayerStats(getOwner().getUniqueId());
+        PlayerStats ps = TicketManager.getPlayerStats(getOwner().getUniqueId());
         Iterator<LootItem> iterator = items.iterator();
         while (iterator.hasNext()) {
             LootItem item = iterator.next();
