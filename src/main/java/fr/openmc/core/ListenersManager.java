@@ -32,6 +32,7 @@ public class ListenersManager {
                 new BossbarListener(),
                 new PlayerSettingsManager(),
                 new InteractListener(),
+                new BlockBreakListener(),
                 new ItemsAddersListener()
         );
     }
