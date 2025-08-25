@@ -37,11 +37,6 @@ public class DBCityChest {
     }
 
     public ItemStack[] getContent() {
-        try {
-            return BukkitSerializer.deserializeItemStacks(content);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return BukkitSerializer.deserializeItemStacks(content);
     }
 }
