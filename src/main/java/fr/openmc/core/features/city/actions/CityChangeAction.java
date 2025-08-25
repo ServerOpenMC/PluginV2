@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.conditions.CityTypeConditions;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -31,6 +32,12 @@ public class CityChangeAction {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         if (!CityTypeConditions.canCityChangeType(city, player)) return;
+
+        if (typeChange.equals(CityType.WAR) && !FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.TYPE_WAR)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         String cityTypeActuel;
         String cityTypeAfter;
         cityTypeActuel = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";

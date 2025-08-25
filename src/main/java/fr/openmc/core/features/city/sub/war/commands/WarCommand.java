@@ -1,10 +1,11 @@
 package fr.openmc.core.features.city.sub.war.commands;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
@@ -33,6 +34,11 @@ public class WarCommand {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.WAR)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -74,6 +80,11 @@ public class WarCommand {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
             player.sendMessage("§cVous n'avez pas de ville.");
+            return;
+        }
+
+        if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.WAR)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

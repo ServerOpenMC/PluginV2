@@ -10,7 +10,7 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.actions.MayorSetWarpAction;
+import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
@@ -149,11 +149,11 @@ public class MayorLawMenu extends Menu {
                 ));
             }
 
-            if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+            if (!DynamicCooldownManager.isReady(city.getUUID(), "mayor:law-move-warp")) {
                 loreLawWarp.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-move-warp")))
+                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "mayor:law-move-warp")))
                         )
                 );
             } else {

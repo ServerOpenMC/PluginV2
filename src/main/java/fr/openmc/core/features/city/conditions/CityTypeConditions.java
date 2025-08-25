@@ -41,8 +41,8 @@ public class CityTypeConditions {
             return false;
         }
 
-        if (city.getBalance() < 20000) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez avoir au moins 20000" + EconomyManager.getEconomyIcon() + " dans votre banque pour changer le type de votre ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (city.getBalance() < 40000) {
+            MessagesManager.sendMessage(player, Component.text("Vous devez avoir au moins 40000" + EconomyManager.getEconomyIcon() + " dans votre banque pour changer le type de votre ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

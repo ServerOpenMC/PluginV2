@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.ranks;
+package fr.openmc.core.features.city.sub.rank.menus;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.PaginatedMenu;

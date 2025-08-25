@@ -302,7 +302,7 @@ public class AdminCityCommands {
         if (mascot.isImmunity()) {
             mascot.setImmunity(false);
         }
-        DynamicCooldownManager.clear(city.getUUID(), "city:immunity");
+        DynamicCooldownManager.clear(city.getUUID(), "city:immunity", false);
         UUID mascotUUID = mascot.getMascotUUID();
         if (mascotUUID!=null){
             Entity mob = Bukkit.getEntity(mascotUUID);

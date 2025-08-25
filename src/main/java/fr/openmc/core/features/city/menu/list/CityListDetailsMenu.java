@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
@@ -139,7 +140,7 @@ public class CityListDetailsMenu extends Menu {
 		
 		map.put(4, new ItemBuilder(this, new ItemStack(Material.PLAYER_HEAD),
 				itemMeta -> {
-					itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
+					itemMeta.displayName(Component.text("§bPopulation : " + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
 					itemMeta.lore(List.of(
 							Component.empty(),
 									Component.text("§e§lCLIQUEZ ICI POUR VOIR LES MEMBRES")

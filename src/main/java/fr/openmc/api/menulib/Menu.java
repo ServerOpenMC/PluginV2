@@ -162,6 +162,16 @@ public abstract class Menu implements InventoryHolder {
 	public final void setItem(Player player, Inventory inventory, int slot, ItemBuilder item) {
 		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) return;
 
+		if (this instanceof PaginatedMenu paginatedMenu) {
+			if (item.isPreviousButton() && paginatedMenu.isFirstPage()) {
+				return;
+			}
+
+			if (item.isNextButton() && paginatedMenu.isLastPage()) {
+				return;
+			}
+		}
+
 		if (item.isBackButton()) {
 			item = new ItemBuilder(this, item, itemMeta -> {
 				itemMeta.displayName(Component.text("§aRetour"));

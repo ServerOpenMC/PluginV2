@@ -23,6 +23,7 @@ import fr.openmc.core.features.city.sub.mayor.models.*;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -294,7 +295,48 @@ public class MayorManager {
         cityElections = new HashMap<>();
         playerVote = new HashMap<>();
         for (City city : CityManager.getCities()) {
-            // PERKS INIT
+            if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) continue;
+
+            initCityPhase1(city, copyCityMayor);
+        }
+
+        NPCManager.updateAllNPCS();
+
+        Bukkit.broadcast(Component.text("""
+                §8§m                                                     §r
+                §7
+                §3§lMAIRE!§r §7Les Elections sont ouvertes !§7
+                §8§oPrésentez vous, votez pour des maires, ...
+                §8§oRegardez si vous avez assez de membres!
+                §7
+                §8§m                                                     §r"""));
+    }
+
+    public static void initPhase2() {
+        OMCPlugin.getInstance().getSLF4JLogger().debug("MAYOR - INIT PHASE 2");
+        phaseMayor = 2;
+
+        // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
+        for (City city : CityManager.getCities()) {
+            if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) continue;
+
+            initCityPhase2(city);
+        }
+
+        NPCManager.updateAllNPCS();
+
+        Bukkit.broadcast(Component.text("""
+                §8§m                                                     §r
+                §7
+                §3§lMAIRE!§r §7Vos Réformes sont actives !§7
+                §8§oFaites vos stratégies, farmez, et pleins d'autres choses !
+                §7
+                §8§m                                                     §r"""));
+    }
+
+    public static void initCityPhase1(City city, HashMap<String, Mayor> copyCityMayor) {
+        // PERKS INIT
+        if (copyCityMayor != null) {
             for (UUID uuid : city.getMembers()) {
                 OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
                 if (offlinePlayer.isOnline()) {
@@ -321,66 +363,38 @@ public class MayorManager {
                     }
                 }
             }
-
-            if (city.getMembers().size() >= MEMBER_REQUEST_ELECTION) {
-                createMayor(null, null, city, null, null, null, null, ElectionType.ELECTION);
-            }
-            createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
-
         }
 
-        NPCManager.updateAllNPCS();
-
-        Bukkit.broadcast(Component.text("""
-                §8§m                                                     §r
-                §7
-                §3§lMAIRE!§r §7Les Elections sont ouvertes !§7
-                §8§oPrésentez vous, votez pour des maires, ...
-                §8§oRegardez si vous avez assez de membres!
-                §7
-                §8§m                                                     §r"""));
+        if (city.getMembers().size() >= MEMBER_REQUEST_ELECTION) {
+            createMayor(null, null, city, null, null, null, null, ElectionType.ELECTION);
+        }
+        createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
     }
 
-    public static void initPhase2() {
-        OMCPlugin.getInstance().getSLF4JLogger().debug("MAYOR - INIT PHASE 2");
-        phaseMayor = 2;
+    public static void initCityPhase2(City city) {
+        OMCPlugin.getInstance().getSLF4JLogger().debug("- City : {}", city.getName());
+        runSetupMayor(city);
 
-        // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
-        for (City city : CityManager.getCities()) {
-            OMCPlugin.getInstance().getSLF4JLogger().debug("- City : {}", city.getName());
-            runSetupMayor(city);
+        for (UUID uuid : city.getMembers()) {
+            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
+            if (offlinePlayer.isOnline()) {
+                Player player = offlinePlayer.getPlayer();
+                // Mineur Dévoué
+                if (PerkManager.hasPerk(city.getMayor(), Perks.MINER.getId())) {
+                    MinerPerk.updatePlayerEffects(player);
+                }
 
-            for (UUID uuid : city.getMembers()) {
-                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
-                if (offlinePlayer.isOnline()) {
-                    Player player = offlinePlayer.getPlayer();
-                    // Mineur Dévoué
-                    if (PerkManager.hasPerk(city.getMayor(), Perks.MINER.getId())) {
-                        MinerPerk.updatePlayerEffects(player);
-                    }
+                // Mascotte de Compagnie
+                if (PerkManager.hasPerk(city.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) {
+                    MascotFriendlyPerk.updatePlayerEffects(player);
+                }
 
-                    // Mascotte de Compagnie
-                    if (PerkManager.hasPerk(city.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) {
-                        MascotFriendlyPerk.updatePlayerEffects(player);
-                    }
-
-                    // Fruit du Démon
-                    if (PerkManager.hasPerk(city.getMayor(), Perks.FRUIT_DEMON.getId())) {
-                        DemonFruitPerk.applyReachBonus(player);
-                    }
+                // Fruit du Démon
+                if (PerkManager.hasPerk(city.getMayor(), Perks.FRUIT_DEMON.getId())) {
+                    DemonFruitPerk.applyReachBonus(player);
                 }
             }
         }
-
-        NPCManager.updateAllNPCS();
-
-        Bukkit.broadcast(Component.text("""
-                §8§m                                                     §r
-                §7
-                §3§lMAIRE!§r §7Vos Réformes sont actives !§7
-                §8§oFaites vos stratégies, farmez, et pleins d'autres choses !
-                §7
-                §8§m                                                     §r"""));
     }
 
     /**

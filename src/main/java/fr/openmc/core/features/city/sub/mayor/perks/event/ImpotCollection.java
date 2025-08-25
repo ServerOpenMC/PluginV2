@@ -86,7 +86,7 @@ public class ImpotCollection implements Listener {
                 return;
             }
 
-            BankManager.withdrawBankBalance(victim.getUniqueId(), amount);
+            BankManager.withdraw(victim.getUniqueId(), amount);
         } else {
             EconomyManager.withdrawBalance(victim.getUniqueId(), amount);
         }

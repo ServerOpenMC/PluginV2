@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.utils.PlayerNameCache;
@@ -93,7 +94,8 @@ public class CityTopMenu extends PaginatedMenu {
                                 .color(mayorColor)
                                 .decoration(TextDecoration.ITALIC, false)));
             }
-            cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + " membres"));
+            cityLore.add(Component.text("§7Niveau: §3" + city.getLevel()));
+            cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + " membres"));
             cityLore.add(Component.text("§7Superficie : §6" + city.getChunks().size() + " chunks"));
             cityLore.add(Component.text("§7Richesses : §6"
                     + EconomyManager.getFormattedSimplifiedNumber(city.getBalance())

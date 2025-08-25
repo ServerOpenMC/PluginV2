@@ -14,17 +14,12 @@ public class InputUtils {
         // for Sonar
     }
 
-    /**
-     * Check if input was for money
-     * @param input Input of Player
-     * @return Boolean
-     */
     public static boolean isInputMoney(String input) {
         if (input == null || input.isEmpty()) {
             return false;
         }
 
-        String regex = "^(\\d+)([kKmM]?)$";
+        String regex = "^(\\d+(?:\\.\\d+)?)([kKmM]?)$";
 
         if (!input.matches(regex)) {
             return false;
@@ -33,11 +28,11 @@ public class InputUtils {
         char lastChar = input.charAt(input.length() - 1);
         if (Character.isLetter(lastChar)) {
             char lowerChar = Character.toLowerCase(lastChar);
-            return lowerChar == 'k' || lowerChar == 'm' ||lowerChar == 'K' || lowerChar == 'M';
+            return lowerChar == 'k' || lowerChar == 'm' || lowerChar == 'K' || lowerChar == 'M';
         }
 
         try {
-            long value = Long.parseLong(input);
+            double value = Double.parseDouble(input);
             return value > 0;
         } catch (NumberFormatException e) {
             return false;

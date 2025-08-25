@@ -2,10 +2,15 @@ package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.actions.CityClaimAction;
+import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -32,6 +37,25 @@ public class CityClaimCondition {
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.CLAIM))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de claim"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
+        int amount = CityClaimAction.calculateAywenite(city.getChunks().size());
+        if (!ItemUtils.hasEnoughItems(player, CustomItemRegistry.getByName("omc_items:aywenite").getBest(), amount)) {
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas assez d'§dAywenite §f(" + amount + " nécessaires)"),
+                    Prefix.OPENMC,
+                    MessageType.ERROR,
+                    false
+            );
+            return false;
+        }
+
+        double money = CityClaimAction.calculatePrice(city.getChunks().size());
+
+        if (city.getBalance() < money) {
+            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour claim (" + money).append(Component.text(EconomyManager.getEconomyIcon() + " §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

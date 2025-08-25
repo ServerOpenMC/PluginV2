@@ -1,6 +1,9 @@
 package fr.openmc.core.features.economy.commands;
 
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.CityBankManager;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.menu.PersonalBankMenu;
@@ -21,23 +24,47 @@ public class BankCommands {
     @DefaultFor("~")
     @Description("Ouvre le menu de votre banque personelle")
     public static void openBankMenu(Player player) {
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         new PersonalBankMenu(player).open();
     }
 
     @Subcommand("deposit")
     @Description("Ajout de l'argent a votre banque personelle")
     void deposit(Player player, String input) {
-        BankManager.addBankBalance(player, input);
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        BankManager.deposit(player.getUniqueId(), input);
     }
 
     @Subcommand("withdraw")
     @Description("Retire de l'argent de votre banque personelle")
     void withdraw(Player player, String input) {
-        BankManager.withdrawBankBalance(player, input);
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        BankManager.withdraw(player.getUniqueId(), input);
     }
 
     @Subcommand({ "balance", "bal" })
     void withdraw(Player player) {
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+        if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         double balance = BankManager.getBankBalance(player.getUniqueId());
         MessagesManager.sendMessage(player, Component.text("Il y a §d" + EconomyManager.getFormattedSimplifiedNumber(balance) + "§r" + EconomyManager.getEconomyIcon() + " dans ta banque"), Prefix.BANK, MessageType.INFO, false);
     }

@@ -8,6 +8,7 @@ public enum NotationNote {
     NOTE_COHERENCE(10),
 
     NOTE_ACTIVITY(5),
+    NOTE_MILITARY(20),
 
     NOTE_PIB(15);
     private final int maxNote;

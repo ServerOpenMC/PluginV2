@@ -25,6 +25,8 @@ import java.time.DayOfWeek;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static fr.openmc.core.features.city.sub.notation.NotationNote.getMaxTotalNote;
+
 public class NotationManager {
 
     private static final DayOfWeek APPLY_NOTATION_DAY = DayOfWeek.MONDAY;
@@ -34,8 +36,9 @@ public class NotationManager {
 
 
     public static final Map<UUID, Long> activityNotation = new HashMap<>();
+    public static final Set<String> top10Cities = new HashSet<>();
 
-
+    private static Dao<ActivityTimePlayed, String> activityTimePlayedDao;
     private static Dao<CityNotation, String> notationDao;
 
     public NotationManager() {
@@ -49,6 +52,7 @@ public class NotationManager {
         );
 
         scheduleMidnightTask();
+        loadTop10Cities();
     }
 
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
@@ -56,8 +60,7 @@ public class NotationManager {
         notationDao = DaoManager.createDao(connectionSource, CityNotation.class);
 
         TableUtils.createTableIfNotExists(connectionSource, ActivityTimePlayed.class);
-        Dao<ActivityTimePlayed, String> activityTimePlayedDao = DaoManager.createDao(connectionSource, ActivityTimePlayed.class);
-
+        activityTimePlayedDao = DaoManager.createDao(connectionSource, ActivityTimePlayed.class);
         activityTimePlayedDao.queryForAll()
                 .forEach(activityTimePlayed -> activityNotation.put(
                         UUID.fromString(activityTimePlayed.getPlayerUUID()),
@@ -69,15 +72,19 @@ public class NotationManager {
         try {
             List<CityNotation> notations = notationDao.queryForAll();
 
-            notations.forEach(notation -> {
+            for (CityNotation notation : notations) {
                 String cityUUID = notation.getCityUUID();
+
+                City city = CityManager.getCity(cityUUID);
+
+                if (city == null) continue;
 
                 String weekStr = notation.getWeekStr();
 
                 cityNotations.computeIfAbsent(cityUUID, k -> new ArrayList<>()).add(notation);
 
                 notationPerWeek.computeIfAbsent(weekStr, k -> new ArrayList<>()).add(notation);
-            });
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -109,7 +116,7 @@ public class NotationManager {
                 return list;
             });
 
-            cityNotations.compute(weekStr, (k, list) -> {
+            cityNotations.compute(notation.getCityUUID(), (k, list) -> {
                 if (list == null) list = new ArrayList<>();
                 list.removeIf(n -> Objects.equals(n.getCityUUID(), notation.getCityUUID()));
                 list.add(notation);
@@ -118,6 +125,17 @@ public class NotationManager {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void loadTop10Cities() {
+        top10Cities.clear();
+
+        for (String weekStr : notationPerWeek.keySet()) {
+            getSortedNotationForWeek(weekStr).stream()
+                    .limit(10)
+                    .map(CityNotation::getCityUUID)
+                    .forEach(top10Cities::add);
         }
     }
 
@@ -131,7 +149,7 @@ public class NotationManager {
                 .toList();
     }
 
-    public static double getActivityScore(City city) {
+    public static double getActivityScore(City city) throws SQLException {
         double totalScore = 0;
         int playerCount = 0;
 
@@ -150,9 +168,33 @@ public class NotationManager {
                 totalScore += playerScore;
                 playerCount++;
             }
+
+            activityTimePlayedDao.createOrUpdate(
+                    new ActivityTimePlayed(playerUUID, currentPlaytime)
+            );
         }
 
         return playerCount == 0 ? 0 : totalScore / playerCount;
+    }
+
+    public static double getMilitaryScore(City city) {
+        int powerPoints = city.getPowerPoints();
+
+        int maxNote = NotationNote.NOTE_MILITARY.getMaxNote();
+
+        int pointsToGetMaxNote = 30;
+
+        double score = ((double) powerPoints / pointsToGetMaxNote) * maxNote;
+
+        if (score > maxNote) {
+            score = maxNote;
+        }
+
+        if (score < 0) {
+            score = 0;
+        }
+
+        return score;
     }
 
     public static double getEconomyScore(City city, double pibMax) {
@@ -193,7 +235,7 @@ public class NotationManager {
         return maxPib;
     }
 
-    public static void calculateAllCityScore(String weekStr) {
+    public static void calculateAllCityScore(String weekStr) throws SQLException {
         List<CityNotation> notationsCopy = new ArrayList<>(notationPerWeek.get(weekStr));
 
         for (CityNotation notations : notationsCopy) {
@@ -201,9 +243,11 @@ public class NotationManager {
 
             notations.setNoteActivity(getActivityScore(city));
 
+            notations.setNoteMilitary(getMilitaryScore(city));
+
             notations.setNoteEconomy(Math.floor(getEconomyScore(
                     city,
-                    getMaxPib(cityNotations.get(weekStr).stream()
+                    getMaxPib(cityNotations.get(city.getUUID()).stream()
                             .map(CityNotation::getCityUUID)
                             .map(CityManager::getCity)
                             .collect(Collectors.toList()))
@@ -216,7 +260,7 @@ public class NotationManager {
     public static double calculateReward(CityNotation notation) {
         double points = notation.getTotalNote();
 
-        double money = points * (45000.0 / 70.0);
+        double money = points * (45000.0 / getMaxTotalNote());
         notation.setMoney(money);
         return money;
     }
@@ -239,7 +283,11 @@ public class NotationManager {
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             String weekStr = DateUtils.getWeekFormat();
-            calculateAllCityScore(weekStr);
+            try {
+                calculateAllCityScore(weekStr);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
             giveReward(weekStr);
 

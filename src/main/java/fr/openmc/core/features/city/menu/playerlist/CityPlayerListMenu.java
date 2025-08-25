@@ -13,6 +13,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
@@ -166,6 +167,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Player player = getOwner();
+
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
         Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
@@ -178,7 +182,12 @@ public class CityPlayerListMenu extends PaginatedMenu {
         map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
         map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_search")).getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Inviter des §dpersonnes"));
-            itemMeta.lore(List.of(Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir !")));
+            itemMeta.lore(
+                    List.of(
+                            Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir !"),
+                            Component.text("§7Vous êtes à " + playerCity.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(playerCity.getLevel()))
+                    )
+            );
         }).setOnClick(inventoryClickEvent -> {
             DialogInput.send(player, Component.text("Entrez le nom du joueur"), MAX_LENGTH_PLAYERNAME, input -> {
                 if (InputUtils.isInputPlayer(input)) {

@@ -5,9 +5,9 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
@@ -125,7 +125,7 @@ public class MayorMandateMenu extends Menu {
         inventory.put(29, new ItemBuilder(this, iaPerk1, itemMeta -> {
             itemMeta.customName(Component.text(namePerk1));
             itemMeta.lore(lorePerk1);
-        }).hide(perk1.getToHide()));
+        }).hide((perk1 != null) ? perk1.getToHide() : null));
 
         ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
         String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
@@ -133,7 +133,7 @@ public class MayorMandateMenu extends Menu {
         inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
             itemMeta.customName(Component.text(namePerk2));
             itemMeta.lore(lorePerk2);
-        }).hide(perk2.getToHide()));
+        }).hide((perk2 != null) ? perk2.getToHide() : null));
 
         ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
         String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
@@ -141,7 +141,7 @@ public class MayorMandateMenu extends Menu {
         inventory.put(33, new ItemBuilder(this, iaPerk3, itemMeta -> {
             itemMeta.customName(Component.text(namePerk3));
             itemMeta.lore(lorePerk3);
-        }).hide(perk3.getToHide()));
+        }).hide((perk3 != null) ? perk3.getToHide() : null));
 
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));

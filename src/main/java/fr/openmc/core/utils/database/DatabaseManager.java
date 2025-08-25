@@ -9,6 +9,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
+import fr.openmc.core.features.city.sub.rank.CityRankManager;
+import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -48,6 +51,7 @@ public class DatabaseManager {
             String password = config.getString("database.password");
             connectionSource = new JdbcPooledConnectionSource(databaseUrl, username, password);
 
+            WarManager.initDB(connectionSource);
             NotationManager.initDB(connectionSource);
             MayorManager.initDB(connectionSource);
             MilestonesManager.initDB(connectionSource);
@@ -61,8 +65,10 @@ public class DatabaseManager {
             FriendSQLManager.initDB(connectionSource);
             DynamicCooldownManager.initDB(connectionSource);
             CityManager.initDB(connectionSource);
+            CityRankManager.initDB(connectionSource);
             MascotsManager.initDB(connectionSource);
             PlayerSettingsManager.initDB(connectionSource);
+            CityStatisticsManager.initDB(connectionSource);
         } catch (SQLException e) {
             OMCPlugin.getInstance().getSLF4JLogger().error("Failed to initialize the database connection.", e);
             throw new RuntimeException(e);

@@ -19,7 +19,11 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
+import fr.openmc.core.features.city.sub.milestone.CityMilestoneManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
+import fr.openmc.core.features.city.sub.rank.CityRankCommands;
+import fr.openmc.core.features.city.sub.rank.CityRankManager;
+import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ChunkPos;
@@ -76,21 +80,22 @@ public class CityManager implements Listener {
 
         OMCPlugin.registerEvents(
                 new CityChatListener()
-            );
+        );
 
         // SUB-FEATURE
-        new MascotsManager();
         new MayorManager();
         new ProtectionsManager();
         new WarManager();
         new CityBankManager();
+        new CityStatisticsManager();
         new NotationManager();
+        new CityRankManager();
+        new CityMilestoneManager();
     }
 
     private static Dao<DBCity, String> citiesDao;
     private static Dao<DBCityMember, String> membersDao;
     private static Dao<DBCityPermission, String> permissionsDao;
-    private static Dao<CityRank, String> ranksDao;
     private static Dao<DBCityClaim, String> claimsDao;
     private static Dao<DBCityChest, String> chestsDao;
 
@@ -103,9 +108,6 @@ public class CityManager implements Listener {
 
         TableUtils.createTableIfNotExists(connectionSource, DBCityPermission.class);
         permissionsDao = DaoManager.createDao(connectionSource, DBCityPermission.class);
-
-        TableUtils.createTableIfNotExists(connectionSource, CityRank.class);
-        ranksDao = DaoManager.createDao(connectionSource, CityRank.class);
 
         TableUtils.createTableIfNotExists(connectionSource, DBCityClaim.class);
         claimsDao = DaoManager.createDao(connectionSource, DBCityClaim.class);
@@ -140,19 +142,6 @@ public class CityManager implements Listener {
         }
 
         cities.values().forEach(City::initializeRanks);
-
-        try {
-            ranksDao.queryForAll()
-                    .forEach(rank -> {
-                        City city = getCity(rank.getCityUUID());
-                        if (city != null) {
-                            city.getRanks().add(rank);
-                        }
-                    });
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void saveCity(City city) {
@@ -414,69 +403,6 @@ public class CityManager implements Listener {
         return claimedChunks.get(new ChunkPos(x, z));
     }
 
-
-    /* =================== RANKS =================== */
-
-    /**
-     * Add a city rank to the database
-     *
-     * @param rank The rank to add
-     */
-    public static void addCityRank(CityRank rank) {
-        try {
-            ranksDao.create(rank);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Remove a city rank from the database
-     *
-     * @param rank The rank to remove
-     */
-    public static void removeCityRank(CityRank rank) {
-        try {
-            DeleteBuilder<CityRank, String> delete = ranksDao.deleteBuilder();
-            delete.where().eq("city_uuid", rank.getCityUUID()).and().eq("name", rank.getName());
-            ranksDao.delete(delete.prepare());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Update a city rank in the database
-     *
-     * @param rank The rank to update
-     */
-    public static void updateCityRank(CityRank rank) {
-        try {
-            ranksDao.update(rank);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Load city ranks from the database and add them to the city
-     *
-     * @param city The city to load ranks for
-     */
-    public static void loadCityRanks(City city) {
-        try {
-            QueryBuilder<CityRank, String> query = ranksDao.queryBuilder();
-            query.where().eq("city_uuid", city.getUUID());
-            List<CityRank> dbRanks = ranksDao.query(query.prepare());
-
-            for (CityRank dbRank : dbRanks) {
-                city.getRanks().add(dbRank);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Register a city
      *
@@ -516,7 +442,7 @@ public class CityManager implements Listener {
 
             if (!DynamicCooldownManager.isReady(mascot.getMascotUUID().toString(), "mascots:move")) {
                 if (Bukkit.getEntity(memberId) != null) {
-                    DynamicCooldownManager.clear(mascot.getMascotUUID().toString(), "mascots:move");
+                    DynamicCooldownManager.clear(mascot.getMascotUUID().toString(), "mascots:move", false);
                 }
             }
         }
@@ -540,7 +466,7 @@ public class CityManager implements Listener {
         }
 
         if (DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
-            DynamicCooldownManager.clear(city.getUUID(), "city:type");
+            DynamicCooldownManager.clear(city.getUUID(), "city:type", false);
         }
 
         MascotsManager.removeMascotsFromCity(city);
@@ -558,9 +484,7 @@ public class CityManager implements Listener {
                 permissionsDelete.where().eq("city", city.getUUID());
                 permissionsDao.delete(permissionsDelete.prepare());
 
-                DeleteBuilder<CityRank, String> ranksDelete = ranksDao.deleteBuilder();
-                ranksDelete.where().eq("city_uuid", city.getUUID());
-                ranksDao.delete(ranksDelete.prepare());
+                CityRankManager.removeRanks(city);
 
                 DeleteBuilder<DBCityClaim, String> claimsDelete = claimsDao.deleteBuilder();
                 claimsDelete.where().eq("city", city.getUUID());

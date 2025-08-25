@@ -16,6 +16,7 @@ public enum Perks {
     FOU_DE_RAGE(
             1,
             PerkType.BASIC,
+            PerkCategory.MILITARY,
             0,
             "§e§lFou de Rage",
             List.of(
@@ -27,6 +28,7 @@ public enum Perks {
     IMPOT(
             2,
             PerkType.EVENT,
+            PerkCategory.ECONOMIC,
             3 * 24 * 60 * 60 * 1000L, // 3 jours
             "§e§lPrévélement d'Impot",
             List.of(
@@ -38,6 +40,7 @@ public enum Perks {
     MINER(
             3,
             PerkType.BASIC,
+            PerkCategory.AGRICULTURAL,
             0,
             "§e§lMineur Dévoué",
             List.of(
@@ -49,6 +52,7 @@ public enum Perks {
     FRUIT_DEMON(
             4,
             PerkType.BASIC,
+            PerkCategory.MILITARY,
             0,
             "§e§lFruit du Démon",
             List.of(
@@ -60,17 +64,19 @@ public enum Perks {
     BUSINESS_MAN(
             5,
             PerkType.BASIC,
+            PerkCategory.ECONOMIC,
             0,
             "§e§lBuisness Man",
             List.of(
-                    Component.text("§7Mets l'intérêt à §33%"),
-                    Component.text("§7pour la ville et les membres de la ville !")
+                    Component.text("§7Ajout §32% à l'intérêt de la banque"),
+                    Component.text("§7de la ville et des joueurs!")
             ),
             ItemStack.of(Material.DIAMOND)
     ),
     IRON_BLOOD(
             6,
             PerkType.BASIC,
+            PerkCategory.MILITARY,
             0,
             "§e§lFer dans le Sang",
             List.of(
@@ -82,6 +88,7 @@ public enum Perks {
     CITY_HUNTER(
             7,
             PerkType.BASIC,
+            PerkCategory.STRATEGY,
             0,
             "§e§lChasseur Urbain",
             List.of(
@@ -93,6 +100,7 @@ public enum Perks {
     AYWENITER(
             8,
             PerkType.BASIC,
+            PerkCategory.AGRICULTURAL,
             0,
             "§e§lAyweniteur",
             List.of(
@@ -103,6 +111,7 @@ public enum Perks {
     GPS_TRACKER(
             9,
             PerkType.BASIC,
+            PerkCategory.STRATEGY,
             0,
             "§e§lTraceur GPS",
             List.of(
@@ -114,6 +123,7 @@ public enum Perks {
     SYMBIOSIS(
             10,
             PerkType.BASIC,
+            PerkCategory.MILITARY,
             0,
             "§e§lSymbiose",
             List.of(
@@ -125,6 +135,7 @@ public enum Perks {
     AGRICULTURAL_ESSOR(
             11,
             PerkType.EVENT,
+            PerkCategory.AGRICULTURAL,
             24 * 60 * 60 * 1000L, // 1 jour
             "§e§lEssor Agricole",
             List.of(
@@ -136,6 +147,7 @@ public enum Perks {
     MINERAL_RUSH(
             12,
             PerkType.EVENT,
+            PerkCategory.AGRICULTURAL,
             24 * 60 * 60 * 1000L, // 1 jour
             "§e§lRuée Minière",
             List.of(
@@ -148,6 +160,7 @@ public enum Perks {
     MILITARY_DISSUASION(
             13,
             PerkType.EVENT,
+            PerkCategory.STRATEGY,
             25 * 60 * 1000L, // 25 minutes
             "§e§lDissuasion Militaire",
             List.of(
@@ -159,6 +172,7 @@ public enum Perks {
     IDYLLIC_RAIN(
             14,
             PerkType.EVENT,
+            PerkCategory.ECONOMIC,
             24 * 60 * 60 * 1000L, // 1 jour
             "§e§lPluie idyllique",
             List.of(
@@ -169,6 +183,7 @@ public enum Perks {
     MASCOTS_FRIENDLY(
             15,
             PerkType.BASIC,
+            PerkCategory.MILITARY,
             0,
             "§e§lMascotte de Compagnie",
             List.of(
@@ -181,15 +196,17 @@ public enum Perks {
 
     private final int id;
     private final PerkType type;
+    private final PerkCategory category;
     private final long cooldown;
     private final String name;
     private final List<Component> lore;
     private final ItemStack itemStack;
     private final DataComponentType[] toHide;
 
-    Perks(int id, PerkType type, long cooldown, String name, List<Component> lore, ItemStack itemStack, DataComponentType... toHide) {
+    Perks(int id, PerkType type, PerkCategory category, long cooldown, String name, List<Component> lore, ItemStack itemStack, DataComponentType... toHide) {
         this.id = id;
         this.type = type;
+        this.category = category;
         this.cooldown = cooldown;
         this.name = name;
         this.lore = lore;

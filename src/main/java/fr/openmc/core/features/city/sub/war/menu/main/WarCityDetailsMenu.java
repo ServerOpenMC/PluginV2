@@ -73,7 +73,7 @@ public class WarCityDetailsMenu extends Menu {
             map.put(11, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
-            }).hide(perk1.getToHide()));
+            }).hide((perk1 != null) ? perk1.getToHide() : null));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
@@ -81,7 +81,7 @@ public class WarCityDetailsMenu extends Menu {
             map.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
-            }).hide(perk2.getToHide()));
+            }).hide((perk2 != null) ? perk2.getToHide() : null));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
@@ -89,7 +89,7 @@ public class WarCityDetailsMenu extends Menu {
             map.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
-            }).hide(perk3.getToHide()));
+            }).hide((perk3 != null) ? perk3.getToHide() : null));
         }
         Mascot mascot = city.getMascot();
         LivingEntity mascotMob = (LivingEntity) mascot.getEntity();

@@ -6,9 +6,6 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.messages.MessageType;
-import fr.openmc.core.utils.messages.MessagesManager;
-import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -70,15 +67,8 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre l'§6Argent de votre banque"));
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
-            if (halfMoneyBankPlayer != 0) {
-                BankManager.withdrawBankBalance(player.getUniqueId(), moneyBankPlayer);
-                EconomyManager.addBalance(player.getUniqueId(), moneyBankPlayer);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer)
-                            + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
-            } else {
-                MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.BANK, MessageType.ERROR, false);
-            }
             player.closeInventory();
+            BankManager.withdraw(player.getUniqueId(), String.valueOf(moneyBankPlayer));
         }));
 
         List<Component> loreBankWithdrawHalf = List.of(
@@ -93,14 +83,7 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6Argent de votre banque"));
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
-            if (halfMoneyBankPlayer != 0) {
-                BankManager.withdrawBankBalance(player.getUniqueId(), halfMoneyBankPlayer);
-                EconomyManager.addBalance(player.getUniqueId(), halfMoneyBankPlayer);
-                MessagesManager.sendMessage(player, Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer) + "§r" + EconomyManager.getEconomyIcon() + " ont été transférés à votre compte"), Prefix.BANK, MessageType.SUCCESS, false);
-            } else {
-                MessagesManager.sendMessage(player, Component.text("Impossible de vous transféré l'argent, votre banque est vide"), Prefix.BANK, MessageType.ERROR, false);
-            }
-
+            BankManager.withdraw(player.getUniqueId(), String.valueOf(halfMoneyBankPlayer));
             player.closeInventory();
         }));
 
@@ -115,7 +98,7 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
             DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input ->
-                    BankManager.withdrawBankBalance(player, input)
+                    BankManager.withdraw(player.getUniqueId(), input)
             );
         }));
 
