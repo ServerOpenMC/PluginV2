@@ -97,9 +97,9 @@ public class MascotsDamageListener implements Listener {
         }
 
         PersistentDataContainer data = damageEntity.getPersistentDataContainer();
-        String pdcCityUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
-
-        if (pdcCityUUID == null) return;
+        String pdcCityData = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        if (pdcCityData == null) return;
+        UUID pdcCityUUID = UUID.fromString(pdcCityData);
 
         Set<EntityDamageEvent.DamageCause> allowedCauses = Set.of(
                 EntityDamageEvent.DamageCause.ENTITY_ATTACK,
