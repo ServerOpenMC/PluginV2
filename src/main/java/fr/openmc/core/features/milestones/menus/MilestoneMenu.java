@@ -24,6 +24,23 @@ public class MilestoneMenu extends Menu {
     private final List<Quest> steps;
     private int offset = 0;
 
+    private static final int START_ROW = 0;
+    private static final int END_ROW = 4;
+    private static final int[] COLS = {0, 2, 4, 6, 8};
+    private static final int MAX_VISIBLE_NODES = 2 * COLS.length;
+
+    private static int slotAt(int row, int col) {
+        return row * 9 + col;
+    }
+
+    private static int rowOf(int slot) {
+        return slot / 9;
+    }
+
+    private static int colOf(int slot) {
+        return slot % 9;
+    }
+
     public MilestoneMenu(Player owner, Milestone milestone) {
         super(owner);
         this.milestone = milestone;
@@ -56,65 +73,78 @@ public class MilestoneMenu extends Menu {
         Player player = getOwner();
         int currentStep = MilestonesManager.getPlayerStep(milestone.getType(), player);
 
-        int visibleSteps = 5;
-        int baseSlot = 18;
+        int remaining = Math.max(0, steps.size() - offset);
+        int visible = Math.min(MAX_VISIBLE_NODES, remaining);
 
-        for (int i = 0; i < visibleSteps; i++) {
-            int questIndex = offset + i;
-            if (questIndex >= steps.size()) break;
+        Snake snake = buildSnake(visible);
 
-            int slot = baseSlot + (i * 2);
-            Quest quest = steps.get(questIndex);
-            boolean completed = questIndex < currentStep;
-            boolean active = questIndex == currentStep;
+        for (int i = 0; i < visible; i++) {
+            int stepIndex = offset + i;
+            Quest quest = steps.get(stepIndex);
+
+            boolean completed = stepIndex < currentStep;
+            boolean active = stepIndex == currentStep;
 
             List<Component> stepLore = new ArrayList<>();
             quest.getDescription(player.getUniqueId()).forEach(line -> stepLore.add(Component.text(line)));
 
+
+            int slot = snake.nodes.get(i);
             content.put(slot, new ItemBuilder(this, quest.getIcon(), meta -> {
-                meta.displayName(Component.text((completed ? "§a" : active ? "§e" : "§7") + quest.getName()));
+                meta.displayName(Component.text(
+                        (completed ? "§a" : active ? "§e" : "§7") + quest.getName()
+                ));
                 meta.lore(stepLore);
                 meta.setEnchantmentGlintOverride(completed || active);
             }));
+        }
 
-            if (i < visibleSteps - 1 && questIndex + 1 < steps.size()) {
-                int linkSlot = slot + 1;
-                boolean previousCompleted = questIndex < currentStep;
-                Material linkType = previousCompleted ? Material.LIME_STAINED_GLASS_PANE : Material.GRAY_STAINED_GLASS_PANE;
+        for (int j = 0; j < snake.links.size(); j++) {
+            int a = snake.links.get(j);
 
-                content.put(linkSlot, new ItemBuilder(this, linkType, meta ->
-                        meta.displayName(Component.empty())));
+            int segmentIndex = -1;
+            for (int i = 0; i + 1 < snake.nodes.size(); i++) {
+                int n1 = snake.nodes.get(i);
+                int n2 = snake.nodes.get(i + 1);
+
+                if ((colOf(n1) == colOf(n2) && colOf(n1) == colOf(a) && rowOf(a) > Math.min(rowOf(n1), rowOf(n2)) && rowOf(a) < Math.max(rowOf(n1), rowOf(n2)))
+                        || (rowOf(n1) == rowOf(n2) && rowOf(n1) == rowOf(a) && colOf(a) > Math.min(colOf(n1), colOf(n2)) && colOf(a) < Math.max(colOf(n1), colOf(n2)))) {
+                    segmentIndex = i;
+                    break;
+                }
             }
-        }
 
-        if (offset > 0) {
-            content.put(28, new ItemBuilder(this, Material.ARROW,
-                    meta -> meta.displayName(Component.text("§e◀ Étape précédente")))
-                    .setOnClick(click -> {
-                        if (offset > 0) {
-                            offset--;
-                            open();
-                        }
-                    })
-            );
-        }
+            boolean alreadyPassed = (segmentIndex != -1 && (offset + segmentIndex + 1) <= currentStep);
 
-        if (offset + visibleSteps < steps.size()) {
-            content.put(34, new ItemBuilder(this, Material.ARROW,
-                    meta -> meta.displayName(Component.text("§eÉtape suivante ▶")))
-                    .setOnClick(click -> {
-                        if (offset + visibleSteps < steps.size()) {
-                            offset++;
-                            open();
-                        }
-                    })
-            );
+            Material linkMat = alreadyPassed
+                    ? Material.LIME_STAINED_GLASS_PANE
+                    : Material.GRAY_STAINED_GLASS_PANE;
+
+            content.put(a, new ItemBuilder(this, linkMat).hideTooltip(true));
         }
 
         content.put(45, new ItemBuilder(this, Material.ARROW, true));
 
-        content.put(53, new ItemBuilder(this, Material.BARRIER, meta ->
-                meta.displayName(Component.text("§cFermer"))).setCloseButton());
+        if (offset > 0) {
+            content.put(48, new ItemBuilder(this, Material.ARROW,
+                    meta -> meta.displayName(Component.text("§e◀ Page précédente")))
+                    .setOnClick(c -> {
+                        offset = Math.max(0, offset - MAX_VISIBLE_NODES);
+                        open();
+                    }));
+        }
+
+        if (offset + visible < steps.size()) {
+            content.put(50, new ItemBuilder(this, Material.ARROW,
+                    meta -> meta.displayName(Component.text("§ePage suivante ▶")))
+                    .setOnClick(c -> {
+                        offset = Math.min(steps.size() - 1, offset + MAX_VISIBLE_NODES);
+                        open();
+                    }));
+        }
+
+        content.put(53, new ItemBuilder(this, Material.BARRIER,
+                meta -> meta.displayName(Component.text("§cFermer"))).setCloseButton());
 
         return content;
     }
@@ -126,5 +156,62 @@ public class MilestoneMenu extends Menu {
     @Override
     public List<Integer> getTakableSlot() {
         return List.of();
+    }
+
+    private record Snake(List<Integer> nodes, List<Integer> links) {
+    }
+
+    private Snake buildSnake(int count) {
+        List<Integer> nodes = new ArrayList<>();
+        List<Integer> links = new ArrayList<>();
+        int placed = 0;
+
+        for (int colIdx = 0; colIdx < COLS.length && placed < count; colIdx++) {
+            int col = COLS[colIdx];
+            int nextPrimary = (colIdx + 1 < COLS.length) ? COLS[colIdx + 1] : -1;
+            boolean topDown = (colIdx % 2 == 0);
+
+            if (topDown) {
+                // haut
+                if (placed < count) {
+                    nodes.add(slotAt(START_ROW, col));
+                    placed++;
+                    if (placed < count) {
+                        for (int r = START_ROW + 1; r <= END_ROW - 1; r++)
+                            links.add(slotAt(r, col));
+                    }
+                }
+                // bas
+                if (placed < count) {
+                    nodes.add(slotAt(END_ROW, col));
+                    placed++;
+                    if (placed < count && nextPrimary != -1) {
+                        for (int c = col + 1; c < nextPrimary; c++)
+                            links.add(slotAt(END_ROW, c));
+                    }
+                }
+            } else {
+                // bas
+                if (placed < count) {
+                    nodes.add(slotAt(END_ROW, col));
+                    placed++;
+                    if (placed < count) {
+                        for (int r = END_ROW - 1; r >= START_ROW + 1; r--)
+                            links.add(slotAt(r, col));
+                    }
+                }
+
+                // haut
+                if (placed < count) {
+                    nodes.add(slotAt(START_ROW, col));
+                    placed++;
+                    if (placed < count && nextPrimary != -1) {
+                        for (int c = col + 1; c < nextPrimary; c++)
+                            links.add(slotAt(START_ROW, c));
+                    }
+                }
+            }
+        }
+        return new Snake(nodes, links);
     }
 }

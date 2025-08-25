@@ -19,6 +19,7 @@ import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.homes.command.TpHome;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
+import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
 import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.utils.DateUtils;
@@ -218,9 +219,7 @@ public class Page1 implements Menu {
         } else if (QUEST_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> QuestCommand.onQuest(player));
         } else if (MILESTONES_SLOTS.contains(slot)) {
-            PacketMenuLib.closeMenu(player);
-            player.sendMessage(Component.text(FontImageWrapper.replaceFontImages("Les Milestones sont toujours en développement :sad:."), NamedTextColor.RED));
-            // TODO : ajouter le menu des Milestones lorsque c'est fait
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new MainMilestonesMenu(player));
         } else if (CONTEST_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ContestCommand.mainCommand(player));
         } else if (SHOP_SLOTS.contains(slot)) {
