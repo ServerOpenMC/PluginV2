@@ -199,6 +199,7 @@ public class MascotsManager {
         World world = Bukkit.getWorld("world");
         LivingEntity entityMascot = (LivingEntity) mascots.getEntity();
         Location mascotsLoc = entityMascot.getLocation();
+        UUID mascotUUID = entityMascot.getUniqueId();
 
         boolean glowing = entityMascot.isGlowing();
         long cooldown = 0;
@@ -245,6 +246,8 @@ public class MascotsManager {
 
         setMascotsData(newMascots, mascots.getCity().getName(), maxHealth, baseHealth);
         PersistentDataContainer newData = newMascots.getPersistentDataContainer();
+        MascotsManager.mascotsByEntityUUID.remove(mascotUUID);
+        MascotsManager.mascotsByEntityUUID.put(newMascots.getUniqueId(), mascots);
 
         if (cityUUID != null) {
             newData.set(mascotsKey, PersistentDataType.STRING, cityUUID);

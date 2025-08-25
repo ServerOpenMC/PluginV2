@@ -35,10 +35,9 @@ public class MascotsInteractionListener implements Listener {
         if (!MascotUtils.canBeAMascot(clickEntity)) return;
 
         PersistentDataContainer data = clickEntity.getPersistentDataContainer();
-        String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
-        if (mascotsUUID == null) return;
         String mascotsData = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
         if (mascotsData == null) return;
+        System.out.println(mascotsData);
         UUID mascotsUUID = UUID.fromString(mascotsData);
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
