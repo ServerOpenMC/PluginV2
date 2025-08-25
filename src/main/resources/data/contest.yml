@@ -29,10 +29,6 @@ contestTrades:
     amount: 1
     amount_shell: 192
     selected: false
-  - ress: ECHO_SHARD
-    amount: 1
-    amount_shell: 25
-    selected: false
   - ress: WET_SPONGE
     amount: 1
     amount_shell: 3
@@ -140,6 +136,54 @@ contestTrades:
   - ress: DEEPSLATE_IRON_ORE
     amount: 2
     amount_shell: 1
+    selected: false
+  - ress: EMERALD_ORE
+    amount: 1
+    amount_shell: 3
+    selected: false
+  - ress: DEEPSLATE_DIAMOND_ORE
+    amount: 1
+    amount_shell: 3
+    selected: false
+  - ress: TURTLE_EGG
+    amount: 1
+    amount_shell: 6
+    selected: false
+  - ress: WITHER_SKELETON_SKULL
+    amount: 1
+    amount_shell: 30
+    selected: false
+  - ress: CACTUS
+    amount: 128
+    amount_shell: 1
+    selected: false
+  - ress: INK_SAC
+    amount: 4
+    amount_shell: 1
+    selected: false
+  - ress: GLOW_INK_SAC
+    amount: 2
+    amount_shell: 1
+    selected: false
+  - ress: PHANTOM_MEMBRANE
+    amount: 1
+    amount_shell: 5
+    selected: false
+  - ress: ACACIA_CHEST_BOAT
+    amount: 1
+    amount_shell: 1
+    selected: false
+  - ress: DIAMOND_BLOCK
+    amount: 1
+    amount_shell: 9
+    selected: false
+  - ress: COCOA_BEANS
+    amount: 32
+    amount_shell: 1
+    selected: false
+  - ress: POISONOUS_POTATO
+    amount: 1
+    amount_shell: 10
     selected: false
 
 # La Liste des Contest

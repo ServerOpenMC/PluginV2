@@ -2,6 +2,7 @@ package fr.openmc.core.features.contest.commands;
 
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.features.contest.managers.TradeYMLManager;
 import fr.openmc.core.features.contest.menu.ContributionMenu;
 import fr.openmc.core.features.contest.menu.VoteMenu;
 import fr.openmc.core.utils.DateUtils;
@@ -85,7 +86,7 @@ public class ContestCommand {
     @CommandPermission("omc.admin.commands.contest.settrade")
     @AutoComplete("@trade")
     public void setTrade(Player player, @Named("trade") String trade, int amount, int amountShell) {
-        YamlConfiguration config = ContestManager.contestConfig;
+        YamlConfiguration config = TradeYMLManager.getContestConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
         boolean tradeFound = false;
@@ -100,7 +101,7 @@ public class ContestCommand {
         }
 
         if (tradeFound) {
-            ContestManager.saveContestConfig();
+            TradeYMLManager.saveContestConfig();
             MessagesManager.sendMessage(player, Component.text("Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amountShell + " coquillages de contest."), Prefix.STAFF, MessageType.SUCCESS, true);
         } else {
             MessagesManager.sendMessage(player, Component.text("Le trade n'existe pas.\n/contest settrade <mat> <amount> <amount_shell>"), Prefix.STAFF, MessageType.ERROR, true);
