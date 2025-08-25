@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.conditions;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.models.CityRank;
+import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -50,7 +50,7 @@ public class CityRankCondition {
             return false;
         }
 
-        CityRank rank = city.getRankByName(oldRankName);
+        DBCityRank rank = city.getRankByName(oldRankName);
         if (rank == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
@@ -79,7 +79,7 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
-        CityRank rank = city.getRankByName(rankName);
+        DBCityRank rank = city.getRankByName(rankName);
         if (rank == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;

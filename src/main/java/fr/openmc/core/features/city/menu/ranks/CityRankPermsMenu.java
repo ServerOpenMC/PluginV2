@@ -4,7 +4,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityRankCommands;
-import fr.openmc.core.features.city.models.CityRank;
+import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -27,7 +27,7 @@ public class CityRankPermsMenu {
 	 * @param sender The player who is opening the book.
 	 * @param rank   The city rank for which permissions are being managed.
 	 */
-	public static void openBook(Player sender, CityRank rank, boolean canEdit) {
+	public static void openBook(Player sender, DBCityRank rank, boolean canEdit) {
 		City city = CityManager.getPlayerCity(sender.getUniqueId());
 
 		if (city == null) {

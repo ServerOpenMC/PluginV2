@@ -31,8 +31,8 @@ public class CityCreateConditions {
      * @return booleen
      */
     public static boolean canCityCreate(Player player, String cityName) {
-        if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
-            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir créer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
+        if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
+            MessagesManager.sendMessage(player, Component.text("§cTu dois attendre avant de pouvoir créer ta ville ("+ DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")/1000 + " secondes)"), Prefix.CITY, MessageType.INFO, false);
             return false;
         }
 
@@ -50,6 +50,8 @@ public class CityCreateConditions {
             MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'§dAywenite §cpour créer ta ville (" + AYWENITE_CREATE +" nécessaires)"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
+        // TODO: Check if  city na me   is already taken
 
         if (cityName != null && !InputUtils.isInputCityName(cityName)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);

@@ -49,7 +49,7 @@ public class IronBloodPerk implements Listener {
                     .map(Player.class::cast)
                     .filter(nearbyPlayer -> {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
-                        return enemyCity != null && !enemyCity.getUUID().equals(city.getUUID());
+                        return enemyCity != null && !enemyCity.getUniqueId().equals(city.getUniqueId());
                     })
                     .toList();
 
@@ -82,7 +82,7 @@ public class IronBloodPerk implements Listener {
                     .map(ent -> (Player) ent)
                     .filter(nearbyPlayer -> {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
-                        return enemyCity != null && !enemyCity.getUUID().equals(MascotUtils.getCityFromEntity(mascotUUID).getUUID());
+                        return enemyCity != null && !enemyCity.getUniqueId().equals(MascotUtils.getCityFromEntity(mascotUUID).getUniqueId());
                     })
                     .toList();
 

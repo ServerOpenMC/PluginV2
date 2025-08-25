@@ -23,7 +23,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import java.util.*;
 
 public class ExplodeProtection implements Listener {
-    public static final Map<String, CityExplosionData> explosionDataMap = new HashMap<>();
+    public static final Map<UUID, CityExplosionData> explosionDataMap = new HashMap<>();
     public static final int MAX_TNT_PER_DAY = 2;
 
     private static final List<EntityType> NATURAL_EXPLOSIVE_ENTITIES = List.of(
@@ -78,7 +78,7 @@ public class ExplodeProtection implements Listener {
 
     private void handlePlayerTntExplosion(EntityExplodeEvent event, Player player) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
-        Set<String> countedCities = new HashSet<>();
+        Set<UUID> countedCities = new HashSet<>();
 
         event.blockList().removeIf(block -> {
             City blockCity = CityManager.getCityFromChunk(block.getChunk().getX(), block.getChunk().getZ());
@@ -89,14 +89,14 @@ public class ExplodeProtection implements Listener {
             }
 
             if (blockCity.getType() == CityType.WAR && playerCity != null && playerCity.getType() == CityType.WAR) {
-                CityExplosionData data = explosionDataMap.computeIfAbsent(blockCity.getUUID(), k -> new CityExplosionData());
+                CityExplosionData data = explosionDataMap.computeIfAbsent(blockCity.getUniqueId(), k -> new CityExplosionData());
 
                 if (!data.canExplode(MAX_TNT_PER_DAY)) {
                     return true;
                 }
 
-                if (!countedCities.contains(blockCity.getUUID())) {
-                    countedCities.add(blockCity.getUUID());
+                if (!countedCities.contains(blockCity.getUniqueId())) {
+                    countedCities.add(blockCity.getUniqueId());
 
                     notifyCityMembers(blockCity, playerCity, player);
                 }
@@ -107,7 +107,7 @@ public class ExplodeProtection implements Listener {
             return true;
         });
 
-        for (String cityUUID : countedCities) {
+        for (UUID cityUUID : countedCities) {
             CityExplosionData data = explosionDataMap.computeIfAbsent(cityUUID, k -> new CityExplosionData());
 
             data.increment();
@@ -116,7 +116,7 @@ public class ExplodeProtection implements Listener {
 
     private void notifyCityMembers(City city, City attackerCity, Player attacker) {
         for (UUID memberUUID : city.getMembers()) {
-            int currentTnt = explosionDataMap.get(city.getUUID()).getExplosions() + 1;
+            int currentTnt = explosionDataMap.get(city.getUniqueId()).getExplosions() + 1;
             OfflinePlayer member = CacheOfflinePlayer.getOfflinePlayer(memberUUID);
             if (member.isOnline()) {
                 MessagesManager.sendMessage(

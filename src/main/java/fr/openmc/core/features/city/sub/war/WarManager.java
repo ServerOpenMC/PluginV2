@@ -27,10 +27,10 @@ public class WarManager {
     public static final long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
     public static final long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
 
-    public static final Map<String, War> warsByAttacker = new HashMap<>();
-    public static final Map<String, War> warsByDefender = new HashMap<>();
+    public static final Map<UUID, War> warsByAttacker = new HashMap<>();
+    public static final Map<UUID, War> warsByDefender = new HashMap<>();
 
-    private static final Map<String, WarPendingDefense> pendingDefenses = new HashMap<>();
+    private static final Map<UUID, WarPendingDefense> pendingDefenses = new HashMap<>();
 
     /**
      * Initializes the WarManager by registering commands and listeners.
@@ -53,7 +53,7 @@ public class WarManager {
      * @param cityUUID The UUID of the city to check.
      * @return true if the city is in war, false otherwise.
      */
-    public static boolean isCityInWar(String cityUUID) {
+    public static boolean isCityInWar(UUID cityUUID) {
         return warsByAttacker.containsKey(cityUUID) || warsByDefender.containsKey(cityUUID);
     }
 
@@ -63,7 +63,7 @@ public class WarManager {
      * @param cityUUID The UUID of the city.
      * @return The War object if found, null otherwise.
      */
-    public static War getWarByCity(String cityUUID) {
+    public static War getWarByCity(UUID cityUUID) {
         War war = warsByAttacker.get(cityUUID);
         if (war != null) return war;
 
@@ -82,8 +82,8 @@ public class WarManager {
     public static void startWar(City attacker, City defender, List<UUID> attackers, List<UUID> defenders) {
         War war = new War(attacker, defender, attackers, defenders);
 
-        warsByAttacker.put(attacker.getUUID(), war);
-        warsByDefender.put(defender.getUUID(), war);
+        warsByAttacker.put(attacker.getUniqueId(), war);
+        warsByDefender.put(defender.getUniqueId(), war);
     }
 
     /**
@@ -94,9 +94,9 @@ public class WarManager {
      * @param war The War object representing the war to be ended.
      */
     public static void endWar(War war) {
-        War warRemoved = warsByAttacker.remove(war.getCityAttacker().getUUID());
+        War warRemoved = warsByAttacker.remove(war.getCityAttacker().getUniqueId());
         if (warRemoved == null)
-            warRemoved = warsByDefender.remove(war.getCityDefender().getUUID());
+            warRemoved = warsByDefender.remove(war.getCityDefender().getUniqueId());
 
         if (warRemoved == null) return;
 
@@ -178,8 +178,8 @@ public class WarManager {
 
             claimsWon = (int) Math.ceil(totalClaims * percent * (1 + (level / 10.0)));
 
-            DynamicCooldownManager.use(loser.getUUID(), "city:immunity", CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN);
-            DynamicCooldownManager.use(winner.getUUID(), "city:immunity", CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN);
+            DynamicCooldownManager.use(loser.getUniqueId(), "city:immunity", CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN);
+            DynamicCooldownManager.use(winner.getUniqueId(), "city:immunity", CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN);
 
             int actualClaims = transferChunksAfterWar(winner, loser, claimsWon);
             if (actualClaims < claimsWon) {
@@ -188,8 +188,8 @@ public class WarManager {
                 winner.updateBalance(bonusMoney);
             }
         } else {
-            DynamicCooldownManager.use(war.getCityDefender().getUUID(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
-            DynamicCooldownManager.use(war.getCityAttacker().getUUID(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
+            DynamicCooldownManager.use(war.getCityDefender().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
+            DynamicCooldownManager.use(war.getCityAttacker().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
         }
 
         broadcastWarResult(war, winner, loser, winReason, powerChange, amountStolen, bonusMoney, Math.abs(claimsWon));
@@ -444,7 +444,7 @@ public class WarManager {
      * @param defense The WarPendingDefense object containing the defense details.
      */
     public static void addPendingDefense(WarPendingDefense defense) {
-        pendingDefenses.put(defense.getDefender().getUUID(), defense);
+        pendingDefenses.put(defense.getDefender().getUniqueId(), defense);
     }
 
     /**
@@ -453,7 +453,7 @@ public class WarManager {
      * @param city The city for which the pending defense is to be removed.
      */
     public static WarPendingDefense getPendingDefenseFor(City city) {
-        return pendingDefenses.get(city.getUUID());
+        return pendingDefenses.get(city.getUniqueId());
     }
 
     public enum WinReason {

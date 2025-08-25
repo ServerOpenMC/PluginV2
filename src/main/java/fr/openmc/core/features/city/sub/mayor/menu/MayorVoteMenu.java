@@ -66,7 +66,7 @@ public class MayorVoteMenu extends PaginatedMenu {
         assert city != null;
 
             int totalVotes = city.getMembers().size();
-        for (MayorCandidate candidate : MayorManager.cityElections.get(city.getUUID())) {
+        for (MayorCandidate candidate : MayorManager.cityElections.get(city.getUniqueId())) {
                 Perks perk2 = PerkManager.getPerkById(candidate.getIdChoicePerk2());
                 Perks perk3 = PerkManager.getPerkById(candidate.getIdChoicePerk3());
                 NamedTextColor color = candidate.getCandidateColor();
@@ -91,7 +91,7 @@ public class MayorVoteMenu extends PaginatedMenu {
             boolean ench = candidate == playerVote;
 
 
-                ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getUUID()), itemMeta -> {
+                ItemStack mayorItem = new ItemBuilder(this, ItemUtils.getPlayerSkull(candidate.getCandidateUUID()), itemMeta -> {
                     itemMeta.displayName(Component.text("Maire " + candidate.getName()).color(color).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(loreMayor);
                     itemMeta.setEnchantmentGlintOverride(ench);

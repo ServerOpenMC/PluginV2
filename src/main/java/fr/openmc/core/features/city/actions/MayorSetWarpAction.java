@@ -30,12 +30,12 @@ public class MayorSetWarpAction {
 
         if (mayor == null) return;
 
-        if (!player.getUniqueId().equals(mayor.getUUID())) {
+        if (!player.getUniqueId().equals(mayor.getMayorUUID())) {
             MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le Maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
-        if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+        if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-move-warp")) {
             return;
         }
         CityLaw law = city.getLaw();
@@ -56,7 +56,7 @@ public class MayorSetWarpAction {
                         return false;
                     }
 
-                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
+                    DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-move-warp", COOLDOWN_TIME_WARP);
                     law.setWarp(locationClick);
                     MessagesManager.sendMessage(player, Component.text("Vous venez de mettre le §9warp de votre ville §fen : \n §8- §fx=§6" + locationClick.x() + "\n §8- §fy=§6" + locationClick.y() + "\n §8- §fz=§6" + locationClick.z()), Prefix.CITY, MessageType.SUCCESS, false);
                     return true;

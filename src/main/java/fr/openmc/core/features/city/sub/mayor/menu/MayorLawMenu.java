@@ -88,11 +88,11 @@ public class MayorLawMenu extends Menu {
                     Component.text("§7entre les membres !")
             ));
 
-            if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
+            if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-pvp")) {
                 loreLawPVP.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-pvp")))
+                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-pvp")))
                         )
                 );
             } else {
@@ -107,8 +107,8 @@ public class MayorLawMenu extends Menu {
                 itemMeta.itemName(Component.text(nameLawPVP));
                 itemMeta.lore(loreLawPVP);
             }).setOnClick(inventoryClickEvent -> {
-                if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
-                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-pvp", COOLDOWN_TIME_PVP);
+                if (DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-pvp")) {
+                    DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-pvp", COOLDOWN_TIME_PVP);
 
                     law.setPvp(!law.isPvp());
                     String messageLawPVP = !law.isPvp() ? "§7Vous avez §cdésactivé §7le PVP dans votre ville" : "§7Vous avez §4activé §7le PVP dans votre ville";
@@ -121,7 +121,7 @@ public class MayorLawMenu extends Menu {
             });
         };
 
-        if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
+        if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-pvp")) {
             MenuUtils.runDynamicItem(player, this, 19, pvpItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
@@ -149,11 +149,11 @@ public class MayorLawMenu extends Menu {
                 ));
             }
 
-            if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+            if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-move-warp")) {
                 loreLawWarp.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-move-warp")))
+                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-move-warp")))
                         )
                 );
             } else {
@@ -186,11 +186,11 @@ public class MayorLawMenu extends Menu {
                     Component.text("§7Cette §1loi §7permet d'émettre un message dans toute la ville!")
             ));
 
-            if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-announce")) {
+            if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-announce")) {
                 loreLawAnnounce.addAll(
                         List.of(
                                 Component.empty(),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-announce")))
+                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-announce")))
                         )
                 );
             } else {
@@ -206,7 +206,7 @@ public class MayorLawMenu extends Menu {
                 itemMeta.itemName(Component.text("§7Faire une annonce"));
                 itemMeta.lore(loreLawAnnounce);
             }).setOnClick(inventoryClickEvent -> {
-                if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-announce")) {
+                if (DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-announce")) {
 
                     ChatInput.sendInput(
                             player,
@@ -228,7 +228,7 @@ public class MayorLawMenu extends Menu {
 
                             }
                     );
-                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);
+                    DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);
                 }
 
             });
@@ -243,11 +243,11 @@ public class MayorLawMenu extends Menu {
                 ItemStack iaPerkEvent = perkEvent.getItemStack();
                 String namePerkEvent = perkEvent.getName();
                 List<Component> lorePerkEvent = new ArrayList<>(perkEvent.getLore());
-                if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
+                if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
                     lorePerkEvent.addAll(
                             List.of(
                                     Component.empty(),
-                                    Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-perk-event")))
+                                    Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-perk-event")))
                             )
                     );
                 } else {
@@ -264,7 +264,7 @@ public class MayorLawMenu extends Menu {
                 })
                         .hide(perkEvent.getToHide())
                         .setOnClick(inventoryClickEvent -> {
-                    if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
+                    if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
                         MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de pouvoir utiliser cette §3Réforme"), Prefix.MAYOR, MessageType.ERROR, false);
                         return;
                     }
@@ -272,7 +272,7 @@ public class MayorLawMenu extends Menu {
                     // Prélévement d'impot (id : 2) - Perk Event
                     if (PerkManager.hasPerk(city.getMayor(), Perks.IMPOT.getId())) {
                         for (UUID uuid : city.getMembers()) {
-                            if (uuid == city.getMayor().getUUID()) continue;
+                            if (uuid == city.getMayor().getMayorUUID()) continue;
 
                             Player member = Bukkit.getPlayer(uuid);
 
@@ -282,7 +282,7 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché le §ePrélévement d'Impot §f!"), Prefix.MAYOR, MessageType.INFO, false);
 
                         }
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) {
                         // Essor agricole (id : 11) - Perk Event
                         for (UUID uuid : city.getMembers()) {
@@ -293,8 +293,8 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché l'§eEssor Agricole §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
-                        DynamicCooldownManager.use(city.getUUID(), "city:agricultural_essor", 30 * 60 * 1000L); // 30 minutes
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        DynamicCooldownManager.use(city.getUniqueId(), "city:agricultural_essor", 30 * 60 * 1000L); // 30 minutes
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) {
                         // Ruée Miniere (id : 12) - Perk Event
                         for (UUID uuid : city.getMembers()) {
@@ -305,8 +305,8 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eRuée Minière §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
-                        DynamicCooldownManager.use(city.getUUID(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        DynamicCooldownManager.use(city.getUniqueId(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.MILITARY_DISSUASION.getId())) {
                         // Dissuasion Militaire (id : 13) - Perk Event
                         for (UUID uuid : city.getMembers()) {
@@ -318,13 +318,13 @@ public class MayorLawMenu extends Menu {
                         }
 
                         MilitaryDissuasion.startEvent(city, 10);
-                        DynamicCooldownManager.use(city.getUUID(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        DynamicCooldownManager.use(city.getUniqueId(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
 
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if (DynamicCooldownManager.isReady(city.getUUID(), "city:military_dissuasion")) {
+                                if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:military_dissuasion")) {
                                     MilitaryDissuasion.clearCityGolems(city);
                                     this.cancel();
                                 }
@@ -343,7 +343,7 @@ public class MayorLawMenu extends Menu {
                         // spawn d'un total de 100 aywenite progressivement sur une minute
                         IdyllicRain.spawnAywenite(city, 100);
 
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     }
                 });
             };

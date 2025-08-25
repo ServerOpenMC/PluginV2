@@ -87,13 +87,13 @@ public class Company {
      * @param id The uuid of the company
      * @param name The name of the company
      * @param player The owner
-     * @param city The city of the company (can be null)
+     * @param cityUUID The city unique id of the company (can be null)
      * @param cut The cut of the company
      * @param balance The balance of the company
      */
-    public Company(UUID id, String name, UUID player, String city, double cut, double balance) {
+    public Company(UUID id, String name, UUID player, UUID cityUUID, double cut, double balance) {
         this.name = name;
-        this.owner = city == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(city));
+        this.owner = cityUUID == null ? new CompanyOwner(player) : new CompanyOwner(CityManager.getCity(cityUUID));
         this.company_uuid = id;
         this.cut = cut;
         this.balance = balance;

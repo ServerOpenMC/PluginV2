@@ -129,7 +129,7 @@ public class NotationEditionDialog {
                                             String description = response.getText("input_description");
 
                                             CityNotation cityNotation = new CityNotation(
-                                                    cityEdited.getUUID(),
+                                                    cityEdited.getUniqueId(),
                                                     noteArchitectural,
                                                     noteCoherence,
                                                     description,

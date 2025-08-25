@@ -17,7 +17,7 @@ public class Cooldowns {
     @Description("Permet d'avoir la liste des cooldowns")
     @CommandPermission("omc.commands.cooldowns")
     public void cooldowns(Player sender) {
-        if (DynamicCooldownManager.getCooldowns(sender.getUniqueId().toString()) == null) {
+        if (DynamicCooldownManager.getCooldowns(sender.getUniqueId()) == null) {
             MessagesManager.sendMessage(
                     sender,
                     Component.text("§cAucun cooldown actif"),
@@ -35,7 +35,7 @@ public class Cooldowns {
                 MessageType.INFO,
                 true
         );
-        DynamicCooldownManager.getCooldowns(sender.getUniqueId().toString()).forEach(
+        DynamicCooldownManager.getCooldowns(sender.getUniqueId()).forEach(
                 (group, cooldown) -> {
                     sender.sendMessage(
                             Component.text("§a- " + group + " : " + DateUtils.convertMillisToTime(cooldown.getRemaining()))

@@ -15,6 +15,7 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Command({"adminmayor"})
 @CommandPermission("omc.admins.commands.adminmayor")
@@ -31,8 +32,8 @@ public class AdminMayorCommands {
 
     @Subcommand({"changeelection"})
     @CommandPermission("omc.admins.commands.adminmayor")
-    public void changeElection(Player sender, @Named("uuid") String cityUUID, String electionType) {
-        City city = CityManager.getCity(cityUUID);
+    public void changeElection(Player sender, @Named("name") String cityName, String electionType) {
+        City city = CityManager.getCityByName(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -49,7 +50,7 @@ public class AdminMayorCommands {
 
         city.getMayor().setElectionType(E);
 
-        MessagesManager.sendMessage(sender, Component.text("Vous venez de mettre : " + electionType + " dans la ville " + city.getUUID()), Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessage(sender, Component.text("Vous venez de mettre : " + electionType + " dans la ville " + city.getName()), Prefix.STAFF, MessageType.INFO, false);
 
     }
 }

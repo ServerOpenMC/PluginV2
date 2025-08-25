@@ -7,11 +7,13 @@ import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import java.util.UUID;
+
 @DatabaseTable(tableName = "laws")
 public class CityLaw {
     @DatabaseField(id = true)
     @Getter
-    private String cityUUID;
+    private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     @Getter
     @Setter
@@ -33,7 +35,7 @@ public class CityLaw {
         // required for ORMLite
     }
 
-    public CityLaw(String cityUUID, boolean pvp, Location warp) {
+    public CityLaw(UUID cityUUID, boolean pvp, Location warp) {
         this.cityUUID = cityUUID;
         this.pvp = pvp;
         setWarp(warp);

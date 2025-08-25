@@ -72,27 +72,27 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
                 .sorted(Comparator.comparing((UUID uuid) -> !Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline())
                         .thenComparing(uuid -> {
                             if (cityLaunch.hasPermission(uuid, CityPermission.OWNER)) return 0;
-                            else if (MayorManager.cityMayor.get(cityLaunch.getUUID()).getUUID().equals(uuid))
+                            else if (MayorManager.cityMayor.get(cityLaunch.getUniqueId()).getMayorUUID().equals(uuid))
                                 return 1;
                             else return 2;
                         }))
                 .toList();
 
-        for (UUID uuid : sortedMembers) {
-            OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(uuid);
-            boolean isSelected = selected.contains(uuid);
-            boolean isOwner = cityLaunch.hasPermission(uuid, CityPermission.OWNER);
-            boolean isMayor = MayorManager.phaseMayor == 2 && cityLaunch.getMayor().getUUID().equals(uuid);
+        for (UUID memberUUID : sortedMembers) {
+            OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(memberUUID);
+            boolean isSelected = selected.contains(memberUUID);
+            boolean isOwner = cityLaunch.hasPermission(memberUUID, CityPermission.OWNER);
+            boolean isMayor = MayorManager.phaseMayor == 2 && cityLaunch.getMayor().getMayorUUID().equals(memberUUID);
 
             String prefix = isOwner ? "Propriétaire " : isMayor ? "Maire " : "Membre ";
 
-            ItemBuilder item = new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), meta -> {
+            ItemBuilder item = new ItemBuilder(this, ItemUtils.getPlayerSkull(memberUUID), meta -> {
                 meta.displayName(Component.text((isSelected ? "§a✔ " : "") + prefix + offline.getName())
                         .decoration(TextDecoration.ITALIC, false));
                 meta.lore(List.of(Component.text(isSelected ? "§c§lCLIQUEZ POUR RETIRER" : "§a§lCLIQUEZ POUR SÉLECTIONNER")));
             }).setOnClick(event -> {
                 if (isSelected) {
-                    selected.remove(uuid);
+                    selected.remove(memberUUID);
                 } else {
                     if (selected.size() >= count) {
                         MessagesManager.sendMessage(player,
@@ -100,7 +100,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
                                 Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
-                    selected.add(uuid);
+                    selected.add(memberUUID);
                 }
                 new WarChooseParticipantsMenu(player, cityLaunch, cityAttack, count, selected).open();
             });

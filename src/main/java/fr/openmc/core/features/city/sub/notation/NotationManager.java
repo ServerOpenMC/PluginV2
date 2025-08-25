@@ -30,7 +30,7 @@ public class NotationManager {
     private static final DayOfWeek APPLY_NOTATION_DAY = DayOfWeek.MONDAY;
 
     public static final Map<String, List<CityNotation>> notationPerWeek = new HashMap<>(); // weekStr -> List of CityNotation
-    public static final Map<String, List<CityNotation>> cityNotations = new HashMap<>(); // cityUUID -> List of CityNotation
+    public static final Map<UUID, List<CityNotation>> cityNotations = new HashMap<>(); // cityUUID -> List of CityNotation
 
 
     public static final Map<UUID, Long> activityNotation = new HashMap<>();
@@ -70,7 +70,7 @@ public class NotationManager {
             List<CityNotation> notations = notationDao.queryForAll();
 
             notations.forEach(notation -> {
-                String cityUUID = notation.getCityUUID();
+                UUID cityUUID = notation.getCityUUID();
 
                 String weekStr = notation.getWeekStr();
 
@@ -109,7 +109,7 @@ public class NotationManager {
                 return list;
             });
 
-            cityNotations.compute(weekStr, (k, list) -> {
+            cityNotations.compute(notation.getCityUUID(), (k, list) -> {
                 if (list == null) list = new ArrayList<>();
                 list.removeIf(n -> Objects.equals(n.getCityUUID(), notation.getCityUUID()));
                 list.add(notation);
@@ -203,7 +203,7 @@ public class NotationManager {
 
             notations.setNoteEconomy(Math.floor(getEconomyScore(
                     city,
-                    getMaxPib(cityNotations.get(weekStr).stream()
+                    getMaxPib(cityNotations.get(city.getUniqueId()).stream()
                             .map(CityNotation::getCityUUID)
                             .map(CityManager::getCity)
                             .collect(Collectors.toList()))

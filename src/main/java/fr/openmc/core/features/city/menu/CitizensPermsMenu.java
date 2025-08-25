@@ -35,7 +35,7 @@ public class CitizensPermsMenu {
             return;
         }
 
-        if (!Objects.equals(hisCity.getUUID(), city.getUUID())) {
+        if (!Objects.equals(hisCity.getUniqueId(), city.getUniqueId())) {
             MessagesManager.sendMessage(sender, Component.text("Ce joueur n'habite pas dans ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

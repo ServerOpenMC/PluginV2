@@ -23,6 +23,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.UUID;
 
 import static fr.openmc.core.features.city.sub.mascots.MascotsManager.DEAD_MASCOT_NAME;
 
@@ -35,9 +36,9 @@ public class MascotsDeathListener implements Listener {
         if (!MascotUtils.canBeAMascot(entity)) return;
 
         PersistentDataContainer data = entity.getPersistentDataContainer();
-        String city_uuid = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        UUID cityUUID = UUID.fromString(data.get(MascotsManager.mascotsKey, PersistentDataType.STRING));
 
-        City city = CityManager.getCity(city_uuid);
+        City city = CityManager.getCity(cityUUID);
 
         if (city == null) return;
 
