@@ -10,7 +10,7 @@ import java.util.UUID;
 @DatabaseTable(tableName = "city_permissions")
 public class DBCityPermission {
     @DatabaseField(columnName = "city", canBeNull = false)
-    private UUID cityUUID; //TODO change to cityUUID and city_uuid for db
+    private UUID cityUUID;
     @DatabaseField(canBeNull = false, uniqueCombo = true)
     @Getter
     private UUID player;
