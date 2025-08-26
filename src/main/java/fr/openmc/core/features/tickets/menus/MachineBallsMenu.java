@@ -34,7 +34,7 @@ public class MachineBallsMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return "";
+        return null;
     }
 
     @Override

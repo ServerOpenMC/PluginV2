@@ -56,7 +56,7 @@ public class MachineBallsOpenMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return "";
+        return null;
     }
 
     @Override
@@ -344,10 +344,8 @@ public class MachineBallsOpenMenu extends Menu {
 
         if (animationTick >= maxAnimationTicks) {
             for (int i : displaySlots) {
-                if (i != 22) {
-                    inv.setItem(i, new ItemBuilder(this, Material.GRAY_STAINED_GLASS_PANE,
-                            meta -> meta.displayName(Component.text(" "))).hideTooltip(true));
-                }
+                if (i == 22) continue;
+                inv.setItem(i, new ItemBuilder(this, Material.GRAY_STAINED_GLASS_PANE).hideTooltip(true));
             }
         }
     }
