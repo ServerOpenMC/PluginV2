@@ -230,21 +230,20 @@ public class TicketManager {
      */
     public static int giveTicket(UUID uuid) {
         for (PlayerStats stats : timePlayed) {
-            if (stats.getUniqueID().equals(uuid)) {
-                if (!stats.isTicketGiven()) {
-                    int playtime = getPlayTimeFromUUID(uuid);
-                    float secondsPerTicket = hoursPerTicket * 3600;
-                    float ticketsToGiveF = playtime / secondsPerTicket;
+            if (!stats.getUniqueID().equals(uuid)) continue;
+            if (stats.isTicketGiven()) return 0;
 
-                    int ticketsToGive = (int) Math.ceil(ticketsToGiveF);
+            int playtime = getPlayTimeFromUUID(uuid);
+            float secondsPerTicket = hoursPerTicket * 3600;
+            float ticketsToGiveF = playtime / secondsPerTicket;
 
-                    stats.setTicketRemaining(ticketsToGive);
-                    setTicketGiven(uuid, ticketsToGive, true);
-                    return ticketsToGive;
-                }
-                return 0;
-            }
+            int ticketsToGive = (int) Math.ceil(ticketsToGiveF);
+
+            stats.setTicketRemaining(ticketsToGive);
+            setTicketGiven(uuid, ticketsToGive, true);
+            return ticketsToGive;
         }
+
         return 0;
     }
 }
