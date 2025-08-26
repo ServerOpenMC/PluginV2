@@ -76,38 +76,24 @@ public class LeaderboardCommands {
             }
             leaderboardMoveItem.setItemMeta(meta);
 
-            ItemInteraction.runLocationInteraction(
-                    player,
-                    leaderboardMoveItem,
-                    "admin:move-leaderboard",
-                    120,
-                    "Temps Restant : %sec%s",
-                    "§cDéplacement du leaderboard",
-                    leaderboardMove -> {
-                        if (leaderboardMove == null) return true;
-                        try {
-                            LeaderboardManager.setHologramLocation(leaderboard, leaderboardMove);
-                            MessagesManager.sendMessage(
-                                    player,
-                                    Component.text("§aPosition du leaderboard " + leaderboard + " mise à jour."),
-                                    Prefix.STAFF,
-                                    MessageType.SUCCESS,
-                                    true
-                            );
-                        } catch (IOException e) {
-                            MessagesManager.sendMessage(
-                                    player,
-                                    Component.text("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage()),
-                                    Prefix.STAFF,
-                                    MessageType.ERROR,
-                                    true
-                            );
-                        }
-                        return true;
-                    },
-                    null
-            );
-
+            try {
+                LeaderboardManager.setHologramLocation(leaderboard, player.getLocation());
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("§aPosition du leaderboard " + leaderboard + " mise à jour."),
+                        Prefix.STAFF,
+                        MessageType.SUCCESS,
+                        true
+                );
+            } catch (IOException e) {
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage()),
+                        Prefix.STAFF,
+                        MessageType.ERROR,
+                        true
+                );
+            }
         } else {
             MessagesManager.sendMessage(
                     player,
