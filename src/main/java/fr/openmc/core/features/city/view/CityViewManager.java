@@ -160,26 +160,26 @@ public class CityViewManager {
 
         // borders[0]: bord haut (nord) → ligne z = baseZ
         if (borders[0]) {
-            for (int x = 0; x <= CHUNK_SIZE; x++)
-                locations.add(new Location(world, baseX + x, y, baseZ));
+            for (int x = 0; x <= CHUNK_SIZE * 2; x++)
+                locations.add(new Location(world, baseX + x / 2D, y, baseZ));
         }
 
         // borders[2]: bord bas (sud) → ligne z = baseZ + CHUNK_SIZE
         if (borders[2]) {
-            for (int x = 0; x <= CHUNK_SIZE; x++)
-                locations.add(new Location(world, baseX + x, y, baseZ + CHUNK_SIZE));
+            for (int x = 0; x <= CHUNK_SIZE * 2; x++)
+                locations.add(new Location(world, baseX + x / 2D, y, baseZ + CHUNK_SIZE));
         }
 
         // borders[3]: bord gauche (ouest) → colonne x = baseX
         if (borders[3]) {
-            for (int z = 0; z <= CHUNK_SIZE; z++)
-                locations.add(new Location(world, baseX, y, baseZ + z));
+            for (int z = 0; z <= CHUNK_SIZE * 2; z++)
+                locations.add(new Location(world, baseX, y, baseZ + z / 2D));
         }
 
         // borders[1]: bord droit (est) → colonne x = baseX + CHUNK_SIZE
         if (borders[1]) {
-            for (int z = 0; z <= CHUNK_SIZE; z++)
-                locations.add(new Location(world, baseX + CHUNK_SIZE, y, baseZ + z));
+            for (int z = 0; z <= CHUNK_SIZE * 2; z++)
+                locations.add(new Location(world, baseX + CHUNK_SIZE, y, baseZ + z / 2D));
         }
 
         return locations;
