@@ -91,12 +91,12 @@ public class AdminCityCommands {
         Component nav = Component.empty()
                 .append(page > 1
                         ? Component.text("« Prev").color(NamedTextColor.YELLOW)
-                        .clickEvent(ClickEvent.runCommand("/cities " + (page - 1)))
+                        .clickEvent(ClickEvent.runCommand("/admcity list " + (page - 1)))
                         : Component.text("       "))
                 .append(Component.text("    "))
                 .append(page < maxPage
                         ? Component.text("Next »").color(NamedTextColor.YELLOW)
-                        .clickEvent(ClickEvent.runCommand("/cities " + (page + 1)))
+                        .clickEvent(ClickEvent.runCommand("/admcity list " + (page + 1)))
                         : Component.text("      "));
 
         player.sendMessage(nav);
