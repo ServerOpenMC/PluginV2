@@ -65,17 +65,6 @@ public class LeaderboardCommands {
     @Description("Défini la position d'un Hologram.")
     void setPosCommand(Player player, String leaderboard) {
         if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
-            ItemStack leaderboardMoveItem = new ItemStack(Material.STICK);
-            ItemMeta meta = leaderboardMoveItem.getItemMeta();
-
-            if (meta != null) {
-                List<Component> info = new ArrayList<>();
-                info.add(Component.text("§7Cliquez ou vous voulez pour poser le leaderboard"));
-                info.add(Component.text("§cITEM POUR ADMIN"));
-                meta.lore(info);
-            }
-            leaderboardMoveItem.setItemMeta(meta);
-
             try {
                 LeaderboardManager.setHologramLocation(leaderboard, player.getLocation());
                 MessagesManager.sendMessage(
