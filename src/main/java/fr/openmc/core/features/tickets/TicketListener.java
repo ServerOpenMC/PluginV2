@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TicketListener implements Listener {
@@ -22,7 +23,7 @@ public class TicketListener implements Listener {
 
     @EventHandler
     public void onMachineBallsInteraction(FurnitureInteractEvent furniture) {
-        if (furniture.getNamespacedID().equals("omc_blocks:ball_machine")) {
+        if (Objects.equals(furniture.getNamespacedID(), "omc_blocks:ball_machine")) {
             furniture.getPlayer().playSound(Sound.sound(Key.key("minecraft", "block.barrel.open"), Sound.Source.BLOCK, 1f, 1f));
             new MachineBallsMenu(furniture.getPlayer()).open();
         }
@@ -30,7 +31,7 @@ public class TicketListener implements Listener {
 
     @EventHandler
     public void onMachinePlaced(FurniturePlacedEvent event) {
-        if (event.getNamespacedID().equals("omc_blocks:ball_machine")) {
+        if (Objects.equals(event.getNamespacedID(), "omc_blocks:ball_machine")) {
             Bukkit.getScheduler().runTaskLater(fr.openmc.core.OMCPlugin.getInstance(), () -> {
                 Location machineLocation = event.getBukkitEntity().getLocation();
                 createMachineHologram(machineLocation);
@@ -40,16 +41,14 @@ public class TicketListener implements Listener {
 
     @EventHandler
     public void onMachineBreak(FurnitureBreakEvent event) {
-        if (event.getNamespacedID().equals("omc_blocks:ball_machine")) {
+        if (Objects.equals(event.getNamespacedID(), "omc_blocks:ball_machine")) {
             Location machineLocation = event.getBukkitEntity().getLocation();
             removeMachineHologram(machineLocation);
         }
     }
 
     private void createMachineHologram(Location machineLocation) {
-        if (machineHolograms.containsKey(machineLocation)) {
-            return;
-        }
+        if (machineHolograms.containsKey(machineLocation)) return;
 
         String hologramName = "ball_machine_" + (++hologramCounter);
 
@@ -71,16 +70,14 @@ public class TicketListener implements Listener {
 
     private void removeMachineHologram(Location machineLocation) {
         String hologramName = machineHolograms.remove(machineLocation);
-        if (hologramName != null) {
-            var hologramInfo = HologramLoader.displays.get(hologramName);
-            if (hologramInfo != null) {
-                hologramInfo.display().remove();
-                HologramLoader.displays.remove(hologramName);
+        var hologramInfo = hologramName != null ? HologramLoader.displays.get(hologramName) : null;
+        if (hologramInfo == null) return;
 
-                if (hologramInfo.file().exists()) {
-                    hologramInfo.file().delete();
-                }
-            }
+        hologramInfo.display().remove();
+        HologramLoader.displays.remove(hologramName);
+
+        if (hologramInfo.file().exists()) {
+            hologramInfo.file().delete();
         }
     }
 }
