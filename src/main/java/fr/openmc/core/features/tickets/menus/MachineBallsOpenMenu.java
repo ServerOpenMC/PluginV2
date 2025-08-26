@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
 
 public class MachineBallsOpenMenu extends Menu {
 
@@ -37,7 +38,7 @@ public class MachineBallsOpenMenu extends Menu {
     private int animationTick = 0;
     private final int maxAnimationTicks = 60;
     private final List<LootItem> lootItems;
-    private final List<Integer> displaySlots = Arrays.asList(19, 20, 21, 22, 23, 24, 25);
+    private final List<Integer> displaySlots = IntStream.range(19, 25).boxed().toList();
 
     private int itemOffset = 0;
     private LootItem winningItem = null;
