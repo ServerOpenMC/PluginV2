@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class BukkitSerializer {
     public static byte[] serializeItemStacks(ItemStack[] inv) throws IOException {
-        return ItemStack.serializeItemsAsBytes(inv);
+        return inv != null ? ItemStack.serializeItemsAsBytes(inv) : new byte[0];
     }
 
     public static ItemStack[] deserializeItemStacks(byte[] b) {
