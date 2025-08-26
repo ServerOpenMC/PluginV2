@@ -210,15 +210,14 @@ public class TicketManager {
      */
     public static boolean useTicket(UUID uuid) {
         for (PlayerStats stats : timePlayed) {
-            if (stats.getUniqueID().equals(uuid)) {
-                if (stats.getTicketRemaining() > 0) {
-                    stats.setTicketRemaining(stats.getTicketRemaining() - 1);
-                    updatePlayerJsonFile(uuid, stats.getTicketRemaining(), stats.isTicketGiven());
-                    return true;
-                }
-                return false;
-            }
+            if (!stats.getUniqueID().equals(uuid)) continue;
+            if (stats.getTicketRemaining() <= 0) return false;
+
+            stats.setTicketRemaining(stats.getTicketRemaining() - 1);
+            updatePlayerJsonFile(uuid, stats.getTicketRemaining(), stats.isTicketGiven());
+            return true;
         }
+
         return false;
     }
 
