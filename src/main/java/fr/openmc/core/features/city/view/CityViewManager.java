@@ -34,6 +34,11 @@ public class CityViewManager {
 
     private static final Map<UUID, CityViewData> activeViewers = new ConcurrentHashMap<>();
 
+    /**
+     * Démarre la visualisation des claims pour un joueur.
+     *
+     * @param player joueur qui active la visualisation
+     */
     public static void startView(@NotNull Player player) {
         stopView(player);
 
@@ -62,6 +67,11 @@ public class CityViewManager {
         );
     }
 
+    /**
+     * Arrête la visualisation pour un joueur.
+     *
+     * @param player joueur concerné
+     */
     public static void stopView(@NotNull Player player) {
         CityViewData currentView = activeViewers.get(player.getUniqueId());
         if (currentView == null)
@@ -71,10 +81,18 @@ public class CityViewManager {
         activeViewers.remove(player.getUniqueId());
     }
 
+    /**
+     * Met à jour la visualisation de tous les joueurs actifs.
+     */
     public static void updateAllViews() {
         activeViewers.keySet().forEach(CityViewManager::updateView);
     }
 
+    /**
+     * Met à jour la visualisation d’un joueur spécifique.
+     *
+     * @param playerUUID UUID du joueur
+     */
     public static void updateView(@NotNull UUID playerUUID) {
         CityViewData viewData = activeViewers.get(playerUUID);
         if (viewData == null)
@@ -88,6 +106,12 @@ public class CityViewManager {
         activeViewers.put(playerUUID, new CityViewData(viewData.task(), claimsToShow));
     }
 
+    /**
+     * Récupère tous les claims de villes dans un rayon autour du joueur.
+     *
+     * @param player joueur concerné
+     * @return map des positions de chunks et des villes correspondantes
+     */
     @NotNull
     private static Object2ObjectMap<ChunkPos, City> collectClaimsInRadius(@NotNull Player player) {
         Object2ObjectMap<ChunkPos, City> claims = new Object2ObjectOpenHashMap<>();
@@ -110,6 +134,13 @@ public class CityViewManager {
         return claims;
     }
 
+    /**
+     * Crée une tâche répétée qui affiche les particules des claims.
+     *
+     * @param player     joueur concerné
+     * @param playerCity ville du joueur (peut être null)
+     * @return tâche planifiée
+     */
     private static ScheduledTask createViewTask(@NotNull Player player, @Nullable City playerCity) {
         return Bukkit.getAsyncScheduler().runAtFixedRate(OMCPlugin.getInstance(), task -> {
             CityViewData viewData = activeViewers.get(player.getUniqueId());
@@ -122,6 +153,11 @@ public class CityViewManager {
         }, 0L, VIEW_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
+    /**
+     * Programme l’arrêt automatique de la visualisation après un délai.
+     *
+     * @param player joueur concerné
+     */
     private static void scheduleViewExpiration(@NotNull Player player) {
         Bukkit.getAsyncScheduler().runDelayed(OMCPlugin.getInstance(), task -> {
             CityViewData viewData = activeViewers.get(player.getUniqueId());
@@ -132,6 +168,15 @@ public class CityViewManager {
         }, VIEW_DURATION_SECONDS, TimeUnit.SECONDS);
     }
 
+    /**
+     * Affiche les particules représentant les bordures d’un chunk.
+     *
+     * @param player       joueur qui voit les particules
+     * @param chunkPos     position du chunk
+     * @param city         ville propriétaire du chunk
+     * @param isPlayerCity true si c’est la ville du joueur
+     * @param playerY      hauteur du joueur (pour placer les particules)
+     */
     private static void showChunkBorders(@NotNull Player player, @NotNull ChunkPos chunkPos, @NotNull City city, boolean isPlayerCity, int playerY) {
         List<Location> particleLocations = calculateParticleLocations(chunkPos, city, playerY);
 
@@ -150,33 +195,42 @@ public class CityViewManager {
         );
     }
 
+    /**
+     * Calcule les positions des particules pour dessiner les bordures d’un chunk.
+     *
+     * @param chunkPos position du chunk
+     * @param city     ville propriétaire
+     * @param y        hauteur d’affichage
+     * @return liste des positions de particules
+     */
     @NotNull
-    private static List<Location> calculateParticleLocations(@NotNull ChunkPos chunkPos, @NotNull City city, int y) {
+    private static List<Location> calculateParticleLocations(@NotNull ChunkPos chunkPos,
+                                                             @NotNull City city, int y) {
         List<Location> locations = new ArrayList<>();
         World world = chunkPos.getChunkInWorld().getWorld();
         int baseX = chunkPos.x() * 16;
         int baseZ = chunkPos.z() * 16;
         boolean[] borders = checkBorders(chunkPos, city);
 
-        // borders[0]: bord haut (nord) → ligne z = baseZ
+        // Bord nord
         if (borders[0]) {
             for (int x = 0; x <= CHUNK_SIZE * 2; x++)
                 locations.add(new Location(world, baseX + x / 2D, y, baseZ));
         }
 
-        // borders[2]: bord bas (sud) → ligne z = baseZ + CHUNK_SIZE
+        // Bord sud
         if (borders[2]) {
             for (int x = 0; x <= CHUNK_SIZE * 2; x++)
                 locations.add(new Location(world, baseX + x / 2D, y, baseZ + CHUNK_SIZE));
         }
 
-        // borders[3]: bord gauche (ouest) → colonne x = baseX
+        // Bord ouest
         if (borders[3]) {
             for (int z = 0; z <= CHUNK_SIZE * 2; z++)
                 locations.add(new Location(world, baseX, y, baseZ + z / 2D));
         }
 
-        // borders[1]: bord droit (est) → colonne x = baseX + CHUNK_SIZE
+        // Bord est
         if (borders[1]) {
             for (int z = 0; z <= CHUNK_SIZE * 2; z++)
                 locations.add(new Location(world, baseX + CHUNK_SIZE, y, baseZ + z / 2D));
@@ -185,6 +239,14 @@ public class CityViewManager {
         return locations;
     }
 
+    /**
+     * Vérifie quelles bordures d’un chunk doivent être affichées
+     * (si le chunk adjacent n’appartient pas à la même ville).
+     *
+     * @param chunkPos position du chunk
+     * @param city     ville propriétaire
+     * @return tableau de 4 booléens (N, E, S, O)
+     */
     private static boolean @NotNull [] checkBorders(@NotNull ChunkPos chunkPos, @NotNull City city) {
         boolean[] borders = new boolean[4];
         for (int i = 0; i < 4; i++) {
