@@ -3,8 +3,13 @@ package fr.openmc.core.utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 public record ChunkPos(int x, int z) {
+    @NotNull
+    public static ChunkPos fromChunk(@NotNull Chunk chunk) {
+        return new ChunkPos(chunk.getX(), chunk.getZ());
+    }
 
     public Chunk getChunkInWorld() {
         World world = Bukkit.getWorld("world");

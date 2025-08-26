@@ -3,7 +3,13 @@ Nouveau plugin collaboratif pour un serveur : VOTRE serveur !
 
 <a href="https://github.com/ServerOpenMC/PluginV2/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=ServerOpenMC/PluginV2" alt="Contributors" />
-</a>
+</a><br><br>
+
+<p align="center">
+  <a href="https://www.codefactor.io/repository/github/serveropenmc/pluginv2">
+    <img src="https://www.codefactor.io/repository/github/serveropenmc/pluginv2/badge" alt="CodeFactor" />
+  </a>
+</p>
 
 ## 🤝 Rejoindre le développement.
 1. Commencez par forker le dépôt et rejoindre le [Discord](https://discord.gg/aywen)

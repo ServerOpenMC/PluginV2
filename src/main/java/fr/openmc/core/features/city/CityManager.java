@@ -21,6 +21,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
+import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ChunkPos;
 import org.bukkit.Bukkit;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 public class CityManager implements Listener {
     private static final HashMap<UUID, City> cities = new HashMap<>();
     private static final HashMap<UUID, City> playerCities = new HashMap<>();
-    private static final HashMap<ChunkPos, City> claimedChunks = new HashMap<>();
+    private static final HashMap<ChunkPos, City> claimedChunks = new HashMap<>();;
 
     public CityManager() {
         OMCPlugin.registerEvents(this);
@@ -65,10 +66,10 @@ public class CityManager implements Listener {
         );
 
         CommandsManager.getHandler().register(
-		        new AdminCityCommands(),
-		        new CityCommands(),
-		        new CityChatCommand(),
-		        new CityPermsCommands(),
+                new AdminCityCommands(),
+                new CityCommands(),
+                new CityChatCommand(),
+                new CityPermsCommands(),
                 new CityChestCommand(),
                 new CityRankCommands(),
                 new CityTopCommands()
@@ -76,7 +77,7 @@ public class CityManager implements Listener {
 
         OMCPlugin.registerEvents(
                 new CityChatListener()
-            );
+        );
 
         // SUB-FEATURE
         new MascotsManager();
@@ -171,6 +172,8 @@ public class CityManager implements Listener {
      */
     public static void addPlayerToCity(City city, UUID player) {
         playerCities.put(player, city);
+        CityViewManager.updateView(player);
+
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 membersDao.create(new DBCityMember(player, city.getUniqueId()));
@@ -188,6 +191,8 @@ public class CityManager implements Listener {
      */
     public static void removePlayerFromCity(City city, UUID player) {
         playerCities.remove(player);
+        CityViewManager.updateView(player);
+
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 membersDao.delete(new DBCityMember(player, city.getUniqueId()));
@@ -271,6 +276,7 @@ public class CityManager implements Listener {
 
     public static void claimChunk(City city, ChunkPos chunk) {
         claimedChunks.put(chunk, city);
+        CityViewManager.updateAllViews();
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -283,6 +289,7 @@ public class CityManager implements Listener {
 
     public static void unclaimChunk(City city, ChunkPos chunk) {
         claimedChunks.remove(chunk);
+        CityViewManager.updateAllViews();
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
@@ -427,6 +434,17 @@ public class CityManager implements Listener {
     @Nullable
     public static City getCityFromChunk(int x, int z) {
         return claimedChunks.get(new ChunkPos(x, z));
+    }
+
+    /**
+     * Get a city from a chunk
+     *
+     * @param chunkPos The chunk position
+     * @return The city object, or null if not found
+     */
+    @Nullable
+    public static City getCityFromChunk(ChunkPos chunkPos) {
+        return claimedChunks.get(chunkPos);
     }
 
 
@@ -594,5 +612,7 @@ public class CityManager implements Listener {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new CityDeleteEvent(city));
         });
+
+        CityViewManager.updateAllViews();
     }
 }
