@@ -17,8 +17,6 @@ public class TicketManager {
     private static final Gson gson = new Gson();
     @Setter private static File statsDirectory;
 
-    public TicketManager() { }
-
     /**
      * Load player statistics from JSON files in the specified directory.
      *
