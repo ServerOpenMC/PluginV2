@@ -105,8 +105,7 @@ public class City {
         this.balance = balance;
         this.freeClaims = freeClaims;
         this.powerPoints = power;
-
-        setType(type);
+        this.type = CityType.valueOf(type.toUpperCase());
 
         CityManager.registerCity(this);
     }
@@ -145,19 +144,6 @@ public class City {
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
                 CityManager.saveCity(this)
-        );
-    }
-
-    public void setType(String type) {
-        try {
-            this.type = CityType.valueOf(type.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return;
-        }
-
-        Bukkit.getScheduler().runTaskAsynchronously(
-                OMCPlugin.getInstance(),
-                () -> CityManager.saveCity(this)
         );
     }
 
