@@ -149,23 +149,21 @@ public class City {
     }
 
     public void setType(String type) {
-        if ("war".equalsIgnoreCase(type)) {
-            this.type = CityType.WAR;
-        } else if ("peace".equalsIgnoreCase(type)) {
-            this.type = CityType.PEACE;
+        try {
+            this.type = CityType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
-                CityManager.saveCity(this)
+        Bukkit.getScheduler().runTaskAsynchronously(
+                OMCPlugin.getInstance(),
+                () -> CityManager.saveCity(this)
         );
     }
 
     public void changeType() {
-        if (this.type == CityType.WAR) {
-            this.type = CityType.PEACE;
-        } else if (this.type == CityType.PEACE) {
-            this.type = CityType.WAR;
-        }
+        if (this.type == CityType.WAR) this.type = CityType.PEACE;
+        else if (this.type == CityType.PEACE) this.type = CityType.WAR;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->
                 CityManager.saveCity(this)
@@ -243,6 +241,8 @@ public class City {
 
     /**
      * Updates the number of free claims of the city
+     *
+     * @param diff The amount to be added or removed to the existing free claims.
      */
     public void updateFreeClaims(int diff) {
         freeClaims += diff;
@@ -361,19 +361,6 @@ public class City {
             this.chunks = CityManager.getCityChunks(this);
 
         return chunks.contains(new ChunkPos(x, z));
-    }
-
-    /**
-     * Checks if a specific chunk is claimed by the city.
-     *
-     * @param chunk The chunk
-     * @return True if the chunk is claimed, false otherwise.
-     */
-    public boolean hasChunk(Chunk chunk) {
-        if (this.chunks == null)
-            this.chunks = CityManager.getCityChunks(this);
-
-        return chunks.contains(new ChunkPos(chunk.getX(), chunk.getZ()));
     }
 
     // ==================== Economy Methods ====================
@@ -534,9 +521,8 @@ public class City {
         if (playerPerms.contains(CityPermission.OWNER)) {
             return true;
         }
-        
 
-        return playerPerms.contains(permission);
+        return playerPerms.contains(CityPermission.OWNER) || playerPerms.contains(permission);
     }
 
     /**

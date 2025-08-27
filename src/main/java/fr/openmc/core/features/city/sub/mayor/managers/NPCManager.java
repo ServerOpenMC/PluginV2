@@ -284,7 +284,9 @@ public class NPCManager implements Listener {
                 return;
             }
 
-            if (!city.hasChunk(event.getNpc().getData().getLocation().getChunk())) {
+            Chunk npcChuck = event.getNpc().getData().getLocation().getChunk();
+
+            if (!city.hasChunk(npcChuck.getX(), npcChuck.getZ())) {
                 MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
                 return;
