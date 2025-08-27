@@ -120,10 +120,8 @@ public class CityChangeAction {
             exception.printStackTrace();
         }
 
-        String cityTypeActuel;
-        String cityTypeAfter;
-        cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
-        cityTypeAfter = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+        String cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
+        String cityTypeAfter = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
 
         MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
     }
