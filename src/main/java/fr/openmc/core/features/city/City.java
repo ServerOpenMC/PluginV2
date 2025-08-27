@@ -544,7 +544,7 @@ public class City {
         
         if (playerPerms == null) return;
         
-        if (! playerPerms.contains(permission)) return;
+        if (!playerPerms.contains(permission)) return;
 
         playerPerms.remove(permission);
         permissions.put(playerUUID, playerPerms);
@@ -732,7 +732,7 @@ public class City {
      * @throws IllegalArgumentException if the rank is not found, or if it is the default rank (priority 0).
      */
     public void deleteRank(DBCityRank rank) {
-        if (! cityRanks.contains(rank)) {
+        if (!cityRanks.contains(rank)) {
             throw new IllegalArgumentException("Rank not found in the city's ranks.");
         }
         if (rank.getPriority() == 0) {
@@ -809,7 +809,7 @@ public class City {
      * @throws IllegalArgumentException if the specified rank does not exist in the city's ranks.
      */
     public void changeRank(Player sender, UUID playerUUID, DBCityRank newRank) {
-        if (! cityRanks.contains(newRank)) {
+        if (!cityRanks.contains(newRank)) {
             throw new IllegalArgumentException("The specified rank does not exist in the city's ranks.");
         }
         

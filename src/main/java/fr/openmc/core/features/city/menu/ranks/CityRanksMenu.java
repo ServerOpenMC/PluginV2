@@ -76,7 +76,7 @@ public class CityRanksMenu extends PaginatedMenu {
 		boolean canManagerRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
 
 		Set<DBCityRank> cityRanks = city.getRanks();
-		if (! cityRanks.isEmpty()) {
+		if (!cityRanks.isEmpty()) {
 			for (DBCityRank rank : cityRanks) {
 				String rankName = rank.getName();
 				int priority = rank.getPriority();

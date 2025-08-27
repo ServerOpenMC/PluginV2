@@ -35,7 +35,7 @@ public class CityInviteConditions {
 			return false;
 		}
 		
-		if (! (city.hasPermission(player.getUniqueId(), CityPermission.INVITE))) {
+		if (!(city.hasPermission(player.getUniqueId(), CityPermission.INVITE))) {
 			MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'inviter des joueurs dans la ville"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
@@ -61,7 +61,7 @@ public class CityInviteConditions {
 	 */
 	public static boolean canCityInviteDeny(Player player, Player inviter) {
 		List<Player> playerInvitations = CityCommands.invitations.get(player);
-		if (! playerInvitations.contains(inviter)) {
+		if (!playerInvitations.contains(inviter)) {
 			MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
@@ -78,7 +78,7 @@ public class CityInviteConditions {
 	 * @return booleen
 	 */
 	public static boolean canCityInviteAccept(City newCity, Player inviter, Player invitedPlayer) {
-		if (! invitations.containsKey(invitedPlayer)) {
+		if (!invitations.containsKey(invitedPlayer)) {
 			MessagesManager.sendMessage(invitedPlayer, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}

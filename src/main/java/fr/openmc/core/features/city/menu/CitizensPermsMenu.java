@@ -84,7 +84,7 @@ public class CitizensPermsMenu {
         while (!perms.isEmpty()) {
             Component page = Component.empty();
             
-            for (int i = 0; i < 9 && ! perms.isEmpty(); i++) {
+            for (int i = 0; i < 9 && !perms.isEmpty(); i++) {
                 page = page.append(perms.removeFirst());
             }
 

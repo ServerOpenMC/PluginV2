@@ -79,7 +79,7 @@ public class InteractProtection implements Listener {
         
         Entity rightClicked = event.getRightClicked();
         if (rightClicked instanceof Player) return;
-        if (! (rightClicked instanceof ItemFrame)) return;
+        if (!(rightClicked instanceof ItemFrame)) return;
 
         if (MascotUtils.canBeAMascot(rightClicked)) return;
         

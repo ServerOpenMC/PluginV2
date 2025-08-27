@@ -171,7 +171,7 @@ public class DBCityRank {
 	public void setPermissions(String permissions) {
 		if (permissionsSet == null) permissionsSet = new HashSet<>();
 		
-		if (permissions != null && ! permissions.isEmpty()) {
+		if (permissions != null && !permissions.isEmpty()) {
 			String[] perms = permissions.split(",");
 			for (String perm : perms) {
 				try {
@@ -193,7 +193,7 @@ public class DBCityRank {
 	public void setMembers(String members) {
 		if (membersSet == null) membersSet = new HashSet<>();
 		
-		if (members != null && ! members.isEmpty()) {
+		if (members != null && !members.isEmpty()) {
 			String[] membersUUIDs = members.split(",");
 			for (String uuid : membersUUIDs) {
 				try {
