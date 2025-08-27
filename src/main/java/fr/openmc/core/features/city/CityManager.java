@@ -120,37 +120,28 @@ public class CityManager implements Listener {
     private static void loadCities() {
         try {
             cities.clear();
-            citiesDao.queryForAll().forEach(city -> cities.put(city.getUniqueId(), city.deserialize()));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            for (DBCity dbCity : citiesDao.queryForAll()) {
+                cities.put(dbCity.getUniqueId(), dbCity.deserialize());
+            }
 
-        try {
             playerCities.clear();
-            membersDao.queryForAll().forEach(member -> playerCities.put(member.getPlayerUUID(), getCity(member.getCityUUID())));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            for (DBCityMember member : membersDao.queryForAll()) {
+                City city = getCity(member.getCityUUID());
+                if (city != null) playerCities.put(member.getPlayerUUID(), city);
+            }
 
-        try {
             claimedChunks.clear();
-            claimsDao.queryForAll()
-                    .forEach(claim -> claimedChunks.put(claim.getChunkPos(), getCity(claim.getCityUUID())));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            for (DBCityClaim claim : claimsDao.queryForAll()) {
+                City city = getCity(claim.getCityUUID());
+                if (city != null) claimedChunks.put(claim.getChunkPos(), city);
+            }
 
-        cities.values().forEach(City::initializeRanks);
+            cities.values().forEach(City::initializeRanks);
 
-        try {
-            ranksDao.queryForAll()
-                    .forEach(rank -> {
-                        City city = getCity(rank.getCityUUID());
-                        if (city != null) {
-                            city.getRanks().add(rank);
-                        }
-                    });
-
+            for (DBCityRank rank : ranksDao.queryForAll()) {
+                City city = getCity(rank.getCityUUID());
+                if (city != null) city.getRanks().add(rank);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -171,6 +162,8 @@ public class CityManager implements Listener {
      * @param player The player to add to the city
      */
     public static void addPlayerToCity(City city, UUID player) {
+        if (city == null || player == null) return;
+
         playerCities.put(player, city);
         CityViewManager.updateView(player);
 
@@ -190,6 +183,8 @@ public class CityManager implements Listener {
      * @param player The player to remove from the city
      */
     public static void removePlayerFromCity(City city, UUID player) {
+        if (city == null || player == null) return;
+
         playerCities.remove(player);
         CityViewManager.updateView(player);
 
@@ -525,6 +520,8 @@ public class CityManager implements Listener {
      * @param city The city
      */
     public static void deleteCity(City city) {
+        if (city == null) return;
+
         MayorManager.cityMayor.remove(city.getUniqueId());
         MayorManager.cityElections.remove(city.getUniqueId());
         MayorManager.playerVote.remove(city.getUniqueId());
