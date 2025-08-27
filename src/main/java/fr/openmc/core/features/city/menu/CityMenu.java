@@ -46,10 +46,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_1_DAY;
@@ -372,15 +369,10 @@ public class CityMenu extends Menu {
         MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
                 .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L * 60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
 
-        String typeStr = switch(city.getType()) {
-            case WAR -> "guerre";
-            case PEACE -> "paix";
-        };
-
         Supplier<ItemBuilder> typeItemSupplier = () -> {
 
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("§7Votre ville est en §5" + typeStr));
+            lore.add(Component.text("§7Votre ville est en §5" + city.getType().getDisplayName().toLowerCase(Locale.ROOT)));
 
             if (city.getType().equals(CityType.WAR) && city.hasPermission(player.getUniqueId(), CityPermission.LAUNCH_WAR)) {
                 lore.add(Component.empty());

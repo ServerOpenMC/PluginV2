@@ -82,7 +82,7 @@ public class CityListMenu extends PaginatedMenu {
 				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
 				cityLore.add(Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)));
 			}
-			cityLore.add(Component.text("§eType : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")));
+			cityLore.add(Component.text("§eType : " + city.getType().getDisplayName()));
 			cityLore.add(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
 
 
