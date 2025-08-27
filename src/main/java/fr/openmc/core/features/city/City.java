@@ -312,16 +312,6 @@ public class City {
      * Removes a chunk from the city's claimed chunks and updates the database
      * asynchronously.
      *
-     * @param chunk The chunk to be removed.
-     */
-    public void removeChunk(Chunk chunk) {
-        removeChunk(chunk.getX(), chunk.getZ());
-    }
-
-    /**
-     * Removes a chunk from the city's claimed chunks and updates the database
-     * asynchronously.
-     *
      * @param chunkX The X coordinate of the chunk to be removed.
      * @param chunkZ The Z coordinate of the chunk to be removed.
      */
