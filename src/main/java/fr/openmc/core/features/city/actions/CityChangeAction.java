@@ -83,13 +83,13 @@ public class CityChangeAction {
             return;
         }
 
-        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:type")) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
+            MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         city.changeType();
-        DynamicCooldownManager.use(city.getUUID(), "city:type", COOLDOWN_CHANGE_TYPE);
+        DynamicCooldownManager.use(city.getUniqueId(), "city:type", COOLDOWN_CHANGE_TYPE);
 
         LivingEntity mob = (LivingEntity) mascot.getEntity();
         MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
@@ -120,10 +120,8 @@ public class CityChangeAction {
             exception.printStackTrace();
         }
 
-        String cityTypeActuel;
-        String cityTypeAfter;
-        cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
-        cityTypeAfter = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
+        String cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
+        String cityTypeAfter = city.getType() == CityType.WAR ? "§cen guerre§7" : "§aen paix§7";
 
         MessagesManager.sendMessage(sender, Component.text("Vous avez changé le type de votre ville de " + cityTypeActuel + " à " + cityTypeAfter), Prefix.CITY, MessageType.SUCCESS, false);
     }

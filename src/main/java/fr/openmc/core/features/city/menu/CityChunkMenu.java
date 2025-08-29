@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CityChunkMenu extends Menu {
@@ -39,7 +40,7 @@ public class CityChunkMenu extends Menu {
     private final Player player;
     private final int playerChunkX, playerChunkZ, startX, startZ;
     private final City playerCity;
-    private final String playerCityUUID;
+    private final UUID playerCityUUID;
     private final boolean hasPermissionClaim, hasFreeClaimAvailable;
     private final int freeClaims;
     private final double price;
@@ -61,11 +62,11 @@ public class CityChunkMenu extends Menu {
         int tempFreeClaims = 0;
         double tempPrice = 0;
         int tempAywenite = 0;
-        String tempPlayerCityUUID = null;
+        UUID tempPlayerCityUUID = null;
 
         if (playerCity != null) {
             tempHasPermissionClaim = playerCity.hasPermission(player.getUniqueId(), CityPermission.CLAIM);
-            tempPlayerCityUUID = playerCity.getUUID();
+            tempPlayerCityUUID = playerCity.getUniqueId();
 
             int nbChunk = playerCity.getChunks().size();
             tempPrice = CityClaimAction.calculatePrice(nbChunk);
@@ -236,14 +237,14 @@ public class CityChunkMenu extends Menu {
         } else if (isProtected) {
             material = Material.ORANGE_STAINED_GLASS_PANE;
         } else if (city != null) {
-            boolean isPlayerCity = playerCityUUID != null && playerCityUUID.equals(city.getUUID());
+            boolean isPlayerCity = playerCityUUID != null && playerCityUUID.equals(city.getUniqueId());
             material = isPlayerCity ? Material.BLUE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE;
         }
 
         if (isProtected) {
             return createProtectedChunkItem(material, chunkX, chunkZ);
         } else if (city != null) {
-            boolean isPlayerCity = playerCityUUID != null && playerCityUUID.equals(city.getUUID());
+            boolean isPlayerCity = playerCityUUID != null && playerCityUUID.equals(city.getUniqueId());
             return isPlayerCity
                     ? createPlayerCityChunkItem(material, city, chunkX, chunkZ)
                     : createOtherCityChunkItem(material, city, chunkX, chunkZ);

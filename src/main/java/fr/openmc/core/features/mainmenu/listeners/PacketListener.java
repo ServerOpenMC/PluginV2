@@ -37,7 +37,6 @@ public class PacketListener implements Listener {
     @Getter
     private static final List<UUID> enabledAdvancements = new ArrayList<>();
 
-    // #ProtocolLib sucks
     public PacketListener(OMCPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this, plugin);
         advancementPacket = createEmptyAdvancementPacket();

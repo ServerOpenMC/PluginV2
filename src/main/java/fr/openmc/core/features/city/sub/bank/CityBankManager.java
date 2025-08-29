@@ -5,6 +5,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.bank.commands.CityBankCommand;
 
 import java.util.List;
+import java.util.UUID;
 
 
 public class CityBankManager {
@@ -21,8 +22,8 @@ public class CityBankManager {
      * WARNING: THIS FUNCTION IS VERY EXPENSIVE DO NOT RUN FREQUENTLY IT WILL AFFECT PERFORMANCE IF THERE ARE MANY CITIES SAVED IN THE DB
      */
     public static void applyAllCityInterests() {
-        List<String> cityUUIDs = CityManager.getAllCityUUIDs();
-        for (String cityUUID : cityUUIDs) {
+        List<UUID> cityUUIDs = CityManager.getAllCityUUIDs();
+        for (UUID cityUUID : cityUUIDs) {
             CityManager.getCity(cityUUID).applyCityInterest();
         }
     }

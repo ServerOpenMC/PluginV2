@@ -9,19 +9,19 @@ import lombok.Getter;
 
 @DatabaseTable(tableName = "city_members")
 public class DBCityMember {
-    @DatabaseField(id = true)
+    @DatabaseField(columnName = "player_uuid", id = true)
     @Getter
-    private UUID player;
-    @DatabaseField(canBeNull = false)
+    private UUID playerUUID;
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
     @Getter
-    private String city;
+    private UUID cityUUID;
 
     DBCityMember() {
         // required for ORMLite
     }
 
-    public DBCityMember(UUID player, String city) {
-        this.player = player;
-        this.city = city;
+    public DBCityMember(UUID player, UUID city) {
+        this.playerUUID = player;
+        this.cityUUID = city;
     }
 }

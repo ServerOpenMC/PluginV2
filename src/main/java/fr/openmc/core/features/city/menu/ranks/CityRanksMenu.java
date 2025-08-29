@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityRankAction;
-import fr.openmc.core.features.city.models.CityRank;
+import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -75,9 +75,9 @@ public class CityRanksMenu extends PaginatedMenu {
 
 		boolean canManagerRanks = city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS);
 
-		Set<CityRank> cityRanks = city.getRanks();
-		if (! cityRanks.isEmpty()) {
-			for (CityRank rank : cityRanks) {
+		Set<DBCityRank> cityRanks = city.getRanks();
+		if (!cityRanks.isEmpty()) {
+			for (DBCityRank rank : cityRanks) {
 				String rankName = rank.getName();
 				int priority = rank.getPriority();
 				Material icon = rank.getIcon() != null ? rank.getIcon() : Material.PAPER;

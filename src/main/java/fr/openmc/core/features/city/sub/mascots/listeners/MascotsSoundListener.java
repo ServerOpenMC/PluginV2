@@ -16,11 +16,13 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 public class MascotsSoundListener {
+
+    private static final Map<EntityType, EntityType> SOUND_TO_ENTITY = Map.of(
+            EntityType.COW, EntityType.MOOSHROOM
+    );
 
     public MascotsSoundListener() {
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(
@@ -55,8 +57,12 @@ public class MascotsSoundListener {
                         .map(entity -> MascotsManager.mascotsByEntityUUID.get(entity.getUniqueId()))
                         .toList();
 
+                EntityType soundEntity = EnumUtils.match(splitedSound[1].toUpperCase(Locale.ROOT), EntityType.class);
+
                 for (Mascot mascot : mascotsNear) {
-                    if (mascot.getEntity().getType().equals(EnumUtils.match(splitedSound[1].toUpperCase(Locale.ROOT), EntityType.class))) {
+                    EntityType entityType = mascot.getEntity().getType();
+
+                    if (entityType.equals(soundEntity) || (SOUND_TO_ENTITY.containsKey(soundEntity) && SOUND_TO_ENTITY.get(soundEntity) == entityType)) {
                         event.setCancelled(true);
                         break;
                     }

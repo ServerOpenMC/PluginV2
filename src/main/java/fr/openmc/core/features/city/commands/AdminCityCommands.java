@@ -30,8 +30,8 @@ import java.util.UUID;
 public class AdminCityCommands {
     @Subcommand("deleteCity")
     @CommandPermission("omc.admins.commands.admincity.deleteCity")
-    void deleteCity(Player player, @Named("uuid") String cityUUID) {
-        City city = CityManager.getCity(cityUUID);
+    void deleteCity(Player player, @Named("name") String name) {
+        City city = CityManager.getCityByName(name);
 
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -70,11 +70,11 @@ public class AdminCityCommands {
         );
 
         sub.forEach(city -> {
-            String id = city.getUUID();
+            UUID cityUUID = city.getUniqueId();
             String name = city.getName();
 
             Component line = Component.text("- ")
-                    .append(Component.text(id).color(NamedTextColor.GRAY))
+                    .append(Component.text(cityUUID.toString()).color(NamedTextColor.GRAY))
                     .append(Component.text(" • "))
                     .append(Component.text(name).color(NamedTextColor.WHITE))
                     .append(Component.text(" [copier]")
@@ -82,7 +82,7 @@ public class AdminCityCommands {
                             .hoverEvent(net.kyori.adventure.text.event.HoverEvent.showText(
                                     Component.text("Clique pour copier l’UUID"))
                             )
-                            .clickEvent(ClickEvent.copyToClipboard(id))
+                            .clickEvent(ClickEvent.copyToClipboard(cityUUID.toString()))
                     );
 
             player.sendMessage(line);
@@ -91,12 +91,12 @@ public class AdminCityCommands {
         Component nav = Component.empty()
                 .append(page > 1
                         ? Component.text("« Prev").color(NamedTextColor.YELLOW)
-                        .clickEvent(ClickEvent.runCommand("/cities " + (page - 1)))
+                        .clickEvent(ClickEvent.runCommand("/admcity list " + (page - 1)))
                         : Component.text("       "))
                 .append(Component.text("    "))
                 .append(page < maxPage
                         ? Component.text("Next »").color(NamedTextColor.YELLOW)
-                        .clickEvent(ClickEvent.runCommand("/cities " + (page + 1)))
+                        .clickEvent(ClickEvent.runCommand("/admcity list " + (page + 1)))
                         : Component.text("      "));
 
         player.sendMessage(nav);
@@ -104,9 +104,9 @@ public class AdminCityCommands {
 
     @Subcommand("info")
     @CommandPermission("omc.admins.commands.admincity.info")
-    @AutoComplete("<uuid>")
-    void info(Player player, @Named("uuid") String cityUUID) {
-        City city = CityManager.getCity(cityUUID);
+    @AutoComplete("<name>")
+    void info(Player player, @Named("name") String name) {
+        City city = CityManager.getCityByName(name);
 
         if (city == null) {
             MessagesManager.sendMessage(player, Component.text("Cette ville n'existe pas"), Prefix.STAFF, MessageType.ERROR, false);
@@ -118,9 +118,9 @@ public class AdminCityCommands {
 
     @Subcommand("rename")
     @CommandPermission("omc.admins.commands.admincity.rename")
-    void rename(Player player, @Named("uuid") String cityUUID, @Named("nouveau nom") String newName) {
+    void rename(Player player, @Named("name") String name, @Named("nouveau nom") String newName) {
         // Aucune vérification de nom, mais il faut espérer que le nom est valide
-        City city = CityManager.getCity(cityUUID);
+        City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
@@ -132,8 +132,8 @@ public class AdminCityCommands {
 
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
-    void setOwner(Player player, @Named("uuid") String cityUUID, @Named("nouveau maire") Player newOwner) {
-        City city = CityManager.getCity(cityUUID);
+    void setOwner(Player player, @Named("name") String name, @Named("nouveau maire") Player newOwner) {
+        City city = CityManager.getCityByName(name);
 
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -145,8 +145,8 @@ public class AdminCityCommands {
 
     @Subcommand("setBalance")
     @CommandPermission("omc.admins.commands.admincity.setBalance")
-    void setBalance(Player player, @Named("uuid") String cityUUID, @Named("balance") double newBalance) {
-        City city = CityManager.getCity(cityUUID);
+    void setBalance(Player player, @Named("name") String name, @Named("balance") double newBalance) {
+        City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
@@ -158,8 +158,8 @@ public class AdminCityCommands {
 
     @Subcommand("getBalance")
     @CommandPermission("omc.admins.commands.admincity.getBalance")
-    void getBalance(Player player, String cityUUID) {
-        City city = CityManager.getCity(cityUUID);
+    void getBalance(Player player, String name) {
+        City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
             return;
@@ -170,8 +170,8 @@ public class AdminCityCommands {
 
     @Subcommand("add")
     @CommandPermission("omc.admins.commands.admincity.add")
-    void add(Player player, @Named("uuid") String cityUUID, Player newMember) {
-        City city = CityManager.getCity(cityUUID);
+    void add(Player player, @Named("name") String name, Player newMember) {
+        City city = CityManager.getCityByName(name);
 
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -189,7 +189,7 @@ public class AdminCityCommands {
 
     @Subcommand("remove")
     @CommandPermission("omc.admins.commands.admincity.remove")
-    void remove(Player player, @Named("uuid") String cityUUID, Player member) {
+    void remove(Player player, Player member) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
@@ -214,7 +214,7 @@ public class AdminCityCommands {
             return;
         }
 
-        MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville "+ city.getName()+" ("+city.getUUID()+")"), Prefix.STAFF, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("Le joueur est dans la ville " + city.getName() + " (" + city.getUniqueId() + ")"), Prefix.STAFF, MessageType.INFO, false);
     }
 
     @Subcommand("claim bypass")
@@ -302,7 +302,7 @@ public class AdminCityCommands {
         if (mascot.isImmunity()) {
             mascot.setImmunity(false);
         }
-        DynamicCooldownManager.clear(city.getUUID(), "city:immunity");
+        DynamicCooldownManager.clear(city.getUniqueId(), "city:immunity");
         UUID mascotUUID = mascot.getMascotUUID();
         if (mascotUUID!=null){
             Entity mob = Bukkit.getEntity(mascotUUID);

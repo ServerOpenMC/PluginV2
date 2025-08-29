@@ -1,6 +1,5 @@
 package fr.openmc.core.listeners;
 
-import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.items.usable.CustomUsableItem;
 import fr.openmc.core.items.usable.CustomUsableItemRegistry;
 import org.bukkit.entity.Player;
@@ -17,7 +16,6 @@ public class InteractListener implements Listener {
         Player player = event.getPlayer();
         if (event.useInteractedBlock() == Event.Result.DENY) return;
         if (event.getClickedBlock() == null) return;
-        ProtectionsManager.verify(player, event, event.getClickedBlock().getLocation());
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         CustomUsableItem usableItem = CustomUsableItemRegistry.getByItemStack(itemInHand);

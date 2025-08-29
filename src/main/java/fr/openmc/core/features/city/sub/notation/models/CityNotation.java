@@ -5,12 +5,14 @@ import com.j256.ormlite.table.DatabaseTable;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @DatabaseTable(tableName = "city_notation")
 @Getter
 @Setter
 public class CityNotation {
-    @DatabaseField(id = true, columnName = "uuid")
-    private String cityUUID;
+    @DatabaseField(id = true, columnName = "city_uuid")
+    private UUID cityUUID;
     @DatabaseField
     private String weekStr;
     @DatabaseField(defaultValue = "0", columnName = "economy")
@@ -30,7 +32,7 @@ public class CityNotation {
         // required for ORMLite
     }
 
-    public CityNotation(String uuid, double noteArchitectural, double noteCoherence, String description, String weekStr) {
+    public CityNotation(UUID uuid, double noteArchitectural, double noteCoherence, String description, String weekStr) {
         this.cityUUID = uuid;
         this.noteArchitectural = noteArchitectural;
         this.noteCoherence = noteCoherence;

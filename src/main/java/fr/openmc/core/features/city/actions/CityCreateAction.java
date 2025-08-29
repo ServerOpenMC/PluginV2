@@ -1,6 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
@@ -11,11 +12,11 @@ import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -101,7 +102,7 @@ public class CityCreateAction {
         String pendingCityName = pendingCities.remove(playerUUID);
         if (pendingCityName == null) return false;
 
-        String cityUUID = UUID.randomUUID().toString().substring(0, 8);
+        UUID cityUUID = UUID.randomUUID();
         Chunk chunk = mascotLocation.getChunk();
 
         if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
@@ -137,9 +138,10 @@ public class CityCreateAction {
         MessagesManager.sendMessage(player, Component.text("§aVotre ville a été crée : " + pendingCityName), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("§7+ §615 chunks gratuits"), Prefix.CITY, MessageType.INFO, false);
 
-        DynamicCooldownManager.use(playerUUID.toString(), "city:big", 60000);
+        DynamicCooldownManager.use(playerUUID, "city:big", 60000);
         DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);
 
+        CityViewManager.updateAllViews();
         return true;
     }
 }

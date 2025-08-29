@@ -29,14 +29,6 @@ public class CityMessages {
         int power = city.getPowerPoints();
 
         CityType type = city.getType();
-        String typeString;
-        if (type == CityType.WAR) {
-            typeString = "Guerre";
-        } else if (type == CityType.PEACE) {
-            typeString = "Paix";
-        } else {
-            typeString = "Inconnu";
-        }
         Mascot mascot = city.getMascot();
         if (mascot!=null){
             LivingEntity mob = (LivingEntity) mascot.getEntity();
@@ -58,7 +50,7 @@ public class CityMessages {
             sendLine(sender, "Puissance", String.valueOf(power));
         }
         sendLine(sender, "Vie de la Mascotte", mascotLife);
-        sendLine(sender, "Type", typeString);
+        sendLine(sender, "Type", type.getDisplayName());
 
         String money = EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon();
         if (sender instanceof Player player) {

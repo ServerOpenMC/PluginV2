@@ -14,8 +14,8 @@ public class MayorVote {
     @DatabaseField(id = true)
     @Getter
     private UUID voter;
-    @DatabaseField(canBeNull = false)
-    private String city;
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
+    private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     private UUID candidate;
 
@@ -23,14 +23,14 @@ public class MayorVote {
         // required for ORMLite
     }
 
-    public MayorVote(String city, UUID voterUUID, MayorCandidate candidate) {
-        this.city = city;
+    public MayorVote(UUID cityUUID, UUID voterUUID, MayorCandidate candidate) {
+        this.cityUUID = cityUUID;
         this.voter = voterUUID;
-        this.candidate = candidate.getUUID();
+        this.candidate = candidate.getCandidateUUID();
     }
 
     public City getCity() {
-        return CityManager.getCity(city);
+        return CityManager.getCity(cityUUID);
     }
 
     public MayorCandidate getCandidate() {

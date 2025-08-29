@@ -77,13 +77,8 @@ public class LetterMenu extends MailboxInv {
         if (letter == null || letter.isRefused())
             return false;
 
-        try {
-            items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        items = BukkitSerializer.deserializeItemStacks(letter.getItems());
+        return true;
     }
 
     public void accept() {

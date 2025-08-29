@@ -204,7 +204,7 @@ public class CompanyManager {
                     if (dbShop.getCity() == null) {
                         company.createShop(barrel, cashRegister, dbShop.getId());
                     } else {
-                        City city = CityManager.getCity(dbShop.getCity().toString());
+                        City city = CityManager.getCity(dbShop.getCity());
                         if (city != null) {
                             company.createShop(barrel, cashRegister, dbShop.getId());
                         }
@@ -318,7 +318,7 @@ public class CompanyManager {
                 UUID companyId = company.getCompany_uuid();
                 UUID cityUuid = null;
                 if (company.getOwner().isCity()) {
-                    cityUuid = UUID.fromString(company.getOwner().getCity().getUUID());
+                    cityUuid = company.getOwner().getCity().getUniqueId();
                 }
 
                 double x = ShopBlocksManager.getMultiblock(shop.getUuid()).stockBlock().getBlockX();
@@ -400,8 +400,7 @@ public class CompanyManager {
     public static Set<CorpPermission> getPermissions(Company company, UUID player) {
         Set<CorpPermission> permissions = new HashSet<>();
         try {
-            UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
-                    : UUID.fromString(company.getOwner().getCity().getUUID());
+            UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer() : company.getOwner().getCity().getUniqueId();
             QueryBuilder<CompanyPermission, UUID> query = permissionsDao.queryBuilder();
             query.where().eq("company", companyUuid).and().eq("player", player);
 
@@ -424,7 +423,7 @@ public class CompanyManager {
     public static void removePermissions(Company company, UUID player, CorpPermission permission) {
         try {
             UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
-                    : UUID.fromString(company.getOwner().getCity().getUUID());
+                    : company.getOwner().getCity().getUniqueId();
 
             permissionsDao.delete(new CompanyPermission(companyUuid, player, permission.toString()));
         } catch (SQLException e) {
@@ -435,7 +434,7 @@ public class CompanyManager {
     public static void addPermissions(Company company, UUID player, CorpPermission permission) {
         try {
             UUID companyUuid = company.getOwner().getCity() == null ? company.getOwner().getPlayer()
-                    : UUID.fromString(company.getOwner().getCity().getUUID());
+                    : company.getOwner().getCity().getUniqueId();
 
             permissionsDao.create(new CompanyPermission(companyUuid, player, permission.toString()));
         } catch (SQLException e) {

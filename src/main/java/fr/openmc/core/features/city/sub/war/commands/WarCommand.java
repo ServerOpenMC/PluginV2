@@ -38,14 +38,14 @@ public class WarCommand {
 
         if (!playerCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville n'est pas dans un statut de §cgueere§f! Changez la type de votre ville avec §c/city type §fou depuis le §cMenu Princiapl des Villes"),
+                    Component.text("Votre ville n'est pas dans un statut de §cguerre §f! Changez la type de votre ville avec §c/city type §fou depuis le §cMenu Principal des Villes"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (playerCity.isImmune()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville est actuellement en période d'immunité, vous ne pouvez pas lancer de guerre pour le moment. \nTemps restant : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(playerCity.getUUID(), "city:immunity"))),
+                    Component.text("Votre ville est actuellement en période d'immunité, vous ne pouvez pas lancer de guerre pour le moment. \nTemps restant : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(playerCity.getUniqueId(), "city:immunity"))),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }

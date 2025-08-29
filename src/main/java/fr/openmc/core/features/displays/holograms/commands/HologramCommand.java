@@ -30,48 +30,25 @@ public class HologramCommand {
     @Description("Défini la position d'un Hologram.")
     void setPosCommand(Player player, String hologramName) {
         if (HologramLoader.displays.containsKey(hologramName)) {
-            ItemStack holoMoveItem = new ItemStack(Material.STICK);
-            ItemMeta meta = holoMoveItem.getItemMeta();
 
-            if (meta != null) {
-                List<Component> info = new ArrayList<>();
-                info.add(Component.text("§7Cliquez ou vous voulez pour poser l'hologramme"));
-                info.add(Component.text("§cITEM POUR ADMIN"));
-                meta.lore(info);
+            try {
+                HologramLoader.setHologramLocation(hologramName, player.getLocation());
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("§aPosition du hologramme " + hologramName + " mise à jour."),
+                        Prefix.STAFF,
+                        MessageType.SUCCESS,
+                        true
+                );
+            } catch (IOException e) {
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("§cErreur lors de la mise à jour de la position du hologram " + hologramName + ": " + e.getMessage()),
+                        Prefix.STAFF,
+                        MessageType.ERROR,
+                        true
+                );
             }
-            holoMoveItem.setItemMeta(meta);
-
-            ItemInteraction.runLocationInteraction(
-                    player,
-                    holoMoveItem,
-                    "admin:move-hologram",
-                    120,
-                    "Temps Restant : %sec%s",
-                    "§cDéplacement de l'Hologramme " + hologramName,
-                    holoMove -> {
-                        if (holoMove == null) return true;
-                        try {
-                            HologramLoader.setHologramLocation(hologramName, holoMove);
-                            MessagesManager.sendMessage(
-                                    player,
-                                    Component.text("§aPosition du hologramme " + hologramName + " mise à jour."),
-                                    Prefix.STAFF,
-                                    MessageType.SUCCESS,
-                                    true
-                            );
-                        } catch (IOException e) {
-                            MessagesManager.sendMessage(
-                                    player,
-                                    Component.text("§cErreur lors de la mise à jour de la position du hologram " + hologramName + ": " + e.getMessage()),
-                                    Prefix.STAFF,
-                                    MessageType.ERROR,
-                                    true
-                            );
-                        }
-                        return true;
-                    },
-                    null
-            );
 
         } else {
             String list = String.join(", ", HologramLoader.displays.keySet());

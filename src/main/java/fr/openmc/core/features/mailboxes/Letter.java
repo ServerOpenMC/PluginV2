@@ -55,15 +55,9 @@ public class Letter {
 
     public LetterHead toLetterHead() {
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
-        try {
-            ItemStack[] items = BukkitSerializer.deserializeItemStacks(this.items);
-            return new LetterHead(player, id, numItems,
-                    LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), items);
-        } catch (Exception e) {
-            e.printStackTrace();
-            MailboxUtils.sendFailureMessage(player.getPlayer(), "Une erreur est survenue.");
-            return null;
-        }
+        ItemStack[] items = BukkitSerializer.deserializeItemStacks(this.items);
+        return new LetterHead(player, id, numItems,
+                LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), items);
     }
 
     public SenderLetter toSenderLetter() {

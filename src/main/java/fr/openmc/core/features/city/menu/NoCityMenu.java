@@ -90,12 +90,12 @@ public class NoCityMenu extends Menu {
 
         Supplier<ItemBuilder> createItemSupplier = () -> {
                 List<Component> loreCreate;
-                if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+                if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
                     loreCreate = List.of(
                             Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                             Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
                             Component.empty(),
-                            Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId().toString(), "city:big")) + " §7avant de pouvoir créer une ville")
+                            Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " §7avant de pouvoir créer une ville")
                     );
                 } else {
                     loreCreate = List.of(
@@ -114,7 +114,7 @@ public class NoCityMenu extends Menu {
                     itemMeta.itemName(Component.text("§7Créer §dvotre ville"));
                     itemMeta.lore(loreCreate);
                 }).setOnClick(inventoryClickEvent -> {
-                    if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) return;
+                    if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) return;
 
                     DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input ->
                             CityCreateAction.beginCreateCity(player, input)
@@ -122,7 +122,7 @@ public class NoCityMenu extends Menu {
                 });
             };
 
-            if (!DynamicCooldownManager.isReady(player.getUniqueId().toString(), "city:big")) {
+            if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) {
                 MenuUtils.runDynamicItem(player, this, 11, createItemSupplier)
                         .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
             } else {

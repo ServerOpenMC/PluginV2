@@ -18,8 +18,8 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 public class AdminWarCommand {
     @Subcommand("startCombat")
     @CommandPermission("omc.admins.commands.adminwar.startCombat")
-    void startCombat(Player player, @Named("uuid") String cityUUID) {
-        City city = CityManager.getCity(cityUUID);
+    void startCombat(Player player, @Named("name") String cityName) {
+        City city = CityManager.getCityByName(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);

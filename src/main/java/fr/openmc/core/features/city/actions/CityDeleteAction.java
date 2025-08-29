@@ -41,7 +41,7 @@ public class CityDeleteAction {
                     CityManager.deleteCity(city);
                     MessagesManager.sendMessage(player, Component.text("Votre ville a été supprimée"), Prefix.CITY, MessageType.SUCCESS, false);
 
-                    DynamicCooldownManager.use(uuid.toString(), "city:big", 60000); //1 minute
+                    DynamicCooldownManager.use(uuid, "city:big", 60000); // 1 minute
                     player.closeInventory();
                 },
                 player::closeInventory,

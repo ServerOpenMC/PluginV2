@@ -40,7 +40,7 @@ public class TntPlaceListener implements Listener {
 
         boolean sameCity = cityAtLoc.isMember(player);
 
-        CityExplosionData data = explosionDataMap.get(cityAtLoc.getUUID());
+        CityExplosionData data = explosionDataMap.get(cityAtLoc.getUniqueId());
         int current = (data == null) ? 0 : data.getExplosions();
         if (current >= MAX_TNT_PER_DAY && !sameCity) {
             MessagesManager.sendMessage(

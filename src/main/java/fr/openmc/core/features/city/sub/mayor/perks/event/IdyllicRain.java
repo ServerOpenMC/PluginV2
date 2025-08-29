@@ -19,12 +19,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class IdyllicRain implements Listener {
+
+    private static final NamespacedKey cityAyweniteKey = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
 
     /**
      * Spawns Aywenite items in the specified city.
@@ -41,7 +40,6 @@ public class IdyllicRain implements Listener {
 
         List<ChunkPos> chunkList = new ArrayList<>(chunks);
         Random random = new Random();
-        NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
 
         final int[] dropped = {0};
 
@@ -65,7 +63,7 @@ public class IdyllicRain implements Listener {
 
                 ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
                 ItemMeta meta = aywenite.getItemMeta();
-                meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, city.getUUID());
+                meta.getPersistentDataContainer().set(cityAyweniteKey, PersistentDataType.STRING, city.getUniqueId().toString());
                 aywenite.setItemMeta(meta);
 
                 Item droppedItem = world.dropItemNaturally(dropLoc, aywenite);
@@ -88,13 +86,12 @@ public class IdyllicRain implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
-        if (!meta.getPersistentDataContainer().has(key, PersistentDataType.STRING)) return;
+        if (!meta.getPersistentDataContainer().has(cityAyweniteKey, PersistentDataType.STRING)) return;
 
-        String cityId = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
+        UUID cityId = UUID.fromString(meta.getPersistentDataContainer().get(cityAyweniteKey, PersistentDataType.STRING));
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (playerCity == null || !playerCity.getUUID().equals(cityId)) {
+        if (playerCity == null || !playerCity.getUniqueId().equals(cityId)) {
             event.setCancelled(true);
             return;
         }

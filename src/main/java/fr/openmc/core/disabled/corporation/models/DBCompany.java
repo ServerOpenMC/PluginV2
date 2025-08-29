@@ -17,7 +17,7 @@ public class DBCompany {
     @DatabaseField(canBeNull = false)
     private UUID owner;
     @DatabaseField
-    private String city;
+    private UUID city;
     @DatabaseField(canBeNull = false)
     private double cut;
     @DatabaseField(canBeNull = false)
@@ -31,7 +31,7 @@ public class DBCompany {
         this.id = id;
         this.name = name;
         this.owner = owner;
-        this.city = city == null ? null : city.getUUID();
+        this.city = city == null ? null : city.getUniqueId();
         this.cut = cut;
         this.balance = balance;
     }

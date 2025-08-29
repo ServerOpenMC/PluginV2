@@ -104,7 +104,7 @@ public class MayorElectionMenu extends Menu {
                 itemMeta.itemName(Component.text("§6Les Elections"));
                 itemMeta.lore(loreElection);
             }).setOnClick(inventoryClickEvent -> {
-                if (MayorManager.cityElections.get(city.getUUID()) == null) {
+                if (MayorManager.cityElections.get(city.getUniqueId()) == null) {
                     MessagesManager.sendMessage(player, Component.text("Il y a aucun volontaire pour être maire"), Prefix.MAYOR, MessageType.ERROR, true);
                     return;
                 }

@@ -38,8 +38,8 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
-        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:agricultural_essor")) {
-            MessagesManager.sendMessage(player, Component.text("La réforme d'événement l'§eEssor Agricole §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:agricultural_essor"))), Prefix.MAYOR, MessageType.INFO, false);
+        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) {
+            MessagesManager.sendMessage(player, Component.text("La réforme d'événement l'§eEssor Agricole §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:agricultural_essor"))), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 
@@ -50,7 +50,7 @@ public class AgriculturalEssorPerk implements Listener {
         String chronometerGroup = e.getGroup();
         if (!chronometerGroup.equals("city:agricultural_essor")) return;
 
-        City city = CityManager.getCity(e.getEntity().getUniqueId().toString());
+        City city = CityManager.getCity(e.getEntity().getUniqueId());
 
         if (city == null) return;
 
@@ -76,7 +76,7 @@ public class AgriculturalEssorPerk implements Listener {
 
         if (!PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) return;
 
-        if (DynamicCooldownManager.isReady(city.getUUID(), "city:agricultural_essor")) return;
+        if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:agricultural_essor")) return;
 
         Block block = event.getBlock();
 

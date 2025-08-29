@@ -67,10 +67,9 @@ public class MilitaryDissuasion implements Listener {
                 golem.setHealth(35);
 
                 PersistentDataContainer pdc = golem.getPersistentDataContainer();
-                pdc.set(new NamespacedKey(OMCPlugin.getInstance(), "city_golem"), PersistentDataType.STRING, city.getUUID());
+                pdc.set(new NamespacedKey(OMCPlugin.getInstance(), "city_golem"), PersistentDataType.STRING, city.getUniqueId().toString());
 
                 golem.setAI(false);
-                golem.setTarget(null);
 
                 Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
                     if (!golem.isValid() || golem.isDead()) return;
@@ -84,7 +83,7 @@ public class MilitaryDissuasion implements Listener {
                                 }
 
                                 City playerCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
-                                return playerCity == null || !playerCity.getUUID().equals(city.getUUID());
+                                return playerCity == null || !playerCity.getUniqueId().equals(city.getUniqueId());
                             })
                             .collect(Collectors.toList());
 
@@ -112,7 +111,7 @@ public class MilitaryDissuasion implements Listener {
      */
     public static void clearCityGolems(City city) {
         NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_golem");
-        String cityUUID = city.getUUID();
+        UUID cityUUID = city.getUniqueId();
 
         for (Entity entity : Bukkit.getWorld("world").getEntitiesByClass(IronGolem.class)) {
             PersistentDataContainer pdc = entity.getPersistentDataContainer();

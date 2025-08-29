@@ -19,7 +19,7 @@ import java.util.UUID;
 @DatabaseTable(tableName = "mascots")
 public class Mascot {
     @DatabaseField(id = true)
-    private String cityUUID;
+    private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     private int level;
     @DatabaseField(canBeNull = false)
@@ -38,7 +38,7 @@ public class Mascot {
         // required by ORMLite
     }
 
-    public Mascot(String cityUUID, UUID mascotUUID, int level, boolean immunity, boolean alive, int x, int z) {
+    public Mascot(UUID cityUUID, UUID mascotUUID, int level, boolean immunity, boolean alive, int x, int z) {
         this.cityUUID = cityUUID;
         this.level = level;
         this.mascotUUID = mascotUUID;
@@ -94,5 +94,18 @@ public class Mascot {
         }
         this.city = CityManager.getCity(this.cityUUID);
         return this.city;
+    }
+
+    @Override
+    public String toString() {
+        return "Mascot{" +
+                "cityUUID='" + cityUUID + '\'' +
+                ", level=" + level +
+                ", mascotUUID=" + mascotUUID +
+                ", immunity=" + immunity +
+                ", alive=" + alive +
+                ", x=" + x +
+                ", z=" + z +
+                '}';
     }
 }
