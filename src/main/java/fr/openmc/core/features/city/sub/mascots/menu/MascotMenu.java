@@ -12,6 +12,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotsLevels;
+import fr.openmc.core.features.city.sub.milestone.rewards.MascotsLevelsRewards;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
@@ -19,6 +20,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import io.papermc.paper.datacomponent.DataComponentTypes;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -213,21 +215,29 @@ public class MascotMenu extends Menu {
         List<Component> requiredAmount = new ArrayList<>();
         MascotsLevels mascotsLevels = MascotsLevels.valueOf("level" + mascot.getLevel());
 
+        int maxMascotLevel = MascotsLevelsRewards.getMascotsLevelLimit(city.getLevel());
+
+        int currentMascotLevel = mascot.getLevel();
+
         if (mascotsLevels.equals(MascotsLevels.level10)) {
             requiredAmount.add(Component.text("§7Niveau max atteint"));
+        } else if (currentMascotLevel >= maxMascotLevel) {
+            requiredAmount.add(Component.text("§cVous devez etre Niveau " + (maxMascotLevel + 1) + " pour améliorer la Mascotte"));
         } else {
             requiredAmount.add(Component.text("§7Nécessite §d" + mascotsLevels.getUpgradeCost() + " d'Aywenites"));
         }
 
-        map.put(15, new ItemBuilder(this, Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, itemMeta -> {
+        ItemBuilder itemBuilder = new ItemBuilder(this, Material.PAPER, itemMeta -> {
             itemMeta.displayName(Component.text("§7Améliorer votre §cMascotte"));
             itemMeta.lore(requiredAmount);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
-        })
-                .hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS, DataComponentTypes.TRIM)
-                .setOnClick(inventoryClickEvent -> {
+        }).hide(DataComponentTypes.ENCHANTMENTS, DataComponentTypes.ATTRIBUTE_MODIFIERS);
 
+        itemBuilder.setData(DataComponentTypes.ITEM_MODEL, Key.key("minecraft:netherite_upgrade_smithing_template"));
+        map.put(15, itemBuilder
+                .setOnClick(inventoryClickEvent -> {
                     if (mascotsLevels.equals(MascotsLevels.level10)) return;
+                    if (currentMascotLevel >= maxMascotLevel) return;
 
                     if (city == null) {
                         MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mascots.models;
 
+import fr.openmc.core.utils.EntityUtils;
 import fr.openmc.core.utils.EnumUtils;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -33,7 +34,7 @@ public enum MascotType {
     private final int slot;
     private final Material spawnEgg;
     private final EntityType entityType;
-    private final Component displayName;
+    private final String displayName;
     private final int price;
 
     private final Function<Boolean, ItemStack> itemFunction;
@@ -43,7 +44,7 @@ public enum MascotType {
         this.slot = slot;
         this.spawnEgg = EnumUtils.match(name() + "_SPAWN_EGG", Material.class, Material.PIG_SPAWN_EGG);
         this.entityType = EnumUtils.match(name(), EntityType.class, EntityType.PIG);
-        this.displayName = Component.translatable(entityType.translationKey());
+        this.displayName = EntityUtils.getEntityName(entityType);
         this.price = price;
 
         this.itemFunction = this::createMascotItem;
@@ -57,7 +58,7 @@ public enum MascotType {
         ItemStack item = new ItemStack(spawnEgg);
         item.editMeta(meta -> {
             meta.displayName(
-                    displayName
+                    Component.text(displayName)
                             .color(NamedTextColor.GRAY)
                             .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
             );

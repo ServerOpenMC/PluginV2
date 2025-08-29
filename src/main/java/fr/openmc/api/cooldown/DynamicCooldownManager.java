@@ -54,7 +54,7 @@ public class DynamicCooldownManager {
             long delayTicks = duration / 50; //ticks
             this.scheduledTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uniqueId, this.group));
-                DynamicCooldownManager.clear(this.uniqueId, group);
+                DynamicCooldownManager.clear(this.uniqueId, this.group, false);
             }, delayTicks);
         }
 
@@ -245,9 +245,12 @@ public class DynamicCooldownManager {
      * @param uuid  Entity UUID
      * @param group Cooldown group
      */
-    public static void clear(UUID uuid, String group) {
+    public static void clear(UUID uuid, String group, boolean callEvent) {
         var userCooldowns = cooldowns.get(uuid);
+
         if (userCooldowns != null) {
+            if (callEvent) Bukkit.getPluginManager().callEvent(new CooldownEndEvent(uuid, group));
+
             Cooldown removed = userCooldowns.remove(group);
             if (removed != null) removed.cancelTask();
             if (userCooldowns.isEmpty()) cooldowns.remove(uuid);

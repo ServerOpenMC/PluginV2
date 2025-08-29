@@ -2,10 +2,11 @@ package fr.openmc.core.features.city.sub.war.actions;
 
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.WarPendingDefense;
 import fr.openmc.core.features.city.sub.war.menu.selection.WarChooseParticipantsMenu;
@@ -39,6 +40,11 @@ public class WarActions {
 
         if (launchCity == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (!FeaturesRewards.hasUnlockFeature(launchCity, FeaturesRewards.Feature.WAR)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

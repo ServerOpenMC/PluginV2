@@ -5,19 +5,20 @@ import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
 import de.oliver.fancynpcs.api.utils.NpcEquipmentSlot;
+import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.MayorNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.menu.npc.OwnerNpcMenu;
 import fr.openmc.core.features.city.sub.mayor.npcs.MayorNPC;
 import fr.openmc.core.features.city.sub.mayor.npcs.OwnerNPC;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.api.hooks.FancyNpcsHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -198,6 +199,11 @@ public class NPCManager implements Listener {
                 return;
             }
 
+            if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+                MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
+
             Chunk chunkTest = event.getNpc().getData().getLocation().getChunk();
             int chunkX = chunkTest.getX();
             int chunkZ = chunkTest.getZ();
@@ -281,6 +287,11 @@ public class NPCManager implements Listener {
             if (city == null) {
                 MessagesManager.sendMessage(player, Component.text("§8§oCet objet n'est pas dans une ville"), Prefix.MAYOR, MessageType.ERROR, false);
                 removeNPCS(cityUUID);
+                return;
+            }
+
+            if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+                MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 

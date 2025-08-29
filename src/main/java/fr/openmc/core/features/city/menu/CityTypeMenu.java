@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.actions.CityChangeAction;
 import fr.openmc.core.features.city.conditions.CityTypeConditions;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -76,6 +77,11 @@ public class CityTypeMenu extends Menu {
         warInfo.add(Component.text("§8- §cLes villes étant dans le même status que vous, pourront vous §cdéclarer la guerre!"));
         warInfo.add(Component.text("§6§lTIPS: Idéal pour les tryhardeurs et les compétitifs"));
 
+        if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.TYPE_WAR)) {
+            warInfo.add(Component.empty());
+            warInfo.add(Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR) + " pour débloquer ceci"));
+        }
+
         boolean enchantWar = city.getType() == CityType.WAR;
         map.put(15, new ItemBuilder(this, Material.TNT, itemMeta -> {
             itemMeta.displayName(Component.text("§cVille en guerre"));
@@ -86,6 +92,10 @@ public class CityTypeMenu extends Menu {
 
             CityChangeAction.beginChangeCity(player, CityType.WAR);
         }));
+
+        map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.itemName(Component.text("§aRetour"));
+        }, true));
 
         return map;
     }

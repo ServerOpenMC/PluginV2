@@ -5,9 +5,15 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -64,6 +70,15 @@ public class PersonalBankMenu extends Menu {
             new PersonalBankDepositMenu(player).open();
         }));
 
+        City playerCity = CityManager.getPlayerCity(player.getUniqueId());
+
+        if (playerCity == null) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Pour avoir une banque personnelle, vous devez appartenir à une ville niveau 2 minimum !"),
+                    Prefix.BANK, MessageType.ERROR, false);
+            return Map.of();
+        }
+
         Supplier<ItemBuilder> interestItemSupplier = () -> {
             return new ItemBuilder(this, Material.DIAMOND_BLOCK, itemMeta -> {
             itemMeta.itemName(Component.text("§6Votre argent"));
@@ -71,6 +86,11 @@ public class PersonalBankMenu extends Menu {
                 Component.text("§7Vous avez actuellement §d" +
                         EconomyManager.getFormattedSimplifiedNumber(BankManager.getBankBalance(player.getUniqueId())) + " ")
                     .append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+
+                    Component.text("§7Votre limite d'argent dans votre banque est de §d" +
+                                    EconomyManager.getFormattedSimplifiedNumber(PlayerBankLimitRewards.getBankBalanceLimit(playerCity.getLevel())) + " ")
+                            .append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                    Component.empty(),
                 Component.text("§7Votre prochain intéret est de §b" + BankManager.calculatePlayerInterest(player.getUniqueId())*100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
                 )
             );

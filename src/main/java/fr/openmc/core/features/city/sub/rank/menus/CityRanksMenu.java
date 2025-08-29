@@ -1,4 +1,4 @@
-package fr.openmc.core.features.city.menu.ranks;
+package fr.openmc.core.features.city.sub.rank.menus;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -6,8 +6,8 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;

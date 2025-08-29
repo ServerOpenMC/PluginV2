@@ -93,7 +93,7 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.customName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
             })
-                    .hide(perk1.getToHide())
+                    .hide((perk1 != null) ? perk1.getToHide() : null)
                     .setOnClick(inventoryClickEvent -> {
                         new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
                     }));
@@ -126,7 +126,7 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
             })
-                    .hide(perk2.getToHide())
+                    .hide((perk2 != null) ? perk2.getToHide() : null)
                     .setOnClick(inventoryClickEvent -> {
                         new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open();
                     }));
@@ -149,7 +149,7 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
             })
-                    .hide(perk3.getToHide())
+                    .hide((perk3 != null) ? perk3.getToHide() : null)
                     .setOnClick(inventoryClickEvent -> {
                         new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
                     }));
@@ -185,7 +185,7 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
             })
-                    .hide(perk1.getToHide())
+                    .hide((perk1 != null) ? perk1.getToHide() : null)
                     .setOnClick(inventoryClickEvent -> {
                         new PerkChoiceMenu(player, "perk1", perk1, perk2, perk3, type).open();
                     }));
@@ -208,7 +208,7 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
             })
-                    .hide(perk2.getToHide())
+                    .hide((perk2 != null) ? perk2.getToHide() : null)
                     .setOnClick(inventoryClickEvent -> {
                         new PerkChoiceMenu(player, "perk2", perk1, perk2, perk3, type).open();
                     }));
@@ -231,7 +231,7 @@ public class MayorCreateMenu extends Menu {
                 itemMeta.itemName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
             })
-                    .hide(perk3.getToHide())
+                    .hide((perk3 != null) ? perk3.getToHide() : null)
                     .setOnClick(inventoryClickEvent -> {
                         new PerkChoiceMenu(player, "perk3", perk1, perk2, perk3, type).open();
                     }));

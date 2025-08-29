@@ -23,6 +23,7 @@ import fr.openmc.core.features.city.sub.mayor.models.*;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.mayor.perks.basic.*;
 import fr.openmc.core.features.city.sub.mayor.perks.event.*;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
@@ -241,22 +242,22 @@ public class MayorManager {
 
     public static void removeCity(City city) throws SQLException {
         DeleteBuilder<Mayor, String> mayorsDelete = mayorsDao.deleteBuilder();
-        mayorsDelete.where().eq("cityUUID", city.getUniqueId());
+        mayorsDelete.where().eq("city_uuid", city.getUniqueId());
         mayorsDao.delete(mayorsDelete.prepare());
         cityMayor.remove(city.getUniqueId());
 
         DeleteBuilder<MayorCandidate, UUID> candidatesDelete = candidatesDao.deleteBuilder();
-        candidatesDelete.where().eq("city", city.getUniqueId());
+        candidatesDelete.where().eq("city_uuid", city.getUniqueId());
         candidatesDao.delete(candidatesDelete.prepare());
         cityElections.remove(city.getUniqueId());
 
         DeleteBuilder<MayorVote, UUID> votesDelete = votesDao.deleteBuilder();
-        votesDelete.where().eq("city", city.getUniqueId());
+        votesDelete.where().eq("city_uuid", city.getUniqueId());
         votesDao.delete(votesDelete.prepare());
         playerVote.remove(city.getUniqueId());
 
         DeleteBuilder<CityLaw, String> lawsDelete = lawsDao.deleteBuilder();
-        lawsDelete.where().eq("cityUUID", city.getUniqueId());
+        lawsDelete.where().eq("city_uuid", city.getUniqueId());
         lawsDao.delete(lawsDelete.prepare());
         cityLaws.remove(city.getUniqueId());
     }
@@ -294,39 +295,9 @@ public class MayorManager {
         cityElections = new HashMap<>();
         playerVote = new HashMap<>();
         for (City city : CityManager.getCities()) {
-            // PERKS INIT
-            for (UUID uuid : city.getMembers()) {
-                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
-                if (offlinePlayer.isOnline()) {
-                    Player player = offlinePlayer.getPlayer();
-                    // Fou de Rage
-                    if (PerkManager.hasPerk(copyCityMayor.get(city.getUniqueId()), Perks.FOU_DE_RAGE.getId())) {
-                        player.removePotionEffect(PotionEffectType.STRENGTH);
-                        player.removePotionEffect(PotionEffectType.RESISTANCE);
-                    }
+            if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) continue;
 
-                    // Mineur Dévoué
-                    if (PerkManager.hasPerk(copyCityMayor.get(city.getUniqueId()), Perks.MINER.getId())) {
-                        MinerPerk.updatePlayerEffects(player);
-                    }
-
-                    // Mascotte de Compagnie
-                    if (PerkManager.hasPerk(copyCityMayor.get(city.getUniqueId()), Perks.MASCOTS_FRIENDLY.getId())) {
-                        MascotFriendlyPerk.updatePlayerEffects(player);
-                    }
-
-                    // Fruit du Démon
-                    if (PerkManager.hasPerk(copyCityMayor.get(city.getUniqueId()), Perks.FRUIT_DEMON.getId())) {
-                        DemonFruitPerk.removeReachBonus(player);
-                    }
-                }
-            }
-
-            if (city.getMembers().size() >= MEMBER_REQUEST_ELECTION) {
-                createMayor(null, null, city, null, null, null, null, ElectionType.ELECTION);
-            }
-            createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
-
+            initCityPhase1(city, copyCityMayor);
         }
 
         NPCManager.updateAllNPCS();
@@ -347,29 +318,9 @@ public class MayorManager {
 
         // TRAITEMENT DE CHAQUE VILLE - Complexité de O(n log(n))
         for (City city : CityManager.getCities()) {
-            OMCPlugin.getInstance().getSLF4JLogger().debug("- City : {}", city.getName());
-            runSetupMayor(city);
+            if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) continue;
 
-            for (UUID uuid : city.getMembers()) {
-                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
-                if (offlinePlayer.isOnline()) {
-                    Player player = offlinePlayer.getPlayer();
-                    // Mineur Dévoué
-                    if (PerkManager.hasPerk(city.getMayor(), Perks.MINER.getId())) {
-                        MinerPerk.updatePlayerEffects(player);
-                    }
-
-                    // Mascotte de Compagnie
-                    if (PerkManager.hasPerk(city.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) {
-                        MascotFriendlyPerk.updatePlayerEffects(player);
-                    }
-
-                    // Fruit du Démon
-                    if (PerkManager.hasPerk(city.getMayor(), Perks.FRUIT_DEMON.getId())) {
-                        DemonFruitPerk.applyReachBonus(player);
-                    }
-                }
-            }
+            initCityPhase2(city);
         }
 
         NPCManager.updateAllNPCS();
@@ -381,6 +332,74 @@ public class MayorManager {
                 §8§oFaites vos stratégies, farmez, et pleins d'autres choses !
                 §7
                 §8§m                                                     §r"""));
+    }
+
+    public static void initCityPhase1(City city, Map<UUID, Mayor> copyCityMayor) {
+        // PERKS INIT
+        if (copyCityMayor != null) {
+            for (UUID uuid : city.getMembers()) {
+                OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
+                if (offlinePlayer.isOnline()) {
+                    Player player = offlinePlayer.getPlayer();
+
+                    if (player == null) continue;
+
+                    Mayor oldMayor = copyCityMayor.get(city.getUniqueId());
+
+                    // Fou de Rage
+                    if (PerkManager.hasPerk(oldMayor, Perks.FOU_DE_RAGE.getId())) {
+                        player.removePotionEffect(PotionEffectType.STRENGTH);
+                        player.removePotionEffect(PotionEffectType.RESISTANCE);
+                    }
+
+                    // Mineur Dévoué
+                    if (PerkManager.hasPerk(oldMayor, Perks.MINER.getId())) {
+                        MinerPerk.updatePlayerEffects(player);
+                    }
+
+                    // Mascotte de Compagnie
+                    if (PerkManager.hasPerk(oldMayor, Perks.MASCOTS_FRIENDLY.getId())) {
+                        MascotFriendlyPerk.updatePlayerEffects(player);
+                    }
+
+                    // Fruit du Démon
+                    if (PerkManager.hasPerk(oldMayor, Perks.FRUIT_DEMON.getId())) {
+                        DemonFruitPerk.removeReachBonus(player);
+                    }
+                }
+            }
+        }
+
+        if (city.getMembers().size() >= MEMBER_REQUEST_ELECTION) {
+            createMayor(null, null, city, null, null, null, null, ElectionType.ELECTION);
+        }
+        createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
+    }
+
+    public static void initCityPhase2(City city) {
+        OMCPlugin.getInstance().getSLF4JLogger().debug("- City : {}", city.getName());
+        runSetupMayor(city);
+
+        for (UUID uuid : city.getMembers()) {
+            OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
+            if (offlinePlayer.isOnline()) {
+                Player player = offlinePlayer.getPlayer();
+                // Mineur Dévoué
+                if (PerkManager.hasPerk(city.getMayor(), Perks.MINER.getId())) {
+                    MinerPerk.updatePlayerEffects(player);
+                }
+
+                // Mascotte de Compagnie
+                if (PerkManager.hasPerk(city.getMayor(), Perks.MASCOTS_FRIENDLY.getId())) {
+                    MascotFriendlyPerk.updatePlayerEffects(player);
+                }
+
+                // Fruit du Démon
+                if (PerkManager.hasPerk(city.getMayor(), Perks.FRUIT_DEMON.getId())) {
+                    DemonFruitPerk.applyReachBonus(player);
+                }
+            }
+        }
     }
 
     /**
@@ -441,11 +460,11 @@ public class MayorManager {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 DeleteBuilder<MayorCandidate, UUID> candidatesDelete = candidatesDao.deleteBuilder();
-                candidatesDelete.where().eq("city", city.getUniqueId());
+                candidatesDelete.where().eq("city_uuid", city.getUniqueId());
                 candidatesDao.delete(candidatesDelete.prepare());
 
                 DeleteBuilder<MayorVote, UUID> votesDelete = votesDao.deleteBuilder();
-                votesDelete.where().eq("city", city.getUniqueId());
+                votesDelete.where().eq("city_uuid", city.getUniqueId());
                 votesDao.delete(votesDelete.prepare());
             } catch (SQLException e) {
                 e.printStackTrace();

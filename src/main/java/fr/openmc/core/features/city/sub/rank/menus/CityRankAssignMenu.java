@@ -1,12 +1,12 @@
-package fr.openmc.core.features.city.menu.ranks;
+package fr.openmc.core.features.city.sub.rank.menus;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.actions.CityRankAction;
 import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;

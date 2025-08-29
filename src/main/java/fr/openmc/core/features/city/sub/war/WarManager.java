@@ -1,5 +1,9 @@
 package fr.openmc.core.features.city.sub.war;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
@@ -9,6 +13,7 @@ import fr.openmc.core.features.city.sub.war.commands.AdminWarCommand;
 import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.features.city.sub.war.listeners.TntPlaceListener;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
+import fr.openmc.core.features.city.sub.war.models.WarHistory;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkPos;
 import net.kyori.adventure.text.Component;
@@ -16,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.BiConsumer;
 
@@ -32,6 +38,10 @@ public class WarManager {
 
     private static final Map<UUID, WarPendingDefense> pendingDefenses = new HashMap<>();
 
+    private static Dao<WarHistory, String> warHistoryDeo;
+
+    public static final Map<UUID, WarHistory> warHistory = new HashMap<>();
+
     /**
      * Initializes the WarManager by registering commands and listeners.
      */
@@ -45,6 +55,55 @@ public class WarManager {
                 new WarKillListener(),
                 new TntPlaceListener()
         );
+
+        loadWarHistories();
+    }
+
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, WarHistory.class);
+        warHistoryDeo = DaoManager.createDao(connectionSource, WarHistory.class);
+
+        for (WarHistory history : warHistoryDeo.queryForAll()) {
+            warHistory.put(history.getCityUUID(), history);
+        }
+    }
+
+    public static void loadWarHistories() {
+        try {
+            List<WarHistory> warHistories = warHistoryDeo.queryForAll();
+
+            warHistories.forEach(war -> {
+                UUID cityUUID = war.getCityUUID();
+
+                warHistory.computeIfAbsent(cityUUID, k -> war);
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveWarHistories() {
+        warHistory.forEach((cityUUID, warHistory) -> {
+                    try {
+                        warHistoryDeo.createOrUpdate(warHistory);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+        );
+    }
+
+    public static WarHistory createOrGetWarHistory(City city) throws SQLException {
+        WarHistory history = warHistory.get(city.getUniqueId());
+
+        if (history == null) {
+            history = new WarHistory(city.getUniqueId());
+            warHistoryDeo.createOrUpdate(history);
+
+            warHistory.put(history.getCityUUID(), history);
+        }
+
+        return history;
     }
 
     /**
@@ -95,8 +154,7 @@ public class WarManager {
      */
     public static void endWar(War war) {
         War warRemoved = warsByAttacker.remove(war.getCityAttacker().getUniqueId());
-        if (warRemoved == null)
-            warRemoved = warsByDefender.remove(war.getCityDefender().getUniqueId());
+        warsByDefender.remove(war.getCityDefender().getUniqueId());
 
         if (warRemoved == null) return;
 
@@ -151,12 +209,31 @@ public class WarManager {
             }
         }
 
+        try {
+            if (winner != null) {
+                WarHistory winnerHistory = createOrGetWarHistory(winner);
+                winnerHistory.addParticipation();
+                winnerHistory.addWin();
+                warHistoryDeo.update(winnerHistory);
+            }
+
+            if (loser != null) {
+                WarHistory loserHistory = createOrGetWarHistory(loser);
+                loserHistory.addParticipation();
+                warHistoryDeo.update(loserHistory);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         int claimsWon = -1;
         double amountStolen = -1;
         int powerChange = -1;
         double bonusMoney = 0;
         if (!winReason.equals(WinReason.DRAW)) {
-            double ratio = winner.getPowerPoints() / (double) loser.getPowerPoints();
+            int powerPointWinner = winner.getPowerPoints() == 0 ? 4 : winner.getPowerPoints();
+            int powerPointLoser = loser.getPowerPoints() == 0 ? 4 : loser.getPowerPoints();
+            double ratio = powerPointWinner / powerPointLoser;
             ratio = Math.max(0.2, Math.min(2.5, ratio));
 
             int base = (war.getAttackers().size() + war.getDefenders().size()) / 2;

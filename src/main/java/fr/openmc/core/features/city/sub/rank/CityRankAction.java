@@ -1,14 +1,14 @@
-package fr.openmc.core.features.city.actions;
+package fr.openmc.core.features.city.sub.rank;
 
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.conditions.CityRankCondition;
-import fr.openmc.core.features.city.menu.ranks.CityRankDetailsMenu;
-import fr.openmc.core.features.city.menu.ranks.CityRankMemberMenu;
 import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.features.city.sub.rank.menus.CityRankDetailsMenu;
+import fr.openmc.core.features.city.sub.rank.menus.CityRankMemberMenu;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -112,6 +112,12 @@ public class CityRankAction {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
+
+        if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (!city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;

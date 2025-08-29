@@ -89,16 +89,14 @@ public class CityBankMenu extends Menu {
 
         if (city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE)) {
 
-            Supplier<ItemBuilder> interestItemSupplier = () -> {
-                return new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-                    itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
-                    itemMeta.lore(List.of(
-                                    Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-                            Component.text("§7Votre prochain intéret est de §b" + city.calculateCityInterest() * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
-                            )
-                    );
-                });
-            };
+            Supplier<ItemBuilder> interestItemSupplier = () -> new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
+                itemMeta.itemName(Component.text("§6L'Argent de votre Ville"));
+                itemMeta.lore(List.of(
+                                Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
+                                Component.text("§7Votre prochain intéret est de §b" + city.calculateCityInterest() * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
+                        )
+                );
+            });
 
             MenuUtils.runDynamicItem(player, this, 13, interestItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);

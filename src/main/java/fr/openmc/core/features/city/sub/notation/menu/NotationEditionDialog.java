@@ -128,6 +128,14 @@ public class NotationEditionDialog {
                                             float noteCoherence = response.getFloat("input_note_architectural");
                                             String description = response.getText("input_description");
 
+                                            if (noteArchitectural > NotationNote.NOTE_ARCHITECTURAL.getMaxNote()) {
+                                                noteArchitectural = NotationNote.NOTE_ARCHITECTURAL.getMaxNote();
+                                            }
+
+                                            if (noteCoherence > NotationNote.NOTE_COHERENCE.getMaxNote()) {
+                                                noteCoherence = NotationNote.NOTE_COHERENCE.getMaxNote();
+                                            }
+
                                             CityNotation cityNotation = new CityNotation(
                                                     cityEdited.getUniqueId(),
                                                     noteArchitectural,

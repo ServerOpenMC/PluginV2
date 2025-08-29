@@ -9,13 +9,14 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Range;
 
-
 public class CityBankCommand {
     @Command({"city bank view", "ville bank view"})
     @Description("Ouvre le menu de la banque de ville")
     void bank(Player player) {
         if (CityManager.getPlayerCity(player.getUniqueId()) == null)
             return;
+
+        if (!CityBankConditions.canOpenCityBank(CityManager.getPlayerCity(player.getUniqueId()), player)) return;
 
         new CityBankMenu(player).open();
     }

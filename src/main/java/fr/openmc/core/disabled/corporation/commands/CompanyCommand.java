@@ -254,7 +254,7 @@ public class CompanyCommand {
 //            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.INFO, false);
 //            return;
 //        }
-//        if (player.getUniqueId() != city.getPlayerWith(CPermission.OWNER)) {
+//        if (player.getUniqueId() != city.getPlayerWith(CityPermission.OWNER)) {
 //            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas créer d'entreprise au nom de votre ville sans en être l'owner"), Prefix.ENTREPRISE, MessageType.INFO, false);
 //            return;
 //        }

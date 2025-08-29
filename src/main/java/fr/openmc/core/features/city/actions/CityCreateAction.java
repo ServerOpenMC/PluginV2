@@ -38,6 +38,7 @@ import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE
 
 public class CityCreateAction {
 
+    public static final int FREE_CLAIMS = 9;
     public static final long IMMUNITY_COOLDOWN = 7 * 24 * 60 * 60 * 1000L;
 
     private static final Map<UUID, String> pendingCities = new HashMap<>();
@@ -136,7 +137,7 @@ public class CityCreateAction {
 
         // Feedback
         MessagesManager.sendMessage(player, Component.text("§aVotre ville a été crée : " + pendingCityName), Prefix.CITY, MessageType.SUCCESS, true);
-        MessagesManager.sendMessage(player, Component.text("§7+ §615 chunks gratuits"), Prefix.CITY, MessageType.INFO, false);
+        MessagesManager.sendMessage(player, Component.text("§7+ §6" + FREE_CLAIMS + " chunks gratuits"), Prefix.CITY, MessageType.INFO, false);
 
         DynamicCooldownManager.use(playerUUID, "city:big", 60000);
         DynamicCooldownManager.use(cityUUID, "city:immunity", IMMUNITY_COOLDOWN);

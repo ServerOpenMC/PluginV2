@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.conditions.CityClaimCondition;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ChunkPos;
 import fr.openmc.core.utils.ItemUtils;
@@ -21,7 +22,7 @@ public class CityClaimAction {
     private static final int[][] CARDINAL_OFFSETS = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 
     public static int calculatePrice(int chunkCount) {
-        return 5000 + (chunkCount * 1000);
+        return 5000 + (chunkCount * 750);
     }
 
     public static int calculateAywenite(int chunkCount) {
@@ -35,6 +36,8 @@ public class CityClaimAction {
             MessagesManager.sendMessage(sender, Component.text("Tu ne peux pas étendre ta ville ici"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
+
+        if (!CityClaimCondition.canCityClaim(city, sender)) return;
 
         ChunkPos chunkVec2 = new ChunkPos(chunkX, chunkZ);
 

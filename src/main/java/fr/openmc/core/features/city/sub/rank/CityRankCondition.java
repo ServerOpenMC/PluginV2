@@ -1,11 +1,14 @@
-package fr.openmc.core.features.city.conditions;
+package fr.openmc.core.features.city.sub.rank;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 /**
@@ -26,11 +29,17 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
+        if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         if (!city.hasPermission(player.getUniqueId(), CityPermission.MANAGE_RANKS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
-        if (city.getRanks().size() >= City.MAX_RANKS) {
+        if (city.getRanks().size() >= RankLimitRewards.getRankLimit(city.getLevel())) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -50,6 +59,11 @@ public class CityRankCondition {
             return false;
         }
 
+        if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         DBCityRank rank = city.getRankByName(oldRankName);
         if (rank == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -60,7 +74,7 @@ public class CityRankCondition {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
-        if (city.getRanks().size() >= City.MAX_RANKS) {
+        if (city.getRanks().size() >= RankLimitRewards.getRankLimit(city.getLevel())) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_MAX.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
@@ -75,6 +89,11 @@ public class CityRankCondition {
      * @return booleen
      */
     public static boolean canDeleteRank(City city, Player player, String rankName) {
+        if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            return false;
+        }
+
         if (!city.hasPermission(player.getUniqueId(), CityPermission.PERMS)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_ACCESS_PERMS.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
