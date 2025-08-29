@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @DatabaseTable(tableName = "city_chests")
 public class DBCityChest {
-    @DatabaseField(columnName = "city", canBeNull = false)
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
     private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     @Getter

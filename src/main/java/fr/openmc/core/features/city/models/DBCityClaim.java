@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @DatabaseTable(tableName = "city_regions")
 public class DBCityClaim {
-    @DatabaseField(columnName = "city", canBeNull = false)
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
     @Getter
     private UUID cityUUID;
     @DatabaseField(canBeNull = false)

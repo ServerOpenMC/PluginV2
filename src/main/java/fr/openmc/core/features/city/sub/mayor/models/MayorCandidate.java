@@ -11,10 +11,10 @@ import java.util.UUID;
 
 @DatabaseTable(tableName = "mayor_candidates")
 public class MayorCandidate {
-    @DatabaseField(id = true)
+    @DatabaseField(columnName = "candidate_uuid", id = true)
     @Getter
     private UUID candidateUUID;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
     @Getter
     private UUID cityUUID;
     @DatabaseField(canBeNull = false)

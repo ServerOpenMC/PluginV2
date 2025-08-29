@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CityNotation {
-    @DatabaseField(id = true, columnName = "uuid")
+    @DatabaseField(id = true, columnName = "city_uuid")
     private UUID cityUUID;
     @DatabaseField
     private String weekStr;

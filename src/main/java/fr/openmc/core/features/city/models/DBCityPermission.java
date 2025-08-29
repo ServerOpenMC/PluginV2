@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @DatabaseTable(tableName = "city_permissions")
 public class DBCityPermission {
-    @DatabaseField(columnName = "city", canBeNull = false)
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
     private UUID cityUUID;
     @DatabaseField(canBeNull = false, uniqueCombo = true)
     @Getter

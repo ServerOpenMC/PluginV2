@@ -14,7 +14,7 @@ public class MayorVote {
     @DatabaseField(id = true)
     @Getter
     private UUID voter;
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
     private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     private UUID candidate;

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @DatabaseTable(tableName = "laws")
 public class CityLaw {
-    @DatabaseField(id = true)
+    @DatabaseField(columnName = "city_uuid", id = true)
     @Getter
     private UUID cityUUID;
     @DatabaseField(canBeNull = false)
