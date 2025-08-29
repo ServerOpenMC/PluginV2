@@ -1,6 +1,10 @@
 package fr.openmc.core.features.displays.scoreboards;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.hooks.ItemsAdderHook;
+import fr.openmc.api.hooks.LuckPermsHook;
+import fr.openmc.api.hooks.PapiHook;
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.utils.Restart;
@@ -13,10 +17,6 @@ import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
-import fr.openmc.api.hooks.ItemsAdderHook;
-import fr.openmc.api.hooks.LuckPermsHook;
-import fr.openmc.api.hooks.PapiHook;
-import fr.openmc.api.hooks.WorldGuardHook;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -235,7 +235,7 @@ public class ScoreboardManager implements Listener {
 
             City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
             boolean isInRegion = WorldGuardHook.isRegionConflict(player.getLocation());
-            String location = isInRegion ? "§6Région Protégé" : "Nature";
+            String location = isInRegion ? "§6Région Protégée" : "Nature";
             location = (chunkCity != null) ? chunkCity.getName() : location;
             objective.getScore("§8• §fLocation§7: " + location).setScore(6);
         }

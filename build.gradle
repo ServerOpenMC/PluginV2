@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id "com.gradleup.shadow" version "9.0.1"
     id "io.papermc.paperweight.userdev" version "${paperWeightUserDevVersion}"
+    id("xyz.jpenilla.run-paper") version "2.3.1" // Will use ${minecraftVersion} for the paper version
 }
 
 def getLatestGitTag() {

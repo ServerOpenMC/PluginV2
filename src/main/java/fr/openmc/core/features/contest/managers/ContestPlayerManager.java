@@ -11,6 +11,11 @@ import java.util.UUID;
 
 @Setter
 public class ContestPlayerManager  {
+
+    /**
+     * Map reliant un nombre de points à un titre correspondant.
+     * Par exemple, 10000 points correspond à "Dictateur en ".
+     */
     private static final Map<Integer, String> RANKS = Map.of(
             10000, "Dictateur en ",
             2500, "Colonel en ",
@@ -24,6 +29,11 @@ public class ContestPlayerManager  {
             0, "Noob en "
     );
 
+    /**
+     * Map reliant le nombre de points minimum à atteindre pour obtenir le rang suivant
+     * au nombre de points à partir desquels ce rang est débloqué.
+     * Par exemple, pour 2500 points, le rang suivant commence à 10000 points.
+     */
     private static final Map<Integer, Integer> GOAL_POINTS = Map.of(
             10000, 0,
             2500, 10000,
@@ -37,6 +47,10 @@ public class ContestPlayerManager  {
             0, 100
     );
 
+    /**
+     * Map convertissant le nombre de points en un rang numérique compris entre 1 et 10.
+     * Par exemple, 10000 points correspond au rang 10.
+     */
     private static final Map<Integer, Integer> POINTS_TO_INT_RANK = Map.of(
             10000, 10,
             2500, 9,
@@ -51,7 +65,29 @@ public class ContestPlayerManager  {
     );
 
     /**
-     * Retourne le camp du joueur (soit camp1 ou camp2)
+     * Map des multiplicateurs d'argent pour la récompense en fonction du rang.
+     * Chaque clé est le rang numérique et chaque valeur le multiplicateur correspondant.
+     */
+    private static final HashMap<Integer, Double> MULTIPLICATOR_MONEY = new HashMap<>();
+
+    static {
+        MULTIPLICATOR_MONEY.put(1, 1.0);
+        MULTIPLICATOR_MONEY.put(2, 1.1);
+        MULTIPLICATOR_MONEY.put(3, 1.3);
+        MULTIPLICATOR_MONEY.put(4, 1.4);
+        MULTIPLICATOR_MONEY.put(5, 1.5);
+        MULTIPLICATOR_MONEY.put(6, 1.6);
+        MULTIPLICATOR_MONEY.put(7, 1.7);
+        MULTIPLICATOR_MONEY.put(8, 1.8);
+        MULTIPLICATOR_MONEY.put(9, 2.0);
+        MULTIPLICATOR_MONEY.put(10, 2.4);
+    }
+
+    /**
+     * Retourne le nom du camp auquel appartient le joueur.
+     *
+     * @param player Le joueur dont on veut connaître le camp.
+     * @return Le nom du camp (camp1 ou camp2).
      */
     public static String getPlayerCampName(Player player) {
         int campInteger = ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
@@ -59,7 +95,11 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Met a jour le nombre de points du joueur, cela écrase les points précédents
+     * Met à jour le nombre de points d’un joueur.
+     * Cette opération écrase les points précédemment enregistrés.
+     *
+     * @param player L’UUID du joueur à mettre à jour.
+     * @param points Le nouveau nombre de points du joueur.
      */
     public static void setPointsPlayer(UUID player, int points) {
         ContestPlayer data = ContestManager.dataPlayer.get(player);
@@ -69,7 +109,10 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne le Titre en fonction du nombre de points
+     * Retourne le titre associé à un nombre de points donné.
+     *
+     * @param points Le nombre de points d’un joueur.
+     * @return Le titre correspondant aux points.
      */
     public static String getTitleWithPoints(int points) {
         for (Map.Entry<Integer, String> entry : RANKS.entrySet()) {
@@ -81,7 +124,10 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne le Titre d'une personne
+     * Retourne le titre du contest d’un joueur en fonction de ses points actuels.
+     *
+     * @param player Le joueur dont on veut obtenir le titre.
+     * @return Le titre correspondant au joueur.
      */
     public static String getTitleContest(Player player) {
         int points = ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
@@ -90,7 +136,11 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne les prochains points pour arriver au prochain rang
+     * Retourne le nombre de points nécessaires pour atteindre le rang suivant.
+     *
+     * @param player Le joueur dont on veut calculer le prochain palier.
+     * @return Le nombre de points requis pour monter de rang.
+     *         Retourne -1 si aucun palier trouvé.
      */
     public static int getGoalPointsToRankUp(Player player) {
         int points = ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
@@ -105,7 +155,10 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne le Rang d'un joueur hors ligne
+     * Retourne le rang numérique d’un joueur hors ligne en fonction de ses points.
+     *
+     * @param player Le joueur hors ligne.
+     * @return Le rang sous forme d’un entier (1 à 10).
      */
     public static int getRankContestFromOfflineInt(OfflinePlayer player) {
         int points = ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
@@ -120,7 +173,10 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne si le joueur est dans l'equipe gagnante
+     * Vérifie si le joueur fait partie de l’équipe gagnante du contest.
+     *
+     * @param player Le joueur hors ligne à vérifier.
+     * @return true si le joueur est dans le camp gagnant, false sinon.
      */
     public static boolean hasWinInCampFromOfflinePlayer(OfflinePlayer player) {
         int playerCamp = ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
@@ -150,21 +206,12 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne le multiplicateur en fonction de son rang
+     * Retourne le multiplicateur de récompense en fonction du rang du joueur.
+     *
+     * @param rang Le rang numérique du joueur (1 à 10).
+     * @return Le multiplicateur correspondant pour le calcul des récompenses.
      */
     public static double getMultiplicatorFromRank(int rang) {
-        HashMap<Integer, Double> rankToMultiplicatorMoney = new HashMap<>();
-        rankToMultiplicatorMoney.put(1, 1.0);
-        rankToMultiplicatorMoney.put(2, 1.1);
-        rankToMultiplicatorMoney.put(3, 1.3);
-        rankToMultiplicatorMoney.put(4, 1.4);
-        rankToMultiplicatorMoney.put(5, 1.5);
-        rankToMultiplicatorMoney.put(6, 1.6);
-        rankToMultiplicatorMoney.put(7, 1.7);
-        rankToMultiplicatorMoney.put(8, 1.8);
-        rankToMultiplicatorMoney.put(9, 2.0);
-        rankToMultiplicatorMoney.put(10, 2.4);
-
-        return rankToMultiplicatorMoney.getOrDefault(rang, 1.0);
+        return MULTIPLICATOR_MONEY.getOrDefault(rang, 1.0);
     }
 }

@@ -2,15 +2,20 @@ package fr.openmc.core.features.contest.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.utils.ColorUtils;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -50,11 +55,11 @@ public class VoteMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
-            String camp1Name = ContestManager.data.getCamp1();
-            String camp2Name = ContestManager.data.getCamp2();
+        String camp1Name = ContestManager.data.getCamp1();
+        String camp2Name = ContestManager.data.getCamp2();
 
-            String camp1Color = ContestManager.data.getColor1();
-            String camp2Color = ContestManager.data.getColor2();
+        String camp1Color = ContestManager.data.getColor1();
+        String camp2Color = ContestManager.data.getColor2();
 
         NamedTextColor color1 = ColorUtils.getNamedTextColor(camp1Color);
         NamedTextColor color2 = ColorUtils.getNamedTextColor(camp2Color);
@@ -153,7 +158,39 @@ public class VoteMenu extends Menu {
             itemMeta.setEnchantmentGlintOverride(ench1);
         }).setOnClick(inventoryClickEvent -> {
             if (playerData == null || playerData.getCamp() <= 0) {
-                ConfirmMenu menu = new ConfirmMenu(player, "camp1", "color1");
+                String messageTeam = "La Team ";
+
+                String campName = ContestManager.data.getCamp1();
+                String campColor = ContestManager.data.getColor1();
+
+                NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
+                List<Component> loreAccept = Arrays.asList(
+                        Component.text("§7Vous allez rejoindre ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
+                        Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+                );
+
+                List<Component> loreDeny = Arrays.asList(
+                        Component.text("§7Vous allez annuler votre choix : ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
+                        Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+                );
+
+                ConfirmMenu menu = new ConfirmMenu(
+                        player,
+                        () -> {
+                            ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 1, colorFinal));
+                            player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
+                            MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
+
+                            player.closeInventory();
+                        },
+                        () -> new VoteMenu(player).open(),
+                        loreAccept,
+                        loreDeny,
+                        FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:"),
+                        InventorySize.LARGE,
+                        15,
+                        11
+                );
                 menu.open();
             }
         }));
@@ -164,7 +201,39 @@ public class VoteMenu extends Menu {
             itemMeta.setEnchantmentGlintOverride(ench2);
         }).setOnClick(inventoryClickEvent -> {
             if (playerData == null || playerData.getCamp() <= 0) {
-                ConfirmMenu menu = new ConfirmMenu(player, "camp2", "color2");
+                String messageTeam = "La Team ";
+
+                String campName = ContestManager.data.getCamp2();
+                String campColor = ContestManager.data.getColor2();
+
+                NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
+                List<Component> loreAccept = Arrays.asList(
+                        Component.text("§7Vous allez rejoindre ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
+                        Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+                );
+
+                List<Component> loreDeny = Arrays.asList(
+                        Component.text("§7Vous allez annuler votre choix : ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
+                        Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+                );
+
+                ConfirmMenu menu = new ConfirmMenu(
+                        player,
+                        () -> {
+                            ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 1, colorFinal));
+                            player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
+                            MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
+
+                            player.closeInventory();
+                        },
+                        () -> new VoteMenu(player).open(),
+                        loreAccept,
+                        loreDeny,
+                        FontImageWrapper.replaceFontImages("§r§f:offset_-48::contest_menu:"),
+                        InventorySize.LARGE,
+                        15,
+                        11
+                );
                 menu.open();
             }
         }));

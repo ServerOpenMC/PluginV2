@@ -2,15 +2,16 @@ package fr.openmc.core.features.contest.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.features.contest.managers.TradeYMLManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -28,6 +29,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class TradeMenu extends Menu {
+
+    private static final String SHELL_NAMESPACE = "omc_contest:contest_shell";
 
     public TradeMenu(Player owner) {
         super(owner);
@@ -58,12 +61,10 @@ public class TradeMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
-            String campName = ContestPlayerManager.getPlayerCampName(player);
-            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
+        String campName = ContestPlayerManager.getPlayerCampName(player);
+        NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
 
-        // ITEM ADDER
-        String namespaceShellContest = "omc_contest:contest_shell";
-        ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
+        ItemStack shellContest = CustomItemRegistry.getByName(SHELL_NAMESPACE).getBest();
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
@@ -83,109 +84,45 @@ public class TradeMenu extends Menu {
             itemMeta.lore(loreTrade);
         }));
 
-            List<Map<String, Object>> selectedTrades = ContestManager.getTradeSelected(true).stream()
-                    .sorted(Comparator.comparing(trade -> (String) trade.get("ress"))).toList();
+        List<Map<String, Object>> trades = TradeYMLManager.getTradeSelected(true)
+                .stream()
+                .sorted(Comparator.comparing(trade -> (String) trade.get("ress")))
+                .toList();
 
-        List<Integer> slotTrade = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
+        List<Integer> tradeSlots = Arrays.asList(10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24);
+        for (int i = 0; i < trades.size() && i < tradeSlots.size(); i++) {
+            Map<String, Object> trade = trades.get(i);
+            Material material = Material.getMaterial((String) trade.get("ress"));
+            int amount = (int) trade.get("amount");
+            int amountShell = (int) trade.get("amount_shell");
 
-        for (int i = 0; i < selectedTrades.size(); i++) {
-            Map<String, Object> trade = selectedTrades.get(i);
-            Integer slot = slotTrade.get(i);
-
-            Material m = Material.getMaterial((String) trade.get("ress"));
-            List<Component> loreTrades = Arrays.asList(
-                    Component.text("§7Vendez §e" + trade.get("amount") + " de cette ressource §7pour §b" + trade.get("amount_shell") + " Coquillage(s) de Contest"),
+            List<Component> lore = Arrays.asList(
+                    Component.text("§7Vendez §e" + amount + " §7pour §b" + amountShell + " Coquillage(s)"),
                     Component.text("§e§lCLIQUE-GAUCHE POUR VENDRE UNE FOIS"),
                     Component.text("§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE")
             );
 
-            inventory.put(slot, new ItemBuilder(this, m, itemMeta -> itemMeta.lore(loreTrades)).setOnClick(inventoryClickEvent -> {
-                if (!ItemsAdderHook.hasItemAdder()) {
-                    MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
-                    return;
-                }
 
-                TranslatableComponent tradeName = ItemUtils.getItemTranslation(inventoryClickEvent.getCurrentItem().getType());
-                int amount = (int) trade.get("amount");
-                int amountShell = (int) trade.get("amount_shell");
-                ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
-                if (inventoryClickEvent.isLeftClick() && inventoryClickEvent.isShiftClick()) {
-                    int items = 0;
-                    for (ItemStack is : player.getInventory().getContents()) {
-                        if (is != null && is.getType() == inventoryClickEvent.getCurrentItem().getType()) {
-                            items = items + is.getAmount();
-                        }
-                    }
-
-                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem(), amount)) {
-                        int amountShell2 = (items / amount) * amountShell;
-                        int items1 = (amountShell2 / amountShell) * amount;
-                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem(), items1);
-                        int slotEmpty = ItemUtils.getSlotNull(player);
-                        int stackAvailable = slotEmpty * 64;
-                        int additem = Math.min(amountShell2, stackAvailable);
-                        if (stackAvailable >= 64) {
-                            shellContestItem.setAmount(additem);
-                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {
-                                player.getInventory().addItem(item);
-                            }
-                            int remain1 = amountShell2 - additem;
-                            if (remain1 != 0) {
-                                int numbertoStack = ItemUtils.getNumberItemToStack(player, shellContestItem);
-                                if (numbertoStack > 0) {
-                                    shellContestItem.setAmount(numbertoStack);
-                                    player.getInventory().addItem(shellContestItem);
-                                }
-
-                                ItemStack newshellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
-                                int remain2 = remain1 - numbertoStack;
-                                if (remain2 != 0) {
-                                    newshellContestItem.setAmount(remain2);
-                                    List<ItemStack> itemlist = ItemUtils.splitAmountIntoStack(newshellContestItem);
-                                    ItemStack[] shellContestArray = itemlist.toArray(new ItemStack[0]);
-                                    MailboxManager.sendItems(player, player, shellContestArray);
-                                }
-                            }
-                        } else {
-                            shellContestItem.setAmount(amountShell2);
-                            ItemStack[] shellContestArray = new ItemStack[]{shellContestItem, shellContestItem};
-                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {
-                                player.getInventory().addItem(item);
-                            }
-
-                            MailboxManager.sendItems(player, player, shellContestArray);
+            inventory.put(tradeSlots.get(i), new ItemBuilder(this, material, meta -> meta.lore(lore))
+                    .setOnClick(event -> {
+                        if (!ItemsAdderHook.hasItemAdder()) {
+                            MessagesManager.sendMessage(player,
+                                    Component.text("§cFonctionnalité bloquée. Contactez l'administration."),
+                                    Prefix.CONTEST, MessageType.ERROR, true);
+                            return;
                         }
 
-                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + items1 + " ")
-                                .append(tradeName)
-                                .append(Component.text(" §7contre§b " + amountShell2 + " Coquillages(s) de Contest")), Prefix.CONTEST, MessageType.SUCCESS, true);
-                    } else {
-                        MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
-                    }
-                } else if (inventoryClickEvent.isLeftClick()) {
-                    if (ItemUtils.hasEnoughItems(player, inventoryClickEvent.getCurrentItem(), amount)) {
+                        if (event.getCurrentItem() == null) return;
 
-                        //mettre dans l'inv ou boite mail ?
-                        if (Arrays.asList(player.getInventory().getStorageContents()).contains(null)) {
-                            shellContestItem.setAmount(amountShell);
-                            for (ItemStack item : ItemUtils.splitAmountIntoStack(shellContestItem)) {
-                                player.getInventory().addItem(item);
-                            }
-                        } else {
-                            shellContestItem.setAmount(amountShell);
-                            ItemStack[] shellContestArray = new ItemStack[]{shellContestItem};
-                            MailboxManager.sendItems(player, player, shellContestArray);
+                        TranslatableComponent tradeName = ItemUtils.getItemTranslation(event.getCurrentItem().getType());
+
+                        if (event.isShiftClick()) {
+                            handleBulkTrade(player, event.getCurrentItem(), amount, amountShell, tradeName);
+                        } else if (event.isLeftClick()) {
+                            handleSingleTrade(player, event.getCurrentItem(), amount, amountShell, tradeName);
                         }
-
-                        ItemUtils.removeItemsFromInventory(player, inventoryClickEvent.getCurrentItem(), amount);
-                        MessagesManager.sendMessage(player, Component.text("§7Vous avez échangé §e" + amount + " ")
-                                .append(tradeName)
-                                .append(Component.text(" §7contre§b " + amountShell + " Coquillages(s) de Contest")), Prefix.CONTEST, MessageType.SUCCESS, true);
-                    } else {
-                        MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez de cette ressource pour pouvoir l'échanger!"), Prefix.CONTEST, MessageType.ERROR, true);
-                    }
-                }
-            }));
+                    })
+            );
         }
 
         inventory.put(27, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));
@@ -206,5 +143,108 @@ public class TradeMenu extends Menu {
     @Override
     public List<Integer> getTakableSlot() {
         return List.of();
+    }
+
+    /**
+     * Gère l'échange simple d'items pour un trade.
+     * <p>
+     * Vérifie si le joueur possède assez d'items, supprime les items échangés, attribue les coquillages
+     * correspondants et envoie un message de succès.
+     *
+     * @param player       le joueur effectuant le trade
+     * @param item         l'item concerné par l'échange
+     * @param itemsRemoved le nombre d'items à retirer
+     * @param shellsEarned le nombre de coquillages à attribuer
+     * @param tradeName    le nom du trade sous forme de composant traduisible
+     */
+    private void handleSingleTrade(Player player, ItemStack item, int itemsRemoved, int shellsEarned, TranslatableComponent tradeName) {
+        if (!ItemUtils.hasEnoughItems(player, item, itemsRemoved)) {
+            sendNotEnoughMessage(player);
+            return;
+        }
+        ItemUtils.removeItemsFromInventory(player, item, itemsRemoved);
+        giveShells(player, shellsEarned);
+        sendSuccessMessage(player, itemsRemoved, shellsEarned, tradeName);
+    }
+
+    /**
+     * Gère l'échange en masse d'items pour un trade.
+     * <p>
+     * Vérifie si le joueur possède assez d'items, calcule la somme totale d'items dans l'inventaire,
+     * détermine le nombre de coquillages à attribuer et d'items à retirer, puis réalise l'échange et
+     * envoie un message de succès.
+     *
+     * @param player      le joueur effectuant le trade
+     * @param item        l'item concerné par l'échange
+     * @param amount      le nombre minimal d'items pour réaliser un échange
+     * @param amountShell le nombre de coquillages attribués pour cet échange
+     * @param tradeName   le nom du trade sous forme de composant traduisible
+     */
+    private void handleBulkTrade(Player player, ItemStack item, int amount, int amountShell, TranslatableComponent tradeName) {
+        if (!ItemUtils.hasEnoughItems(player, item, amount)) {
+            sendNotEnoughMessage(player);
+            return;
+        }
+        int totalItems = Arrays.stream(player.getInventory().getContents())
+                .filter(is -> is != null && is.getType() == item.getType())
+                .mapToInt(ItemStack::getAmount)
+                .sum();
+        int shellsEarned = (totalItems / amount) * amountShell;
+        int itemsRemoved = (shellsEarned / amountShell) * amount;
+        ItemUtils.removeItemsFromInventory(player, item, itemsRemoved);
+        giveShells(player, shellsEarned);
+        sendSuccessMessage(player, itemsRemoved, shellsEarned, tradeName);
+    }
+
+    /**
+     * Attribue au joueur un certain nombre de coquillages en répartissant l'item coquillage en stacks.
+     * <p>
+     * Si l'inventaire du joueur ne peut accueillir tous les items, ceux-ci sont envoyés par courrier.
+     *
+     * @param player le joueur destinataire des coquillages
+     * @param amount le nombre total de coquillages à attribuer
+     */
+    private void giveShells(Player player, int amount) {
+        ItemStack baseShell = CustomStack.getInstance(SHELL_NAMESPACE).getItemStack();
+        List<ItemStack> stacks = ItemUtils.splitAmountIntoStack(baseShell, amount);
+        List<ItemStack> leftovers = new ArrayList<>();
+        for (ItemStack stack : stacks) {
+            HashMap<Integer, ItemStack> result = player.getInventory().addItem(stack);
+            if (!result.isEmpty()) {
+                leftovers.addAll(result.values());
+            }
+        }
+        if (!leftovers.isEmpty()) {
+            MailboxManager.sendItems(player, player, leftovers.toArray(new ItemStack[0]));
+        }
+    }
+
+    /**
+     * Envoie un message de succès au joueur après un trade réussi.
+     *
+     * Le message indique le nombre d'items échangés et le nombre de coquillages obtenus.
+     *
+     * @param player       le joueur destinataire du message
+     * @param itemsRemoved le nombre d'items échangés
+     * @param shellsEarned le nombre de coquillages obtenus
+     * @param tradeName    le nom du trade sous forme de composant
+     */
+    private void sendSuccessMessage(Player player, int itemsRemoved, int shellsEarned, Component tradeName) {
+        MessagesManager.sendMessage(player,
+                Component.text("§7Vous avez échangé §e" + itemsRemoved + " ")
+                        .append(tradeName).color(NamedTextColor.YELLOW)
+                        .append(Component.text(" §7contre §b" + shellsEarned + " Coquillage(s) de Contest")),
+                Prefix.CONTEST, MessageType.SUCCESS, true);
+    }
+
+    /**
+     * Envoie un message d'erreur indiquant que le joueur ne possède pas assez d'items pour l'échange.
+     *
+     * @param player le joueur destinataire du message
+     */
+    private void sendNotEnoughMessage(Player player) {
+        MessagesManager.sendMessage(player,
+                Component.text("§cVous n'avez pas assez de cette ressource pour l'échanger !"),
+                Prefix.CONTEST, MessageType.ERROR, true);
     }
 }

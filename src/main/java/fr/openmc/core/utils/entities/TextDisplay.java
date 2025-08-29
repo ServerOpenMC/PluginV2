@@ -42,7 +42,7 @@ public class TextDisplay {
         textDisplay = new Display.TextDisplay(EntityType.TEXT_DISPLAY, ((CraftWorld) location.getWorld()).getHandle());
         textDisplay.setPos(location.getX(), location.getY(), location.getZ());
         textDisplay.setRot(location.getYaw(), location.getPitch());
-        textDisplay.setBillboardConstraints(Display.BillboardConstraints.VERTICAL);
+        textDisplay.setBillboardConstraints(Display.BillboardConstraints.CENTER);
         textDisplay.getEntityData().set(new EntityDataAccessor<>(24, EntityDataSerializers.INT),Integer.MAX_VALUE);
         textDisplay.setInvisible(true);
         textDisplay.setBrightnessOverride(Brightness.FULL_BRIGHT);

@@ -79,6 +79,21 @@ public class ItemUtils {
         return stacks;
     }
 
+    public static List<ItemStack> splitAmountIntoStack(ItemStack item, int totalAmount) {
+        int maxStackSize = item.getMaxStackSize();
+        List<ItemStack> stacks = new ArrayList<>();
+
+        while (totalAmount > 0) {
+            int stackAmount = Math.min(totalAmount, maxStackSize);
+            ItemStack clone = item.clone();
+            clone.setAmount(stackAmount);
+            stacks.add(clone);
+            totalAmount -= stackAmount;
+        }
+
+        return stacks;
+    }
+
     /**
      * Retourne le nombre d'item qui peut aller dans un Stack
      *

@@ -65,49 +65,24 @@ public class LeaderboardCommands {
     @Description("Défini la position d'un Hologram.")
     void setPosCommand(Player player, String leaderboard) {
         if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
-            ItemStack leaderboardMoveItem = new ItemStack(Material.STICK);
-            ItemMeta meta = leaderboardMoveItem.getItemMeta();
-
-            if (meta != null) {
-                List<Component> info = new ArrayList<>();
-                info.add(Component.text("§7Cliquez ou vous voulez pour poser le leaderboard"));
-                info.add(Component.text("§cITEM POUR ADMIN"));
-                meta.lore(info);
+            try {
+                LeaderboardManager.setHologramLocation(leaderboard, player.getLocation());
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("§aPosition du leaderboard " + leaderboard + " mise à jour."),
+                        Prefix.STAFF,
+                        MessageType.SUCCESS,
+                        true
+                );
+            } catch (IOException e) {
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage()),
+                        Prefix.STAFF,
+                        MessageType.ERROR,
+                        true
+                );
             }
-            leaderboardMoveItem.setItemMeta(meta);
-
-            ItemInteraction.runLocationInteraction(
-                    player,
-                    leaderboardMoveItem,
-                    "admin:move-leaderboard",
-                    120,
-                    "Temps Restant : %sec%s",
-                    "§cDéplacement du leaderboard",
-                    leaderboardMove -> {
-                        if (leaderboardMove == null) return true;
-                        try {
-                            LeaderboardManager.setHologramLocation(leaderboard, leaderboardMove);
-                            MessagesManager.sendMessage(
-                                    player,
-                                    Component.text("§aPosition du leaderboard " + leaderboard + " mise à jour."),
-                                    Prefix.STAFF,
-                                    MessageType.SUCCESS,
-                                    true
-                            );
-                        } catch (IOException e) {
-                            MessagesManager.sendMessage(
-                                    player,
-                                    Component.text("§cErreur lors de la mise à jour de la position du leaderboard " + leaderboard + ": " + e.getMessage()),
-                                    Prefix.STAFF,
-                                    MessageType.ERROR,
-                                    true
-                            );
-                        }
-                        return true;
-                    },
-                    null
-            );
-
         } else {
             MessagesManager.sendMessage(
                     player,

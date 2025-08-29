@@ -2,6 +2,7 @@ package fr.openmc.core.features.contest.menu;
 
 import dev.lone.itemsadder.api.CustomStack;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -10,7 +11,6 @@ import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ColorUtils;
 import fr.openmc.core.utils.ItemUtils;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -25,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static fr.openmc.core.utils.ItemUtils.isSimilar;
 
 public class ContributionMenu extends Menu {
 
@@ -57,9 +59,9 @@ public class ContributionMenu extends Menu {
         Player player = getOwner();
         Map<Integer, ItemBuilder> inventory = new HashMap<>();
 
-            String campName = ContestPlayerManager.getPlayerCampName(player);
-            NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
-            Material m = ColorUtils.getMaterialFromColor(campColor);
+        String campName = ContestPlayerManager.getPlayerCampName(player);
+        NamedTextColor campColor = ContestManager.dataPlayer.get(player.getUniqueId()).getColor();
+        Material m = ColorUtils.getMaterialFromColor(campColor);
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Contest !"),
@@ -81,16 +83,15 @@ public class ContributionMenu extends Menu {
                 Component.text("§e§lCliquez pour acceder au Menu des trades")
         );
 
-            List<Component> loreRang = Arrays.asList(
-                    Component.text(ContestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
-                    Component.text("§7Progression §8: ")
-                            .append(Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
-                            .append(Component.text("§8/"))
-                            .append(Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
-                    Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
-            );
+        List<Component> loreRang = Arrays.asList(
+                Component.text(ContestPlayerManager.getTitleContest(player) + campName).decoration(TextDecoration.ITALIC, false).color(campColor),
+                Component.text("§7Progression §8: ")
+                        .append(Component.text(ContestManager.dataPlayer.get(player.getUniqueId()).getPoints()).decoration(TextDecoration.ITALIC, false).color(campColor))
+                        .append(Component.text("§8/"))
+                        .append(Component.text(ContestPlayerManager.getGoalPointsToRankUp(getOwner())).decoration(TextDecoration.ITALIC, false).color(campColor)),
+                Component.text("§e§lAUGMENTER DE TITRE POUR AVOIR DES RECOMPENSES MEILLEURES")
+        );
 
-        //ITEMADDER
         String namespaceShellContest = "omc_contest:contest_shell";
         ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
 
@@ -115,21 +116,21 @@ public class ContributionMenu extends Menu {
 
             try {
                 ItemStack shellContestItem = CustomStack.getInstance(namespaceShellContest).getItemStack();
-                int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && is.isSimilar(shellContestItem)).mapToInt(ItemStack::getAmount).sum();
+                int shellCount = Arrays.stream(player.getInventory().getContents()).filter(is -> is != null && isSimilar(shellContestItem, is)).mapToInt(ItemStack::getAmount).sum();
 
                 if (ItemUtils.hasEnoughItems(player, shellContestItem, shellCount)) {
                     ItemUtils.removeItemsFromInventory(player, shellContestItem, shellCount);
 
-                        int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
-                        int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp());
+                    int newPlayerPoints = shellCount + ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
+                    int updatedCampPoints = shellCount + ContestManager.data.getInteger("points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp());
 
-                        ContestPlayerManager.setPointsPlayer(player.getUniqueId(), newPlayerPoints);
-                        String pointCamp = "points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
-                        if (Objects.equals(pointCamp, "points1")) {
-                            ContestManager.data.setPoints1(updatedCampPoints);
-                        } else if (Objects.equals(pointCamp, "points2")) {
-                            ContestManager.data.setPoints2(updatedCampPoints);
-                        }
+                    ContestPlayerManager.setPointsPlayer(player.getUniqueId(), newPlayerPoints);
+                    String pointCamp = "points" + ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
+                    if (Objects.equals(pointCamp, "points1")) {
+                        ContestManager.data.setPoints1(updatedCampPoints);
+                    } else if (Objects.equals(pointCamp, "points2")) {
+                        ContestManager.data.setPoints2(updatedCampPoints);
+                    }
 
                     MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
                 } else {
