@@ -51,8 +51,6 @@ public class CityCreateConditions {
             return false;
         }
 
-        // TODO: Check if  city na me   is already taken
-
         if (cityName != null && !InputUtils.isInputCityName(cityName)) {
             MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit contenir seulement des caractères alphanumerique et doit faire moins de 24 charactères"), Prefix.CITY, MessageType.ERROR, false);
             return false;

@@ -36,9 +36,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CityManager implements Listener {
-    private static final HashMap<UUID, City> cities = new HashMap<>();
-    private static final HashMap<UUID, City> playerCities = new HashMap<>();
-    private static final HashMap<ChunkPos, City> claimedChunks = new HashMap<>();
+    private static final Map<UUID, City> cities = new HashMap<>();
+    private static final Map<UUID, City> playerCities = new HashMap<>();
+    private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
 
     public CityManager() {
         OMCPlugin.registerEvents(this);

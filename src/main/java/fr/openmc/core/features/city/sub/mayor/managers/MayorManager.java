@@ -62,8 +62,8 @@ public class MayorManager {
     public static final DayOfWeek PHASE_2_DAY = DayOfWeek.THURSDAY;
 
     public static int phaseMayor;
-    public static HashMap<UUID, Mayor> cityMayor = new HashMap<>();
-    public static final HashMap<UUID, CityLaw> cityLaws = new HashMap<>();
+    public static Map<UUID, Mayor> cityMayor = new HashMap<>();
+    public static final Map<UUID, CityLaw> cityLaws = new HashMap<>();
     public static Map<UUID, List<MayorCandidate>> cityElections = new HashMap<>();
     public static Map<UUID, List<MayorVote>> playerVote = new HashMap<>();
 
@@ -289,7 +289,7 @@ public class MayorManager {
             }
         });
 
-        HashMap<UUID, Mayor> copyCityMayor = cityMayor;
+        Map<UUID, Mayor> copyCityMayor = cityMayor;
         cityMayor = new HashMap<>();
         cityElections = new HashMap<>();
         playerVote = new HashMap<>();

@@ -70,7 +70,6 @@ public class MilitaryDissuasion implements Listener {
                 pdc.set(new NamespacedKey(OMCPlugin.getInstance(), "city_golem"), PersistentDataType.STRING, city.getUniqueId().toString());
 
                 golem.setAI(false);
-                golem.setTarget(null);
 
                 Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
                     if (!golem.isValid() || golem.isDead()) return;

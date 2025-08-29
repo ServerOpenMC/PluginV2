@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -81,7 +82,7 @@ public class DynamicCooldownManager {
     }
 
     // Map structure: UUID -> (Group -> Cooldown)
-    private static final HashMap<UUID, HashMap<String, Cooldown>> cooldowns = new HashMap<>();
+    private static final Map<UUID, Map<String, Cooldown>> cooldowns = new HashMap<>();
 
     private static Dao<Cooldown, String> cooldownDao;
 
@@ -129,7 +130,7 @@ public class DynamicCooldownManager {
      * @param uuid Entity UUID to check
      * @return Map of cooldowns for the entity, or null if no cooldowns
      */
-    public static HashMap<String, Cooldown> getCooldowns(UUID uuid) {
+    public static Map<String, Cooldown> getCooldowns(UUID uuid) {
         return cooldowns.get(uuid);
     }
 
