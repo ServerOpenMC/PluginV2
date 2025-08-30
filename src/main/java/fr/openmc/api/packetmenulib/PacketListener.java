@@ -50,7 +50,7 @@ public class PacketListener extends PacketAdapter {
             int stateId = packet.getIntegers().read(1);
             short slot = packet.getShorts().read(0);
             byte button = packet.getBytes().read(0);
-            int mode = ( (net.minecraft.world.inventory.ClickType) packet.getStructures().withType(net.minecraft.world.inventory.ClickType.class).read(0)).ordinal();
+            int mode = ((net.minecraft.world.inventory.ClickType) packet.getStructures().withType(net.minecraft.world.inventory.ClickType.class).read(0)).ordinal();
 
             if (PacketMenuLib.getWindowIds().containsKey(event.getPlayer().getUniqueId()) && windowId == PacketMenuLib.getWindowIds().get(event.getPlayer().getUniqueId())) {
                 Player player = event.getPlayer();

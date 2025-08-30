@@ -9,22 +9,6 @@ import org.mockbukkit.mockbukkit.ServerMock;
 
 class MotdUtilsTest {
 
-    private ServerMock server;
-
-    @BeforeEach
-    void setUp() {
-        server = MockBukkit.mock();
-
-        server.addSimpleWorld("world");
-
-        MockBukkit.load(OMCPlugin.class);
-    }
-
-    @AfterEach
-    void tearDown() {
-        MockBukkit.unmock();
-    }
-
     private String getComponentContent(Component component) {
         return ((TextComponent) component).content();
     }
@@ -32,6 +16,7 @@ class MotdUtilsTest {
     @Test
     @DisplayName("MOTD switch")
     void testMOTD() {
+        ServerMock server = MockBukkit.getMock();
         String motd = getComponentContent(server.motd());
 
         new MotdUtils();

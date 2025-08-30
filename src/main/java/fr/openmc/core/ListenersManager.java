@@ -23,7 +23,6 @@ public class ListenersManager {
                 new ClockInfos(),
                 new MailboxListener(),
                 new ChronometerListener(),
-                new CubeListener(OMCPlugin.getInstance()),
                 new ItemInteraction(),
                 new ChatInput(),
                 new RespawnListener(),
@@ -36,6 +35,11 @@ public class ListenersManager {
                 new ItemsAddersListener(),
                 new TicketListener()
         );
+        if (!OMCPlugin.isUnitTestVersion()) {
+            registerEvents(
+                    new CubeListener(OMCPlugin.getInstance())
+            );
+        }
     }
 
     private static void registerEvents(Listener... args) {

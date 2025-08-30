@@ -112,16 +112,16 @@ public class OMCPlugin extends JavaPlugin {
             new LeaderboardManager();
             new MainMenu(this);
             new HologramLoader();
+            new ContestManager();
+            HomeIconCacheManager.initialize();
         }
         new AdminShopManager();
         new BossbarManager();
-        new ContestManager();
         new PrivateMessageManager();
 
         new MotdUtils();
         new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
         new DynamicCooldownManager();
-        HomeIconCacheManager.initialize();
 
         PlayerSettingsManager.loadAllPlayerSettings();
 

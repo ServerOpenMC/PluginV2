@@ -32,8 +32,10 @@ public class CubeListener implements Listener {
     public CubeListener(OMCPlugin plugin) {
         this.plugin = plugin;
 
-        double currentY = Bukkit.getWorld("world").getHighestBlockYAt((int) currentX, (int) currentZ);
-        currentLocation = new Location(Bukkit.getWorld("world"), currentX, currentY, currentZ);
+        World world = Bukkit.getWorld("world");
+        if (world == null) throw  new NullPointerException("World 'world' not found");
+        double currentY = world.getHighestBlockYAt((int) currentX, (int) currentZ);
+        currentLocation = new Location(world, currentX, currentY, currentZ);
 
         clearCube(currentLocation);
 
