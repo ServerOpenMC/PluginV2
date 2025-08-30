@@ -111,7 +111,6 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion()) { // Tous les trucs faits par misieur qui fonctionne à peu près
             new LeaderboardManager();
             new MainMenu(this);
-            new HologramLoader();
         }
         new AdminShopManager();
         new BossbarManager();
@@ -136,6 +135,9 @@ public class OMCPlugin extends JavaPlugin {
         new CustomUsableItemRegistry();
         new MilestonesManager();
         new QuestsManager();
+        if (! OMCPlugin.isUnitTestVersion()) {
+            new HologramLoader();
+        }
     }
 
     @Override

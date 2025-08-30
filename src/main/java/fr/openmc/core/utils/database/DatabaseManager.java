@@ -10,6 +10,7 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.corporation.manager.ShopManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.TransactionsManager;
@@ -63,6 +64,8 @@ public class DatabaseManager {
             CityManager.initDB(connectionSource);
             MascotsManager.initDB(connectionSource);
             PlayerSettingsManager.initDB(connectionSource);
+	        ShopManager.initDB(connectionSource);
+            
         } catch (SQLException e) {
             OMCPlugin.getInstance().getSLF4JLogger().error("Failed to initialize the database connection.", e);
             throw new RuntimeException(e);

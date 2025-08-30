@@ -8,6 +8,7 @@ import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
 import fr.openmc.core.features.adminshop.AdminShopCommand;
+import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.features.friend.FriendCommand;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
@@ -54,7 +55,8 @@ public class CommandsManager {
                 new PrivateMessageCommand(),
                 new SocialSpyCommand(),
                 new SettingsCommand(),
-                new Cooldowns()
+                new Cooldowns(),
+                new ShopCommand()
         );
     }
 
