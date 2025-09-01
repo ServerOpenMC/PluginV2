@@ -1,12 +1,11 @@
 package fr.openmc.core.features.economy;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.List;
 import java.util.Objects;

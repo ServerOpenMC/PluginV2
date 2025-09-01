@@ -1,11 +1,10 @@
 package fr.openmc.core.features.analytics.models;
 
-import java.util.UUID;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
+
+import java.util.UUID;
 
 @DatabaseTable(tableName = "stats")
 public class Statistic {

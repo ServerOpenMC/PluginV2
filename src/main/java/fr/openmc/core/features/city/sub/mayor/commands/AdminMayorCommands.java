@@ -15,7 +15,6 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Command({"adminmayor"})
 @CommandPermission("omc.admins.commands.adminmayor")

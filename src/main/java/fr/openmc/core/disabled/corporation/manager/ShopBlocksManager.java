@@ -1,9 +1,9 @@
 package fr.openmc.core.disabled.corporation.manager;
 
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.disabled.corporation.ItemsAdderIntegration;
 import fr.openmc.core.disabled.corporation.shops.Shop;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
 import org.bukkit.Location;

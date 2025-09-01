@@ -1,7 +1,7 @@
 package fr.openmc.core.listeners;
 
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.api.hooks.LuckPermsHook;
+import fr.openmc.core.OMCPlugin;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

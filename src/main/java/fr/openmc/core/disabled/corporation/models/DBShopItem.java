@@ -1,15 +1,13 @@
 package fr.openmc.core.disabled.corporation.models;
 
-import java.util.UUID;
-
-import org.bukkit.inventory.ItemStack;
-
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import fr.openmc.core.disabled.corporation.shops.ShopItem;
 import lombok.Getter;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 @Getter
 @DatabaseTable(tableName = "shop_items")

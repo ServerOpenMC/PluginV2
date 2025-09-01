@@ -1,12 +1,11 @@
 package fr.openmc.core.disabled.corporation.models;
 
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.disabled.corporation.company.Company;
-
-import java.util.UUID;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.core.disabled.corporation.company.Company;
+import fr.openmc.core.features.city.City;
+
+import java.util.UUID;
 
 @DatabaseTable(tableName = "companies")
 public class DBCompany {

@@ -5,13 +5,13 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import lombok.Getter;
 
 import java.math.BigDecimal;

@@ -1,8 +1,8 @@
 package fr.openmc.core.features.homes.command;
 
+import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
-import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;

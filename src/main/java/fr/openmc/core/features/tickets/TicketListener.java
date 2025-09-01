@@ -1,6 +1,8 @@
 package fr.openmc.core.features.tickets;
 
-import dev.lone.itemsadder.api.Events.*;
+import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
+import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
+import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import fr.openmc.core.features.displays.holograms.Hologram;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.tickets.menus.MachineBallsMenu;

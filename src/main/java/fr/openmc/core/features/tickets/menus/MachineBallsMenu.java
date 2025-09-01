@@ -3,7 +3,6 @@ package fr.openmc.core.features.tickets.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;

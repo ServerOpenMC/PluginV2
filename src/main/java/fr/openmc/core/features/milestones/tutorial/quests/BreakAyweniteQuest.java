@@ -1,6 +1,7 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
 import dev.lone.itemsadder.api.CustomBlock;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
@@ -11,7 +12,6 @@ import fr.openmc.core.features.quests.rewards.QuestMethodsReward;
 import fr.openmc.core.features.quests.rewards.QuestMoneyReward;
 import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
 import org.bukkit.event.EventHandler;

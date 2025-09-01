@@ -1,16 +1,12 @@
 package fr.openmc.core.features.leaderboards.commands;
 
-import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Description;
@@ -18,8 +14,6 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
 

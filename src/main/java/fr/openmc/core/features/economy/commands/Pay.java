@@ -10,7 +10,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Range;

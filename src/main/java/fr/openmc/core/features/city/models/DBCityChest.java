@@ -1,13 +1,11 @@
 package fr.openmc.core.features.city.models;
 
-import org.bukkit.inventory.ItemStack;
-
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
