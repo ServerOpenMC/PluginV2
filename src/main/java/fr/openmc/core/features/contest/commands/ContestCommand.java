@@ -2,6 +2,7 @@ package fr.openmc.core.features.contest.commands;
 
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
+import fr.openmc.core.features.contest.managers.TradeYMLManager;
 import fr.openmc.core.features.contest.menu.ContributionMenu;
 import fr.openmc.core.features.contest.menu.VoteMenu;
 import fr.openmc.core.utils.DateUtils;
@@ -16,17 +17,14 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Command("contest")
 @Description("Ouvre l'interface des festivals, et quand un festival commence, vous pouvez choisir votre camp")
 public class ContestCommand {
     @Cooldown(4)
     @DefaultFor("~")
-    public void defaultCommand(Player player) {
+    public static void mainCommand(Player player) {
         int phase = ContestManager.data.getPhase();
         if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId()) == null) || (phase == 2)) {
             VoteMenu menu = new VoteMenu(player);
@@ -50,9 +48,6 @@ public class ContestCommand {
     @CommandPermission("omc.admin.commands.contest.setphase")
     public void setPhase(Integer phase) {
         switch(phase) {
-            case 1:
-                ContestManager.initPhase1();
-                break;
             case 2:
                 ContestManager.initPhase2();
                 break;
@@ -72,7 +67,8 @@ public class ContestCommand {
     public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
         int phase = ContestManager.data.getPhase();
         if (phase == 1) {
-            if (ContestManager.getColorContestList().containsAll(Arrays.asList(color1, color2))) {
+            // It's weird but it's for performance reasons
+            if (new HashSet<>(ContestManager.getColorContestList()).containsAll(Arrays.asList(color1, color2))) {
                 ContestManager.clearDB();
                 ContestManager.insertCustomContest(camp1, color1, camp2, color2);
 
@@ -90,7 +86,7 @@ public class ContestCommand {
     @CommandPermission("omc.admin.commands.contest.settrade")
     @AutoComplete("@trade")
     public void setTrade(Player player, @Named("trade") String trade, int amount, int amountShell) {
-        YamlConfiguration config = ContestManager.contestConfig;
+        YamlConfiguration config = TradeYMLManager.getContestConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
         boolean tradeFound = false;
@@ -105,7 +101,7 @@ public class ContestCommand {
         }
 
         if (tradeFound) {
-            ContestManager.saveContestConfig();
+            TradeYMLManager.saveContestConfig();
             MessagesManager.sendMessage(player, Component.text("Le trade de " + trade + " a été mis à jour avec " + amount + " pour " + amountShell + " coquillages de contest."), Prefix.STAFF, MessageType.SUCCESS, true);
         } else {
             MessagesManager.sendMessage(player, Component.text("Le trade n'existe pas.\n/contest settrade <mat> <amount> <amount_shell>"), Prefix.STAFF, MessageType.ERROR, true);

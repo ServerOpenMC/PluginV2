@@ -2,12 +2,13 @@ package fr.openmc.core.features.city.menu;
 
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,7 +28,12 @@ public class InvitationsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des villes - Invitations";
+        return "Menu des Villes - Invitations";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -42,11 +48,11 @@ public class InvitationsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
         List<Player> invitations = CityCommands.invitations.get(player);
@@ -59,7 +65,7 @@ public class InvitationsMenu extends PaginatedMenu {
 
             if (inviterCity == null) {
                 invitations.remove(inviter);
-                if (invitations.size() == 0) {
+                if (invitations.isEmpty()) {
                     CityCommands.invitations.remove(player);
                 }
                 return getItems();
@@ -94,20 +100,29 @@ public class InvitationsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
+    public Map<Integer, ItemBuilder> getButtons() {
         Player player = getOwner();
-        Map<Integer, ItemStack> map = new HashMap<>();
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         map.put(49,
                 new ItemBuilder(this,
-                        Objects.requireNonNull(CustomItemRegistry.getByName("menu:close_button")).getBest(),
-                        itemMeta -> itemMeta.displayName(Component.text("§7Retour au menu des villes")))
-                        .setOnClick(InventoryClickEvent -> new NoCityMenu(player).open()));
+                        Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(),
+                        itemMeta -> itemMeta.displayName(Component.text("§7Retour au menu précédent")), true));
         map.put(48,
                 new ItemBuilder(this,
-                        Objects.requireNonNull(CustomItemRegistry.getByName("menu:previous_page")).getBest(),
+                        Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(),
                         itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
         map.put(50,
-                new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:next_page")).getBest(),
+                new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(),
                         itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
 
         return map;

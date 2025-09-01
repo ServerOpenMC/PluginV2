@@ -4,7 +4,7 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -60,7 +60,7 @@ public class ImpotCollection implements Listener {
 
             zombie.setShouldBurnInDay(false);
 
-            zombie.setMetadata("mayor:zombie", new FixedMetadataValue(OMCPlugin.getInstance(), city.getMayor().getUUID()));
+            zombie.setMetadata("mayor:zombie", new FixedMetadataValue(OMCPlugin.getInstance(), city.getMayor().getMayorUUID()));
         }
     }
 
@@ -68,15 +68,12 @@ public class ImpotCollection implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Zombie)) return;
-        if (!(event.getEntity() instanceof Player)) return;
-
-        Zombie zombie = (Zombie) event.getDamager();
-        Player victim = (Player) event.getEntity();
+        if (!(event.getDamager() instanceof Zombie zombie)) return;
+        if (!(event.getEntity() instanceof Player victim)) return;
 
         if (!zombie.hasMetadata("mayor:zombie")) return;
 
-        String ownerUuid = zombie.getMetadata("mayor:zombie").get(0).asString();
+        String ownerUuid = zombie.getMetadata("mayor:zombie").getFirst().asString();
         UUID uuid = UUID.fromString(ownerUuid);
         Player mayorPlayer = Bukkit.getPlayer(uuid);
         if (mayorPlayer == null) return;
@@ -103,11 +100,10 @@ public class ImpotCollection implements Listener {
 
         if (newTotal >= 5000) {
             for (Entity entity : victim.getWorld().getEntities()) {
-                if (entity instanceof Zombie) {
-                    Zombie z = (Zombie) entity;
+                if (entity instanceof Zombie z) {
 
                     if (!z.hasMetadata("mayor:zombie")) continue;
-                    String zOwnerUuid = z.getMetadata("mayor:zombie").get(0).asString();
+                    String zOwnerUuid = z.getMetadata("mayor:zombie").getFirst().asString();
                     if (!zOwnerUuid.equals(ownerUuid)) continue;
                     if (z.getTarget() != null && z.getTarget().getUniqueId().equals(victim.getUniqueId())) {
                         z.remove();

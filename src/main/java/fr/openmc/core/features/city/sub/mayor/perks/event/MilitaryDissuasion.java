@@ -1,9 +1,9 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.utils.ChunkPos;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -27,14 +27,14 @@ public class MilitaryDissuasion implements Listener {
      * @param city           The city where the golems will be spawned.
      * @param golemsToSpawn  The number of golems to spawn.
      */
-    public static void spawnIronMan(City city, int golemsToSpawn) {
-        Set<BlockVector2> chunks = city.getChunks();
+    public static void startEvent(City city, int golemsToSpawn) {
+        Set<ChunkPos> chunks = city.getChunks();
         if (chunks.isEmpty()) return;
 
         World world = Bukkit.getWorld("world");
         if (world == null) return;
 
-        List<BlockVector2> chunkList = new ArrayList<>(chunks);
+        List<ChunkPos> chunkList = new ArrayList<>(chunks);
         Random random = new Random();
 
         int spawned = 0;
@@ -43,10 +43,10 @@ public class MilitaryDissuasion implements Listener {
         while (spawned < golemsToSpawn && attempts < golemsToSpawn * 10) {
             attempts++;
 
-            BlockVector2 chunk = chunkList.get(spawned % chunkList.size());
+            ChunkPos chunk = chunkList.get(spawned % chunkList.size());
 
-            int chunkX = chunk.getBlockX();
-            int chunkZ = chunk.getBlockZ();
+            int chunkX = chunk.x();
+            int chunkZ = chunk.z();
 
             int x = (chunkX << 4) + 8 + random.nextInt(8);
             int z = (chunkZ << 4) + 8 + random.nextInt(8);
@@ -67,10 +67,9 @@ public class MilitaryDissuasion implements Listener {
                 golem.setHealth(35);
 
                 PersistentDataContainer pdc = golem.getPersistentDataContainer();
-                pdc.set(new NamespacedKey(OMCPlugin.getInstance(), "city_golem"), PersistentDataType.STRING, city.getUUID());
+                pdc.set(new NamespacedKey(OMCPlugin.getInstance(), "city_golem"), PersistentDataType.STRING, city.getUniqueId().toString());
 
                 golem.setAI(false);
-                golem.setTarget(null);
 
                 Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
                     if (!golem.isValid() || golem.isDead()) return;
@@ -84,13 +83,13 @@ public class MilitaryDissuasion implements Listener {
                                 }
 
                                 City playerCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
-                                return playerCity == null || !playerCity.getUUID().equals(city.getUUID());
+                                return playerCity == null || !playerCity.getUniqueId().equals(city.getUniqueId());
                             })
                             .collect(Collectors.toList());
 
                     if (!nearbyEnemies.isEmpty()) {
                         Collections.shuffle(nearbyEnemies);
-                        Player target = nearbyEnemies.get(0);
+                        Player target = nearbyEnemies.getFirst();
                         golem.setAI(true);
                         golem.setTarget(target);
                     } else {
@@ -112,7 +111,7 @@ public class MilitaryDissuasion implements Listener {
      */
     public static void clearCityGolems(City city) {
         NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_golem");
-        String cityUUID = city.getUUID();
+        UUID cityUUID = city.getUniqueId();
 
         for (Entity entity : Bukkit.getWorld("world").getEntitiesByClass(IronGolem.class)) {
             PersistentDataContainer pdc = entity.getPersistentDataContainer();

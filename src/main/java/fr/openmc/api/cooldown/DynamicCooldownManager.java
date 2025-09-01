@@ -14,6 +14,8 @@ import org.bukkit.scheduler.BukkitTask;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Main class for managing cooldowns
@@ -25,7 +27,7 @@ public class DynamicCooldownManager {
     @DatabaseTable(tableName = "cooldowns")
     public static class Cooldown {
         @DatabaseField(id = true)
-        private String id;
+        private UUID uniqueId;
         @DatabaseField(canBeNull = false)
         private String group;
         @DatabaseField(canBeNull = false)
@@ -41,18 +43,18 @@ public class DynamicCooldownManager {
         /**
          * @param duration Cooldown duration in ms
          */
-        public Cooldown(String id, String group, long duration, long lastUse) {
+        public Cooldown(UUID cooldownUUID, String group, long duration, long lastUse) {
             this.duration = duration;
             this.lastUse = lastUse;
-            this.id = id;
+            this.uniqueId = cooldownUUID;
             this.group = group;
 
-            Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.id, this.group));
+            Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.uniqueId, this.group));
 
             long delayTicks = duration / 50; //ticks
             this.scheduledTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.id, this.group));
-                DynamicCooldownManager.clear(id, group);
+                Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uniqueId, this.group));
+                DynamicCooldownManager.clear(this.uniqueId, group);
             }, delayTicks);
         }
 
@@ -80,11 +82,11 @@ public class DynamicCooldownManager {
     }
 
     // Map structure: UUID -> (Group -> Cooldown)
-    private static final HashMap<String, HashMap<String, Cooldown>> cooldowns = new HashMap<>();
+    private static final Map<UUID, Map<String, Cooldown>> cooldowns = new HashMap<>();
 
     private static Dao<Cooldown, String> cooldownDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Cooldown.class);
         cooldownDao = DaoManager.createDao(connectionSource, Cooldown.class);
     }
@@ -94,9 +96,13 @@ public class DynamicCooldownManager {
             List<Cooldown> dbCooldowns = cooldownDao.queryForAll();
 
             for (Cooldown cooldown : dbCooldowns) {
-                if (cooldown.isReady()) continue;
-                HashMap<String, Cooldown> groupCooldowns = cooldowns.getOrDefault(cooldown.id, new HashMap<>());
-                groupCooldowns.put(cooldown.group, cooldown);
+                if (cooldown.isReady()) {
+                    cooldownDao.delete(cooldown);
+                    continue;
+                }
+
+                cooldowns.computeIfAbsent(cooldown.uniqueId, k -> new HashMap<>())
+                        .put(cooldown.group, cooldown);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors du chargement des cooldowns depuis la base de données", e);
@@ -104,7 +110,8 @@ public class DynamicCooldownManager {
     }
 
     public static void saveCooldowns() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Saving cooldowns...");
+
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
                 if (cooldown.isReady()) return;
@@ -116,7 +123,15 @@ public class DynamicCooldownManager {
             });
         });
 
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des cooldowns réussie.");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Cooldowns saved successfully.");
+    }
+
+    /**
+     * @param uuid Entity UUID to check
+     * @return Map of cooldowns for the entity, or null if no cooldowns
+     */
+    public static Map<String, Cooldown> getCooldowns(UUID uuid) {
+        return cooldowns.get(uuid);
     }
 
     /**
@@ -124,7 +139,7 @@ public class DynamicCooldownManager {
      * @param group Cooldown group
      * @return true if entity can perform action
      */
-    public static boolean isReady(String uuid, String group) {
+    public static boolean isReady(UUID uuid, String group) {
         var userCooldowns = cooldowns.get(uuid);
         if (userCooldowns == null)
             return true;
@@ -140,7 +155,7 @@ public class DynamicCooldownManager {
      * @param group    Cooldown group
      * @param duration Cooldown duration in ms
      */
-    public static void use(String uuid, String group, long duration) {
+    public static void use(UUID uuid, String group, long duration) {
         cooldowns.computeIfAbsent(uuid, k -> new HashMap<>())
                 .put(group, new Cooldown(uuid, group, duration, System.currentTimeMillis()));
     }
@@ -152,7 +167,7 @@ public class DynamicCooldownManager {
      * @param group Cooldown group
      * @return remaining time in milliseconds, 0 if no cooldown
      */
-    public static long getRemaining(String uuid, String group) {
+    public static long getRemaining(UUID uuid, String group) {
         var userCooldowns = cooldowns.get(uuid);
         if (userCooldowns == null) return 0;
 
@@ -167,7 +182,7 @@ public class DynamicCooldownManager {
      * @param group           Nom du groupe de cooldown
      * @param reductionMillis Réduction en millisecondes
      */
-    public static void reduceCooldown(Player player, String uuid, String group, long reductionMillis) {
+    public static void reduceCooldown(Player player, UUID uuid, String group, long reductionMillis) {
         var userCooldowns = cooldowns.get(uuid);
 
         if (userCooldowns == null) {
@@ -212,15 +227,16 @@ public class DynamicCooldownManager {
     }
 
     /**
-     * Removes all cooldowns for a specific entity
+     * Removes all cooldowns for group
      *
-     * @param uuid Entity UUID
+     * @param group Cooldown group
      */
-    public static void clear(String uuid) {
-        var userCooldowns = cooldowns.remove(uuid);
-        if (userCooldowns != null) {
-            userCooldowns.values().forEach(Cooldown::cancelTask);
-        }
+    public static void clear(String group) {
+        cooldowns.forEach((uuid, userCooldowns) -> {
+            Cooldown removed = userCooldowns.remove(group);
+            if (removed != null) removed.cancelTask();
+        });
+        cooldowns.entrySet().removeIf(entry -> entry.getValue().isEmpty()); // A test
     }
 
     /**
@@ -229,7 +245,7 @@ public class DynamicCooldownManager {
      * @param uuid  Entity UUID
      * @param group Cooldown group
      */
-    public static void clear(String uuid, String group) {
+    public static void clear(UUID uuid, String group) {
         var userCooldowns = cooldowns.get(uuid);
         if (userCooldowns != null) {
             Cooldown removed = userCooldowns.remove(group);

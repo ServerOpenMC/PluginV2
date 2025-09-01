@@ -19,7 +19,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +38,12 @@ public class WarCityDetailsMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu de guerre - " + city.getName();
+        return "Menu de Guerre - Details de " + city.getName();
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override
@@ -53,8 +57,8 @@ public class WarCityDetailsMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         Player player = getOwner();
 
         Mayor mayor = city.getMayor();
@@ -69,9 +73,7 @@ public class WarCityDetailsMenu extends Menu {
             map.put(11, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }));
+            }).hide(perk1.getToHide()));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
@@ -79,9 +81,7 @@ public class WarCityDetailsMenu extends Menu {
             map.put(13, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }));
+            }).hide(perk2.getToHide()));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
@@ -89,9 +89,7 @@ public class WarCityDetailsMenu extends Menu {
             map.put(15, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            }));
+            }).hide(perk3.getToHide()));
         }
         Mascot mascot = city.getMascot();
         LivingEntity mascotMob = (LivingEntity) mascot.getEntity();
@@ -115,15 +113,15 @@ public class WarCityDetailsMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> new WarPlayerListMenu(player, city).open()));
 
         map.put(26, new ItemBuilder(this, new ItemStack(city.getType().equals(CityType.WAR) ? Material.RED_BANNER : Material.GREEN_BANNER),
-                itemMeta -> itemMeta.displayName(Component.text("§7Type : " + (city.getType().equals(CityType.WAR) ? "§cGuerre" : "§aPaix")))));
+                itemMeta -> itemMeta.displayName(Component.text("§7Type : " + city.getType().getName()))));
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de Guerre"),
+                    Component.text("§7Vous allez retourner au Menu Précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> new MainWarMenu(getOwner()).open()));
+        }, true));
 
         return map;
     }

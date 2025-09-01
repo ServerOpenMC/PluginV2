@@ -8,9 +8,9 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.MaterialUtils;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -40,8 +40,8 @@ public class MineralRushPerk implements Listener {
 
         if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
-        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:mineral_rush")) {
-            MessagesManager.sendMessage(player, Component.text("La réforme d'événement la §eRuée Minière §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUUID(), "city:mineral_rush"))), Prefix.MAYOR, MessageType.INFO, false);
+        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) {
+            MessagesManager.sendMessage(player, Component.text("La réforme d'événement la §eRuée Minière §fest lancée et il reste plus que §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:mineral_rush"))), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 
@@ -52,7 +52,7 @@ public class MineralRushPerk implements Listener {
         String chronometerGroup = e.getGroup();
         if (!chronometerGroup.equals("city:mineral_rush")) return;
 
-        City city = CityManager.getCity(e.getEntity().getUniqueId().toString());
+        City city = CityManager.getCity(e.getEntity().getUniqueId());
 
         if (city == null) return;
 
@@ -80,7 +80,7 @@ public class MineralRushPerk implements Listener {
 
         if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
 
-        if (DynamicCooldownManager.isReady(city.getUUID(), "city:mineral_rush")) return;
+        if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
 
         Block block = event.getBlock();
 
@@ -107,7 +107,7 @@ public class MineralRushPerk implements Listener {
 
         if (city == null) return;
         if (!PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) return;
-        if (!DynamicCooldownManager.isReady(city.getUUID(), "city:mineral_rush")) return;
+        if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:mineral_rush")) return;
 
         String namespace = event.getNamespacedID();
         if (!namespace.equals("omc_blocks:aywenite_ore") && !namespace.equals("omc_blocks:deepslate_aywenite_ore")) return;

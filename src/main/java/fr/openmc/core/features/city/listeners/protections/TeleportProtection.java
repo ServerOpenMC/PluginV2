@@ -9,10 +9,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Set;
+
 public class TeleportProtection implements Listener {
-    @EventHandler
+    private final Set<PlayerTeleportEvent.TeleportCause> illegalCauses = Set.of(
+            PlayerTeleportEvent.TeleportCause.COMMAND,
+            PlayerTeleportEvent.TeleportCause.NETHER_PORTAL,
+            PlayerTeleportEvent.TeleportCause.PLUGIN,
+            PlayerTeleportEvent.TeleportCause.SPECTATE,
+            PlayerTeleportEvent.TeleportCause.END_GATEWAY,
+            PlayerTeleportEvent.TeleportCause.EXIT_BED
+    );
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        if (event.isCancelled()) return;
+        PlayerTeleportEvent.TeleportCause cause = event.getCause();
+
+        if (illegalCauses.contains(cause)) return;
 
         Player player = event.getPlayer();
 

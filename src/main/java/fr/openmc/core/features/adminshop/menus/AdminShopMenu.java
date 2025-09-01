@@ -1,11 +1,11 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopCategory;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -27,7 +27,12 @@ public class AdminShopMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§f" + PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop_category%");
+        return "Menu Principal de l'AdminShop";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop_category:");
     }
 
     @Override
@@ -39,8 +44,8 @@ public class AdminShopMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
 
         int slot = 10;
         for (ShopCategory category : AdminShopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {

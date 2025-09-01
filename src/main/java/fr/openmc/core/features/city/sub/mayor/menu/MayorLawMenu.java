@@ -1,5 +1,6 @@
 package fr.openmc.core.features.city.sub.mayor.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.menulib.Menu;
@@ -18,12 +19,9 @@ import fr.openmc.core.features.city.sub.mayor.perks.event.IdyllicRain;
 import fr.openmc.core.features.city.sub.mayor.perks.event.ImpotCollection;
 import fr.openmc.core.features.city.sub.mayor.perks.event.MilitaryDissuasion;
 import fr.openmc.core.utils.DateUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,7 +29,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -51,11 +48,12 @@ public class MayorLawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-38%%img_mayor%");
-        } else {
-            return "Menu des Lois";
-        }
+        return "Menu des Lois";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-38::mayor:");
     }
 
     @Override
@@ -74,8 +72,8 @@ public class MayorLawMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
@@ -83,23 +81,23 @@ public class MayorLawMenu extends Menu {
 
         CityLaw law = city.getLaw();
 
-        Supplier<ItemStack> pvpItemSupplier = () -> {
+        Supplier<ItemBuilder> pvpItemSupplier = () -> {
             String nameLawPVP = law.isPvp() ? "§cDésactiver §7le PVP" : "§4Activer §7le PVP";
             List<Component> loreLawPVP = new ArrayList<>(List.of(
                     Component.text("§7Cette §1loi " + (law.isPvp() ? "§4active" : "§cdésactive") + " §7le PVP dans toute la §dVille"),
                     Component.text("§7entre les membres !")
             ));
 
-            if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
+            if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-pvp")) {
                 loreLawPVP.addAll(
                         List.of(
-                                Component.text(""),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-pvp")))
+                                Component.empty(),
+                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-pvp")))
                         )
                 );
             } else {
                 loreLawPVP.addAll(List.of(
-                                Component.text(""),
+                        Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR " + (law.isPvp() ? "ACTIVER" : "DESACTIVER") + " LE PVP")
                         )
                 );
@@ -109,8 +107,8 @@ public class MayorLawMenu extends Menu {
                 itemMeta.itemName(Component.text(nameLawPVP));
                 itemMeta.lore(loreLawPVP);
             }).setOnClick(inventoryClickEvent -> {
-                if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
-                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-pvp", COOLDOWN_TIME_PVP);
+                if (DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-pvp")) {
+                    DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-pvp", COOLDOWN_TIME_PVP);
 
                     law.setPvp(!law.isPvp());
                     String messageLawPVP = !law.isPvp() ? "§7Vous avez §cdésactivé §7le PVP dans votre ville" : "§7Vous avez §4activé §7le PVP dans votre ville";
@@ -123,14 +121,14 @@ public class MayorLawMenu extends Menu {
             });
         };
 
-        if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-pvp")) {
+        if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-pvp")) {
             MenuUtils.runDynamicItem(player, this, 19, pvpItemSupplier)
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         } else {
             inventory.put(19, pvpItemSupplier.get());
         }
 
-        Supplier<ItemStack> warpItemSupplier = () -> {
+        Supplier<ItemBuilder> warpItemSupplier = () -> {
             Location warpLoc = law.getWarp();
 
             List<Component> loreLawWarp;
@@ -151,17 +149,17 @@ public class MayorLawMenu extends Menu {
                 ));
             }
 
-            if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-move-warp")) {
+            if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-move-warp")) {
                 loreLawWarp.addAll(
                         List.of(
-                                Component.text(""),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-move-warp")))
+                                Component.empty(),
+                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-move-warp")))
                         )
                 );
             } else {
                 loreLawWarp.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR CHOISIR UN ENDROIT")
                         )
                 );
@@ -183,22 +181,22 @@ public class MayorLawMenu extends Menu {
                     .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L);
         }
 
-        Supplier<ItemStack> announceItemSupplier = () -> {
+        Supplier<ItemBuilder> announceItemSupplier = () -> {
             List<Component> loreLawAnnounce = new ArrayList<>(List.of(
                     Component.text("§7Cette §1loi §7permet d'émettre un message dans toute la ville!")
             ));
 
-            if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-announce")) {
+            if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-announce")) {
                 loreLawAnnounce.addAll(
                         List.of(
-                                Component.text(""),
-                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-announce")))
+                                Component.empty(),
+                                Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-announce")))
                         )
                 );
             } else {
                 loreLawAnnounce.addAll(
                         List.of(
-                                Component.text(""),
+                                Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR ECRIRE LE MESSAGE")
                         )
                 );
@@ -208,7 +206,7 @@ public class MayorLawMenu extends Menu {
                 itemMeta.itemName(Component.text("§7Faire une annonce"));
                 itemMeta.lore(loreLawAnnounce);
             }).setOnClick(inventoryClickEvent -> {
-                if (DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-announce")) {
+                if (DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-announce")) {
 
                     ChatInput.sendInput(
                             player,
@@ -230,7 +228,7 @@ public class MayorLawMenu extends Menu {
 
                             }
                     );
-                    DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);
+                    DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-announce", COOLDOWN_TIME_ANNOUNCE);
                 }
 
             });
@@ -241,21 +239,21 @@ public class MayorLawMenu extends Menu {
 
         Perks perkEvent = PerkManager.getPerkEvent(mayor);
         if (PerkManager.getPerkEvent(mayor) != null) {
-            Supplier<ItemStack> perkEventItemSupplier = () -> {
+            Supplier<ItemBuilder> perkEventItemSupplier = () -> {
                 ItemStack iaPerkEvent = perkEvent.getItemStack();
                 String namePerkEvent = perkEvent.getName();
                 List<Component> lorePerkEvent = new ArrayList<>(perkEvent.getLore());
-                if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
+                if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
                     lorePerkEvent.addAll(
                             List.of(
-                                    Component.text(""),
-                                    Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getUUID().toString(), "mayor:law-perk-event")))
+                                    Component.empty(),
+                                    Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(mayor.getMayorUUID(), "mayor:law-perk-event")))
                             )
                     );
                 } else {
                     lorePerkEvent.addAll(
                             List.of(
-                                    Component.text(""),
+                                    Component.empty(),
                                     Component.text("§e§lCLIQUEZ ICI POUR UTILISER LA REFORME")
                             )
                     );
@@ -263,10 +261,10 @@ public class MayorLawMenu extends Menu {
                 return new ItemBuilder(this, iaPerkEvent, itemMeta -> {
                     itemMeta.itemName(Component.text(namePerkEvent));
                     itemMeta.lore(lorePerkEvent);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-                    itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-                }).setOnClick(inventoryClickEvent -> {
-                    if (!DynamicCooldownManager.isReady(mayor.getUUID().toString(), "mayor:law-perk-event")) {
+                })
+                        .hide(perkEvent.getToHide())
+                        .setOnClick(inventoryClickEvent -> {
+                    if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
                         MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de pouvoir utiliser cette §3Réforme"), Prefix.MAYOR, MessageType.ERROR, false);
                         return;
                     }
@@ -274,7 +272,7 @@ public class MayorLawMenu extends Menu {
                     // Prélévement d'impot (id : 2) - Perk Event
                     if (PerkManager.hasPerk(city.getMayor(), Perks.IMPOT.getId())) {
                         for (UUID uuid : city.getMembers()) {
-                            if (uuid == city.getMayor().getUUID()) continue;
+                            if (uuid == city.getMayor().getMayorUUID()) continue;
 
                             Player member = Bukkit.getPlayer(uuid);
 
@@ -284,8 +282,7 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché le §ePrélévement d'Impot §f!"), Prefix.MAYOR, MessageType.INFO, false);
 
                         }
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
-                        return;
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.AGRICULTURAL_ESSOR.getId())) {
                         // Essor agricole (id : 11) - Perk Event
                         for (UUID uuid : city.getMembers()) {
@@ -296,8 +293,8 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché l'§eEssor Agricole §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
-                        DynamicCooldownManager.use(city.getUUID(), "city:agricultural_essor", 30 * 60 * 1000L); // 30 minutes
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        DynamicCooldownManager.use(city.getUniqueId(), "city:agricultural_essor", 30 * 60 * 1000L); // 30 minutes
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.MINERAL_RUSH.getId())) {
                         // Ruée Miniere (id : 12) - Perk Event
                         for (UUID uuid : city.getMembers()) {
@@ -308,8 +305,8 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eRuée Minière §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
-                        DynamicCooldownManager.use(city.getUUID(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        DynamicCooldownManager.use(city.getUniqueId(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.MILITARY_DISSUASION.getId())) {
                         // Dissuasion Militaire (id : 13) - Perk Event
                         for (UUID uuid : city.getMembers()) {
@@ -320,14 +317,14 @@ public class MayorLawMenu extends Menu {
                             MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eDissuasion Militaire §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
-                        MilitaryDissuasion.spawnIronMan(city, 10);
-                        DynamicCooldownManager.use(city.getUUID(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        MilitaryDissuasion.startEvent(city, 10);
+                        DynamicCooldownManager.use(city.getUniqueId(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
 
                         new BukkitRunnable() {
                             @Override
                             public void run() {
-                                if (DynamicCooldownManager.isReady(city.getUUID(), "city:military_dissuasion")) {
+                                if (DynamicCooldownManager.isReady(city.getUniqueId(), "city:military_dissuasion")) {
                                     MilitaryDissuasion.clearCityGolems(city);
                                     this.cancel();
                                 }
@@ -346,7 +343,7 @@ public class MayorLawMenu extends Menu {
                         // spawn d'un total de 100 aywenite progressivement sur une minute
                         IdyllicRain.spawnAywenite(city, 100);
 
-                        DynamicCooldownManager.use(mayor.getUUID().toString(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
+                        DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     }
                 });
             };
@@ -358,12 +355,10 @@ public class MayorLawMenu extends Menu {
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu du Mandat du Maire"),
+                    Component.text("§7Vous allez retourner au Menu Précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
-        }).setOnClick(inventoryClickEvent -> {
-            new MayorMandateMenu(player).open();
-        }));
+        }, true));
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Maires !"),
@@ -374,7 +369,7 @@ public class MayorLawMenu extends Menu {
         inventory.put(52, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
         return inventory;
     }

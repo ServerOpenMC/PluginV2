@@ -1,8 +1,8 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -31,11 +31,11 @@ public class CityInviteConditions {
 	 */
 	public static boolean canCityInvitePlayer(City city, Player player, Player target) {
 		if (city == null) {
-			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 		
-		if (! (city.hasPermission(player.getUniqueId(), CPermission.INVITE))) {
+		if (!(city.hasPermission(player.getUniqueId(), CityPermission.INVITE))) {
 			MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'inviter des joueurs dans la ville"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
@@ -61,7 +61,7 @@ public class CityInviteConditions {
 	 */
 	public static boolean canCityInviteDeny(Player player, Player inviter) {
 		List<Player> playerInvitations = CityCommands.invitations.get(player);
-		if (! playerInvitations.contains(inviter)) {
+		if (!playerInvitations.contains(inviter)) {
 			MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
@@ -78,7 +78,7 @@ public class CityInviteConditions {
 	 * @return booleen
 	 */
 	public static boolean canCityInviteAccept(City newCity, Player inviter, Player invitedPlayer) {
-		if (! invitations.containsKey(invitedPlayer)) {
+		if (!invitations.containsKey(invitedPlayer)) {
 			MessagesManager.sendMessage(invitedPlayer, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
@@ -88,7 +88,7 @@ public class CityInviteConditions {
 			
 			List<Player> playerInvitations = CityCommands.invitations.get(invitedPlayer);
 			playerInvitations.remove(inviter);
-			if (playerInvitations.size() == 0) {
+			if (playerInvitations.isEmpty()) {
 				CityCommands.invitations.remove(invitedPlayer);
 			}
 			return false;

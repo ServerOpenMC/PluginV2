@@ -1,14 +1,13 @@
 package fr.openmc.core.commands.utils;
 
-import java.io.File;
-import java.io.IOException;
-
+import fr.openmc.core.OMCPlugin;
+import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import fr.openmc.core.OMCPlugin;
-import lombok.Getter;
+import java.io.File;
+import java.io.IOException;
 
 public class SpawnManager {
 
@@ -59,8 +58,7 @@ public class SpawnManager {
         try {
             spawnConfig.save(spawnFile);
         } catch (IOException e) {
-            OMCPlugin.getInstance().getLogger().severe("Impossible de sauvegarder le fichier de configuration de spawn");
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save spawn configuration file: {}", e.getMessage(), e);
         }
     }
     

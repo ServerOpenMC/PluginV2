@@ -1,5 +1,6 @@
 package fr.openmc.core.features.homes.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -7,13 +8,11 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomeLimits;
 import fr.openmc.core.features.homes.HomeUpgradeManager;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
+import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -26,12 +25,17 @@ public class HomeUpgradeMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return PlaceholderAPI.setPlaceholders(this.getOwner(), "§r§f%img_offset_-8%%img_omc_homes_menus_home_upgrade%");
+        return "Menu des Homes - Amélioration";
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> items = new HashMap<>();
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::omc_homes_menus_home_upgrade:");
+    }
+
+    @Override
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> items = new HashMap<>();
 
         int currentHome = HomesManager.getHomeLimit(getOwner().getUniqueId());
 

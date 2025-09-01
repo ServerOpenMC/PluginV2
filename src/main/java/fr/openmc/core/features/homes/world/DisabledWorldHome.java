@@ -34,8 +34,7 @@ public class DisabledWorldHome {
             try {
                 file.createNewFile();
             } catch (Exception e) {
-                OMCPlugin.getInstance().getLogger().severe("Error while creating disabled worlds config: " + e.getMessage());
-                e.printStackTrace();
+                OMCPlugin.getInstance().getSLF4JLogger().error("Error while creating disabled worlds config: {}", e.getMessage(), e);
             }
         }
         config = YamlConfiguration.loadConfiguration(file);
@@ -58,7 +57,7 @@ public class DisabledWorldHome {
     }
 
     public void saveConfig() {
-        plugin.getLogger().info("Saving disabled worlds config...");
+        plugin.getSLF4JLogger().info("Saving disabled worlds config...");
         config.set("disabled-worlds", null);
         for(Map.Entry<String, WorldDisableInfo> entry : disabledWorlds.entrySet()) {
             String key = entry.getKey();
@@ -69,8 +68,7 @@ public class DisabledWorldHome {
         try {
             config.save(file);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().severe("Error while saving disabled worlds config: " + e.getMessage());
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error while saving disabled worlds config: {}", e.getMessage(), e);
         }
     }
 

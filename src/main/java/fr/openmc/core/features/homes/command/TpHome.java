@@ -1,20 +1,17 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.menu.HomeMenu;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
@@ -24,17 +21,11 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 
 public class TpHome {
-
-    private final HomesManager homesManager;
-    public TpHome(HomesManager homesManager) {
-        this.homesManager = homesManager;
-    }
-
     @Command("home")
     @Description("Se téléporter à un home")
     @CommandPermission("omc.commands.home.teleport")
     @AutoComplete("@homes")
-    public void home(Player player, @Optional String home) {
+    public static void home(Player player, @Optional String home) {
 
         if(home != null && home.contains(":") && player.hasPermission("omc.admin.homes.teleport.others")) {
             String[] split = home.split(":");

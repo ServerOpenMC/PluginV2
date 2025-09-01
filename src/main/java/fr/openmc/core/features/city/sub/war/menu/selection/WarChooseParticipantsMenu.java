@@ -1,15 +1,16 @@
 package fr.openmc.core.features.city.sub.war.menu.selection;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -49,39 +50,49 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
         List<UUID> sortedMembers = cityLaunch.getOnlineMembers().stream()
                 .sorted(Comparator.comparing((UUID uuid) -> !Objects.requireNonNull(Bukkit.getPlayer(uuid)).isOnline())
                         .thenComparing(uuid -> {
-                            if (cityLaunch.hasPermission(uuid, CPermission.OWNER)) return 0;
-                            else if (MayorManager.cityMayor.get(cityLaunch.getUUID()).getUUID().equals(uuid))
+                            if (cityLaunch.hasPermission(uuid, CityPermission.OWNER)) return 0;
+                            else if (MayorManager.cityMayor.get(cityLaunch.getUniqueId()).getMayorUUID().equals(uuid))
                                 return 1;
                             else return 2;
                         }))
                 .toList();
 
-        for (UUID uuid : sortedMembers) {
-            OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(uuid);
-            boolean isSelected = selected.contains(uuid);
-            boolean isOwner = cityLaunch.hasPermission(uuid, CPermission.OWNER);
-            boolean isMayor = MayorManager.phaseMayor == 2 && cityLaunch.getMayor().getUUID().equals(uuid);
+        for (UUID memberUUID : sortedMembers) {
+            OfflinePlayer offline = CacheOfflinePlayer.getOfflinePlayer(memberUUID);
+            boolean isSelected = selected.contains(memberUUID);
+            boolean isOwner = cityLaunch.hasPermission(memberUUID, CityPermission.OWNER);
+            boolean isMayor = MayorManager.phaseMayor == 2 && cityLaunch.getMayor().getMayorUUID().equals(memberUUID);
 
             String prefix = isOwner ? "Propriétaire " : isMayor ? "Maire " : "Membre ";
 
-            ItemBuilder item = new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), meta -> {
+            ItemBuilder item = new ItemBuilder(this, ItemUtils.getPlayerSkull(memberUUID), meta -> {
                 meta.displayName(Component.text((isSelected ? "§a✔ " : "") + prefix + offline.getName())
                         .decoration(TextDecoration.ITALIC, false));
                 meta.lore(List.of(Component.text(isSelected ? "§c§lCLIQUEZ POUR RETIRER" : "§a§lCLIQUEZ POUR SÉLECTIONNER")));
             }).setOnClick(event -> {
                 if (isSelected) {
-                    selected.remove(uuid);
+                    selected.remove(memberUUID);
                 } else {
                     if (selected.size() >= count) {
                         MessagesManager.sendMessage(player,
@@ -89,7 +100,7 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
                                 Prefix.CITY, MessageType.ERROR, false);
                         return;
                     }
-                    selected.add(uuid);
+                    selected.add(memberUUID);
                 }
                 new WarChooseParticipantsMenu(player, cityLaunch, cityAttack, count, selected).open();
             });
@@ -106,19 +117,19 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
         Player player = getOwner();
 
-        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("menu:previous_page").getBest(), meta -> {
+        map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), meta -> {
             meta.displayName(Component.text("§cPage précédente"));
         }).setPreviousPageButton());
 
-        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("menu:close_button").getBest(), meta -> {
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), meta -> {
             meta.displayName(Component.text("§7Fermer"));
         }).setCloseButton());
 
-        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("menu:next_page").getBest(), meta -> {
+        map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), meta -> {
             meta.displayName(Component.text("§aPage suivante"));
         }).setNextPageButton());
 
@@ -146,7 +157,12 @@ public class WarChooseParticipantsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu de Guerre - Participants";
+        return "Menu des Guerre - Participants";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override

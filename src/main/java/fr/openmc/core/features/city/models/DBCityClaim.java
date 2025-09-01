@@ -2,15 +2,16 @@ package fr.openmc.core.features.city.models;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-import com.sk89q.worldedit.math.BlockVector2;
-
+import fr.openmc.core.utils.ChunkPos;
 import lombok.Getter;
+
+import java.util.UUID;
 
 @DatabaseTable(tableName = "city_regions")
 public class DBCityClaim {
-    @DatabaseField(canBeNull = false)
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
     @Getter
-    private String city;
+    private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     private int x;
     @DatabaseField(canBeNull = false)
@@ -20,13 +21,13 @@ public class DBCityClaim {
         // required for ORMLite
     }
 
-    public DBCityClaim(BlockVector2 chunk, String city) {
-        this.city = city;
-        this.x = chunk.getX();
-        this.z = chunk.getZ();
+    public DBCityClaim(ChunkPos chunk, UUID cityUUID) {
+        this.cityUUID = cityUUID;
+        this.x = chunk.x();
+        this.z = chunk.z();
     }
 
-    public BlockVector2 getBlockVector() {
-        return BlockVector2.at(x, z);
+    public ChunkPos getChunkPos() {
+        return new ChunkPos(x, z);
     }
 }

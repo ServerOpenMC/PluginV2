@@ -1,13 +1,14 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,7 +42,12 @@ public class ConfirmMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§f" + PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop%");
+        return "Menu de Confirmation de l'AdminShop";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop:");
     }
 
     @Override
@@ -53,8 +59,8 @@ public class ConfirmMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
         double pricePerUnit = isBuying ? shopItem.getActualBuyPrice() : shopItem.getActualSellPrice();
         double totalPrice = pricePerUnit * quantity;
         int quantityToStack = Math.max(0, quantity / 64);
@@ -67,7 +73,9 @@ public class ConfirmMenu extends Menu {
 
         content.put(9, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(Component.text("§cAnnuler"));
-        }).setNextMenu(previousMenu));
+        }).setOnClick(inventoryClickEvent -> {
+            previousMenu.open();
+        }));
 
         content.put(10, createQuantityButton("-64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
             if (quantity > 64) quantity -= 64;
@@ -91,7 +99,7 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
-            if (!isBuying && AdminShopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 1)) {
+            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 1)) {
                 quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
             } else if (quantity < maxQuantity) {
                 quantity++;
@@ -100,7 +108,7 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> {
-            if (!isBuying && AdminShopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 10)) {
+            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 10)) {
                 quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
             } else if (quantity < maxQuantity) {
                 quantity += 10;
@@ -109,7 +117,7 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
-            if (!isBuying && AdminShopManager.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 64)) {
+            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 64)) {
                 quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
             } else if (quantity < maxQuantity) {
                 quantity += 64;
@@ -140,7 +148,7 @@ public class ConfirmMenu extends Menu {
      * @param action    The action to perform when the button is clicked.
      * @return The created item stack.
      */
-    private ItemStack createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
+    private ItemBuilder createQuantityButton(String text, ItemStack itemStack, Consumer<InventoryClickEvent> action) {
         return new ItemBuilder(this, itemStack, meta ->
             meta.displayName(Component.text((text.contains("+") ? "§aAjouter " : "§cRetirer ") + text.replace("+", "").replace("-", ""))))
             .setItemId("quantity_" + text.replace("+", "plus").replace("-", "minus"))

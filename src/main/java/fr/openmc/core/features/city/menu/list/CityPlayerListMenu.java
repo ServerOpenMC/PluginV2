@@ -1,14 +1,13 @@
 package fr.openmc.core.features.city.menu.list;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -41,11 +40,21 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
@@ -53,20 +62,9 @@ public class CityPlayerListMenu extends PaginatedMenu {
             for (UUID uuid : city.getMembers()) {
                 OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
 
-                boolean hasPermissionOwner = city.hasPermission(uuid, CPermission.OWNER);
-                String title = "";
-                if (hasPermissionOwner) {
-                    title = "Propriétaire ";
-                } else if (MayorManager.cityMayor.get(city.getUUID()).getUUID() == uuid) {
-                    title = "Maire ";
-                } else {
-                    title = "Membre ";
-                }
+                String title = city.getRankName(uuid) + " ";
 
-                String finalTitle = title;
-                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
-                    itemMeta.displayName(Component.text(finalTitle + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
-                }));
+                items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false))));
             }
             return items;
         } catch (Exception e) {
@@ -83,17 +81,22 @@ public class CityPlayerListMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:close_button")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:previous_page")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:next_page")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
+        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
+        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
+        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
         return map;
     }
 
     @Override
     public @NotNull String getName() {
-        return "Détails des membres de " + city.getName();
+        return "Menu des détails des Membres de " + city.getName();
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override

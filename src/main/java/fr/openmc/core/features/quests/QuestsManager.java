@@ -43,7 +43,7 @@ public class QuestsManager {
                 Bukkit.getPluginManager().registerEvents(questL, OMCPlugin.getInstance());
             }
         } else {
-            OMCPlugin.getInstance().getLogger().warning("Quest " + quest.getName() + " is already registered.");
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Quest {} is already registered.", quest.getName(), new Exception());
         }
     }
 
@@ -75,9 +75,8 @@ public class QuestsManager {
                 new KillZombieQuest(),
                 new SmeltIronQuest(),
                 new SaveTheEarthQuest(),
-                new CityCreateQuest(),
                 new WinContestQuest(),
-                new CraftKebabQuest(),
+                new CraftTheMixtureQuest(),
                 new ConsumeKebabQuest(),
                 new MineAyweniteQuest(),
                 new ChickenThrowerQuest(),

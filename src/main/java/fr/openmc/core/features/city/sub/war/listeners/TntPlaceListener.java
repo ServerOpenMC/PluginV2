@@ -24,7 +24,7 @@ import static fr.openmc.core.features.city.listeners.protections.ExplodeProtecti
 import static fr.openmc.core.features.city.listeners.protections.ExplodeProtection.explosionDataMap;
 
 public class TntPlaceListener implements Listener {
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlaceTNT(BlockPlaceEvent event) {
         if (event.getBlock().getType() != Material.TNT) return;
 
@@ -40,7 +40,7 @@ public class TntPlaceListener implements Listener {
 
         boolean sameCity = cityAtLoc.isMember(player);
 
-        CityExplosionData data = explosionDataMap.get(cityAtLoc.getUUID());
+        CityExplosionData data = explosionDataMap.get(cityAtLoc.getUniqueId());
         int current = (data == null) ? 0 : data.getExplosions();
         if (current >= MAX_TNT_PER_DAY && !sameCity) {
             MessagesManager.sendMessage(

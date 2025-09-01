@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public class Chronometer{
         }
 
         @Override
-        public HandlerList getHandlers() {
+        public @NotNull HandlerList getHandlers() {
             return HANDLERS;
         }
     }
@@ -94,9 +95,11 @@ public class Chronometer{
                         player.spigot().sendMessage(finishMessageType.getChatMessageType(), new TextComponent(finishMessage != null ? finishMessage : "Le chronomètre est terminé !"));
                     }
                     Bukkit.getPluginManager().callEvent(new ChronometerEndEvent(entity, group));
-                    chronometer.get(entityUUID).remove(group);
-                    if (chronometer.get(entityUUID).isEmpty()){
-                        chronometer.remove(entityUUID);
+                    if (chronometer.containsKey(entityUUID)) {
+                        chronometer.get(entityUUID).remove(group);
+                        if (chronometer.get(entityUUID).isEmpty()){
+                            chronometer.remove(entityUUID);
+                        }
                     }
                     cancel();
                     return;

@@ -1,21 +1,16 @@
 package fr.openmc.core;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import org.mockbukkit.mockbukkit.ServerMock;
+import org.junit.jupiter.api.*;
 import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
 
 public class OMCPluginTest {
 
     public OMCPlugin plugin;
-    public ServerMock server;
+    public static ServerMock server;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         server = MockBukkit.mock();
 
         server.addSimpleWorld("world");
@@ -24,13 +19,13 @@ public class OMCPluginTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         MockBukkit.unmock();
     }
 
     @Test
     @DisplayName("Test if plugin is load")
-    public void testPluginIsEnabled() {
+    void testPluginIsEnabled() {
         Assertions.assertTrue(plugin.isEnabled());
     }
 }

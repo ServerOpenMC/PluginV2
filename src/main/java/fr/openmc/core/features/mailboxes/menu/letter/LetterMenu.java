@@ -1,7 +1,9 @@
 package fr.openmc.core.features.mailboxes.menu.letter;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
@@ -9,16 +11,10 @@ import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.UUID;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
@@ -81,13 +77,8 @@ public class LetterMenu extends MailboxInv {
         if (letter == null || letter.isRefused())
             return false;
 
-        try {
-            items = BukkitSerializer.deserializeItemStacks(letter.getItems());
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        items = BukkitSerializer.deserializeItemStacks(letter.getItems());
+        return true;
     }
 
     public void accept() {
@@ -96,6 +87,11 @@ public class LetterMenu extends MailboxInv {
                     .append(Component.text(itemsCount, NamedTextColor.GREEN))
                     .append(Component.text(" " + getItemCount(itemsCount), NamedTextColor.DARK_GREEN));
             sendSuccessMessage(player, message);
+
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(player));
+            });
+
             HashMap<Integer, ItemStack> remainingItems = player.getInventory().addItem(items);
             for (ItemStack item : remainingItems.values()) {
                 player.getWorld().dropItemNaturally(player.getLocation(), item);

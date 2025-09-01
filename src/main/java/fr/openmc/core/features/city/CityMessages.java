@@ -22,21 +22,13 @@ public class CityMessages {
     public static void sendInfo(CommandSender sender, City city) {
         String mascotLife = "dead";
         String cityName = city.getName();
-        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CPermission.OWNER)).getName();
+        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName();
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
         int power = city.getPowerPoints();
 
         CityType type = city.getType();
-        String typeString;
-        if (type == CityType.WAR) {
-            typeString = "Guerre";
-        } else if (type == CityType.PEACE) {
-            typeString = "Paix";
-        } else {
-            typeString = "Inconnu";
-        }
         Mascot mascot = city.getMascot();
         if (mascot!=null){
             LivingEntity mob = (LivingEntity) mascot.getEntity();
@@ -54,15 +46,15 @@ public class CityMessages {
         sendLine(sender, "Maire", mayorName);
         sendLine(sender, "Habitants", String.valueOf(citizens));
         sendLine(sender, "Superficie", String.valueOf(area));
-        if (type != null && type == CityType.WAR) {
+        if (type == CityType.WAR) {
             sendLine(sender, "Puissance", String.valueOf(power));
         }
         sendLine(sender, "Vie de la Mascotte", mascotLife);
-        sendLine(sender, "Type", typeString);
+        sendLine(sender, "Type", type.getDisplayName());
 
         String money = EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon();
         if (sender instanceof Player player) {
-            if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE))) return;
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE))) return;
             sendLine(sender, "Banque", money);
         } else {
             sendLine(sender, "Banque", money);

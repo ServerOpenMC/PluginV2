@@ -5,10 +5,46 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
 public class DateUtils {
+    private final static DateTimeFormatter foratterWeekFormat = DateTimeFormatter.ofPattern("u-w", Locale.FRENCH);
+
+    /**
+     * Get "Previous Week Format"
+     * -> 2025-34 - 1 YY-w
+     * w is the week number in the year
+     */
+    public static String getPreviousWeekFormat() {
+        LocalDate previousWeek = LocalDate.now().minusWeeks(1);
+
+        return previousWeek.format(foratterWeekFormat);
+    }
+
+    /**
+     * Get "Week Format"
+     * -> 2025-34 YY-w
+     * w is the week number in the year
+     */
+    public static String getWeekFormat() {
+        LocalDate currentDate = LocalDate.now();
+
+        return currentDate.format(foratterWeekFormat);
+    }
+
+    /**
+     * Get "Next Week Format"
+     * -> 2025-34 + 1 YY-w
+     * w is the week number in the year
+     */
+    public static String getNextWeekFormat() {
+        LocalDate nextWeek = LocalDate.now().plusWeeks(1);
+
+        return nextWeek.format(foratterWeekFormat);
+    }
+
     /**
      * Get Current day of week
      * @return date (MONDAY, FRIDAY, SUNDAY, ...)
@@ -71,7 +107,7 @@ public class DateUtils {
         if (days > 0) sb.append(days).append("j ");
         if (hours > 0) sb.append(hours).append("h ");
         if (minutes > 0) sb.append(minutes).append("m ");
-        if (seconds > 0 || sb.length() == 0) sb.append(seconds).append("s");
+        if (seconds > 0 || sb.isEmpty()) sb.append(seconds).append("s");
 
         return sb.toString().trim();
     }
@@ -118,5 +154,17 @@ public class DateUtils {
         long minutes = duration.toMinutes() % 60;
 
         return String.format("%dd %dh %dm", days, hours, minutes);
+    }
+
+    public static long getSecondsUntilDayOfWeekMidnight(DayOfWeek dayOfWeek) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextDayOfWeekMidnight = now.with(TemporalAdjusters.nextOrSame(dayOfWeek))
+                .withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+        if (!now.isBefore(nextDayOfWeekMidnight)) {
+            nextDayOfWeekMidnight = nextDayOfWeekMidnight.plusWeeks(1);
+        }
+
+        return ChronoUnit.SECONDS.between(now, nextDayOfWeekMidnight);
     }
 }

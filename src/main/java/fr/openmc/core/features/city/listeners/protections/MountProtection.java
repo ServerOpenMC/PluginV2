@@ -9,9 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityMountEvent;
 
 public class MountProtection implements Listener {
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onEntityMount(EntityMountEvent event) {
-        if (event.isCancelled()) return;
         if (!(event.getEntity() instanceof Player player)) return;
 
         Entity mount = event.getMount();
@@ -20,13 +19,14 @@ public class MountProtection implements Listener {
 
 
         if (!tameable.isTamed()) return;
-
-        if (tameable.getOwnerUniqueId() == null) {
-            ProtectionsManager.verify(player, event, mount.getLocation());
-            return;
+        
+        if (!tameable.getOwnerUniqueId().equals(player.getUniqueId())) {
+            if (!ProtectionsManager.canInteract(player, mount.getLocation())) {
+                event.setCancelled(true);
+                ProtectionsManager.cancelMessage(player);
+            } else {
+                ProtectionsManager.verify(player, event, mount.getLocation());
+            }
         }
-
-        if (!tameable.getOwnerUniqueId().equals(player.getUniqueId()))
-            ProtectionsManager.verify(player, event, mount.getLocation());
     }
 }

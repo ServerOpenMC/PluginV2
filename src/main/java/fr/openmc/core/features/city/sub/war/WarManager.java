@@ -1,6 +1,5 @@
 package fr.openmc.core.features.city.sub.war;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
@@ -11,6 +10,7 @@ import fr.openmc.core.features.city.sub.war.commands.WarCommand;
 import fr.openmc.core.features.city.sub.war.listeners.TntPlaceListener;
 import fr.openmc.core.features.city.sub.war.listeners.WarKillListener;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.utils.ChunkPos;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
@@ -20,17 +20,17 @@ import java.util.*;
 import java.util.function.BiConsumer;
 
 public class WarManager {
-    public static int TIME_PREPARATION = 5; // in minutes
-    public static int TIME_FIGHT = 30; // in minutes
+    public static final int TIME_PREPARATION = 5; // in minutes
+    public static final int TIME_FIGHT = 30; // in minutes
 
-    public static long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
-    public static long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
-    public static long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
+    public static final long CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN = 2 * 24 * 60 * 60 * 1000L; // 2 jours en millisecondes
+    public static final long CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN = 24 * 60 * 60 * 1000L; // 1 jours en millisecondes
+    public static final long CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN = 12 * 60 * 60 * 1000L; // 12 heures en millisecondes
 
-    public static final Map<String, War> warsByAttacker = new HashMap<>();
-    public static final Map<String, War> warsByDefender = new HashMap<>();
+    public static final Map<UUID, War> warsByAttacker = new HashMap<>();
+    public static final Map<UUID, War> warsByDefender = new HashMap<>();
 
-    private static final Map<String, WarPendingDefense> pendingDefenses = new HashMap<>();
+    private static final Map<UUID, WarPendingDefense> pendingDefenses = new HashMap<>();
 
     /**
      * Initializes the WarManager by registering commands and listeners.
@@ -53,27 +53,27 @@ public class WarManager {
      * @param cityUUID The UUID of the city to check.
      * @return true if the city is in war, false otherwise.
      */
-    public static boolean isCityInWar(String cityUUID) {
+    public static boolean isCityInWar(UUID cityUUID) {
         return warsByAttacker.containsKey(cityUUID) || warsByDefender.containsKey(cityUUID);
     }
 
     /**
      * Retrieves the war associated with a given city UUID.
+     *
      * @param cityUUID The UUID of the city.
      * @return The War object if found, null otherwise.
      */
-    public static War getWarByCity(String cityUUID) {
+    public static War getWarByCity(UUID cityUUID) {
         War war = warsByAttacker.get(cityUUID);
         if (war != null) return war;
 
         war = warsByDefender.get(cityUUID);
-        if (war != null) return war;
-
-        return null;
+        return war;
     }
 
     /**
      * Starts a war between two cities.
+     *
      * @param attacker The city that is attacking.
      * @param defender The city that is defending.
      * @param attackers The list of UUIDs of the players in the attacking city.
@@ -82,8 +82,8 @@ public class WarManager {
     public static void startWar(City attacker, City defender, List<UUID> attackers, List<UUID> defenders) {
         War war = new War(attacker, defender, attackers, defenders);
 
-        warsByAttacker.put(attacker.getUUID(), war);
-        warsByDefender.put(defender.getUUID(), war);
+        warsByAttacker.put(attacker.getUniqueId(), war);
+        warsByDefender.put(defender.getUniqueId(), war);
     }
 
     /**
@@ -94,9 +94,9 @@ public class WarManager {
      * @param war The War object representing the war to be ended.
      */
     public static void endWar(War war) {
-        War warRemoved;
-        warRemoved = warsByAttacker.remove(war.getCityAttacker().getUUID());
-        warRemoved = warsByDefender.remove(war.getCityDefender().getUUID());
+        War warRemoved = warsByAttacker.remove(war.getCityAttacker().getUniqueId());
+        if (warRemoved == null)
+            warRemoved = warsByDefender.remove(war.getCityDefender().getUniqueId());
 
         if (warRemoved == null) return;
 
@@ -178,8 +178,8 @@ public class WarManager {
 
             claimsWon = (int) Math.ceil(totalClaims * percent * (1 + (level / 10.0)));
 
-            DynamicCooldownManager.use(loser.getUUID(), "city:immunity", CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN);
-            DynamicCooldownManager.use(winner.getUUID(), "city:immunity", CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN);
+            DynamicCooldownManager.use(loser.getUniqueId(), "city:immunity", CITY_LOSER_IMMUNITY_FIGHT_COOLDOWN);
+            DynamicCooldownManager.use(winner.getUniqueId(), "city:immunity", CITY_WINNER_IMMUNITY_FIGHT_COOLDOWN);
 
             int actualClaims = transferChunksAfterWar(winner, loser, claimsWon);
             if (actualClaims < claimsWon) {
@@ -188,8 +188,8 @@ public class WarManager {
                 winner.updateBalance(bonusMoney);
             }
         } else {
-            DynamicCooldownManager.use(war.getCityDefender().getUUID(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
-            DynamicCooldownManager.use(war.getCityAttacker().getUUID(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
+            DynamicCooldownManager.use(war.getCityDefender().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
+            DynamicCooldownManager.use(war.getCityAttacker().getUniqueId(), "city:immunity", CITY_DRAW_IMMUNITY_FIGHT_COOLDOWN);
         }
 
         broadcastWarResult(war, winner, loser, winReason, powerChange, amountStolen, bonusMoney, Math.abs(claimsWon));
@@ -213,16 +213,16 @@ public class WarManager {
 
         if (reason == WinReason.DRAW) {
             String message = String.format("""
-                    §8§m                                                     §r
-                    §7
-                    §c§lGUERRE!§r §7C'est la fin des combats!§7
-                    §8§oIl y a eu égalité !
-                    §7
-                    §7Statistiques globales:
-                    §7 - §cKills de %s : §f%d
-                    §7 - §9Kills de %s : §f%d
-                    §7
-                            §8§m                                                     §r""",
+                            §8§m                                                     §r
+                            §7
+                            §c§lGUERRE!§r §7C'est la fin des combats!§7
+                            §8§oIl y a eu égalité !
+                            §7
+                            §7Statistiques globales:
+                            §7 - §cKills de %s : §f%d
+                            §7 - §9Kills de %s : §f%d
+                            §7
+                                    §8§m                                                     §r""",
                     war.getCityAttacker().getName(), killsWinner, war.getCityDefender().getName(), killsLoser);
 
 
@@ -319,22 +319,22 @@ public class WarManager {
     public static int transferChunksAfterWar(City winner, City loser, int claimAmount) {
         if (claimAmount <= 0) return 0;
 
-        BlockVector2 mascotVec = BlockVector2.at(
+        ChunkPos mascotVec = new ChunkPos(
                 loser.getMascot().getChunk().getX(),
                 loser.getMascot().getChunk().getZ()
         );
 
-        Set<BlockVector2> adjacentChunks = new HashSet<>();
-        for (BlockVector2 wChunk : winner.getChunks()) {
-            int wx = wChunk.getX(), wz = wChunk.getZ();
+        Set<ChunkPos> adjacentChunks = new HashSet<>();
+        for (ChunkPos wChunk : winner.getChunks()) {
+            int wx = wChunk.x(), wz = wChunk.z();
 
-            BlockVector2[] neighbors = {
-                    BlockVector2.at(wx + 1, wz),
-                    BlockVector2.at(wx - 1, wz),
-                    BlockVector2.at(wx, wz + 1),
-                    BlockVector2.at(wx, wz - 1)
+            ChunkPos[] neighbors = {
+                    new ChunkPos(wx + 1, wz),
+                    new ChunkPos(wx - 1, wz),
+                    new ChunkPos(wx, wz + 1),
+                    new ChunkPos(wx, wz - 1)
             };
-            for (BlockVector2 nb : neighbors) {
+            for (ChunkPos nb : neighbors) {
                 if (nb.equals(mascotVec)) continue;
 
                 if (loser.getChunks().contains(nb)) {
@@ -345,23 +345,23 @@ public class WarManager {
 
         final int[] transferred = {0};
 
-        BiConsumer<Queue<BlockVector2>, Set<BlockVector2>> bfsCapture = (queue, visited) -> {
+        BiConsumer<Queue<ChunkPos>, Set<ChunkPos>> bfsCapture = (queue, visited) -> {
             while (!queue.isEmpty() && transferred[0] < claimAmount) {
-                BlockVector2 current = queue.poll();
-                int cx = current.getX(), cz = current.getZ();
+                ChunkPos current = queue.poll();
+                int cx = current.x(), cz = current.z();
 
-                BlockVector2[] neighs = {
-                        BlockVector2.at(cx + 1, cz),
-                        BlockVector2.at(cx - 1, cz),
-                        BlockVector2.at(cx, cz + 1),
-                        BlockVector2.at(cx, cz - 1)
+                ChunkPos[] neighs = {
+                        new ChunkPos(cx + 1, cz),
+                        new ChunkPos(cx - 1, cz),
+                        new ChunkPos(cx, cz + 1),
+                        new ChunkPos(cx, cz - 1)
                 };
-                for (BlockVector2 nb : neighs) {
+                for (ChunkPos nb : neighs) {
                     if (visited.contains(nb) || nb.equals(mascotVec)) continue;
 
                     if (loser.getChunks().contains(nb)) {
-                        loser.removeChunk(nb.getX(), nb.getZ());
-                        winner.addChunk(nb.getX(), nb.getZ());
+                        loser.removeChunk(nb.x(), nb.z());
+                        winner.addChunk(nb.x(), nb.z());
                         visited.add(nb);
                         queue.add(nb);
                         transferred[0]++;
@@ -372,14 +372,14 @@ public class WarManager {
         };
 
         if (!adjacentChunks.isEmpty()) {
-            List<BlockVector2> toSteal = new ArrayList<>(adjacentChunks);
+            List<ChunkPos> toSteal = new ArrayList<>(adjacentChunks);
             int initialSteal = Math.min(toSteal.size(), claimAmount);
-            Queue<BlockVector2> queue = new LinkedList<>();
-            Set<BlockVector2> visited = new HashSet<>();
+            Queue<ChunkPos> queue = new LinkedList<>();
+            Set<ChunkPos> visited = new HashSet<>();
             for (int i = 0; i < initialSteal; i++) {
-                BlockVector2 c = toSteal.get(i);
-                loser.removeChunk(c.getX(), c.getZ());
-                winner.addChunk(c.getX(), c.getZ());
+                ChunkPos c = toSteal.get(i);
+                loser.removeChunk(c.x(), c.z());
+                winner.addChunk(c.x(), c.z());
                 queue.add(c);
                 visited.add(c);
                 transferred[0]++;
@@ -387,18 +387,18 @@ public class WarManager {
             bfsCapture.accept(queue, visited);
         } else {
             // Try from border
-            List<BlockVector2> borderChunks = new ArrayList<>();
-            for (BlockVector2 lChunk : loser.getChunks()) {
+            List<ChunkPos> borderChunks = new ArrayList<>();
+            for (ChunkPos lChunk : loser.getChunks()) {
                 if (lChunk.equals(mascotVec)) continue;
-                int lx = lChunk.getX(), lz = lChunk.getZ();
-                BlockVector2[] neighs = {
-                        BlockVector2.at(lx + 1, lz),
-                        BlockVector2.at(lx - 1, lz),
-                        BlockVector2.at(lx, lz + 1),
-                        BlockVector2.at(lx, lz - 1)
+                int lx = lChunk.x(), lz = lChunk.z();
+                ChunkPos[] neighs = {
+                        new ChunkPos(lx + 1, lz),
+                        new ChunkPos(lx - 1, lz),
+                        new ChunkPos(lx, lz + 1),
+                        new ChunkPos(lx, lz - 1)
                 };
 
-                for (BlockVector2 nb : neighs) {
+                for (ChunkPos nb : neighs) {
                     if (!loser.getChunks().contains(nb)) {
                         borderChunks.add(lChunk);
                         break;
@@ -407,12 +407,12 @@ public class WarManager {
             }
             if (!borderChunks.isEmpty()) {
                 Collections.shuffle(borderChunks);
-                BlockVector2 seed = borderChunks.get(0);
+                ChunkPos seed = borderChunks.getFirst();
 
-                loser.removeChunk(seed.getX(), seed.getZ());
-                winner.addChunk(seed.getX(), seed.getZ());
-                Queue<BlockVector2> queue = new LinkedList<>();
-                Set<BlockVector2> visited = new HashSet<>();
+                loser.removeChunk(seed.x(), seed.z());
+                winner.addChunk(seed.x(), seed.z());
+                Queue<ChunkPos> queue = new LinkedList<>();
+                Set<ChunkPos> visited = new HashSet<>();
                 queue.add(seed);
                 visited.add(seed);
                 transferred[0]++;
@@ -444,7 +444,7 @@ public class WarManager {
      * @param defense The WarPendingDefense object containing the defense details.
      */
     public static void addPendingDefense(WarPendingDefense defense) {
-        pendingDefenses.put(defense.getDefender().getUUID(), defense);
+        pendingDefenses.put(defense.getDefender().getUniqueId(), defense);
     }
 
     /**
@@ -453,7 +453,7 @@ public class WarManager {
      * @param city The city for which the pending defense is to be removed.
      */
     public static WarPendingDefense getPendingDefenseFor(City city) {
-        return pendingDefenses.get(city.getUUID());
+        return pendingDefenses.get(city.getUniqueId());
     }
 
     public enum WinReason {

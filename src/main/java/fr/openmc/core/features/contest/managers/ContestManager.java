@@ -4,21 +4,22 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.ContestEndEvent;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.listeners.ContestIntractEvents;
-import fr.openmc.core.features.contest.listeners.ContestListener;
 import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.contest.models.ContestPlayer;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.features.mailboxes.MailboxManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.ColorUtils;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,17 +28,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.time.DayOfWeek;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -47,51 +45,64 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getRunCommand
 
 public class ContestManager {
 
-    public static File contestFile;
-    public static YamlConfiguration contestConfig;
+    private static final DayOfWeek START_CONTEST_DAY = DayOfWeek.FRIDAY;
+    private static final DayOfWeek START_TRADE_CONTEST_DAY = DayOfWeek.SATURDAY;
+    private static final DayOfWeek END_CONTEST_DAY = DayOfWeek.MONDAY;
 
     public static Contest data;
     public static Map<UUID, ContestPlayer> dataPlayer = new HashMap<>();
 
-    private static List<String> colorContest = Arrays.asList(
+    private static final List<String> colorContest = Arrays.asList(
             "WHITE","YELLOW","LIGHT_PURPLE","RED","AQUA","GREEN","BLUE",
             "DARK_GRAY","GRAY","GOLD","DARK_PURPLE","DARK_AQUA","DARK_RED",
             "DARK_GREEN","DARK_BLUE","BLACK"
     );
 
+    /**
+     * Constructeur du ContestManager :
+     * - Enregistre les évents liés aux contests si ItemsAdder est présent
+     * - Enregistre les suggestions pour l’autocomplétion des commandes
+     * - Enregistre la commande principale /contest
+     * - Initialise les données globales et les joueurs
+     * - Programme le lancement et la fin des différentes phases du contest
+     */
     public ContestManager() {
-        // LISTENERS
-        OMCPlugin.registerEvents(new ContestListener(OMCPlugin.getInstance()));
-        if (ItemsAdderApi.hasItemAdder()) {
+        // ** LISTENERS **
+        if (ItemsAdderHook.hasItemAdder()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );
         }
 
-        //COMMANDS
+        // ** COMMANDS **
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("colorContest", SuggestionProvider.of(ContestManager.getColorContestList()));
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("trade", SuggestionProvider.of(ContestManager.getRessListFromConfig()));
+        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("trade", SuggestionProvider.of(TradeYMLManager.getRessListFromConfig()));
 
         CommandsManager.getHandler().register(
                 new ContestCommand()
         );
 
-        //Load config
-        contestFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "contest.yml");
-        loadContestConfig();
+        // ** MANAGER EXTERNE **
+        new TradeYMLManager();
 
-        // Fill data and playerData
+        // ** LOAD DATAS **
         initContestData();
         loadContestPlayerData();
+
+        // ** SCHEDULE TASK **
+        scheduleStartContest();
+        scheduleStartTradeContest();
+        scheduleEndContest();
     }
 
     private static Dao<Contest, Integer> contestDao;
     private static Dao<ContestPlayer, UUID> playerDao;
 
     /**
-     * Initialise la DB pour les Contests
+     * Initialise la base de données pour les contests et les joueurs
+     * (création des tables si elles n’existent pas encore)
      */
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Contest.class);
         contestDao = DaoManager.createDao(connectionSource, Contest.class);
 
@@ -100,32 +111,8 @@ public class ContestManager {
     }
 
     /**
-     * Charge le contest.yml
-     */
-    private static void loadContestConfig() {
-        if(!contestFile.exists()) {
-            contestFile.getParentFile().mkdirs();
-            OMCPlugin.getInstance().saveResource("data/contest.yml", false);
-        }
-
-        contestConfig = YamlConfiguration.loadConfiguration(contestFile);
-    }
-
-    /**
-     * Sauvegarde du contest.yml
-     */
-    public static void saveContestConfig() {
-        try {
-            contestConfig.save(contestFile);
-        } catch (IOException e) {
-            OMCPlugin.getInstance().getLogger().severe("Impossible de sauvegarder le fichier de configuration des contests");
-            e.printStackTrace();
-        }
-    }
-
-    // CONTEST DATA
-    /**
-     * Initialisation des variables en fonction des données dans la DB
+     * Initialise les données globales du contest depuis la DB.
+     * Si aucune donnée n’est trouvée, un contest par défaut est créé.
      */
     public static void initContestData() {
         try {
@@ -140,7 +127,7 @@ public class ContestManager {
     }
 
     /**
-     * Sauvegarde des Données globales des Contests
+     * Sauvegarde les données globales du contest dans la DB.
      */
     public static void saveContestData() {
         try {
@@ -150,9 +137,9 @@ public class ContestManager {
         }
     }
 
-    // CONTEST PLAYER DATA
     /**
-     * Charge les données des Joueurs a propos du contests (leur profil, leur points, son camp)
+     * Charge les données des joueurs depuis la DB
+     * et les insère dans la map dataPlayer.
      */
     public static void loadContestPlayerData() {
         try {
@@ -163,21 +150,23 @@ public class ContestManager {
     }
 
     /**
-     * Sauvegarder les données des Joueurs du Contests
+     * Sauvegarde les données des joueurs (points, camp, etc.) dans la DB.
      */
     public static void saveContestPlayerData() {
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Joueurs du Contest...");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Saving contest player data...");
         dataPlayer.forEach((player, data) -> {
             try {
                 playerDao.createOrUpdate(data);
             } catch (SQLException e) {
-                OMCPlugin.getInstance().getLogger().severe("Echec de la sauvegarde des données des Joueurs du Contest.");
-                e.printStackTrace();
+                OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save contest player data for {}: {}", player, e.getMessage(), e);
             }
         });
-        OMCPlugin.getInstance().getLogger().info("Sauvegarde des données des Joueurs du Contest réussi.");
+        OMCPlugin.getInstance().getSLF4JLogger().info("Contest player data saved successfully.");
     }
 
+    /**
+     * Vide les tables relatives au contest (Contest et ContestPlayer) dans la DB.
+     */
     public static void clearDB() {
         try {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), Contest.class);
@@ -187,12 +176,16 @@ public class ContestManager {
         }
     }
 
-    //PHASE 1
     /**
-     * Initialisation de la phase 1 donc des votes
+     * Démarre la phase 1 du contest (phase de vote).
+     * - Définit la phase sur 2
+     * - Réinitialise les particules
+     * - Diffuse un message et joue un son aux joueurs connectés
      */
     public static void initPhase1() {
         data.setPhase(2);
+        ParticleUtils.color1 = null;
+        ParticleUtils.color2 = null;
 
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
@@ -207,22 +200,23 @@ public class ContestManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
         }
-
-        OMCPlugin.getInstance().getLogger().info("[CONTEST] Ouverture des votes");
     }
-    //PHASE 2
+
     /**
-     * Initialisation de la phase 2 donc le commencement du Contests (ouverture des trades et des confrontations)
+     * Démarre la phase 2 du contest (contributions et échanges).
+     * - Sélectionne et met à jour les trades
+     * - Définit la phase sur 3
+     * - Diffuse un message et joue un son aux joueurs connectés
      */
     public static void initPhase2() {
-        List<Map<String, Object>> selectedTrades = getTradeSelected(true);
+        List<Map<String, Object>> selectedTrades = TradeYMLManager.getTradeSelected(true);
         for (Map<String, Object> trade : selectedTrades) {
-            updateColumnBooleanFromRandomTrades(false, (String) trade.get("ress"));
+            TradeYMLManager.updateColumnBooleanFromRandomTrades(false, (String) trade.get("ress"));
         }
 
-        List<Map<String, Object>> unselectedTrades = getTradeSelected(false);
+        List<Map<String, Object>> unselectedTrades = TradeYMLManager.getTradeSelected(false);
         for (Map<String, Object> trade : unselectedTrades) {
-            updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
+            TradeYMLManager.updateColumnBooleanFromRandomTrades(true, (String) trade.get("ress"));
         }
 
         data.setPhase(3);
@@ -240,15 +234,21 @@ public class ContestManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_FIREWORK_ROCKET_TWINKLE, 1.0F, 0.3F);
         }
-
-        OMCPlugin.getInstance().getLogger().info("[CONTEST] Ouverture des trades");
     }
-    //PHASE 3
+
     /**
-     * Initialisation de la phase 3 donc la fin du Contests (les récompenses ect)
+     * Démarre la phase 3 du contest (fin du contest et récompenses).
+     * - Calcule les résultats et affiche les statistiques
+     * - Crée un livre de résultats global + classement
+     * - Donne un livre personnalisé avec récompenses à chaque joueur
+     * - Envoie les récompenses via la mailbox
+     * - Réinitialise les données en DB pour le prochain contest
      */
     public static void initPhase3() {
         data.setPhase(4);
+
+        ParticleUtils.color1 = null;
+        ParticleUtils.color2 = null;
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.playSound(player.getEyeLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 1.0F, 2F);
@@ -435,8 +435,8 @@ public class ContestManager {
             List<ItemStack> itemListRewards = new ArrayList<>();
             String textRewards = "§8§lRécompenses";
 
-            int money = 0;
-            int aywenite = 0;
+            int money;
+            int aywenite;
 
             double multiplicator = ContestPlayerManager.getMultiplicatorFromRank(ContestPlayerManager.getRankContestFromOfflineInt(player));
             if(ContestPlayerManager.hasWinInCampFromOfflinePlayer(player)) {
@@ -499,7 +499,7 @@ public class ContestManager {
             itemListRewards.add(bookPlayer);
             itemListRewards.add(ayweniteItemStack);
 
-            ItemStack[] rewards = itemListRewards.toArray(new ItemStack[itemListRewards.size()]);
+            ItemStack[] rewards = itemListRewards.toArray(new ItemStack[0]);
             playerItemsMap.put(player, rewards);
             rank.getAndIncrement();
         });
@@ -512,55 +512,22 @@ public class ContestManager {
 
         //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                    addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
+            TradeYMLManager.addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
                     try {
                         TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
-                    dataPlayer=new HashMap<>(); // on supprime les données précédentes du joueurs
-                    MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
+            TradeYMLManager.selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
+            dataPlayer = new HashMap<>(); // on supprime les données précédentes du joueurs
+            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
         });
-
-        OMCPlugin.getInstance().getLogger().info("[CONTEST] Fermeture du Contest");
-    }
-
-    // TRADE METHODE
-    /**
-     * Retourne une Liste avec les trades selectionnés donc le bool pour savoir si le trade est déjà
-     * choisis ou pas
-     */
-    public static List<Map<String, Object>> getTradeSelected(boolean bool) {
-        List<Map<?, ?>> contestTrades = contestConfig.getMapList("contestTrades");
-
-        List<Map<String, Object>> filteredTrades = contestTrades.stream()
-                .filter(trade -> (boolean) trade.get("selected") == bool)
-                .map(trade -> (Map<String, Object>) trade)
-                .collect(Collectors.toList());
-
-        Collections.shuffle(filteredTrades);
-
-        return filteredTrades.stream().limit(12).collect(Collectors.toList());
-    }
-
-
-    /**
-     * Change le boolean, si il est true il sera false
-     */
-    public static void updateColumnBooleanFromRandomTrades(Boolean bool, String ress) {
-        List<Map<String, Object>> contestTrades = (List<Map<String, Object>>) contestConfig.get("contestTrades");
-
-        for (Map<String, Object> trade : contestTrades) {
-            if (trade.get("ress").equals(ress)) {
-                trade.put("selected", bool);
-            }
-        }
-        saveContestConfig();
     }
 
     /**
-     * Calcule le Taux de Vote d'un Camp
+     * Calcule le nombre de votes pour un camp donné.
+     * @param camps 1 ou 2
+     * @return nombre de votes
      */
     public static Integer getVoteTaux(Integer camps) {
         return (int) dataPlayer.values().stream()
@@ -568,115 +535,65 @@ public class ContestManager {
                 .count();
     }
 
-    //END CONTEST METHODE
-
     /**
-     * Retourne une Liste contenant les ressources (ex NETHERITE_BLOCK)
-     */
-    public static List<String> getRessListFromConfig() {
-        FileConfiguration config = OMCPlugin.getInstance().getConfig();
-        List<Map<?, ?>> trades = config.getMapList("contestTrades");
-        List<String> ressList = new ArrayList<>();
-
-        for (Map<?, ?> tradeEntry : trades) {
-            if (tradeEntry.containsKey("ress")) {
-                ressList.add(tradeEntry.get("ress").toString());
-            }
-        }
-        return ressList;
-    }
-
-
-    private static void updateSelected(String camp) {
-        List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
-        List<Map<String, Object>> updatedContestList = new ArrayList<>();
-
-        for (Map<?, ?> contest : contestList) {
-            Map<String, Object> fusionContestList = new HashMap<>();
-
-            for (Map.Entry<?, ?> entry : contest.entrySet()) {
-                if (entry.getKey() instanceof String) {
-                    fusionContestList.put((String) entry.getKey(), entry.getValue());
-                }
-            }
-
-            if (fusionContestList.get("camp1").equals(camp)) {
-                int selected = (int) fusionContestList.get("selected");
-                fusionContestList.put("selected", selected + 1);
-            }
-
-            updatedContestList.add(fusionContestList);
-        }
-        contestConfig.set("contestList", updatedContestList);
-        saveContestConfig();
-    }
-
-    /**
-     * On ajoute 1 au dernier Contest pour éviter qu'il revienne (il revient seulement si tout les contests sont passés
-     */
-    public static void addOneToLastContest(String camps) {
-        List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
-
-        for (Map<?, ?> contest : contestList) {
-            if (contest.get("camp1").equals(camps)) {
-                Map<String, Object> result = new HashMap<>();
-                for (Map.Entry<?, ?> entry : contest.entrySet()) {
-                    if (entry.getKey() instanceof String) {
-                        result.put((String) entry.getKey(), entry.getValue());
-                    }
-                }
-                updateSelected(camps);
-            }
-        }
-    }
-
-    /**
-     * Pioche un Conests en fonction de son nombre de selection
-     */
-    public static void selectRandomlyContest() {
-        List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
-        List<Map<String, Object>> orderedContestList = new ArrayList<>();
-
-        for (Map<?, ?> contest : contestList) {
-            Map<String, Object> fusionContest = new HashMap<>();
-            for (Map.Entry<?, ?> entry : contest.entrySet()) {
-                if (entry.getKey() instanceof String) {
-                    fusionContest.put((String) entry.getKey(), entry.getValue());
-                }
-            }
-            orderedContestList.add(fusionContest);
-        }
-
-        int minSelected = orderedContestList.stream()
-                .mapToInt(c -> (int) c.get("selected"))
-                .min()
-                .orElse(0);
-
-        List<Map<String, Object>> leastSelectedContests = orderedContestList.stream()
-                .filter(c -> (int) c.get("selected") == minSelected)
-                .toList();
-
-        Random random = new Random();
-        Map<String, Object> selectedContest = leastSelectedContests.get(random.nextInt(leastSelectedContests.size()));
-
-        data = new Contest((String) selectedContest.get("camp1"), (String) selectedContest.get("camp2"), (String) selectedContest.get("color1"), (String) selectedContest.get("color2"), 1, "ven.", 0, 0);
-    }
-
-    /**
-     * Retourne une Liste contenant toutes les couleurs possibles pour faire un Contest
+     * Retourne la liste des couleurs disponibles pour créer un contest.
      */
     public static List<String> getColorContestList() {
-        List<String> color = new ArrayList<>();
-        for (String colorName : colorContest) {
-            color.add(colorName);
-        }
-        return color;
+        return new ArrayList<>(colorContest);
     }
 
     /**
-     * Mise d'un Contest de type innédit
+     * Insère un contest personnalisé dans la DB avec 2 camps et leurs couleurs.
      */
     public static void insertCustomContest(String camp1, String color1, String camp2, String color2) {
         data = new Contest(camp1, camp2, color1, color2, 1, "ven.", 0, 0);
+    }
+
+    /**
+     * Programme le lancement de la phase 1 (votes) chaque vendredi à minuit.
+     */
+    private static void scheduleStartContest() {
+        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(START_CONTEST_DAY) * 20;
+
+        if (DateUtils.getCurrentDayOfWeek().equals(START_CONTEST_DAY)) {
+            ContestManager.initPhase1();
+        }
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            ContestManager.initPhase1();
+            scheduleStartContest();
+        }, delayInTicks);
+    }
+
+    /**
+     * Programme le lancement de la phase 2 (contributions) chaque samedi à minuit.
+     */
+    private static void scheduleStartTradeContest() {
+        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(START_TRADE_CONTEST_DAY) * 20;
+
+        if (DateUtils.getCurrentDayOfWeek().equals(START_TRADE_CONTEST_DAY)) {
+            ContestManager.initPhase2();
+        }
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            ContestManager.initPhase2();
+            scheduleStartTradeContest();
+        }, delayInTicks);
+    }
+
+    /**
+     * Programme la fin du contest (phase 3) chaque lundi à minuit.
+     */
+    private static void scheduleEndContest() {
+        long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(END_CONTEST_DAY) * 20;
+
+        if (DateUtils.getCurrentDayOfWeek().equals(END_CONTEST_DAY)) {
+            ContestManager.initPhase3();
+        }
+
+        Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            ContestManager.initPhase3();
+            scheduleEndContest();
+        }, delayInTicks);
     }
 }

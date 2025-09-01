@@ -13,7 +13,7 @@ public class QuestCommand {
 
     @DefaultFor({"~"})
     @Description("Ouvre le menu des quêtes")
-    public void onQuest(Player player) {
+    public static void onQuest(Player player) {
         new QuestsMenu(player).open();
     }
 
@@ -24,7 +24,7 @@ public class QuestCommand {
             new QuestsMenu(sender).open();
         } else {
             if (sender.hasPermission("omc.quests.admin")) new QuestsMenu(target).open();
-            else MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
+            else MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, true);
 
         }
     }

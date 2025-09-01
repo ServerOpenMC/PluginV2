@@ -1,12 +1,13 @@
 package fr.openmc.core.features.city.sub.war.menu.main;
 
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -16,8 +17,8 @@ import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.PlayerNameCache;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class MainWarMenu extends PaginatedMenu {
 
@@ -47,26 +47,36 @@ public class MainWarMenu extends PaginatedMenu {
 
     @Override
     public @NotNull List<Integer> getStaticSlots() {
-        return StaticSlots.STANDARD;
+        return StaticSlots.getStandardSlots(getInventorySize());
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
 
             List<City> warCities = CityManager.getCities().stream()
                     .sorted((c1, c2) -> Integer.compare(c2.getOnlineMembers().size(), c1.getOnlineMembers().size()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (City city : warCities) {
-                if (Objects.equals(city.getUUID(), CityManager.getPlayerCity(player.getUniqueId()).getUUID())) continue;
+                if (Objects.equals(city.getUniqueId(), CityManager.getPlayerCity(player.getUniqueId()).getUniqueId())) continue;
                 if (city.getType() != CityType.WAR) continue;
                 if (city.isImmune()) continue;
 
                 long onlineCount = city.getOnlineMembers().size();
 
-                UUID ownerUUID = city.getPlayerWithPermission(CPermission.OWNER);
+                UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
                 String ownerName = PlayerNameCache.getName(ownerUUID);
 
                 Mascot mascot = city.getMascot();
@@ -75,7 +85,7 @@ public class MainWarMenu extends PaginatedMenu {
                 Location mascotLocation = mascotMob == null ? new Location(Bukkit.getWorld("world"), 0, 0, 0) : mascotMob.getLocation();
 
                 List<Component> loreCity = new ArrayList<>(List.of(
-                        Component.text(""),
+                        Component.empty(),
                         Component.text("§7Propriétaire : §d" + ownerName),
                         Component.text("§7Population (en ligne) : §a" + onlineCount),
                         Component.text("§7Mascotte  : §4niv. " + city.getMascot().getLevel()),
@@ -96,7 +106,7 @@ public class MainWarMenu extends PaginatedMenu {
 
                 loreCity.add(Component.text("§7Richesses : §6" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
 
-                loreCity.add(Component.text(""));
+                loreCity.add(Component.empty());
                 loreCity.add(Component.text("§e§lCLIQUE DROIT POUR PLUS D'INFORMATIONS SUR LA VILLE"));
                 loreCity.add(Component.text("§e§lCLIQUE GAUCHE POUR LANCER UNE GUERRE"));
 
@@ -121,11 +131,11 @@ public class MainWarMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:close_button")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
-        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:previous_page")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("menu:next_page")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
+        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§7Fermer"))).setCloseButton());
+        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
+        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Guerres !"),
@@ -136,14 +146,19 @@ public class MainWarMenu extends PaginatedMenu {
         map.put(53, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.displayName(Component.text("§r§aPlus d'info !"));
             itemMeta.lore(loreInfo);
-        }).setNextMenu(new MoreInfoMenu(getOwner())));
+        }).setOnClick(inventoryClickEvent -> new MoreInfoMenu(getOwner()).open()));
 
         return map;
     }
 
     @Override
     public @NotNull String getName() {
-        return "Menu des guerres";
+        return "Menu des Guerres";
+    }
+
+    @Override
+    public String getTexture() {
+        return null;
     }
 
     @Override

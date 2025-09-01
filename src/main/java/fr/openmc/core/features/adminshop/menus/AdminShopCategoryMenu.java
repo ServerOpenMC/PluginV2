@@ -1,13 +1,13 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
+import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -30,7 +30,12 @@ public class AdminShopCategoryMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop_items%");
+        return "Menu d'une catégorie de l'adminshop";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop_items:");
     }
 
     @Override
@@ -47,8 +52,8 @@ public class AdminShopCategoryMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
 
         Map<String, ShopItem> categoryItems = AdminShopManager.getCategoryItems(categoryId);
 
@@ -79,7 +84,7 @@ public class AdminShopCategoryMenu extends Menu {
 
         ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(Component.text("§aRetour au menu principal"));
-        });
+        }, true);
 
         backButton.setItemId("back")
                 .setOnClick(event -> {

@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 @DatabaseTable(tableName = "mascots")
 public class Mascot {
     @DatabaseField(id = true)
-    private String cityUUID;
+    private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     private int level;
     @DatabaseField(canBeNull = false)
@@ -37,7 +38,7 @@ public class Mascot {
         // required by ORMLite
     }
 
-    public Mascot(String cityUUID, UUID mascotUUID, int level, boolean immunity, boolean alive, int x, int z) {
+    public Mascot(UUID cityUUID, UUID mascotUUID, int level, boolean immunity, boolean alive, int x, int z) {
         this.cityUUID = cityUUID;
         this.level = level;
         this.mascotUUID = mascotUUID;
@@ -57,9 +58,13 @@ public class Mascot {
     }
 
     public Material getMascotEgg() {
-        String eggName = this.getEntity().getType().name() + "_SPAWN_EGG";
+        LivingEntity entity = (LivingEntity) this.getEntity();
+        if (entity == null) {
+            return Material.BARRIER; // Default fallback
+        }
+        String eggName = entity.getType().name() + "_SPAWN_EGG";
         if (Material.matchMaterial(eggName) == null) {
-            return Material.ZOMBIE_SPAWN_EGG;
+            return Material.BARRIER;
         }
         return Material.matchMaterial(eggName);
     }
@@ -75,7 +80,7 @@ public class Mascot {
         if (mascot_uuid == null) {
             return null;
         }
-        Entity mob = Bukkit.getEntity(mascot_uuid);
+        LivingEntity mob = (LivingEntity) Bukkit.getEntity(mascot_uuid);
         if (mob == null) {
             return null;
         }
@@ -89,5 +94,18 @@ public class Mascot {
         }
         this.city = CityManager.getCity(this.cityUUID);
         return this.city;
+    }
+
+    @Override
+    public String toString() {
+        return "Mascot{" +
+                "cityUUID='" + cityUUID + '\'' +
+                ", level=" + level +
+                ", mascotUUID=" + mascotUUID +
+                ", immunity=" + immunity +
+                ", alive=" + alive +
+                ", x=" + x +
+                ", z=" + z +
+                '}';
     }
 }

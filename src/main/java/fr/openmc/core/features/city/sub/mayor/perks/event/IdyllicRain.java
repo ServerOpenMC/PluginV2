@@ -1,10 +1,10 @@
 package fr.openmc.core.features.city.sub.mayor.perks.event;
 
-import com.sk89q.worldedit.math.BlockVector2;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -19,12 +19,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class IdyllicRain implements Listener {
+
+    private static final NamespacedKey cityAyweniteKey = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
 
     /**
      * Spawns Aywenite items in the specified city.
@@ -33,15 +32,14 @@ public class IdyllicRain implements Listener {
      * @param totalItems The total number of items to spawn.
      */
     public static void spawnAywenite(City city, int totalItems) {
-        Set<BlockVector2> chunks = city.getChunks();
+        Set<ChunkPos> chunks = city.getChunks();
         if (chunks.isEmpty()) return;
 
         World world = Bukkit.getWorld("world");
         if (world == null) return;
 
-        List<BlockVector2> chunkList = new ArrayList<>(chunks);
+        List<ChunkPos> chunkList = new ArrayList<>(chunks);
         Random random = new Random();
-        NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
 
         final int[] dropped = {0};
 
@@ -53,9 +51,9 @@ public class IdyllicRain implements Listener {
                     return;
                 }
 
-                BlockVector2 chunk = chunkList.get(random.nextInt(chunkList.size()));
-                int chunkX = chunk.getBlockX();
-                int chunkZ = chunk.getBlockZ();
+                ChunkPos chunk = chunkList.get(random.nextInt(chunkList.size()));
+                int chunkX = chunk.x();
+                int chunkZ = chunk.z();
 
                 int x = (chunkX << 4) + random.nextInt(16);
                 int z = (chunkZ << 4) + random.nextInt(16);
@@ -65,7 +63,7 @@ public class IdyllicRain implements Listener {
 
                 ItemStack aywenite = CustomItemRegistry.getByName("omc_items:aywenite").getBest();
                 ItemMeta meta = aywenite.getItemMeta();
-                meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, city.getUUID());
+                meta.getPersistentDataContainer().set(cityAyweniteKey, PersistentDataType.STRING, city.getUniqueId().toString());
                 aywenite.setItemMeta(meta);
 
                 Item droppedItem = world.dropItemNaturally(dropLoc, aywenite);
@@ -88,13 +86,12 @@ public class IdyllicRain implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        NamespacedKey key = new NamespacedKey(OMCPlugin.getInstance(), "city_aywenite");
-        if (!meta.getPersistentDataContainer().has(key, PersistentDataType.STRING)) return;
+        if (!meta.getPersistentDataContainer().has(cityAyweniteKey, PersistentDataType.STRING)) return;
 
-        String cityId = meta.getPersistentDataContainer().get(key, PersistentDataType.STRING);
+        UUID cityId = UUID.fromString(meta.getPersistentDataContainer().get(cityAyweniteKey, PersistentDataType.STRING));
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (playerCity == null || !playerCity.getUUID().equals(cityId)) {
+        if (playerCity == null || !playerCity.getUniqueId().equals(cityId)) {
             event.setCancelled(true);
             return;
         }

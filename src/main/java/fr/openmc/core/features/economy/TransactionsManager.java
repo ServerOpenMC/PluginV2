@@ -1,5 +1,10 @@
 package fr.openmc.core.features.economy;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.analytics.Stats;
 
@@ -8,16 +13,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.support.ConnectionSource;
-import com.j256.ormlite.table.TableUtils;
-
 public class TransactionsManager {
     private static Dao<Transaction, String> transactionsDao;
 
-    public static void init_db(ConnectionSource connectionSource) throws SQLException {
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Transaction.class);
         transactionsDao = DaoManager.createDao(connectionSource, Transaction.class);
     }

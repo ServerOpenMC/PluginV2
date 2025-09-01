@@ -1,17 +1,20 @@
 package fr.openmc.core.features.settings.menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
 import fr.openmc.core.features.settings.policy.Policy;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
+import io.papermc.paper.datacomponent.DataComponentType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -36,6 +39,16 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.LARGEST;
+    }
+
+    @Override
+    public int getSizeOfItems() {
+        return getItems().size();
+    }
+
+    @Override
     public @Nullable Material getBorderMaterial() {
         return null;
     }
@@ -46,20 +59,33 @@ public class PlayerSettingsMenu extends PaginatedMenu {
     }
 
     @Override
-    public Map<Integer, ItemStack> getButtons() {
-        Map<Integer, ItemStack> buttons = new HashMap<>();
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> buttons = new HashMap<>();
 
         buttons.put(45, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_bin_red")).getBest(), meta -> {
             meta.displayName(Component.text("§cRéinitialiser les paramètres", NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }).setOnClick(event -> {
-            settings.resetAllSettings();
-            this.refresh();
-            MessagesManager.sendMessage(getOwner(),
-                    Component.text("Tous les paramètres ont été réinitialisés.", NamedTextColor.GREEN)
-                            .decoration(TextDecoration.ITALIC, false),
-                    Prefix.SETTINGS, MessageType.SUCCESS, true);
+            new ConfirmMenu(getOwner(), () -> {
+                settings.resetAllSettings();
+                this.refresh();
+                MessagesManager.sendMessage(getOwner(),
+                        Component.text("Tous les paramètres ont été réinitialisés.", NamedTextColor.GREEN)
+                                .decoration(TextDecoration.ITALIC, false),
+                        Prefix.SETTINGS, MessageType.SUCCESS, true);
+                },
+                this::open,
+                List.of(
+                    Component.text("Êtes-vous sûr de vouloir réinitialiser tous les paramètres ?",
+                            NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
+                    Component.text("Cette action est irréversible.", NamedTextColor.YELLOW)
+                            .decoration(TextDecoration.ITALIC, false)),
+                List.of(
+                    Component.text("Cliquez pour annuler", NamedTextColor.GRAY)
+                            .decoration(TextDecoration.ITALIC, false))
+            ).open();
         }));
+
         buttons.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
         buttons.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
         buttons.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
@@ -69,11 +95,16 @@ public class PlayerSettingsMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "§r" + PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_settings%");
+        return "Menu des Paramètres";
     }
 
     @Override
-    public @NotNull List<ItemStack> getItems() {
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-8::settings:");
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
         List<ItemStack> content = new ArrayList<>();
 
         for (SettingType settingType : SettingType.values()) {
@@ -108,7 +139,7 @@ public class PlayerSettingsMenu extends PaginatedMenu {
             lore.add(Component.text("Clique pour changer", NamedTextColor.GRAY)
                     .decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
-        }).setOnClick(e -> {
+        }).hide(settingType.getDataComponentType()).setOnClick(e -> {
             settings.setSetting(settingType, !currentValue);
             this.refresh();
 

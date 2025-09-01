@@ -1,6 +1,6 @@
 package fr.openmc.core.utils.customfonts;
 
-import fr.openmc.core.utils.api.ItemsAdderApi;
+import fr.openmc.api.hooks.ItemsAdderHook;
 
 public abstract class CustomFonts {
     /**
@@ -12,7 +12,7 @@ public abstract class CustomFonts {
      */
     public static String getBest(String namespaceID, String baseFont) {
         String font = null;
-        if (ItemsAdderApi.hasItemAdder()) font = Fonts.getFont(namespaceID);
+        if (ItemsAdderHook.hasItemAdder()) font = Fonts.getFont(namespaceID);
 
         if (font == null) {
             font = baseFont;

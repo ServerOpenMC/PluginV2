@@ -20,7 +20,7 @@ public class CooldownCommand {
     public void cooldown(Player player, @Named("isSuccess") String isSuccess) {
         if (isSuccess.equals("success")) {
             player.sendMessage(Component.text("Succès, le cooldown est activé").color(NamedTextColor.GREEN));
-            DynamicCooldownManager.use(player.getUniqueId().toString(), "test" ,5000);
+            DynamicCooldownManager.use(player.getUniqueId(), "test" ,5000);
         } else {
             player.sendMessage(Component.text("Erreur, vous pouvez refaire la commande").color(NamedTextColor.RED));
         }

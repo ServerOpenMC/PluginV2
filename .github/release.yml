@@ -1,5 +1,8 @@
 changelog:
   categories:
+    - titre: "🎮 Mise à jour de Minecraft !"
+      labels:
+        - "🎮 Game Update"
     - title: Nouvelles Fonctionnalités
       labels:
         - "🆙 Amélioration"

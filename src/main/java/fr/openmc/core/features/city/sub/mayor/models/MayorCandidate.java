@@ -11,12 +11,12 @@ import java.util.UUID;
 
 @DatabaseTable(tableName = "mayor_candidates")
 public class MayorCandidate {
-    @DatabaseField(id = true)
+    @DatabaseField(columnName = "candidate_uuid", id = true)
     @Getter
-    private UUID UUID;
-    @DatabaseField(canBeNull = false)
+    private UUID candidateUUID;
+    @DatabaseField(columnName = "city_uuid", canBeNull = false)
     @Getter
-    private String city;
+    private UUID cityUUID;
     @DatabaseField(canBeNull = false)
     @Getter
     private String name;
@@ -37,11 +37,11 @@ public class MayorCandidate {
         // required for ORMLite
     }
 
-    public MayorCandidate(String city, String candidateName, UUID candidateUUID, NamedTextColor candidateColor,
+    public MayorCandidate(UUID cityUUID, String candidateName, UUID candidateUUID, NamedTextColor candidateColor,
             int idChoicePerk2, int idChoicePerk3, int vote) {
-        this.city = city;
+        this.cityUUID = cityUUID;
         this.name = candidateName;
-        this.UUID = candidateUUID;
+        this.candidateUUID = candidateUUID;
         this.candidateColor = candidateColor.toString();
         this.idChoicePerk2 = idChoicePerk2;
         this.idChoicePerk3 = idChoicePerk3;

@@ -1,15 +1,13 @@
 package fr.openmc.api.menulib.default_menu;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.utils.api.ItemsAdderApi;
-import fr.openmc.core.utils.api.PapiApi;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
+import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -28,6 +26,10 @@ public class ConfirmMenu extends Menu {
     private final List<Component> loreDenyMsg;
     private final Runnable accept;
     private final Runnable deny;
+    private String texture = null;
+    private InventorySize inventorySize = InventorySize.SMALLEST;
+    private int posAcceptBtn = 5;
+    private int posDenyBtn = 3;
 
     /**
      * Add Confirmation Menu, it must use for all
@@ -48,18 +50,42 @@ public class ConfirmMenu extends Menu {
         this.loreDenyMsg = loreDeny;
     }
 
+    /**
+     * Add Confirmation Menu, it must use for all
+     *
+     * @param owner        Player for Menu owner
+     * @param methodAccept Run your action when Accept
+     * @param methodDeny   Run your action when Accept
+     * @param loreAccept   Put your lore for Accept
+     * @param loreDeny     Run your lore for Deny
+     * @param texture      set textures
+     * @param size         Set inventory size
+     */
+    public ConfirmMenu(Player owner, Runnable methodAccept, Runnable methodDeny, List<Component> loreAccept, List<Component> loreDeny, String texture, InventorySize size, int posAcceptBtn, int posDenyBtn) {
+        super(owner);
+        this.accept = methodAccept != null ? methodAccept : () -> {};
+        this.deny = methodDeny != null ? methodDeny : () -> {};
+        this.loreAcceptMsg = loreAccept;
+        this.loreDenyMsg = loreDeny;
+        this.texture = texture;
+        this.inventorySize = size;
+        this.posAcceptBtn = posAcceptBtn;
+        this.posDenyBtn = posDenyBtn;
+    }
+
     @Override
     public @NotNull String getName() {
-        if (PapiApi.hasPAPI() && ItemsAdderApi.hasItemAdder()) {
-            return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-8%%img_confirm_menu%");
-        } else {
-            return "Confirmation";
-        }
+        return "Menu de Confirmation";
+    }
+
+    @Override
+    public String getTexture() {
+        return texture == null ? FontImageWrapper.replaceFontImages("§r§f:offset_-8::confirm_menu:") : texture;
     }
 
     @Override
     public @NotNull InventorySize getInventorySize() {
-        return InventorySize.SMALLEST;
+        return inventorySize;
     }
 
     @Override
@@ -73,8 +99,8 @@ public class ConfirmMenu extends Menu {
     }
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> inventory = new HashMap<>();
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> inventory = new HashMap<>();
         Player player = getOwner();
 
         List<Component> loreAccept = new ArrayList<>(loreAcceptMsg);
@@ -88,7 +114,7 @@ public class ConfirmMenu extends Menu {
         ItemStack refuseBtn = CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest();
         ItemStack acceptBtn = CustomItemRegistry.getByName("omc_menus:accept_btn").getBest();
 
-        inventory.put(3, new ItemBuilder(this, refuseBtn, itemMeta -> {
+        inventory.put(posDenyBtn, new ItemBuilder(this, refuseBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§cRefuser"));
             itemMeta.lore(loreDeny);
         }).setOnClick(event -> {
@@ -101,7 +127,7 @@ public class ConfirmMenu extends Menu {
             }
         }));
 
-        inventory.put(5, new ItemBuilder(this, acceptBtn, itemMeta -> {
+        inventory.put(posAcceptBtn, new ItemBuilder(this, acceptBtn, itemMeta -> {
             itemMeta.displayName(Component.text("§aAccepter"));
             itemMeta.lore(loreAccept);
         }).setOnClick(event -> {

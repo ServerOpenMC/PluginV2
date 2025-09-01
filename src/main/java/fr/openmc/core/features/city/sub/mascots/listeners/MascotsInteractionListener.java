@@ -21,6 +21,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.UUID;
+
 public class MascotsInteractionListener implements Listener {
     @SneakyThrows
     @EventHandler
@@ -30,26 +32,31 @@ public class MascotsInteractionListener implements Listener {
         Player player = e.getPlayer();
         Entity clickEntity = e.getRightClicked();
 
-        if (!MascotUtils.isMascot(clickEntity)) return;
+        if (!MascotUtils.canBeAMascot(clickEntity)) return;
 
         PersistentDataContainer data = clickEntity.getPersistentDataContainer();
-        String mascotsUUID = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
-        if (mascotsUUID == null) return;
+        String mascotsData = data.get(MascotsManager.mascotsKey, PersistentDataType.STRING);
+        if (mascotsData == null) return;
+        UUID mascotsUUID = UUID.fromString(mascotsData);
 
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (city.isInWar()) return;
 
-        String city_uuid = city.getUUID();
-        if (mascotsUUID.equals(city_uuid)) {
+        UUID cityUUID = city.getUniqueId();
+        if (mascotsUUID.equals(cityUUID)) {
             Mascot mascot = city.getMascot();
+            if (mascot == null) {
+                MessagesManager.sendMessage(player, Component.text("§cAucune mascotte trouvée - Veuillez contacter le staff"), Prefix.CITY, MessageType.ERROR, false);
+                return;
+            }
             if (!mascot.isAlive()) {
-                new MascotsDeadMenu(player, city_uuid).open();
+                new MascotsDeadMenu(player, cityUUID).open();
             } else {
                 new MascotMenu(player, mascot).open();
             }
