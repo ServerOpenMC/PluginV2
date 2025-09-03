@@ -8,6 +8,7 @@ import fr.openmc.api.packetmenulib.PacketMenuLib;
 import fr.openmc.core.commands.admin.freeze.FreezeManager;
 import fr.openmc.core.commands.utils.SpawnManager;
 import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.features.animations.AnimationsManager;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
@@ -117,6 +118,7 @@ public class OMCPlugin extends JavaPlugin {
         new BossbarManager();
         new ContestManager();
         new PrivateMessageManager();
+        new AnimationsManager();
 
         new MotdUtils();
         new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
