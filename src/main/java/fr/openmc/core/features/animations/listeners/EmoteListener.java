@@ -33,6 +33,11 @@ public class EmoteListener implements Listener {
         Player player = e.getPlayer();
         Location base = player.getLocation();
 
+        if (animation.getSoundName() != null) {
+            player.playSound(player, animation.getSoundName(), 1.0f, 1.0f);
+        }
+
+
         playingAnimations.put(player, new PlayerAnimationInfo());
         EmoteListener.setupHead(player);
 

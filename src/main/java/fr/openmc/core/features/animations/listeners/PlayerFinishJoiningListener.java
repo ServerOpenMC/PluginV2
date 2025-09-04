@@ -22,6 +22,7 @@ public class PlayerFinishJoiningListener implements Listener {
             public void run() {
                 playingAnimations.put(player, new PlayerAnimationInfo());
                 EmoteListener.setupHead(player);
+                player.playSound(player, "omc_sounds:ambient.join_rift", 1.0f, 1.0f);
                 CustomPlayer.playEmote(player, Animation.JOIN_RIFT.getNameAnimation());
             }
         }.runTaskLater(OMCPlugin.getInstance(), 10L);
