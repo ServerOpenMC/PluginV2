@@ -25,7 +25,6 @@ def gitHash = System.getenv('GITHUB_SHA') ?: 'local'
 
 version = isSnapshot ? "$tag-SNAPSHOT-${gitHash.take(7)}" : (System.getenv("TAG") ? tag : "dev-$tag")
 group = 'fr.openmc'
-version = "GIT-"+System.getenv("GITHUB_SHA") ?: "unknown"
 
 repositories {
     mavenCentral()
