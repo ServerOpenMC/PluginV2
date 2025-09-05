@@ -25,7 +25,6 @@ public class EmoteListener implements Listener {
 
     @EventHandler
     public void onAnimationStart(PlayerEmotePlayEvent e) {
-        System.out.println("Playing animation");
         Animation animation = Animation.valueOf(e.getEmoteName().toUpperCase());
 
         if (animation == null) return;
