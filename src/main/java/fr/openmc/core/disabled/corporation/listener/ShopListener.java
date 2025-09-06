@@ -61,7 +61,7 @@ public class ShopListener implements Listener {
         }
 
         // Check if the clicked block is a sign with tags
-        // Instead of getting the entire state of the block
+        // Instead of getting the entire state of the block,
         // This is much faster and avoids unnecessary overhead
         if (!Tag.SIGNS.isTagged(event.getClickedBlock().getType()))
             return;
@@ -184,7 +184,7 @@ public class ShopListener implements Listener {
      * add the SUPPLIER_KEY to an item
      *
      * @param item the item to add the key
-     * @param uuid the uuid of the player ( the supplier_key )
+     * @param uuid the uuid of the player (the supplier_key)
      */
     private void setSupplierKey(ItemStack item, String uuid) {
         ItemMeta meta = item.getItemMeta();

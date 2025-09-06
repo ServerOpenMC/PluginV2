@@ -32,9 +32,9 @@ public class ConfirmMenu extends Menu {
     private int posDenyBtn = 3;
 
     /**
-     * Add Confirmation Menu, it must use for all
+     * Add Confirmation Menu, it must use it for all
      *
-     * @param owner        Player for Menu owner
+     * @param owner        Player for a Menu owner
      * @param methodAccept Run your action when Accept
      * @param methodDeny   Run your action when Accept
      * @param loreAccept   Put your lore for Accept
@@ -51,9 +51,9 @@ public class ConfirmMenu extends Menu {
     }
 
     /**
-     * Add Confirmation Menu, it must use for all
+     * Add Confirmation Menu, it must use it for all
      *
-     * @param owner        Player for Menu owner
+     * @param owner        Player for a Menu owner
      * @param methodAccept Run your action when Accept
      * @param methodDeny   Run your action when Accept
      * @param loreAccept   Put your lore for Accept

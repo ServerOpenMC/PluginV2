@@ -233,7 +233,7 @@ public class WarActions {
      * @param cityAttack        The city being attacked.
      * @param attackers         The list of UUIDs of players from the launching city who will participate in the war.
      * @param allDefenders      The list of UUIDs of all potential defenders from the defending city.
-     * @param requiredParticipants The number of defenders required to start the war.
+     * @param requiredParticipants The number of defenders required starting the war.
      * @param pending           The pending defense object containing information about the war.
      */
     public static void launchWar(City cityLaunch, City cityAttack, List<UUID> attackers, List<UUID> allDefenders, int requiredParticipants, WarPendingDefense pending) {

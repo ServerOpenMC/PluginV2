@@ -67,7 +67,7 @@ public class ContestCommand {
     public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
         int phase = ContestManager.data.getPhase();
         if (phase == 1) {
-            // It's weird but it's for performance reasons
+	        // It is unique, but it is for performance reasons
             if (new HashSet<>(ContestManager.getColorContestList()).containsAll(Arrays.asList(color1, color2))) {
                 ContestManager.clearDB();
                 ContestManager.insertCustomContest(camp1, color1, camp2, color2);

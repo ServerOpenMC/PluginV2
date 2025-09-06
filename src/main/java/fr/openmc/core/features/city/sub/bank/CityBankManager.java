@@ -103,7 +103,7 @@ public class CityBankManager {
 
     /**
      * Calculates the interest for the city
-     * Interests calculated as proportion not percentage (eg: 0.01 = 1%)
+     * Interests calculated as proportion not percentage (e.g.: 0.01 = 1%)
      *
      * @return The calculated interest as a double.
      */

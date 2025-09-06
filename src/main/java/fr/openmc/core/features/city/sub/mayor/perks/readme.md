@@ -30,8 +30,8 @@ NOM(
     cooldown si PerksType.EVENT
 )
 ```
-id devra etre un int
-nom, un string
+
+Il devra être un int, nom, un string,
 description, une liste de components
 itemstack, un itemstack :
 - ItemStack.of(Material)
@@ -71,7 +71,7 @@ IDYLLIC_RAIN(
 ### Gérer les comportements d'une Réforme :
 #### Réforme Basique
 1. Faites une classe dans `mayor.perks.basic`, vous pourrez implementer Listener si votre Réforme peut être activée lorsqu'une telle chose se passe
-2. Utilisez `PerkManager.hasPerk(<City>.getMayor(), id)` afin de regarder si le Maire a choisit ce Perk et assurez vous
+2. Utilisez `PerkManager.hasPerk(<City>.getMayor(), id)` afin de regarder si le Maire a choisi ce Perk et assurez-vous
    que le Maire est dans sa phase d'application `MayorManager.getInstance().phaseMayor==2`
 
 Exemple avec un Listener:
@@ -163,7 +163,8 @@ getId())){
 
 `MilitaryDissuasion.spawnIronMan(city, 10);`
 `DynamicCooldownManager.use(city.getUUID(), "city:military_dissuasion", 10 * 60 * 1000L); // 10 minutes`
-Les lignes ci dessus sont le corps de votre Réforme, ici on spawn 10 IronMan dans la ville. Et apres 10 minutes on les clear.
+Les lignes ci-dessus sont le corps de votre Réforme, ici on spawn 10 IronMan dans la ville. Et apres 10 minutes, on les
+clear.
 
 ## Bonnes pratiques
 

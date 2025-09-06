@@ -1,17 +1,16 @@
 package fr.openmc.core.disabled.corporation.models;
 
-import java.util.UUID;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
 import lombok.Getter;
+
+import java.util.UUID;
 
 @DatabaseTable(tableName = "shop_suppliers")
 @Getter
 public class ShopSupplier {
     @DatabaseField(id = true)
-    private UUID id; // différencie les supplier (un joueur peut avoir plusieurs supplier)
+    private UUID id; // différencie les supplier (un joueur peut avoir plusieurs suppliers)
     @DatabaseField(canBeNull = false)
     private UUID shop;
     @DatabaseField(canBeNull = false)

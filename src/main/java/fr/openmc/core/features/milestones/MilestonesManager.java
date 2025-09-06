@@ -47,7 +47,7 @@ public class MilestonesManager {
     }
 
     /**
-     * Load all milestones data from the database.
+     * Load all milestone data from the database.
      * This method retrieves all MilestoneModel entries and populates the player data for each milestone type.
      */
     public static void loadMilestonesData() {
@@ -65,7 +65,7 @@ public class MilestonesManager {
     }
 
     /**
-     * Save all milestones data to the database.
+     * Save all milestone data to the database.
      * This method iterates through each milestone and saves the player data for each milestone type.
      */
     public static void saveMilestonesData() {

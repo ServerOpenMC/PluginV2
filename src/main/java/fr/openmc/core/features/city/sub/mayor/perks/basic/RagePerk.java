@@ -23,8 +23,8 @@ public class RagePerk implements Listener {
 
         Player player = event.getPlayer();
         UUID uuid = player.getUniqueId();
-
-        // ça sert a rien de lancer ça si on change pas de chunk
+        
+        // ça sert à rien de lancer ça si on ne change pas de chunk
         if (event.getFrom().getChunk().equals(event.getTo().getChunk())) return;
 
         City playerCity = CityManager.getPlayerCity(uuid);

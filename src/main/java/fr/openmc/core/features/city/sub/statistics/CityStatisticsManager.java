@@ -71,7 +71,7 @@ public class CityStatisticsManager {
     }
 
     /**
-     * Retourne l'ensemble des statistiques pour une ville ou en crée un nouveau.
+     * Retourne l'ensemble des statistiques pour une ville avec laquelle en crée un nouveau.
      *
      * @param cityUUID l'identifiant de la ville
      * @return l'ensemble des statistiques associées à la ville

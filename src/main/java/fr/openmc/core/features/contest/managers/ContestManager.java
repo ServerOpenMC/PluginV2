@@ -60,7 +60,7 @@ public class ContestManager {
 
     /**
      * Constructeur du ContestManager :
-     * - Enregistre les évents liés aux contests si ItemsAdder est présent
+     * – Enregistre les évents liés aux contests si ItemsAdder est présent
      * - Enregistre les suggestions pour l’autocomplétion des commandes
      * - Enregistre la commande principale /contest
      * - Initialise les données globales et les joueurs
@@ -278,8 +278,8 @@ public class ContestManager {
         NamedTextColor color2 = ColorUtils.getReadableColor(ColorUtils.getNamedTextColor(camp2Color));
         String camp1Name = data.getCamp1();
         String camp2Name = data.getCamp2();
-
-        //CREATE PART OF BOOK
+        
+        // Create part of the book
         ItemStack baseBook = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta baseBookMeta = (BookMeta) baseBook.getItemMeta();
         baseBookMeta.setTitle("Les Résultats du Contest");
@@ -509,8 +509,8 @@ public class ContestManager {
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-
-        //EXECUTER LES REQUETES SQL DANS UN AUTRE THREAD
+        
+        // Exécuter les requêtes SQL dans un autre thread
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             TradeYMLManager.addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
                     try {
@@ -519,8 +519,8 @@ public class ContestManager {
                         e.printStackTrace();
                     }
             TradeYMLManager.selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
-            dataPlayer = new HashMap<>(); // on supprime les données précédentes du joueurs
-            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoit les Items en mailbox ss forme de batch
+            dataPlayer = new HashMap<>(); // on supprime les données précédentes des joueurs
+            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoi les Items en mailbox ss forme de batch
         });
     }
 

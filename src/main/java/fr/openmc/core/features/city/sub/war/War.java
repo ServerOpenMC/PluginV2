@@ -157,7 +157,7 @@ public class War {
 
     /**
      * Ends the war and notifies the WarManager.
-     * This method sets the phase to ENDED and calls the endWar method in WarManager.
+     * This method sets the phase to END and calls the endWar method in WarManager.
      */
     public void end() {
         this.phase = WarPhase.ENDED;

@@ -222,7 +222,7 @@ public class ItemUtils {
      *
      * @param player the player to check
      * @param material the material to check {@link ItemStack}
-     * @param amount the amount of items to check
+     * @param amount the number of items to check
      * @return {@code true} if the player has enough items, {@code false} otherwise
      */
     public static boolean hasEnoughItems(Player player, Material material, int amount) {
@@ -250,7 +250,7 @@ public class ItemUtils {
     }
 
     /**
-     * Retirer le nombre d'objet au joueur (vérification obligatoire avant execution)
+     * Retirer le nombre d'objets au joueur (vérification obligatoire avant execution)
      *
      * @param player         the player whose inventory will be modified
      * @param material       the item to remove, must be similar to the items in the inventory {@link Material}
@@ -261,7 +261,7 @@ public class ItemUtils {
     }
 
     /**
-     * Retirer le nombre d'objet au joueur (vérification obligatoire avant execution)
+     * Retirer le nombre d'objets au joueur (vérification obligatoire avant execution)
      *
      * @param player the player whose inventory will be modified
      * @param item the item to remove, must be similar to the items in the inventory {@link ItemStack}
@@ -362,7 +362,7 @@ public class ItemUtils {
     }
 
     /**
-     * Trouve le slot ou est l'item
+     * Trouve le slot où est l'item
      *
      * @param player le joueur pour l'inventaire
      * @param item   l'item a chercher
@@ -448,7 +448,7 @@ public class ItemUtils {
 
     /**
      * Compare deux {@link ItemStack} pour vérifier s'ils sont similaires.
-     * Deux items sont considérés similaires s'ils ont le même type, la même quantité,
+     * Deux items sont considérés semblables s'ils ont le même type, la même quantité,
      * et les mêmes métadonnées (nom, lore, etc.). Permet de ne pas vérifier le component TooltipDisplay.
      *
      * @param item1 le premier item à comparer

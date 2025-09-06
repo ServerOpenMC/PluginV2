@@ -46,7 +46,7 @@ public class DateUtils {
     }
 
     /**
-     * Get Current day of week
+     * Get Current day of the week
      * @return date (MONDAY, FRIDAY, SUNDAY, ...)
      */
     public static DayOfWeek getCurrentDayOfWeek() {

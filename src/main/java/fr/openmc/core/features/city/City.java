@@ -99,7 +99,7 @@ public class City {
     }
 
     /**
-     * Constructor used to deserialize City database object
+     * Constructor used to deserialize a City database object
      */
     public City(UUID uniqueId, String name, double balance, String type, int power, int freeClaims, int level) {
         this.uniqueId = uniqueId;
@@ -398,7 +398,7 @@ public class City {
 
     /**
      * Calculates the interest for the city
-     * Interests calculated as proportion not percentage (eg: 0.01 = 1%)
+     * Interests calculated as proportion not percentage (e.g.: 0.01 = 1%)
      *
      * @return The calculated interest as a double.
      */

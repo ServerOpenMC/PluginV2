@@ -308,7 +308,7 @@ public class MayorLawMenu extends Menu {
                         DynamicCooldownManager.use(city.getUniqueId(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
                         DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
                     } else if (PerkManager.hasPerk(city.getMayor(), Perks.MILITARY_DISSUASION.getId())) {
-                        // Dissuasion Militaire (id : 13) - Perk Event
+                        // Dissuasion Militaire (id: 13) - Perk Event
                         for (UUID uuid : city.getMembers()) {
                             Player member = Bukkit.getPlayer(uuid);
 

@@ -15,7 +15,7 @@ public class LocationSerializer {
      * @param y The y coordinate
      * @param z The z coordinate
      * @return Serialized location string in format "x;y;z;0;0"
-     * @throws IllegalArgumentException if resulting string would exceed max length
+     * @throws IllegalArgumentException if the resulting string exceeds max length
      */
     public static String serialize(double x, double y, double z) {
         return serialize(x, y, z, 0, 0);
@@ -29,7 +29,7 @@ public class LocationSerializer {
      * @param yaw The yaw rotation
      * @param pitch The pitch rotation
      * @return Serialized location string in format "x;y;z;yaw;pitch"
-     * @throws IllegalArgumentException if resulting string would exceed max length
+     * @throws IllegalArgumentException if the resulting string exceeds max length
      */
     public static String serialize(double x, double y, double z, double yaw, double pitch) {
         // Format each value with proper precision
@@ -40,8 +40,8 @@ public class LocationSerializer {
             throw new IllegalArgumentException(
                     "Serialized location exceeds maximum length of " + MAX_LENGTH + " characters");
         }
-
-        // Verify each value stays within size limit
+        
+        // Verify each value stays within the size limit
         String[] values = serialized.split(SEPARATOR);
         for (String value : values) {
             if (value.length() > VALUES_LENGTH) {

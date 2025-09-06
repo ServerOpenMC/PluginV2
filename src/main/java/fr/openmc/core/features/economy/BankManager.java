@@ -225,7 +225,8 @@ public class BankManager {
     }
 
     private static void updateInterestTimer() {
-        if (OMCPlugin.isUnitTestVersion()) return; // cette méthode bloque totalement le flux des tests. si quelqu'un fait les unit test des banques, merci de le prendre en compte.
+        if (OMCPlugin.isUnitTestVersion()) return; // Cette méthode bloque totalement le flux des tests. Si
+        // quelqu'un fait les unit test des banques, merci de le prendre en compte.
         
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
             OMCPlugin.getInstance().getSLF4JLogger().info("Applying all player interests...");
