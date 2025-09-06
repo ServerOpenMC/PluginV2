@@ -137,7 +137,7 @@ public class DynamicCooldownManager {
     /**
      * @param uuid  Entity UUID to check
      * @param group Cooldown group
-     * @return true if entity can perform action
+     * @return true if an entity can perform action
      */
     public static boolean isReady(UUID uuid, String group) {
         var userCooldowns = cooldowns.get(uuid);

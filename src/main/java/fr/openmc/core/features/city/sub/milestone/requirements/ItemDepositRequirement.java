@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Objects;
 
 /**
- * Représente une condition où le joueur doit déposer un certain nombre d'items.
+ * Représente une condition avec laquelle le joueur doit déposer un certain nombre d'items.
  */
 public class ItemDepositRequirement implements CityRequirement {
 

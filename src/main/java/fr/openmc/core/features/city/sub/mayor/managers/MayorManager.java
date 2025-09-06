@@ -413,7 +413,7 @@ public class MayorManager {
         Mayor mayor = city.getMayor();
 
         if (city.getElectionType() == ElectionType.OWNER_CHOOSE) {
-            // si maire a pas choisis les perks
+            // si maire n'a pas choisis les perks
             if ((mayor.getIdPerk1() == 0) && (mayor.getIdPerk2() == 0) && (mayor.getIdPerk3() == 0)) {
                 NamedTextColor color = getRandomMayorColor();
                 List<Perks> perks = PerkManager.getRandomPerksAll();
@@ -421,7 +421,7 @@ public class MayorManager {
                         ElectionType.OWNER_CHOOSE);
             }
         } else {
-            if (cityElections.containsKey(city.getUniqueId())) { // si y'a des maires qui se sont présenter
+            if (cityElections.containsKey(city.getUniqueId())) { // s'il y a des maires qui se sont présenté
                 List<MayorCandidate> candidates = cityElections.get(city.getUniqueId());
 
                 // Code fait avec ChatGPT pour avoir une complexité de O(n log(n)) au lieu de
@@ -470,17 +470,17 @@ public class MayorManager {
                 e.printStackTrace();
             }
         });
-
-        // on supprime donc les elections de la ville ou le maire a été élu
+        
+        // on supprime donc les elections de la ville avec laquelle le maire a été élu
         cityElections.remove(city.getUniqueId());
-        // on supprime donc les votes de la ville ou le maire a été élu
+        // on supprime donc les votes de la ville avec laquelle le maire a été élu
         playerVote.remove(city.getUniqueId());
     }
 
     /**
      * Create a new candidate for the city with the given perks and color.
      *
-     * @param city      The city to add candidate
+     * @param city      The city to add a candidate
      * @param candidate The candidate to add
      */
     public static void createCandidate(City city, MayorCandidate candidate) {
@@ -492,7 +492,7 @@ public class MayorManager {
     /**
      * Get the candidate for the player in the city.
      *
-     * @param player The player to get candidate
+     * @param player The player to get a candidate
      */
     public static MayorCandidate getCandidate(UUID player) {
         for (List<MayorCandidate> candidates : cityElections.values()) {
@@ -525,7 +525,7 @@ public class MayorManager {
     /**
      * Remove the player from the vote list.
      *
-     * @param player The player to remove vote
+     * @param player The player to remove a vote
      */
     public static void removeVotePlayer(Player player) {
         playerVote.forEach((city, votes) -> votes.removeIf(vote -> vote.getVoter().equals(player.getUniqueId())));
@@ -535,7 +535,7 @@ public class MayorManager {
      * Vote a candidate for the player in the city.
      *
      * @param playerCity The city where player are
-     * @param player     The player who vote
+     * @param player     The player who votes
      * @param candidate  The candidate to vote
      */
     public static void voteCandidate(City playerCity, Player player, MayorCandidate candidate) {
@@ -564,7 +564,7 @@ public class MayorManager {
     /**
      * Get the player vote for the city.
      *
-     * @param player The player to get vote
+     * @param player The player to get a vote
      */
     public static MayorCandidate getPlayerVote(Player player) {
         for (List<MayorVote> votes : playerVote.values()) {
@@ -603,7 +603,7 @@ public class MayorManager {
         Mayor mayor = cityMayor.get(city.getUniqueId());
         if (mayor != null) {
             mayor.setIdPerk1(perk1.getId());
-        } else { // au cas ou meme si théoriquement c impossible
+        } else { // au cas où meme si théoriquement c impossible
             cityMayor.put(city.getUniqueId(),
                     new Mayor(city.getUniqueId(), null, null, null, perk1.getId(), 0, 0, city.getElectionType()));
         }
@@ -635,7 +635,7 @@ public class MayorManager {
             mayor.setIdPerk2(idPerk2);
             mayor.setIdPerk3(idPerk3);
             mayor.setElectionType(city.getElectionType());
-        } else { // au cas ou meme si c théoriquement impossible (on défini tous les maires a la
+        } else { // au cas où meme si c théoriquement impossible (ont défini tous les maires à la
                  // phase 1 et on le crée quand on crée la ville)
             cityMayor.put(city.getUniqueId(),
                     new Mayor(city.getUniqueId(), playerName, playerUUID, color, idPerk1, idPerk2, idPerk3, type));
@@ -661,8 +661,8 @@ public class MayorManager {
         if (laws != null) {
             laws.setPvp(pvp);
             laws.setWarp(locationWarp);
-
-        } else { // au cas ou meme si c théoriquement impossible (on défini tous les maires a la
+            
+        } else { // au cas où meme si c théoriquement impossible (ont défini tous les maires à la
                  // phase 1 et on le crée quand on crée la ville)
             cityLaws.put(city.getUniqueId(), new CityLaw(city.getUniqueId(), pvp, locationWarp));
         }

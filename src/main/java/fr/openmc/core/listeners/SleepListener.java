@@ -14,7 +14,7 @@ import java.util.TreeMap;
 public class SleepListener implements Listener {
 	
 	/**
-	 * This class is used to manage the sleep percentage in a world.
+	 * This class is used to manage the sleep percentage in the world.
 	 * The percentage is set based on the number of players in the world.
 	 */
 	private static final NavigableMap<Integer, Integer> PLAYER_THRESHOLDS = new TreeMap<>();
@@ -56,11 +56,11 @@ public class SleepListener implements Listener {
 	}
 	
 	/**
-	 * This method is used to get the percentage of players needed to sleep in a world.
+	 * This method is used to get the percentage of players needed to sleep in the world.
 	 * The percentage is set based on the number of players in the world.
 	 *
 	 * @param players The number of players in the world.
-	 * @return The percentage of players needed to sleep in a world.
+	 * @return The percentage of players needed to sleep in the world.
 	 */
 	private int getPercentage(int players) {
 		return PLAYER_THRESHOLDS.ceilingEntry(players).getValue();

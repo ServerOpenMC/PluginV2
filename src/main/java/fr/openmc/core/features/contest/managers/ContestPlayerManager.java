@@ -14,7 +14,7 @@ public class ContestPlayerManager  {
 
     /**
      * Map reliant un nombre de points à un titre correspondant.
-     * Par exemple, 10000 points correspond à "Dictateur en ".
+     * Par exemple, 10000 points correspondent à "Dictateur en ".
      */
     private static final Map<Integer, String> RANKS = Map.of(
             10000, "Dictateur en ",
@@ -49,7 +49,7 @@ public class ContestPlayerManager  {
 
     /**
      * Map convertissant le nombre de points en un rang numérique compris entre 1 et 10.
-     * Par exemple, 10000 points correspond au rang 10.
+     * Par exemple, 10000 points correspondent au rang 10.
      */
     private static final Map<Integer, Integer> POINTS_TO_INT_RANK = Map.of(
             10000, 10,

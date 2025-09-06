@@ -411,7 +411,7 @@ public class CityMenu extends Menu {
         };
 
         MenuUtils.runDynamicItem(player, this, 23, electionItemSupplier)
-                .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L * 60); //ici je n'ai pas besoin d'attendre 1 sec pour update le menu
+		        .runTaskTimer(OMCPlugin.getInstance(), 0L, 20L * 60); //ici, je n'ai pas besoin d'attendre 1 sec pour update le menu
 
         Supplier<ItemBuilder> typeItemSupplier = () -> {
 

@@ -13,4 +13,4 @@ _Une bonne description qui décrit tout ce que vous voulez_
 **Capture d'écran**
 _des photos de GUI, pour bien de mob, de lore_
 
-**Voulez vous faire cette feature ? :**
+**Voulez-vous faire cette feature ? :**

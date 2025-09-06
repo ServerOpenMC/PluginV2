@@ -116,7 +116,7 @@ public class TradeYMLManager {
     }
 
     /**
-     * Met à jour le nombre de sélection pour un contest donné.
+     * Met à jour le nombre de sélections pour un contest donné.
      * Incrémente la valeur de "selected" si le camp correspond.
      *
      * @param camp le nom du camp à mettre à jour.
@@ -147,7 +147,7 @@ public class TradeYMLManager {
 
     /**
      * Ajoute 1 au compte de sélection du dernier contest associé au camp fourni.
-     * Ceci permet d'éviter que ce contest ne soit repioche.
+     * Ceci permet d'éviter que ce contest ne soit repioché.
      *
      * @param camps le nom du camp pour lequel la mise à jour est effectuée.
      */
@@ -162,7 +162,7 @@ public class TradeYMLManager {
     }
 
     /**
-     * Sélectionne aléatoirement un contest basé sur le nombre de sélection le plus faible.
+     * Sélectionne aléatoirement un contest basé sur le nombre de sélections le plus faible.
      * Le contest sélectionné est assigné à {@code ContestManager.data}.
      */
     public static void selectRandomlyContest() {

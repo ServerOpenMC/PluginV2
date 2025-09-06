@@ -245,7 +245,7 @@ public class Shop {
      *
      * @param item the item to buy
      * @param amountToBuy the amount of it
-     * @param buyer the player who buy
+     * @param buyer the player who buys
      * @return a MethodState
      */
     public MethodState buy(ShopItem item, int amountToBuy, Player buyer) {

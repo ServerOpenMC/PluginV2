@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum OldHomeIcon {
 
     /**
-     * Oublie pas de rajouter vos icon/items dans CustomItemRegistry
+     * N'oubliez pas de rajouter vos icon/items dans CustomItemRegistry
      */
 
     AXENQ("omc_homes:omc_homes_icon_axenq", "axeno|axenq"),

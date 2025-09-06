@@ -73,7 +73,7 @@ public class Quest {
      * @param name            The name of the quest
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - ItemStack
-     * @param isLargeActionBar If true, the quest will be displayed in large action bar
+     * @param isLargeActionBar If true, the quest will be displayed in the large action bar
      */
     public Quest(String name, List<String> baseDescription, ItemStack icon, boolean isLargeActionBar) {
         this.name = name;
@@ -88,7 +88,7 @@ public class Quest {
      * @param name            The name of the quest
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - Material
-     * @param isLargeActionBar If true, the quest will be displayed in large action bar
+     * @param isLargeActionBar If true, the quest will be displayed in the large action bar
      */
     public Quest(String name, List<String> baseDescription, Material icon, boolean isLargeActionBar) {
         this.name = name;
@@ -406,7 +406,7 @@ public class Quest {
     /**
      * Complete a specific step of the current tier for a player.
      * <p>
-     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * This method will check if the step is completed, and if so, it will complete the step and check if the tier is completed.
      * @param playerUUID the UUID of the player
      * @param stepIndex the index of the step to complete
      */
@@ -467,7 +467,7 @@ public class Quest {
     /**
      * Increment the progress of the quest for a player.
      * <p>
-     * This method will check if the quest is fully completed and if not, it will increment the progress.
+     * This method will check if the quest is fully completed, and if not, it will increment the progress.
      * @param playerUUID The UUID of the player
      */
     public void incrementProgress(UUID playerUUID) {
@@ -519,7 +519,7 @@ public class Quest {
     /**
      * Increment the progress of a specific step of the current tier for a player.
      * <p>
-     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * This method will check if the step is completed, and if so, it will complete the step and check if the tier is completed.
      * @param playerUUID the UUID of the player
      * @param stepIndex the index of the step to increment
      */
@@ -530,7 +530,7 @@ public class Quest {
     /**
      * Increment the progress of a specific step of the current tier for a player by a specified amount.
      * <p>
-     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * This method will check if the step is completed, and if so, it will complete the step and check if the tier is completed.
      * @param playerUUID the UUID of the player
      * @param stepIndex the index of the step to increment
      * @param amount The amount to increment the progress by
@@ -549,7 +549,7 @@ public class Quest {
     /**
      * Increment the progress of a specific step of the current tier for a player by a specified amount.
      * <p>
-     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * This method will check if the step is completed, and if so, it will complete the step and check if the tier is completed.
      * @param playerUUID the UUID of the player
      * @param stepDescription the description of the step to increment
      * @param amount The amount to increment the progress by

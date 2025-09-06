@@ -8,9 +8,6 @@ import com.j256.ormlite.table.TableUtils;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.disabled.corporation.models.*;
-import fr.openmc.core.features.city.City;
-import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.disabled.corporation.CorpPermission;
 import fr.openmc.core.disabled.corporation.MethodState;
 import fr.openmc.core.disabled.corporation.commands.CompanyCommand;
@@ -24,6 +21,8 @@ import fr.openmc.core.disabled.corporation.models.*;
 import fr.openmc.core.disabled.corporation.shops.Shop;
 import fr.openmc.core.disabled.corporation.shops.ShopItem;
 import fr.openmc.core.disabled.corporation.shops.Supply;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.utils.Queue;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
@@ -463,8 +462,8 @@ public class CompanyManager {
      *
      * @param name         the name of the company
      * @param owner        the owner of the company
-     * @param newMember    use for the city company ( not working for now )
-     * @param company_uuid use to set the company uuid if it's create at the load of
+     * @param newMember    use for the city company (not working for now)
+     * @param company_uuid use to set the company uuid if it creates at the load of
      *                     the server
      */
     public static void createCompany(String name, CompanyOwner owner, boolean newMember, UUID company_uuid) {
@@ -576,7 +575,7 @@ public class CompanyManager {
     /**
      * get the application list of a company
      *
-     * @param playerUUID the uuid of the player who want to leave the company
+     * @param playerUUID the uuid of the player who wants to leave the company
      * @return A different MethodeState
      */
     public static MethodState leaveCompany(UUID playerUUID) {
@@ -664,7 +663,7 @@ public class CompanyManager {
     }
 
     /**
-     * get a company by a city ( not use now )
+     * get a company by a city (not use now)
      *
      * @param city the city us for the check
      * @return A company if found
@@ -700,9 +699,9 @@ public class CompanyManager {
     }
 
     /**
-     * know if a company exist by its name
+     * know if a company exists by its name
      *
-     * @param name the name use for the check
+     * @param name the name uses for the check
      * @return true or false
      */
     public static boolean companyExists(String name) {

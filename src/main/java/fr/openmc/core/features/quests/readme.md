@@ -59,8 +59,9 @@ public class MinerQuest extends Quest {
 }
 ```
 
-pour `l'action bar`, le boolean est facultatif, par défaut il est à `false`.
-Il permet d'afficher la progression de la quête dans la barre d'action du joueur, elle s'afficheras a chaque palier (50), pour éviter de spammer le joueur.
+pour `l'action bar`, le boolean est facultatif, par défaut, il est à `false`.
+Il permet d'afficher la progression de la quête dans la barre d'action du joueur, elle s'affichera à chaque palier (50),
+pour éviter de spammer le joueur.
 
 ### Enregistrer une quête
 

@@ -167,22 +167,21 @@ public class ItemInteraction implements Listener {
     }
 
     /*
-     * Stopper l'interaction des que le Chronometre est fini
+     * Méthode qui permet de verifier si l'item est celui avec qui on interagit
      */
-    @EventHandler
-    void onTimeEnd(Chronometer.ChronometerEndEvent e) {
-        Player player = (Player) e.getEntity();
-        String chronometerGroup = e.getGroup();
+    private static boolean isItemInteraction(ItemStack item) {
+        if (item == null || item.getType() == Material.AIR)
+            return false;
 
-        HashMap<String, Runnable> playerCallbacksMap = playerCallbacksFail.get(player.getUniqueId());
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null)
+            return false;
 
-        if (playerCallbacksMap != null) {
-            Runnable onFail = playerCallbacksMap.get(chronometerGroup);
-
-            onFail.run();
+        if (item != null && item.hasItemMeta()) {
+            PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
+            return data.has(NAMESPACE_KEY, PersistentDataType.STRING);
         }
-
-        stopInteraction(player, chronometerGroup);
+        return false;
     }
 
     @EventHandler
@@ -302,21 +301,22 @@ public class ItemInteraction implements Listener {
     }
 
     /*
-     * Méthode qui permet de verifier si l'item est celui avec qui on intéragit
+     * Stopper l'interaction dès que le Chronometre est fini
      */
-    private static boolean isItemInteraction(ItemStack item) {
-        if (item == null || item.getType() == Material.AIR)
-            return false;
+    @EventHandler
+    void onTimeEnd(Chronometer.ChronometerEndEvent e) {
+        Player player = (Player) e.getEntity();
+        String chronometerGroup = e.getGroup();
 
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null)
-            return false;
+        HashMap<String, Runnable> playerCallbacksMap = playerCallbacksFail.get(player.getUniqueId());
 
-        if (item != null && item.hasItemMeta()) {
-            PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
-            return data.has(NAMESPACE_KEY, PersistentDataType.STRING);
+        if (playerCallbacksMap != null) {
+            Runnable onFail = playerCallbacksMap.get(chronometerGroup);
+
+            onFail.run();
         }
-        return false;
+
+        stopInteraction(player, chronometerGroup);
     }
 
     /*

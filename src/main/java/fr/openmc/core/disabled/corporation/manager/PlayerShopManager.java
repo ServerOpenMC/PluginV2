@@ -20,7 +20,7 @@ public class PlayerShopManager {
     /**
      * create a shop
      *
-     * @param playerUUID   the uuif of the player who create it
+     * @param playerUUID   the uuid of the player who creates it
      * @param barrel       the barrel block
      * @param cashRegister the cash register
      * @param shop_uuid    the uuid of the shop if it already has one
@@ -50,7 +50,7 @@ public class PlayerShopManager {
     /**
      * delete a shop
      *
-     * @param playerUUID the uuid of the player who delete the shop
+     * @param playerUUID the uuid of the player who deletes the shop
      * @return a Methode state
      */
     public static MethodState deleteShop(UUID playerUUID) {

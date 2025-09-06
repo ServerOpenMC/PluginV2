@@ -35,7 +35,7 @@ public class ColorUtils {
     }
 
     /**
-     * Retourne une couleur plus visible sur les Livres (blanc sur blanc ça se voit pas)
+     * Retourne une couleur plus visible sur les Livres (blanc sur blanc ça ne se voit pas)
      */
     public static NamedTextColor getReadableColor(NamedTextColor c) {
         return colorToReadable.getOrDefault(c, null);
@@ -62,14 +62,14 @@ public class ColorUtils {
     }
 
     /**
-     * Retourne une laine de couleur en fonction de la couleur rentré
+     * Retourne une laine de couleur en fonction de la couleur rentrée
      */
     public static Material getMaterialFromColor(NamedTextColor c) {
         return colorToMaterial.getOrDefault(c, null);
     }
 
     /**
-     * Retourne une couleur en fonction du String (LIGHT_PURPLE => NamedTextColor.LIGHT_PURPLE)
+     * Retourne une couleur en fonction du String (LIGHT_PURPLE -> NamedTextColor.LIGHT_PURPLE)
      */
     public static NamedTextColor getNamedTextColor(String color) {
         if (color == null) {

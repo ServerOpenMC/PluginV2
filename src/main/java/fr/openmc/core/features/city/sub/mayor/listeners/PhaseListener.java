@@ -12,7 +12,7 @@ public class PhaseListener {
 
     /**
      * Constructor for the PhaseListener class.
-     * This class is responsible for managing the phases of the mayor election process.
+     * This class is responsible for managing the phases of the mayor's election process.
      *
      * @param plugin The OMCPlugin instance.
      */

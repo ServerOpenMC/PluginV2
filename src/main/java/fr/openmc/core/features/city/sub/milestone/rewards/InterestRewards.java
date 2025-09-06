@@ -39,7 +39,7 @@ public enum InterestRewards implements CityRewards {
     /**
      * Calcule l'intérêt total cumulé jusqu'au niveau spécifié.
      *
-     * @param level le niveau jusqu'auquel cumuler l'intérêt
+     * @param level le niveau jusqu'auquel cumule l'intérêt
      * @return l'intérêt total cumulé
      * @throws IllegalArgumentException si le niveau est invalide
      */
