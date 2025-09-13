@@ -162,9 +162,9 @@ public class CityMilestoneMenu extends Menu {
         lore.add(Component.text("§3§lRequis :"));
 
         for (CityRequirement requirement : level.getRequirements()) {
-            lore.add(Component.text((requirement.isDone(city, level) ? "§l✔ " : "§l✖ "))
+            lore.add(Component.text((city.getLevel() < level.ordinal() ? "§l¤ " : requirement.isDone(city, level) ? "§l✔ " : "§l✖ "))
                     .append(requirement.getName(city, level))
-                    .color(requirement.isDone(city, level) ? NamedTextColor.GREEN : NamedTextColor.RED)
+                    .color(city.getLevel() < level.ordinal() ? NamedTextColor.DARK_GRAY : requirement.isDone(city, level) ? NamedTextColor.GREEN : NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }
 
