@@ -17,6 +17,8 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -127,7 +129,10 @@ public class CityBankManager {
     public static void applyCityInterest(City city) {
         double interest = calculateCityInterest(city);
         double amount = city.getBalance() * interest;
-        city.updateBalance(amount);
+
+        BigDecimal rounded = BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP);
+
+        city.updateBalance(rounded.doubleValue());
     }
 
     /**

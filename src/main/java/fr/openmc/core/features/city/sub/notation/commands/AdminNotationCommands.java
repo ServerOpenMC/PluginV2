@@ -61,8 +61,6 @@ public class AdminNotationCommands {
             return;
         }
 
-        NotationManager.notationPerWeek.remove(weekStr);
-
         try {
             calculateAllCityScore(weekStr);
         } catch (Exception e) {

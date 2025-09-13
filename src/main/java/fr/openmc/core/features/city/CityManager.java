@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 
 public class CityManager implements Listener {
     private static final Map<UUID, City> cities = new HashMap<>();
+    public static final Map<String, City> citiesByName = new HashMap<>();
     private static final Map<UUID, City> playerCities = new HashMap<>();
     private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
 
@@ -124,6 +125,12 @@ public class CityManager implements Listener {
             cities.clear();
             for (DBCity dbCity : citiesDao.queryForAll()) {
                 cities.put(dbCity.getUniqueId(), dbCity.deserialize());
+            }
+
+            citiesByName.clear();
+            for (DBCity dbCity : citiesDao.queryForAll()) {
+                City city = getCity(dbCity.getUniqueId());
+                if (city != null) citiesByName.put(city.getName(), city);
             }
 
             playerCities.clear();
@@ -363,12 +370,7 @@ public class CityManager implements Listener {
      * @return The city object, or null if not found
      */
     public static City getCityByName(String name) {
-        for (City city : cities.values()) {
-            if (city.getName().equalsIgnoreCase(name)) {
-                return city;
-            }
-        }
-        return null;
+        return citiesByName.get(name);
     }
 
     /**
@@ -446,6 +448,7 @@ public class CityManager implements Listener {
      */
     public static void registerCity(City city) {
         cities.put(city.getUniqueId(), city);
+        citiesByName.put(city.getName(), city);
     }
 
     /**
@@ -537,6 +540,9 @@ public class CityManager implements Listener {
                 e.printStackTrace();
             }
         });
+
+        cities.remove(city.getUniqueId());
+        citiesByName.remove(city.getName());
 
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new CityDeleteEvent(city));

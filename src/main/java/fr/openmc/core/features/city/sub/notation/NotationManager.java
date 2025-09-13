@@ -20,6 +20,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.util.*;
@@ -323,8 +325,11 @@ public class NotationManager {
     public static double calculateReward(CityNotation notation) {
         double points = notation.getTotalNote();
         double money = points * (45000.0 / getMaxTotalNote());
-        notation.setMoney(money);
-        return money;
+
+        BigDecimal rounded = BigDecimal.valueOf(money).setScale(2, RoundingMode.HALF_UP);
+
+        notation.setMoney(rounded.doubleValue());
+        return rounded.doubleValue();
     }
 
     /**
