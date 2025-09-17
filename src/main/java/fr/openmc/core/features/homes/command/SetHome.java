@@ -19,6 +19,7 @@ import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
+import java.util.UUID;
 
 public class SetHome {
     private final HomesManager homesManager;
@@ -65,7 +66,7 @@ public class SetHome {
                 }
             }
 
-            Home home = new Home(target.getUniqueId(), homeName, player.getLocation(), HomeIconRegistry.getDefaultIcon());
+            Home home = new Home(UUID.randomUUID(), target.getUniqueId(), homeName, player.getLocation(), HomeIconRegistry.getDefaultIcon());
             HomesManager.addHome(home);
 
             MessagesManager.sendMessage(player, Component.text("§aLe home §e" + homeName + " §aa été défini pour §e" + targetName + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
@@ -98,7 +99,7 @@ public class SetHome {
             }
         }
 
-        Home home = new Home(player.getUniqueId(), name, player.getLocation(), HomeIconRegistry.getDefaultIcon());
+        Home home = new Home(UUID.randomUUID(), player.getUniqueId(), name, player.getLocation(), HomeIconRegistry.getDefaultIcon());
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new HomeCreateEvent(home, player));
         });
