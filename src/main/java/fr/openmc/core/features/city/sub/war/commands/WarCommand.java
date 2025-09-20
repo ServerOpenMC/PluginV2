@@ -63,6 +63,13 @@ public class WarCommand {
             return;
         }
 
+        if (WarManager.getPendingDefenseFor(playerCity) != null) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Vous avez déjà été déclaré en guerre !"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (playerCity.isInWar()) {
             MessagesManager.sendMessage(player,
                     Component.text("Vous êtes déjà en guerre !"),

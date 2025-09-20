@@ -69,9 +69,23 @@ public class WarActions {
             return;
         }
 
+        if (WarManager.getPendingDefenseFor(launchCity) != null) {
+            MessagesManager.sendMessage(player,
+                    Component.text("Vous avez déjà été déclaré en guerre !"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (launchCity.isInWar()) {
             MessagesManager.sendMessage(player,
                     Component.text("Votre ville est en déjà en guerre!"),
+                    Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
+        if (WarManager.getPendingDefenseFor(cityAttack) != null) {
+            MessagesManager.sendMessage(player,
+                    Component.text("La ville que vous essayez d'attaquer et déjà en préparation des troupes"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
