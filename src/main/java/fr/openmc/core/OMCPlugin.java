@@ -41,6 +41,7 @@ import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.errors.ErrorReporter;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -96,6 +97,9 @@ public class OMCPlugin extends JavaPlugin {
 
         logLoadMessage();
 
+        new ErrorReporter();
+        getLogger().info("\u001B[32m✔ ErrorHandler activé\u001B[0m");
+
         /* MANAGERS */
         TicketManager.loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
         new DatabaseManager();
@@ -111,7 +115,7 @@ public class OMCPlugin extends JavaPlugin {
         new FreezeManager();
         new QuestProgressSaveManager();
         new TabList();
-        if (!OMCPlugin.isUnitTestVersion()) { // Tous les trucs faits par misieur qui fonctionne à peu près
+        if (!OMCPlugin.isUnitTestVersion()) {
             new LeaderboardManager();
             new MainMenu(this);
             new HologramLoader();
