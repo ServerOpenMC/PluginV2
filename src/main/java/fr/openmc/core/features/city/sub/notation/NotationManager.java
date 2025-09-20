@@ -133,7 +133,9 @@ public class NotationManager {
     /**
      * Sauvegarde toutes les notations dans la base de données.
      */
-    public static void saveNotations() {
+    public static void saveNotations() throws SQLException {
+        notationDao.delete(notationDao.queryForAll());
+
         notationPerWeek.forEach((weekStr, notations) -> {
             notations.forEach(notation -> {
                 try {

@@ -53,6 +53,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 
 import java.io.File;
+import java.sql.SQLException;
 
 public class OMCPlugin extends JavaPlugin {
     @Getter
@@ -166,7 +167,11 @@ public class OMCPlugin extends JavaPlugin {
         PlayerSettingsManager.saveAllSettings();
 
         // - Notation des Villes
-        NotationManager.saveNotations();
+        try {
+            NotationManager.saveNotations();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         // - Maires
         MayorManager.saveMayorConstant();
