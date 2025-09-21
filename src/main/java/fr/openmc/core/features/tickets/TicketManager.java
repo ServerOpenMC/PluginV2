@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tickets;
 
+import com.comphenix.protocol.PacketType;
 import com.google.gson.*;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
@@ -110,7 +111,7 @@ public class TicketManager {
         return timePlayed.stream()
                 .filter(stats -> stats.getUniqueID().equals(uuid))
                 .findFirst()
-                .orElse(null);
+                .orElse(PlayerStats.notExisting());
     }
 
     /**

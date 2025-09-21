@@ -22,4 +22,7 @@ public class PlayerStats {
         this.maxItemsGiven = maxItemsGiven;
     }
 
+    public static PlayerStats notExisting() {
+        return new PlayerStats(null, 0, 0, false, new HashMap<>());
+    }
 }
