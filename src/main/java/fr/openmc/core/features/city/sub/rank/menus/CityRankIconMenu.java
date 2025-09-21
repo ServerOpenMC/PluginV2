@@ -26,14 +26,16 @@ import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 
 public class CityRankIconMenu extends PaginatedMenu {
 	
-	private final DBCityRank rank;
+	private final DBCityRank newRank;
+	private final DBCityRank oldRank;
 	private final City city;
 	private final int page;
 	private static String filter = null;
 
 	public CityRankIconMenu(Player owner, City city, int page, DBCityRank rank, String filter) {
 		super(owner);
-		this.rank = rank;
+		this.newRank = rank;
+		this.oldRank = rank;
 		this.city = city;
 		this.page = page;
 		CityRankIconMenu.filter = filter;
@@ -86,7 +88,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 				itemMeta.displayName(ItemUtils.getItemTranslation(material).decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(List.of(Component.text("§7Cliquez pour sélectionner cette icône")));
 			}).setOnClick(inventoryClickEvent -> {
-				new CityRankDetailsMenu(getOwner(), city, rank.withIcon(material)).open();
+				new CityRankDetailsMenu(getOwner(), city, oldRank, newRank.withIcon(material)).open();
 			}));
 		}
 
@@ -103,12 +105,12 @@ public class CityRankIconMenu extends PaginatedMenu {
 		if (hasPreviousPage())
 			map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
 					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setOnClick(inventoryClickEvent -> {
-				new CityRankIconMenu(getOwner(), city, page - 1, rank, filter).open();
+				new CityRankIconMenu(getOwner(), city, page - 1, newRank, filter).open();
 			}));
 		if (hasNextPage())
 			map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
 					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setOnClick(inventoryClickEvent -> {
-				new CityRankIconMenu(getOwner(), city, page + 1, rank, filter).open();
+				new CityRankIconMenu(getOwner(), city, page + 1, newRank, filter).open();
 			}));
 		
 		map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_search").getBest(), itemMeta -> {
@@ -117,7 +119,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 		}).setOnClick(event -> {
 			DialogInput.send(getOwner(), Component.text("Entrez le nom d'un mot clé pour l'icône"), MAX_LENGTH, input -> {
                 if (input == null) return;
-				new CityRankIconMenu(getOwner(), city, 0, rank, input).open();
+				new CityRankIconMenu(getOwner(), city, 0, newRank, input).open();
 			});
 		}));
 
@@ -126,7 +128,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 				itemMeta.displayName(Component.text("§cEffacer le filtre"));
 				itemMeta.lore(List.of(Component.text("§e§lCLIQUEZ POURE EFFACER LE FILTRE")));
 			}).setOnClick(event -> {
-				new CityRankIconMenu(getOwner(), city, 0, rank, null).open();
+				new CityRankIconMenu(getOwner(), city, 0, newRank, null).open();
 			}));
 		}
 		return map;

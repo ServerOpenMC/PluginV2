@@ -204,4 +204,8 @@ public class DBCityRank {
 			}
 		}
 	}
+	
+	public DBCityRank clone() {
+		return new DBCityRank(this.rankUUID, this.cityUUID, this.name, this.priority, new HashSet<>(this.permissionsSet), this.icon);
+	}
 }
