@@ -1,4 +1,4 @@
-package fr.openmc.core.disabled.corporation.shops;
+package fr.openmc.core.features.corporation.shops;
 
 import fr.openmc.core.utils.ItemUtils;
 import lombok.Getter;
@@ -20,12 +20,7 @@ public class ShopItem {
     private int amount;
 
     public ShopItem(ItemStack item, double pricePerItem) {
-        this.item = item.clone();
-        this.pricePerItem = pricePerItem;
-        this.item.setAmount(1);
-        this.price = pricePerItem * amount;
-        this.amount = 0;
-        this.itemID = UUID.randomUUID();
+        this(item, pricePerItem, UUID.randomUUID());
     }
 
     public ShopItem(ItemStack item, double pricePerItem, UUID itemID) {
@@ -50,38 +45,36 @@ public class ShopItem {
     }
 
     /**
-     * copy an ShopItem
+     * Get the name of an item, either custom or default
      *
-     * @return a copy of the ShopItem
+     * @param itemStack the item to get the name from
+     * @return the name of the item
+     */
+    public static Component getItemName(ItemStack itemStack) {
+        if (itemStack.hasItemMeta()) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta.hasDisplayName()) return itemMeta.displayName();
+        }
+        // If no custom name, return default name
+        return ItemUtils.getItemTranslation(itemStack).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD);
+    }
+
+    /**
+     * Create a copy of the ShopItem
+     *
+     * @return the copied ShopItem
      */
     public ShopItem copy() {
         return new ShopItem(item.clone(), pricePerItem);
     }
 
     /**
-     * get the price of a certain amount of an item
+     * Get the price of an item based on the amount
      *
-     * @param amount amount of item
-     * @return a price
+     * @param amount the amount of the item
+     * @return the total price
      */
     public double getPrice(int amount) {
         return pricePerItem * amount;
-    }
-
-    /**
-     * get the name of an item
-     *
-     * @param itemStack the item
-     * @return default name if the item has no custom name
-     */
-    public static Component getItemName(ItemStack itemStack) {
-        if (itemStack.hasItemMeta()) {
-            ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemMeta.hasDisplayName()) {
-                return itemMeta.displayName();
-            }
-        }
-        // If no custom name, return default name
-        return ItemUtils.getItemTranslation(itemStack).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD);
     }
 }

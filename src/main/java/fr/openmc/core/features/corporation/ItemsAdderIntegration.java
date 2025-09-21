@@ -1,4 +1,4 @@
-package fr.openmc.core.disabled.corporation;
+package fr.openmc.core.features.corporation;
 
 import dev.lone.itemsadder.api.CustomFurniture;
 import dev.lone.itemsadder.api.CustomStack;
