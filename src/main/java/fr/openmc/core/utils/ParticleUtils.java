@@ -9,6 +9,9 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -18,9 +21,10 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class ParticleUtils {
+import java.util.ArrayList;
+import java.util.List;
 
-    private static final double MAX_PARTICLE_DISTANCE_SQR = 100 * 100;
+public class ParticleUtils {
 
     public static Color color1;
     public static Color color2;
@@ -42,7 +46,15 @@ public class ParticleUtils {
             @Override
             public void run() {
                 if (ContestManager.data.getPhase() == 3) return;
-
+                List<ServerPlayer> players = Bukkit.getOnlinePlayers()
+                        .stream()
+                        .filter(player ->
+                                player.getWorld().equals(world) &&
+                                        region.contains(BukkitAdapter.asBlockVector(player.getLocation())))
+                        .map(player -> ((CraftPlayer) player).getHandle())
+                        .toList();
+                if (players.isEmpty()) return;
+                List<Packet<? super ClientGamePacketListener>> particlePackets = new ArrayList<>();
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
                     double y = RandomUtils.randomBetween(minLocation.getY(), maxLocation.getY());
@@ -50,38 +62,21 @@ public class ParticleUtils {
 
                     Location particleLocation = new Location(world, x, y, z);
 
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        if (!player.getWorld().equals(world)) continue;
-
-                        if (!region.contains(BukkitAdapter.asBlockVector(player.getLocation()))) continue;
-
-                        sendParticlePacket(player, particle, particleLocation);
-                    }
+                    particlePackets.add(createParticlePacket(particle, particleLocation));
                 }
+
+                ClientboundBundlePacket bundlePacket = new ClientboundBundlePacket(particlePackets);
+                players.forEach(player -> player.connection.send(bundlePacket));
             }
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 2L);
     }
 
-    public static void sendParticlePacket(Player player, Particle particle, Location loc) {
-        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-
-        ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
-                CraftParticle.createParticleParam(particle, null),
-                false,
-                false,
-                loc.getX(), loc.getY(), loc.getZ(),
-                0.2f, 0.2f, 0.2f,
-                0.01f,
-                3
-        );
-
-        nmsPlayer.connection.send(packet);
+    public static ClientboundLevelParticlesPacket createParticlePacket(Particle particle, Location loc) {
+        return createParticlePacket(particle, loc, 3, 0.2f, 0.2f, 0.2f, 0.01f, null);
     }
 
-    public static <T> void sendParticlePacket(Player player, Location location, Particle particle, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
-        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
-
-        ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
+    public static <T> ClientboundLevelParticlesPacket createParticlePacket(Particle particle, Location location, int count, double offsetX, double offsetY, double offsetZ, double speed, T data) {
+        return new ClientboundLevelParticlesPacket(
                 CraftParticle.createParticleParam(particle, data),
                 false,
                 false,
@@ -90,8 +85,6 @@ public class ParticleUtils {
                 (float) speed,
                 count
         );
-
-        nmsPlayer.connection.send(packet);
     }
 
     public static void spawnContestParticlesInRegion(String regionId, World world, int amountPer2Tick, int minHeight, int maxHeight) {
@@ -134,71 +127,69 @@ public class ParticleUtils {
                     color2 = Color.fromRGB(rgb2[0], rgb2[1], rgb2[2]);
                 }
 
+                List<RisingDustParticle> particles = new ArrayList<>();
+                int rgbColor1 = color1.asRGB();
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
                     double y = RandomUtils.randomBetween(minLocation.getY(), maxLocation.getY());
                     double z = RandomUtils.randomBetween(minLocation.getZ(), maxLocation.getZ());
 
                     Location base = new Location(world, x, y, z);
-                    spawnRisingDustParticle(regionId, world, base, color1, 1.0f, 15, 1);
+                    particles.add(new RisingDustParticle(base, rgbColor1));
                 }
 
+                int rgbColor2 = color2.asRGB();
                 for (int i = 0; i < amountPer2Tick; i++) {
                     double x = RandomUtils.randomBetween(minLocation.getX(), maxLocation.getX());
                     double y = RandomUtils.randomBetween(minLocation.getY(), maxLocation.getY());
                     double z = RandomUtils.randomBetween(minLocation.getZ(), maxLocation.getZ());
 
                     Location base = new Location(world, x, y, z);
-                    spawnRisingDustParticle(regionId, world, base, color2, 1.0f, 15, 1);
+                    particles.add(new RisingDustParticle(base, rgbColor2));
                 }
+                spawnRisingDustParticles(regionId, world, particles, 1.0f, 15, 1);
             }
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 2L);
     }
 
-    public static void spawnRisingDustParticle(String regionId, World world, Location origin, Color color, float size, int steps, int count) {
+    public static void spawnRisingDustParticles(String regionId, World world, List<RisingDustParticle> particles, float size, int steps, int count) {
         RegionManager regionManager = WorldGuard.getInstance().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
         if (regionManager == null) return;
 
         ProtectedRegion region = regionManager.getRegion(regionId);
         if (region == null) return;
 
-        Vec3 current = new Vec3(origin.getX(), origin.getY(), origin.getZ());
-        Vec3 step = new Vec3(0, 0.10, 0);
-
-        int rgb = color.asRGB();
-
-        DustParticleOptions dust = new DustParticleOptions(rgb, size);
-
         new BukkitRunnable() {
             int stepCount = 0;
-            Vec3 position = current;
-
             @Override
             public void run() {
                 if (stepCount > steps) {
                     cancel();
                     return;
                 }
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (!player.getWorld().equals(world)) continue;
-
-                    if (!region.contains(BukkitAdapter.asBlockVector(player.getLocation()))) continue;
-
-                    if (player.getLocation().distanceSquared(origin) > MAX_PARTICLE_DISTANCE_SQR) continue;
-
-                    ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+                List<Packet<? super ClientGamePacketListener>> particlePackets = new ArrayList<>();
+                for (RisingDustParticle particle : particles) {
+                    Vec3 position = new Vec3(particle.origin.getX(), particle.origin.getY() + (stepCount * 0.10), particle.origin.getZ());
                     ClientboundLevelParticlesPacket packet = new ClientboundLevelParticlesPacket(
-                            dust, true, true,
+                            new DustParticleOptions(particle.color, size), true, true,
                             position.x, position.y, position.z,
                             0, 0.1f, 0, 0.01f, count
                     );
-                    nmsPlayer.connection.send(packet);
+                    particlePackets.add(packet);
                 }
-
-                position = position.add(step);
+                if (!particlePackets.isEmpty()) {
+                    ClientboundBundlePacket bundlePacket = new ClientboundBundlePacket(particlePackets);
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        if (!player.getWorld().equals(world)) continue;
+                        if (!region.contains(BukkitAdapter.asBlockVector(player.getLocation()))) continue;
+                        ServerPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+                        nmsPlayer.connection.send(bundlePacket);
+                    }
+                }
                 stepCount++;
             }
         }.runTaskTimerAsynchronously(OMCPlugin.getInstance(), 0L, 1L);
     }
+
+    public record RisingDustParticle(Location origin, int color) {}
 }

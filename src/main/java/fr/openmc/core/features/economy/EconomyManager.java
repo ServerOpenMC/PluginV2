@@ -153,7 +153,7 @@ public class EconomyManager {
 
     public static String getEconomyIcon() {
         if (ItemsAdderHook.hasItemAdder()) {
-            return FontImageWrapper.replaceFontImages("§f:aywenito:");
+            return FontImageWrapper.replaceFontImages(":aywenito:");
         } else {
             return "Ⓐ";
         }

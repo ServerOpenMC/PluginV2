@@ -11,6 +11,7 @@ import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -21,21 +22,32 @@ import java.util.List;
 
 public class CachedIconItem {
 
-    @Getter private final HomeIcon homeIcon;
+    @Getter
+    private final HomeIcon homeIcon;
     private final ItemStack normalItemWithBuilder, selectedItemWithBuilder;
     private final Component displayName, normalLore, selectedLore;
 
     /**
      * Constructs a CachedIconItem with the specified HomeIcon and base ItemStack.
      *
-     * @param homeIcon        The HomeIcon to be cached.
-     * @param baseItemStack   The base ItemStack to use for creating the normal and selected items.
+     * @param homeIcon      The HomeIcon to be cached.
+     * @param baseItemStack The base ItemStack to use for creating the normal and selected items.
      */
     public CachedIconItem(HomeIcon homeIcon, ItemStack baseItemStack) {
         this.homeIcon = homeIcon;
-        this.displayName = Component.text("§a" + homeIcon.getVanillaName());
-        this.normalLore = Component.text("§7■ §aClique §2gauche §apour changer l'icône");
-        this.selectedLore = Component.text("§8[§a✔§8] §7Icône actuelle");
+        this.displayName = Component.text(homeIcon.getVanillaName()).color(NamedTextColor.GREEN);
+        this.normalLore = Component.text()
+                .append(Component.text("■ ").color(NamedTextColor.GRAY))
+                .append(Component.text("Clique ").color(NamedTextColor.GREEN))
+                .append(Component.text("gauche ").color(NamedTextColor.DARK_GREEN))
+                .append(Component.text("pour changer l'icône").color(NamedTextColor.GREEN))
+                .build();
+        this.selectedLore = Component.text()
+                .append(Component.text("[").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text("✔").color(NamedTextColor.GREEN))
+                .append(Component.text("] ").color(NamedTextColor.DARK_GRAY))
+                .append(Component.text("Icône actuelle").color(NamedTextColor.GRAY))
+                .build();
 
         this.normalItemWithBuilder = createNormalItemWithBuilder(baseItemStack);
         this.selectedItemWithBuilder = createSelectedItemWithBuilder(baseItemStack);

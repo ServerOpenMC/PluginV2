@@ -3,6 +3,11 @@ package fr.openmc.core.features.cube;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlock;
+import fr.openmc.core.utils.ParticleUtils;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBundlePacket;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -12,10 +17,14 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // Les Restes du Cube. Aucun mouvement possible, juste pour le lore, les souvenirs, l'easter egg, bref :)
 // - iambibi_
@@ -124,6 +133,9 @@ public class Cube extends MultiBlock {
 
     public void startMagneticShock() {
         World world = this.origin.getWorld();
+        List<ServerPlayer> players = this.getCenter().getNearbyPlayers(50).stream().map(player -> ((CraftPlayer) player).getHandle()).toList();
+        if (players.isEmpty()) return;
+        List<Packet<? super ClientGamePacketListener>> particlePackets = new ArrayList<>();
 
         world.strikeLightningEffect(this.getCenter());
 
@@ -142,13 +154,14 @@ public class Cube extends MultiBlock {
 
             for (int j = 1; j <= shockRadius; j++) {
                 Location point = center.clone().add(dir.clone().multiply(j));
-                world.spawnParticle(
+                particlePackets.add(ParticleUtils.createParticlePacket(
                         Particle.ELECTRIC_SPARK,
                         point,
                         2,
                         0.05, 0.05, 0.05,
-                        0.01
-                );
+                        0.01,
+                        null
+                ));
             }
         }
 
@@ -163,31 +176,50 @@ public class Cube extends MultiBlock {
                         powerable.setPowered(!powerable.isPowered());
                         block.setBlockData(powerable, true);
 
-                        world.spawnParticle(Particle.ELECTRIC_SPARK, loc.add(0.5, 0.5, 0.5), 8,
-                                0.2, 0.2, 0.2
-                        );
+                        particlePackets.add(ParticleUtils.createParticlePacket(
+                                Particle.ELECTRIC_SPARK,
+                                loc.add(0.5, 0.5, 0.5),
+                                8,
+                                0.2, 0.2, 0.2,
+                                0.2,
+                                null
+                        ));
                     }
 
                     if (data instanceof Lightable lightable && data instanceof Powerable) {
                         lightable.setLit(!lightable.isLit());
                         block.setBlockData(lightable, true);
-
-                        world.spawnParticle(Particle.ENCHANT, loc.add(0.5, 0.5, 0.5), 8,
-                                0.2, 0.2, 0.2
-                        );
+                        particlePackets.add(ParticleUtils.createParticlePacket(
+                                Particle.ELECTRIC_SPARK,
+                                loc.add(0.5, 0.5, 0.5),
+                                8,
+                                0.2, 0.2, 0.2,
+                                0.2,
+                                null
+                        ));
                     }
                 }
             }
         }
 
+        int shockRadiusSq = shockRadius * shockRadius;
         for (Player player : world.getPlayers()) {
-            if (player.getLocation().distance(this.getCenter()) <= shockRadius) {
-                world.spawnParticle(Particle.FLASH, player.getLocation().add(0, 1, 0), 5, 0.3, 0.5, 0.3, 0.01);
+            if (player.getLocation().distanceSquared(this.getCenter()) <= shockRadiusSq) {
+                particlePackets.add(ParticleUtils.createParticlePacket(
+                        Particle.ELECTRIC_SPARK,
+                        player.getLocation().add(0, 1, 0),
+                        5,
+                        0.3, 0.5, 0.3,
+                        0.01,
+                        null
+                ));
                 world.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1f, 1f);
             } else {
                 world.playSound(player.getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 0.2f, 2f);
             }
         }
+        ClientboundBundlePacket bundlePacket = new ClientboundBundlePacket(particlePackets);
+        players.forEach(player -> player.connection.send(bundlePacket));
     }
 
     public final int RADIUS_BUBBLE = this.radius * 3;
@@ -242,11 +274,13 @@ public class Cube extends MultiBlock {
     }
 
     public void startBubbleParticles() {
-        World world = this.origin.getWorld();
         Location center = this.getCenter();
         double radius = RADIUS_BUBBLE;
 
         Bukkit.getScheduler().runTaskTimer(OMCPlugin.getInstance(), () -> {
+            List<ServerPlayer> players = this.getCenter().getNearbyPlayers(50).stream().map(player -> ((CraftPlayer) player).getHandle()).toList();
+            if (players.isEmpty()) return;
+            List<Packet<? super ClientGamePacketListener>> particlePackets = new ArrayList<>();
             for (int i = 0; i < 50; i++) {
                 double theta = Math.random() * 2 * Math.PI;
                 double phi = Math.random() * Math.PI;
@@ -255,7 +289,14 @@ public class Cube extends MultiBlock {
                 double z = radius * Math.sin(phi) * Math.sin(theta);
 
                 Location particleLoc = center.clone().add(x, y, z);
-                world.spawnParticle(Particle.OMINOUS_SPAWNING, particleLoc, 1, 0.1, 0.1, 0.1, 0);
+                particlePackets.add(ParticleUtils.createParticlePacket(
+                        Particle.OMINOUS_SPAWNING,
+                        particleLoc,
+                        1,
+                        0.1, 0.1, 0.1,
+                        0,
+                        null
+                ));
             }
 
             for (double theta = 0; theta < Math.PI; theta += Math.PI / 16) {
@@ -267,9 +308,18 @@ public class Cube extends MultiBlock {
                     Location particleLoc = center.clone().add(x, y, z);
 
                     Vector dir = center.clone().subtract(particleLoc).toVector().normalize();
-                    world.spawnParticle(Particle.SNEEZE, particleLoc, 1, dir.getX(), dir.getY(), dir.getZ(), 0.1);
+                    particlePackets.add(ParticleUtils.createParticlePacket(
+                            Particle.SNEEZE,
+                            particleLoc,
+                            1,
+                            dir.getX(), dir.getY(), dir.getZ(),
+                            0.1,
+                            null
+                    ));
                 }
             }
+            ClientboundBundlePacket bundlePacket = new ClientboundBundlePacket(particlePackets);
+            players.forEach(player -> player.connection.send(bundlePacket));
         }, 0L, 20L);
     }
 
