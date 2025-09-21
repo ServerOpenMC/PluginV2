@@ -3,7 +3,6 @@ package fr.openmc.core.features.tickets.menus;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.tickets.PlayerStats;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -47,6 +46,9 @@ public class MachineBallsMenu extends Menu {
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> items = new HashMap<>();
 
+        PlayerStats stats = TicketManager.getPlayerStats(getOwner().getUniqueId());
+        int tickets = stats != null ? stats.getTicketRemaining() : 0;
+
         items.put(2, new ItemBuilder(
                 this,
                 Material.PAPER,
@@ -62,11 +64,11 @@ public class MachineBallsMenu extends Menu {
         ).setOnClick(
                 e -> {
                     e.getWhoClicked().closeInventory();
-                    if (TicketManager.getPlayerStats(getOwner().getUniqueId()) == null) {
+                    if (stats == null) {
                         MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de statistique pour récupérer des tickets."), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
-                    if (TicketManager.getPlayerStats(getOwner().getUniqueId()).isTicketGiven()) {
+                    if (stats.isTicketGiven()) {
                         MessagesManager.sendMessage(getOwner(), Component.text("§cVous avez déjà récupéré vos tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
@@ -87,13 +89,13 @@ public class MachineBallsMenu extends Menu {
                     itemMeta.lore(
                         List.of(
                             Component.text("§7Ouvrir une box avec 1 ticket."),
-                            Component.text("§7Vous avez actuellement §e%s §7tickets.".formatted(TicketManager.getPlayerStats(getOwner().getUniqueId()).getTicketRemaining()))
+                            Component.text("§7Vous avez actuellement §e%s §7tickets.".formatted(tickets))
                     ));
                 }
         ).setOnClick(
                 e -> {
                     e.getWhoClicked().closeInventory();
-                    if (TicketManager.getPlayerStats(getOwner().getUniqueId()).getTicketRemaining() <= 0) {
+                    if (tickets <= 0) {
                         MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas assez de tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;
                     }
