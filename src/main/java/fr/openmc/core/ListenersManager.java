@@ -2,6 +2,9 @@ package fr.openmc.core;
 
 import fr.openmc.api.input.ChatInput;
 import fr.openmc.api.input.location.ItemInteraction;
+import fr.openmc.core.features.cube.listeners.CubeListener;
+import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
+import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
 import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
 import fr.openmc.core.features.mailboxes.MailboxListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -23,7 +26,9 @@ public class ListenersManager {
                 new ClockInfos(),
                 new MailboxListener(),
                 new ChronometerListener(),
-                new CubeListener(OMCPlugin.getInstance()),
+                new CubeListener(),
+                new RepulseEffectListener(),
+                new MultiBlocksListeners(),
                 new ItemInteraction(),
                 new ChatInput(),
                 new RespawnListener(),
