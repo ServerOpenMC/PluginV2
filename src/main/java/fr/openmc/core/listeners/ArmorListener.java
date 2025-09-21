@@ -89,11 +89,6 @@ public class ArmorListener implements Listener {
         if(event.getAction() == Action.PHYSICAL) return;
         if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             Player player = event.getPlayer();
-            if(!event.useInteractedBlock().equals(Event.Result.DENY)) {
-                if(event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK && !player.isSneaking()) {
-                    Material mat = event.getClickedBlock().getType();
-                }
-            }
             ArmorType newArmorType = ArmorType.match(event.getItem());
             if (newArmorType == null) return;
             if(newArmorType.equals(ArmorType.HELMET)
