@@ -4,6 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.tickets.PlayerStats;
 import fr.openmc.core.features.tickets.TicketManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -61,6 +62,10 @@ public class MachineBallsMenu extends Menu {
         ).setOnClick(
                 e -> {
                     e.getWhoClicked().closeInventory();
+                    if (TicketManager.getPlayerStats(getOwner().getUniqueId()) == null) {
+                        MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de statistique pour récupérer des tickets."), Prefix.OPENMC, MessageType.ERROR, true);
+                        return;
+                    }
                     if (TicketManager.getPlayerStats(getOwner().getUniqueId()).isTicketGiven()) {
                         MessagesManager.sendMessage(getOwner(), Component.text("§cVous avez déjà récupéré vos tickets !"), Prefix.OPENMC, MessageType.ERROR, true);
                         return;

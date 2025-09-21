@@ -111,7 +111,7 @@ public class TicketManager {
         return timePlayed.stream()
                 .filter(stats -> stats.getUniqueID().equals(uuid))
                 .findFirst()
-                .orElse(PlayerStats.notExisting());
+                .orElse(null);
     }
 
     /**
