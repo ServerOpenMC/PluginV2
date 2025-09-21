@@ -66,7 +66,11 @@ public class MachineBallsMenu extends Menu {
                         return;
                     }
                     int ticketsToGive = TicketManager.giveTicket(getOwner().getUniqueId());
-                    MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez reçu §e%s §atickets !".formatted(ticketsToGive)), Prefix.OPENMC, MessageType.SUCCESS, true);
+                    if (ticketsToGive <= 0) {
+                        MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de tickets à récupérer !"), Prefix.OPENMC, MessageType.ERROR, true);
+                    } else {
+                        MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez reçu §e%s §atickets !".formatted(ticketsToGive)), Prefix.OPENMC, MessageType.SUCCESS, true);
+                    }
                 }
         ));
 
