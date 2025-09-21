@@ -1,7 +1,9 @@
 package fr.openmc.core.listeners;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.events.ArmorEquipEvent;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ArmorType;
 import fr.openmc.core.utils.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,12 +28,10 @@ public class AywenCapListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getWhoClicked() instanceof Player player)) return;
-
-        ItemStack clickedItem = event.getCurrentItem();
-        if (event.getSlotType() == InventoryType.SlotType.ARMOR)
-            player.getServer().getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> updateEffect(player), 1L);
+    public void onPlayerEquip(ArmorEquipEvent event) {
+        if (event.getType() == null || !event.getType().equals(ArmorType.HELMET)) return;
+        Player player = event.getPlayer();
+        player.getServer().getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> updateEffect(player), 1L);
     }
 
     @EventHandler

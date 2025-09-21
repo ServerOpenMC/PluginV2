@@ -35,7 +35,8 @@ public class ListenersManager {
                 new InteractListener(),
                 new ItemsAddersListener(),
                 new TicketListener(),
-                new AywenCapListener()
+                new AywenCapListener(),
+                new ArmorListener()
         );
     }
 
