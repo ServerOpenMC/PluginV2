@@ -23,9 +23,7 @@ public class CityRankAction {
 
     public static void beginCreateRank(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (!CityRankCondition.canCreateRank(city, player)) {
-            return;
-        }
+	    if (! CityRankCondition.canCreateRank(city, player)) return;
 
         DialogInput.send(player, Component.text("Entrez le nom de votre grade"), MAX_LENGTH_RANK_NAME, input -> {
                     if (input == null) return;
@@ -37,9 +35,7 @@ public class CityRankAction {
 
     public static void afterCreateRank(Player player, String rankName) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (!CityRankCondition.canCreateRank(city, player)) {
-            return;
-        }
+	    if (! CityRankCondition.canCreateRank(city, player)) return;
 
         if (city.isRankExists(rankName)) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_ALREADY_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -51,17 +47,13 @@ public class CityRankAction {
 
     public static void renameRank(Player player, String oldName) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
-        if (!CityRankCondition.canRenameRank(city, player, oldName)) {
-            return;
-        }
+	    if (! CityRankCondition.canRenameRank(city, player, oldName)) return;
 
         DialogInput.send(player, Component.text("Entrez le nouveau nom de votre grade"), MAX_LENGTH_RANK_NAME, input -> {
             if (input == null) return;
-
-            if (!CityRankCondition.canRenameRank(city, player, oldName)) {
-                return;
-            }
-
+	        
+	        if (! CityRankCondition.canRenameRank(city, player, oldName)) return;
+            
             DBCityRank rank = city.getRankByName(oldName);
             if (rank == null) {
                 MessagesManager.sendMessage(player, MessagesManager.Message.CITY_RANKS_NOT_EXIST.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -103,10 +95,8 @@ public class CityRankAction {
                 MessagesManager.sendMessage(player, Component.text("Impossible de supprimer le grade : " + e.getMessage()), Prefix.CITY, MessageType.ERROR, false);
             }
         }, () -> {
-            if (!CityRankCondition.canDeleteRank(city, player, rankName)) {
-                return;
-            }
-
+	        if (! CityRankCondition.canDeleteRank(city, player, rankName)) return;
+            
             new CityRankDetailsMenu(player, city, rank).open();
         }, List.of(Component.text("§cCette action est irréversible")), List.of()).open();
     }
