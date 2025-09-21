@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum TutorialStep {
     BREAK_AYWENITE(null),
     CITY_CREATE(null),
+    CITY_LEVEL_2(null),
     HOME_CREATE(null),
     HOME_UPGRADE(null),
     OPEN_QUEST(null),
@@ -31,6 +32,7 @@ public enum TutorialStep {
     static {
         BREAK_AYWENITE.quest = new BreakAyweniteQuest();
         CITY_CREATE.quest = new CityCreateQuest();
+        CITY_LEVEL_2.quest = new CityLevel2Quest();
         HOME_CREATE.quest = new HomeCreateQuest();
         HOME_UPGRADE.quest = new HomeUpgradeQuest();
         OPEN_QUEST.quest = new OpenQuestMenuQuest();

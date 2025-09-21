@@ -118,6 +118,8 @@ public class HomeChangeIconMenu extends PaginatedMenu {
                 getOwner().closeInventory();
 
                 DialogInput.send(getOwner(), Component.text("Entrez votre recherche pour un item"), MAX_LENGTH, input -> {
+                    if (input == null) return;
+
                     searchQuery = input;
                     currentCategory = IconCategory.ALL;
                     setPage(0);

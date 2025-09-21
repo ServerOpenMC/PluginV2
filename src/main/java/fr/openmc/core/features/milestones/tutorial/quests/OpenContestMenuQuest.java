@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -13,12 +14,14 @@ import fr.openmc.core.features.quests.rewards.QuestTextReward;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.Prefix;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +60,20 @@ public class OpenContestMenuQuest extends Quest implements Listener {
                             aywenite.setAmount(30);
                             items.add(aywenite);
 
-                            //TODO: ajouter les tickets de la V1
+                            FileConfiguration config = OMCPlugin.getConfigs();
+                            if (config != null) {
+                                LocalDate today = LocalDate.now();
+                                LocalDate limitDate = LocalDate.of(
+                                        config.getInt("features.aywen_pelush.year", 2025),
+                                        config.getInt("features.aywen_pelush.month", 11),
+                                        config.getInt("features.aywen_pelush.day", 3)
+                                );
+
+                                if (!limitDate.isBefore(today)) {
+                                    ItemStack aywenPlush = CustomItemRegistry.getByName("omc_plush:peluche_awyen").getBest();
+                                    items.add(aywenPlush);
+                                }
+                            }
 
                             ItemStack[] itemsArray = items.toArray(new ItemStack[0]);
 

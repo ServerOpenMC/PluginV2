@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static fr.openmc.core.features.city.CityManager.citiesByName;
 import static fr.openmc.core.features.city.actions.CityCreateAction.FREE_CLAIMS;
 
 public class City {
@@ -143,6 +144,10 @@ public class City {
     }
 
     public void rename(String newName) {
+
+        citiesByName.remove(name);
+        citiesByName.put(newName, this);
+
         this.name = newName;
 
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () ->

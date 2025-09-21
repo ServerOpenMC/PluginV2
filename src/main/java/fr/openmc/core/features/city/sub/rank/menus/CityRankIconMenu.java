@@ -116,6 +116,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 			itemMeta.lore(List.of(Component.text("§7Cliquez pour saisir un mot-clé")));
 		}).setOnClick(event -> {
 			DialogInput.send(getOwner(), Component.text("Entrez le nom d'un mot clé pour l'icône"), MAX_LENGTH, input -> {
+                if (input == null) return;
 				new CityRankIconMenu(getOwner(), city, 0, rank, input).open();
 			});
 		}));

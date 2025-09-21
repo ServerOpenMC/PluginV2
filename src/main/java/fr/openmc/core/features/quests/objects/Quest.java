@@ -280,7 +280,7 @@ public class Quest {
                 }
 
                 Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                    Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player));
+                    Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player, this));
                 });
 
                 Component titleMain = Component.text(

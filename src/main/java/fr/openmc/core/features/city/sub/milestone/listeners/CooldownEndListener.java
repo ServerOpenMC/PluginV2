@@ -1,16 +1,19 @@
 package fr.openmc.core.features.city.sub.milestone.listeners;
 
 import fr.openmc.api.cooldown.CooldownEndEvent;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.milestone.CityLevels;
+import fr.openmc.core.features.city.sub.milestone.events.CityUpgradeEvent;
 import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -25,9 +28,14 @@ public class CooldownEndListener implements Listener {
 
         City city = CityManager.getCity(event.getCooldownUUID());
 
+        if (city == null) return;
+
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new CityUpgradeEvent(city))
+        );
+
         int oldLevel = city.getLevel();
         boolean hadMayorBefore = FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR);
-
 
         if (oldLevel + 1 > CityLevels.values().length) return;
 

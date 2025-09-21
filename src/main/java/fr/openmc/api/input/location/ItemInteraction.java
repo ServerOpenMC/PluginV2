@@ -97,7 +97,6 @@ public class ItemInteraction implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
         if (isItemInteraction(item)) {
-
             event.setCancelled(true);
 
             String interactionId = item.getItemMeta().getPersistentDataContainer().get(NAMESPACE_KEY, PersistentDataType.STRING);
@@ -133,7 +132,6 @@ public class ItemInteraction implements Listener {
                             }
 
                             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(interactionId);
-
 
                             int slotOfItem = ItemUtils.getSlotOfItem(player, item);
 

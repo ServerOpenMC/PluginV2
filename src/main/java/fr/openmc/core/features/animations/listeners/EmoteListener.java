@@ -97,14 +97,14 @@ public class EmoteListener implements Listener {
         PlayerAnimationInfo info = playingAnimations.remove(player);
         if (info == null) return;
 
-        restoreHead(player);
-
         sendCamera(player, player);
         if (info.getArmorStand() != null)
             info.getArmorStand().remove();
 
         if (info.getTask() != null)
             info.getTask().cancel();
+
+        restoreHead(player);
     }
 
     /**
@@ -125,7 +125,6 @@ public class EmoteListener implements Listener {
         info.setOldRotations(new Float[]{player.getLocation().getYaw(), player.getLocation().getPitch()});
 
         Location loc = player.getLocation().clone();
-
         loc.setYaw(180f);
         loc.setPitch(0f);
 

@@ -44,6 +44,7 @@ public class CityCreateAction {
     private static final Map<UUID, String> pendingCities = new HashMap<>();
 
     public static void beginCreateCity(Player player, String cityName) {
+        if (cityName == null) return;
         if (!CityCreateConditions.canCityCreate(player, cityName)) return;
 
         pendingCities.put(player.getUniqueId(), cityName);
@@ -60,6 +61,7 @@ public class CityCreateAction {
                 "§cCréation annulée",
                 location -> {
                     if (!isValidLocation(player, location)) return false;
+
                     return finalizeCreation(player, location);
                 },
                 () -> {
@@ -99,11 +101,6 @@ public class CityCreateAction {
     }
 
     public static boolean finalizeCreation(Player player, Location mascotLocation) {
-        UUID playerUUID = player.getUniqueId();
-        String pendingCityName = pendingCities.remove(playerUUID);
-        if (pendingCityName == null) return false;
-
-        UUID cityUUID = UUID.randomUUID();
         Chunk chunk = mascotLocation.getChunk();
 
         if (WorldGuardHook.doesChunkContainWGRegion(chunk)) {
@@ -115,6 +112,12 @@ public class CityCreateAction {
             MessagesManager.sendMessage(player, Component.text("Une des parcelles autour de ce chunk est claim!"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
+        UUID cityUUID = UUID.randomUUID();
+
+        UUID playerUUID = player.getUniqueId();
+        String pendingCityName = pendingCities.remove(playerUUID);
+        if (pendingCityName == null) return false;
 
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
 

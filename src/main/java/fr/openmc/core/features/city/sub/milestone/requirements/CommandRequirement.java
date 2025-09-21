@@ -85,7 +85,7 @@ public class CommandRequirement implements EventCityRequirement {
      */
     @Override
     public Component getName(City city, CityLevels level) {
-        if (city.getLevel() > level.ordinal()) {
+        if (city.getLevel() != level.ordinal()) {
             return Component.text(String.format(
                     "Exécuter %d fois %s",
                     amountRequired, command

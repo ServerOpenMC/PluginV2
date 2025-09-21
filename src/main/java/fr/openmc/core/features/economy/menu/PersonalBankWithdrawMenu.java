@@ -97,9 +97,11 @@ public class PersonalBankWithdrawMenu extends Menu {
             itemMeta.itemName(Component.text("§7Prendre un §6montant précis"));
             itemMeta.lore(loreBankWithdrawInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input ->
-                    BankManager.withdraw(player.getUniqueId(), input)
-            );
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input -> {
+                if (input == null) return;
+
+                BankManager.withdraw(player.getUniqueId(), input);
+            });
         }));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {

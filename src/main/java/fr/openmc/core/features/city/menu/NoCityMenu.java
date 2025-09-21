@@ -116,8 +116,10 @@ public class NoCityMenu extends Menu {
                 }).setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(player.getUniqueId(), "city:big")) return;
 
-                    DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input ->
-                            CityCreateAction.beginCreateCity(player, input)
+                    DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input -> {
+                                if (input == null) return;
+                                CityCreateAction.beginCreateCity(player, input);
+                            }
                     );
                 });
             };

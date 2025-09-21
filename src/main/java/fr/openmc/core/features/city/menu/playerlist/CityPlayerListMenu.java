@@ -190,6 +190,8 @@ public class CityPlayerListMenu extends PaginatedMenu {
             );
         }).setOnClick(inventoryClickEvent -> {
             DialogInput.send(player, Component.text("Entrez le nom du joueur"), MAX_LENGTH_PLAYERNAME, input -> {
+                if (input == null) return;
+
                 if (InputUtils.isInputPlayer(input)) {
                     Player playerToInvite = Bukkit.getPlayer(input);
                     CityCommands.invite(player, playerToInvite);

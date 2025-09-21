@@ -68,7 +68,7 @@ public class AdminShopManager {
         ShopItem item = getItemSafe(player, categoryId, itemId);
         if (item == null) return;
 
-        if (ItemUtils.hasEnoughItems(player, item.getMaterial(), 1)) {
+        if (!ItemUtils.hasEnoughItems(player, item.getMaterial(), 1)) {
             sendError(player, "Vous n'avez pas cet item dans votre inventaire !");
             return;
         }

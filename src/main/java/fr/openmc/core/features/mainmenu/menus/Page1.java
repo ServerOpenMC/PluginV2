@@ -219,7 +219,7 @@ public class Page1 implements Menu {
         } else if (QUEST_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> QuestCommand.onQuest(player));
         } else if (MILESTONES_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new MainMilestonesMenu(player));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> new MainMilestonesMenu(player).open());
         } else if (CONTEST_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> ContestCommand.mainCommand(player));
         } else if (SHOP_SLOTS.contains(slot)) {

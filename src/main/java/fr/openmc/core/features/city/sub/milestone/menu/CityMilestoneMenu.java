@@ -162,9 +162,9 @@ public class CityMilestoneMenu extends Menu {
         lore.add(Component.text("§3§lRequis :"));
 
         for (CityRequirement requirement : level.getRequirements()) {
-            lore.add(Component.text((requirement.isDone(city, level) ? "§l✔ " : "§l✖ "))
+            lore.add(Component.text((city.getLevel() < level.ordinal() ? "§l¤ " : requirement.isDone(city, level) ? "§l✔ " : "§l✖ "))
                     .append(requirement.getName(city, level))
-                    .color(requirement.isDone(city, level) ? NamedTextColor.GREEN : NamedTextColor.RED)
+                    .color(city.getLevel() < level.ordinal() ? NamedTextColor.DARK_GRAY : requirement.isDone(city, level) ? NamedTextColor.GREEN : NamedTextColor.RED)
                     .decoration(TextDecoration.ITALIC, false));
         }
 
@@ -180,7 +180,7 @@ public class CityMilestoneMenu extends Menu {
             lore.add(Component.text("§a§lDÉBLOQUÉ"));
         } else {
             lore.add(Component.empty());
-            if (DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") != 0) {
+            if (DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") != 0 && city.getLevel() + 1 == level.ordinal() + 1) {
                 lore.add(Component.text("§fIl reste §3" +
                         DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level")) +
                         " §fde débloquage"));

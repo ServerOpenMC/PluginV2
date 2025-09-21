@@ -28,7 +28,7 @@ public class CityClaimCondition {
      * @return booleen
      */
     public static boolean canCityClaim(City city, Player player) {
-        if (player.getWorld() != Bukkit.getWorld("world")) return false ;
+        if (player.getWorld() != Bukkit.getWorld("world")) return false;
         
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
@@ -39,6 +39,8 @@ public class CityClaimCondition {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de claim"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
+
+        if (city.getFreeClaims() > 0) return true;
 
         int amount = CityClaimAction.calculateAywenite(city.getChunks().size());
         if (!ItemUtils.hasEnoughItems(player, CustomItemRegistry.getByName("omc_items:aywenite").getBest(), amount)) {
@@ -55,7 +57,7 @@ public class CityClaimCondition {
         double money = CityClaimAction.calculatePrice(city.getChunks().size());
 
         if (city.getBalance() < money) {
-            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'Argent pour claim (" + money).append(Component.text(EconomyManager.getEconomyIcon() + " §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("§cTu n'as pas assez d'argent dans ta banque pour claim (" + money).append(Component.text(EconomyManager.getEconomyIcon() + " §cnécessaires)")).decoration(TextDecoration.ITALIC, false), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

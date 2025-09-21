@@ -2,7 +2,6 @@ package fr.openmc.core.features.city.sub.notation.menu;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.notation.NotationNote;
@@ -76,7 +75,7 @@ public class NotationDialog {
                 .append(Component.text(PaddingUtils.format("Milit.", LENGTH_CASE)).hoverEvent(getHoverMilitary())).append(Component.text(" | "))
                 .append(Component.text(PaddingUtils.format("Arch.", LENGTH_CASE)).hoverEvent(getHoverArchitectural())).append(Component.text(" | "))
                 .append(Component.text(PaddingUtils.format("Coh.", LENGTH_CASE)).hoverEvent(getHoverCoherence())).append(Component.text(" | "))
-                .append(Component.text(PaddingUtils.format("Total", LENGTH_CASE)).hoverEvent(getHoverTotal(city.getNotationOfWeek(weekStr)))).append(Component.text(" | "))
+                .append(Component.text(PaddingUtils.format("Total", LENGTH_CASE)).hoverEvent(getHoverTotal(city == null ? null : city.getNotationOfWeek(weekStr)))).append(Component.text(" | "))
                 .append(Component.text(PaddingUtils.format("Argent", LENGTH_CASE)));
 
         header.font(Key.key(FONT));
@@ -130,7 +129,7 @@ public class NotationDialog {
                     .append(Component.text(" | "))
                     .append(Component.text(PaddingUtils.format(coh, LENGTH_CASE)).hoverEvent(getHoverCoherence()))
                     .append(Component.text(" | "))
-                    .append(Component.text(PaddingUtils.format(total, LENGTH_CASE)).hoverEvent(getHoverTotal(city.getNotationOfWeek(weekStr))))
+                    .append(Component.text(PaddingUtils.format(total, LENGTH_CASE)).hoverEvent(getHoverTotal(city == null ? null : city.getNotationOfWeek(weekStr))))
                     .append(Component.text(" | "))
                     .append(Component.text("§6 +" + PaddingUtils.format(money, LENGTH_CASE)));
 

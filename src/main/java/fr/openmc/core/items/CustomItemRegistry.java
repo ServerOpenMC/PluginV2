@@ -61,6 +61,7 @@ public class CustomItemRegistry {
         /* Blocs */
         registerSimpleItem("omc_blocks:aywenite_block", Material.AMETHYST_BLOCK);
         registerSimpleItem("omc_plush:peluche_seinyy", Material.PAPER);
+        registerSimpleItem("omc_plush:peluche_awyen", Material.PAPER);
         registerSimpleItem("omc_blocks:urne", Material.GLASS);
 
         /* Homes icons */

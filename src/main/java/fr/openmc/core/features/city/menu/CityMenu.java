@@ -330,7 +330,8 @@ public class CityMenu extends Menu {
                     );
                 } else {
                     loreElections = List.of(
-                            Component.text("§cErreur")
+                            Component.text("§cErreur"),
+                            Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
                     );
                 }
             } else {

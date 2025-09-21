@@ -67,6 +67,12 @@ public class CityInviteConditions {
 	 */
 	public static boolean canCityInviteDeny(Player player, Player inviter) {
 		List<Player> playerInvitations = CityCommands.invitations.get(player);
+
+		if (playerInvitations == null) {
+			MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
+			return false;
+		}
+
 		if (!playerInvitations.contains(inviter)) {
 			MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
 			return false;

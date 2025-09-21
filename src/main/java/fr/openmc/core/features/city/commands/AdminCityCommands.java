@@ -1,10 +1,11 @@
 package fr.openmc.core.features.city.commands;
 
-import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.core.features.city.*;
+import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.ProtectionsManager;
 import fr.openmc.core.features.city.actions.CityTransferAction;
-import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.city.sub.mascots.models.Mascot;
+import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -12,8 +13,6 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
@@ -113,13 +112,18 @@ public class AdminCityCommands {
             return;
         }
 
-        CityMessages.sendInfo(player, city);
+        new CityListDetailsMenu(player, city).open();
     }
 
     @Subcommand("rename")
     @CommandPermission("omc.admins.commands.admincity.rename")
     void rename(Player player, @Named("name") String name, @Named("nouveau nom") String newName) {
-        // Aucune vérification de nom, mais il faut espérer que le nom est valide
+        City newNameCity = CityManager.getCityByName(newName);
+        if (newNameCity != null) {
+            MessagesManager.sendMessage(player, Component.text("Une ville a déjà le nom que vous voulez mettre"), Prefix.STAFF, MessageType.ERROR, false);
+            return;
+        }
+
         City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -132,7 +136,7 @@ public class AdminCityCommands {
 
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
-    void setOwner(Player player, @Named("name") String name, @Named("nouveau maire") Player newOwner) {
+    void setOwner(Player player, @Named("name") String name, @Named("nouveau propriétaire") Player newOwner) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
@@ -168,8 +172,8 @@ public class AdminCityCommands {
         MessagesManager.sendMessage(player, Component.text("Le solde de la ville est de "+ city.getBalance()+ EconomyManager.getEconomyIcon()), Prefix.STAFF, MessageType.INFO, false);
     }
 
-    @Subcommand("add")
-    @CommandPermission("omc.admins.commands.admincity.add")
+    @Subcommand("addPlayer")
+    @CommandPermission("omc.admins.commands.admincity.addplayer")
     void add(Player player, @Named("name") String name, Player newMember) {
         City city = CityManager.getCityByName(name);
 
@@ -266,47 +270,5 @@ public class AdminCityCommands {
             return;
         }
         city.updateFreeClaims(-city.getFreeClaims());
-    }
-
-    @Subcommand("mascots remove")
-    @CommandPermission("omc.admins.commands.admcity.mascots.remove")
-    public void forceRemoveMascots(Player sender, @Named("player") Player target) {
-        City city = CityManager.getPlayerCity(target.getUniqueId());
-
-        if (city == null) {
-            MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        MascotsManager.removeMascotsFromCity(city);
-        MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.CITY, MessageType.ERROR, false);
-    }
-
-    @Subcommand("mascots immunityoff")
-    @CommandPermission("omc.admins.commands.admcity.mascots.immunityoff")
-    public void removeMascotImmunity(Player sender, @Named("player") Player target){
-        City city = CityManager.getPlayerCity(target.getUniqueId());
-
-        if (city==null){
-            MessagesManager.sendMessage(sender, Component.text("§cLe joueur n'a pas de ville"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        Mascot mascot = city.getMascot();
-
-        if (!mascot.isAlive()) {
-            MessagesManager.sendMessage(sender, Component.text("§cLa mascotte est en immunité forcée"), Prefix.CITY, MessageType.ERROR, false);
-            return;
-        }
-
-        if (mascot.isImmunity()) {
-            mascot.setImmunity(false);
-        }
-        DynamicCooldownManager.clear(city.getUniqueId(), "city:immunity", false);
-        UUID mascotUUID = mascot.getMascotUUID();
-        if (mascotUUID!=null){
-            Entity mob = Bukkit.getEntity(mascotUUID);
-            if (mob!=null) mob.setGlowing(false);
-        }
     }
 }

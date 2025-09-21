@@ -97,8 +97,11 @@ public class PersonalBankDepositMenu extends Menu {
             itemMeta.itemName(Component.text("§7Déposer un §6montant précis"));
             itemMeta.lore(loreBankDepositInput);
         }).setOnClick(inventoryClickEvent -> {
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input ->
-                    BankManager.deposit(player.getUniqueId(), input)
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input -> {
+                        if (input == null) return;
+
+                        BankManager.deposit(player.getUniqueId(), input);
+                    }
             );
         }));
 

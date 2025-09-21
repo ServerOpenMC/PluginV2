@@ -51,7 +51,8 @@ public class DynamicCooldownManager {
 
             Bukkit.getPluginManager().callEvent(new CooldownStartEvent(this.uniqueId, this.group));
 
-            long delayTicks = duration / 50; //ticks
+            long delayTicks = getRemaining() / 50; //ticks
+
             this.scheduledTask = Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new CooldownEndEvent(this.uniqueId, this.group));
                 DynamicCooldownManager.clear(this.uniqueId, this.group, false);
@@ -97,12 +98,13 @@ public class DynamicCooldownManager {
 
             for (Cooldown cooldown : dbCooldowns) {
                 if (cooldown.isReady()) {
+                    Bukkit.getPluginManager().callEvent(new CooldownEndEvent(cooldown.uniqueId, cooldown.group));
                     cooldownDao.delete(cooldown);
                     continue;
                 }
 
                 cooldowns.computeIfAbsent(cooldown.uniqueId, k -> new HashMap<>())
-                        .put(cooldown.group, cooldown);
+                        .put(cooldown.group, new Cooldown(cooldown.uniqueId, cooldown.group, cooldown.duration, cooldown.lastUse));
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors du chargement des cooldowns depuis la base de données", e);

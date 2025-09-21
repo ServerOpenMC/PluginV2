@@ -4,13 +4,13 @@ import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.CityMessages;
 import fr.openmc.core.features.city.actions.*;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.menu.CityChunkMenu;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.menu.CityTypeMenu;
 import fr.openmc.core.features.city.menu.NoCityMenu;
+import fr.openmc.core.features.city.menu.list.CityListDetailsMenu;
 import fr.openmc.core.features.city.menu.list.CityListMenu;
 import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.utils.InputUtils;
@@ -63,7 +63,7 @@ public class CityCommands {
             return;
         }
 
-        CityMessages.sendInfo(player, city);
+        new CityListDetailsMenu(player, city).open();
     }
 
 
@@ -80,8 +80,10 @@ public class CityCommands {
             return;
         }
 
-        DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input ->
-                CityCreateAction.beginCreateCity(player, input)
+        DialogInput.send(player, Component.text("Entrez le nom de la ville"), MAX_LENGTH_CITY, input -> {
+                    if (input == null) return;
+                    CityCreateAction.beginCreateCity(player, input);
+                }
         );
     }
 
@@ -121,6 +123,12 @@ public class CityCommands {
     @Description("Accepter une invitation")
     public static void acceptInvitation(Player player, Player inviter) {
         List<Player> playerInvitations = invitations.get(player);
+
+        if (playerInvitations == null) {
+            MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
+            return;
+        }
+
         if (!playerInvitations.contains(inviter)) {
             MessagesManager.sendMessage(player, Component.text(inviter.getName() + " ne vous a pas invité"), Prefix.CITY, MessageType.ERROR, false);
             return;

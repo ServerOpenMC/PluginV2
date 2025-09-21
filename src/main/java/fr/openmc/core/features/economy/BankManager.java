@@ -14,6 +14,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.sub.milestone.rewards.PlayerBankLimitRewards;
 import fr.openmc.core.features.economy.commands.BankCommands;
+import fr.openmc.core.features.economy.events.BankDepositEvent;
 import fr.openmc.core.features.economy.models.Bank;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.InputUtils;
@@ -53,19 +54,23 @@ public class BankManager {
         updateInterestTimer();
     }
 
-    public static double getBankBalance(UUID player) {
-        Bank bank = getPlayerBank(player);
+    public static double getBankBalance(UUID playerUUID) {
+        Bank bank = getPlayerBank(playerUUID);
         return bank.getBalance();
     }
 
-    public static boolean deposit(UUID player, double amount) {
-        Bank bank = getPlayerBank(player);
+    public static boolean deposit(UUID playerUUID, double amount) {
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                Bukkit.getPluginManager().callEvent(new BankDepositEvent(playerUUID))
+        );
+
+        Bank bank = getPlayerBank(playerUUID);
         bank.deposit(amount);
         return saveBank(bank);
     }
 
-    public static boolean withdraw(UUID player, double amount) {
-        Bank bank = getPlayerBank(player);
+    public static boolean withdraw(UUID playerUUID, double amount) {
+        Bank bank = getPlayerBank(playerUUID);
 
         if (bank.getBalance() < amount) {
             return false;
@@ -74,13 +79,13 @@ public class BankManager {
         return saveBank(bank);
     }
 
-    public static double getBalance(UUID player) {
-        Bank bank = getPlayerBank(player);
+    public static double getBalance(UUID playerUUID) {
+        Bank bank = getPlayerBank(playerUUID);
         return bank.getBalance();
     }
 
-    private static Bank getPlayerBank(UUID player) {
-        return banks.computeIfAbsent(player, Bank::new);
+    private static Bank getPlayerBank(UUID playerUUID) {
+        return banks.computeIfAbsent(playerUUID, Bank::new);
     }
 
     private static boolean saveBank(Bank bank) {
@@ -189,11 +194,11 @@ public class BankManager {
     }
 
     // Interests calculated as proportion not percentage (eg: 0.01 = 1%)
-    public static double calculatePlayerInterest(UUID player) {
+    public static double calculatePlayerInterest(UUID playerUUID) {
         double interest = .01; // base interest is 1%
 
         if (MayorManager.phaseMayor == 2) {
-            if (PerkManager.hasPerk(CityManager.getPlayerCity(player).getMayor(), Perks.BUSINESS_MAN.getId())) {
+            if (PerkManager.hasPerk(CityManager.getPlayerCity(playerUUID).getMayor(), Perks.BUSINESS_MAN.getId())) {
                 interest += .02; // interest is +2% when perk Business Man enabled
             }
         }
@@ -201,12 +206,12 @@ public class BankManager {
         return interest;
     }
 
-    public static void applyPlayerInterest(UUID player) {
-        double interest = calculatePlayerInterest(player);
-        double amount = getBankBalance(player) * interest;
-        deposit(player, amount);
+    public static void applyPlayerInterest(UUID playerUUID) {
+        double interest = calculatePlayerInterest(playerUUID);
+        double amount = getBankBalance(playerUUID) * interest;
+        deposit(playerUUID, amount);
 
-        Player sender = Bukkit.getPlayer(player);
+        Player sender = Bukkit.getPlayer(playerUUID);
         if (sender != null)
             MessagesManager.sendMessage(sender,
                     Component.text("Vous venez de percevoir §d" + interest * 100 + "% §rd'intérèt, soit §d"

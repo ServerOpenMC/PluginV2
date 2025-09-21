@@ -44,7 +44,8 @@ public class DialogInput {
                                         .action(DialogAction.customClick((response, audience) -> {
                                             callback.accept(response.getText("inputtextomc"));
                                         }, ClickCallback.Options.builder().build()))
-                                        .build(), ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
+                                        .build(),
+                        ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
                                 .action(DialogAction.customClick((response, audience) -> {
                                     callback.accept(null);
                                 }, ClickCallback.Options.builder().build()))

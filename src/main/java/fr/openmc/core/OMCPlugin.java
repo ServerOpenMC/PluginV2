@@ -16,6 +16,7 @@ import fr.openmc.core.features.city.sub.notation.NotationManager;
 import fr.openmc.core.features.city.sub.statistics.CityStatisticsManager;
 import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.contest.managers.ContestManager;
+import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
@@ -40,6 +41,7 @@ import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.errors.ErrorReporter;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -95,6 +97,9 @@ public class OMCPlugin extends JavaPlugin {
 
         logLoadMessage();
 
+        new ErrorReporter();
+        getLogger().info("\u001B[32m✔ ErrorHandler activé\u001B[0m");
+
         /* MANAGERS */
         TicketManager.loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
         new DatabaseManager();
@@ -110,14 +115,13 @@ public class OMCPlugin extends JavaPlugin {
         new FreezeManager();
         new QuestProgressSaveManager();
         new TabList();
-        if (!OMCPlugin.isUnitTestVersion()) { // Tous les trucs faits par misieur qui fonctionne à peu près
+        if (!OMCPlugin.isUnitTestVersion()) {
             new LeaderboardManager();
             new MainMenu(this);
             new HologramLoader();
         }
         new AdminShopManager();
         new BossbarManager();
-        new ContestManager();
         new PrivateMessageManager();
         new AnimationsManager();
 
@@ -128,12 +132,9 @@ public class OMCPlugin extends JavaPlugin {
         new MascotsManager();
         HomeIconCacheManager.initialize();
 
-        PlayerSettingsManager.loadAllPlayerSettings();
+        new MultiBlockManager();
 
-        if (WorldGuardHook.hasWorldGuard()) {
-            ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
-            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
-        }
+        PlayerSettingsManager.loadAllPlayerSettings();
     }
 
     public void loadWithItemsAdder() {
@@ -142,6 +143,11 @@ public class OMCPlugin extends JavaPlugin {
         new MilestonesManager();
         new QuestsManager();
         new CityManager();
+        new ContestManager();
+        if (WorldGuardHook.hasWorldGuard()) {
+            ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
+            ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
+        }
     }
 
     @Override
@@ -150,6 +156,9 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion()) {
             HologramLoader.unloadAll();
         }
+
+        // - MultiBlocks
+        MultiBlockManager.save();
 
         // - War
         WarManager.saveWarHistories();

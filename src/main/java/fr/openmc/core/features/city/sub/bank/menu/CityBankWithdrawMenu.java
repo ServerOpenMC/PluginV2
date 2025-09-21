@@ -132,8 +132,10 @@ public class CityBankWithdrawMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityWithdraw(city, player)) return;
 
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input ->
-                    city.withdrawCityBank(player, input)
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez retirer"), MAX_LENGTH, input -> {
+                        if (input == null) return;
+                        city.withdrawCityBank(player, input);
+                    }
             );
 
         }));

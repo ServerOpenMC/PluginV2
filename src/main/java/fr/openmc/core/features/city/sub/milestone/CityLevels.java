@@ -53,7 +53,7 @@ public enum CityLevels {
                             city -> city.getChunks().size() >= 5,
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 5 Claims");
                                 }
 
@@ -90,7 +90,7 @@ public enum CityLevels {
                             city -> city.getChunks().size() >= 10,
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 10 Claims");
                                 }
 
@@ -104,7 +104,7 @@ public enum CityLevels {
                             city -> city.getBalance() >= 5000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 5k dans la banque");
                                 }
 
@@ -118,7 +118,7 @@ public enum CityLevels {
                             city -> city.getMembers().size() >= 2,
                             city -> ItemStack.of(Material.PLAYER_HEAD),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 2 Membres");
                                 }
 
@@ -159,7 +159,7 @@ public enum CityLevels {
                             city -> city.getRanks().size() >= 2,
                             city -> ItemStack.of(Material.DANDELION),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 2 Grades (/city rank)");
                                 }
 
@@ -173,7 +173,7 @@ public enum CityLevels {
                             city -> city.getBalance() >= 7500,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 7,5k dans la banque");
                                 }
 
@@ -245,7 +245,7 @@ public enum CityLevels {
                             city -> city.getBalance() >= 12000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 12k dans la banque");
                                 }
 
@@ -259,7 +259,7 @@ public enum CityLevels {
                             city -> city.getChunks().size() >= 20,
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 20 Claims");
                                 }
 
@@ -295,7 +295,7 @@ public enum CityLevels {
                             city -> city.getBalance() >= 20000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 20k dans la banque");
                                 }
 
@@ -309,7 +309,7 @@ public enum CityLevels {
                             city -> city.getChunks().size() >= 25,
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 25 Claims");
                                 }
 
@@ -353,7 +353,7 @@ public enum CityLevels {
                             city -> city.getBalance() >= 30000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 30k dans la banque");
                                 }
 
@@ -367,7 +367,7 @@ public enum CityLevels {
                             city -> city.getChunks().size() >= 30,
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 30 Claims");
                                 }
 
@@ -406,7 +406,7 @@ public enum CityLevels {
                             city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 2,
                             city -> ItemStack.of(Material.IRON_SWORD),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir fait 2 guerres");
                                 }
 
@@ -430,7 +430,7 @@ public enum CityLevels {
                             city -> city.getBalance() >= 60000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 60k dans la banque");
                                 }
 
@@ -444,7 +444,7 @@ public enum CityLevels {
                             city -> city.getChunks().size() >= 50,
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 50 Claims");
                                 }
 
@@ -482,7 +482,7 @@ public enum CityLevels {
                             city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWon() >= 3,
                             city -> ItemStack.of(Material.DIAMOND_SWORD),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Gagner 3 guerres");
                                 }
 
@@ -501,7 +501,7 @@ public enum CityLevels {
                             city -> city.getBalance() >= 80000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 80k dans la banque");
                                 }
 
@@ -548,7 +548,7 @@ public enum CityLevels {
                             city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 10,
                             city -> ItemStack.of(Material.NETHERITE_SWORD),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir fait 10 guerres");
                                 }
 
@@ -562,7 +562,7 @@ public enum CityLevels {
                             city -> city.getBalance() >= 125000,
                             city -> ItemStack.of(Material.GOLD_BLOCK),
                             (city, level) -> {
-                                if (city.getLevel() > level.ordinal()) {
+                                if (city.getLevel() != level.ordinal()) {
                                     return Component.text("Avoir 125k dans la banque");
                                 }
 

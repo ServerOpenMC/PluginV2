@@ -20,6 +20,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Statistic;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.util.*;
@@ -132,15 +134,21 @@ public class NotationManager {
      * Sauvegarde toutes les notations dans la base de données.
      */
     public static void saveNotations() {
-        notationPerWeek.forEach((weekStr, notations) -> {
-            notations.forEach(notation -> {
-                try {
-                    notationDao.createOrUpdate(notation);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
-        });
+        try {
+            notationDao.delete(notationDao.queryForAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        notationPerWeek.forEach((weekStr, notations) ->
+                notations.forEach(notation -> {
+                    try {
+                        notationDao.createOrUpdate(notation);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+        );
     }
 
     /**
@@ -151,6 +159,7 @@ public class NotationManager {
     public static void createOrUpdateNotation(CityNotation notation) {
         try {
             notationDao.createOrUpdate(notation);
+
             String weekStr = notation.getWeekStr();
             notationPerWeek.compute(weekStr, (k, list) -> {
                 if (list == null) list = new ArrayList<>();
@@ -162,6 +171,7 @@ public class NotationManager {
             cityNotations.compute(notation.getCityUUID(), (k, list) -> {
                 if (list == null) list = new ArrayList<>();
                 list.removeIf(n -> Objects.equals(n.getCityUUID(), notation.getCityUUID()));
+                list.removeIf(n -> Objects.equals(n.getWeekStr(), notation.getWeekStr()));
                 list.add(notation);
                 return list;
             });
@@ -294,7 +304,10 @@ public class NotationManager {
      * @throws SQLException en cas d'erreur SQL
      */
     public static void calculateAllCityScore(String weekStr) throws SQLException {
-        List<CityNotation> notationsCopy = new ArrayList<>(notationPerWeek.get(weekStr));
+        List<CityNotation> notationsCopy = new ArrayList<>(
+                notationPerWeek.getOrDefault(weekStr, Collections.emptyList())
+        );
+
         for (CityNotation notation : notationsCopy) {
             City city = CityManager.getCity(notation.getCityUUID());
             notation.setNoteActivity(getActivityScore(city));
@@ -320,8 +333,11 @@ public class NotationManager {
     public static double calculateReward(CityNotation notation) {
         double points = notation.getTotalNote();
         double money = points * (45000.0 / getMaxTotalNote());
-        notation.setMoney(money);
-        return money;
+
+        BigDecimal rounded = BigDecimal.valueOf(money).setScale(2, RoundingMode.HALF_UP);
+
+        notation.setMoney(rounded.doubleValue());
+        return rounded.doubleValue();
     }
 
     /**
@@ -330,12 +346,14 @@ public class NotationManager {
      * @param weekStr la chaîne représentant la semaine
      */
     public static void giveReward(String weekStr) {
-        notationPerWeek.get(weekStr).forEach(notation -> {
+        List<CityNotation> notations = notationPerWeek.getOrDefault(weekStr, Collections.emptyList());
+
+        for (CityNotation notation : notations) {
             City city = CityManager.getCity(notation.getCityUUID());
             if (city != null) {
                 city.setBalance(city.getBalance() + calculateReward(notation));
             }
-        });
+        }
     }
 
     /**

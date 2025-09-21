@@ -133,8 +133,10 @@ public class CityBankDepositMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> {
             if (!CityBankConditions.canCityDeposit(city, player)) return;
 
-            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input ->
-                    city.depositCityBank(player, String.valueOf(halfMoneyPlayer))
+            DialogInput.send(player, Component.text("Entrez le montant que vous voulez déposer"), MAX_LENGTH, input -> {
+                        if (input == null) return;
+                city.depositCityBank(player, input);
+                    }
             );
 
         }));

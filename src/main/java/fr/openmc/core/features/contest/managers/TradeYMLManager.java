@@ -2,6 +2,7 @@ package fr.openmc.core.features.contest.managers;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.contest.models.Contest;
+import fr.openmc.core.utils.YmlUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -71,12 +72,11 @@ public class TradeYMLManager {
         List<Map<?, ?>> contestTrades = contestConfig.getMapList("contestTrades");
 
         List<Map<String, Object>> filteredTrades = contestTrades.stream()
+                .map(YmlUtils::deepCopy)
                 .filter(trade -> (boolean) trade.get("selected") == bool)
-                .map(trade -> (Map<String, Object>) trade)
                 .collect(Collectors.toList());
 
         Collections.shuffle(filteredTrades);
-
         return filteredTrades.stream().limit(12).collect(Collectors.toList());
     }
 
@@ -87,13 +87,18 @@ public class TradeYMLManager {
      * @param ress la ressource associée au trade à mettre à jour.
      */
     public static void updateColumnBooleanFromRandomTrades(Boolean bool, String ress) {
-        List<Map<String, Object>> contestTrades = (List<Map<String, Object>>) contestConfig.get("contestTrades");
+        List<Map<?, ?>> contestTrades = contestConfig.getMapList("contestTrades");
+        List<Map<String, Object>> updatedTrades = new ArrayList<>();
 
-        for (Map<String, Object> trade : contestTrades) {
-            if (trade.get("ress").equals(ress)) {
-                trade.put("selected", bool);
+        for (Map<?, ?> trade : contestTrades) {
+            Map<String, Object> copy = YmlUtils.deepCopy(trade);
+            if (copy.get("ress").equals(ress)) {
+                copy.put("selected", bool);
             }
+            updatedTrades.add(copy);
         }
+
+        contestConfig.set("contestTrades", updatedTrades);
         saveContestConfig();
     }
 
@@ -108,8 +113,9 @@ public class TradeYMLManager {
         List<String> ressList = new ArrayList<>();
 
         for (Map<?, ?> tradeEntry : trades) {
-            if (tradeEntry.containsKey("ress")) {
-                ressList.add(tradeEntry.get("ress").toString());
+            Map<String, Object> copy = YmlUtils.deepCopy(tradeEntry);
+            if (copy.containsKey("ress")) {
+                ressList.add(copy.get("ress").toString());
             }
         }
         return ressList;
@@ -126,13 +132,7 @@ public class TradeYMLManager {
         List<Map<String, Object>> updatedContestList = new ArrayList<>();
 
         for (Map<?, ?> contest : contestList) {
-            Map<String, Object> fusionContestList = new HashMap<>();
-
-            for (Map.Entry<?, ?> entry : contest.entrySet()) {
-                if (entry.getKey() instanceof String) {
-                    fusionContestList.put((String) entry.getKey(), entry.getValue());
-                }
-            }
+            Map<String, Object> fusionContestList = YmlUtils.deepCopy(contest);
 
             if (fusionContestList.get("camp1").equals(camp)) {
                 int selected = (int) fusionContestList.get("selected");
@@ -141,6 +141,7 @@ public class TradeYMLManager {
 
             updatedContestList.add(fusionContestList);
         }
+
         contestConfig.set("contestList", updatedContestList);
         saveContestConfig();
     }
@@ -155,7 +156,8 @@ public class TradeYMLManager {
         List<Map<?, ?>> contestList = contestConfig.getMapList("contestList");
 
         for (Map<?, ?> contest : contestList) {
-            if (contest.get("camp1").equals(camps)) {
+            Map<String, Object> copy = YmlUtils.deepCopy(contest);
+            if (copy.get("camp1").equals(camps)) {
                 updateSelected(camps);
             }
         }
@@ -170,13 +172,7 @@ public class TradeYMLManager {
         List<Map<String, Object>> orderedContestList = new ArrayList<>();
 
         for (Map<?, ?> contest : contestList) {
-            Map<String, Object> fusionContest = new HashMap<>();
-            for (Map.Entry<?, ?> entry : contest.entrySet()) {
-                if (entry.getKey() instanceof String) {
-                    fusionContest.put((String) entry.getKey(), entry.getValue());
-                }
-            }
-            orderedContestList.add(fusionContest);
+            orderedContestList.add(YmlUtils.deepCopy(contest));
         }
 
         int minSelected = orderedContestList.stream()

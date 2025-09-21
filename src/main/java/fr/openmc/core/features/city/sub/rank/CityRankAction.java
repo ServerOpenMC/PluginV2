@@ -27,8 +27,11 @@ public class CityRankAction {
             return;
         }
 
-        DialogInput.send(player, Component.text("Entrez le nom de votre grade"), MAX_LENGTH_RANK_NAME, input ->
-                CityRankAction.afterCreateRank(player, input)
+        DialogInput.send(player, Component.text("Entrez le nom de votre grade"), MAX_LENGTH_RANK_NAME, input -> {
+                    if (input == null) return;
+
+                    CityRankAction.afterCreateRank(player, input);
+                }
         );
     }
 
@@ -53,6 +56,8 @@ public class CityRankAction {
         }
 
         DialogInput.send(player, Component.text("Entrez le nouveau nom de votre grade"), MAX_LENGTH_RANK_NAME, input -> {
+            if (input == null) return;
+
             if (!CityRankCondition.canRenameRank(city, player, oldName)) {
                 return;
             }

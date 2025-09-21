@@ -13,6 +13,8 @@ public class TutorialUtils {
     public static void completeStep(MilestoneType type, Player player, TutorialStep step) {
         int stepInt = step.ordinal() + 1;
 
+        if (MilestonesManager.getPlayerStep(type, player) >= stepInt) return;
+
         MilestonesManager.setPlayerStep(type, player, stepInt);
 
         int maxStep = TutorialStep.values().length;
