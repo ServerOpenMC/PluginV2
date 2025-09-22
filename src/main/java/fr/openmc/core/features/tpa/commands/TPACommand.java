@@ -66,7 +66,7 @@ public class TPACommand {
 			public void run() {
 				TPAQueue.QUEUE.expireRequest(player, target);
 			}
-		}.runTaskLater(OMCPlugin.getInstance(), 600);
+		}.runTaskLater(OMCPlugin.getInstance(), 800);
 	}
 	
 }
