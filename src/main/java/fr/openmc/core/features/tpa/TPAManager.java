@@ -9,7 +9,7 @@ public class TPAManager {
 	public TPAManager() {
 		CommandsManager.getHandler().register(
 				new TPAcceptCommand(),
-				new TPACommand(OMCPlugin.getInstance()),
+				new TPACommand(),
 				new TPADenyCommand(),
 				new TPACancelCommand()
 		);

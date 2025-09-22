@@ -28,7 +28,7 @@ public class TPADenyCommand {
 		
 		if (TPAQueue.QUEUE.hasMultipleRequests(target)) {
 			if (player == null) {
-				MessagesManager.sendMessage(target, Component.text("§4Vous avez plusieurs demandes de téléportation en cours, utilisez §6/tpdeny <joueur>"), Prefix.OPENMC, MessageType.ERROR, false);
+				MessagesManager.sendMessage(target, Component.text("§4Vous avez plusieurs demandes de téléportation en cours, utilisez §6/tpadeny <joueur>"), Prefix.OPENMC, MessageType.ERROR, false);
 				return;
 			}
 			
