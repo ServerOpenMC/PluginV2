@@ -24,7 +24,7 @@ public class TPACommand {
 	@CommandPermission("omc.commands.tpa")
 	@AutoComplete("@players")
 	public void tpaAsk(Player player, @Named("player") Player target) {
-		if (TPAQueue.QUEUE.requesterHasPendingRequest(player)) {
+		if (TPAQueue.requesterHasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous avez déjà une demande de téléportation en attente\n")
 					.append(Component.text("§3Tapez §5/tpacancel §3pour annuler votre demande de tp en cours").clickEvent(ClickEvent.runCommand("/tpacancel")).hoverEvent(HoverEvent.showText(Component.text("Annuler la demande de TP")))
 					), Prefix.OPENMC, MessageType.ERROR, true);
@@ -40,7 +40,7 @@ public class TPACommand {
 			return;
 		}
 		
-		if (TPAQueue.QUEUE.hasPendingRequest(player)) {
+		if (TPAQueue.hasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous avez déjà une demande de téléportation en attente de votre acceptation"), Prefix.OPENMC, MessageType.ERROR, true);
 			return;
 		}
@@ -49,7 +49,7 @@ public class TPACommand {
 	}
 	
 	private void sendTPARequest(Player player, Player target) {
-		TPAQueue.QUEUE.addRequest(player, target);
+		TPAQueue.addRequest(player, target);
 		
 		MessagesManager.sendMessage(target,
 				Component.text("§3Le joueur §6" + player.getName() + " §3 veut se téléporter à vous\n")
@@ -64,7 +64,7 @@ public class TPACommand {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				TPAQueue.QUEUE.expireRequest(player, target);
+				TPAQueue.expireRequest(player, target);
 			}
 		}.runTaskLater(OMCPlugin.getInstance(), 800);
 	}
