@@ -6,6 +6,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -108,7 +109,7 @@ public class CityRanksMenu extends PaginatedMenu {
 				itemMeta -> {
 					itemMeta.displayName(Component.text("§cRetour"));
 					itemMeta.lore(List.of(Component.text("§7Cliquez pour revenir en arrière")));
-                }, true));
+				}).setOnClick(inventoryClickEvent -> new CityMenu(getOwner()).open()));
 
 		boolean canAssignRanks = city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS);
 
