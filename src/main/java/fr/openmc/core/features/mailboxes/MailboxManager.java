@@ -98,7 +98,7 @@ public class MailboxManager {
 
                 int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
 
-                byte[] itemsBytes = BukkitSerializer.serializeItemStacks(items);
+                byte[] itemsBytes = BukkitSerializer.serializeItemStacks(changeStackItem(items));
 
                 Letter letter = new Letter(player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
                         Timestamp.valueOf(LocalDateTime.now()), false);
@@ -108,6 +108,18 @@ public class MailboxManager {
         } catch (SQLException | IOException e) {
             OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline players: {}", e.getMessage(), e);
         }
+    }
+
+    private static ItemStack[] changeStackItem(ItemStack[] items) {
+        return Arrays.stream(items)
+                .filter(Objects::nonNull)
+                .map(item -> {
+                    ItemStack clone = item.clone();
+                    int amount = Math.max(1, Math.min(clone.getAmount(), 99));
+                    clone.setAmount(amount);
+                    return clone;
+                })
+                .toArray(ItemStack[]::new);
     }
 
     public static void sendMailNotification(Player player) {
