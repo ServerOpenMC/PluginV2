@@ -123,7 +123,7 @@ public class ConfirmMenu extends Menu {
             } catch (Exception e) {
                 MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
                 player.closeInventory();
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }));
 
@@ -136,7 +136,7 @@ public class ConfirmMenu extends Menu {
             } catch (Exception e) {
                 MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
                 player.closeInventory();
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }));
 

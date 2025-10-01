@@ -116,11 +116,12 @@ public class DynamicCooldownManager {
 
         cooldowns.forEach((uuid, groupCooldowns) -> {
             groupCooldowns.forEach((group, cooldown) -> {
-                if (cooldown.isReady()) return;
-                try {
-                    cooldownDao.createOrUpdate(cooldown);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                if (!cooldown.isReady()) {
+                    try {
+                        cooldownDao.createOrUpdate(cooldown);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
         });

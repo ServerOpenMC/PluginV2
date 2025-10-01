@@ -9,13 +9,12 @@ import fr.openmc.core.features.homes.HomeLimits;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
 @DatabaseTable(tableName = "home_limits")
 public class HomeLimit {
 
-    @Getter
-    @DatabaseField(id = true)
-    private UUID player;
-    @Getter
+    @DatabaseField(id = true, columnName = "player")
+    private UUID playerUUID;
     @Setter
     @DatabaseField(canBeNull = false)
     private int limit;
@@ -24,13 +23,13 @@ public class HomeLimit {
         // required for ORMLite
     }
 
-    public HomeLimit(UUID player, int limit) {
-        this.player = player;
+    public HomeLimit(UUID playerUUID, int limit) {
+        this.playerUUID = playerUUID;
         this.limit = limit;
     }
 
-    public HomeLimit(UUID player, HomeLimits limit) {
-        this.player = player;
+    public HomeLimit(UUID playerUUID, HomeLimits limit) {
+        this.playerUUID = playerUUID;
         this.limit = limit.getLimit();
     }
 

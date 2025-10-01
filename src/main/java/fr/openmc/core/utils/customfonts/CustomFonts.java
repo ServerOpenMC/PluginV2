@@ -12,7 +12,7 @@ public abstract class CustomFonts {
      */
     public static String getBest(String namespaceID, String baseFont) {
         String font = null;
-        if (ItemsAdderHook.hasItemAdder()) font = Fonts.getFont(namespaceID);
+        if (ItemsAdderHook.isHasItemAdder()) font = Fonts.getFont(namespaceID);
 
         if (font == null) {
             font = baseFont;

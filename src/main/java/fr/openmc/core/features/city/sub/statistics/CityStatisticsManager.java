@@ -53,7 +53,7 @@ public class CityStatisticsManager {
             List<CityStatistics> statistics = statisticsDao.queryForAll();
             statistics.forEach(statistic -> cityStatistics.computeIfAbsent(statistic.getCityUUID(), k -> new HashSet<>()).add(statistic));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,7 +65,7 @@ public class CityStatisticsManager {
             try {
                 statisticsDao.createOrUpdate(stat);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }));
     }
@@ -113,7 +113,7 @@ public class CityStatisticsManager {
             try {
                 statisticsDao.createOrUpdate(stat);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }
@@ -132,7 +132,7 @@ public class CityStatisticsManager {
                 statisticsDelete.where().eq("city_uuid", cityUUID);
                 statisticsDao.delete(statisticsDelete.prepare());
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }
@@ -152,7 +152,7 @@ public class CityStatisticsManager {
             try {
                 statisticsDao.createOrUpdate(stat);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }

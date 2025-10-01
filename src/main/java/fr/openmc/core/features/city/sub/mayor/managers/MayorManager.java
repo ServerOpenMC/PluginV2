@@ -42,7 +42,7 @@ public class MayorManager {
     @Getter
     private static ConnectionSource connectionSource;
 
-    public static final int MEMBER_REQUEST_ELECTION = 3;
+    public static final int MEMBER_REQUEST_ELECTION = 2;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
@@ -89,11 +89,11 @@ public class MayorManager {
                 new MilitaryDissuasion(),
                 new IdyllicRain());
 
-        if (ItemsAdderHook.hasItemAdder()) {
+        if (ItemsAdderHook.isHasItemAdder()) {
             OMCPlugin.registerEvents(
                     new UrneListener());
         }
-        if (FancyNpcsHook.hasFancyNpc()) {
+        if (FancyNpcsHook.isHasFancyNpc()) {
             OMCPlugin.registerEvents(
                     new NPCManager());
         }
@@ -146,7 +146,7 @@ public class MayorManager {
 
             phaseMayor = constant.getPhase();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -154,7 +154,7 @@ public class MayorManager {
         try {
             constantsDao.createOrUpdate(new MayorConstant(phaseMayor));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -164,7 +164,7 @@ public class MayorManager {
 
             mayors.forEach(mayor -> cityMayor.put(mayor.getCityUUID(), mayor));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -173,7 +173,7 @@ public class MayorManager {
             try {
                 mayorsDao.createOrUpdate(mayor);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }
@@ -186,7 +186,7 @@ public class MayorManager {
                 cityElections.computeIfAbsent(candidate.getCityUUID(), k -> new ArrayList<>()).add(candidate);
             });
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -196,7 +196,7 @@ public class MayorManager {
                     try {
                         candidatesDao.createOrUpdate(candidate);
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                 }));
     }
@@ -206,7 +206,7 @@ public class MayorManager {
             votesDao.queryForAll().forEach(
                     vote -> playerVote.computeIfAbsent(vote.getCity().getUniqueId(), k -> new ArrayList<>()).add(vote));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -215,7 +215,7 @@ public class MayorManager {
             try {
                 votesDao.createOrUpdate(vote);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }));
     }
@@ -226,7 +226,7 @@ public class MayorManager {
 
             laws.forEach(law -> cityLaws.put(law.getCityUUID(), law));
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -235,7 +235,7 @@ public class MayorManager {
             try {
                 lawsDao.createOrUpdate(law);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }
@@ -286,7 +286,7 @@ public class MayorManager {
                 TableUtils.createTableIfNotExists(connectionSource, MayorVote.class);
                 votesDao = DaoManager.createDao(connectionSource, MayorVote.class);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
 
@@ -432,7 +432,12 @@ public class MayorManager {
 
                 MayorCandidate electedMayor = candidateQueue.peek();
 
-                Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+                Perks perk1;
+                if (mayor == null || (mayor.getIdPerk1() == 0)) {
+                    perk1 = PerkManager.getRandomPerkEvent();
+                } else {
+                    perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
+                }
                 Perks perk2 = PerkManager.getPerkById(electedMayor.getIdChoicePerk2());
                 Perks perk3 = PerkManager.getPerkById(electedMayor.getIdChoicePerk3());
 
@@ -467,7 +472,7 @@ public class MayorManager {
                 votesDelete.where().eq("city_uuid", city.getUniqueId());
                 votesDao.delete(votesDelete.prepare());
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
         
@@ -492,12 +497,12 @@ public class MayorManager {
     /**
      * Get the candidate for the player in the city.
      *
-     * @param player The player to get a candidate
+     * @param playerUUID The playerUUID to get a candidate
      */
-    public static MayorCandidate getCandidate(UUID player) {
+    public static MayorCandidate getCandidate(UUID playerUUID) {
         for (List<MayorCandidate> candidates : cityElections.values()) {
             for (MayorCandidate candidate : candidates) {
-                if (candidate.getCandidateUUID().equals(player)) {
+                if (candidate.getCandidateUUID().equals(playerUUID)) {
                     return candidate;
                 }
             }
@@ -558,7 +563,7 @@ public class MayorManager {
 
         return playerVote.get(playerCity.getUniqueId())
                 .stream()
-                .anyMatch(mayorVote -> mayorVote.getVoter().equals(player.getUniqueId()));
+                .anyMatch(mayorVote -> mayorVote.getVoter().equals(player.getUniqueId()) && mayorVote.getCandidate() != null);
     }
 
     /**

@@ -68,7 +68,7 @@ public class ContestManager {
      */
     public ContestManager() {
         // ** LISTENERS **
-        if (ItemsAdderHook.hasItemAdder()) {
+        if (ItemsAdderHook.isHasItemAdder()) {
             OMCPlugin.registerEvents(
                     new ContestIntractEvents()
             );
@@ -172,7 +172,7 @@ public class ContestManager {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), Contest.class);
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -409,7 +409,7 @@ public class ContestManager {
         // STATS PERSO + REWARDS
         Map<OfflinePlayer, ItemStack[]> playerItemsMap = new HashMap<>();
         AtomicInteger rank = new AtomicInteger(1);
-        // For each player in contest
+
         orderedMap.forEach((uuid, dataPlayer1) -> {
             ItemStack bookPlayer = new ItemStack(Material.WRITTEN_BOOK);
             BookMeta bookMetaPlayer = baseBookMeta.clone();
@@ -482,8 +482,8 @@ public class ContestManager {
                 // Perdant - EVENT
                 losers.add(player.getUniqueId());
             }
-            // PRINT REWARDS
 
+            // PRINT REWARDS
             textRewards += "\n§8+ §6" + money + "$ ";
             textRewards += "\n§9+ §d" + aywenite + " d'Aywenite ";
             textRewards += "\n§7Boost de §b" + multiplicator;
@@ -507,20 +507,22 @@ public class ContestManager {
         try {
             Bukkit.getServer().getPluginManager().callEvent(new ContestEndEvent(data, winners, losers));
         } catch (IllegalStateException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         
         // Exécuter les requêtes SQL dans un autre thread
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             TradeYMLManager.addOneToLastContest(data.getCamp1()); // on ajoute 1 au contest précédant dans data/contest.yml pour signifier qu'il n'est plus prioritaire
-                    try {
-                        TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+
+            try {
+                TableUtils.clearTable(DatabaseManager.getConnectionSource(), ContestPlayer.class);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
             TradeYMLManager.selectRandomlyContest(); // on pioche un contest qui a une valeur selected la + faible
             dataPlayer = new HashMap<>(); // on supprime les données précédentes des joueurs
-            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap); // on envoi les Items en mailbox ss forme de batch
+            MailboxManager.sendItemsToAOfflinePlayerBatch(playerItemsMap);
         });
     }
 
@@ -555,7 +557,7 @@ public class ContestManager {
     private static void scheduleStartContest() {
         long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(START_CONTEST_DAY) * 20;
 
-        if (DateUtils.getCurrentDayOfWeek().equals(START_CONTEST_DAY)) {
+        if (data.getPhase() == 1 && DateUtils.getCurrentDayOfWeek().equals(START_CONTEST_DAY)) {
             ContestManager.initPhase1();
         }
 
@@ -571,7 +573,7 @@ public class ContestManager {
     private static void scheduleStartTradeContest() {
         long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(START_TRADE_CONTEST_DAY) * 20;
 
-        if (DateUtils.getCurrentDayOfWeek().equals(START_TRADE_CONTEST_DAY)) {
+        if (data.getPhase() == 2 && DateUtils.getCurrentDayOfWeek().equals(START_TRADE_CONTEST_DAY)) {
             ContestManager.initPhase2();
         }
 
@@ -587,7 +589,7 @@ public class ContestManager {
     private static void scheduleEndContest() {
         long delayInTicks = DateUtils.getSecondsUntilDayOfWeekMidnight(END_CONTEST_DAY) * 20;
 
-        if (DateUtils.getCurrentDayOfWeek().equals(END_CONTEST_DAY)) {
+        if (data.getPhase() == 3 && DateUtils.getCurrentDayOfWeek().equals(END_CONTEST_DAY)) {
             ContestManager.initPhase3();
         }
 

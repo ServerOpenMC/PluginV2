@@ -5,13 +5,13 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.economy.commands.Baltop;
 import fr.openmc.core.features.economy.commands.History;
 import fr.openmc.core.features.economy.commands.Money;
 import fr.openmc.core.features.economy.commands.Pay;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -50,19 +50,19 @@ public class EconomyManager {
                 new Money());
     }
 
-    public static double getBalance(UUID player) {
-        EconomyPlayer bank = getPlayerBank(player);
+    public static double getBalance(UUID playerUUID) {
+        EconomyPlayer bank = getPlayerBank(playerUUID);
         return bank.getBalance();
     }
 
-    public static void addBalance(UUID player, double amount) {
-        EconomyPlayer bank = getPlayerBank(player);
+    public static void addBalance(UUID playerUUID, double amount) {
+        EconomyPlayer bank = getPlayerBank(playerUUID);
         bank.deposit(amount);
         savePlayerBank(bank);
     }
 
-    public static boolean withdrawBalance(UUID player, double amount) {
-        EconomyPlayer bank = getPlayerBank(player);
+    public static boolean withdrawBalance(UUID playerUUID, double amount) {
+        EconomyPlayer bank = getPlayerBank(playerUUID);
         if (bank.withdraw(amount)) {
             savePlayerBank(bank);
             return true;
@@ -70,33 +70,33 @@ public class EconomyManager {
         return false;
     }
 
-    public static void setBalance(UUID player, double amount) {
-        EconomyPlayer bank = getPlayerBank(player);
+    public static void setBalance(UUID playerUUID, double amount) {
+        EconomyPlayer bank = getPlayerBank(playerUUID);
         bank.withdraw(bank.getBalance());
         bank.deposit(amount);
         savePlayerBank(bank);
     }
 
-    public static String getMiniBalance(UUID player) {
-        double balance = getBalance(player);
+    public static String getMiniBalance(UUID playerUUID) {
+        double balance = getBalance(playerUUID);
 
         return getFormattedSimplifiedNumber(balance);
     }
 
     public static void savePlayerBank(EconomyPlayer player) {
         try {
-            balances.put(player.getPlayer(), player);
+            balances.put(player.getPlayerUUID(), player);
             playersDao.createOrUpdate(player);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static EconomyPlayer getPlayerBank(UUID player) {
-        EconomyPlayer bank = balances.get(player);
+    public static EconomyPlayer getPlayerBank(UUID playerUUID) {
+        EconomyPlayer bank = balances.get(playerUUID);
         if (bank != null)
             return bank;
-        return new EconomyPlayer(player);
+        return new EconomyPlayer(playerUUID);
     }
 
     public static Map<UUID, EconomyPlayer> loadAllBalances() {
@@ -104,7 +104,7 @@ public class EconomyManager {
         try {
             List<EconomyPlayer> dbBalances = playersDao.queryForAll();
             for (EconomyPlayer bank : dbBalances) {
-                balances.put(bank.getPlayer(), bank);
+                balances.put(bank.getPlayerUUID(), bank);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -113,8 +113,8 @@ public class EconomyManager {
         return balances;
     }
 
-    public static String getFormattedBalance(UUID player) {
-        String balance = String.valueOf(getBalance(player));
+    public static String getFormattedBalance(UUID playerUUID) {
+        String balance = String.valueOf(getBalance(playerUUID));
         Currency currency = Currency.getInstance(Locale.FRANCE);
         NumberFormat format = NumberFormat.getCurrencyInstance(Locale.FRANCE);
         format.setCurrency(currency);
@@ -152,7 +152,7 @@ public class EconomyManager {
     }
 
     public static String getEconomyIcon() {
-        if (ItemsAdderHook.hasItemAdder()) {
+        if (ItemsAdderHook.isHasItemAdder()) {
             return FontImageWrapper.replaceFontImages("§f:aywenito:");
         } else {
             return "Ⓐ";

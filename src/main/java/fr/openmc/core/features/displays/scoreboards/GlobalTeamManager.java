@@ -20,7 +20,7 @@ public class GlobalTeamManager {
     public GlobalTeamManager(Map<UUID, Scoreboard> playerScoreboards) {
         this.playerScoreboards = playerScoreboards;
 
-        if (LuckPermsHook.hasLuckPerms()) {
+        if (LuckPermsHook.isHasLuckPerms()) {
             this.luckPerms = LuckPermsHook.getApi();
             initSortedGroups();
             createTeams();

@@ -57,7 +57,7 @@ public class MascotsManager {
         try {
             spigotYMLConfig.save(new File("spigot.yml"));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         mascotsKey = new NamespacedKey(OMCPlugin.getInstance(), "mascotsKey");
@@ -69,9 +69,11 @@ public class MascotsManager {
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
                 new MascotsDeathListener(),
+                new MascotsSleepingListener(),
                 new MascotImmuneListener(),
                 new MascotsTargetListener(),
-                new MascotsRenameListener()
+                new MascotsRenameListener(),
+                new MascotsPotionListener()
         );
         if (!OMCPlugin.isUnitTestVersion()) {
             new MascotsSoundListener();
@@ -99,7 +101,7 @@ public class MascotsManager {
                 mascotsByEntityUUID.put(mascot.getMascotUUID(), mascot);
             });
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -108,15 +110,15 @@ public class MascotsManager {
             try {
                 mascotsDao.createOrUpdate(mascot);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }
 
-    public static void createMascot(City city, UUID cityUUID, String cityName, World player_world, Location mascot_spawn) {
-        LivingEntity mob = (LivingEntity) player_world.spawnEntity(mascot_spawn, EntityType.ZOMBIE);
+    public static void createMascot(City city, UUID cityUUID, String cityName, World playerWorld, Location mascotSpawn) {
+        LivingEntity mob = (LivingEntity) playerWorld.spawnEntity(mascotSpawn, EntityType.ZOMBIE);
 
-        Chunk chunk = mascot_spawn.getChunk();
+        Chunk chunk = mascotSpawn.getChunk();
         setMascotsData(mob, cityName, 300, 300);
         mob.setGlowing(true);
 
@@ -127,7 +129,7 @@ public class MascotsManager {
             try {
                 mascotsDao.create(new Mascot(cityUUID, mob.getUniqueId(), 1, true, true, chunk.getX(), chunk.getZ()));
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
 
@@ -147,7 +149,7 @@ public class MascotsManager {
             try {
                 mascotsDao.delete(mascot);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
 

@@ -119,7 +119,7 @@ public class UrneListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     private void onUrnePlaceSuccessEvent(FurniturePlacedEvent event) {
         Location urneLocation = event.getFurniture().getEntity().getLocation();
-        if (!FancyNpcsHook.hasFancyNpc())
+        if (!FancyNpcsHook.isHasFancyNpc())
             return;
 
         if (!"omc_blocks:urne".equals(event.getNamespacedID()))
@@ -161,7 +161,7 @@ public class UrneListener implements Listener {
             return;
         }
 
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         NPCManager.removeNPCS(playerCity.getUniqueId());
     }

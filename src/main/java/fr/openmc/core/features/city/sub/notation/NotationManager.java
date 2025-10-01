@@ -126,7 +126,7 @@ public class NotationManager {
                 notationPerWeek.computeIfAbsent(weekStr, k -> new ArrayList<>()).add(notation);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -176,7 +176,7 @@ public class NotationManager {
                 return list;
             });
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -203,7 +203,7 @@ public class NotationManager {
         List<CityNotation> notations = notationPerWeek.getOrDefault(weekStr, Collections.emptyList());
         return notations.stream()
                 .sorted(Comparator.comparingDouble(
-                        (CityNotation n) -> n.getNoteArchitectural() + n.getNoteCoherence()
+                        CityNotation::getTotalNote
                 ).reversed())
                 .toList();
     }

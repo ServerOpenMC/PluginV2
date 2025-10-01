@@ -2,7 +2,6 @@ package fr.openmc.api.menulib;
 
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -155,7 +154,7 @@ public abstract class Menu implements InventoryHolder {
 		} catch (Exception e) {
 			MessagesManager.sendMessage(owner, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
 			owner.closeInventory();
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
