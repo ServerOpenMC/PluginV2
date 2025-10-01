@@ -29,3 +29,10 @@ discord: "https://aywen.fr/discord/"
 blog: "https://blog.openmc.fr/"
 wiki: "https://wiki.openmc.fr/"
 repoV2: "https://github.com/ServerOpenMC/PluginV2"
+
+#####
+# Webhook
+#####
+error:
+  notif: [ ]
+  webhook: null

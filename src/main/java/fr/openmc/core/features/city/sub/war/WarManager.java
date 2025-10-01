@@ -78,7 +78,7 @@ public class WarManager {
                 warHistory.computeIfAbsent(cityUUID, k -> war);
             });
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -87,7 +87,7 @@ public class WarManager {
                     try {
                         warHistoryDeo.createOrUpdate(warHistory);
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
                 }
         );
@@ -156,9 +156,10 @@ public class WarManager {
         War warRemoved = warsByAttacker.remove(war.getCityAttacker().getUniqueId());
         warsByDefender.remove(war.getCityDefender().getUniqueId());
 
-        if (warRemoved == null) return;
+        pendingDefenses.remove(war.getCityAttacker().getUniqueId());
+        pendingDefenses.remove(war.getCityDefender().getUniqueId());
 
-        war.setPhase(War.WarPhase.ENDED);
+        if (warRemoved == null) return;
 
         Mascot attackerMascot = war.getCityAttacker().getMascot();
         Mascot defenderMascot = war.getCityDefender().getMascot();
@@ -204,6 +205,8 @@ public class WarManager {
                     loser = war.getCityAttacker();
                     winReason = WinReason.KILLS;
                 } else {
+                    winner = war.getCityDefender();
+                    loser = war.getCityAttacker();
                     winReason = WinReason.DRAW;
                 }
             }
@@ -223,7 +226,7 @@ public class WarManager {
                 warHistoryDeo.update(loserHistory);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         int claimsWon = -1;

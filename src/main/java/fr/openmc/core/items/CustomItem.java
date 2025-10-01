@@ -45,6 +45,6 @@ public abstract class CustomItem {
      * @return Best ItemStack to use for the server
      */
     public ItemStack getBest() {
-        return !ItemsAdderHook.hasItemAdder() || getItemsAdder() == null ? getVanilla() : getItemsAdder();
+        return !ItemsAdderHook.isHasItemAdder() || getItemsAdder() == null ? getVanilla() : getItemsAdder();
     }
 }

@@ -14,6 +14,7 @@ import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
 import fr.openmc.core.features.city.sub.mayor.models.Mayor;
 import fr.openmc.core.features.city.sub.mayor.perks.Perks;
+import fr.openmc.core.features.city.sub.war.WarManager;
 import fr.openmc.core.features.city.sub.war.actions.WarActions;
 import fr.openmc.core.features.city.sub.war.menu.MoreInfoMenu;
 import fr.openmc.core.features.economy.EconomyManager;
@@ -73,6 +74,8 @@ public class MainWarMenu extends PaginatedMenu {
                 if (Objects.equals(city.getUniqueId(), CityManager.getPlayerCity(player.getUniqueId()).getUniqueId())) continue;
                 if (city.getType() != CityType.WAR) continue;
                 if (city.isImmune()) continue;
+                if (WarManager.getPendingDefenseFor(city) != null) continue;
+                if (city.isInWar()) continue;
 
                 long onlineCount = city.getOnlineMembers().size();
 

@@ -67,7 +67,7 @@ public class NPCManager implements Listener {
     }
 
     public static void createNPCS(UUID cityUUID, Location locationMayor, Location locationOwner, UUID creatorUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
 
         City city = CityManager.getCity(cityUUID);
@@ -111,7 +111,7 @@ public class NPCManager implements Listener {
     }
 
     public static void removeNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
         if (!ownerNpcMap.containsKey(cityUUID) || !mayorNpcMap.containsKey(cityUUID)) return;
 
         Npc ownerNpc = ownerNpcMap.remove(cityUUID).getNpc();
@@ -125,7 +125,7 @@ public class NPCManager implements Listener {
     }
 
     public static void updateNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         OwnerNPC ownerNPC = ownerNpcMap.get(cityUUID);
         MayorNPC mayorNPC = mayorNpcMap.get(cityUUID);
@@ -140,7 +140,7 @@ public class NPCManager implements Listener {
     }
 
     public static void updateAllNPCS() {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         Set<UUID> cityUUIDs = new HashSet<>(ownerNpcMap.keySet()); // Copie
 
@@ -159,7 +159,7 @@ public class NPCManager implements Listener {
     }
 
     public static void moveNPC(String type, Location location, UUID cityUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         if (type.equalsIgnoreCase("owner")) {
             OwnerNPC ownerNPC = ownerNpcMap.get(cityUUID);
@@ -177,14 +177,14 @@ public class NPCManager implements Listener {
     }
 
     public static boolean hasNPCS(UUID cityUUID) {
-        if (!FancyNpcsHook.hasFancyNpc()) return false;
+        if (!FancyNpcsHook.isHasFancyNpc()) return false;
 
         return ownerNpcMap.containsKey(cityUUID) && mayorNpcMap.containsKey(cityUUID);
     }
 
     @EventHandler
     public void onInteractWithMayorNPC(NpcInteractEvent event) {
-        if (!FancyNpcsHook.hasFancyNpc()) return;
+        if (!FancyNpcsHook.isHasFancyNpc()) return;
 
         Player player = event.getPlayer();
 

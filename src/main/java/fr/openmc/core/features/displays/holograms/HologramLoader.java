@@ -68,7 +68,7 @@ public class HologramLoader {
                 try {
                     config.save(file);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
 

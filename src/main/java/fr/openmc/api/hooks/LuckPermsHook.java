@@ -16,6 +16,7 @@ import java.util.Objects;
 
 public class LuckPermsHook {
     @Getter private static LuckPerms api;
+    @Getter
     private static boolean hasLuckPerms;
 
     public LuckPermsHook() {
@@ -24,13 +25,6 @@ public class LuckPermsHook {
 
         hasLuckPerms = true;
         api = OMCPlugin.getInstance().getServer().getServicesManager().load(LuckPerms.class);
-    }
-
-    /**
-     * Retourne si l'instance a LuckPerm
-     */
-    public static boolean hasLuckPerms() {
-        return hasLuckPerms;
     }
 
     /**

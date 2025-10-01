@@ -35,7 +35,7 @@ public class CityRankManager {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -54,7 +54,7 @@ public class CityRankManager {
         try {
             ranksDao.create(rank);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -69,7 +69,7 @@ public class CityRankManager {
             delete.where().eq("city_uuid", rank.getCityUUID()).and().eq("name", rank.getName());
             ranksDao.delete(delete.prepare());
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -82,7 +82,7 @@ public class CityRankManager {
         try {
             ranksDao.update(rank);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -101,7 +101,7 @@ public class CityRankManager {
                 city.getRanks().add(dbRank);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
     

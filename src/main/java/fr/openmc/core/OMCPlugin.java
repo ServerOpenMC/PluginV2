@@ -33,7 +33,7 @@ import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
-import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.items.usable.CustomUsableItemRegistry;
@@ -41,6 +41,7 @@ import fr.openmc.core.utils.MotdUtils;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.database.DatabaseManager;
+import fr.openmc.core.utils.errors.ErrorReporter;
 import fr.openmc.core.utils.translation.TranslationManager;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -96,6 +97,8 @@ public class OMCPlugin extends JavaPlugin {
 
         logLoadMessage();
 
+        new ErrorReporter();
+
         /* MANAGERS */
         TicketManager.loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
         new DatabaseManager();
@@ -107,11 +110,11 @@ public class OMCPlugin extends JavaPlugin {
         new BankManager();
         new ScoreboardManager();
         new HomesManager();
-        new TPAManager();
+        TPAQueue.initCommand();
         new FreezeManager();
         new QuestProgressSaveManager();
         new TabList();
-        if (!OMCPlugin.isUnitTestVersion()) { // Tous les trucs faits par misieur qui fonctionne à peu près
+        if (!OMCPlugin.isUnitTestVersion()) {
             new LeaderboardManager();
             new MainMenu(this);
             new HologramLoader();
@@ -140,7 +143,7 @@ public class OMCPlugin extends JavaPlugin {
         new QuestsManager();
         new CityManager();
         new ContestManager();
-        if (WorldGuardHook.hasWorldGuard()) {
+        if (WorldGuardHook.isHasWorldGuard()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }

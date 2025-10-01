@@ -8,6 +8,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -68,6 +69,7 @@ public class War {
                         §8§oPréparez vous pour le combat contre %s
                         §8§oVous avez §c§l%d minutes §8pour vous équiper.
                         §8§oVous serez en §4%d §8VS §4%d
+                        §8§oLorsque le combat commencera vous serez §4téléporter §8a votre §cMascotte.
                         §7
                         §8§m                                                     §r""",
                 cityAttacker.getName(), TIME_PREPARATION, attackers.size(), defenders.size());
@@ -87,6 +89,12 @@ public class War {
 
             player.sendMessage(Component.text(message));
         }
+
+        LivingEntity mascotAttacker = (LivingEntity) cityAttacker.getMascot().getEntity();
+        mascotAttacker.clearActivePotionEffects();
+
+        LivingEntity mascotDefender = (LivingEntity) cityDefender.getMascot().getEntity();
+        mascotDefender.clearActivePotionEffects();
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::startCombat, (long) TIME_PREPARATION * 60 * 20);
     }

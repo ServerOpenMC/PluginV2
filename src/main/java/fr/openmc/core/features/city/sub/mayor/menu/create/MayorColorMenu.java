@@ -141,7 +141,7 @@ public class MayorColorMenu extends Menu {
                                     MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
                                     player.closeInventory();
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    throw new RuntimeException(e);
                                 }
                             },
                             player::closeInventory,

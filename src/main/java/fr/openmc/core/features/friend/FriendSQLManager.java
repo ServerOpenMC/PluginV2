@@ -6,6 +6,7 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.OMCPlugin;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public class FriendSQLManager {
 
@@ -41,7 +43,7 @@ public class FriendSQLManager {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get Friends Object 1=" + first + " 2=" + second, e);
             return null;
         }
     }
@@ -50,7 +52,7 @@ public class FriendSQLManager {
         try {
             return friendsDao.create(new Friend(first, second, Timestamp.valueOf(LocalDateTime.now()))) != 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to add Friends in database", e);
             return false;
         }
     }
@@ -59,7 +61,7 @@ public class FriendSQLManager {
         try {
             return friendsDao.delete(getFriendObject(first, second)) != 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to remove Friends in database", e);
             return false;
         }
     }
@@ -78,7 +80,7 @@ public class FriendSQLManager {
         try {
             return friendsDao.update(friend) != 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to set Best Friends in database", e);
             return false;
         }
     }
@@ -87,32 +89,33 @@ public class FriendSQLManager {
         return getFriendObject(first, second).getDate();
     }
 
-    public static CompletableFuture<List<UUID>> getAllFriendsAsync(UUID player) {
+    public static CompletableFuture<List<UUID>> getAllFriendsAsync(UUID playerUUID) {
         return CompletableFuture.supplyAsync(() -> {
             List<UUID> friends = new ArrayList<>();
 
             try {
                 QueryBuilder<Friend, UUID> query = friendsDao.queryBuilder();
-                query.where().eq("first", player).or().eq("second", player);
-                friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(player)));
+                query.where().eq("first", playerUUID).or().eq("second", playerUUID);
+                friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(playerUUID)));
             } catch (SQLException e) {
-                e.printStackTrace();
+                OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get a friends async", e);
             }
             return friends;
         });
     }
 
-    public static CompletableFuture<List<UUID>> getBestFriendsAsync(UUID player) {
+    public static CompletableFuture<List<UUID>> getBestFriendsAsync(UUID playerUUID) {
         return CompletableFuture.supplyAsync(() -> {
             List<UUID> friends = new ArrayList<>();
 
             try {
                 QueryBuilder<Friend, UUID> query = friendsDao.queryBuilder();
-                query.where().and(query.where().eq("first", player).or().eq("second", player),
+                query.where().and(query.where().eq("first", playerUUID)
+                                .or().eq("second", playerUUID),
                         query.where().eq("best_friend", true));
-                friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(player)));
+                friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(playerUUID)));
             } catch (SQLException e) {
-                e.printStackTrace();
+                OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get Best Friends async", e);
             }
             return friends;
         });

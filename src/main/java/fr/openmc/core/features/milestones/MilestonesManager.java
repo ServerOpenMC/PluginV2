@@ -60,7 +60,7 @@ public class MilestonesManager {
                 milestone.getPlayerData().put(data.getUUID(), data);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -77,7 +77,7 @@ public class MilestonesManager {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

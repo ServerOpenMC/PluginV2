@@ -105,7 +105,7 @@ public class TradeMenu extends Menu {
 
             inventory.put(tradeSlots.get(i), new ItemBuilder(this, material, meta -> meta.lore(lore))
                     .setOnClick(event -> {
-                        if (!ItemsAdderHook.hasItemAdder()) {
+                        if (!ItemsAdderHook.isHasItemAdder()) {
                             MessagesManager.sendMessage(player,
                                     Component.text("§cFonctionnalité bloquée. Contactez l'administration."),
                                     Prefix.CONTEST, MessageType.ERROR, true);

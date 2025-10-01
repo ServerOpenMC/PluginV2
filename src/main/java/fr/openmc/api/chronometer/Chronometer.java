@@ -1,8 +1,11 @@
 package fr.openmc.api.chronometer;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import lombok.Getter;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -12,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Chronometer{
@@ -61,11 +65,9 @@ public class Chronometer{
         UUID entityUUID = entity.getUniqueId();
         chronometer.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, time);
 
-
         new BukkitRunnable() {
             @Override
             public void run() {
-
                 if (!chronometer.containsKey(entityUUID)) {
                     cancel();
                     return;
@@ -79,21 +81,23 @@ public class Chronometer{
                             timerMessage = message.replace("%sec%", String.valueOf(remainingTime));
                         }
                         if (entity instanceof Player player){
-                            player.spigot().sendMessage(messageType.getChatMessageType(),new TextComponent(timerMessage));
+                            sendMessage(player, messageType, Component.text(timerMessage));
                         }
                     }
                 } else {
                     if (entity instanceof Player player){
-                        player.spigot().sendMessage(messageType.getChatMessageType(),new TextComponent(timerMessage));
+                        sendMessage(player, messageType, Component.text(timerMessage));
                     }
                 }
 
 
                 if (timerEnd(entityUUID, group)) {
                     if (entity instanceof Player player){
-                        player.spigot().sendMessage(finishMessageType.getChatMessageType(), new TextComponent(finishMessage != null ? finishMessage : "Le chronomètre est terminé !"));
+                        sendMessage(player, finishMessageType, Component.text(finishMessage != null ? finishMessage : "Le chronomètre est terminé !"));
                     }
+
                     Bukkit.getPluginManager().callEvent(new ChronometerEndEvent(entity, group));
+
                     if (chronometer.containsKey(entityUUID)) {
                         chronometer.get(entityUUID).remove(group);
                         if (chronometer.get(entityUUID).isEmpty()){
@@ -121,12 +125,12 @@ public class Chronometer{
             if (message!=null){
                 if (!message.contains("%null%")){
                     if (entity instanceof Player player){
-                        player.spigot().sendMessage(messageType.getChatMessageType(), new TextComponent(message));
+                        sendMessage(player, messageType, Component.text(message));
                     }
                 }
             } else {
                 if (entity instanceof Player player){
-                    player.spigot().sendMessage(messageType.getChatMessageType(), new TextComponent("Chronomètre arrêté"));
+                    sendMessage(player, messageType, Component.text("Chronomètre arrêté"));
                 }
             }
         }
@@ -146,12 +150,12 @@ public class Chronometer{
             if (message!=null){
                 if (!message.contains("%null%")){
                     if (entity instanceof Player player){
-                        player.spigot().sendMessage(messageType.getChatMessageType(), new TextComponent(message));
+                        sendMessage(player, messageType, Component.text(message));
                     }
                 }
             } else {
                 if (entity instanceof Player player){
-                    player.spigot().sendMessage(messageType.getChatMessageType(), new TextComponent("Chronomètre du " + group + " arrêté"));
+                    sendMessage(player, messageType, Component.text("Chronomètre du " + group + " arrêté"));
                 }
             }
 
@@ -197,5 +201,13 @@ public class Chronometer{
             return chronometer.get(entityUUID).containsKey(group);
         }
         return false;
+    }
+
+    private static void sendMessage(Player player, ChronometerType type, Component content) {
+        if (Objects.requireNonNull(type) == ChronometerType.CHAT) {
+            MessagesManager.sendMessage(player, content, Prefix.OPENMC, MessageType.INFO, false);
+        } else {
+            player.sendActionBar(content);
+        }
     }
 }

@@ -64,7 +64,7 @@ public class AdminNotationCommands {
         try {
             calculateAllCityScore(weekStr);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         giveReward(weekStr);

@@ -126,7 +126,7 @@ public class NotationManager {
                 notationPerWeek.computeIfAbsent(weekStr, k -> new ArrayList<>()).add(notation);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -134,15 +134,21 @@ public class NotationManager {
      * Sauvegarde toutes les notations dans la base de données.
      */
     public static void saveNotations() {
-        notationPerWeek.forEach((weekStr, notations) -> {
-            notations.forEach(notation -> {
-                try {
-                    notationDao.createOrUpdate(notation);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            });
-        });
+        try {
+            notationDao.delete(notationDao.queryForAll());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        notationPerWeek.forEach((weekStr, notations) ->
+                notations.forEach(notation -> {
+                    try {
+                        notationDao.createOrUpdate(notation);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+        );
     }
 
     /**
@@ -153,6 +159,7 @@ public class NotationManager {
     public static void createOrUpdateNotation(CityNotation notation) {
         try {
             notationDao.createOrUpdate(notation);
+
             String weekStr = notation.getWeekStr();
             notationPerWeek.compute(weekStr, (k, list) -> {
                 if (list == null) list = new ArrayList<>();
@@ -164,11 +171,12 @@ public class NotationManager {
             cityNotations.compute(notation.getCityUUID(), (k, list) -> {
                 if (list == null) list = new ArrayList<>();
                 list.removeIf(n -> Objects.equals(n.getCityUUID(), notation.getCityUUID()));
+                list.removeIf(n -> Objects.equals(n.getWeekStr(), notation.getWeekStr()));
                 list.add(notation);
                 return list;
             });
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -195,7 +203,7 @@ public class NotationManager {
         List<CityNotation> notations = notationPerWeek.getOrDefault(weekStr, Collections.emptyList());
         return notations.stream()
                 .sorted(Comparator.comparingDouble(
-                        (CityNotation n) -> n.getNoteArchitectural() + n.getNoteCoherence()
+                        CityNotation::getTotalNote
                 ).reversed())
                 .toList();
     }

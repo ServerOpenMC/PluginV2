@@ -9,19 +9,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@Getter
 public class WarPendingDefense {
 
-    @Getter
     private final City defender;
-    @Getter
     private final City attacker;
-    @Getter
     private final List<UUID> attackers;
-    @Getter
     private final Set<UUID> acceptedDefenders = new HashSet<>();
-    @Getter
     private final int required;
-    @Getter
     @Setter
     private boolean alreadyExecuted = false;
 
