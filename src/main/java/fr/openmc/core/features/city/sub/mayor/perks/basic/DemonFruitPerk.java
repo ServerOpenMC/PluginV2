@@ -75,7 +75,7 @@ public class DemonFruitPerk implements Listener {
                         player.getAttribute(Attribute.BLOCK_INTERACTION_RANGE).removeModifier(modifier);
                     });
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

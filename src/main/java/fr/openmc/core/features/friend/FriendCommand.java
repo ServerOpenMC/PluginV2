@@ -176,7 +176,7 @@ public class FriendCommand {
                 } catch (Exception e) {
                     player.sendMessage(Component.text("Erreur lors de la récupération des informations de " + friend.getName())
                             .color(NamedTextColor.RED));
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
 

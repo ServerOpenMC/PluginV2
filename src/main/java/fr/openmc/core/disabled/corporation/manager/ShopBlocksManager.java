@@ -1,9 +1,9 @@
 package fr.openmc.core.disabled.corporation.manager;
 
+import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.disabled.corporation.ItemsAdderIntegration;
 import fr.openmc.core.disabled.corporation.shops.Shop;
-import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.core.utils.world.WorldUtils;
 import fr.openmc.core.utils.world.Yaw;
 import org.bukkit.Location;
@@ -73,7 +73,7 @@ public class ShopBlocksManager {
         Block cashBlock = multiblock.cashBlock().getBlock();
         Yaw yaw = WorldUtils.getYaw(player);
 
-        if (ItemsAdderHook.hasItemAdder()) {
+        if (ItemsAdderHook.isHasItemAdder()) {
             boolean placed = ItemsAdderIntegration.placeShopFurniture(cashBlock);
             if (!placed) {
                 cashBlock.setType(Material.OAK_SIGN);
@@ -104,7 +104,7 @@ public class ShopBlocksManager {
         Block cashBlock = multiblock.cashBlock().getBlock();
         Block stockBlock = multiblock.stockBlock().getBlock();
 
-        if (ItemsAdderHook.hasItemAdder()) {
+        if (ItemsAdderHook.isHasItemAdder()) {
 
             if (!ItemsAdderIntegration.hasFurniture(cashBlock)) {
                 return false;

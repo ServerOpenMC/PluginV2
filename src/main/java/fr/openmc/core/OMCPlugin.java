@@ -142,7 +142,7 @@ public class OMCPlugin extends JavaPlugin {
         new QuestsManager();
         new CityManager();
         new ContestManager();
-        if (WorldGuardHook.hasWorldGuard()) {
+        if (WorldGuardHook.isHasWorldGuard()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }

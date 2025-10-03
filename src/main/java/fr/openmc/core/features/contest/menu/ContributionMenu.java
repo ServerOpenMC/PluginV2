@@ -109,7 +109,7 @@ public class ContributionMenu extends Menu {
             itemMeta.displayName(Component.text("§r§7Contribuer pour la§r ").append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor)));
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
-            if (!ItemsAdderHook.hasItemAdder()) {
+            if (!ItemsAdderHook.isHasItemAdder()) {
                 MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                 return;
             }

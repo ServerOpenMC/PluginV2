@@ -151,41 +151,41 @@ public class HomesManager {
         home.setLocation(newLoc);
     }
 
-    public static List<Home> getHomes(UUID owner) {
+    public static List<Home> getHomes(UUID playerUUID) {
         return homes
                 .stream()
-                .filter(home -> home.getOwner().equals(owner))
+                .filter(home -> home.getOwner().equals(playerUUID))
                 .toList();
     }
 
-    public static List<String> getHomesNames(UUID owner) {
-        return getHomes(owner)
+    public static List<String> getHomesNames(UUID playerUUID) {
+        return getHomes(playerUUID)
                 .stream()
                 .map(Home::getName)
                 .toList();
     }
 
-    public static int getHomeLimit(UUID owner) {
+    public static int getHomeLimit(UUID playerUUID) {
         HomeLimit homeLimit = homeLimits.stream()
-                .filter(hl -> hl.getPlayer().equals(owner))
+                .filter(hl -> hl.getPlayerUUID().equals(playerUUID))
                 .findFirst()
                 .orElse(null);
 
         if (homeLimit == null) {
-            homeLimit = new HomeLimit(owner, HomeLimits.LIMIT_0);
+            homeLimit = new HomeLimit(playerUUID, HomeLimits.LIMIT_0);
             homeLimits.add(homeLimit);
         }
 
         return homeLimit.getLimit();
     }
 
-    public static void updateHomeLimit(UUID owner) {
+    public static void updateHomeLimit(UUID playerUUID) {
         HomeLimit homeLimit = homeLimits.stream()
-                .filter(hl -> hl.getPlayer().equals(owner))
+                .filter(hl -> hl.getPlayerUUID().equals(playerUUID))
                 .findFirst()
                 .orElse(null);
         if (homeLimit == null) {
-            homeLimits.add(new HomeLimit(owner, HomeLimits.LIMIT_0));
+            homeLimits.add(new HomeLimit(playerUUID, HomeLimits.LIMIT_0));
         } else {
             int currentLimitIndex = homeLimit.getHomeLimit().ordinal();
             HomeLimits newLimit = HomeLimits.values()[currentLimitIndex + 1];
@@ -214,7 +214,7 @@ public class HomesManager {
                 if (homeLimit.getLimit() == 0) homeLimit.setLimit(HomeLimits.LIMIT_0.getLimit());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur de chargement des HomesLimit ", e);
         }
     }
 
@@ -223,7 +223,7 @@ public class HomesManager {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), HomeLimit.class);
             limitsDao.create(homeLimits);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur de sauvegarde des HomesLimit ", e);
         }
     }
 
@@ -231,7 +231,7 @@ public class HomesManager {
         try {
             homes.addAll(homesDao.queryForAll());
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur de chargement des Homes ", e);
         }
     }
 
@@ -242,7 +242,7 @@ public class HomesManager {
                 homesDao.createOrUpdate(home);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur de sauvegarde des Homes ", e);
         }
     }
 }

@@ -25,7 +25,6 @@ public class CooldownInterceptor implements CommandCondition {
             message = message.replace("%sec%", String.valueOf(remaining / 1000));
             message = message.replace("%ms%", String.valueOf(remaining));
             actor.reply(message);
-            throw new IllegalStateException("Cooldown active");
         }
     }
 }

@@ -70,11 +70,11 @@ public class MayorMandateMenu extends Menu {
                 Component.text("§8§oMaire de " + city.getName())
         ));
         loreMayor.add(Component.empty());
-        loreMayor.add(Component.text(perk2.getName()));
-        loreMayor.addAll(perk2.getLore());
+        loreMayor.add(Component.text(perk2 == null ? "§cErreur de la Réforme" : perk2.getName()));
+        loreMayor.addAll(perk2 == null ? List.of() : perk2.getLore());
         loreMayor.add(Component.empty());
-        loreMayor.add(Component.text(perk3.getName()));
-        loreMayor.addAll(perk3.getLore());
+        loreMayor.add(Component.text(perk3 == null ? "§cErreur de la Réforme" : perk3.getName()));
+        loreMayor.addAll(perk3 == null ? List.of() : perk3.getLore());
 
 
         inventory.put(3, new ItemBuilder(this, ItemUtils.getPlayerSkull(mayor.getMayorUUID()), itemMeta -> {
@@ -102,17 +102,15 @@ public class MayorMandateMenu extends Menu {
             inventory.put(4, new ItemBuilder(this, Material.STONE_BUTTON, itemMeta -> {
                 itemMeta.itemName(Component.text("§1Les Lois"));
                 itemMeta.lore(loreLaw);
-            }).setOnClick(event -> {
-                new MayorLawMenu(player).open();
-            }));
+            }).setOnClick(event -> new MayorLawMenu(player).open()));
         }
 
         List<Component> loreOwner = new ArrayList<>(List.of(
                 Component.text("§8§oPropriétaire de " + city.getName())
         ));
         loreOwner.add(Component.empty());
-        loreOwner.add(Component.text(perk1.getName()));
-        loreOwner.addAll(perk1.getLore());
+        loreOwner.add(Component.text(perk1 == null ? "§cErreur de la Réforme" : perk1.getName()));
+        loreOwner.addAll(perk1 == null ? List.of() : perk1.getLore());
 
         inventory.put(5, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
             itemMeta.displayName(Component.text("§ePropriétaire " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CityPermission.OWNER))).getName()));

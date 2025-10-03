@@ -81,7 +81,7 @@ public class MenuUtils {
 					ItemStack item = itemSupplier.get();
 					player.getOpenInventory().getTopInventory().setItem(slot, item);
 				} catch (Exception e) {
-					e.printStackTrace();
+                    throw new RuntimeException(e);
 				}
 			}
 		};

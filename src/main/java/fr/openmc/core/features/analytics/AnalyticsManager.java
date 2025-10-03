@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class AnalyticsManager {
     static Dao<Statistic, String> statsDao;
@@ -29,25 +30,25 @@ public class AnalyticsManager {
      * Return the stats for a player
      * 
      * @param scope        The scope of the statistics
-     * @param player       Player
+     * @param playerUUID       playerUUID
      * @param defaultValue The value that will get returned if analytics is disabled
      *                     or didn't work
      * @return The stats of the player, if unavailable, it will return defaultValue
      */
-    static int getStatistic(String scope, UUID player, int defaultValue) {
+    static int getStatistic(String scope, UUID playerUUID, int defaultValue) {
         if (!isEnabled())
             return defaultValue;
 
         try {
             QueryBuilder<Statistic, String> query = statsDao.queryBuilder();
-            query.where().eq("player", player).or().eq("scope", scope);
+            query.where().eq("player", playerUUID).or().eq("scope", scope);
             List<Statistic> stats = statsDao.query(query.prepare());
             if (stats.isEmpty())
                 return 0;
 
             return stats.getFirst().getValue();
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get Statistics from " + playerUUID, e);
             return defaultValue;
         }
     }
@@ -56,11 +57,11 @@ public class AnalyticsManager {
      * Increment a player's stats
      * 
      * @param scope  The scope of the statistics
-     * @param player Player
+     * @param playerUUID PlayerUUID
      * @param value  The amount to increment the statistic
      *
      */
-    static void incrementStatistic(String scope, UUID player, int value) {
+    static void incrementStatistic(String scope, UUID playerUUID, int value) {
         if (!isEnabled())
             return;
 
@@ -69,16 +70,16 @@ public class AnalyticsManager {
         Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
             try {
                 QueryBuilder<Statistic, String> query = statsDao.queryBuilder();
-                query.where().eq("player", player).or().eq("scope", scope);
+                query.where().eq("player", playerUUID).or().eq("scope", scope);
                 List<Statistic> stats = statsDao.query(query.prepare());
                 if (stats.size() != 1)
                     return;
                 statsDao.delete(stats);
 
-                Statistic statistic = new Statistic(player, scope, stats.getFirst().getValue() + value);
+                Statistic statistic = new Statistic(playerUUID, scope, stats.getFirst().getValue() + value);
                 statsDao.create(statistic);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         });
     }

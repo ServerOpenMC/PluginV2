@@ -123,8 +123,8 @@ public class CityChangeAction {
                     mob.getHealth(),
                     maxHealth
             )));
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         String cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";
