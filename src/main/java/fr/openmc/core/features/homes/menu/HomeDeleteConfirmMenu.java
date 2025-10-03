@@ -5,6 +5,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -70,7 +71,7 @@ public class HomeDeleteConfirmMenu extends Menu {
                     this,
                     home.getIconItem(),
                     itemMeta -> itemMeta.displayName(Component.text("§a" + home.getName()))
-            ));
+            ).hide(HomeIcon.getDataComponentTypes()));
 
             content.put(6, new ItemBuilder(
                     this,
