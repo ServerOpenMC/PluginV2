@@ -147,8 +147,8 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             lore.add(Component.text("§7Catégories disponibles:"));
 
             lore.add(formatCategoryLine(NamedTextColor.YELLOW, "§eToutes", currentCategory == HomeIcon.IconCategory.ALL));
-            lore.add(formatCategoryLine(NamedTextColor.LIGHT_PURPLE, "§dPersonnalisés", currentCategory == HomeIcon.IconCategory.CUSTOM));
             lore.add(formatCategoryLine(NamedTextColor.GREEN, "§aVanilla", currentCategory == HomeIcon.IconCategory.VANILLA));
+            lore.add(formatCategoryLine(NamedTextColor.LIGHT_PURPLE, "§dPersonnalisés", currentCategory == HomeIcon.IconCategory.CUSTOM));
 
             lore.add(Component.empty());
             lore.add(Component.text("§7■ §aClique §2gauche §apour aller à la catégorie suivante"));

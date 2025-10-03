@@ -99,6 +99,24 @@ public class CachedIconItem {
                                 Prefix.HOME, MessageType.SUCCESS, true);
                     });
                     player.closeInventory();
-                });
+                }).hide(
+                        DataComponentTypes.CONSUMABLE,
+                        DataComponentTypes.FOOD,
+                        DataComponentTypes.BUNDLE_CONTENTS,
+                        DataComponentTypes.ENCHANTMENTS,
+                        DataComponentTypes.DAMAGE,
+                        DataComponentTypes.DAMAGE_RESISTANT,
+                        DataComponentTypes.UNBREAKABLE,
+                        DataComponentTypes.ATTRIBUTE_MODIFIERS,
+                        DataComponentTypes.TRIM,
+                        DataComponentTypes.PROVIDES_TRIM_MATERIAL,
+                        DataComponentTypes.JUKEBOX_PLAYABLE,
+                        DataComponentTypes.FIREWORKS,
+                        DataComponentTypes.FIREWORK_EXPLOSION,
+                        DataComponentTypes.POTION_CONTENTS,
+                        DataComponentTypes.POTION_DURATION_SCALE,
+                        DataComponentTypes.TOOLTIP_DISPLAY,
+                        DataComponentTypes.ITEM_NAME
+                );
     }
 }
