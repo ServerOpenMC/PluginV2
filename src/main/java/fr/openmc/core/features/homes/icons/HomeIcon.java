@@ -174,4 +174,15 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
                 ", materialOrCustomId='" + materialOrCustomId + '\'' +
                 '}';
     }
+
+    public enum IconCategory {
+        ALL,
+        VANILLA,
+        CUSTOM
+    }
+
+    public enum IconType {
+        VANILLA,
+        CUSTOM
+    }
 }

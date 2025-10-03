@@ -2,7 +2,7 @@ package fr.openmc.core.features.homes.utils;
 
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
-import fr.openmc.core.features.homes.icons.OldHomeIcon;
+import fr.openmc.core.features.homes.icons.LegacyHomeIcon;
 import fr.openmc.core.features.homes.models.Home;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +19,7 @@ public class HomeUtil {
         if (icon != null) return icon;
 
         try {
-            OldHomeIcon legacyIcon = OldHomeIcon.valueOf(iconId.toUpperCase());
+            LegacyHomeIcon legacyIcon = LegacyHomeIcon.valueOf(iconId.toUpperCase());
             return HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
         } catch (IllegalArgumentException e) {
             return mapLegacyCustomId(iconId);
@@ -32,7 +32,7 @@ public class HomeUtil {
     }
 
     @Deprecated
-    public static ItemStack getHomeIconItem(OldHomeIcon legacyIcon) {
+    public static ItemStack getHomeIconItem(LegacyHomeIcon legacyIcon) {
         HomeIcon icon = HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
         return icon.getItemStack();
     }

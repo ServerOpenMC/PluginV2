@@ -5,7 +5,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
@@ -28,10 +27,9 @@ public class HomesManager {
 
     public static final List<Home> homes = new ArrayList<>();
     public static final List<HomeLimit> homeLimits = new ArrayList<>();
-    public final DisabledWorldHome disabledWorldHome;
 
     public HomesManager() {
-        disabledWorldHome = new DisabledWorldHome(OMCPlugin.getInstance());
+        DisabledWorldHome.init();
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("homes",
                 (args, sender, command) -> {
@@ -111,21 +109,21 @@ public class HomesManager {
                 (args, sender, command) -> {
                     List<String> suggestions = new ArrayList<>(
                             Bukkit.getWorlds().stream().map(WorldInfo::getName).toList());
-                    suggestions.removeAll(disabledWorldHome.getDisabledWorlds());
+                    suggestions.removeAll(DisabledWorldHome.getDisabledWorlds());
                     return suggestions;
                 });
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("homeWorldsRemove",
-                (args, sender, command) -> new ArrayList<>(disabledWorldHome.getDisabledWorlds()));
+                (args, sender, command) -> new ArrayList<>(DisabledWorldHome.getDisabledWorlds()));
 
         CommandsManager.getHandler().register(
-                new SetHome(this),
-                new RenameHome(),
-                new DelHome(),
-                new RelocateHome(this),
-                new TpHome(),
-                new HomeWorld(disabledWorldHome),
-                new UpgradeHome()
+                new SetHomeCommand(),
+                new RenameHomeCommand(),
+                new DelHomeCommand(),
+                new RelocateHomeCommand(),
+                new TpHomeCommand(),
+                new HomeWorldCommand(),
+                new UpgradeHomeCommand()
         );
 
         loadHomeLimit();

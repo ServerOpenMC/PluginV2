@@ -17,12 +17,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("homeworld")
 @Description("Permet de définir les mondes où les homes sont interdits")
 @CommandPermission("omc.admins.commands.home.world")
-public class HomeWorld {
-
-    private final DisabledWorldHome disabledWorldHome;
-    public HomeWorld(DisabledWorldHome disabledWorldHome) {
-        this.disabledWorldHome = disabledWorldHome;
-    }
+public class HomeWorldCommand {
 
     @Subcommand("add")
     @Description("Set the world where homes are disabled")
@@ -35,12 +30,12 @@ public class HomeWorld {
             return;
         }
 
-        if(disabledWorldHome.isDisabledWorld(world)) {
+        if(DisabledWorldHome.isDisabledWorld(world)) {
             MessagesManager.sendMessage(player, Component.text("§cLe monde §e" + world.getName() + " §cest déjà dans la liste des mondes où les homes sont désactivés."), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
 
-        disabledWorldHome.addDisabledWorld(world, player);
+        DisabledWorldHome.addDisabledWorld(world, player);
         MessagesManager.sendMessage(player, Component.text("§aLe monde §e" + world.getName() + " §aa été ajouté à la liste des mondes où les homes sont §cdésactivés."), Prefix.HOME, MessageType.SUCCESS, true);
     }
 
@@ -55,8 +50,8 @@ public class HomeWorld {
             return;
         }
 
-        if(disabledWorldHome.isDisabledWorld(world)) {
-            disabledWorldHome.removeDisabledWorld(world);
+        if(DisabledWorldHome.isDisabledWorld(world)) {
+            DisabledWorldHome.removeDisabledWorld(world);
             MessagesManager.sendMessage(player, Component.text("§aLe monde §e" + world.getName() + " §aa été retiré de la liste des mondes où les homes sont §cdésactivés."), Prefix.HOME, MessageType.SUCCESS, true);
         } else {
             MessagesManager.sendMessage(player, Component.text("§cLe monde §e " + world.getName() + " §cn'est pas dans la liste des mondes où les homes sont désactivés."), Prefix.HOME, MessageType.ERROR, true);
@@ -67,12 +62,12 @@ public class HomeWorld {
     @Description("List the worlds where homes are disabled")
     @CommandPermission("omc.admins.commands.home.world")
     public void listWorlds(Player player) {
-        if(disabledWorldHome.getDisabledWorlds().isEmpty()) {
+        if(DisabledWorldHome.getDisabledWorlds().isEmpty()) {
             MessagesManager.sendMessage(player, Component.text("§cAucun monde n'est dans la liste des mondes où les homes sont désactivés."), Prefix.HOME, MessageType.ERROR, true);
             return;
         }
         MessagesManager.sendMessage(player, Component.text("§eListe des mondes où les homes sont désactivés :"), Prefix.HOME, MessageType.INFO, true);
-        disabledWorldHome.getDisabledWorlds().forEach(worldName1 -> player.sendMessage("    §8- §e" + worldName1 + " §8(" + disabledWorldHome.getDisabledWorldInfo(worldName1) + "§8)"));
+        DisabledWorldHome.getDisabledWorlds().forEach(worldName1 -> player.sendMessage("    §8- §e" + worldName1 + " §8(" + DisabledWorldHome.getDisabledWorldInfo(worldName1) + "§8)"));
     }
 
 }
