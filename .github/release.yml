@@ -1,17 +1,19 @@
 changelog:
   categories:
-    - titre: "🎮 Mise à jour de Minecraft !"
+    - title: "🎮 Mise à jour de Minecraft !"
       labels:
         - "🎮 Game Update"
     - title: Nouvelles Fonctionnalités
       labels:
-        - "🆙 Amélioration"
-        - ":arrows_counterclockwise: Changement"
         - ":package:  Features"
-    - title: Bugs et Optimisations
+    - title: Corrections de Bugs & Optimisations
       labels:
         - "⚡Optimisation"
         - ":sparkles: Fixes"
+    - title: Changements & Améliorations
+      labels:
+        - ":arrows_counterclockwise: Changement"
+        - "🆙 Amélioration"
     - title: Autre
       labels:
         - "*"
