@@ -167,6 +167,10 @@ public class HomeIconCacheManager {
         initialized = false;
     }
 
+    public static void clearRenderedCache() {
+        RENDERED_ITEMS_CACHE.clear();
+    }
+
     /**
      * Reloads the cache by clearing it and reinitializing.
      * <p>

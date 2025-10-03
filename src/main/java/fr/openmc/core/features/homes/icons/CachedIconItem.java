@@ -97,6 +97,8 @@ public class CachedIconItem {
                         MessagesManager.sendMessage(player,
                                 Component.text("§aL'icône de votre home §2" + home.getName() + " §aa été changée en §2" + homeIcon.getVanillaName() + "§a !"),
                                 Prefix.HOME, MessageType.SUCCESS, true);
+
+                        HomeIconCacheManager.clearRenderedCache();
                     });
                     player.closeInventory();
                 }).hide(HomeIcon.getDataComponentTypes());
