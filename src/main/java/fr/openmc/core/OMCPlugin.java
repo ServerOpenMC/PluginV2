@@ -124,7 +124,6 @@ public class OMCPlugin extends JavaPlugin {
         new DynamicCooldownManager();
 
         new MascotsManager();
-        HomeIconCacheManager.initialize();
 
         new MultiBlockManager();
 
@@ -147,6 +146,7 @@ public class OMCPlugin extends JavaPlugin {
             new MainMenu(this);
             new HologramLoader();
         }
+        HomeIconCacheManager.initialize();
     }
 
     @Override

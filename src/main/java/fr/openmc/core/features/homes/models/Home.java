@@ -2,7 +2,7 @@ package fr.openmc.core.features.homes.models;
 
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
-import fr.openmc.core.features.homes.icons.OldHomeIcon;
+import fr.openmc.core.features.homes.icons.LegacyHomeIcon;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,7 +60,7 @@ public class Home {
         this.iconId = icon.getSaveId();
     }
 
-    public Home(UUID uniqueId, UUID owner, String name, Location location, OldHomeIcon legacyIcon) {
+    public Home(UUID uniqueId, UUID owner, String name, Location location, LegacyHomeIcon legacyIcon) {
         this(uniqueId, owner, name, location, HomeIconRegistry.fromLegacyHomeIcon(legacyIcon));
     }
 
@@ -114,12 +114,12 @@ public class Home {
     }
 
     @Deprecated
-    public OldHomeIcon getLegacyIcon() {
+    public LegacyHomeIcon getLegacyIcon() {
         return HomeIconRegistry.toLegacyHomeIcon(getIcon());
     }
 
     @Deprecated
-    public void setLegacyIcon(OldHomeIcon legacyIcon) {
+    public void setLegacyIcon(LegacyHomeIcon legacyIcon) {
         this.iconId = HomeIconRegistry.fromLegacyHomeIcon(legacyIcon).getSaveId();
     }
 
@@ -147,7 +147,7 @@ public class Home {
             return icon;
 
         try {
-            OldHomeIcon legacyIcon = OldHomeIcon.valueOf(iconId.toUpperCase());
+            LegacyHomeIcon legacyIcon = LegacyHomeIcon.valueOf(iconId.toUpperCase());
             return HomeIconRegistry.fromLegacyHomeIcon(legacyIcon);
         } catch (IllegalArgumentException e) {
             return HomeUtil.mapLegacyCustomId(iconId);
