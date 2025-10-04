@@ -135,7 +135,19 @@ public class TradeYMLManager {
             Map<String, Object> fusionContestList = YmlUtils.deepCopy(contest);
 
             if (fusionContestList.get("camp1").equals(camp)) {
-                int selected = (int) fusionContestList.get("selected");
+                Object selectedObj = fusionContestList.get("selected");
+                int selected = 0;
+
+                if (selectedObj instanceof Integer) {
+                    selected = (Integer) selectedObj;
+                } else if (selectedObj instanceof String s && s.matches("\\d+")) {
+                    selected = Integer.parseInt(s);
+                } else {
+                    OMCPlugin.getInstance().getLogger().warning(
+                            "⚠️ Valeur inattendue pour 'selected' dans TradeYMLManager : " + selectedObj + " (réinitialisation à 0)"
+                    );
+                }
+
                 fusionContestList.put("selected", selected + 1);
             }
 
