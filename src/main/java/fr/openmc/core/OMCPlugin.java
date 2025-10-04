@@ -129,7 +129,6 @@ public class OMCPlugin extends JavaPlugin {
         new DynamicCooldownManager();
 
         new MascotsManager();
-        HomeIconCacheManager.initialize();
 
         new MultiBlockManager();
 
@@ -147,6 +146,7 @@ public class OMCPlugin extends JavaPlugin {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
+        HomeIconCacheManager.initialize();
     }
 
     @Override

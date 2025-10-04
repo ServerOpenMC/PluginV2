@@ -3,7 +3,7 @@ package fr.openmc.core.features.homes.icons;
 import lombok.Getter;
 
 @Getter
-public enum OldHomeIcon {
+public enum LegacyHomeIcon {
 
     /**
      * N'oubliez pas de rajouter vos icon/items dans CustomItemRegistry
@@ -24,7 +24,7 @@ public enum OldHomeIcon {
     private final String id;
     private final String usage;
 
-    OldHomeIcon(String id, String usage) {
+    LegacyHomeIcon(String id, String usage) {
         this.id = id;
         this.usage = usage;
     }

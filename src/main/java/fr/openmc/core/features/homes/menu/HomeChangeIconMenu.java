@@ -6,8 +6,8 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
-import fr.openmc.core.features.homes.icons.IconCategory;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.items.CustomItemRegistry;
@@ -34,7 +34,7 @@ import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 public class HomeChangeIconMenu extends PaginatedMenu {
 
     private final Home home;
-    private IconCategory currentCategory = IconCategory.ALL;
+    private HomeIcon.IconCategory currentCategory = HomeIcon.IconCategory.ALL;
     private String searchQuery;
 
     private static final Map<UUID, Long> CATEGORY_COOLDOWNS = new ConcurrentHashMap<>();
@@ -121,7 +121,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
                     if (input == null) return;
 
                     searchQuery = input;
-                    currentCategory = IconCategory.ALL;
+                    currentCategory = HomeIcon.IconCategory.ALL;
                     setPage(0);
                     refresh();
                 });
@@ -146,9 +146,9 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             lore.add(Component.empty());
             lore.add(Component.text("§7Catégories disponibles:"));
 
-            lore.add(formatCategoryLine(NamedTextColor.YELLOW, "§eToutes", currentCategory == IconCategory.ALL));
-            lore.add(formatCategoryLine(NamedTextColor.LIGHT_PURPLE, "§dPersonnalisés", currentCategory == IconCategory.CUSTOM));
-            lore.add(formatCategoryLine(NamedTextColor.GREEN, "§aVanilla", currentCategory == IconCategory.VANILLA));
+            lore.add(formatCategoryLine(NamedTextColor.YELLOW, "§eToutes", currentCategory == HomeIcon.IconCategory.ALL));
+            lore.add(formatCategoryLine(NamedTextColor.GREEN, "§aVanilla", currentCategory == HomeIcon.IconCategory.VANILLA));
+            lore.add(formatCategoryLine(NamedTextColor.LIGHT_PURPLE, "§dPersonnalisés", currentCategory == HomeIcon.IconCategory.CUSTOM));
 
             lore.add(Component.empty());
             lore.add(Component.text("§7■ §aClique §2gauche §apour aller à la catégorie suivante"));
@@ -168,7 +168,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             CATEGORY_COOLDOWNS.put(getOwner().getUniqueId(), now);
 
             getOwner().playSound(getOwner().getLocation(), Sound.UI_BUTTON_CLICK, 1.0f, 1.0f);
-            IconCategory[] CATEGORIES = IconCategory.values();
+            HomeIcon.IconCategory[] CATEGORIES = HomeIcon.IconCategory.values();
             if (event.getClick().isLeftClick()) {
                 currentCategory = CATEGORIES[(currentCategory.ordinal() + 1) % CATEGORIES.length];
             } else if (event.getClick().isRightClick()) {
@@ -188,8 +188,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {
-    }
+    public void onInventoryClick(InventoryClickEvent inventoryClickEvent) {}
 
     @Override
     public void onClose(InventoryCloseEvent event) {}
