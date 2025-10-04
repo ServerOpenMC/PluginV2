@@ -38,7 +38,7 @@ public class MachineBallsOpenMenu extends Menu {
     private int animationTick = 0;
     private final int maxAnimationTicks = 60;
     private final List<LootItem> lootItems;
-    private final List<Integer> displaySlots = IntStream.range(19, 25).boxed().toList();
+    private final List<Integer> displaySlots = IntStream.range(19, 26).boxed().toList();
 
     private int itemOffset = 0;
     private LootItem winningItem = null;
