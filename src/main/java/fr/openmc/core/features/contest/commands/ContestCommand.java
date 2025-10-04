@@ -48,6 +48,9 @@ public class ContestCommand {
     @CommandPermission("omc.admin.commands.contest.setphase")
     public void setPhase(Integer phase) {
         switch(phase) {
+            case 1:
+                ContestManager.initPhase1();
+                break;
             case 2:
                 ContestManager.initPhase2();
                 break;
@@ -55,7 +58,7 @@ public class ContestCommand {
                 ContestManager.initPhase3();
                 break;
             default:
-                ContestManager.initPhase1();
+                ContestManager.initPhase0();
                 break;
         }
     }

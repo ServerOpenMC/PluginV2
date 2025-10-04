@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
