@@ -4,6 +4,9 @@ import dev.lone.itemsadder.api.CustomPlayer;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.animations.Animation;
 import fr.openmc.core.features.animations.PlayerAnimationInfo;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +19,9 @@ public class PlayerFinishJoiningListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+
+        boolean onGround = player.getLocation().subtract(0, 1, 0).getBlock().getType().isSolid();
+        if (player.isFlying() || !onGround || player.getGameMode().equals(GameMode.SPECTATOR)) return;
 
         playingAnimations.put(player, new PlayerAnimationInfo());
         EmoteListener.setupHead(player);

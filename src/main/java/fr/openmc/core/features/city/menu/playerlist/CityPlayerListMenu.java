@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.menu.playerlist;
 
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
