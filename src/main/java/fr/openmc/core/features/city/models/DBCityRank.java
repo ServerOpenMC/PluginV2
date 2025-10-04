@@ -19,20 +19,20 @@ import java.util.UUID;
 @Getter
 public class DBCityRank {
 	
-	@DatabaseField(useGetSet = true)
-	public String permissions;
-	@DatabaseField(useGetSet = true)
-	public String members;
 	@DatabaseField(id = true, canBeNull = false, unique = true, columnName = "rank_uuid")
 	private UUID rankUUID;
-	@DatabaseField(uniqueCombo = true)
-	private String name;
 	@DatabaseField(uniqueCombo = true, columnName = "city_uuid")
 	private UUID cityUUID;
-	@DatabaseField(canBeNull = false)
-	private Material icon;
+	@DatabaseField(useGetSet = true)
+	public String permissions;
 	@DatabaseField(canBeNull = false)
 	private int priority;
+	@DatabaseField(useGetSet = true)
+	public String members;
+	@DatabaseField(uniqueCombo = true)
+	private String name;
+	@DatabaseField(canBeNull = false)
+	private Material icon;
 
 	private Set<CityPermission> permissionsSet;
 	private Set<UUID> membersSet;
@@ -203,5 +203,9 @@ public class DBCityRank {
 				}
 			}
 		}
+	}
+	
+	public DBCityRank clone() {
+		return new DBCityRank(this.rankUUID, this.cityUUID, this.name, this.priority, new HashSet<>(this.permissionsSet), this.icon);
 	}
 }
