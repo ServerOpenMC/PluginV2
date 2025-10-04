@@ -88,17 +88,12 @@ public class OpenContestMenuQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onContestCommand(OpenMenuEvent event) {
+    public void onContestCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (event.getMenu() == null) return;
-
-        if (!(event.getMenu() instanceof ContributionMenu
-                || event.getMenu() instanceof TradeMenu
-                || event.getMenu() instanceof VoteMenu)
-        ) return;
+        if (!event.getMessage().equals("/contest")) return;
 
         this.incrementProgress(player.getUniqueId());
     }
