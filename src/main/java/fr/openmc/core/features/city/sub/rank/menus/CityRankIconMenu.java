@@ -31,11 +31,11 @@ public class CityRankIconMenu extends PaginatedMenu {
 	private final City city;
 	private final int page;
 	private static String filter = null;
-
-	public CityRankIconMenu(Player owner, City city, int page, DBCityRank rank, String filter) {
+	
+	public CityRankIconMenu(Player owner, City city, int page, DBCityRank oldRank, DBCityRank newRank, String filter) {
 		super(owner);
-		this.newRank = rank;
-		this.oldRank = rank;
+		this.newRank = newRank;
+		this.oldRank = oldRank;
 		this.city = city;
 		this.page = page;
 		CityRankIconMenu.filter = filter;
@@ -105,12 +105,12 @@ public class CityRankIconMenu extends PaginatedMenu {
 		if (hasPreviousPage())
 			map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
 					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setOnClick(inventoryClickEvent -> {
-				new CityRankIconMenu(getOwner(), city, page - 1, newRank, filter).open();
+				new CityRankIconMenu(getOwner(), city, page - 1, oldRank, newRank, filter).open();
 			}));
 		if (hasNextPage())
 			map.put(50, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_next_orange")
 					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setOnClick(inventoryClickEvent -> {
-				new CityRankIconMenu(getOwner(), city, page + 1, newRank, filter).open();
+				new CityRankIconMenu(getOwner(), city, page + 1, oldRank, newRank, filter).open();
 			}));
 		
 		map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_search").getBest(), itemMeta -> {
@@ -119,16 +119,16 @@ public class CityRankIconMenu extends PaginatedMenu {
 		}).setOnClick(event -> {
 			DialogInput.send(getOwner(), Component.text("Entrez le nom d'un mot clé pour l'icône"), MAX_LENGTH, input -> {
                 if (input == null) return;
-				new CityRankIconMenu(getOwner(), city, 0, newRank, input).open();
+				new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, input).open();
 			});
 		}));
 
 		if (filter != null && !filter.isEmpty()) {
 			map.put(53, new ItemBuilder(this, Material.PAPER, itemMeta -> {
 				itemMeta.displayName(Component.text("§cEffacer le filtre"));
-				itemMeta.lore(List.of(Component.text("§e§lCLIQUEZ POURE EFFACER LE FILTRE")));
+				itemMeta.lore(List.of(Component.text("§e§lCLIQUEZ POUR EFFACER LE FILTRE")));
 			}).setOnClick(event -> {
-				new CityRankIconMenu(getOwner(), city, 0, newRank, null).open();
+				new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open();
 			}));
 		}
 		return map;

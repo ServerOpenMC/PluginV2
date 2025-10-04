@@ -35,10 +35,10 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	private final City city;
 	private final int page;
 	
-	public CityRankPermsMenu(Player owner, DBCityRank rank, boolean canEdit, int page) {
+	public CityRankPermsMenu(Player owner, DBCityRank oldRank, DBCityRank newRank, boolean canEdit, int page) {
 		super(owner);
-		this.newRank = rank;
-		this.oldRank = rank;
+		this.oldRank = oldRank;
+		this.newRank = newRank;
 		this.canEdit = canEdit;
 		this.city = CityManager.getPlayerCity(owner.getUniqueId());
 		this.page = page;
@@ -69,15 +69,16 @@ public class CityRankPermsMenu extends PaginatedMenu {
 			
 			boolean hasPerm = this.newRank.getPermissionsSet().contains(permission);
 			ItemBuilder itemBuilder = new ItemBuilder(this, permission.getIcon(), itemMeta -> {
+				itemMeta.setEnchantmentGlintOverride(hasPerm);
 				itemMeta.displayName(Component.text((hasPerm ? "§cRetirer " : "§aAjouter ") + permission.getDisplayName()));
 				
 				List<Component> lore = List.of(
-						Component.text("§7CLIQUEZ POUR " + (hasPerm ? "RETIRER" : "AJOUTER") + " CETTE PERMISSION")
+						Component.text("§e§lCLIQUEZ POUR " + (hasPerm ? "RETIRER" : "AJOUTER") + " CETTE PERMISSION")
 				);
 				itemMeta.lore(lore);
 			}).setOnClick(inventoryClickEvent -> {
 				CityRankCommands.swapPermission(getOwner(), newRank, permission);
-				new CityRankPermsMenu(getOwner(), newRank, canEdit, page).open();
+				new CityRankPermsMenu(getOwner(), oldRank, newRank, true, page).open();
 			});
 			
 			items.add(itemBuilder);
@@ -99,13 +100,13 @@ public class CityRankPermsMenu extends PaginatedMenu {
 			map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
 				itemMeta.displayName(Component.text("§aPage précédente"));
 				itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page précédente")));
-			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), newRank, canEdit, page - 1).open()));
+			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page - 1).open()));
 		}
 		if (hasNextPage()) {
 			map.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> {
 				itemMeta.displayName(Component.text("§aPage suivante"));
 				itemMeta.lore(List.of(Component.text("§7Cliquez pour aller à la page suivante")));
-			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), newRank, canEdit, page + 1).open()));
+			}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), oldRank, newRank, canEdit, page + 1).open()));
 		}
 		
 		return map;

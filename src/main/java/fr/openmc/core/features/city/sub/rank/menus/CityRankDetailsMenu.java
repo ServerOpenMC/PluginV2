@@ -8,6 +8,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.milestone.rewards.RankLimitRewards;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
+import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -36,9 +37,9 @@ public class CityRankDetailsMenu extends Menu {
 	
 	public CityRankDetailsMenu(Player owner, City city, DBCityRank oldRank, DBCityRank newRank) {
 		super(owner);
+		this.city = city;
 		this.oldRank = oldRank;
 		this.newRank = newRank;
-		this.city = city;
 	}
 	
 	public CityRankDetailsMenu(Player owner, City city, String rankName) {
@@ -47,7 +48,7 @@ public class CityRankDetailsMenu extends Menu {
 	
 	@Override
 	public @NotNull String getName() {
-		return city.isRankExists(newRank) ? "Menu des détails du grade " + newRank.getName() : "Menu de création du grade  " + newRank.getName();
+		return city.isRankExists(oldRank) ? "Menu des détails du grade " + oldRank.getName() : "Menu de création du grade  " + newRank.getName();
 	}
 
 	@Override
@@ -121,7 +122,7 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("§7Cliquez pour changer une icône"),
 					Component.text("§7Modifiable plus tard")
 			));
-	    }).setOnClick(inventoryClickEvent -> new CityRankIconMenu(getOwner(), city, 0, newRank, null).open()));
+	    }).hide(CityRankManager.HIDDEN_ITEMS_DATA_COMPONENTS).setOnClick(inventoryClickEvent -> new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open()));
 		
 		map.put(13, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
 			itemMeta.displayName(Component.text("§bInsérer les permissions du grade"));
@@ -130,7 +131,7 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("§7Modifiables plus tard"),
 					Component.text("§7Permissions actuelles : §b" + (this.newRank.getPermissionsSet().isEmpty() ? "Aucune" : this.newRank.getPermissionsSet().size()))
 			));
-		}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), newRank, true, 0).open()));
+		}).setOnClick(inventoryClickEvent -> new CityRankPermsMenu(getOwner(), newRank, newRank, true, 0).open()));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {
 			itemMeta.displayName(Component.text("§cAnnuler et supprimer"));
@@ -219,10 +220,10 @@ public class CityRankDetailsMenu extends Menu {
 	    map.put(8, new ItemBuilder(this, this.newRank.getIcon(), itemMeta -> {
 			itemMeta.displayName(Component.text("§9Icône du grade"));
 			itemMeta.lore(loreIcon);
-		}).setOnClick(inventoryClickEvent -> {
+	    }).hide(CityRankManager.HIDDEN_ITEMS_DATA_COMPONENTS).setOnClick(inventoryClickEvent -> {
 			if (!canManageRanks) return;
 		    
-		    new CityRankIconMenu(getOwner(), city, 0, newRank, null).open();
+		    new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open();
 		}));
 
 		List<Component> lorePerm = new ArrayList<>(
@@ -232,7 +233,7 @@ public class CityRankDetailsMenu extends Menu {
 		);
 		lorePerm.add(Component.empty());
 	    if (canManageRanks) {
-		    lorePerm.add(Component.text("§e§lCLIQUEZ POUR CHANGER l'ICONE"));
+		    lorePerm.add(Component.text("§e§lCLIQUEZ POUR GÉRER LES PERMISSIONS"));
 	    } else {
 		    lorePerm.add(Component.text("§e§lCLIQUEZ POUR VOIR LES PERMISSIONS"));
 	    }
@@ -245,7 +246,7 @@ public class CityRankDetailsMenu extends Menu {
 				MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions"), Prefix.CITY, MessageType.ERROR, false);
 				return;
 			}
-			new CityRankPermsMenu(getOwner(), newRank, true, 0).open();
+			new CityRankPermsMenu(getOwner(), oldRank, newRank, true, 0).open();
 		}));
 		
 		map.put(18, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), itemMeta -> {

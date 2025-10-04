@@ -9,6 +9,7 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
+import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -93,7 +94,7 @@ public class CityRanksMenu extends PaginatedMenu {
 									Component.text(canManagerRanks ? "§e§lCLIQUEZ POUR MODIFIER LE ROLE" : "§e§lCLIQUEZ POUR S'Y INFORMER")
 							));
 						}
-				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(player, city, rank).open()));
+				).hide(CityRankManager.HIDDEN_ITEMS_DATA_COMPONENTS).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(player, city, rank).open()));
 			}
 		}
 		return map;
