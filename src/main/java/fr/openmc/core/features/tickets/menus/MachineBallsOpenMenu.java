@@ -74,6 +74,7 @@ public class MachineBallsOpenMenu extends Menu {
     public void onClose(InventoryCloseEvent event) {
         if (animationTask != null && !animationTask.isCancelled()) {
             animationTask.cancel();
+            finishAnimation(false);
         }
         Player player = (Player) event.getPlayer();
         player.playSound(Sound.sound(Key.key("minecraft", "block.barrel.close"),
@@ -144,7 +145,7 @@ public class MachineBallsOpenMenu extends Menu {
             @Override
             public void run() {
                 if (animationTick >= maxAnimationTicks) {
-                    finishAnimation();
+                    finishAnimation(true);
                     cancel();
                     return;
                 }
@@ -162,7 +163,7 @@ public class MachineBallsOpenMenu extends Menu {
         }.runTaskTimer(OMCPlugin.getInstance(), 0L, 4L);
     }
 
-    private void finishAnimation() {
+    private void finishAnimation(boolean withLatency) {
         winningItem = selectRandomLoot();
         finished = true;
 
@@ -208,7 +209,7 @@ public class MachineBallsOpenMenu extends Menu {
                             Prefix.OPENMC, MessageType.INFO);
                 }
             }
-        }.runTaskLater(OMCPlugin.getInstance(), 60L);
+        }.runTaskLater(OMCPlugin.getInstance(), withLatency ? 60L : 0L);
     }
 
     private LootItem selectRandomLoot() {
