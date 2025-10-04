@@ -177,14 +177,6 @@ public class ContestManager {
     }
 
     /**
-     * Démarre la phase 0 du contest (rien n’est lancé).
-     * - Définit la phase sur 1
-     */
-    public static void initPhase0() {
-        data.setPhase(1);
-    }
-
-    /**
      * Démarre la phase 1 du contest (phase de vote).
      * - Définit la phase sur 2
      * - Réinitialise les particules
