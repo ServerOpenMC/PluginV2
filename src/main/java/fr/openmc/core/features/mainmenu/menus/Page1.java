@@ -16,7 +16,7 @@ import fr.openmc.core.features.city.commands.CityCommands;
 import fr.openmc.core.features.contest.commands.ContestCommand;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.models.Contest;
-import fr.openmc.core.features.homes.command.TpHome;
+import fr.openmc.core.features.homes.command.TpHomeCommand;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.listeners.PacketListener;
 import fr.openmc.core.features.milestones.menus.MainMilestonesMenu;
@@ -225,7 +225,7 @@ public class Page1 implements Menu {
         } else if (SHOP_SLOTS.contains(slot)) {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> AdminShopManager.openMainMenu(player));
         } else if (HOME_SLOTS.contains(slot)) {
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHome.home(player, null));
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> TpHomeCommand.home(player, null));
         } else if (PROFILE_SLOTS.contains(slot)) {
             PacketMenuLib.closeMenu(player);
             player.sendMessage(Component.text(FontImageWrapper.replaceFontImages("Les profils des joueurs sont toujours en développement :sad:."), NamedTextColor.RED));

@@ -68,7 +68,7 @@ public class CompanyManager {
         OMCPlugin.registerEvents(
                 new ShopListener());
 
-        if (ItemsAdderHook.hasItemAdder()) {
+        if (ItemsAdderHook.isHasItemAdder()) {
             OMCPlugin.registerEvents(
                     new CustomItemsCompanyListener());
         }

@@ -3,7 +3,6 @@ package fr.openmc.core.features.displays.scoreboards;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.hooks.LuckPermsHook;
-import fr.openmc.api.hooks.PapiHook;
 import fr.openmc.api.hooks.WorldGuardHook;
 import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
@@ -43,7 +42,7 @@ public class ScoreboardManager implements Listener {
 
     public static final Set<UUID> disabledPlayers = new HashSet<>();
     public static final HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
-    private static final boolean canShowLogo = PapiHook.hasPAPI() && ItemsAdderHook.hasItemAdder();
+    private static final boolean canShowLogo = ItemsAdderHook.isHasItemAdder();
     final OMCPlugin plugin = OMCPlugin.getInstance();
     private static GlobalTeamManager globalTeamManager = null;
 
@@ -69,7 +68,7 @@ public class ScoreboardManager implements Listener {
                 updateScoreboard(player);
             }
         }, 0L, 20L); // 1s
-        if (LuckPermsHook.hasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
+        if (LuckPermsHook.isHasLuckPerms()) globalTeamManager = new GlobalTeamManager(playerScoreboards);
     }
 
     public static Scoreboard createNewScoreboard(Player player) {
@@ -256,6 +255,6 @@ public class ScoreboardManager implements Listener {
         objective.getScore("   ").setScore(1);
         objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
 
-        if (LuckPermsHook.hasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
+        if (LuckPermsHook.isHasLuckPerms() && globalTeamManager != null) globalTeamManager.updatePlayerTeam(player);
     }
 }

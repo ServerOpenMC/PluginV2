@@ -1,5 +1,6 @@
 package fr.openmc.core.features.tickets;
 
+import com.comphenix.protocol.PacketType;
 import com.google.gson.*;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;

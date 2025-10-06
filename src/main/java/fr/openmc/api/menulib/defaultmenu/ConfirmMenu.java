@@ -1,4 +1,4 @@
-package fr.openmc.api.menulib.default_menu;
+package fr.openmc.api.menulib.defaultmenu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
@@ -123,7 +123,7 @@ public class ConfirmMenu extends Menu {
             } catch (Exception e) {
                 MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
                 player.closeInventory();
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }));
 
@@ -136,7 +136,7 @@ public class ConfirmMenu extends Menu {
             } catch (Exception e) {
                 MessagesManager.sendMessage(player, Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
                 player.closeInventory();
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }));
 

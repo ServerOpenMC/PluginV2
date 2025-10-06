@@ -175,7 +175,7 @@ public class ItemInteraction implements Listener {
         if (meta == null)
             return false;
 
-        if (item != null && item.hasItemMeta()) {
+        if (item.hasItemMeta()) {
             PersistentDataContainer data = item.getItemMeta().getPersistentDataContainer();
             return data.has(NAMESPACE_KEY, PersistentDataType.STRING);
         }

@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.menu.create;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.city.City;
@@ -141,7 +141,7 @@ public class MayorColorMenu extends Menu {
                                     MessagesManager.sendMessage(player, Component.text("§7Vous vous êtes présenter avec §asuccès§7!"), Prefix.MAYOR, MessageType.ERROR, false);
                                     player.closeInventory();
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    throw new RuntimeException(e);
                                 }
                             },
                             player::closeInventory,

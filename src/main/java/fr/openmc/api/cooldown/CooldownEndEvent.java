@@ -7,10 +7,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+@Getter
 public class CooldownEndEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
-    @Getter private final UUID cooldownUUID;
-    @Getter
+    private final UUID cooldownUUID;
     private final String group;
 
     public CooldownEndEvent(UUID cooldownUUID, String group) {

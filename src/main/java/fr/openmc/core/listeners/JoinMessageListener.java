@@ -8,6 +8,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.quests.objects.Quest;
+import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -107,6 +108,18 @@ public class JoinMessageListener implements Listener {
             OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while loading friends of {} : {}", player.getName(), throwable.getMessage(), throwable);
             return null;
         });
+
+        if (TPAQueue.requesterHasPendingRequest(player)) {
+            Player targetTPA = TPAQueue.getTargetByRequester(player);
+            TPAQueue.removeRequest(player, targetTPA);
+            MessagesManager.sendMessage(targetTPA, Component.text("§3La demande de téléportation de §6" + player.getName() + " §4a été annulée car il s'est déconnecté"), Prefix.OPENMC, MessageType.INFO, true);
+        } else if (TPAQueue.hasPendingRequest(player)) {
+            for (Player requester : TPAQueue.getRequesters(player)) {
+                TPAQueue.removeRequest(requester, player);
+                MessagesManager.sendMessage(requester, Component.text("§4Votre demande de téléportation à §6" + player.getName() + " §4a été annulée car il s'est déconnecté"), Prefix.OPENMC, MessageType.WARNING, true);
+            }
+        }
+
 
         event.quitMessage(Component.text("§8[§c§l-§8] §r" + "§r" + LuckPermsHook.getFormattedPAPIPrefix(player) + player.getName()));
     }

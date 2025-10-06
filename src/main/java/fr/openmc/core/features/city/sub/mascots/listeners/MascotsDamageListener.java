@@ -210,10 +210,9 @@ public class MascotsDamageListener implements Listener {
             if (!PerkManager.hasPerk(cityMob.getMayor(), Perks.IRON_BLOOD.getId())) return;
 
             IronBloodPerk.spawnGolem(player, cityMob, mob);
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
-
 
         if (MascotRegenerationUtils.regenTasks.containsKey(damageEntity.getUniqueId())) {
             MascotRegenerationUtils.regenTasks.get(damageEntity.getUniqueId()).cancel();

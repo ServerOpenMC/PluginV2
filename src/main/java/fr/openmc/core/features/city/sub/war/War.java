@@ -8,6 +8,7 @@ import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -88,6 +89,12 @@ public class War {
 
             player.sendMessage(Component.text(message));
         }
+
+        LivingEntity mascotAttacker = (LivingEntity) cityAttacker.getMascot().getEntity();
+        mascotAttacker.clearActivePotionEffects();
+
+        LivingEntity mascotDefender = (LivingEntity) cityDefender.getMascot().getEntity();
+        mascotDefender.clearActivePotionEffects();
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), this::startCombat, (long) TIME_PREPARATION * 60 * 20);
     }

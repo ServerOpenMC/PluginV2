@@ -18,14 +18,14 @@ public class TPACancelCommand {
 	@Command("tpacancel")
 	@CommandPermission("omc.commands.tpa")
 	public void tpaCancel(Player player) {
-		if (!TPAQueue.QUEUE.requesterHasPendingRequest(player)) {
+		if (!TPAQueue.requesterHasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;
 		}
 		
-		Player target = TPAQueue.QUEUE.getTargetByRequester(player);
+		Player target = TPAQueue.getTargetByRequester(player);
 		
-		TPAQueue.QUEUE.removeRequest(player, target);
+		TPAQueue.removeRequest(player, target);
 		MessagesManager.sendMessage(player, Component.text("§2Vous avez annulé votre demande de téléportation à §6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);
 		MessagesManager.sendMessage(target, Component.text("§3" + player.getName() + " §4a annulé sa demande de téléportation"), Prefix.OPENMC, MessageType.INFO, true);
 		

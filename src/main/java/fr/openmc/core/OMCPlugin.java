@@ -33,7 +33,7 @@ import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketManager;
-import fr.openmc.core.features.tpa.TPAManager;
+import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.features.updates.UpdateManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.items.usable.CustomUsableItemRegistry;
@@ -110,7 +110,7 @@ public class OMCPlugin extends JavaPlugin {
         new BankManager();
         new ScoreboardManager();
         new HomesManager();
-        new TPAManager();
+        TPAQueue.initCommand();
         new FreezeManager();
         new QuestProgressSaveManager();
         new TabList();
@@ -129,7 +129,6 @@ public class OMCPlugin extends JavaPlugin {
         new DynamicCooldownManager();
 
         new MascotsManager();
-        HomeIconCacheManager.initialize();
 
         new MultiBlockManager();
 
@@ -143,10 +142,11 @@ public class OMCPlugin extends JavaPlugin {
         new QuestsManager();
         new CityManager();
         new ContestManager();
-        if (WorldGuardHook.hasWorldGuard()) {
+        if (WorldGuardHook.isHasWorldGuard()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
+        HomeIconCacheManager.initialize();
     }
 
     @Override

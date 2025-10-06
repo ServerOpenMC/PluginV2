@@ -63,7 +63,7 @@ public class BreakAyweniteQuest extends Quest implements Listener {
     public void onPlayerBreakBlock(BlockBreakEvent event) {
         if (MilestonesManager.getPlayerStep(type, event.getPlayer()) != step.ordinal()) return;
 
-        if (!ItemsAdderHook.hasItemAdder())
+        if (!ItemsAdderHook.isHasItemAdder())
             return;
 
         CustomBlock customBlock = CustomBlock.byAlreadyPlaced(event.getBlock());

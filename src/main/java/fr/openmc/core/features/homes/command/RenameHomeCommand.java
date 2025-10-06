@@ -17,7 +17,8 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
 
-public class RenameHome {
+public class RenameHomeCommand {
+
     @Command("renamehome")
     @Description("Renomme votre home")
     @CommandPermission("omc.commands.home.rename")

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.actions;
 
 import fr.openmc.api.cooldown.DynamicCooldownManager;
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
@@ -31,7 +31,7 @@ public class CityChangeAction {
     public static void beginChangeCity(Player player, CityType typeChange) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, player)) return;
+        if (!CityTypeConditions.canCityChangeType(city, player, typeChange)) return;
 
         if (typeChange.equals(CityType.WAR) && !FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.TYPE_WAR)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
@@ -71,7 +71,7 @@ public class CityChangeAction {
     public static void finishChange(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, sender)) {
+        if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
             MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -123,8 +123,8 @@ public class CityChangeAction {
                     mob.getHealth(),
                     maxHealth
             )));
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         String cityTypeActuel = city.getType() == CityType.WAR ? "§aen paix§7" : "§cen guerre§7";

@@ -6,9 +6,9 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
-import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.NPCManager;
 import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
@@ -76,14 +76,14 @@ public class OwnerNpcMenu extends Menu {
 
         String nameOwner = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission((CityPermission.OWNER))).getName();
 
+        Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
         if (electionType == ElectionType.ELECTION) {
-            Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
             List<Component> loreOwner = new ArrayList<>(List.of(
                     Component.text("§8§oPropriétaire de " + city.getName())
             ));
             loreOwner.add(Component.empty());
-            loreOwner.add(Component.text(perk1.getName()));
-            loreOwner.addAll(perk1.getLore());
+            loreOwner.add(Component.text(perk1 == null ? "§cErreur de la Réforme" : perk1.getName()));
+            loreOwner.addAll(perk1 == null ? List.of() : perk1.getLore());
 
             inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(uuidOwner), itemMeta -> {
                 itemMeta.displayName(Component.text("§ePropriétaire " + nameOwner));
@@ -96,9 +96,8 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(31, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
-            }).hide(perk1.getToHide()));
+            }).hide(perk1 == null ? null : perk1.getToHide()));
         } else {
-            Perks perk1 = PerkManager.getPerkById(mayor.getIdPerk1());
             Perks perk2 = PerkManager.getPerkById(mayor.getIdPerk2());
             Perks perk3 = PerkManager.getPerkById(mayor.getIdPerk3());
 
@@ -106,14 +105,14 @@ public class OwnerNpcMenu extends Menu {
                     Component.text("§8§oPropriétaire de " + city.getName())
             ));
             loreOwner.add(Component.empty());
-            loreOwner.add(Component.text(perk1.getName()));
-            loreOwner.addAll(perk1.getLore());
+            loreOwner.add(Component.text(perk1 == null ? "§cErreur de la Réforme" : perk1.getName()));
+            loreOwner.addAll(perk1 == null ? List.of() : perk1.getLore());
             loreOwner.add(Component.empty());
-            loreOwner.add(Component.text(perk2.getName()));
-            loreOwner.addAll(perk2.getLore());
+            loreOwner.add(Component.text(perk2 == null ? "§cErreur de la Réforme" : perk2.getName()));
+            loreOwner.addAll(perk2 == null ? List.of() : perk2.getLore());
             loreOwner.add(Component.empty());
-            loreOwner.add(Component.text(perk3.getName()));
-            loreOwner.addAll(perk3.getLore());
+            loreOwner.add(Component.text(perk3 == null ? "§cErreur de la Réforme" : perk3.getName()));
+            loreOwner.addAll(perk3 == null ? List.of() : perk3.getLore());
 
             inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(uuidOwner), itemMeta -> {
                 itemMeta.displayName(Component.text("§ePropriétaire " + nameOwner));
@@ -126,7 +125,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(20, new ItemBuilder(this, iaPerk1, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk1));
                 itemMeta.lore(lorePerk1);
-            }).hide(perk1.getToHide()));
+            }).hide(perk1 == null ? null : perk1.getToHide()));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
@@ -134,7 +133,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(22, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.itemName(Component.text(namePerk2));
                 itemMeta.lore(lorePerk2);
-            }).hide(perk2.getToHide()));
+            }).hide(perk2 == null ? null : perk2.getToHide()));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
             String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
@@ -142,7 +141,7 @@ public class OwnerNpcMenu extends Menu {
             inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
                 itemMeta.lore(lorePerk3);
-            }).hide(perk3.getToHide()));
+            }).hide(perk3 == null ? null : perk3.getToHide()));
         }
 
         if (mayor.getMayorUUID().equals(player.getUniqueId())) {

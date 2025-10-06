@@ -6,6 +6,7 @@ import fr.openmc.core.features.homes.events.HomeCreateEvent;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
+import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -21,19 +22,14 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 import java.util.List;
 import java.util.UUID;
 
-public class SetHome {
-    private final HomesManager homesManager;
-
-    public SetHome(HomesManager homesManager) {
-        this.homesManager = homesManager;
-    }
+public class SetHomeCommand {
 
     @Command("sethome")
     @Description("Permet de définir votre home")
     @CommandPermission("omc.commands.home.sethome")
     @AutoComplete("@homes")
     public void setHome(Player player, String name) {
-        if(homesManager.disabledWorldHome.isDisabledWorld(player.getWorld())) {
+        if(DisabledWorldHome.isDisabledWorld(player.getWorld())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir de home dans ce monde."), Prefix.HOME, MessageType.ERROR, true);
             return;
         }

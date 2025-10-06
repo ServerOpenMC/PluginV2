@@ -35,4 +35,4 @@ repoV2: "https://github.com/ServerOpenMC/PluginV2"
 #####
 error:
   notif: [ ]
-  webhook: "https://discord.com/api/webhooks/..."
+  webhook: null

@@ -5,7 +5,6 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.CommandsManager;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.command.*;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.models.HomeLimit;
@@ -28,10 +27,9 @@ public class HomesManager {
 
     public static final List<Home> homes = new ArrayList<>();
     public static final List<HomeLimit> homeLimits = new ArrayList<>();
-    public final DisabledWorldHome disabledWorldHome;
 
     public HomesManager() {
-        disabledWorldHome = new DisabledWorldHome(OMCPlugin.getInstance());
+        DisabledWorldHome.init();
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("homes",
                 (args, sender, command) -> {
@@ -111,21 +109,21 @@ public class HomesManager {
                 (args, sender, command) -> {
                     List<String> suggestions = new ArrayList<>(
                             Bukkit.getWorlds().stream().map(WorldInfo::getName).toList());
-                    suggestions.removeAll(disabledWorldHome.getDisabledWorlds());
+                    suggestions.removeAll(DisabledWorldHome.getDisabledWorlds());
                     return suggestions;
                 });
 
         CommandsManager.getHandler().getAutoCompleter().registerSuggestion("homeWorldsRemove",
-                (args, sender, command) -> new ArrayList<>(disabledWorldHome.getDisabledWorlds()));
+                (args, sender, command) -> new ArrayList<>(DisabledWorldHome.getDisabledWorlds()));
 
         CommandsManager.getHandler().register(
-                new SetHome(this),
-                new RenameHome(),
-                new DelHome(),
-                new RelocateHome(this),
-                new TpHome(),
-                new HomeWorld(disabledWorldHome),
-                new UpgradeHome()
+                new SetHomeCommand(),
+                new RenameHomeCommand(),
+                new DelHomeCommand(),
+                new RelocateHomeCommand(),
+                new TpHomeCommand(),
+                new HomeWorldCommand(),
+                new UpgradeHomeCommand()
         );
 
         loadHomeLimit();
@@ -153,41 +151,41 @@ public class HomesManager {
         home.setLocation(newLoc);
     }
 
-    public static List<Home> getHomes(UUID owner) {
+    public static List<Home> getHomes(UUID playerUUID) {
         return homes
                 .stream()
-                .filter(home -> home.getOwner().equals(owner))
+                .filter(home -> home.getOwner().equals(playerUUID))
                 .toList();
     }
 
-    public static List<String> getHomesNames(UUID owner) {
-        return getHomes(owner)
+    public static List<String> getHomesNames(UUID playerUUID) {
+        return getHomes(playerUUID)
                 .stream()
                 .map(Home::getName)
                 .toList();
     }
 
-    public static int getHomeLimit(UUID owner) {
+    public static int getHomeLimit(UUID playerUUID) {
         HomeLimit homeLimit = homeLimits.stream()
-                .filter(hl -> hl.getPlayer().equals(owner))
+                .filter(hl -> hl.getPlayerUUID().equals(playerUUID))
                 .findFirst()
                 .orElse(null);
 
         if (homeLimit == null) {
-            homeLimit = new HomeLimit(owner, HomeLimits.LIMIT_0);
+            homeLimit = new HomeLimit(playerUUID, HomeLimits.LIMIT_0);
             homeLimits.add(homeLimit);
         }
 
         return homeLimit.getLimit();
     }
 
-    public static void updateHomeLimit(UUID owner) {
+    public static void updateHomeLimit(UUID playerUUID) {
         HomeLimit homeLimit = homeLimits.stream()
-                .filter(hl -> hl.getPlayer().equals(owner))
+                .filter(hl -> hl.getPlayerUUID().equals(playerUUID))
                 .findFirst()
                 .orElse(null);
         if (homeLimit == null) {
-            homeLimits.add(new HomeLimit(owner, HomeLimits.LIMIT_0));
+            homeLimits.add(new HomeLimit(playerUUID, HomeLimits.LIMIT_0));
         } else {
             int currentLimitIndex = homeLimit.getHomeLimit().ordinal();
             HomeLimits newLimit = HomeLimits.values()[currentLimitIndex + 1];
@@ -216,7 +214,7 @@ public class HomesManager {
                 if (homeLimit.getLimit() == 0) homeLimit.setLimit(HomeLimits.LIMIT_0.getLimit());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur de chargement des HomesLimit ", e);
         }
     }
 
@@ -225,7 +223,7 @@ public class HomesManager {
             TableUtils.clearTable(DatabaseManager.getConnectionSource(), HomeLimit.class);
             limitsDao.create(homeLimits);
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur de sauvegarde des HomesLimit ", e);
         }
     }
 
@@ -233,7 +231,7 @@ public class HomesManager {
         try {
             homes.addAll(homesDao.queryForAll());
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur de chargement des Homes ", e);
         }
     }
 
@@ -244,7 +242,7 @@ public class HomesManager {
                 homesDao.createOrUpdate(home);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur de sauvegarde des Homes ", e);
         }
     }
 }

@@ -34,6 +34,6 @@ public class MayorVote {
     }
 
     public MayorCandidate getCandidate() {
-        return MayorManager.getCandidate(voter);
+        return MayorManager.getCandidate(candidate);
     }
 }

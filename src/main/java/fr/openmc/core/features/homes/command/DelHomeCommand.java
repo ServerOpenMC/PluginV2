@@ -16,7 +16,8 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
 
-public class DelHome {
+public class DelHomeCommand {
+
     @Command("delhome")
     @Description("Supprime un home")
     @CommandPermission("omc.commands.home.delhome")

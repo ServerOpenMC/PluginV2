@@ -3,6 +3,7 @@ package fr.openmc.core.features.homes.command;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.api.hooks.WorldGuardHook;
+import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -18,13 +19,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
 
-public class RelocateHome {
-    private final HomesManager homeManager;
-
-    public RelocateHome(HomesManager homeManager) {
-        this.homeManager = homeManager;
-    }
-
+public class RelocateHomeCommand {
 
     @Command("relocatehome")
     @Description("Déplace votre home")
@@ -34,7 +29,7 @@ public class RelocateHome {
 
         Location location = player.getLocation();
 
-        if(homeManager.disabledWorldHome.isDisabledWorld(location.getWorld())) {
+        if(DisabledWorldHome.isDisabledWorld(location.getWorld())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir de home dans ce monde."), Prefix.HOME, MessageType.ERROR, true);
             return;
         }

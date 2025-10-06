@@ -31,6 +31,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.logging.Level;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 
@@ -83,7 +84,7 @@ public class MailboxManager {
             sendSuccessSendingMessage(sender, receiverName, numItems);
             return true;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to send lettre", ex);
             sendFailureSendingMessage(sender, receiverName);
             return false;
         }
@@ -98,7 +99,7 @@ public class MailboxManager {
 
                 int numItems = Arrays.stream(items).mapToInt(ItemStack::getAmount).sum();
 
-                byte[] itemsBytes = BukkitSerializer.serializeItemStacks(items);
+                byte[] itemsBytes = BukkitSerializer.serializeItemStacks(changeStackItem(items));
 
                 Letter letter = new Letter(player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
                         Timestamp.valueOf(LocalDateTime.now()), false);
@@ -108,6 +109,18 @@ public class MailboxManager {
         } catch (SQLException | IOException e) {
             OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline players: {}", e.getMessage(), e);
         }
+    }
+
+    private static ItemStack[] changeStackItem(ItemStack[] items) {
+        return Arrays.stream(items)
+                .filter(Objects::nonNull)
+                .map(item -> {
+                    ItemStack clone = item.clone();
+                    int amount = Math.max(1, Math.min(clone.getAmount(), 99));
+                    clone.setAmount(amount);
+                    return clone;
+                })
+                .toArray(ItemStack[]::new);
     }
 
     public static void sendMailNotification(Player player) {
@@ -139,8 +152,8 @@ public class MailboxManager {
                 sendSuccessMessage(player, message);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             sendFailureMessage(player, "Une erreur est survenue.");
+            throw new RuntimeException(e);
         }
     }
 
@@ -148,7 +161,7 @@ public class MailboxManager {
         try {
             return letterDao.createOrUpdate(letter) != null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save letter in database", e);
             return false;
         }
     }
@@ -157,7 +170,7 @@ public class MailboxManager {
         try {
             return letterDao.deleteById(id) != 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to delete lettre in database", e);
             return false;
         }
     }
@@ -170,7 +183,7 @@ public class MailboxManager {
 
             return letter;
         } catch (Exception e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get lettre by id", e);
             sendFailureMessage(player, "Une erreur est survenue.");
             return null;
         }
@@ -183,7 +196,7 @@ public class MailboxManager {
             query.orderBy("sent", false);
             return letterDao.query(query.prepare());
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get sent letters", e);
             return null;
         }
     }
@@ -195,7 +208,7 @@ public class MailboxManager {
             query.orderBy("sent", false);
             return letterDao.query(query.prepare());
         } catch (SQLException e) {
-            e.printStackTrace();
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get received letters", e);
             return null;
         }
     }
