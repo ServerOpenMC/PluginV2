@@ -98,32 +98,11 @@ public class ConfirmMenu extends Menu {
             meta.lore(lore);
         }));
 
-        content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
-            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 1)) {
-                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
-            } else if (quantity < maxQuantity) {
-                quantity++;
-            }
-            update();
-        }));
+        content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> increaseQuantity(1)));
 
-        content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> {
-            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 10)) {
-                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
-            } else if (quantity < maxQuantity) {
-                quantity += 10;
-            }
-            update();
-        }));
+        content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> increaseQuantity(10)));
 
-        content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
-            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 64)) {
-                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
-            } else if (quantity < maxQuantity) {
-                quantity += 64;
-            }
-            update();
-        }));
+        content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> increaseQuantity(64)));
 
         content.put(17, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), meta -> {
             meta.displayName(Component.text("§aAccepter"));
@@ -169,6 +148,22 @@ public class ConfirmMenu extends Menu {
                 count += item.getAmount();
         return count;
     }
+
+    /**
+     * Increases the quantity by the specified amount, ensuring it does not exceed the maximum allowed quantity.
+     *
+     * @param amount The amount to increase the quantity by.
+     */
+    private void increaseQuantity(int amount) {
+        if (!isBuying) {
+            int playerItemCount = countPlayerItems(getOwner(), shopItem.getMaterial());
+            quantity = Math.min(quantity + amount, playerItemCount);
+        } else {
+            quantity = Math.min(quantity + amount, maxQuantity);
+        }
+        update();
+    }
+
 
     @Override
     public void onClose(InventoryCloseEvent event) {
