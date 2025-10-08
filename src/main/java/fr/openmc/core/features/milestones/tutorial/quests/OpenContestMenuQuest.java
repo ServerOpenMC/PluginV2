@@ -1,6 +1,10 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.contest.menu.ContributionMenu;
+import fr.openmc.core.features.contest.menu.TradeMenu;
+import fr.openmc.core.features.contest.menu.VoteMenu;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -86,11 +90,10 @@ public class OpenContestMenuQuest extends Quest implements Listener {
     @EventHandler
     public void onContestCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        String message = event.getMessage();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (!message.equals("/contest")) return;
+        if (!event.getMessage().equals("/contest")) return;
 
         this.incrementProgress(player.getUniqueId());
     }
