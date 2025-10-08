@@ -1,5 +1,6 @@
 package fr.openmc.api.menulib;
 
+import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.utils.messages.MessageType;
@@ -149,6 +150,8 @@ public abstract class Menu implements InventoryHolder {
 			getContent().forEach((slot, item) -> {
 				setItem(owner, inventory, slot, item);
 			});
+
+            Bukkit.getServer().getPluginManager().callEvent(new OpenMenuEvent(owner, this));
 
 			owner.openInventory(inventory);
 		} catch (Exception e) {

@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
@@ -53,14 +54,14 @@ public class OpenAdminShopMenuQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onAdminShopMenuOpen(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
+    public void onAdminShopMenuOpen(OpenMenuEvent event) {
+        Player player = event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (event.getInventory().getHolder() == null) return;
+        if (event.getMenu() == null) return;
 
-        if (!event.getInventory().getHolder().getClass().equals(AdminShopMenu.class)) return;
+        if (!(event.getMenu() instanceof AdminShopMenu)) return;
 
         this.incrementProgress(player.getUniqueId());
     }

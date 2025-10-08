@@ -53,10 +53,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
     @Override
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
-        Player player = getOwner();
 
         for (UUID uuid : city.getMembers()) {
             OfflinePlayer playerOffline = CacheOfflinePlayer.getOfflinePlayer(uuid);
+
+            if (playerOffline == null) continue;
 
             String title = city.getRankName(uuid) + " ";
 

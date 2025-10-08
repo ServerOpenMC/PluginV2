@@ -1,6 +1,6 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeDeleteConfirmMenu;

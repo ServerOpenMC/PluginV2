@@ -1,5 +1,6 @@
 package fr.openmc.core.features.milestones.tutorial.quests;
 
+import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.core.features.milestones.MilestoneType;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.milestones.tutorial.TutorialStep;
@@ -53,14 +54,14 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
     }
 
     @EventHandler
-    public void onQuestMenuOpen(InventoryOpenEvent event) {
-        Player player = (Player) event.getPlayer();
+    public void onQuestMenuOpen(OpenMenuEvent event) {
+        Player player = event.getPlayer();
 
         if (MilestonesManager.getPlayerStep(type, player) != step.ordinal()) return;
 
-        if (event.getInventory().getHolder() == null) return;
+        if (event.getMenu() == null) return;
 
-        if (!event.getInventory().getHolder().getClass().equals(QuestsMenu.class)) return;
+        if (!(event.getMenu() instanceof QuestsMenu)) return;
 
         this.incrementProgress(player.getUniqueId());
     }
