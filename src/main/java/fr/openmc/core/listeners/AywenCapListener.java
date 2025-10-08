@@ -18,25 +18,32 @@ import org.bukkit.potion.PotionEffectType;
 
 public class AywenCapListener implements Listener {
 
-    private void updateEffect(Player player) {
-        ItemStack helmet = player.getInventory().getHelmet();
-        if (ItemUtils.isSimilar(CustomItemRegistry.getByName("omc_items:aywen_cap").getBest(), helmet)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
-        } else {
-            player.removePotionEffect(PotionEffectType.NIGHT_VISION);
-        }
-    }
-
     @EventHandler
     public void onPlayerEquip(ArmorEquipEvent event) {
         if (event.getType() == null || !event.getType().equals(ArmorType.HELMET)) return;
         Player player = event.getPlayer();
-        player.getServer().getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> updateEffect(player), 1L);
+
+        ItemStack aywenCap = CustomItemRegistry.getByName("omc_items:aywen_cap").getBest();
+
+        boolean wasWearingCap = ItemUtils.isSimilar(aywenCap, event.getOldArmorPiece());
+        boolean isWearingCap = ItemUtils.isSimilar(aywenCap, event.getNewArmorPiece());
+
+        player.getServer().getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (isWearingCap && !player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
+            } else if (!isWearingCap && wasWearingCap) {
+                player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+            }
+        }, 1L);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        updateEffect(event.getPlayer());
+        Player player = event.getPlayer();
+        ItemStack helmet = player.getInventory().getHelmet();
+        if (ItemUtils.isSimilar(CustomItemRegistry.getByName("omc_items:aywen_cap").getBest(), helmet)) {
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
+        }
     }
 
     @EventHandler

@@ -8,20 +8,16 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityType;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
-import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
-import fr.openmc.core.features.city.sub.mayor.managers.PerkManager;
-import fr.openmc.core.features.city.sub.mayor.perks.Perks;
 import fr.openmc.core.features.city.view.CityViewManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.items.CustomItem;
 import fr.openmc.core.items.CustomItemRegistry;
-import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import static fr.openmc.core.features.city.sub.mayor.managers.MayorManager.PHASE_1_DAY;
 
 public class CityCreateAction {
 
@@ -73,7 +67,13 @@ public class CityCreateAction {
     }
 
     private static ItemStack getMascotStick() {
-        ItemStack stick = CustomItemRegistry.getByName("omc_items:mascot_stick").getBest();
+        ItemStack stick;
+        CustomItem mascotStick = CustomItemRegistry.getByName("omc_items:mascot_stick");
+        if (mascotStick != null)
+            stick = mascotStick.getBest();
+        else
+            stick = new ItemStack(Material.STICK);
+
         ItemMeta meta = stick.getItemMeta();
         if (meta != null) {
             meta.displayName(Component.text("§lMascotte"));
@@ -120,16 +120,6 @@ public class CityCreateAction {
         if (pendingCityName == null) return false;
 
         City city = new City(cityUUID, pendingCityName, player, CityType.PEACE, chunk);
-
-        // Maire
-        if (MayorManager.phaseMayor == 1) { // si création pendant le choix des maires
-            MayorManager.createMayor(null, null, city, null, null, null, null, ElectionType.OWNER_CHOOSE);
-        } else { // si création pendant les réformes actives
-            NamedTextColor color = MayorManager.getRandomMayorColor();
-            List<Perks> perks = PerkManager.getRandomPerksAll();
-            MayorManager.createMayor(player.getName(), player.getUniqueId(), city, perks.getFirst(), perks.get(1), perks.get(2), color, ElectionType.OWNER_CHOOSE);
-            MessagesManager.sendMessage(player, Component.text("Vous avez été désigné comme §6Maire de la Ville.\n§8§oVous pourrez choisir vos Réformes dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)), Prefix.MAYOR, MessageType.SUCCESS, true);
-        }
 
         // Lois
         MayorManager.createCityLaws(city, false, null);
