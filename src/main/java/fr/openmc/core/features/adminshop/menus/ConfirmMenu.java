@@ -1,6 +1,7 @@
 package fr.openmc.core.features.adminshop.menus;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -12,6 +13,7 @@ import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -95,6 +97,25 @@ public class ConfirmMenu extends Menu {
         content.put(13, new ItemBuilder(this, shopItem.getMaterial(), meta -> {
             meta.displayName(Component.text("§f" + shopItem.getName()));
             meta.lore(lore);
+        }).setOnClick(event -> {
+            if (event.getClick().equals(ClickType.MIDDLE)) {
+                DialogInput.sendFloat(
+                        getOwner(),
+                        Component.text("§eVeuillez entrer la quantité souhaitée:"),
+                        1,
+                        maxQuantity,
+                        quantity,
+                        input -> {
+                            if (input != null) {
+                                int inputQuantity = (int) input.doubleValue();
+                                if (inputQuantity > 0) {
+                                    quantity = Math.min(inputQuantity, maxQuantity);
+                                    this.open();
+                                }
+                            }
+                        }
+                );
+            }
         }));
 
         content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> increaseQuantity(1)));
