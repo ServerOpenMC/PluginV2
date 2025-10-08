@@ -153,7 +153,7 @@ public class ItemUtils {
      * Dire si le joueur a assez de place pour un type d'objet
      *
      * @param player Joueur pour acceder a son inventaire
-     * @param item   Type d'bjet concerné
+     * @param item   Type d'objet concerné
      */
     public static int getFreePlacesForItem(Player player, Material item) {
         int maxStackSize = item.getMaxStackSize();

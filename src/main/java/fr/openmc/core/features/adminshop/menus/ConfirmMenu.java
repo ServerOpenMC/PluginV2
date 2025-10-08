@@ -36,8 +36,7 @@ public class ConfirmMenu extends Menu {
         this.previousMenu = previousMenu;
         this.isBuying = isBuying;
         this.quantity = 1;
-        if (isBuying) this.maxQuantity = 64 * 36;
-        else this.maxQuantity = countPlayerItems(owner, shopItem.getMaterial());
+        this.maxQuantity = isBuying ? ItemUtils.getFreePlacesForItem(owner, shopItem.getMaterial()) : countPlayerItems(owner, shopItem.getMaterial());
     }
 
     @Override
@@ -80,17 +79,17 @@ public class ConfirmMenu extends Menu {
         content.put(10, createQuantityButton("-64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
             if (quantity > 64) quantity -= 64;
             else quantity = 1;
-            update();
+            this.open();
         }));
 
         content.put(11, createQuantityButton("-10", CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), event -> {
             if (quantity > 10) quantity -= 10;
-            update();
+            this.open();
         }));
 
         content.put(12, createQuantityButton("-1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
             if (quantity > 1) quantity--;
-            update();
+            this.open();
         }));
 
         content.put(13, new ItemBuilder(this, shopItem.getMaterial(), meta -> {
@@ -113,10 +112,6 @@ public class ConfirmMenu extends Menu {
         }));
 
         return content;
-    }
-
-    private void update() {
-        this.open();
     }
 
     /**
@@ -161,7 +156,7 @@ public class ConfirmMenu extends Menu {
         } else {
             quantity = Math.min(quantity + amount, maxQuantity);
         }
-        update();
+        this.open();
     }
 
 
