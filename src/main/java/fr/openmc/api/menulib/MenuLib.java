@@ -128,10 +128,10 @@ public final class MenuLib implements Listener {
         Menu current = history.pop();
 
         while (!history.isEmpty()) {
-            Menu previous = history.peek();
+            Menu previous = history.pop();
 
             if (!ignoredMenus.contains(previous.getClass()) && previous != current) {
-                return history.pop();
+                return previous;
             }
 
             current = history.pop();
