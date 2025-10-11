@@ -39,7 +39,7 @@ public class NoCityMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Aucune";
+	    return "Menu des villes - Aucune";
     }
 
     @Override
@@ -67,7 +67,7 @@ public class NoCityMenu extends Menu {
             List<Component> loreNotif = new ArrayList<>();
             if (!CityCommands.invitations.containsKey(player)) {
                 nameNotif = Component.text("§7Vous n'avez aucune §6invitation");
-                loreNotif.add(Component.text("§7Le Maire d'une ville doit vous §6inviter"));
+	            loreNotif.add(Component.text("§7Un habitant d'une ville doit vous §6inviter"));
                 loreNotif.add(Component.text("§6via /city invite"));
 
             inventory.put(15, new ItemBuilder(this, Material.CHISELED_BOOKSHELF, itemMeta -> {
@@ -95,7 +95,7 @@ public class NoCityMenu extends Menu {
                             Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                             Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
                             Component.empty(),
-                            Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " §7avant de pouvoir créer une ville")
+		                    Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " seconde(s) §7avant de pouvoir créer une ville")
                     );
                 } else {
                     loreCreate = List.of(

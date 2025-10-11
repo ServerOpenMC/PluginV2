@@ -138,7 +138,7 @@ public class CityChestMenu extends PaginatedMenu {
                 Component.empty()
         ));
         if (city.getChestPages() >= ChestPageLimitRewards.getChestPageLimit(city.getLevel())) {
-            loreUpgrade.add(Component.text("§cLimite Atteinte"));
+	        loreUpgrade.add(Component.text("§cLimite atteinte"));
         } else {
             loreUpgrade.add(Component.text("§e§lCLIQUEZ ICI POUR AMELIORER LE COFFRE"));
         }
@@ -160,7 +160,7 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu du Coffre de " + this.city.getName() + " - Page " + this.page;
+	    return "Menu du coffre de " + this.city.getName() + " - Page " + this.page;
     }
 
     @Override

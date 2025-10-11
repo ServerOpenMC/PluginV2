@@ -68,7 +68,7 @@ public class RTPCommands {
 
                 if ((tries + 1) >= maxTries) {
                     // On a déjà mis le cooldown au début
-                    player.sendActionBar(Component.text("Échec du RTP réessayez plus tard..."));
+	                player.sendActionBar(Component.text("Échec du RTP. Réessayez plus tard..."));
                     return;
                 }
 

@@ -33,7 +33,7 @@ public class CityUnclaimAction {
         }
 
         if (!city.hasChunk(chunkX, chunkZ)) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez avoir ce claim pour le unclaim!"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Vous devez posséder ce claim pour le unclaim"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

@@ -42,7 +42,7 @@ public class MayorElectionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Elections";
+	    return "Menu des élections";
     }
 
     @Override
@@ -78,10 +78,10 @@ public class MayorElectionMenu extends Menu {
             List<Component> loreElection;
             if (MayorManager.hasVoted(player)) {
                 loreElection = List.of(
-                        Component.text("§7Les Elections sont §6ouvertes§7!"),
+		                Component.text("§7Les élections sont §6ouvertes§7!"),
                         Component.text("§7Vous pouvez changer votre vote !"),
                         Component.empty(),
-                        Component.text("§7Vote Actuel : ").append(
+		                Component.text("§7Vote actuel : ").append(
                                         Component.text(MayorManager.getPlayerVote(player).getName()))
                                 .decoration(TextDecoration.ITALIC, false)
                                 .color(MayorManager.getPlayerVote(player).getCandidateColor()),
@@ -91,8 +91,8 @@ public class MayorElectionMenu extends Menu {
                 );
             } else {
                 loreElection = List.of(
-                        Component.text("§7Les Elections sont §6ouvertes§7!"),
-                        Component.text("§7Choissiez le Maire qui vous plait !"),
+		                Component.text("§7Les élections sont §6ouvertes§7!"),
+		                Component.text("§7Choissiez le maire qui vous plaît !"),
                         Component.empty(),
                         Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
                         Component.empty(),
@@ -101,7 +101,7 @@ public class MayorElectionMenu extends Menu {
             }
 
             return new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
-                itemMeta.itemName(Component.text("§6Les Elections"));
+	            itemMeta.itemName(Component.text("§6Les élections"));
                 itemMeta.lore(loreElection);
             }).setOnClick(inventoryClickEvent -> {
                 if (MayorManager.cityElections.get(city.getUniqueId()) == null) {
@@ -119,14 +119,14 @@ public class MayorElectionMenu extends Menu {
         if (MayorManager.hasCandidated(player)) {
             loreCandidature = List.of(
                     Component.text("§7Vous vous êtes déjà §3présenter §7!"),
-                    Component.text("§7Modifier votre couleur et regardez §3les Réformes §7que vous avez choisis"),
+		            Component.text("§7Modifiez votre couleur et regardez §3les réformes §7que vous avez choisit"),
                     Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU MENU")
             );
         } else {
             loreCandidature = List.of(
                     Component.text("§7Vous pouvez vous §3inscire §7afin d'être maire !"),
-                    Component.text("§7Séléctionner §3vos Réformes §7et votre couleur !"),
+		            Component.text("§7Sélectionnez §3vos réformes §7et votre couleur !"),
                     Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR VOUS INSCRIRE")
             );
@@ -137,22 +137,22 @@ public class MayorElectionMenu extends Menu {
             if (MayorManager.hasChoicePerkOwner(player)) {
                 Perks perk1 = PerkManager.getPerkById(city.getMayor().getIdPerk1());
                 lorePerkOwner = new ArrayList<>(List.of(
-                        Component.text("§7Vous avez déjà choisis §3votre Réforme §7!"),
+		                Component.text("§7Vous avez déjà choisis §3votre réforme §7!"),
                         Component.empty(),
                         Component.text(perk1.getName())
                 ));
                 lorePerkOwner.addAll(perk1.getLore());
             } else {
                 lorePerkOwner = List.of(
-                        Component.text("§7Vous êtes le propriétaire de la §dVille§7!"),
-                        Component.text("§7Vous pouvez choisir une §3Réforme événementiel §7!"),
+		                Component.text("§7Vous êtes le propriétaire de la §dville §7!"),
+		                Component.text("§7Vous pouvez choisir une §3réforme événementiel §7!"),
                         Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR CHOISIR LA REFORME")
                 );
             }
 
             inventory.put(22, new ItemBuilder(this, ItemUtils.getPlayerSkull(player.getUniqueId()), itemMeta -> {
-                itemMeta.displayName(Component.text("§7Choix d'une §3Réforme"));
+	            itemMeta.displayName(Component.text("§7Choix d'une §3réforme"));
                 itemMeta.lore(lorePerkOwner);
             }).setOnClick(inventoryClickEvent -> {
                 if (!MayorManager.hasChoicePerkOwner(player)) {
@@ -162,7 +162,7 @@ public class MayorElectionMenu extends Menu {
         }
 
         inventory.put(33, new ItemBuilder(this, Material.PAPER, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Votre §3Candidature"));
+	        itemMeta.itemName(Component.text("§7Votre §3candidature"));
             itemMeta.lore(loreCandidature);
         }).setOnClick(inventoryClickEvent -> {
             if (MayorManager.hasCandidated(player)) {
@@ -175,15 +175,15 @@ public class MayorElectionMenu extends Menu {
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu Précédent"),
+		            Component.text("§7Vous allez retourner au menu précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));
 
 
         List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les Maires !"),
-                Component.text("§7Le déroulement..., Les éléctions, ..."),
+		        Component.text("§7Apprenez en plus sur les maires !"),
+		        Component.text("§7Le déroulement..., les éléctions, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 

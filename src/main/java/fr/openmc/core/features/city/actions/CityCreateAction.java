@@ -57,7 +57,7 @@ public class CityCreateAction {
                 getMascotStick(),
                 "mascot:stick",
                 300,
-                "Vous avez reçu un baton pour poser votre mascotte",
+		        "Vous avez reçu un bâton pour poser votre mascotte",
                 "§cCréation annulée",
                 location -> {
                     if (!isValidLocation(player, location)) return false;
@@ -78,9 +78,9 @@ public class CityCreateAction {
         if (meta != null) {
             meta.displayName(Component.text("§lMascotte"));
             meta.lore(List.of(
-                    Component.text("§cVotre mascotte sera posée à l'emplacement du coffre."),
-                    Component.text("§cCe baton n'est pas retirable."),
-                    Component.text("§cDéconnexion = annulation.")
+		            Component.text("§cVotre mascotte sera posée à l'emplacement du coffre"),
+		            Component.text("§cCe bâton n'est pas retirable"),
+		            Component.text("§cDéconnexion = annulation")
             ));
             stick.setItemMeta(meta);
         }
@@ -90,11 +90,11 @@ public class CityCreateAction {
     private static boolean isValidLocation(Player player, Location location) {
         if (location == null || location.getWorld() == null) return false;
         if (!"world".equals(location.getWorld().getName())) {
-            MessagesManager.sendMessage(player, Component.text("§cCoffre uniquement dans le monde principal"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("§cVous pouvez poser votre mascotte uniquement dans le monde principal"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         if (location.clone().add(0, 1, 0).getBlock().getType().isSolid()) {
-            MessagesManager.sendMessage(player, Component.text("§cAucun bloc ne doit être au-dessus du coffre"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("§cAucun bloc ne doit être au-dessus de la mascotte"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;
@@ -109,7 +109,7 @@ public class CityCreateAction {
         }
 
         if (CityManager.isChunkClaimedInRadius(chunk, 1)) {
-            MessagesManager.sendMessage(player, Component.text("Une des parcelles autour de ce chunk est claim!"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Une des parcelles autour de ce chunk est claim"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -139,7 +139,7 @@ public class CityCreateAction {
         MascotsManager.createMascot(city, cityUUID, pendingCityName, player.getWorld(), mascotLocation);
 
         // Feedback
-        MessagesManager.sendMessage(player, Component.text("§aVotre ville a été crée : " + pendingCityName), Prefix.CITY, MessageType.SUCCESS, true);
+	    MessagesManager.sendMessage(player, Component.text("§aVotre ville a été créée : " + pendingCityName), Prefix.CITY, MessageType.SUCCESS, true);
         MessagesManager.sendMessage(player, Component.text("§7+ §6" + FREE_CLAIMS + " chunks gratuits"), Prefix.CITY, MessageType.INFO, false);
 
         DynamicCooldownManager.use(playerUUID, "city:big", 60000);

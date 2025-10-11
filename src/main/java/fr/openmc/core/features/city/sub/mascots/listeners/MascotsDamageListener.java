@@ -121,7 +121,7 @@ public class MascotsDamageListener implements Listener {
         }
 
         if (cityEnemy == null) {
-            MessagesManager.sendMessage(player, Component.text("§cErreur : La ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("§cErreur : La ville ennemie n'a pas été reconnue"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
@@ -131,13 +131,13 @@ public class MascotsDamageListener implements Listener {
         CityType cityEnemyType = cityEnemy.getType();
 
         if (cityType == null) {
-            MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de votre ville n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de votre ville n'a pas été reconnue"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
 
         if (cityEnemyType == null) {
-            MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de la ville enemie n'a pas été reconnu"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("§cErreur : Le type de la ville ennemie n'a pas été reconnue"), Prefix.CITY, MessageType.ERROR, false);
             e.setCancelled(true);
             return;
         }
@@ -182,7 +182,7 @@ public class MascotsDamageListener implements Listener {
 
         if (!citiesWar.getAttackers().contains(player.getUniqueId()) &&
                 !citiesWar.getDefenders().contains(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer la mascotte car vous n'avez pas été séléctionné pour la guerre"), Prefix.CITY, MessageType.INFO, false);
+	        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas attaquer la mascotte car vous n'avez pas été sélectionné pour la guerre"), Prefix.CITY, MessageType.INFO, false);
             e.setCancelled(true);
             return;
         }

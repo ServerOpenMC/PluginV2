@@ -32,12 +32,12 @@ public class CityTypeConditions {
         }
 
         if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de changer le status de ta ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission de changer le statut de ta ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
-            MessagesManager.sendMessage(player, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " secondes pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " seconde(s) pour changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

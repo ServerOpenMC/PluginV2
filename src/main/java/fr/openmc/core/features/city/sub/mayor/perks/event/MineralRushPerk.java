@@ -62,8 +62,8 @@ public class MineralRushPerk implements Listener {
             Player player = Bukkit.getPlayer(memberUUID);
 
             if (player == null || !player.isOnline()) continue;
-
-            MessagesManager.sendMessage(player, Component.text("La réforme d'événement la §eRuée Minière §fest terminée !"), Prefix.MAYOR, MessageType.INFO, false);
+	        
+	        MessagesManager.sendMessage(player, Component.text("La réforme d'évènement la §eRuée Minière §fest terminée !"), Prefix.MAYOR, MessageType.INFO, false);
         }
     }
 

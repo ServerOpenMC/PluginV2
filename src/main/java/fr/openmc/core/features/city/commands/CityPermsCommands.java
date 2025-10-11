@@ -33,7 +33,7 @@ public class CityPermsCommands {
         }
 
         if (city.hasPermission(playerUUID, CityPermission.OWNER)) {
-            MessagesManager.sendMessage(sender, Component.text("Le maire a déjà les pleins pouvoirs"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Le propriétaire a déjà les pleins pouvoirs"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -54,7 +54,7 @@ public class CityPermsCommands {
         }
 
         if (!city.hasPermission(sender.getUniqueId(), permission) && permission == CityPermission.PERMS) {
-            MessagesManager.sendMessage(sender, Component.text("Seul le maire peut modifier cette permission"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Seul le propriétaire peut modifier cette permission"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -97,7 +97,7 @@ public class CityPermsCommands {
             MessagesManager.sendMessage(sender, Component.text(player.getName()+" a perdu la permission \""+permission.toString()+"\""), Prefix.CITY, MessageType.SUCCESS, false);
         } else {
             city.addPermission(player.getUniqueId(), permission);
-            MessagesManager.sendMessage(sender, Component.text(player.getName()+" a gagné la permission \""+permission.toString()+"\""), Prefix.CITY, MessageType.SUCCESS, false);
+	        MessagesManager.sendMessage(sender, Component.text(player.getName() + " a reçu la permission \"" + permission.toString() + "\""), Prefix.CITY, MessageType.SUCCESS, false);
         }
     }
     
@@ -177,7 +177,7 @@ public class CityPermsCommands {
         }
 
         if (!(city.hasPermission(sender.getUniqueId(), CityPermission.PERMS))) {
-            MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission de consulter les permissions de "+player.getName()), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Tu n'as pas la permission de consulter les permissions de " + player.getName()), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -195,7 +195,7 @@ public class CityPermsCommands {
         }
 
         sender.openBook(Book.book(
-                Component.text("Permissions de "+player.getName()+": ").decorate(TextDecoration.BOLD),
+		        Component.text("Permissions de " + player.getName() + " : ").decorate(TextDecoration.BOLD),
                 Component.empty(),
                 content
         ));

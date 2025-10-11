@@ -77,22 +77,22 @@ public class PerkChoiceMenu extends PaginatedMenu {
             switch (newPerk.getCategory()) {
                 case AGRICULTURAL -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_AGRICULTURAL)) {
-                        perkLore.add(Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_AGRICULTURAL) + " pour débloquer ceci"));
+	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_AGRICULTURAL) + " pour débloquer ceci"));
                     }
                 }
                 case ECONOMIC -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_ECONOMY)) {
-                        perkLore.add(Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_ECONOMY) + " pour débloquer ceci"));
+	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_ECONOMY) + " pour débloquer ceci"));
                     }
                 }
                 case MILITARY -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_MILITARY)) {
-                        perkLore.add(Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_MILITARY) + " pour débloquer ceci"));
+	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_MILITARY) + " pour débloquer ceci"));
                     }
                 }
                 case STRATEGY -> {
                     if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.PERK_STRATEGY)) {
-                        perkLore.add(Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_STRATEGY) + " pour débloquer ceci"));
+	                    perkLore.add(Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PERK_STRATEGY) + " pour débloquer ceci"));
                     }
                 }
             }
@@ -134,7 +134,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
                                                 ("perk3".equals(perkNumber) && ((perk1 != null && perk1.getType() == PerkType.EVENT) || (perk2 != null && perk2.getType() == PerkType.EVENT)))
                                 );
                         if (isPerkEvent) {
-                            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 Réformes de Type Evenement!"), Prefix.MAYOR, MessageType.ERROR, false);
+	                        MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas choisir 2 réformes de type évènement !"), Prefix.MAYOR, MessageType.ERROR, false);
                             return;
                         }
 
@@ -173,7 +173,7 @@ public class PerkChoiceMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Reformes";
+	    return "Menu des maires - Reformes";
     }
 
     @Override

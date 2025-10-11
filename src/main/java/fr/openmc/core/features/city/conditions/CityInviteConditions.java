@@ -52,7 +52,7 @@ public class CityInviteConditions {
 		}
 
         if (city.getMembers().size() >= MemberLimitRewards.getMemberLimit(city.getLevel())) {
-            MessagesManager.sendMessage(player, Component.text("§cVous avez atteint la limite de membre qui est de §3" + MemberLimitRewards.getMemberLimit(city.getLevel()) + "§f, Améliorez votre ville au niveau suppérieur !"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("§cVous avez atteint la limite de membre qui est de §3" + MemberLimitRewards.getMemberLimit(city.getLevel()) + "§f, Améliorez votre ville au niveau supérieur !"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

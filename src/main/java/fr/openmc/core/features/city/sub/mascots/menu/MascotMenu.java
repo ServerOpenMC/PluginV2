@@ -56,7 +56,7 @@ public class MascotMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des §cMascotte (niv. " + city.getMascot().getLevel() + ")";
+	    return "Menu de §cmascotte (niv. " + city.getMascot().getLevel() + ")";
     }
 
     @Override
@@ -87,13 +87,13 @@ public class MascotMenu extends Menu {
         }
 
         List<Component> loreSkinMascot = List.of(
-                Component.text("§7Vous pouvez changer l'apparence de votre §cMascotte"),
+		        Component.text("§7Vous pouvez changer l'apparence de votre §cmascotte"),
                 Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR CHANGER DE SKIN")
         );
 
         map.put(11, new ItemBuilder(this, this.mascot.getMascotEgg(), itemMeta -> {
-            itemMeta.displayName(Component.text("§7Le Skin de la §cMascotte"));
+	        itemMeta.displayName(Component.text("§7Le skin de la §cmascotte"));
             itemMeta.lore(loreSkinMascot);
             itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
         })
@@ -112,20 +112,20 @@ public class MascotMenu extends Menu {
 
             if (!DynamicCooldownManager.isReady(this.mascot.getMascotUUID(), "mascots:move")) {
                 lorePosMascot = List.of(
-                        Component.text("§7Vous ne pouvez pas changer la position de votre §cMascotte"),
+		                Component.text("§7Vous ne pouvez pas changer la position de votre §cmascotte"),
                         Component.empty(),
                         Component.text("§cCooldown §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(this.mascot.getMascotUUID(), "mascots:move")))
                 );
             } else {
                 lorePosMascot = List.of(
-                        Component.text("§7Vous pouvez changer la position de votre §cMascotte"),
+		                Component.text("§7Vous pouvez changer la position de votre §cmascotte"),
                         Component.empty(),
                         Component.text("§e§lCLIQUEZ ICI POUR LA CHANGER DE POSITION")
                 );
             }
 
             return new ItemBuilder(this, Material.CHEST, itemMeta -> {
-                itemMeta.displayName(Component.text("§7Déplacer votre §cMascotte"));
+	            itemMeta.displayName(Component.text("§7Déplacer votre §cmascotte"));
                 itemMeta.lore(lorePosMascot);
                 itemMeta.addEnchant(Enchantment.EFFICIENCY, 1, true);
             })
@@ -163,7 +163,7 @@ public class MascotMenu extends Menu {
                             List<Component> info = new ArrayList<>();
                             info.add(Component.text("§cVotre mascotte sera posé a l'emplacement du coffre"));
                             info.add(Component.text("§cCe coffre n'est pas retirable"));
-                            meta.displayName(Component.text("§7Déplacer votre §lMascotte"));
+	                        meta.displayName(Component.text("§7Déplacer votre §lmascotte"));
                             meta.lore(info);
                         }
                         mascotsMoveItem.setItemMeta(meta);
@@ -173,8 +173,8 @@ public class MascotMenu extends Menu {
                                 mascotsMoveItem,
                                 "mascots:moveInteraction",
                                 120,
-                                "Temps Restant : %sec%s",
-                                "§cDéplacement de la Mascotte annulée",
+		                        "Temps restant : %sec%s",
+		                        "§cDéplacement de la mascotte annulée",
                                 mascotMove -> {
                                     if (mascotMove == null) return true;
                                     if (!movingMascots.contains(cityUUID)) return false;
@@ -222,7 +222,7 @@ public class MascotMenu extends Menu {
         if (mascotsLevels.equals(MascotsLevels.level10)) {
             requiredAmount.add(Component.text("§7Niveau max atteint"));
         } else if (currentMascotLevel >= maxMascotLevel) {
-            requiredAmount.add(Component.text("§cVous devez etre Niveau " + (maxMascotLevel + 1) + " pour améliorer la Mascotte"));
+	        requiredAmount.add(Component.text("§cVous devez être niveau " + (maxMascotLevel + 1) + " pour améliorer la mascotte"));
         } else {
             requiredAmount.add(Component.text("§7Nécessite §d" + mascotsLevels.getUpgradeCost() + " d'Aywenites"));
         }
@@ -249,7 +249,7 @@ public class MascotMenu extends Menu {
                         int aywenite = mascotsLevels.getUpgradeCost();
                         if (ItemUtils.takeAywenite(player, aywenite)) {
                             upgradeMascots(cityUUID);
-                            MessagesManager.sendMessage(player, Component.text("Vous avez amélioré votre mascotte au §cNiveau " + mascot.getLevel()), Prefix.CITY, MessageType.ERROR, false);
+	                        MessagesManager.sendMessage(player, Component.text("Vous avez amélioré votre mascotte au §cniveau " + mascot.getLevel()), Prefix.CITY, MessageType.ERROR, false);
                             player.closeInventory();
                             return;
                         }
@@ -263,13 +263,13 @@ public class MascotMenu extends Menu {
 
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Retourner au Menu Précédent")));
+	        itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
         }, true));
 
         if (city.isImmune()) {
             Supplier<ItemBuilder> immunityItemSupplier = () -> {
                 List<Component> lore = List.of(
-                        Component.text("§7Vous avez une §bimmunité §7sur votre §cMascotte"),
+		                Component.text("§7Vous avez une §bimmunité §7sur votre §cmascotte"),
                         Component.text("§cTemps restant §7: " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))),
                         Component.text("§7Pour réduire le temps de 1 heure, vous devez posséder de :"),
                         Component.text("§8- §d" + AYWENITE_REDUCE + " d'Aywenite"),
@@ -278,7 +278,7 @@ public class MascotMenu extends Menu {
                 );
 
                 return new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
-                    itemMeta.displayName(Component.text("§7Votre §cMascotte §7est §bimmunisée§7!"));
+	                itemMeta.displayName(Component.text("§7Votre §cmascotte §7est §bimmunisée§7!"));
                     itemMeta.lore(lore);
                 }).setOnClick(inventoryClickEvent -> {
                     if (city == null) {

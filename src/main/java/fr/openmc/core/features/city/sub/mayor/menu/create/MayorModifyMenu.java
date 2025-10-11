@@ -27,7 +27,7 @@ public class MayorModifyMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Modification";
+	    return "Menu des maires - Modification";
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MayorModifyMenu extends Menu {
         }));
 
         List<Component> loreColor = List.of(
-                Component.text("§7Vous pouvez rechangez la couleur de votre Nom!"),
+		        Component.text("§7Vous pouvez rechangez la couleur de votre nom!"),
                 Component.empty(),
                 Component.text("§e§lCLIQUEZ ICI POUR CHANGER LA COULEUR")
         );
@@ -86,7 +86,7 @@ public class MayorModifyMenu extends Menu {
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de votre ville"),
+		            Component.text("§7Vous allez retourner au menu de votre ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));

@@ -82,12 +82,12 @@ public class CityPlayerListMenu extends PaginatedMenu {
             List<Component> lorePlayer;
             if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                 lorePlayer = List.of(
-                        Component.text("§7Le priopriétaire de la ville.")
+		                Component.text("§7Le propriétaire de la ville.")
                 );
             } else if (hasPermissionPerms && hasPermissionKick) {
                 if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                     lorePlayer = List.of(
-                            Component.text("§7Vous ne pouvez pas éditer le propriétaire!")
+		                    Component.text("§7Vous ne pouvez pas éditer le propriétaire")
                     );
                 } else {
                     lorePlayer = List.of(
@@ -103,11 +103,11 @@ public class CityPlayerListMenu extends PaginatedMenu {
             } else if (hasPermissionKick) {
                 if (player.getUniqueId().equals(playerOffline.getUniqueId())) {
                     lorePlayer = List.of(
-                            Component.text("§7Vous ne pouvez pas vous §aexclure §7vous même!")
+		                    Component.text("§7Vous ne pouvez pas vous §aexclure §7vous même")
                     );
                 } else if (city.hasPermission(playerOffline.getUniqueId(), CityPermission.OWNER)) {
                     lorePlayer = List.of(
-                            Component.text("§7Vous ne pouvez pas §aexclure §7le propriétaire!")
+		                    Component.text("§7Vous ne pouvez pas §aexclure §7le propriétaire")
                     );
                 } else {
                     lorePlayer = List.of(
@@ -117,7 +117,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                 }
             } else {
                 lorePlayer = List.of(
-                        Component.text("§7Un membre comme vous.")
+		                Component.text("§7Un membre comme vous")
                 );
             }
 
@@ -184,7 +184,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
             itemMeta.displayName(Component.text("§7Inviter des §dpersonnes"));
             itemMeta.lore(
                     List.of(
-                            Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir !"),
+		                    Component.text("§7Vous pouvez inviter des personnes à votre ville pour la remplir"),
                             Component.text("§7Vous êtes à " + playerCity.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(playerCity.getLevel()))
                     )
             );
@@ -205,7 +205,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Membres";
+	    return "Menu des villes - Membres";
     }
 
     @Override

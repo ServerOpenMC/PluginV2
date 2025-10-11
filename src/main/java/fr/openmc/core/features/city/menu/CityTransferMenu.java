@@ -65,7 +65,7 @@ public class CityTransferMenu extends PaginatedMenu {
                 items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(uuid), itemMeta -> {
                     itemMeta.displayName(Component.text(title + playerOffline.getName()).decoration(TextDecoration.ITALIC, false));
                     itemMeta.lore(List.of(
-                            Component.text("§7Voulez-vous donner à §d" + title + playerOffline.getName() + " §7votre ville ?"),
+		                    Component.text("§7Voulez-vous transférer la ville à §d" + title + playerOffline.getName() + "§7 ?"),
                             Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
                     ));
                 }).setOnClick(inventoryClickEvent -> {
@@ -113,7 +113,7 @@ public class CityTransferMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Villes - Transferer";
+	    return "Menu des villes - Transférer";
     }
 
     @Override

@@ -48,7 +48,7 @@ public class CityCommands {
                     menu.open();
                 }
         } else {
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas ouvrir le menu des villes si vous devez poser votre mascotte"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas ouvrir le menu des villes sans avoir posé la mascotte"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 
@@ -170,7 +170,7 @@ public class CityCommands {
         if (!CityManageConditions.canCityRename(playerCity, player)) return;
 
         if (!InputUtils.isInputCityName(name)) {
-            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum " + MAX_LENGTH_CITY + " caractères."), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit comporter uniquement des caractères alphanumeriques et maximum " + MAX_LENGTH_CITY + " caractères."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 

@@ -135,7 +135,7 @@ public class CityListMenu extends PaginatedMenu {
 	
 	@Override
 	public @NotNull String getName() {
-		return "Menu des listes des Villes";
+		return "Menu de liste des villes";
 	}
 
 	@Override

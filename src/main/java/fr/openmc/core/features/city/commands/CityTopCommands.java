@@ -22,7 +22,7 @@ public class CityTopCommands {
     void notationTest(Player sender) {
         List<City> cities = new ArrayList<>(CityManager.getCities());
         if (cities.isEmpty()) {
-            MessagesManager.sendMessage(sender, Component.text("Aucune ville n'est créée pour le moment."), Prefix.CITY, MessageType.ERROR, true);
+	        MessagesManager.sendMessage(sender, Component.text("Aucune ville n'est créée pour le moment"), Prefix.CITY, MessageType.ERROR, true);
             return;
         }
         new CityTopMenu(sender).open();

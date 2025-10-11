@@ -32,7 +32,7 @@ public class MayorSetWarpAction {
         if (mayor == null) return;
 
         if (!player.getUniqueId().equals(mayor.getMayorUUID()) && !city.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le Maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }
 
@@ -46,14 +46,14 @@ public class MayorSetWarpAction {
                 getWarpWand(),
                 "mayor:wait-set-warp",
                 300,
-                "§7Vous avez 300s pour séléctionner votre point de spawn",
-                "§7Vous n'avez pas eu le temps de poser votre Warp",
+		        "§7Vous avez 300s pour sélectionner votre point de spawn",
+		        "§7Vous n'avez pas eu le temps de poser votre warp",
                 locationClick -> {
                     if (locationClick == null) return true;
                     Chunk chunk = locationClick.getChunk();
 
                     if (!city.hasChunk(chunk.getX(), chunk.getZ())) {
-                        MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le Warp ici car ce n'est pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
+	                    MessagesManager.sendMessage(player, Component.text("§cImpossible de mettre le warp ici car ce n'est pas dans votre ville"), Prefix.CITY, MessageType.ERROR, false);
                         return false;
                     }
 
@@ -68,12 +68,12 @@ public class MayorSetWarpAction {
 
     public static ItemStack getWarpWand() {
         List<Component> loreItemInterraction = List.of(
-                Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9Warp")
+		        Component.text("§7Cliquez sur l'endroit où vous voulez mettre le §9warp")
         );
         ItemStack item = CustomItemRegistry.getByName("omc_items:warp_stick").getBest();
         ItemMeta itemMeta = item.getItemMeta();
-
-        itemMeta.displayName(Component.text("§7Séléction du §9Warp"));
+	    
+	    itemMeta.displayName(Component.text("§7Séléction du §9warp"));
         itemMeta.lore(loreItemInterraction);
         item.setItemMeta(itemMeta);
         return item;

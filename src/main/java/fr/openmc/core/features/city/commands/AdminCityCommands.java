@@ -136,7 +136,7 @@ public class AdminCityCommands {
 
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
-    void setOwner(Player player, @Named("name") String name, @Named("nouveau propriétaire") Player newOwner) {
+    void setOwner(Player player, @Named("name") String name, @Named("new_owner") Player newOwner) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
@@ -157,7 +157,7 @@ public class AdminCityCommands {
         }
 
         city.setBalance(newBalance);
-        MessagesManager.sendMessage(player, Component.text("Le solde a été modifié"), Prefix.STAFF, MessageType.SUCCESS, false);
+	    MessagesManager.sendMessage(player, Component.text("Le solde de la ville a été modifié"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
     @Subcommand("getBalance")
@@ -183,7 +183,7 @@ public class AdminCityCommands {
         }
 
         if (CityManager.getPlayerCity(newMember.getUniqueId()) != null) {
-            MessagesManager.sendMessage(player, Component.text("Le joueur est déjà dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Ce joueur est déjà dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -196,12 +196,12 @@ public class AdminCityCommands {
     void remove(Player player, Player member) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
-            MessagesManager.sendMessage(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Ce joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
         if (city.hasPermission(member.getUniqueId(), CityPermission.OWNER)) {
-            MessagesManager.sendMessage(player, Component.text("Le joueur est le propriétaire de la ville"), Prefix.STAFF, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Ce joueur est le propriétaire de la ville"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 

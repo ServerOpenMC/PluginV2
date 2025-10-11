@@ -48,7 +48,7 @@ public class MayorLawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Lois";
+	    return "Menu des lois";
     }
 
     @Override
@@ -84,7 +84,7 @@ public class MayorLawMenu extends Menu {
         Supplier<ItemBuilder> pvpItemSupplier = () -> {
             String nameLawPVP = law.isPvp() ? "§cDésactiver §7le PVP" : "§4Activer §7le PVP";
             List<Component> loreLawPVP = new ArrayList<>(List.of(
-                    Component.text("§7Cette §1loi " + (law.isPvp() ? "§4active" : "§cdésactive") + " §7le PVP dans toute la §dVille"),
+		            Component.text("§7Cette §1loi " + (law.isPvp() ? "§4active" : "§cdésactive") + " §7le PVP dans toute la §dville"),
                     Component.text("§7entre les membres !")
             ));
 
@@ -135,7 +135,7 @@ public class MayorLawMenu extends Menu {
 
             if (warpLoc == null) {
                 loreLawWarp = new ArrayList<>(List.of(
-                        Component.text("§7Cette §1loi §7n'est pas effective!"),
+		                Component.text("§7Cette §1loi §7n'est pas effective !"),
                         Component.text("§7Vous devez choisir un endroit où les membres pourront"),
                         Component.text("§7arriver")
                 ));
@@ -265,7 +265,7 @@ public class MayorLawMenu extends Menu {
                         .hide(perkEvent.getToHide())
                         .setOnClick(inventoryClickEvent -> {
                     if (!DynamicCooldownManager.isReady(mayor.getMayorUUID(), "mayor:law-perk-event")) {
-                        MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de pouvoir utiliser cette §3Réforme"), Prefix.MAYOR, MessageType.ERROR, false);
+	                    MessagesManager.sendMessage(player, Component.text("Vous devez attendre avant de pouvoir utiliser cette §3réforme"), Prefix.MAYOR, MessageType.ERROR, false);
                         return;
                     }
 
@@ -279,7 +279,7 @@ public class MayorLawMenu extends Menu {
                             if (member == null || !member.isOnline()) continue;
 
                             ImpotCollection.spawnZombies(member, city);
-                            MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché le §ePrélévement d'Impot §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché le §ePrélévement d'Impot §f!"), Prefix.MAYOR, MessageType.INFO, false);
 
                         }
                         DynamicCooldownManager.use(mayor.getMayorUUID(), "mayor:law-perk-event", PerkManager.getPerkEvent(mayor).getCooldown());
@@ -289,8 +289,8 @@ public class MayorLawMenu extends Menu {
                             Player member = Bukkit.getPlayer(uuid);
 
                             if (member == null || !member.isOnline()) continue;
-
-                            MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché l'§eEssor Agricole §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        
+	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché l'§eEssor Agricole §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
                         DynamicCooldownManager.use(city.getUniqueId(), "city:agricultural_essor", 30 * 60 * 1000L); // 30 minutes
@@ -301,8 +301,8 @@ public class MayorLawMenu extends Menu {
                             Player member = Bukkit.getPlayer(uuid);
 
                             if (member == null || !member.isOnline()) continue;
-
-                            MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eRuée Minière §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        
+	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché la §eRuée Minière §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
                         DynamicCooldownManager.use(city.getUniqueId(), "city:mineral_rush", 5 * 60 * 1000L); // 5 minutes
@@ -313,8 +313,8 @@ public class MayorLawMenu extends Menu {
                             Player member = Bukkit.getPlayer(uuid);
 
                             if (member == null || !member.isOnline()) continue;
-
-                            MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §eDissuasion Militaire §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        
+	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché la §eDissuasion Militaire §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
                         MilitaryDissuasion.startEvent(city, 10);
@@ -336,8 +336,8 @@ public class MayorLawMenu extends Menu {
                             Player member = Bukkit.getPlayer(uuid);
 
                             if (member == null || !member.isOnline()) continue;
-
-                            MessagesManager.sendMessage(member, Component.text("Le §6Maire §fa déclenché la §ePluie idyllique §f!"), Prefix.MAYOR, MessageType.INFO, false);
+	                        
+	                        MessagesManager.sendMessage(member, Component.text("Le §6maire §fa déclenché la §ePluie idyllique §f!"), Prefix.MAYOR, MessageType.INFO, false);
                         }
 
                         // spawn d'un total de 100 aywenite progressivement sur une minute
@@ -355,14 +355,14 @@ public class MayorLawMenu extends Menu {
         inventory.put(46, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu Précédent"),
+		            Component.text("§7Vous allez retourner au menu précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));
 
         List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les Maires !"),
-                Component.text("§7Le déroulement..., Les éléctions, ..."),
+		        Component.text("§7Apprenez en plus sur les maires !"),
+		        Component.text("§7Le déroulement..., les éléctions, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
