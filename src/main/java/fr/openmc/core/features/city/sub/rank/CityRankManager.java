@@ -6,9 +6,12 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.CommandsManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.models.DBCityRank;
+import io.papermc.paper.datacomponent.DataComponentType;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -16,6 +19,20 @@ import java.util.List;
 public class CityRankManager {
 
     private static Dao<DBCityRank, String> ranksDao;
+    public static final DataComponentType.Valued[] HIDDEN_ITEMS_DATA_COMPONENTS = new DataComponentType.Valued[]{
+            DataComponentTypes.BUNDLE_CONTENTS,
+            DataComponentTypes.FOOD,
+            DataComponentTypes.DAMAGE,
+            DataComponentTypes.DAMAGE_RESISTANT,
+            DataComponentTypes.DEATH_PROTECTION,
+            DataComponentTypes.DYED_COLOR,
+            DataComponentTypes.CONTAINER_LOOT,
+            DataComponentTypes.CONTAINER,
+            DataComponentTypes.ENCHANTMENTS,
+            DataComponentTypes.JUKEBOX_PLAYABLE,
+            DataComponentTypes.RARITY,
+            DataComponentTypes.FIREWORK_EXPLOSION
+    };
 
     public CityRankManager() {
         loadRanks();
@@ -102,5 +119,16 @@ public class CityRankManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static void initCommandSuggestion() {
+        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_ranks", (args, sender, command) -> {
+            City city = CityManager.getPlayerCity(sender.getUniqueId());
+            if (city == null) return List.of();
+            
+            return city.getRanks().stream()
+                    .map(DBCityRank::getName)
+                    .toList();
+        });
     }
 }
