@@ -1,0 +1,15 @@
+dims:
+  "minecraft:nether":
+    name: "§4§lNETHER"
+    icon: "minecraft:crimson_nylium"
+    steps:
+      - minecraft:cobblestone:
+          count: 64
+          next_step_delay: 1
+  "custom:test":
+    name: "§4§lTEST"
+    icon: "omc_items:aywenite"
+    steps:
+      - minecraft:cobblestone:
+          count: 64
+          next_step_delay: 1
