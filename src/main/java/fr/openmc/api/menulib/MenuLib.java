@@ -1,6 +1,6 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.menulib.default_menu.ConfirmMenu;
+import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeDeleteConfirmMenu;
@@ -72,13 +72,13 @@ public final class MenuLib implements Listener {
      * When a player clicks on the specified {@link ItemStack} in the menu,
      * the provided {@link Consumer} is executed to handle the {@link InventoryClickEvent}.
      *
-     * @param menu      The {@link Menu} in which the click event will be associated.
-     * @param itemStack The {@link ItemStack} that will trigger the event when clicked.
-     * @param e         A {@link Consumer} of {@link InventoryClickEvent} representing the event handler
-     *                  to be executed when the {@link ItemStack} is clicked within the menu.
+     * @param menu        The {@link Menu} in which the click event will be associated.
+     * @param itemBuilder The {@link ItemBuilder} that will trigger the event when clicked.
+     * @param e           A {@link Consumer} of {@link InventoryClickEvent} representing the event handler
+     *                    to be executed when the {@link ItemStack} is clicked within the menu.
      */
-    public static void setItemClickEvent(Menu menu, ItemStack itemStack, Consumer<InventoryClickEvent> e) {
-        menu.getItemClickEvents().put(new ItemBuilder(menu, itemStack), e);
+    public static void setItemClickEvent(Menu menu, ItemBuilder itemBuilder, Consumer<InventoryClickEvent> e) {
+        menu.getItemClickEvents().put(itemBuilder, e);
     }
 
     public static void clearHistory(Player player) {
@@ -185,9 +185,16 @@ public final class MenuLib implements Listener {
             if (itemClickEvents.isEmpty())
                 return;
 
+            Consumer<InventoryClickEvent> action = itemClickEvents.get(itemClicked);
+            if (action != null) {
+                action.accept(e);
+                return;
+            }
+
             for (Map.Entry<ItemBuilder, Consumer<InventoryClickEvent>> entry : itemClickEvents.entrySet()) {
                 if (ItemUtils.isSimilarMenu(entry.getKey(), e.getCurrentItem())) {
                     entry.getValue().accept(e);
+                    break;
                 }
 
             }

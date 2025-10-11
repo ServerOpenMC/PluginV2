@@ -56,4 +56,45 @@ public class DialogInput {
 
         player.showDialog(inputDialog);
     }
+
+    public static void sendFloat(Player player, Component lore, float minSize, float maxSize, float initial, Consumer<Float> callback) {
+        List<DialogBody> body = new ArrayList<>();
+
+        body.add(DialogBody.plainMessage(lore));
+
+        Dialog inputDialog = Dialog.create(builder -> builder.empty()
+                .base(DialogBase.builder(Component.text("Rentrer un nombre"))
+                        .body(body)
+                        .inputs(List.of(
+                                        io.papermc.paper.registry.data.dialog.input.DialogInput
+                                                .numberRange("inputfloatomc",
+                                                        Component.text("Rentrer un nombre ici"),
+                                                        minSize,
+                                                        maxSize
+                                                )
+                                                .initial(initial)
+                                                .step(1F)
+                                                .build()
+                                )
+                        )
+                        .canCloseWithEscape(true)
+                        .build()
+                )
+                .type(DialogType.confirmation(
+                                ActionButton.builder(Component.text(ButtonType.CONFIRM.getLabel()))
+                                        .action(DialogAction.customClick((response, audience) -> {
+                                            callback.accept(response.getFloat("inputfloatomc"));
+                                        }, ClickCallback.Options.builder().build()))
+                                        .build(),
+                                ActionButton.builder(Component.text(ButtonType.CANCEL.getLabel()))
+                                        .action(DialogAction.customClick((response, audience) -> {
+                                            callback.accept(null);
+                                        }, ClickCallback.Options.builder().build()))
+                                        .build()
+                        )
+                )
+        );
+
+        player.showDialog(inputDialog);
+    }
 }

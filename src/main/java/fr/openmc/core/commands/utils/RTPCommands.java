@@ -53,8 +53,10 @@ public class RTPCommands {
             group="player:rtp",
             message = "§cTu dois attendre avant de pouvoir te rtp (%formatTime%)")
     public void rtp(Player player) {
-        DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
-        rtpPlayer(player, 0);
+        if (DynamicCooldownManager.isReady(player.getUniqueId(), "player:rtp")) {
+            DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
+            rtpPlayer(player, 0);
+        }
     }
 
     private void rtpPlayer(Player player, int tries) {
