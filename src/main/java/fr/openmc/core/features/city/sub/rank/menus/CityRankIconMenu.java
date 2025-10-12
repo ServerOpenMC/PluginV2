@@ -8,11 +8,13 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.models.DBCityRank;
+import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -60,7 +62,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 	public @NotNull List<Integer> getStaticSlots() {
 		return StaticSlots.getBottomSlots(getInventorySize());
 	}
-
+	
 	private static final Set<Material> excludedMaterials = Set.of(
 			Material.AIR,
 			Material.BARRIER,
@@ -85,11 +87,11 @@ public class CityRankIconMenu extends PaginatedMenu {
 		for (int i = startIndex; i < endIndex; i++) {
 			Material material = filtered.get(i);
 			items.add(new ItemBuilder(this, material, itemMeta -> {
+				if (itemMeta == null) return;
 				itemMeta.displayName(ItemUtils.getItemTranslation(material).decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(List.of(Component.text("§7Cliquez pour sélectionner cette icône")));
-			}).setOnClick(inventoryClickEvent -> {
-				new CityRankDetailsMenu(getOwner(), city, oldRank, newRank.withIcon(material)).open();
-			}));
+			}).hide(CityRankManager.getCityRankDataComponentType())
+					.setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, oldRank, newRank.withIcon(material)).open()));
 		}
 
 		return items;
@@ -159,11 +161,12 @@ public class CityRankIconMenu extends PaginatedMenu {
 	}
 
 	private List<Material> getFilteredMaterials() {
+		World world = getOwner().getWorld();
 		return Arrays.stream(Material.values())
+				.filter(material -> ! material.isLegacy())
 				.filter(Material::isItem)
 				.filter(material -> !excludedMaterials.contains(material))
 				.filter(material -> !material.name().contains("SPAWN_EGG"))
-				.filter(material -> !material.isLegacy())
 				.filter(material -> filter == null || material.name().toLowerCase().startsWith(filter.toLowerCase()))
 				.toList();
 	}

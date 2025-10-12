@@ -42,23 +42,38 @@ public class DBCityRank {
 	}
 	
 	/**
+	 * Full constructor for creating a CityRank with all properties.
+	 *
+	 * @param rankUUID       Unique identifier for the rank.
+	 * @param cityUUID       Unique identifier for the city this rank belongs to.
+	 * @param priority       Priority of the rank (0-17).
+	 * @param name           Name of the rank.
+	 * @param icon           Icon representing the rank.
+	 * @param permissionsSet Set of permissions associated with this rank.
+	 * @param membersSet     Set of UUIDs of members assigned to this rank.
+	 */
+	public DBCityRank(UUID rankUUID, UUID cityUUID, int priority, String name, Material icon, Set<CityPermission> permissionsSet, Set<UUID> membersSet) {
+		this.rankUUID = rankUUID;
+		this.cityUUID = cityUUID;
+		this.priority = priority;
+		this.name = name;
+		this.icon = icon;
+		this.permissionsSet = permissionsSet;
+		this.membersSet = membersSet;
+	}
+	
+	/**
 	 * Constructor for creating a new CityRank.
 	 *
 	 * @param rankUUID       Unique identifier for the rank.
 	 * @param cityUUID       Unique identifier for the city this rank belongs to.
 	 * @param name           Name of the rank.
 	 * @param priority       Priority of the rank (0-17).
-	 * @param permissionsSet Set of permissions associated with this rank.
 	 * @param icon           Icon representing the rank.
+	 * @param permissionsSet Set of permissions associated with this rank.
 	 */
-	public DBCityRank(UUID rankUUID, UUID cityUUID, String name, int priority, Set<CityPermission> permissionsSet, Material icon) {
-		this.rankUUID = rankUUID;
-		this.cityUUID = cityUUID;
-		this.name = name;
-		this.priority = priority;
-		this.permissionsSet = permissionsSet;
-		this.icon = icon;
-		this.membersSet = new HashSet<>();
+	public DBCityRank(UUID rankUUID, UUID cityUUID, String name, int priority, Material icon, Set<CityPermission> permissionsSet) {
+		this(rankUUID, cityUUID, priority, name, icon, permissionsSet, new HashSet<>());
 	}
 	
 	/**
@@ -203,9 +218,5 @@ public class DBCityRank {
 				}
 			}
 		}
-	}
-	
-	public DBCityRank clone() {
-		return new DBCityRank(this.rankUUID, this.cityUUID, this.name, this.priority, new HashSet<>(this.permissionsSet), this.icon);
 	}
 }

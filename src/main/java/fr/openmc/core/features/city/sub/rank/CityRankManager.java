@@ -19,20 +19,6 @@ import java.util.List;
 public class CityRankManager {
 
     private static Dao<DBCityRank, String> ranksDao;
-    public static final DataComponentType.Valued[] HIDDEN_ITEMS_DATA_COMPONENTS = new DataComponentType.Valued[]{
-            DataComponentTypes.BUNDLE_CONTENTS,
-            DataComponentTypes.FOOD,
-            DataComponentTypes.DAMAGE,
-            DataComponentTypes.DAMAGE_RESISTANT,
-            DataComponentTypes.DEATH_PROTECTION,
-            DataComponentTypes.DYED_COLOR,
-            DataComponentTypes.CONTAINER_LOOT,
-            DataComponentTypes.CONTAINER,
-            DataComponentTypes.ENCHANTMENTS,
-            DataComponentTypes.JUKEBOX_PLAYABLE,
-            DataComponentTypes.RARITY,
-            DataComponentTypes.FIREWORK_EXPLOSION
-    };
 
     public CityRankManager() {
         loadRanks();
@@ -130,5 +116,34 @@ public class CityRankManager {
                     .map(DBCityRank::getName)
                     .toList();
         });
+    }
+    
+    public static DBCityRank copy(DBCityRank rank) {
+        return new DBCityRank(rank.getRankUUID(), rank.getCityUUID(), rank.getPriority(), rank.getName(), rank.getIcon(), rank.getPermissionsSet(), rank.getMembersSet());
+    }
+    
+    public static DataComponentType[] getCityRankDataComponentType() {
+        return new DataComponentType[]{
+                DataComponentTypes.CONSUMABLE,
+                DataComponentTypes.FOOD,
+                DataComponentTypes.BUNDLE_CONTENTS,
+                DataComponentTypes.ENCHANTMENTS,
+                DataComponentTypes.DAMAGE,
+                DataComponentTypes.DAMAGE_RESISTANT,
+                DataComponentTypes.UNBREAKABLE,
+                DataComponentTypes.ATTRIBUTE_MODIFIERS,
+                DataComponentTypes.TRIM,
+                DataComponentTypes.PROVIDES_TRIM_MATERIAL,
+                DataComponentTypes.JUKEBOX_PLAYABLE,
+                DataComponentTypes.FIREWORKS,
+                DataComponentTypes.FIREWORK_EXPLOSION,
+                DataComponentTypes.POTION_CONTENTS,
+                DataComponentTypes.POTION_DURATION_SCALE,
+                DataComponentTypes.DEATH_PROTECTION,
+                DataComponentTypes.DYED_COLOR,
+                DataComponentTypes.CONTAINER_LOOT,
+                DataComponentTypes.CONTAINER,
+                DataComponentTypes.RARITY
+        };
     }
 }

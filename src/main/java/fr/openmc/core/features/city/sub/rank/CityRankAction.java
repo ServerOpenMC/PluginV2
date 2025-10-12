@@ -61,7 +61,7 @@ public class CityRankAction {
             
             if (! CityRankCondition.canRenameRank(city, player, newRank.getName())) return;
             
-            new CityRankDetailsMenu(player, city, oldRank, new DBCityRank(newRank.getRankUUID(), newRank.getCityUUID(), input, newRank.getPriority(), newRank.getPermissionsSet(), newRank.getIcon())).open();
+            new CityRankDetailsMenu(player, city, oldRank, new DBCityRank(newRank.getRankUUID(), newRank.getCityUUID(), newRank.getPriority(), input, newRank.getIcon(), newRank.getPermissionsSet(), newRank.getMembersSet())).open();
         });
     }
     
@@ -84,7 +84,7 @@ public class CityRankAction {
                 return;
             }
             
-            city.updateRank(rank, new DBCityRank(rank.getRankUUID(), city.getUniqueId(), input, rank.getPriority(), rank.getPermissionsSet(), rank.getIcon()));
+            city.updateRank(rank, new DBCityRank(rank.getRankUUID(), city.getUniqueId(), rank.getPriority(), input, rank.getIcon(), rank.getPermissionsSet(), rank.getMembersSet()));
             MessagesManager.sendMessage(player, Component.text("Le nom du grade a été mis à jour : " + oldName + " → " + input), Prefix.CITY, MessageType.SUCCESS, false);
         });
     }
