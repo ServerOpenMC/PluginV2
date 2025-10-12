@@ -20,7 +20,12 @@ import java.util.List;
 
 public class CityRankAction {
     private static final int MAX_LENGTH_RANK_NAME = 16;
-
+    
+    /**
+     * Begin the process to create a new rank.
+     *
+     * @param player The player who wants to create a rank.
+     */
     public static void beginCreateRank(Player player) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 	    if (! CityRankCondition.canCreateRank(city, player)) return;
@@ -32,7 +37,13 @@ public class CityRankAction {
                 }
         );
     }
-
+    
+    /**
+     * After the player has entered the rank name, open the rank details menu.
+     *
+     * @param player   The player who wants to create a rank.
+     * @param rankName The name of the rank to create.
+     */
     public static void afterCreateRank(Player player, String rankName) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (! CityRankCondition.canCreateRank(city, player)) return;
@@ -45,6 +56,13 @@ public class CityRankAction {
         new CityRankDetailsMenu(player, city, rankName).open();
     }
     
+    /**
+     * Rename a rank from the menu.
+     *
+     * @param player The player who wants to rename a rank.
+     * @param oldRank The old rank to pass.
+     * @param newRank The new rank to rename.
+     */
     public static void renameRankFromMenu(Player player, DBCityRank oldRank, DBCityRank newRank) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
@@ -65,6 +83,12 @@ public class CityRankAction {
         });
     }
     
+    /**
+     * Rename a rank.
+     *
+     * @param player The player who wants to rename a rank.
+     * @param oldName The old name of the rank to rename.
+     */
     public static void renameRank(Player player, String oldName) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (! CityRankCondition.canRenameRank(city, player, oldName)) {
@@ -88,7 +112,13 @@ public class CityRankAction {
             MessagesManager.sendMessage(player, Component.text("Le nom du grade a été mis à jour : " + oldName + " → " + input), Prefix.CITY, MessageType.SUCCESS, false);
         });
     }
-
+    
+    /**
+     * Delete a rank.
+     *
+     * @param player The player who wants to delete a rank.
+     * @param rankName The name of the rank to delete.
+     */
     public static void deleteRank(Player player, String rankName) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {
@@ -124,7 +154,14 @@ public class CityRankAction {
             new CityRankDetailsMenu(player, city, rank).open();
         }, List.of(Component.text("§cCette action est irréversible")), List.of()).open();
     }
-
+    
+    /**
+     * Assign a rank to a member.
+     *
+     * @param player   The player who is assigning the rank.
+     * @param rankName The name of the rank to assign.
+     * @param member   The member to assign the rank to.
+     */
     public static void assignRank(Player player, String rankName, OfflinePlayer member) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
         if (city == null) {

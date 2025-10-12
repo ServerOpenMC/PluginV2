@@ -159,7 +159,12 @@ public class CityRankIconMenu extends PaginatedMenu {
 	public List<Integer> getTakableSlot() {
 		return List.of();
 	}
-
+	
+	/**
+	 * Get all non-legacy, non-excluded, non-spawn egg materials, filtered by the current filter if set.
+	 *
+	 * @return List of filtered materials.
+	 */
 	private List<Material> getFilteredMaterials() {
 		World world = getOwner().getWorld();
 		return Arrays.stream(Material.values())

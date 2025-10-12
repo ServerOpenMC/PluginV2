@@ -23,28 +23,42 @@ public class CityRankManager {
     public CityRankManager() {
         loadRanks();
     }
-
+    
+    /**
+     * Initialize the database table for city ranks and set up the DAO.
+     *
+     * @param connectionSource The connection source to the database.
+     * @throws SQLException If there is an error creating the table or DAO.
+     */
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, DBCityRank.class);
         ranksDao = DaoManager.createDao(connectionSource, DBCityRank.class);
     }
-
-    public void loadRanks() {
-        try {
-            for (DBCityRank rank : ranksDao.queryForAll()) {
-                City city = CityManager.getCity(rank.getCityUUID());
-                if (city != null) city.getRanks().add(rank);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    
+    /**
+     * Remove all ranks associated with a city from the database.
+     *
+     * @param city The city whose ranks should be removed.
+     * @throws SQLException If there is an error during the deletion process.
+     */
     public static void removeRanks(City city) throws SQLException {
         DeleteBuilder<DBCityRank, String> ranksDelete = ranksDao.deleteBuilder();
         ranksDelete.where().eq("city_uuid", city.getUniqueId());
         ranksDao.delete(ranksDelete.prepare());
+    }
+    
+    /**
+     * Initialize command suggestions for city ranks.
+     */
+    public static void initCommandSuggestion() {
+        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_ranks", (args, sender, command) -> {
+            City city = CityManager.getPlayerCity(sender.getUniqueId());
+            if (city == null) return List.of();
+            
+            return city.getRanks().stream()
+                    .map(DBCityRank::getName)
+                    .toList();
+        });
     }
 
     /**
@@ -107,21 +121,21 @@ public class CityRankManager {
         }
     }
     
-    public static void initCommandSuggestion() {
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("city_ranks", (args, sender, command) -> {
-            City city = CityManager.getPlayerCity(sender.getUniqueId());
-            if (city == null) return List.of();
-            
-            return city.getRanks().stream()
-                    .map(DBCityRank::getName)
-                    .toList();
-        });
-    }
-    
+    /**
+     * Create a copy of a city rank.
+     *
+     * @param rank The rank to copy.
+     * @return A new instance of DBCityRank with the same properties as the original.
+     */
     public static DBCityRank copy(DBCityRank rank) {
         return new DBCityRank(rank.getRankUUID(), rank.getCityUUID(), rank.getPriority(), rank.getName(), rank.getIcon(), rank.getPermissionsSet(), rank.getMembersSet());
     }
     
+    /**
+     * Get an array of DataComponentType that are allowed for city rank items.
+     *
+     * @return An array of DataComponentType.
+     */
     public static DataComponentType[] getCityRankDataComponentType() {
         return new DataComponentType[]{
                 DataComponentTypes.CONSUMABLE,
@@ -145,5 +159,20 @@ public class CityRankManager {
                 DataComponentTypes.CONTAINER,
                 DataComponentTypes.RARITY
         };
+    }
+    
+    /**
+     * Load all city ranks from the database and associate them with their respective cities.
+     */
+    public void loadRanks() {
+        try {
+            for (DBCityRank rank : ranksDao.queryForAll()) {
+                City city = CityManager.getCity(rank.getCityUUID());
+                if (city != null) city.getRanks().add(rank);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
