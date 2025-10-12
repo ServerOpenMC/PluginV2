@@ -62,7 +62,7 @@ public class CityViewManager {
 
         MessagesManager.sendMessage(
                 player,
-                Component.text("Visualisation des claims des villes."),
+                Component.text("Visualisation des claims des villes en cours pendant 30 secondes"),
                 Prefix.CITY
         );
     }

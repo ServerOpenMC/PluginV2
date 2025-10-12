@@ -54,6 +54,6 @@ public enum MascotsLevelsRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-        return Component.text("§cNiveau " + mascotsLevelLimit + " §7maximum pour la Mascotte");
+	    return Component.text("§cNiveau " + mascotsLevelLimit + " §7maximum pour la mascotte");
     }
 }

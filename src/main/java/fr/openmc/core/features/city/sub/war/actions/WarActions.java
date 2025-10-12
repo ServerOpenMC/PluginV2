@@ -44,20 +44,20 @@ public class WarActions {
         }
 
         if (!FeaturesRewards.hasUnlockFeature(launchCity, FeaturesRewards.Feature.WAR)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!launchCity.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville n'est pas dans un statut de §cgueere §f! Changez la type de votre ville avec §c/city type §fou dans le §cMenu Principal des Villes"),
+                    Component.text("Votre ville n'est pas dans un statut de §cgueere §f! Changez la type de votre ville avec §c/city type §fou dans le §cmenu principal des villes"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (!cityAttack.getType().equals(CityType.WAR)) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer n'est pas dans un statut de guerre!"),
+                    Component.text("La ville que vous essayez d'attaquer n'est pas dans un statut de guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -78,7 +78,7 @@ public class WarActions {
 
         if (launchCity.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville est en déjà en guerre!"),
+                    Component.text("Votre ville est en déjà en guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -92,21 +92,21 @@ public class WarActions {
 
         if (cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer est déjà en guerre!"),
+                    Component.text("La ville que vous essayez d'attaquer est déjà en guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (cityAttack.isImmune()) {
             MessagesManager.sendMessage(player,
-                    Component.text("La ville que vous essayez d'attaquer est en période d'immunité!"),
+                    Component.text("La ville que vous essayez d'attaquer est en période d'immunité !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
         if (launchCity.isImmune()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Votre ville est en période d'immunité!"),
+                    Component.text("Votre ville est en période d'immunité !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -162,7 +162,7 @@ public class WarActions {
     public static void confirmLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Une des villes est déjà en guerre!"),
+                    Component.text("Une des villes est déjà en guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }
@@ -197,7 +197,7 @@ public class WarActions {
     public static void finishLaunchWar(Player player, City cityLaunch, City cityAttack, List<UUID> attackers) {
         if (cityLaunch.isInWar() || cityAttack.isInWar()) {
             MessagesManager.sendMessage(player,
-                    Component.text("Une des villes est déjà en guerre!"),
+                    Component.text("Une des villes est déjà en guerre !"),
                     Prefix.CITY, MessageType.ERROR, false);
             return;
         }

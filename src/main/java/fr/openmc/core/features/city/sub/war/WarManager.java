@@ -295,7 +295,7 @@ public class WarManager {
             String message = String.format("""
                             §8§m                                                     §r
                             §7
-                            §c§lGUERRE!§r §7C'est la fin des combats!§7
+                            §c§lGUERRE !§r §7C'est la fin des combats!§7
                             §8§oIl y a eu égalité !
                             §7
                             §7Statistiques globales:
@@ -325,7 +325,7 @@ public class WarManager {
         String message = """
                 §8§m                                                     §r
                 §7
-                §c§lGUERRE!§r §7C'est la fin des combats!§7
+                §c§lGUERRE !§r §7C'est la fin des combats!§7
                 §8§oVous avez %s contre %s!
                 §8§o%s
                 §7
@@ -346,8 +346,8 @@ public class WarManager {
                 "gagné",
                 loser.getName(),
                 switch (reason) {
-                    case MASCOT_DEATH -> "Vous avez tué la Mascotte adverse!";
-                    case MASCOT_HP -> "Votre Mascotte a eu le plus de points de vie!";
+                    case MASCOT_DEATH -> "Vous avez tué la mascotte adverse!";
+                    case MASCOT_HP -> "Votre mascotte a eu le plus de points de vie!";
                     case KILLS -> "Votre ville a tué le plus d'adversaires!";
                     case DRAW -> "C'est une égalité!";
                 }, winner.getName(), killsWinner, loser.getName(), killsLoser,
@@ -368,8 +368,8 @@ public class WarManager {
                 "perdu",
                 loser.getName(),
                 switch (reason) {
-                    case MASCOT_DEATH -> "Votre Mascotte a été tuée!";
-                    case MASCOT_HP -> "Votre Mascotte a eu le moins de points de vie!";
+                    case MASCOT_DEATH -> "Votre mascotte a été tuée!";
+                    case MASCOT_HP -> "Votre mascotte a eu le moins de points de vie!";
                     case KILLS -> "L'adversaire a tué le plus de monde!";
                     case DRAW -> "C'est une égalité!";
                 }, winner.getName(), killsWinner, loser.getName(), killsLoser,

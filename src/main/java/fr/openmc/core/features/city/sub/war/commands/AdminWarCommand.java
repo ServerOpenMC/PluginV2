@@ -27,7 +27,7 @@ public class AdminWarCommand {
         }
 
         if (!city.isInWar() && city.getWar().getPhase() != War.WarPhase.PREPARATION) {
-            MessagesManager.sendMessage(player, Component.text("Cette ville n'est pas en preparation de guerre!"), Prefix.STAFF, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, Component.text("Cette ville n'est pas en préparation de guerre !"), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 

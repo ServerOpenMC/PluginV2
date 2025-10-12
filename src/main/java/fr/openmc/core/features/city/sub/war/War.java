@@ -65,11 +65,11 @@ public class War {
         String message = String.format("""
                         §8§m                                                     §r
                         §7
-                        §c§lGUERRE!§r §7La préparation de la guerre commence§7
+                        §c§lGUERRE !§r §7La préparation de la guerre commence§7
                         §8§oPréparez vous pour le combat contre %s
                         §8§oVous avez §c§l%d minutes §8pour vous équiper.
                         §8§oVous serez en §4%d §8VS §4%d
-                        §8§oLorsque le combat commencera vous serez §4téléporter §8a votre §cMascotte.
+                        §8§oLorsque le combat commencera vous serez §4téléporter §8a votre §cmascotte.
                         §7
                         §8§m                                                     §r""",
                 cityAttacker.getName(), TIME_PREPARATION, attackers.size(), defenders.size());
@@ -120,7 +120,7 @@ public class War {
         String message = """
                 §8§m                                                     §r
                 §7
-                §c§lGUERRE!§r §7Le comabat est imminent!§7
+                §c§lGUERRE !§r §7Le comabat est imminent!§7
                 §8§oBattez vous contre §c%s!
                 §8§oVous avez §c§l%d minutes §8§ode combat.
                 §8§oSi vous tuez la mascotte de la ville adverse, vous remportez la guerre.

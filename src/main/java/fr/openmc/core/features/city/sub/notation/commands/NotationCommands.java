@@ -19,7 +19,7 @@ public class NotationCommands {
     void notationTest(Player sender) {
         String weekStr = DateUtils.getWeekFormat();
         if (NotationManager.getSortedNotationForWeek(weekStr) == null) {
-            MessagesManager.sendMessage(sender, Component.text("Aucune Notation ont été mise pour cette semaine !"), Prefix.CITY, MessageType.INFO, false);
+	        MessagesManager.sendMessage(sender, Component.text("Aucune notation n'a été mise pour cette semaine !"), Prefix.CITY, MessageType.INFO, false);
             return;
         }
 

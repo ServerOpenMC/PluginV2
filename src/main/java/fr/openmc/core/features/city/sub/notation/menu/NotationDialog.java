@@ -95,7 +95,7 @@ public class NotationDialog {
 
         Component hoverCityName = Component.text("§7Niveau de la mascotte : §c" + city.getMascot().getLevel())
                 .append(Component.newline())
-                .append(Component.text("§7Status : " + city.getType().getName()))
+                .append(Component.text("§7Statut : " + city.getType().getName()))
                 .append(Component.newline())
                 .append(Component.text("§7Membres : §2" + city.getMembers().size()))
                 .append(Component.newline())
@@ -147,14 +147,14 @@ public class NotationDialog {
 
     public static Component getHoverTotal(CityNotation notation) {
         if (notation == null) {
-            return Component.text("Aucun Total pour vous");
+            return Component.text("Aucun total pour vous");
         }
 
         return Component.text("§6§lDétails")
                 .appendNewline()
                 .append(Component.text("§8Activité " + notation.getNoteActivity()))
                 .appendNewline()
-                .append(Component.text("§8Economie " + notation.getNoteEconomy()))
+                .append(Component.text("§8Économie " + notation.getNoteEconomy()))
                 .appendNewline()
                 .append(Component.text("§8Militaire " + notation.getNoteMilitary()))
                 .appendNewline()
@@ -169,30 +169,30 @@ public class NotationDialog {
     }
 
     public static Component getHoverActivity() {
-        return Component.text("Note allant de 0 à " + NotationNote.NOTE_ACTIVITY.getMaxNote() + " points, qui comprends, le nombre de joueurs actifs dans la ville par le temps de jeu d'une ville")
+        return Component.text("Note allant de 0 à " + NotationNote.NOTE_ACTIVITY.getMaxNote() + " points, qui comprend, le nombre de joueurs actifs dans la ville par le temps de jeu d'une ville")
                 .appendNewline()
                 .append(Component.text("Note sur §3" + NotationNote.NOTE_ACTIVITY.getMaxNote() + " §fpoints"));
     }
 
     public static Component getHoverEconomy() {
-        return Component.text("Note qui comprends, la richesse de la ville et le PIB par habitant de la ville.")
+        return Component.text("Note qui comprend, la richesse de la ville et le PIB par habitant de la ville.")
                 .appendNewline()
                 .append(Component.text("Note sur §3" + NotationNote.NOTE_PIB.getMaxNote() + " §fpoints"));
     }
 
     public static Component getHoverMilitary() {
-        return Component.text("Note qui se base en fonction de votre nombre de point de puissance. Gagnable via des Guerres")
+        return Component.text("Note qui se base en fonction de la quantité de points de puissance de votre ville, récupérables via des guerres")
                 .appendNewline()
                 .append(Component.text("Note sur §3" + NotationNote.NOTE_PIB.getMaxNote() + " §fpoints"));
     }
 
     public static Component getHoverCoherence() {
-        return Component.text("Note de cohérence qui comprends, la cohérence des constructions entre elles, l'harmonie des couleurs, la transitition entre 2 thèmes, ect...")
+        return Component.text("Note de cohérence qui comprend, la cohérence des constructions entre elles, l'harmonie des couleurs, la transition entre 2 thèmes, ...")
                 .append(Component.text("Note sur §3" + NotationNote.NOTE_COHERENCE.getMaxNote() + " §fpoints"));
     }
 
     public static Component getHoverArchitectural() {
-        return Component.text("Note d'architecture qui comprends, la diversité des blocs utilisées, l'architecture des builds ainsi que la végétation.")
+        return Component.text("Note d'architecture qui comprend, la diversité des blocs utilisés, l'architecture des builds ainsi que la végétation.")
                 .appendNewline()
                 .append(Component.text("Note sur §3" + NotationNote.NOTE_ARCHITECTURAL.getMaxNote() + " §fpoints"));
     }

@@ -88,7 +88,7 @@ public class WarChooseSizeMenu extends PaginatedMenu {
 
         List<Component> loreInfo = Arrays.asList(
                 Component.text("§7Apprenez en plus sur les Guerres !"),
-                Component.text("§7La préparation..., le combat, ..."),
+                Component.text("§7La préparation, le combat, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN SAVOIR PLUS!")
         );
 

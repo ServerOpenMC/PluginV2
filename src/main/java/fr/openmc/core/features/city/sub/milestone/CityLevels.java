@@ -30,13 +30,13 @@ import static fr.openmc.core.features.city.actions.CityCreateAction.FREE_CLAIMS;
 public enum CityLevels {
     LEVEL_1(
             Component.text("Niveau 1"),
-            Component.text("Ere Urbaine"),
+            Component.text("Ère urbaine"),
             List.of(
                     new CommandRequirement("/city create", 1)
             ),
             List.of(
                     new TemplateRewards(
-                            Component.text("§6" + FREE_CLAIMS + " Claims §7Gratuits")
+                            Component.text("§6" + FREE_CLAIMS + " claims §7gratuits")
                     ),
                     MascotsSkinUnlockRewards.LEVEL_1,
                     MascotsLevelsRewards.LEVEL_1,
@@ -46,7 +46,7 @@ public enum CityLevels {
     ),
     LEVEL_2(
             Component.text("Niveau 2"),
-            Component.text("Les Fondations"),
+            Component.text("Les fondations"),
             List.of(
                     new CommandRequirement("/city map", 1),
                     new TemplateRequirement(
@@ -54,11 +54,11 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 5 Claims");
+                                    return Component.text("Avoir 5 claims");
                                 }
 
                                 return Component.text(String.format(
-                                        "Avoir 5 Claims (%d/5)",
+                                        "Avoir 5 claims (%d/5)",
                                         city.getChunks().size()
                                 ));
                             }
@@ -82,7 +82,7 @@ public enum CityLevels {
     ),
     LEVEL_3(
             Component.text("Niveau 3"),
-            Component.text("Ville peu développé"),
+            Component.text("Ville peu développée"),
             List.of(
                     new CommandRequirement("/city bank view", 1),
                     new CommandRequirement("/city chest", 1),
@@ -91,11 +91,11 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 10 Claims");
+                                    return Component.text("Avoir 10 claims");
                                 }
 
                                 return Component.text(String.format(
-                                        "Avoir 10 Claims (%d/10)",
+                                        "Avoir 10 claims (%d/10)",
                                         city.getChunks().size()
                                 ));
                             }
@@ -119,11 +119,11 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.PLAYER_HEAD),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 2 Membres");
+                                    return Component.text("Avoir 2 membres");
                                 }
 
                                 return Component.text(String.format(
-                                        "Avoir 2 Membres (%d/2)",
+                                        "Avoir 2 membres (%d/2)",
                                         city.getMembers().size()
                                 ));
                             }
@@ -131,7 +131,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 2,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, ignore) -> Component.text("Avoir sa Mascotte Niveau 2")
+                            (city, ignore) -> Component.text("Avoir sa mascotte niveau 2")
                     ),
                     new ItemDepositRequirement(Material.DIAMOND, 16)
             ),
@@ -153,18 +153,18 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> NotationManager.cityNotations.get(city.getUniqueId()) != null && !NotationManager.cityNotations.get(city.getUniqueId()).isEmpty(),
                             city -> ItemStack.of(Material.DIAMOND),
-                            (city, level) -> Component.text("Recevoir une Notation")
+                            (city, level) -> Component.text("Recevoir une notation")
                     ),
                     new TemplateRequirement(
                             city -> city.getRanks().size() >= 2,
                             city -> ItemStack.of(Material.DANDELION),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 2 Grades (/city rank)");
+                                    return Component.text("Avoir 2 grades (/city rank)");
                                 }
 
                                 return Component.text(String.format(
-                                        "Avoir 2 Grades (%d/2)",
+                                        "Avoir 2 grades (%d/2)",
                                         city.getRanks().size()
                                 ));
                             }
@@ -193,8 +193,8 @@ public enum CityLevels {
                                     .asInt() >= 1,
 
                             city -> CustomItemRegistry.getByName("omc_blocks:urne").getBest(),
-
-                            (city, level, scope) -> Component.text("Craftez une Urne"),
+                            
+                            (city, level, scope) -> Component.text("Craftez une urne"),
                             "craft_urne",
                             CraftItemEvent.class,
                             (event, scope) -> {
@@ -226,18 +226,18 @@ public enum CityLevels {
     ),
     LEVEL_5(
             Component.text("Niveau 5"),
-            Component.text("Développement Economique"),
+            Component.text("Développement économique"),
             List.of(
                     new TemplateRequirement(
                             city -> NPCManager.hasNPCS(city.getUniqueId()),
                             city -> CustomItemRegistry.getByName("omc_blocks:urne").getBest(),
-                            (city, level) -> Component.text("Poser l'Urne")
+                            (city, level) -> Component.text("Poser l'urne")
                     ),
 
                     new TemplateRequirement(
                             city -> NotationManager.cityNotations.get(city.getUniqueId()) != null && NotationManager.cityNotations.get(city.getUniqueId()).stream().anyMatch(notation -> notation.getTotalNote() >= 10),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 10 points sur une des Notations")
+                            (city, level) -> Component.text("Avoir minimum 10 points sur une des notations")
                     ),
                     new CommandRequirement("/city mayor", 1),
                     new ItemDepositRequirement(Material.GOLD_BLOCK, 32),
@@ -260,11 +260,11 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 20 Claims");
+                                    return Component.text("Avoir 20 claims");
                                 }
 
                                 return Component.text(String.format(
-                                        "Avoir 20 Claims (%d/20)",
+                                        "Avoir 20 claims (%d/20)",
                                         city.getChunks().size()
                                 ));
                             }
@@ -289,7 +289,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> NotationManager.cityNotations.get(city.getUniqueId()) != null && NotationManager.cityNotations.get(city.getUniqueId()).stream().anyMatch(notation -> notation.getTotalNote() >= 20),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 20 points sur une des Notations")
+                            (city, level) -> Component.text("Avoir minimum 20 points sur une des notations")
                     ),
                     new TemplateRequirement(
                             city -> city.getBalance() >= 20000,
@@ -310,11 +310,11 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 25 Claims");
+                                    return Component.text("Avoir 25 claims");
                                 }
 
                                 return Component.text(String.format(
-                                        "Avoir 25 Claims (%d/25)",
+                                        "Avoir 25 claims (%d/25)",
                                         city.getChunks().size()
                                 ));
                             }
@@ -322,7 +322,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 5,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Etre level 5 sur la Mascotte")
+                            (city, level) -> Component.text("Avoir la mascotte niveau 5")
                     ),
                     new ItemDepositRequirement(Material.STONE_BRICKS, 400),
                     new ItemDepositRequirement(Material.BLACK_CONCRETE, 184),
@@ -347,7 +347,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> NotationManager.cityNotations.get(city.getUniqueId()) != null && NotationManager.cityNotations.get(city.getUniqueId()).stream().anyMatch(notation -> notation.getTotalNote() >= 30),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 30 points sur une des Notations")
+                            (city, level) -> Component.text("Avoir minimum 30 points sur une des notations")
                     ),
                     new TemplateRequirement(
                             city -> city.getBalance() >= 30000,
@@ -368,11 +368,11 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 30 Claims");
+                                    return Component.text("Avoir 30 claims");
                                 }
 
                                 return Component.text(String.format(
-                                        "Avoir 30 Claims (%d/30)",
+                                        "Avoir 30 claims (%d/30)",
                                         city.getChunks().size()
                                 ));
                             }
@@ -380,7 +380,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 6,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Etre level 6 sur la Mascotte")
+                            (city, level) -> Component.text("Avoir la mascotte niveau 6")
                     ),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_items:aywenite").getBest(), 400),
                     new ItemDepositRequirement(Material.DIAMOND_SWORD, 10),
@@ -424,7 +424,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> NotationManager.cityNotations.get(city.getUniqueId()) != null && NotationManager.cityNotations.get(city.getUniqueId()).stream().anyMatch(notation -> notation.getTotalNote() >= 40) && NotationManager.cityNotations.get(city.getUniqueId()) != null,
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 40 points sur une des Notations")
+                            (city, level) -> Component.text("Avoir minimum 40 points sur une des notations")
                     ),
                     new TemplateRequirement(
                             city -> city.getBalance() >= 60000,
@@ -445,11 +445,11 @@ public enum CityLevels {
                             city -> ItemStack.of(Material.OAK_FENCE),
                             (city, level) -> {
                                 if (city.getLevel() != level.ordinal()) {
-                                    return Component.text("Avoir 50 Claims");
+                                    return Component.text("Avoir 50 claims");
                                 }
 
                                 return Component.text(String.format(
-                                        "Avoir 50 Claims (%d/50)",
+                                        "Avoir 50 claims (%d/50)",
                                         city.getChunks().size()
                                 ));
                             }
@@ -457,7 +457,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 7,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Etre level 7 sur la Mascotte")
+                            (city, level) -> Component.text("Avoir la mascotte niveau 7")
                     ),
                     new ItemDepositRequirement(Material.NETHERITE_INGOT, 4),
                     new ItemDepositRequirement(Material.OBSIDIAN, 128)
@@ -495,7 +495,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> NotationManager.cityNotations.get(city.getUniqueId()) != null && NotationManager.cityNotations.get(city.getUniqueId()).stream().anyMatch(notation -> notation.getTotalNote() >= 50),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 50 points sur une des Notations")
+                            (city, level) -> Component.text("Avoir minimum 50 points sur une des notations")
                     ),
                     new TemplateRequirement(
                             city -> city.getBalance() >= 80000,
@@ -514,7 +514,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 8,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Etre level 8 sur la Mascotte")
+                            (city, level) -> Component.text("Avoir une mascotte niveau 8")
                     ),
                     new ItemDepositRequirement(Material.DIAMOND, 300),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_foods:kebab").getBest(), 128)
@@ -537,12 +537,12 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> NotationManager.top10Cities.contains(city.getUniqueId()),
                             city -> ItemStack.of(Material.HONEYCOMB),
-                            (city, level) -> Component.text("Etre dans le top 10 des notations sur une des Notations")
+                            (city, level) -> Component.text("Être dans le top 10 des notations sur une des notations")
                     ),
                     new TemplateRequirement(
                             city -> NotationManager.cityNotations.get(city.getUniqueId()) != null && NotationManager.cityNotations.get(city.getUniqueId()).stream().anyMatch(notation -> notation.getTotalNote() >= 60),
                             city -> ItemStack.of(Material.DANDELION),
-                            (city, level) -> Component.text("Avoir minimum 60 points sur une des Notations")
+                            (city, level) -> Component.text("Avoir minimum 60 points sur une des notations")
                     ),
                     new TemplateRequirement(
                             city -> WarManager.warHistory.get(city.getUniqueId()) != null && WarManager.warHistory.get(city.getUniqueId()).getNumberWar() >= 10,
@@ -575,7 +575,7 @@ public enum CityLevels {
                     new TemplateRequirement(
                             city -> city.getMascot().getLevel() >= 9,
                             city -> ItemStack.of(city.getMascot().getMascotEgg()),
-                            (city, level) -> Component.text("Etre level 9 sur la Mascotte")
+                            (city, level) -> Component.text("Avoir une mascotte niveau 9")
                     ),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_blocks:aywenite_block").getBest(), 32),
                     new ItemDepositRequirement(CustomItemRegistry.getByName("omc_contest:contest_shell").getBest(), 128),

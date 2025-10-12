@@ -183,11 +183,11 @@ public class CityMilestoneMenu extends Menu {
             if (DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level") != 0 && city.getLevel() + 1 == level.ordinal() + 1) {
                 lore.add(Component.text("§fIl reste §3" +
                         DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:upgrade-level")) +
-                        " §fde débloquage"));
+		                " §fde déblocage"));
             } else {
                 lore.add(Component.text("§3" +
                         DateUtils.convertSecondToTime(level.getUpgradeTime()) +
-                        " §fde débloquage"));
+		                " §fde déblocage"));
             }
         }
 

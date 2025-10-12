@@ -97,8 +97,8 @@ public class WarCityDetailsMenu extends Menu {
 
         map.put(8, new ItemBuilder(this, city.getMascot().getMascotEgg(),
                 itemMeta -> {
-                    itemMeta.displayName(Component.text("§7Niveau de la Mascotte : §4" + mascot.getLevel()));
-                    itemMeta.lore(List.of(Component.text("§7Location de la Mascotte : §c" + mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ())));
+                    itemMeta.displayName(Component.text("§7Niveau de la mascotte : §4" + mascot.getLevel()));
+                    itemMeta.lore(List.of(Component.text("§7Location de la mascotte : §c" + mascotLocation.getX() + " " + mascotLocation.getY() + " " + mascotLocation.getZ())));
                 }));
 
         map.put(9, new ItemBuilder(this, new ItemStack(Material.PAPER),
@@ -118,7 +118,7 @@ public class WarCityDetailsMenu extends Menu {
         map.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu Précédent"),
+                    Component.text("§7Vous allez retourner au menu précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));
