@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static fr.openmc.api.menulib.utils.ItemUtils.getDataComponentType;
+
 public class CityRankDetailsMenu extends Menu {
 	
 	private final DBCityRank oldRank;
@@ -123,7 +125,7 @@ public class CityRankDetailsMenu extends Menu {
 					Component.text("§7Modifiable plus tard")
 			));
 		}).setOnClick(inventoryClickEvent -> new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open())
-				.hide(CityRankManager.getCityRankDataComponentType()));
+				.hide(getDataComponentType()));
 		
 		map.put(13, new ItemBuilder(this, Material.WRITABLE_BOOK, itemMeta -> {
 			itemMeta.displayName(Component.text("§bInsérer les permissions du grade"));
@@ -225,7 +227,7 @@ public class CityRankDetailsMenu extends Menu {
 			if (! canManageRanks) return;
 			
 			new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, null).open();
-		}).hide(CityRankManager.getCityRankDataComponentType()));
+		}).hide(getDataComponentType()));
 		
 		List<Component> lorePerm = new ArrayList<>(
 				List.of(

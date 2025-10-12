@@ -170,7 +170,7 @@ public class CityRankAction {
 		}
 		
 		if (! FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
-			MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature !Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+			MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
 			return;
 		}
 		

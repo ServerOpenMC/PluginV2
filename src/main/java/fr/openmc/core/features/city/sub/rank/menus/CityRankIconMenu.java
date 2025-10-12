@@ -8,7 +8,6 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.models.DBCityRank;
-import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
@@ -24,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+import static fr.openmc.api.menulib.utils.ItemUtils.getDataComponentType;
 import static fr.openmc.core.utils.InputUtils.MAX_LENGTH;
 
 public class CityRankIconMenu extends PaginatedMenu {
@@ -90,7 +90,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 				if (itemMeta == null) return;
 				itemMeta.displayName(ItemUtils.getItemTranslation(material).decoration(TextDecoration.ITALIC, false));
 				itemMeta.lore(List.of(Component.text("§7Cliquez pour sélectionner cette icône")));
-			}).hide(CityRankManager.getCityRankDataComponentType())
+			}).hide(getDataComponentType())
 					.setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, oldRank, newRank.withIcon(material)).open()));
 		}
 		

@@ -8,7 +8,6 @@ import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.menu.CityMenu;
 import fr.openmc.core.features.city.models.DBCityRank;
 import fr.openmc.core.features.city.sub.rank.CityRankAction;
-import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -19,6 +18,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static fr.openmc.api.menulib.utils.ItemUtils.getDataComponentType;
 
 public class CityRanksMenu extends Menu {
 	
@@ -56,7 +57,7 @@ public class CityRanksMenu extends Menu {
 		boolean canAssignRanks = city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS);
 		
 		Set<DBCityRank> cityRanks = city.getRanks();
-		if (!cityRanks.isEmpty()) {
+		if (! cityRanks.isEmpty()) {
 			int i = 0;
 			for (DBCityRank rank : cityRanks) {
 				String rankName = rank.getName();
@@ -74,7 +75,7 @@ public class CityRanksMenu extends Menu {
 							));
 						}
 				).setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(player, city, rank).open())
-						.hide(CityRankManager.getCityRankDataComponentType()));
+						.hide(getDataComponentType()));
 				if (i >= 17) break;
 				i++;
 			}
@@ -99,13 +100,13 @@ public class CityRanksMenu extends Menu {
 			}
 			
 			map.put(22, new ItemBuilder(this, Material.FEATHER,
-					itemMeta -> {
-						itemMeta.displayName(Component.text("§aAssigner des grades"));
-						itemMeta.lore(loreAssignRanks);
-					}).setOnClick(inventoryClickEvent -> {
+							itemMeta -> {
+								itemMeta.displayName(Component.text("§aAssigner des grades"));
+								itemMeta.lore(loreAssignRanks);
+							}).setOnClick(inventoryClickEvent -> {
 						if (city.getRanks().isEmpty()) return;
-				
-				new CityRankMemberMenu(player, city).open();
+						
+						new CityRankMemberMenu(player, city).open();
 					})
 			);
 		}

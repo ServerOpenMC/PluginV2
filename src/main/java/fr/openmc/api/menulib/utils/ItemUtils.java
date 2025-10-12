@@ -2,6 +2,8 @@ package fr.openmc.api.menulib.utils;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import fr.openmc.api.menulib.MenuLib;
+import io.papermc.paper.datacomponent.DataComponentType;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -67,5 +69,35 @@ public class ItemUtils {
 			skull.setItemMeta(skullMeta);
 		}
 		return skull;
+	}
+	
+	/**
+	 * Get an array of DataComponentType that are allowed for items.
+	 *
+	 * @return An array of DataComponentType.
+	 */
+	public static DataComponentType[] getDataComponentType() {
+		return new DataComponentType[] {
+				DataComponentTypes.CONSUMABLE,
+				DataComponentTypes.FOOD,
+				DataComponentTypes.BUNDLE_CONTENTS,
+				DataComponentTypes.ENCHANTMENTS,
+				DataComponentTypes.DAMAGE,
+				DataComponentTypes.DAMAGE_RESISTANT,
+				DataComponentTypes.UNBREAKABLE,
+				DataComponentTypes.ATTRIBUTE_MODIFIERS,
+				DataComponentTypes.TRIM,
+				DataComponentTypes.PROVIDES_TRIM_MATERIAL,
+				DataComponentTypes.JUKEBOX_PLAYABLE,
+				DataComponentTypes.FIREWORKS,
+				DataComponentTypes.FIREWORK_EXPLOSION,
+				DataComponentTypes.POTION_CONTENTS,
+				DataComponentTypes.POTION_DURATION_SCALE,
+				DataComponentTypes.DEATH_PROTECTION,
+				DataComponentTypes.DYED_COLOR,
+				DataComponentTypes.CONTAINER_LOOT,
+				DataComponentTypes.CONTAINER,
+				DataComponentTypes.RARITY
+		};
 	}
 }
