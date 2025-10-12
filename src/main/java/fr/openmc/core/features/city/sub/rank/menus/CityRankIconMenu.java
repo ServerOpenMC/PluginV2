@@ -47,17 +47,17 @@ public class CityRankIconMenu extends PaginatedMenu {
 	public @Nullable Material getBorderMaterial() {
 		return Material.WHITE_STAINED_GLASS_PANE;
 	}
-
+	
 	@Override
 	public @NotNull InventorySize getInventorySize() {
 		return InventorySize.LARGEST;
 	}
-
+	
 	@Override
 	public int getSizeOfItems() {
 		return getFilteredMaterials().size();
 	}
-
+	
 	@Override
 	public @NotNull List<Integer> getStaticSlots() {
 		return StaticSlots.getBottomSlots(getInventorySize());
@@ -73,17 +73,17 @@ public class CityRankIconMenu extends PaginatedMenu {
 			Material.STRUCTURE_VOID,
 			Material.DEBUG_STICK
 	);
-
+	
 	private static final List<Material> paginableMaterials = List.of();
-
+	
 	@Override
 	public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		List<Material> filtered = getFilteredMaterials();
-
+		
 		int startIndex = page * (getInventorySize().getSize() - getStaticSlots().size());
 		int endIndex = Math.min(startIndex + (getInventorySize().getSize() - getStaticSlots().size()), filtered.size());
-
+		
 		for (int i = startIndex; i < endIndex; i++) {
 			Material material = filtered.get(i);
 			items.add(new ItemBuilder(this, material, itemMeta -> {
@@ -93,17 +93,17 @@ public class CityRankIconMenu extends PaginatedMenu {
 			}).hide(CityRankManager.getCityRankDataComponentType())
 					.setOnClick(inventoryClickEvent -> new CityRankDetailsMenu(getOwner(), city, oldRank, newRank.withIcon(material)).open()));
 		}
-
+		
 		return items;
 	}
-
+	
 	
 	@Override
 	public Map<Integer, ItemBuilder> getButtons() {
 		Map<Integer, ItemBuilder> map = new HashMap<>();
 		map.put(45, new ItemBuilder(this, Material.BARRIER
 				, itemMeta -> itemMeta.displayName(Component.text("§cRetour")), true));
-
+		
 		if (hasPreviousPage())
 			map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
 					.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setOnClick(inventoryClickEvent -> {
@@ -120,12 +120,12 @@ public class CityRankIconMenu extends PaginatedMenu {
 			itemMeta.lore(List.of(Component.text("§7Cliquez pour saisir un mot-clé")));
 		}).setOnClick(event -> {
 			DialogInput.send(getOwner(), Component.text("Entrez le nom d'un mot clé pour l'icône"), MAX_LENGTH, input -> {
-                if (input == null) return;
+				if (input == null) return;
 				new CityRankIconMenu(getOwner(), city, 0, oldRank, newRank, input).open();
 			});
 		}));
-
-		if (filter != null && !filter.isEmpty()) {
+		
+		if (filter != null && ! filter.isEmpty()) {
 			map.put(53, new ItemBuilder(this, Material.PAPER, itemMeta -> {
 				itemMeta.displayName(Component.text("§cEffacer le filtre"));
 				itemMeta.lore(List.of(Component.text("§e§lCLIQUEZ POUR EFFACER LE FILTRE")));
@@ -140,12 +140,12 @@ public class CityRankIconMenu extends PaginatedMenu {
 	public @NotNull String getName() {
 		return "Menu de choix d'une icône - Page " + (page + 1);
 	}
-
+	
 	@Override
 	public String getTexture() {
 		return null;
 	}
-
+	
 	@Override
 	public void onInventoryClick(InventoryClickEvent e) {
 	}
@@ -170,16 +170,16 @@ public class CityRankIconMenu extends PaginatedMenu {
 		return Arrays.stream(Material.values())
 				.filter(material -> ! material.isLegacy())
 				.filter(Material::isItem)
-				.filter(material -> !excludedMaterials.contains(material))
-				.filter(material -> !material.name().contains("SPAWN_EGG"))
+				.filter(material -> ! excludedMaterials.contains(material))
+				.filter(material -> ! material.name().contains("SPAWN_EGG"))
 				.filter(material -> filter == null || material.name().toLowerCase().startsWith(filter.toLowerCase()))
 				.toList();
 	}
-
+	
 	public boolean hasNextPage() {
 		return this.page < getNumberOfPages();
 	}
-
+	
 	public boolean hasPreviousPage() {
 		return this.page > 0;
 	}
