@@ -31,7 +31,7 @@ public class CityChangeAction {
     public static void beginChangeCity(Player player, CityType typeChange) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, player)) return;
+        if (!CityTypeConditions.canCityChangeType(city, player, typeChange)) return;
 
         if (typeChange.equals(CityType.WAR) && !FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.TYPE_WAR)) {
 	        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.TYPE_WAR) + "!"), Prefix.CITY, MessageType.ERROR, false);
@@ -71,7 +71,7 @@ public class CityChangeAction {
     public static void finishChange(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
-        if (!CityTypeConditions.canCityChangeType(city, sender)) {
+        if (!CityTypeConditions.canCityChangeType(city, sender, city.getType() == CityType.WAR ? CityType.PEACE : CityType.WAR)) {
             MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return;
         }

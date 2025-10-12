@@ -25,7 +25,7 @@ public class PlayerUtils {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					player.teleportAsync(location);
+					player.teleport(location);
 				}
 			}.runTaskLater(OMCPlugin.getInstance(), 14);
 		} else {

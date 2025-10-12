@@ -7,6 +7,7 @@ import fr.openmc.core.features.city.sub.mayor.actions.MayorCommandAction;
 import fr.openmc.core.features.city.sub.mayor.actions.MayorSetWarpAction;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.features.city.sub.mayor.models.CityLaw;
+import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -45,15 +46,10 @@ public class MayorCommands {
             return;
         }
 
-        player.sendTitle("§0:tp_effect%", "§a§lTéléportation...", 20, 10, 10);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                player.teleportAsync(warp).thenAccept(success -> {
-	                MessagesManager.sendMessage(player, Component.text("Vous avez été envoyé au warp §fde votre §dville"), Prefix.CITY, MessageType.SUCCESS, true);
-                });
-            }
-        }.runTaskLater(OMCPlugin.getInstance(), 10);
+        PlayerUtils.sendFadeTitleTeleport(
+                player,
+                warp
+        );
     }
 
     @Command({"city setwarp", "ville setwarp"})

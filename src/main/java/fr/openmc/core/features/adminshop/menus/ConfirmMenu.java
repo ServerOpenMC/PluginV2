@@ -1,6 +1,7 @@
 package fr.openmc.core.features.adminshop.menus;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
@@ -12,6 +13,7 @@ import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
@@ -36,8 +38,7 @@ public class ConfirmMenu extends Menu {
         this.previousMenu = previousMenu;
         this.isBuying = isBuying;
         this.quantity = 1;
-        if (isBuying) this.maxQuantity = 64 * 36;
-        else this.maxQuantity = countPlayerItems(owner, shopItem.getMaterial());
+        this.maxQuantity = isBuying ? ItemUtils.getFreePlacesForItem(owner, shopItem.getMaterial()) : countPlayerItems(owner, shopItem.getMaterial());
     }
 
     @Override
@@ -69,6 +70,8 @@ public class ConfirmMenu extends Menu {
 		        Component.text("§8■ §eQuantité : §f" + quantity + " §7(§f" + quantityToStack + "§7 stack" + (quantityToStack > 1 ? "s" : "") + ")"),
 		        Component.text("§8■ §ePrix unitaire : §a" + AdminShopManager.priceFormat.format(pricePerUnit) + EconomyManager.getEconomyIcon()),
 		        Component.text("§8■ §ePrix total : §a" + AdminShopManager.priceFormat.format(totalPrice) + EconomyManager.getEconomyIcon())
+		        Component.empty(),
+		        Component.text("§8■ §aClique molette pour §2définir §ala quantité manuellement")
         );
 
         content.put(9, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
@@ -80,50 +83,50 @@ public class ConfirmMenu extends Menu {
         content.put(10, createQuantityButton("-64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
             if (quantity > 64) quantity -= 64;
             else quantity = 1;
-            update();
+            this.open();
         }));
 
         content.put(11, createQuantityButton("-10", CustomItemRegistry.getByName("omc_menus:minus_btn").getBest(), event -> {
             if (quantity > 10) quantity -= 10;
-            update();
+            else quantity = 1;
+            this.open();
         }));
 
         content.put(12, createQuantityButton("-1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
             if (quantity > 1) quantity--;
-            update();
+            else quantity = 1;
+            this.open();
         }));
 
         content.put(13, new ItemBuilder(this, shopItem.getMaterial(), meta -> {
             meta.displayName(Component.text("§f" + shopItem.getName()));
             meta.lore(lore);
+        }).setOnClick(event -> {
+            if (event.getClick().equals(ClickType.MIDDLE)) {
+                DialogInput.sendFloat(
+                        getOwner(),
+                        Component.text("§eVeuillez entrer la quantité souhaitée:"),
+                        1,
+                        maxQuantity,
+                        quantity,
+                        input -> {
+                            if (input != null) {
+                                int inputQuantity = (int) input.doubleValue();
+                                if (inputQuantity > 0) {
+                                    quantity = Math.min(inputQuantity, maxQuantity);
+                                    this.open();
+                                }
+                            }
+                        }
+                );
+            }
         }));
 
-        content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> {
-            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 1)) {
-                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
-            } else if (quantity < maxQuantity) {
-                quantity++;
-            }
-            update();
-        }));
+        content.put(14, createQuantityButton("+1", CustomItemRegistry.getByName("omc_menus:1_btn").getBest(), event -> increaseQuantity(1)));
 
-        content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> {
-            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 10)) {
-                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
-            } else if (quantity < maxQuantity) {
-                quantity += 10;
-            }
-            update();
-        }));
+        content.put(15, createQuantityButton("+10", CustomItemRegistry.getByName("omc_menus:plus_btn").getBest(), event -> increaseQuantity(10)));
 
-        content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> {
-            if (!isBuying && ItemUtils.hasEnoughItems(getOwner(), shopItem.getMaterial(), quantity + 64)) {
-                quantity = Math.min(maxQuantity, countPlayerItems(getOwner(), shopItem.getMaterial()));
-            } else if (quantity < maxQuantity) {
-                quantity += 64;
-            }
-            update();
-        }));
+        content.put(16, createQuantityButton("+64", CustomItemRegistry.getByName("omc_menus:64_btn").getBest(), event -> increaseQuantity(64)));
 
         content.put(17, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:accept_btn").getBest(), meta -> {
             meta.displayName(Component.text("§aAccepter"));
@@ -134,10 +137,6 @@ public class ConfirmMenu extends Menu {
         }));
 
         return content;
-    }
-
-    private void update() {
-        this.open();
     }
 
     /**
@@ -169,6 +168,22 @@ public class ConfirmMenu extends Menu {
                 count += item.getAmount();
         return count;
     }
+
+    /**
+     * Increases the quantity by the specified amount, ensuring it does not exceed the maximum allowed quantity.
+     *
+     * @param amount The amount to increase the quantity by.
+     */
+    private void increaseQuantity(int amount) {
+        if (!isBuying) {
+            int playerItemCount = countPlayerItems(getOwner(), shopItem.getMaterial());
+            quantity = Math.min(quantity + amount, playerItemCount);
+        } else {
+            quantity = Math.min(quantity + amount, maxQuantity);
+        }
+        this.open();
+    }
+
 
     @Override
     public void onClose(InventoryCloseEvent event) {

@@ -80,7 +80,13 @@ public class GlobalTeamManager {
     }
 
     private Group getPlayerHighestWeightGroup(Player player) {
-        var user = luckPerms.getPlayerAdapter(Player.class).getUser(player);
+        UUID uuid = player.getUniqueId();
+        if (!luckPerms.getUserManager().isLoaded(uuid)) {
+            luckPerms.getUserManager().getUser(uuid);
+            return null;
+        }
+
+        var user = luckPerms.getUserManager().getUser(uuid);
         if (user == null) return null;
 
         return user.getNodes(NodeType.INHERITANCE).stream()
