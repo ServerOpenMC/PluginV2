@@ -19,7 +19,7 @@ public class FishingQuest extends Quest implements Listener {
 
     public FishingQuest() {
         super(
-                "Pêcheur Expérimenté",
+                "Pêcheur expérimenté",
                 List.of("Pêcher {target} poissons"),
                 new ItemStack(Material.FISHING_ROD)
         );

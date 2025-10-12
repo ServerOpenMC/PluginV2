@@ -113,7 +113,7 @@ public class ContestCommand {
     @CommandPermission("omc.admin.commands.contest.addpoints")
     public void addPoints(Player player, Player target, Integer points) {
         if (ContestManager.data.getPhase()!=3) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le Contests n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le contest n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 

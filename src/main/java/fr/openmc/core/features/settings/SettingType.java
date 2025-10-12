@@ -13,13 +13,13 @@ public enum SettingType {
 
     // - Friendship settings
     FRIEND_REQUESTS_POLICY(ValueType.ENUM, FriendPolicy.EVERYONE, "Politique des demandes d'amis",
-            Material.PLAYER_HEAD, "Qui peut t'envoyer des demandes d'amis:"),
+            Material.PLAYER_HEAD, "Qui peut t'envoyer des demandes d'amis :"),
 
     // - City settings
     CITY_JOIN_REQUESTS_POLICY(ValueType.ENUM, CityPolicy.EVERYONE, "Politique des demandes de rejoindre une ville",
-            Material.PAPER, "Qui peut te demander à rejoindre une ville:"),
-    MASCOT_PLAY_SOUND_POLICY(ValueType.BOOLEAN, true, "Recevoir les sons venant des Mascottes",
-            Material.MUSIC_DISC_LAVA_CHICKEN, Material.GRAY_DYE, "Activer ou désactiver les sons des Mascottes", DataComponentTypes.JUKEBOX_PLAYABLE),
+            Material.PAPER, "Qui peut te demander à rejoindre une ville :"),
+    MASCOT_PLAY_SOUND_POLICY(ValueType.BOOLEAN, true, "Recevoir les sons venant des mascottes",
+            Material.MUSIC_DISC_LAVA_CHICKEN, Material.GRAY_DYE, "Activer ou désactiver les sons des mascottes", DataComponentTypes.JUKEBOX_PLAYABLE),
 
     // - Mailbox settings
     MAILBOX_RECEIVE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "Politique de réception des mailbox",
@@ -27,7 +27,7 @@ public enum SettingType {
 
     // - General settings
     PRIVATE_MESSAGE_POLICY(ValueType.ENUM, GlobalPolicy.EVERYONE, "Recevoir les messages privés",
-            Material.WRITABLE_BOOK, "Qui peut t'envoyer des messages privés:"),
+            Material.WRITABLE_BOOK, "Qui peut t'envoyer des messages privés :"),
     NOTIFICATIONS_SOUND(ValueType.BOOLEAN, true, "Sons des messages",
             Material.NOTE_BLOCK, Material.GRAY_DYE, "Activer ou désactiver les sons des messages privés"),
     TELEPORT_TITLE_FADE(ValueType.BOOLEAN, true, "Fondu du titre lors des téléportations",

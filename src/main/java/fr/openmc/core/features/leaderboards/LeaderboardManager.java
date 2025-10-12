@@ -111,7 +111,7 @@ public class LeaderboardManager {
         if (moneyMap.isEmpty()) {
             return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard de l'argent des joueurs ----")
+        Component text = Component.text("--- Leaderboard de l'argent des joueurs ---")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : moneyMap.entrySet()) {
@@ -142,7 +142,7 @@ public class LeaderboardManager {
         if (moneyMap.isEmpty()) {
             return Component.text("Aucune ville trouvée pour le moment.").color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard de l'argent des villes ----")
+        Component text = Component.text("--- Leaderboard de l'argent des villes ---")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : moneyMap.entrySet()) {
@@ -173,7 +173,7 @@ public class LeaderboardManager {
         if (playtimeMap.isEmpty()) {
             return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard du temps de jeu -----------")
+        Component text = Component.text("------- Leaderboard du temps de jeu -------")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : playtimeMap.entrySet()) {

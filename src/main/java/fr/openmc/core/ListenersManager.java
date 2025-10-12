@@ -21,7 +21,7 @@ public class ListenersManager {
         registerEvents(
                 new HappyGhastListener(),
                 new SessionsListener(),
-                new JoinMessageListener(),
+                new JoinQuitMessageListener(),
                 new UpdateListener(),
                 new ClockInfos(),
                 new MailboxListener(),

@@ -7,8 +7,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 public class TutorialBossBar {
-
-    public static final String PLACEHOLDER_TUTORIAL_BOSSBAR = "§6Etape %s : %s";
+    
+    public static final String PLACEHOLDER_TUTORIAL_BOSSBAR = "§6Étape %s : %s";
 
     /**
      * Adds a tutorial boss bar for the player with the given message and progress.

@@ -32,8 +32,7 @@ public class PrivateMessageManager {
      */
     public void sendPrivateMessage(Player sender, Player receiver, String message) {
         if (sender.equals(receiver)) {
-            MessagesManager.sendMessage(sender, Component.text("§cVous ne pouvez pas vous envoyer de message privé à " +
-                    "vous-même."), Prefix.OPENMC, MessageType.ERROR, true);
+            MessagesManager.sendMessage(sender, Component.text("§cVous ne pouvez pas vous envoyer de message privé à vous-même."), Prefix.OPENMC, MessageType.ERROR, true);
             return;
         }
 

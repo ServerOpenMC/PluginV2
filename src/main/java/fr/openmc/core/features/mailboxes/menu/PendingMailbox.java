@@ -66,7 +66,7 @@ public class PendingMailbox extends PaginatedMailbox<SenderLetter> {
         if (senderLetter == null)
             return;
         int id = senderLetter.getId();
-        Component message = Component.text("Cliquez-ici", NamedTextColor.YELLOW)
+        Component message = Component.text("Cliquez ici", NamedTextColor.YELLOW)
                 .clickEvent(getRunCommand("cancel " + id))
                 .hoverEvent(getHoverEvent("Annuler la lettre #" + id))
                 .append(Component.text(" si vous êtes sur de vouloir annuler la lettre.", NamedTextColor.GOLD));

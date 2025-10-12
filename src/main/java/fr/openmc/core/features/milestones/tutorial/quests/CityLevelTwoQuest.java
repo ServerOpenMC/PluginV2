@@ -21,17 +21,17 @@ import org.bukkit.event.Listener;
 import java.util.List;
 import java.util.UUID;
 
-public class CityLevel2Quest extends Quest implements Listener {
+public class CityLevelTwoQuest extends Quest implements Listener {
 
     private final TutorialStep step;
     private final MilestoneType type;
-
-    public CityLevel2Quest() {
+    
+    public CityLevelTwoQuest() {
         super(
-                "Avoir une Ville niveau 2",
+                "Avoir une ville niveau 2",
                 List.of(
                         "§fFaites §d/city milestone §fpour en savoir plus comment",
-                        "§faméliorer votre Ville !"
+                        "§faméliorer votre ville !"
                 ),
                 Material.NETHER_STAR
         );
@@ -43,7 +43,7 @@ public class CityLevel2Quest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Vous êtes bien parti pour découvrir toutes les features qu'ils se cachent dans les Villes ! Mais avant cela, je voudrais que vous posiez un §2Home §f?",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Vous êtes bien parti pour découvrir toutes les features qu'ils se cachent dans les villes ! Mais avant cela, je voudrais que vous posiez un §2home§f.",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

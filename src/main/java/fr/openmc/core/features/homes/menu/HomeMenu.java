@@ -106,7 +106,7 @@ public class HomeMenu extends PaginatedMenu {
                     }
                 }));
             } catch (Exception e) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(getOwner(), Component.text("§cUne erreur est survenue, veuillez contacter le staff"), Prefix.OPENMC, MessageType.ERROR, false);
                 getOwner().closeInventory();
                 throw new RuntimeException("Failed to create HomeMenu item for home: " + home.getName(), e);
             }

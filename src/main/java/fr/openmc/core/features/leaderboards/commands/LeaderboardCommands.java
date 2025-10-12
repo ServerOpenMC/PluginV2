@@ -1,16 +1,12 @@
 package fr.openmc.core.features.leaderboards.commands;
 
-import fr.openmc.api.input.location.ItemInteraction;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.DefaultFor;
 import revxrsal.commands.annotation.Description;
@@ -18,8 +14,6 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static fr.openmc.core.features.leaderboards.LeaderboardManager.*;
 
@@ -86,7 +80,7 @@ public class LeaderboardCommands {
         } else {
             MessagesManager.sendMessage(
                     player,
-                    Component.text("§cVeuillez spécifier un leaderboard valide: contributors, money, ville-money, playtime"),
+                    Component.text("§cVeuillez spécifier un leaderboard valide : contributors, money, ville-money, playtime"),
                     Prefix.STAFF,
                     MessageType.WARNING,
                     true
@@ -99,7 +93,7 @@ public class LeaderboardCommands {
     @Description("Désactive tout sauf les commandes")
     void disableCommand(CommandSender sender) {
         LeaderboardManager.disable();
-        sender.sendMessage("§cHolograms désactivés avec succès.");
+        sender.sendMessage("§cHologrammes désactivés avec succès.");
     }
 
     @Subcommand("enable")
@@ -107,7 +101,7 @@ public class LeaderboardCommands {
     @Description("Active tout")
     void enableCommand(CommandSender sender) {
         LeaderboardManager.enable();
-        sender.sendMessage("§aHolograms activés avec succès.");
+        sender.sendMessage("§aHologrammes activés avec succès.");
     }
 
     @Subcommand("update")
@@ -120,19 +114,19 @@ public class LeaderboardCommands {
         LeaderboardManager.updatePlayTimeMap();
         LeaderboardManager.updateHolograms();
         LeaderboardManager.updateHologramsViewers();
-        sender.sendMessage("§aHolograms mis à jour avec succès.");
+        sender.sendMessage("§aHologrammes mis à jour avec succès.");
     }
 
     @Subcommand("setScale")
     @CommandPermission("op")
     @Description("Défini la taille des Holograms.")
     void setScaleCommand(Player player, float scale) {
-        player.sendMessage("§aTaille des Holograms modifiée à " + scale);
+        player.sendMessage("§aTaille des hologrammes modifiée à " + scale);
         try {
             LeaderboardManager.setScale(scale);
-            player.sendMessage("§aTaille des Holograms modifiée à " + scale);
+            player.sendMessage("§aTaille des hologrammes modifiée à " + scale);
         } catch (IOException e) {
-            player.sendMessage("§cErreur lors de la mise à jour de la taille des holograms: " + e.getMessage());
+            player.sendMessage("§cErreur lors de la mise à jour de la taille des hologrammes: " + e.getMessage());
         }
     }
 }

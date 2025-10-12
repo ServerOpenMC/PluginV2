@@ -81,17 +81,17 @@ public class ColorUtils {
     private static final Map<NamedTextColor, String> colorToName = new HashMap<>();
     static {
         colorToName.put(BLACK, "§0Noir");
-        colorToName.put(DARK_BLUE, "§1Bleu Foncé");
-        colorToName.put(DARK_GREEN, "§2Vert Foncé");
-        colorToName.put(DARK_AQUA, "§3Aqua Foncé");
-        colorToName.put(DARK_RED, "§4Rouge Foncé");
+        colorToName.put(DARK_BLUE, "§1Bleu foncé");
+        colorToName.put(DARK_GREEN, "§2Vert foncé");
+        colorToName.put(DARK_AQUA, "§3Aqua foncé");
+        colorToName.put(DARK_RED, "§4Rouge foncé");
         colorToName.put(DARK_PURPLE, "§5Violet");
         colorToName.put(GOLD, "§6Orange");
         colorToName.put(GRAY, "§7Gris");
-        colorToName.put(DARK_GRAY, "§8Gris Foncé");
+        colorToName.put(DARK_GRAY, "§8Gris foncé");
         colorToName.put(BLUE, "§9Bleu");
-        colorToName.put(GREEN, "§aVert Clair");
-        colorToName.put(AQUA, "§bBleu Clair");
+        colorToName.put(GREEN, "§aVert clair");
+        colorToName.put(AQUA, "§bBleu clair");
         colorToName.put(RED, "§cRouge");
         colorToName.put(LIGHT_PURPLE, "§dRose");
         colorToName.put(YELLOW, "§eJaune");
@@ -99,7 +99,7 @@ public class ColorUtils {
     }
 
     /**
-     * Retourne un String qui contient la couleur rentré
+     * Retourne un String qui contient la couleur entrée
      */
     public static String getNameFromColor(NamedTextColor c) {
         return colorToName.getOrDefault(c, "Aucun");

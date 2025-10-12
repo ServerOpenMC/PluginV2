@@ -15,7 +15,7 @@ import java.util.List;
 public class ConsumeKebabQuest extends Quest implements Listener {
 
     public ConsumeKebabQuest() {
-        super("Miam Miam", List.of("Manger {target} kebab{s}"), CustomItemRegistry.getByName("omc_foods:kebab").getBest());
+        super("Miam miam", List.of("Manger {target} kebab{s}"), CustomItemRegistry.getByName("omc_foods:kebab").getBest());
 
         this.addTiers(
                 new QuestTier(10, new QuestMoneyReward(30)),

@@ -26,8 +26,9 @@ public class PlayerDeathListener implements Listener {
             MessagesManager.sendMessage(player, Component.text("Vous venez de mourrir avec §6" + getFormattedSimplifiedNumber(balance) + EconomyManager.getEconomyIcon() + "§f, vous avez perdu §6" + getFormattedSimplifiedNumber(balance * LOSS_MONEY) + EconomyManager.getEconomyIcon() + "\n§8*pensez à mettre votre argent dans la banque*"), Prefix.OPENMC, MessageType.INFO, false);
         }
         
-        if (event.deathMessage() == null) return;
-        MessagesManager.broadcastMessage(event.deathMessage().color(NamedTextColor.DARK_RED), Prefix.DEATH, MessageType.INFO);
+        Component deathMessage = event.deathMessage();
+        if (deathMessage == null) return;
+        MessagesManager.broadcastMessage(deathMessage.color(NamedTextColor.DARK_RED), Prefix.DEATH, MessageType.INFO);
         event.deathMessage(null);
     }
 }

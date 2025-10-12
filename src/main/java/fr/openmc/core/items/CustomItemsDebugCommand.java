@@ -11,7 +11,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @CommandPermission("omc.debug.customitems")
 public class CustomItemsDebugCommand {
     private void passTest(Player player, int test, boolean pass) {
-        player.sendMessage("Test " + test + ": " + (pass ? "§aPassé" : "§cÉchoué"));
+        player.sendMessage("Test " + test + ": " + (pass ? "§apassé" : "§céchoué"));
     }
 
     @Subcommand("is closebutton")
@@ -44,7 +44,7 @@ public class CustomItemsDebugCommand {
 
     @Subcommand("list")
     public void list(Player player) {
-        player.sendMessage("§eListe des custom items:");
+        player.sendMessage("§eListe des custom items :");
         for (String item : CustomItemRegistry.getNames()) {
             player.sendMessage("§e- " + item);
         }

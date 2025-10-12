@@ -190,7 +190,7 @@ public class ContestManager {
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                        §6§lCONTEST!§r §7 Les votes sont ouverts !§7
+                §6§lCONTEST !§r §7 Les votes sont ouverts !§7
                         §7
                         §8§o*on se retrouve au spawn pour pouvoir voter ou /contest...*
                         §7
@@ -224,9 +224,9 @@ public class ContestManager {
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                        §6§lCONTEST!§r §7Les contributions ont commencé!§7
-                        §7Echanger des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les
-                        §8§ovia la Borne des Contest ou /contest
+                §6§lCONTEST !§r §7Les contributions ont commencé!§7
+                §7Échangez des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les
+                §8§ovia la borne des contest ou /contest
                         §7
                         §8§m                                                     §r"""
         ));
@@ -257,15 +257,15 @@ public class ContestManager {
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                        §6§lCONTEST!§r §7Time over! §7
-                        §7Fin du Contest, retrouvez vos récompenses et le bilan de ce Contest
+                §6§lCONTEST !§r §7Time over ! §7
+                §7Fin du contest, retrouvez vos récompenses et le bilan de ce Contest
                         §7sous forme de livre
                         §8§o*/contest pour voir quand le prochain contest arrive*
                         §7
                         §8§m                                                     §r"""
         ));
-        Component messageMail = Component.text("Vous avez reçu la lettre du Contest", NamedTextColor.DARK_GREEN)
-                .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
+        Component messageMail = Component.text("Vous avez reçu la lettre du contest", NamedTextColor.DARK_GREEN)
+                .append(Component.text("\nCliquez ici", NamedTextColor.YELLOW))
                 .clickEvent(getRunCommand("mail"))
                 .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
                 .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
@@ -282,8 +282,8 @@ public class ContestManager {
         // Create part of the book
         ItemStack baseBook = new ItemStack(Material.WRITTEN_BOOK);
         BookMeta baseBookMeta = (BookMeta) baseBook.getItemMeta();
-        baseBookMeta.setTitle("Les Résultats du Contest");
-        baseBookMeta.setAuthor("Les Contest");
+        baseBookMeta.setTitle("Les Résultats du contest");
+        baseBookMeta.setAuthor("Les contests");
 
         List<Component> lore = Arrays.asList(
                 Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1)
@@ -354,26 +354,26 @@ public class ContestManager {
         }
 
         baseBookMeta.addPages(
-                Component.text("§8§lStatistiques Globales \n§0Gagnant : ")
+                Component.text("§8§lStatistiques globales \n§0Gagnant : ")
                         .append(Component.text(campWinner).decoration(TextDecoration.ITALIC, false).color(colorWinner))
-                        .append(Component.text("\n§0Taux de Vote : §8"))
+                        .append(Component.text("\n§0Taux de vote : §8"))
                         .append(Component.text(voteWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Taux de Points : §8"))
+                        .append(Component.text("\n§0Taux de points : §8"))
                         .append(Component.text(pointsWinnerTaux + "%").decoration(TextDecoration.ITALIC, false))
                         .append(Component.text( "\n\n§0Perdant : "))
                         .append(Component.text(campLooser).decoration(TextDecoration.ITALIC, false).color(colorLooser))
-                        .append(Component.text("\n§0Taux de Vote : §8"))
+                        .append(Component.text("\n§0Taux de vote : §8"))
                         .append(Component.text(voteLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Taux de Points : §8"))
+                        .append(Component.text("\n§0Taux de points : §8"))
                         .append(Component.text(pointsLooserTaux + "%").decoration(TextDecoration.ITALIC, false))
-                        .append(Component.text("\n§0Multiplicateur d'Infériorité : §bx"))
+                        .append(Component.text("\n§0Multiplicateur d'infériorité : §bx"))
                         .append(Component.text(multiplicateurPoint).decoration(TextDecoration.ITALIC, false).color(NamedTextColor.AQUA))
-                        .append(Component.text("\n§8§oProchaine page : Classement des 10 Meilleurs Contributeur"))
+                        .append(Component.text("\n§8§oProchaine page : classement des 10 meilleurs contributeurs"))
         );
 
 
         // 2EME PAGE - LES CLASSEMENTS
-        final Component[] leaderboard = {Component.text("§8§lLe Classement du Contest (Jusqu'au 10eme)")};
+        final Component[] leaderboard = {Component.text("§8§lLe classement du contest (jusqu'au 10ème)")};
 
         Map<UUID, ContestPlayer> orderedMap = dataPlayer.entrySet()
                 .stream()
@@ -419,17 +419,16 @@ public class ContestManager {
 
             String playerCampName = data.get("camp" + dataPlayer1.getCamp());
             NamedTextColor playerCampColor = ColorUtils.getReadableColor(dataPlayer1.getColor());
-            String playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) + playerCampName;
-            // ex                                                             Novice en + Moutarde
+            String playerTitleContest = ContestPlayerManager.getTitleWithPoints(points) + playerCampName; // ex. Novice en + Moutarde
 
             bookMetaPlayer.addPages(
-                    Component.text("§8§lStatistiques Personnelles\n§0Votre camp : ")
+                    Component.text("§8§lStatistiques personnelles\n§0Votre camp : ")
                             .append(Component.text(playerCampName).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
-                            .append(Component.text("\n§0Votre Titre sur Le Contest §8: "))
+                            .append(Component.text("\n§0Votre titre sur le contest §8: "))
                             .append(Component.text(playerTitleContest).decoration(TextDecoration.ITALIC, false).color(playerCampColor))
-                            .append(Component.text("\n§0Votre Rang sur Le Contest : §8#"))
+                            .append(Component.text("\n§0Votre rang sur le contest : §8#"))
                             .append(Component.text(rank.get()))
-                            .append(Component.text("\n§0Points Déposés : §b" + points))
+                            .append(Component.text("\n§0Points déposés : §b" + points))
             );
 
             List<ItemStack> itemListRewards = new ArrayList<>();

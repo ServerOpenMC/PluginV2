@@ -98,7 +98,7 @@ public class Page1 implements Menu {
         milestonesItem.editMeta(meta -> {
             meta.setItemModel(NamespacedKey.minecraft("air"));
             meta.itemName(Component.text("Milestones", NamedTextColor.YELLOW));
-            meta.lore(List.of(Component.text("Découvrez les features dans des routes de progressions!", NamedTextColor.WHITE),
+            meta.lore(List.of(Component.text("Découvrez les features dans des routes de progressions !", NamedTextColor.WHITE),
                     Component.text("/milestones", NamedTextColor.DARK_GRAY)));
         });
         MILESTONES_SLOTS.forEach(slot -> content.put(slot, milestonesItem));

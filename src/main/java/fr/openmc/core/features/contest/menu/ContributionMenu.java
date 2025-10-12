@@ -36,7 +36,7 @@ public class ContributionMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Contests - Contribution";
+        return "Menu des Contests - Contributions";
     }
 
     @Override
@@ -64,23 +64,23 @@ public class ContributionMenu extends Menu {
         Material m = ColorUtils.getMaterialFromColor(campColor);
 
         List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les Contest !"),
-                Component.text("§7Le déroulement..., Les résultats, ..."),
+                Component.text("§7Apprenez en plus sur les contests !"),
+                Component.text("§7Le déroulement, Les résultats, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
         List<Component> loreContribute = Arrays.asList(
-                Component.text("§7Donner vos §bCoquillages de Contest"),
-                Component.text("§7Pour faire gagner votre ")
+                Component.text("§7Donner vos §bcoquillages de contest"),
+                Component.text("§7Pour faire gagner ta ")
                         .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
-                Component.text("§e§lCliquez pour verser tout vos Coquillages")
+                Component.text("§e§lCliquez pour verser tout vos coquillages")
         );
 
         List<Component> loreTrade = Arrays.asList(
-                Component.text("§7Faites des Trades contre des §bCoquillages de Contest"),
+                Component.text("§7Faites des échanges contre des §bcoquillages de contest"),
                 Component.text("§7Utile pour faire gagner ta ")
                         .append(Component.text("Team").decoration(TextDecoration.ITALIC, false).color(campColor)),
-                Component.text("§e§lCliquez pour acceder au Menu des trades")
+                Component.text("§e§lCliquez pour acceder au menu des échanges")
         );
 
         List<Component> loreRang = Arrays.asList(
@@ -96,12 +96,12 @@ public class ContributionMenu extends Menu {
         ItemStack shellContest = CustomItemRegistry.getByName(namespaceShellContest).getBest();
 
         inventory.put(8, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-            itemMeta.displayName(Component.text("§6§lVotre Titre"));
+            itemMeta.displayName(Component.text("§6§lVotre titre"));
             itemMeta.lore(loreRang);
         }));
 
         inventory.put(11, new ItemBuilder(this, shellContest, itemMeta -> {
-            itemMeta.displayName(Component.text("§7Les Trades"));
+            itemMeta.displayName(Component.text("§7Les échanges"));
             itemMeta.lore(loreTrade);
         }).setOnClick(inventoryClickEvent -> new TradeMenu(getOwner()).open()));
 
@@ -110,7 +110,7 @@ public class ContributionMenu extends Menu {
             itemMeta.lore(loreContribute);
         }).setOnClick(inventoryClickEvent -> {
             if (!ItemsAdderHook.isHasItemAdder()) {
-                MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloqué. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, Component.text("§cFonctionnalité bloquée. Veuillez contactez l'administration"), Prefix.CONTEST, MessageType.ERROR, true);
                 return;
             }
 
@@ -131,10 +131,10 @@ public class ContributionMenu extends Menu {
                     } else if (Objects.equals(pointCamp, "points2")) {
                         ContestManager.data.setPoints2(updatedCampPoints);
                     }
-
-                    MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " Coquillage(s) de Contest§7 pour votre Team!"), Prefix.CONTEST, MessageType.SUCCESS, true);
+                    
+                    MessagesManager.sendMessage(getOwner(), Component.text("§7Vous avez déposé§b " + shellCount + " coquillage(s) de contest§7 pour votre team !"), Prefix.CONTEST, MessageType.SUCCESS, true);
                 } else {
-                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de Coquillage(s) de Contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
+                    MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas de coquillage de contest§7"), Prefix.CONTEST, MessageType.ERROR, true);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);

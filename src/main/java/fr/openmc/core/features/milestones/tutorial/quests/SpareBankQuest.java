@@ -42,7 +42,7 @@ public class SpareBankQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §bBanques§f peuvent stocker une quantité infinie d'argent et protègent celui-ci si vous mourrez ! " +
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les §bbanques§f peuvent stocker une quantité infinie d'argent et protègent celui-ci si vous mourrez ! " +
                                 "Personnalisons maintenant l'expérience de jeu grâce aux paramètres !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS

@@ -11,9 +11,9 @@ public class TutorialHologram extends Hologram {
         this.setLines(
                 "§f" + new FontImageWrapper("omc_icons:openmc").getString(),
                 "§fBienvenue sur §dOpenMC V2§f!",
-                "§fCette version est basée sur les §2Villes",
+                "§fCette version est basée sur les §2villes",
                 "§f",
-                "§fPour acceder au tutoriel, utilisez la commande §a/milestones§f.",
+                "§fPour accéder au tutoriel, utilisez la commande §a/milestones§f.",
                 "§fC'est votre §dserveur §f!",
                 "§8§m                                  §r",
                 "§fLiens utiles : §5/socials"

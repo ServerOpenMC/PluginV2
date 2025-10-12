@@ -1,6 +1,8 @@
 package fr.openmc.core.features.tickets;
 
-import dev.lone.itemsadder.api.Events.*;
+import dev.lone.itemsadder.api.Events.FurnitureBreakEvent;
+import dev.lone.itemsadder.api.Events.FurnitureInteractEvent;
+import dev.lone.itemsadder.api.Events.FurniturePlacedEvent;
 import fr.openmc.core.features.displays.holograms.Hologram;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.tickets.menus.MachineBallsMenu;
@@ -58,7 +60,7 @@ public class TicketListener implements Listener {
         hologram.setLocation(hologramLocation.getX(), hologramLocation.getY(), hologramLocation.getZ());
         hologram.setScale(0.7f);
         hologram.setLines(
-                "§6§lMachine à Boules V1",
+                "§6§lMachine à boules V1",
                 "§eCliquez pour jouer !",
                 "§bBonne chance !"
         );

@@ -17,7 +17,7 @@ public class KillSuperCreeperQuest extends Quest implements Listener {
 
     public KillSuperCreeperQuest() {
         super(
-                "Le Boss des Creepers",
+                "Le boss des creepers",
                 List.of("Tuer {target} creepers super chargés"),
                 Material.CREEPER_HEAD
         );

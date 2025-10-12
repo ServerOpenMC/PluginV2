@@ -24,10 +24,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.UUID;
 
-public class JoinMessageListener implements Listener {
+public class JoinQuitMessageListener implements Listener {
     private final double balanceOnJoin;
-
-    public JoinMessageListener() {
+    
+    public JoinQuitMessageListener() {
         this.balanceOnJoin = OMCPlugin.getInstance().getConfig().getDouble("money-on-first-join", 500D);
     }
 
