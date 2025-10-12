@@ -10,18 +10,17 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
 
 @Getter
 public class SenderLetter extends ItemStack {
-    private final UUID uniqueId;
+    private final int id;
 
-    public SenderLetter(OfflinePlayer player, UUID uniqueId, int itemsCount, LocalDateTime sentAt, boolean refused) {
+    public SenderLetter(OfflinePlayer player, int id, int itemsCount, LocalDateTime sentAt, boolean refused) {
         super(Material.PLAYER_HEAD, 1);
-        this.uniqueId = uniqueId;
+        this.id = id;
         SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
         skullMeta.setOwningPlayer(player);
         skullMeta.displayName(getStatus(refused));

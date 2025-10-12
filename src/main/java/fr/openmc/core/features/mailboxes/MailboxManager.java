@@ -39,12 +39,13 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 public class MailboxManager {
 
     private static Dao<Letter, Integer> letterDao;
-    private static final int MAX_STACKS_PER_LETTER = 27;
 
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, Letter.class);
         letterDao = DaoManager.createDao(connectionSource, Letter.class);
     }
+
+    private static final int MAX_STACKS_PER_LETTER = 27;
 
     public static boolean sendItems(Player sender, OfflinePlayer receiver, ItemStack[] items) {
         if (!canSend(sender, receiver)) return false;
@@ -69,14 +70,14 @@ public class MailboxManager {
             Letter letter = new Letter(sender.getUniqueId(), receiver.getUniqueId(), itemsBytes, numItems, Timestamp.valueOf(sent), false);
             if (letterDao.create(letter) == 0) return false;
 
-            UUID uniqueId = letter.getUniqueId();
+            int id = letter.getId();
             Player receiverPlayer = receiver.getPlayer();
             if (receiverPlayer != null) {
                 if (MailboxMenuManager.playerInventories.get(receiverPlayer) instanceof PlayerMailbox receiverMailbox) {
-                    LetterHead letterHead = new LetterHead(sender, uniqueId, numItems, sent);
+                    LetterHead letterHead = new LetterHead(sender, numItems, id, sent);
                     receiverMailbox.addLetter(letterHead);
                 } else {
-                    sendNotification(receiverPlayer, uniqueId, numItems, sender.getName());
+                    sendNotification(receiverPlayer, numItems, id, sender.getName());
                 }
             }
 
@@ -220,7 +221,7 @@ public class MailboxManager {
         return settings.canPerformAction(SettingType.MAILBOX_RECEIVE_POLICY, sender.getUniqueId());
     }
 
-    private static void sendNotification(Player receiver, UUID id, int numItems, String name) {
+    private static void sendNotification(Player receiver, int numItems, int id, String name) {
         Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
                 .append(Component.text(numItems, NamedTextColor.GREEN))
                 .append(Component.text(" item" + (numItems > 1 ? "s" : "") + " de la part de ",

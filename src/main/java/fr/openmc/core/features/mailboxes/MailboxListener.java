@@ -32,6 +32,46 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 public class MailboxListener implements Listener {
     private final OMCPlugin plugin = OMCPlugin.getInstance();
 
+    /*
+    public MailboxListener() {
+        final int DELAY = 1; // in minutes
+        BukkitRunnable runnable = new BukkitRunnable() {
+            int i = 0;
+
+            @Override
+            public void run() {
+                showBossBar(i++);
+            }
+        };
+        runnable.runTaskTimer(plugin, DELAY, DELAY * 60L * 20L);
+    }
+
+    public void showBossBar(int i) {
+        BossBar bossBar = BossBar.bossBar(getBossBarTitle(i), 1, BossBar.Color.GREEN, BossBar.Overlay.NOTCHED_10);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.showBossBar(bossBar);
+        }
+        new BukkitRunnable() {
+            int j = 1;
+
+            @Override
+            public void run() {
+                bossBar.progress(1.0F - j++ * 0.1F);
+                if (j > 10) {
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        player.hideBossBar(bossBar);
+                    }
+                    cancel();
+                }
+            }
+        }.runTaskTimer(plugin, 10L, 10L);
+    }
+
+    public Component getBossBarTitle(int i) {
+        return Component.text("Envoi de lettre " + i, NamedTextColor.GOLD);
+    }
+    */
+
     @EventHandler
     public void onInventoryOpen(InventoryCloseEvent event) {
         InventoryHolder holder = event.getInventory().getHolder(false);
@@ -92,8 +132,10 @@ public class MailboxListener implements Listener {
             if (!event.isShiftClick())
                 return;
 
-            if (holder instanceof SendingLetter sendingLetter && sendingLetter.noSpace(item)) {
-                event.setCancelled(true);
+            if (holder instanceof SendingLetter sendingLetter) {
+                if (sendingLetter.noSpace(item)) {
+                    event.setCancelled(true);
+                }
             } else if (holder instanceof MailboxInv) {
                 event.setCancelled(true);
             }
@@ -101,8 +143,10 @@ public class MailboxListener implements Listener {
             return;
         }
 
-        if (holder instanceof SendingLetter && (row < 1 || row > 3)) {
-            event.setCancelled(true);
+        if (holder instanceof SendingLetter) {
+            if (row < 1 || row > 3) {
+                event.setCancelled(true);
+            }
         } else if (holder instanceof MailboxInv)
             event.setCancelled(true);
 

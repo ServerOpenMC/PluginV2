@@ -20,8 +20,8 @@ import java.util.UUID;
 @Getter
 @DatabaseTable(tableName = "mail")
 public class Letter {
-    @DatabaseField(id = true, canBeNull = false)
-    private UUID uniqueId;
+    @DatabaseField(generatedId = true)
+    private int id;
     @DatabaseField(canBeNull = false)
     private UUID sender;
     @DatabaseField(canBeNull = false)
@@ -40,7 +40,6 @@ public class Letter {
     }
 
     Letter(UUID sender, UUID receiver, byte[] items, int numItems, Timestamp sent, boolean refused) {
-        this.uniqueId = UUID.randomUUID();
         this.sender = sender;
         this.receiver = receiver;
         this.items = items;
@@ -57,14 +56,14 @@ public class Letter {
     public LetterHead toLetterHead() {
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
         ItemStack[] items = BukkitSerializer.deserializeItemStacks(this.items);
-        return new LetterHead(player, uniqueId, numItems,
+        return new LetterHead(player, id, numItems,
                 LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), items);
     }
 
     public SenderLetter toSenderLetter() {
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
 
-        return new SenderLetter(player, uniqueId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
+        return new SenderLetter(player, id, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
                 refused);
     }
 }

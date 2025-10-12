@@ -13,7 +13,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.UUID;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getPlayerName;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
@@ -21,13 +20,13 @@ import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
 
 @Getter
 public class LetterHead extends ItemStack {
-    private final UUID uniqueId;
+    private final int id;
     private final int itemsCount;
     private final ItemStack[] items;
 
-    public LetterHead(OfflinePlayer player, UUID uniqueId, int itemsCount, LocalDateTime sentAt, ItemStack[] items) {
+    public LetterHead(OfflinePlayer player, int id, int itemsCount, LocalDateTime sentAt, ItemStack[] items) {
         super(Material.PLAYER_HEAD, 1);
-        this.uniqueId = uniqueId;
+        this.id = id;
         this.itemsCount = itemsCount;
         this.items = items;
         SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
@@ -44,8 +43,8 @@ public class LetterHead extends ItemStack {
         this.setItemMeta(skullMeta);
     }
 
-    public LetterHead(OfflinePlayer player, UUID uniqueId, int itemsCount, LocalDateTime sentAt) {
-        this(player, uniqueId, itemsCount, sentAt, null);
+    public LetterHead(OfflinePlayer player, int id, int itemsCount, LocalDateTime sentAt) {
+        this(player, id, itemsCount, sentAt, null);
     }
 
     public void openLetter(Player player) {
