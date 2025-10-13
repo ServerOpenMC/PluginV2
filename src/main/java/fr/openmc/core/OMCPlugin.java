@@ -141,7 +141,7 @@ public class OMCPlugin extends JavaPlugin {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
-        if (! OMCPlugin.isUnitTestVersion()) {
+        if (!OMCPlugin.isUnitTestVersion()) {
             new LeaderboardManager();
             new MainMenu(this);
             new HologramLoader();
