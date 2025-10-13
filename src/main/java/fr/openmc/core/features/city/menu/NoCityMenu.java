@@ -95,7 +95,7 @@ public class NoCityMenu extends Menu {
                             Component.text("§7Vous pouvez aussi créer §dvotre Ville"),
                             Component.text("§7Faites §d/city create <name> §7ou bien cliquez ici !"),
                             Component.empty(),
-		                    Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " seconde(s) §7avant de pouvoir créer une ville")
+		                    Component.text("§7Vous devez attendre §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(player.getUniqueId(), "city:big")) + " §7avant de pouvoir créer une ville")
                     );
                 } else {
                     loreCreate = List.of(

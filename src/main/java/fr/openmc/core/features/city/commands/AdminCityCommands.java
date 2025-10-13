@@ -136,7 +136,7 @@ public class AdminCityCommands {
 
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
-    void setOwner(Player player, @Named("name") String name, @Named("new_owner") Player newOwner) {
+    void setOwner(Player player, @Named("name") String name, @Named("nouveau propriétaire") Player newOwner) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {

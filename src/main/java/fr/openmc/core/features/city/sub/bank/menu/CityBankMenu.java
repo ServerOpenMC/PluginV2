@@ -93,7 +93,7 @@ public class CityBankMenu extends Menu {
 	            itemMeta.itemName(Component.text("§6L'argent de votre ville"));
                 itemMeta.lore(List.of(
                                 Component.text("§7La ville a actuellement §d" + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
-		                Component.text("§7Votre prochain intérêt est de §b" + city.calculateCityInterest() * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()) + "§7 seconde(s)")
+		                Component.text("§7Votre prochain intérêt est de §b" + city.calculateCityInterest() * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
                         )
                 );
             });

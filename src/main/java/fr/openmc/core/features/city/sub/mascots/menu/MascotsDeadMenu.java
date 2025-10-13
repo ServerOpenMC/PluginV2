@@ -70,7 +70,7 @@ public class MascotsDeadMenu extends Menu {
                 itemMeta.lore(List.of(
                         Component.text("§7Votre §cmascotte est morte§7, vous pouvez faire réduire le temps de réanimation"),
                         Component.text("§7qui est actuellement de :"),
-		                Component.text("§8 - §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity")) + "%7 seconde(s)"),
+		                Component.text("§8 - §c" + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(cityUUID, "city:immunity"))),
                         Component.text("§7Pour réduire le temps de 1 heure, vous devez posséder de :"),
                         Component.text("§8- §d" + AYWENITE_REDUCE + " d'Aywenite"),
                         Component.empty(),
