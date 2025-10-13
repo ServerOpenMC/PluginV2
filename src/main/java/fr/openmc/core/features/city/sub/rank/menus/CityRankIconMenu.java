@@ -125,7 +125,7 @@ public class CityRankIconMenu extends PaginatedMenu {
 			});
 		}));
 		
-		if (filter != null && ! filter.isEmpty()) {
+		if (filter != null && !filter.isEmpty()) {
 			map.put(53, new ItemBuilder(this, Material.PAPER, itemMeta -> {
 				itemMeta.displayName(Component.text("§cEffacer le filtre"));
 				itemMeta.lore(List.of(Component.text("§e§lCLIQUEZ POUR EFFACER LE FILTRE")));
@@ -168,10 +168,10 @@ public class CityRankIconMenu extends PaginatedMenu {
 	private List<Material> getFilteredMaterials() {
 		World world = getOwner().getWorld();
 		return Arrays.stream(Material.values())
-				.filter(material -> ! material.isLegacy())
+				.filter(material -> !material.isLegacy())
 				.filter(Material::isItem)
-				.filter(material -> ! excludedMaterials.contains(material))
-				.filter(material -> ! material.name().contains("SPAWN_EGG"))
+				.filter(material -> !excludedMaterials.contains(material))
+				.filter(material -> !material.name().contains("SPAWN_EGG"))
 				.filter(material -> filter == null || material.name().toLowerCase().startsWith(filter.toLowerCase()))
 				.toList();
 	}

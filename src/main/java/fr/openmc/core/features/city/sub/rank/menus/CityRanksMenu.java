@@ -57,7 +57,7 @@ public class CityRanksMenu extends Menu {
 		boolean canAssignRanks = city.hasPermission(player.getUniqueId(), CityPermission.ASSIGN_RANKS);
 		
 		Set<DBCityRank> cityRanks = city.getRanks();
-		if (! cityRanks.isEmpty()) {
+		if (!cityRanks.isEmpty()) {
 			int i = 0;
 			for (DBCityRank rank : cityRanks) {
 				String rankName = rank.getName();

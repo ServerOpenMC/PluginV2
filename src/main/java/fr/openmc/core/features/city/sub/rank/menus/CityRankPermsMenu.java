@@ -58,7 +58,7 @@ public class CityRankPermsMenu extends PaginatedMenu {
 	public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
 		
-		if (! this.canEdit) {
+		if (!this.canEdit) {
 			MessagesManager.sendMessage(getOwner(), Component.text("§cVous n'avez pas la permission de modifier les permissions"), Prefix.CITY, MessageType.ERROR, false);
 			getOwner().closeInventory();
 			return null;
