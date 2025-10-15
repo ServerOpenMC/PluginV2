@@ -190,7 +190,7 @@ public class ContestManager {
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                §6§lCONTEST !§r §7 Les votes sont ouverts !§7
+                        §6§lCONTEST !§r §7 Les votes sont ouverts !§7
                         §7
                         §8§o*on se retrouve au spawn pour pouvoir voter ou /contest...*
                         §7
@@ -224,9 +224,9 @@ public class ContestManager {
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                §6§lCONTEST !§r §7Les contributions ont commencé!§7
-                §7Échangez des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les
-                §8§ovia la borne des contest ou /contest
+                        §6§lCONTEST !§r §7Les contributions ont commencé!§7
+                        §7Échangez des ressources contre des Coquillages de Contest. Récoltez en un max et déposez les
+                        §8§ovia la borne des contest ou /contest
                         §7
                         §8§m                                                     §r"""
         ));
@@ -257,8 +257,8 @@ public class ContestManager {
         Bukkit.broadcast(Component.text("""
                         §8§m                                                     §r
                         §7
-                §6§lCONTEST !§r §7Time over ! §7
-                §7Fin du contest, retrouvez vos récompenses et le bilan de ce Contest
+                        §6§lCONTEST !§r §7Time over ! §7
+                        §7Fin du contest, retrouvez vos récompenses et le bilan de ce Contest
                         §7sous forme de livre
                         §8§o*/contest pour voir quand le prochain contest arrive*
                         §7
