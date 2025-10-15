@@ -561,6 +561,8 @@ public class ContestManager {
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (data.getPhase() != 1) return;
+
             ContestManager.initPhase1();
             scheduleStartContest();
         }, delayInTicks);
@@ -577,6 +579,8 @@ public class ContestManager {
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (data.getPhase() != 2) return;
+
             ContestManager.initPhase2();
             scheduleStartTradeContest();
         }, delayInTicks);
@@ -593,6 +597,8 @@ public class ContestManager {
         }
 
         Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
+            if (data.getPhase() != 3) return;
+
             ContestManager.initPhase3();
             scheduleEndContest();
         }, delayInTicks);

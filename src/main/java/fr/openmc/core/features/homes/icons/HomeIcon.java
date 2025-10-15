@@ -1,14 +1,11 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.core.items.CustomItemRegistry;
-import io.papermc.paper.datacomponent.DataComponentType;
-import io.papermc.paper.datacomponent.DataComponentTypes;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -64,29 +61,6 @@ public record HomeIcon(String id, String displayName, IconType type, String mate
                 return new ItemStack(Material.GRASS_BLOCK);
         }
     }
-
-    public static DataComponentType[] getDataComponentTypes() {
-        return new DataComponentType[] {
-                DataComponentTypes.CONSUMABLE,
-                DataComponentTypes.FOOD,
-                DataComponentTypes.BUNDLE_CONTENTS,
-                DataComponentTypes.ENCHANTMENTS,
-                DataComponentTypes.DAMAGE,
-                DataComponentTypes.DAMAGE_RESISTANT,
-                DataComponentTypes.UNBREAKABLE,
-                DataComponentTypes.ATTRIBUTE_MODIFIERS,
-                DataComponentTypes.TRIM,
-                DataComponentTypes.PROVIDES_TRIM_MATERIAL,
-                DataComponentTypes.JUKEBOX_PLAYABLE,
-                DataComponentTypes.FIREWORKS,
-                DataComponentTypes.FIREWORK_EXPLOSION,
-                DataComponentTypes.POTION_CONTENTS,
-                DataComponentTypes.POTION_DURATION_SCALE,
-                DataComponentTypes.TOOLTIP_DISPLAY,
-                DataComponentTypes.ITEM_NAME
-        };
-    }
-
     /**
      * Converts a material name to a readable format (e.g. "STONE_BRICKS" -> "Stone Bricks").
      *
