@@ -91,7 +91,7 @@ public class CityChangeAction {
         }
 
         if (!DynamicCooldownManager.isReady(city.getUniqueId(), "city:type")) {
-	        MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " seconde(s) avant de changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Vous devez attendre " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:type")) + " avant de changer de type de ville"), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
