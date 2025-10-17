@@ -25,7 +25,7 @@ public class CustomItemRegistry {
 
         /* Buttons */
         registerSimpleItem("_iainternal:icon_cancel", Material.DARK_OAK_DOOR, "Fermer");
-        registerSimpleItem("_iainternal:icon_back_orange", Material.ARROW, "Page précedente");
+        registerSimpleItem("_iainternal:icon_back_orange", Material.ARROW, "Page précédente");
         registerSimpleItem("_iainternal:icon_next_orange", Material.ARROW, "Page suivante");
         registerSimpleItem("_iainternal:icon_search", Material.SPYGLASS, "Rechercher");
         registerSimpleItem("omc_menus:accept_btn", Material.GREEN_CONCRETE, "Accepter");

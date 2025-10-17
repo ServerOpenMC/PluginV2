@@ -1,6 +1,7 @@
 package fr.openmc.core.features.homes.icons;
 
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeChangeIconMenu;
 import fr.openmc.core.features.homes.models.Home;
@@ -101,6 +102,6 @@ public class CachedIconItem {
                         HomeIconCacheManager.clearRenderedCache();
                     });
                     player.closeInventory();
-                }).hide(HomeIcon.getDataComponentTypes());
+                }).hide(ItemUtils.getDataComponentType());
     }
 }

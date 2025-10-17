@@ -1,6 +1,7 @@
 package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.core.features.tpa.TPAQueue;
+import fr.openmc.core.features.tpa.commands.autocomplete.TpaPendingAutoComplete;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Optional;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.Objects;
@@ -25,7 +27,7 @@ public class TPAcceptCommand {
 	 */
 	@Command("tpaccept")
 	@CommandPermission("omc.commands.tpa")
-	public void tpAccept(Player target, @Optional @Named("player") Player player) {
+	public void tpAccept(Player target, @Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player") Player player) {
 		if (!TPAQueue.hasPendingRequest(target)) {
 			MessagesManager.sendMessage(target, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;

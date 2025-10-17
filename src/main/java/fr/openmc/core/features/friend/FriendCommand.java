@@ -1,8 +1,11 @@
 package fr.openmc.core.features.friend;
 
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.friend.autocomplete.FriendsAutoComplete;
+import fr.openmc.core.features.friend.autocomplete.FriendsRequestAutoComplete;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
@@ -32,7 +35,7 @@ public class FriendCommand {
 
     @Subcommand("add")
     @Description("Envoyer une demande d'ami")
-    public void addCommand(Player player, Player target) {
+    public void addCommand(Player player, @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
         try {
             if (player.getUniqueId().equals(target.getUniqueId())) {
                 MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous ajouter vous-même en ami."), Prefix.FRIEND, MessageType.ERROR, true);
@@ -47,7 +50,7 @@ public class FriendCommand {
                 return;
             }
             if (FriendManager.areFriends(player.getUniqueId(), target.getUniqueId())) {
-                MessagesManager.sendMessage(player, Component.text("§cVous êtes déjà amis avec ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
+                MessagesManager.sendMessage(player, Component.text("§cVous êtes déjà ami de ce joueur."), Prefix.FRIEND, MessageType.ERROR, true);
                 return;
             }
             FriendManager.addRequest(player.getUniqueId(), target.getUniqueId());
@@ -55,7 +58,7 @@ public class FriendCommand {
 
             Component acceptButton = Component.text(" [Accepter]", NamedTextColor.GREEN)
                     .clickEvent(ClickEvent.runCommand("/friend accept " + player.getName()))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquer pour accepter la demande d'ami", NamedTextColor.GREEN)));
+                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour accepter la demande d'ami", NamedTextColor.GREEN)));
 
             Component ignoreButton = Component.text(" [Ignorer]", NamedTextColor.GRAY)
                     .clickEvent(ClickEvent.callback(audience -> {
@@ -66,11 +69,11 @@ public class FriendCommand {
                         FriendManager.removeRequest(FriendManager.getRequest(player.getUniqueId()));
                         MessagesManager.sendMessage(target, Component.text("§cVous avez ignoré la demande d'ami de §e" + player.getName() + "§c."), Prefix.FRIEND, MessageType.INFO, true);
                     }))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquer pour ignorer la demande d'ami", NamedTextColor.GRAY)));
+                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour ignorer la demande d'ami", NamedTextColor.GRAY)));
 
             Component denyButton = Component.text(" [Refuser]", NamedTextColor.RED)
                     .clickEvent(ClickEvent.runCommand("/friend deny " + player.getName()))
-                    .hoverEvent(HoverEvent.showText(Component.text("Cliquer pour refuser la demande d'ami", NamedTextColor.RED)));
+                    .hoverEvent(HoverEvent.showText(Component.text("Cliquez pour refuser la demande d'ami", NamedTextColor.RED)));
 
             MessagesManager.sendMessage(target, Component.text("§e" + player.getName() + " §avous a envoyé une demande d'ami.").append(acceptButton).append(ignoreButton).append(denyButton), Prefix.FRIEND, MessageType.INFO, true);
         } catch (Exception e) {
@@ -81,8 +84,7 @@ public class FriendCommand {
 
     @Subcommand("remove")
     @Description("Supprimer un ami de votre liste")
-    @AutoComplete("@friends *")
-    public void removeCommand(Player player, String targetName) {
+    public void removeCommand(Player player, @SuggestWith(FriendsAutoComplete.class) String targetName) {
         try {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if (!target.hasPlayedBefore()) {
@@ -153,17 +155,17 @@ public class FriendCommand {
                                     .color(isOnline ? NamedTextColor.GREEN : NamedTextColor.YELLOW)
                                     .decoration(TextDecoration.BOLD, isOnline))
                             .hoverEvent(HoverEvent.showText(
-                                    Component.text("§7Vile: §e" + (city != null ? city.getName() : "Aucune") +
-                                            "\n§7Argent: §e" + formattedMoney +
-                                            "\n§7Status: " + (isOnline ? "§aEn ligne" : "§cHors ligne")
+                                    Component.text("§7Vile : §e" + (city != null ? city.getName() : "Aucune") +
+                                            "\n§7Argent : §e" + formattedMoney +
+                                            "\n§7Statut : " + (isOnline ? "§aEn ligne" : "§cHors ligne")
                                     )))
                             ;
 
                     Component statusIcon = isOnline
                             ? Component.text(" ⬤ ").color(NamedTextColor.GREEN)
                             : Component.text(" ⬤ ").color(NamedTextColor.RED);
-
-                    Component dateInfo = Component.text("Depuis: " + formattedDate)
+                    
+                    Component dateInfo = Component.text("Depuis le " + formattedDate)
                             .color(NamedTextColor.GRAY);
 
                     Component actions = Component.text(" [✖]")
@@ -223,8 +225,7 @@ public class FriendCommand {
 
     @Subcommand("accept")
     @Description("Accepter une demande d'ami")
-    @AutoComplete("@friends-request *")
-    public void acceptCommand(Player player, String targetName) {
+    public void acceptCommand(Player player, @SuggestWith(FriendsRequestAutoComplete.class) String targetName) {
         try {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if (!target.hasPlayedBefore()) {
@@ -236,9 +237,9 @@ public class FriendCommand {
                 return;
             }
             FriendManager.addFriend(player.getUniqueId(), target.getUniqueId());
-            MessagesManager.sendMessage(player, Component.text("§aVous êtes désormais amis avec §e" + target.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
+            MessagesManager.sendMessage(player, Component.text("§aVous êtes désormais ami avec §e" + target.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
             if (target instanceof Player targetPlayer && targetPlayer.isOnline()) {
-                MessagesManager.sendMessage(targetPlayer, Component.text("§aVous êtes désormais amis avec §e"+ player.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
+                MessagesManager.sendMessage(targetPlayer, Component.text("§aVous êtes désormais ami avec §e" + player.getName() + "§a."), Prefix.FRIEND, MessageType.INFO, true);
             }
         } catch (Exception e) {
             MessagesManager.sendMessage(player, Component.text("§cUne erreur est survenue lors de l'acceptation de la demande d'ami."), Prefix.FRIEND, MessageType.ERROR, true);
@@ -248,8 +249,7 @@ public class FriendCommand {
 
     @Subcommand("deny")
     @Description("Refuser une demande d'ami")
-    @AutoComplete("@friends-request *")
-    public void denyCommand(Player player, String targetName) {
+    public void denyCommand(Player player, @SuggestWith(FriendsRequestAutoComplete.class) String targetName) {
         try {
             OfflinePlayer target = Bukkit.getOfflinePlayer(targetName);
             if (!target.hasPlayedBefore()) {

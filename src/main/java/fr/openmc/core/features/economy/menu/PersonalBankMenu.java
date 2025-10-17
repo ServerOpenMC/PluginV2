@@ -64,7 +64,7 @@ public class PersonalBankMenu extends Menu {
         );
 
         inventory.put(11, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer de l'§6Argent"));
+            itemMeta.itemName(Component.text("§7Déposer de l'§6argent"));
             itemMeta.lore(loreBankDeposit);
         }).setOnClick(inventoryClickEvent -> {
             new PersonalBankDepositMenu(player).open();
@@ -74,7 +74,7 @@ public class PersonalBankMenu extends Menu {
 
         if (playerCity == null) {
             MessagesManager.sendMessage(player,
-                    Component.text("Pour avoir une banque personnelle, vous devez appartenir à une ville niveau 2 minimum !"),
+                    Component.text("Pour avoir une banque personnelle, vous devez appartenir à une ville de niveau 2 minimum !"),
                     Prefix.BANK, MessageType.ERROR, false);
             return Map.of();
         }
@@ -91,7 +91,7 @@ public class PersonalBankMenu extends Menu {
                                     EconomyManager.getFormattedSimplifiedNumber(PlayerBankLimitRewards.getBankBalanceLimit(playerCity.getLevel())) + " ")
                             .append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.empty(),
-                Component.text("§7Votre prochain intéret est de §b" + BankManager.calculatePlayerInterest(player.getUniqueId())*100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
+                    Component.text("§7Votre prochain intérêt est de §b" + BankManager.calculatePlayerInterest(player.getUniqueId()) * 100 + "% §7dans §b" + DateUtils.convertSecondToTime(BankManager.getSecondsUntilInterest()))
                 )
             );
             });
@@ -106,7 +106,7 @@ public class PersonalBankMenu extends Menu {
         );
 
         inventory.put(15, new ItemBuilder(this, Material.DISPENSER, itemMeta -> {
-            itemMeta.itemName(Component.text("§7Retirer de l'§6Argent"));
+            itemMeta.itemName(Component.text("§7Retirer de l'§6argent"));
             itemMeta.lore(loreBankTake);
         }).setOnClick(inventoryClickEvent -> {
             new PersonalBankWithdrawMenu(player).open();

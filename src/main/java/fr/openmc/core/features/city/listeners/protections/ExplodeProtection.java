@@ -121,7 +121,7 @@ public class ExplodeProtection implements Listener {
             if (member.isOnline()) {
                 MessagesManager.sendMessage(
                         (Player) member,
-                        Component.text("Vous vous êtes pris une TNT dans votre ville par la ville §4" + attackerCity.getName() + " §fet posé par §4" + attacker.getName() + "§f! §8(§c" + currentTnt + "§8/§c" + MAX_TNT_PER_DAY + " tnt journalière§8)"),
+		                Component.text("Vous vous êtes pris une TNT dans votre ville par la ville §4" + attackerCity.getName() + " §fet posée par §4" + attacker.getName() + "§f ! §8(§c" + currentTnt + "§8/§c" + MAX_TNT_PER_DAY + " tnt journalières§8)"),
                         Prefix.CITY,
                         MessageType.WARNING,
                         false

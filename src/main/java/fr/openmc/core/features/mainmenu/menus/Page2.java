@@ -172,7 +172,7 @@ public class Page2 implements Menu {
                 PacketListener.getEnabledAdvancements().add(nmsPlayer.getUUID());
                 Component message = Component.text("Appuyez sur la touche '").color(NamedTextColor.GREEN)
                         .append(Component.keybind("key.advancements").color(NamedTextColor.YELLOW))
-                        .append(Component.text("' pour ouvrir le menu des Avancements.", NamedTextColor.GREEN));
+                        .append(Component.text("' pour ouvrir le menu des avancements.", NamedTextColor.GREEN));
                 player.sendActionBar(message);
             });
         } else if (COMPANY_SLOTS.contains(slot) || SHOPS_SLOTS.contains(slot)) {

@@ -1,5 +1,8 @@
 package fr.openmc.core.features.contest.commands;
 
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
+import fr.openmc.core.features.contest.commands.autocomplete.ColorContestAutoComplete;
+import fr.openmc.core.features.contest.commands.autocomplete.TradeContestAutoComplete;
 import fr.openmc.core.features.contest.managers.ContestManager;
 import fr.openmc.core.features.contest.managers.ContestPlayerManager;
 import fr.openmc.core.features.contest.managers.TradeYMLManager;
@@ -23,7 +26,7 @@ import java.util.*;
 @Description("Ouvre l'interface des festivals, et quand un festival commence, vous pouvez choisir votre camp")
 public class ContestCommand {
     @Cooldown(4)
-    @DefaultFor("~")
+    @CommandPlaceholder()
     public static void mainCommand(Player player) {
         int phase = ContestManager.data.getPhase();
         if ((phase >= 2 && ContestManager.dataPlayer.get(player.getUniqueId()) == null) || (phase == 2)) {
@@ -63,8 +66,7 @@ public class ContestCommand {
     @Subcommand("setcontest")
     @Description("Permet de définir un Contest")
     @CommandPermission("omc.admin.commands.contest.setcontest")
-    @AutoComplete("@colorContest")
-    public void setContest(Player player, String camp1, @Named("colorContest") String color1, String camp2, @Named("colorContest") String color2) {
+    public void setContest(Player player, String camp1, @SuggestWith(ColorContestAutoComplete.class) String color1, String camp2, @SuggestWith(ColorContestAutoComplete.class) String color2) {
         int phase = ContestManager.data.getPhase();
         if (phase == 1) {
 	        // It is unique, but it is for performance reasons
@@ -83,9 +85,7 @@ public class ContestCommand {
 
     @Subcommand("settrade")
     @Description("Permet de définir un Trade")
-    @CommandPermission("omc.admin.commands.contest.settrade")
-    @AutoComplete("@trade")
-    public void setTrade(Player player, @Named("trade") String trade, int amount, int amountShell) {
+    public void setTrade(Player player, @SuggestWith(TradeContestAutoComplete.class) String trade, int amount, int amountShell) {
         YamlConfiguration config = TradeYMLManager.getContestConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
@@ -111,9 +111,9 @@ public class ContestCommand {
     @Subcommand("addpoints")
     @Description("Permet d'ajouter des points a un membre")
     @CommandPermission("omc.admin.commands.contest.addpoints")
-    public void addPoints(Player player, Player target, Integer points) {
+    public void addPoints(Player player, @SuggestWith(OnlinePlayerAutoComplete.class) Player target, Integer points) {
         if (ContestManager.data.getPhase()!=3) {
-            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le Contests n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
+            MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le contest n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
             return;
         }
 

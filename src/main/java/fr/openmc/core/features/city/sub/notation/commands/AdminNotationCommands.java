@@ -25,11 +25,11 @@ public class AdminNotationCommands {
     @Command({"admcity notation edit"})
     @CommandPermission("omc.admins.commands.admcity.notation")
     public void editNotations(Player sender) {
-        String exempleTip = "Exemple : cette semaine on est le " + DateUtils.getWeekFormat() + " et la semaine prochaine " + DateUtils.getNextWeekFormat();
+	    String exempleTip = "Exemple : cette semaine on est le " + DateUtils.getWeekFormat() + " et la semaine prochaine, le " + DateUtils.getNextWeekFormat();
         DialogInput.send(sender, Component.text("Entrer le format de la semaine (" + exempleTip + ")"),
                 7, weekStr -> {
                     if (weekStr == null || weekStr.isEmpty()) {
-                        MessagesManager.sendMessage(sender, Component.text("Sasie fausse ! " + exempleTip), Prefix.STAFF, MessageType.ERROR, false);
+	                    MessagesManager.sendMessage(sender, Component.text("Saisie fausse ! " + exempleTip), Prefix.STAFF, MessageType.ERROR, false);
                         return;
                     }
 
@@ -57,7 +57,7 @@ public class AdminNotationCommands {
         String weekStr = DateUtils.getWeekFormat();
 
         if (!NotationManager.notationPerWeek.containsKey(weekStr)) {
-            MessagesManager.sendMessage(sender, Component.text("Vous devez faire /admcity notation edit et éditez la semaine " + weekStr), Prefix.STAFF, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(sender, Component.text("Vous devez faire §6/admcity notation edit §ret éditer la semaine " + weekStr), Prefix.STAFF, MessageType.ERROR, false);
             return;
         }
 
@@ -68,8 +68,8 @@ public class AdminNotationCommands {
         }
 
         giveReward(weekStr);
-
-        MessagesManager.sendMessage(sender, Component.text("La semaine " + weekStr + " a été publié, les notes d'économies et d'activité ainsi que les gains ont été calculé et donné"), Prefix.STAFF, MessageType.ERROR, false);
+	    
+	    MessagesManager.sendMessage(sender, Component.text("La semaine " + weekStr + " a été publiée, les notes d'économies et d'activité ainsi que les gains ont été calculés et donnés"), Prefix.STAFF, MessageType.ERROR, false);
 
     }
 }

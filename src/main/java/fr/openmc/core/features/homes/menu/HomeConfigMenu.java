@@ -5,8 +5,8 @@ import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
@@ -59,12 +59,12 @@ public class HomeConfigMenu extends Menu {
         Map<Integer, ItemBuilder> content = new HashMap<>();
         Player player = getOwner();
 
-        content.put(4, new ItemBuilder(this, home.getIconItem()).hide(HomeIcon.getDataComponentTypes()));
+        content.put(4, new ItemBuilder(this, home.getIconItem()).hide(ItemUtils.getDataComponentType()));
 
         content.put(20, new ItemBuilder(this, home.getIcon().getItemStack(), itemMeta -> {
             itemMeta.displayName(Component.text("§aChanger l'icône"));
             itemMeta.lore(List.of(Component.text("§7■ §aClique §2gauche §apour changer l'icône de votre home")));
-        }).hide(HomeIcon.getDataComponentTypes()).setOnClick(inventoryClickEvent -> new HomeChangeIconMenu(player, home).open()));
+        }).hide(ItemUtils.getDataComponentType()).setOnClick(inventoryClickEvent -> new HomeChangeIconMenu(player, home).open()));
 
         content.put(22, new ItemBuilder(this, Material.NAME_TAG, itemMeta -> {
             itemMeta.displayName(Component.text("Changer le nom", NamedTextColor.GREEN).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));

@@ -41,7 +41,7 @@ public class MayorNpcMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Mandat du Maire";
+	    return "Menu des maires - Mandat du Maire";
     }
 
     @Override
@@ -78,10 +78,10 @@ public class MayorNpcMenu extends Menu {
                     Component.text("§8§oMaire de " + city.getName())
             ));
         loreMayor.add(Component.empty());
-        loreMayor.add(Component.text(perk2 == null ? "§cErreur de la Réforme" : perk2.getName()));
+	    loreMayor.add(Component.text(perk2 == null ? "§cErreur de la réforme" : perk2.getName()));
         loreMayor.addAll(perk2 == null ? List.of() : perk2.getLore());
         loreMayor.add(Component.empty());
-        loreMayor.add(Component.text(perk3 == null ? "§cErreur de la Réforme" : perk3.getName()));
+	    loreMayor.add(Component.text(perk3 == null ? "§cErreur de la réforme" : perk3.getName()));
         loreMayor.addAll(perk3 == null ? List.of() : perk3.getLore());
 
             inventory.put(4, new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWithPermission(CityPermission.OWNER)), itemMeta -> {
@@ -90,7 +90,7 @@ public class MayorNpcMenu extends Menu {
             }));
 
             ItemStack iaPerk2 = (perk2 != null) ? perk2.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme Vide";
+	    String namePerk2 = (perk2 != null) ? perk2.getName() : "§8Réforme vide";
             List<Component> lorePerk2 = (perk2 != null) ? new ArrayList<>(perk2.getLore()) : null;
         inventory.put(20, new ItemBuilder(this, iaPerk2, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk2));
@@ -98,7 +98,7 @@ public class MayorNpcMenu extends Menu {
         }).hide(perk2 == null ? null : perk2.getToHide()));
 
             ItemStack iaPerk3 = (perk3 != null) ? perk3.getItemStack() : ItemStack.of(Material.DEAD_BRAIN_CORAL_BLOCK);
-            String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme Vide";
+	    String namePerk3 = (perk3 != null) ? perk3.getName() : "§8Réforme vide";
             List<Component> lorePerk3 = (perk3 != null) ? new ArrayList<>(perk3.getLore()) : null;
         inventory.put(24, new ItemBuilder(this, iaPerk3, itemMeta -> {
                 itemMeta.customName(Component.text(namePerk3));
@@ -127,7 +127,7 @@ public class MayorNpcMenu extends Menu {
                             itemToGive,
                             "mayor:owner-npc-move",
                             300,
-                            "§7Vous avez 300s pour séléctionner votre emplacement",
+		                    "§7Vous avez 300s pour sélectionner votre emplacement",
                             "§7Vous n'avez pas eu le temps de déplacer votre NPC",
                             locationClick -> {
                                 if (locationClick == null) return true;

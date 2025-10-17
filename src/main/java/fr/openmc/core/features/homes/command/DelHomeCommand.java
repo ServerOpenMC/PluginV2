@@ -1,6 +1,7 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -9,9 +10,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -21,8 +22,7 @@ public class DelHomeCommand {
     @Command("delhome")
     @Description("Supprime un home")
     @CommandPermission("omc.commands.home.delhome")
-    @AutoComplete("@homes")
-    public void delHome(Player player, String name) {
+    public void delHome(Player player, @SuggestWith(HomeAutoComplete.class) String name) {
         if(player.hasPermission("omc.admin.homes.delhome.other") && name.contains(":")) {
             String[] split = name.split(":");
             String targetName = split[0];

@@ -8,7 +8,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.DefaultFor;
+import revxrsal.commands.annotation.CommandPlaceholder;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -21,7 +21,7 @@ import static fr.openmc.core.features.displays.scoreboards.ScoreboardManager.*;
 @Description("Active / désactive le scoreboard")
 public class ScoreboardCommand {
 
-    @DefaultFor("~")
+    @CommandPlaceholder()
     public void onScoreboardCommand(Player player) {
         UUID uuid = player.getUniqueId();
         if (disabledPlayers.contains(uuid)) {

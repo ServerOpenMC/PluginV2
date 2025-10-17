@@ -59,7 +59,7 @@ public class QuestsMenu extends Menu {
     }
 
     public @NotNull String getName() {
-        return "Menu des Quêtes";
+        return "Menu des quêtes";
     }
 
     @Override

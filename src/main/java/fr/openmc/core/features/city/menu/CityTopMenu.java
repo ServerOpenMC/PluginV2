@@ -103,7 +103,7 @@ public class CityTopMenu extends PaginatedMenu {
                 cityLore.add(Component.text("§7Richesses : §6"
                         + EconomyManager.getFormattedSimplifiedNumber(city.getBalance())
                         + EconomyManager.getEconomyIcon()));
-                cityLore.add(Component.text("§7Points de Puissances : §c" + city.getPowerPoints()));
+	            cityLore.add(Component.text("§7Points de puissances : §c" + city.getPowerPoints()));
 
                 int currentRank = rank.getAndIncrement();
 
@@ -152,7 +152,7 @@ public class CityTopMenu extends PaginatedMenu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Classement des Villes";
+	    return "Menu des classement des villes";
     }
 
     @Override

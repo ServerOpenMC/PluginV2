@@ -32,7 +32,7 @@ public enum TutorialStep {
     static {
         BREAK_AYWENITE.quest = new BreakAyweniteQuest();
         CITY_CREATE.quest = new CityCreateQuest();
-        CITY_LEVEL_2.quest = new CityLevel2Quest();
+        CITY_LEVEL_2.quest = new CityLevelTwoQuest();
         HOME_CREATE.quest = new HomeCreateQuest();
         HOME_UPGRADE.quest = new HomeUpgradeQuest();
         OPEN_QUEST.quest = new OpenQuestMenuQuest();

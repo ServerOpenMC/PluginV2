@@ -53,8 +53,6 @@ jobs:
             # Mise à jour ${{ github.event.milestone.title }}
             
             ${{ github.event.milestone.description }}
-            
-            Cette mise à jour à été créée automatiquement a la fermeture de la milsetone "${{ github.event.milestone.title }}".
           files: builds/**
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}

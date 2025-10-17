@@ -75,10 +75,10 @@ public class VoteMenu extends Menu {
         boolean ench2;
 
         ContestPlayer playerData = ContestManager.dataPlayer.get(player.getUniqueId());
-
-        String voteTeamMsg = "§7Votez pour la Team ";
+        
+        String voteTeamMsg = "§7Votez pour la team ";
         String winMsg = "§7Faites la gagner en déposant le plus de points";
-        String clickMsg = "§c§lATTENTION! Le choix est définitif!";
+        String clickMsg = "§c§lATTENTION ! Le choix est définitif!";
 
 
         if (playerData == null) {
@@ -114,31 +114,31 @@ public class VoteMenu extends Menu {
 
             } else if (playerData.getCamp() == 1) {
                 lore1.add(
-                        Component.text("§7Vous avez votez pour la Team ")
+                        Component.text("§7Vous avez votez pour la team ")
                                 .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
                 );
-                lore1.add(Component.text("§7Faites la gagner en déposant le plus de points!"));
+                lore1.add(Component.text("§7Faites la gagner en déposant le plus de points !"));
                 ench1 = true;
 
                 lore2.add(
-                        Component.text("§7Faites perdre la Team ")
+                        Component.text("§7Faites perdre la team ")
                                 .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2))
                 );
-                lore2.add(Component.text("§7En Apportant le plus de points que vous pouvez!"));
+                lore2.add(Component.text("§7En apportant le plus de points que vous pouvez !"));
                 ench2 = false;
             } else if (playerData.getCamp() == 2) {
                 lore1.add(
-                        Component.text("§7Faites perdre la Team ")
+                        Component.text("§7Faites perdre la team ")
                                 .append(Component.text(camp1Name).decoration(TextDecoration.ITALIC, false).color(color1))
                 );
-                lore1.add(Component.text("§7En Apportant le plus de points que vous pouvez!"));
+                lore1.add(Component.text("§7En apportant le plus de points que vous pouvez !"));
                 ench1 = false;
 
                 lore2.add(
-                        Component.text("§7Vous avez votez pour la Team ")
+                        Component.text("§7Vous avez votez pour la team ")
                                 .append(Component.text(camp2Name).decoration(TextDecoration.ITALIC, false).color(color2))
                 );
-                lore2.add(Component.text("§7Faites la gagner en déposant le plus de points!"));
+                lore2.add(Component.text("§7Faites la gagner en déposant le plus de points !"));
                 ench2 = true;
             } else {
                 ench1 = false;
@@ -147,8 +147,8 @@ public class VoteMenu extends Menu {
         }
 
         List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les Contest !"),
-                Component.text("§7Le déroulement..., Les résultats, ..."),
+                Component.text("§7Apprenez en plus sur les contests !"),
+                Component.text("§7Le déroulement, les résultats, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
@@ -166,12 +166,12 @@ public class VoteMenu extends Menu {
                 NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
                 List<Component> loreAccept = Arrays.asList(
                         Component.text("§7Vous allez rejoindre ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
-                        Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+                        Component.text("§c§lATTENTION ! Vous ne pourrez changer de choix !")
                 );
 
                 List<Component> loreDeny = Arrays.asList(
                         Component.text("§7Vous allez annuler votre choix : ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
-                        Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+                        Component.text("§c§lATTENTION ! Vous ne pourrez changer de choix !")
                 );
 
                 ConfirmMenu menu = new ConfirmMenu(
@@ -179,7 +179,7 @@ public class VoteMenu extends Menu {
                         () -> {
                             ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 1, colorFinal));
                             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
-                            MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
+                            MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
 
                             player.closeInventory();
                         },
@@ -209,12 +209,12 @@ public class VoteMenu extends Menu {
                 NamedTextColor colorFinal = ColorUtils.getNamedTextColor(campColor);
                 List<Component> loreAccept = Arrays.asList(
                         Component.text("§7Vous allez rejoindre ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
-                        Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+                        Component.text("§c§lATTENTION ! Vous ne pourrez changer de choix !")
                 );
 
                 List<Component> loreDeny = Arrays.asList(
                         Component.text("§7Vous allez annuler votre choix : ").append(Component.text(messageTeam + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)),
-                        Component.text("§c§lATTENTION! Vous ne pourrez changer de choix !")
+                        Component.text("§c§lATTENTION ! Vous ne pourrez changer de choix !")
                 );
 
                 ConfirmMenu menu = new ConfirmMenu(
@@ -222,7 +222,7 @@ public class VoteMenu extends Menu {
                         () -> {
                             ContestManager.dataPlayer.put(player.getUniqueId(), new ContestPlayer(player.getUniqueId(), 0, 1, colorFinal));
                             player.playSound(player.getEyeLocation(), Sound.BLOCK_AMETHYST_BLOCK_RESONATE, 1.0F, 0.2F);
-                            MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La Team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
+                            MessagesManager.sendMessage(player, Component.text("§7Vous avez bien rejoint : ").append(Component.text("La team " + campName).decoration(TextDecoration.ITALIC, false).color(colorFinal)), Prefix.CONTEST, MessageType.SUCCESS, false);
 
                             player.closeInventory();
                         },

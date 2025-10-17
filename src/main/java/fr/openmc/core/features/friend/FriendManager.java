@@ -1,7 +1,5 @@
 package fr.openmc.core.features.friend;
 
-import fr.openmc.core.CommandsManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
 import lombok.Getter;
 
 import java.sql.Timestamp;
@@ -15,26 +13,8 @@ public class FriendManager {
     // TODO: Configuration pour activer/désactiver les demandes d'amis (par défaut activé) & les messages de connexion/déconnexion
     // Config: accepter que les joueurs voient l'argent, la ville, le status (En ligne, Hors ligne), le temps de jeu, ou autre
 
-    @Getter private static final List<FriendRequest> friendsRequests = new ArrayList<>();
-
-    public static void initCommandSuggestion() {
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("friends", (args, sender, command) -> {
-            List<UUID> friendsUUIDs = getFriendsAsync(sender.getUniqueId()).join();
-            return friendsUUIDs.stream()
-                    .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
-                    .toList();
-        });
-
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("friends-request", (args, sender, command) -> {
-            List<UUID> requestUUIDs = friendsRequests.stream()
-                    .filter(request -> request.containsUUID(sender.getUniqueId()))
-                    .map(request -> request.getSenderUUID().equals(sender.getUniqueId()) ? request.getReceiverUUID() : request.getSenderUUID())
-                    .toList();
-            return requestUUIDs.stream()
-                    .map(uuid -> CacheOfflinePlayer.getOfflinePlayer(uuid).getName())
-                    .toList();
-        });
-    }
+    @Getter
+    public static final List<FriendRequest> friendsRequests = new ArrayList<>();
 
     public static CompletableFuture<List<UUID>> getFriendsAsync(UUID playerUUID) {
         return FriendSQLManager.getAllFriendsAsync(playerUUID);

@@ -38,7 +38,7 @@ public class TradeMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Contests - Trades";
+        return "Menu des Contests - Échanges";
     }
 
     @Override
@@ -67,20 +67,20 @@ public class TradeMenu extends Menu {
         ItemStack shellContest = CustomItemRegistry.getByName(SHELL_NAMESPACE).getBest();
 
         List<Component> loreInfo = Arrays.asList(
-                Component.text("§7Apprenez en plus sur les Contest !"),
-                Component.text("§7Le déroulement..., Les résultats, ..."),
+                Component.text("§7Apprenez en plus sur les contest !"),
+                Component.text("§7Le déroulement, les résultats, ..."),
                 Component.text("§e§lCLIQUEZ ICI POUR EN VOIR PLUS!")
         );
 
         List<Component> loreTrade = Arrays.asList(
                 Component.text("§7Vendez un maximum de ressources"),
-                Component.text("§7Contre des §bCoquillages de Contest"),
+                Component.text("§7Contre des §bcoquillages de contest"),
                 Component.text("§7Pour faire gagner la ")
                         .append(Component.text("Team " + campName).decoration(TextDecoration.ITALIC, false).color(campColor))
         );
 
         inventory.put(4, new ItemBuilder(this, shellContest, itemMeta -> {
-            itemMeta.displayName(Component.text("§7Les Trades"));
+            itemMeta.displayName(Component.text("§7Les échanges"));
             itemMeta.lore(loreTrade);
         }));
 
@@ -97,7 +97,7 @@ public class TradeMenu extends Menu {
             int amountShell = (int) trade.get("amount_shell");
 
             List<Component> lore = Arrays.asList(
-                    Component.text("§7Vendez §e" + amount + " §7pour §b" + amountShell + " Coquillage(s)"),
+                    Component.text("§7Vendez §e" + amount + " §7pour §b" + amountShell + " coquillage(s)"),
                     Component.text("§e§lCLIQUE-GAUCHE POUR VENDRE UNE FOIS"),
                     Component.text("§e§lSHIFT-CLIQUE-GAUCHE POUR VENDRE TOUTE CETTE RESSOURCE")
             );
@@ -233,7 +233,7 @@ public class TradeMenu extends Menu {
         MessagesManager.sendMessage(player,
                 Component.text("§7Vous avez échangé §e" + itemsRemoved + " ")
                         .append(tradeName).color(NamedTextColor.YELLOW)
-                        .append(Component.text(" §7contre §b" + shellsEarned + " Coquillage(s) de Contest")),
+                        .append(Component.text(" §7contre §b" + shellsEarned + " coquillage(s) de contest")),
                 Prefix.CONTEST, MessageType.SUCCESS, true);
     }
 

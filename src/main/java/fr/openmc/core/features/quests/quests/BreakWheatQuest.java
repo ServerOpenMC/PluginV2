@@ -19,7 +19,7 @@ public class BreakWheatQuest extends Quest implements Listener {
 
     public BreakWheatQuest() {
         super(
-                "Fermier Dévoué",
+                "Fermier dévoué",
                 List.of("Récolter {target} blé"),
                 new ItemStack(Material.WHEAT)
         );

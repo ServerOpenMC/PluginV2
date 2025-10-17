@@ -114,7 +114,7 @@ public class BankManager {
 
         if (city == null || city.getLevel() < 2) {
             MessagesManager.sendMessage(offlinePlayer,
-                    Component.text("Pour avoir une banque personnelle, vous devez appartenir à une ville niveau 2 minimum !"),
+                    Component.text("Pour avoir une banque personnelle, vous devez appartenir à une ville de niveau 2 minimum !"),
                     Prefix.BANK, MessageType.ERROR, false);
             return;
         }
@@ -215,7 +215,7 @@ public class BankManager {
         Player sender = Bukkit.getPlayer(playerUUID);
         if (sender != null)
             MessagesManager.sendMessage(sender,
-                    Component.text("Vous venez de percevoir §d" + interest * 100 + "% §rd'intérèt, soit §d"
+                    Component.text("Vous venez de percevoir §d" + interest * 100 + "% §rd'intérêt, soit §d"
                             + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r"
                             + EconomyManager.getEconomyIcon()),
                     Prefix.CITY, MessageType.SUCCESS, false);

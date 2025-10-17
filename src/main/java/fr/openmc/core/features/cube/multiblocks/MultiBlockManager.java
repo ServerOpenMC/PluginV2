@@ -1,6 +1,5 @@
 package fr.openmc.core.features.cube.multiblocks;
 
-import fr.openmc.core.CommandsManager;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.cube.Cube;
 import lombok.Getter;
@@ -107,17 +106,5 @@ public class MultiBlockManager {
         multiBlocks.add(multiBlock);
 
         save();
-    }
-
-    public static void initCommandSuggestion() {
-        CommandsManager.getHandler().getAutoCompleter().registerSuggestion("cubes", (args, sender, command) -> {
-            return MultiBlockManager.getMultiBlocks().stream()
-                    .filter(mb -> mb instanceof Cube)
-                    .map(mb -> {
-                        Location loc = mb.origin;
-                        return loc.getWorld().getName() + ":" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
-                    })
-                    .toList();
-        });
     }
 }

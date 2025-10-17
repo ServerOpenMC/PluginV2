@@ -26,10 +26,10 @@ public class HomeUpgradeQuest extends Quest implements Listener {
 
     public HomeUpgradeQuest() {
         super(
-                "Améliorer votre limite de Homes",
+                "Améliorer votre limite de homes",
                 List.of(
-                        "§fTapez §d/upgradehome §fou bien aller dans le §dmenu des homes (/homes) §fpour pouvoir améliorer votre limite de Homes",
-                        "§8§oCela vous permettra d'avoir plus de Homes !"
+                        "§fTapez §d/upgradehome §fou bien aller dans le §dmenu des homes (/homes) §fpour pouvoir améliorer votre limite de homes",
+                        "§8§oCela vous permettra d'avoir plus de homes !"
                 ),
                 CustomItemRegistry.getByName("omc_homes:omc_homes_icon_upgrade").getBest()
         );
@@ -41,7 +41,7 @@ public class HomeUpgradeQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + "§f ! Les §2homes §fvous seront très utile pour vous déplacer rapidement entre vos bases ! Maintenant, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + "§f ! Les §2homes §fvous seront très utile pour vous déplacer rapidement entre vos bases ! maintenant, je pense que vous avez besoin de challenges ! Ouvrez le menu des §9quêtes",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

@@ -52,7 +52,7 @@ public class MachineBallsOpenMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "§6§lMachine à Boules";
+        return "§6§lMachine à boules";
     }
 
     @Override

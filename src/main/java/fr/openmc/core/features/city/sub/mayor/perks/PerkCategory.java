@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum PerkCategory {
-    MILITARY("§8§oRéformes Militaires"),
-    STRATEGY("§8§oRéformes de Stratégie"),
-    AGRICULTURAL("§8§oRéformes d'Agriculture"),
-    ECONOMIC("§8§oRéformes Econnomiques"),
+	MILITARY("§8§oRéformes militaires"),
+	STRATEGY("§8§oRéformes de stratégie"),
+	AGRICULTURAL("§8§oRéformes d'agriculture"),
+	ECONOMIC("§8§oRéformes économiques"),
     ;
 
     private final String name;

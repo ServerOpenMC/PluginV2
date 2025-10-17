@@ -49,7 +49,7 @@ public enum PlayerBankLimitRewards implements CityRewards {
         PlayerBankLimitRewards[] values = PlayerBankLimitRewards.values();
 
         if (level < 1 || level > values.length) {
-            throw new IllegalArgumentException("Niveau invalide: " + level);
+	        throw new IllegalArgumentException("Niveau invalide : " + level);
         }
 
         PlayerBankLimitRewards reward = values[level - 1];
@@ -73,6 +73,6 @@ public enum PlayerBankLimitRewards implements CityRewards {
      */
     @Override
     public Component getName() {
-        return Component.text("§7Limite à §6" + bankBalanceLimit + " d'Argent §7dans la §bbanque personnelle");
+	    return Component.text("§7Limite à §6" + bankBalanceLimit + " d'argent §7dans la §bbanque personnelle");
     }
 }

@@ -5,7 +5,7 @@ changelog:
         - "🎮 Game Update"
     - title: Nouvelles Fonctionnalités
       labels:
-        - ":package:  Features"
+        - ":package: Feature"
     - title: Corrections de Bugs & Optimisations
       labels:
         - "⚡Optimisation"

@@ -28,7 +28,7 @@ public class CityLeaveCondition {
         }
 
         if (city.hasPermission(player.getUniqueId(), CityPermission.OWNER)) {
-            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas quitter la ville car tu en es le maire, supprime la ou transfère la propriété"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Tu ne peux pas quitter la ville car tu en es le propriétaire, supprime la ville ou transfère la propriété"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;

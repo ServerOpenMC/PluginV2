@@ -200,7 +200,7 @@ public class NPCManager implements Listener {
             }
 
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-                MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+	            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -236,7 +236,7 @@ public class NPCManager implements Listener {
                                     itemToGive,
                                     "mayor:mayor-npc-move",
                                     300,
-                                    "§7Vous avez 300s pour séléctionner votre emplacement",
+		                            "§7Vous avez 300s pour sélectionner votre emplacement",
                                     "§7Vous n'avez pas eu le temps de déplacer votre NPC",
                                     locationClick -> {
                                         if (locationClick == null) return true;
@@ -291,7 +291,7 @@ public class NPCManager implements Listener {
             }
 
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-                MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
+	            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + "!"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -322,7 +322,7 @@ public class NPCManager implements Listener {
                                     itemToGive,
                                     "mayor:owner-npc-move",
                                     300,
-                                    "§7Vous avez 300s pour séléctionner votre emplacement",
+		                            "§7Vous avez 300s pour sélectionner votre emplacement",
                                     "§7Vous n'avez pas eu le temps de déplacer votre NPC",
                                     locationClick -> {
                                         if (locationClick == null) return true;

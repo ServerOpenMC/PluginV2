@@ -65,7 +65,6 @@ public class MascotsManager {
         loadMascots();
 
         OMCPlugin.registerEvents(
-                new MascotsProtectionsListener(),
                 new MascotsInteractionListener(),
                 new MascotsDamageListener(),
                 new MascotsDeathListener(),
@@ -77,6 +76,9 @@ public class MascotsManager {
         );
         if (!OMCPlugin.isUnitTestVersion()) {
             new MascotsSoundListener();
+            OMCPlugin.registerEvents(
+                    new MascotsProtectionsListener()
+            );
         }
 
         CommandsManager.getHandler().register(
@@ -206,7 +208,7 @@ public class MascotsManager {
 
         // to avoid the suffocation of the mascot when it changes skin to a spider for exemple
         if (mascotsLoc.clone().add(0, 1, 0).getBlock().getType().isSolid() && entityMascot.getHeight() <= 1.0) {
-            MessagesManager.sendMessage(player, Component.text("Libérez de l'espace au dessus de la macotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
+	        MessagesManager.sendMessage(player, Component.text("Libérez de l'espace au dessus de la mascotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
             return;
         }
 
@@ -216,7 +218,7 @@ public class MascotsManager {
                 Material blockType = checkLoc.getBlock().getType();
 
                 if (blockType != Material.AIR) {
-                    MessagesManager.sendMessage(player, Component.text("Libérez de l'espace tout autour de la macotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
+	                MessagesManager.sendMessage(player, Component.text("Libérez de l'espace tout autour de la mascotte pour changer son skin"), Prefix.CITY, MessageType.INFO, false);
                     return;
                 }
             }

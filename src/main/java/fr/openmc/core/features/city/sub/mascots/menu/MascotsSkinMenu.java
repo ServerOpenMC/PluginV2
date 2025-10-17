@@ -44,7 +44,7 @@ public class MascotsSkinMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Skins des Mascottes";
+	    return "Menu des skins des mascottes";
     }
 
     @Override
@@ -76,7 +76,7 @@ public class MascotsSkinMenu extends Menu {
 
         map.put(18, new ItemBuilder(this, Material.ARROW, meta -> {
             meta.displayName(Component.text("§aRetour"));
-            meta.lore(List.of(Component.text("§7Retourner au Menu Précédent")));
+	        meta.lore(List.of(Component.text("§7Retourner au menu précédent")));
         }, true));
 
         return map;
@@ -96,7 +96,7 @@ public class MascotsSkinMenu extends Menu {
         List<Component> loreMascots = new ArrayList<>();
 
         if (city.getLevel() < MascotsSkinUnlockRewards.getLevelRequiredSkin(type)) {
-            loreMascots.add(Component.text("§cVous devez etre Niveau " + MascotsSkinUnlockRewards.getLevelRequiredSkin(type) + " pour débloquer ce skin"));
+	        loreMascots.add(Component.text("§cVous devez être niveau " + MascotsSkinUnlockRewards.getLevelRequiredSkin(type) + " pour débloquer ce skin"));
         }
 
         return new ItemBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg())), meta -> meta.lore(loreMascots))

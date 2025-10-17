@@ -2,9 +2,11 @@ package fr.openmc.core.features.city.commands;
 
 import fr.openmc.api.chronometer.Chronometer;
 import fr.openmc.api.input.DialogInput;
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.actions.*;
+import fr.openmc.core.features.city.commands.autocomplete.CityMembersAutoComplete;
 import fr.openmc.core.features.city.conditions.*;
 import fr.openmc.core.features.city.menu.CityChunkMenu;
 import fr.openmc.core.features.city.menu.CityMenu;
@@ -36,7 +38,7 @@ import static fr.openmc.core.utils.InputUtils.MAX_LENGTH_CITY;
 public class CityCommands {
     public static final HashMap<Player, List<Player>> invitations = new HashMap<>(); // Invité, Inviteurs
 
-    @DefaultFor("~")
+    @CommandPlaceholder()
     public static void mainCommand(Player player) {
         if (!Chronometer.containsChronometer(player.getUniqueId(), "mascot:stick")) {
             City playerCity = CityManager.getPlayerCity(player.getUniqueId());
@@ -48,7 +50,7 @@ public class CityCommands {
                     menu.open();
                 }
         } else {
-            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas ouvrir le menu des villes si vous devez poser votre mascotte"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas ouvrir le menu des villes sans avoir posé la mascotte"), Prefix.CITY, MessageType.ERROR, false);
         }
     }
 
@@ -97,7 +99,7 @@ public class CityCommands {
     @Subcommand("invite")
     @CommandPermission("omc.commands.city.invite")
     @Description("Inviter un joueur dans votre ville")
-    public static void invite(Player sender, @Named("invité") Player target) {
+    public static void invite(Player sender, @Named("invité") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityInviteConditions.canCityInvitePlayer(city, sender, target)) return;
@@ -121,7 +123,7 @@ public class CityCommands {
     @Subcommand("accept")
     @CommandPermission("omc.commands.city.accept")
     @Description("Accepter une invitation")
-    public static void acceptInvitation(Player player, Player inviter) {
+    public static void acceptInvitation(Player player, @SuggestWith(OnlinePlayerAutoComplete.class) Player inviter) {
         List<Player> playerInvitations = invitations.get(player);
 
         if (playerInvitations == null) {
@@ -151,7 +153,7 @@ public class CityCommands {
     @Subcommand("deny")
     @CommandPermission("omc.commands.city.deny")
     @Description("Refuser une invitation")
-    public static void denyInvitation(Player player, Player inviter) {
+    public static void denyInvitation(Player player, @SuggestWith(OnlinePlayerAutoComplete.class) Player inviter) {
         if (!CityInviteConditions.canCityInviteDeny(player, inviter)) return;
 
         invitations.remove(player);
@@ -170,7 +172,7 @@ public class CityCommands {
         if (!CityManageConditions.canCityRename(playerCity, player)) return;
 
         if (!InputUtils.isInputCityName(name)) {
-            MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit seulement comporter des caractères alphanumeriques et maximum " + MAX_LENGTH_CITY + " caractères."), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Le nom de ville est invalide, il doit comporter uniquement des caractères alphanumeriques et maximum " + MAX_LENGTH_CITY + " caractères."), Prefix.CITY, MessageType.ERROR, false);
             return;
         }
 
@@ -181,8 +183,7 @@ public class CityCommands {
     @Subcommand("transfer")
     @CommandPermission("omc.commands.city.transfer")
     @Description("Transfert la propriété de votre ville")
-    @AutoComplete("@city_members")
-    void transfer(Player sender, @Named("owner") OfflinePlayer player) {
+    void transfer(Player sender, @SuggestWith(CityMembersAutoComplete.class) @Named("owner") OfflinePlayer player) {
         City playerCity = CityManager.getPlayerCity(sender.getUniqueId());
 
         if (!CityManageConditions.canCityTransfer(playerCity, sender, player.getUniqueId())) return;
@@ -195,8 +196,7 @@ public class CityCommands {
     @Subcommand("kick")
     @CommandPermission("omc.commands.city.kick")
     @Description("Exclure un habitant de votre ville")
-    @AutoComplete("@city_members")
-    void kick(Player sender, @Named("exclu") OfflinePlayer player) {
+    void kick(Player sender, @SuggestWith(CityMembersAutoComplete.class) @Named("exclu") OfflinePlayer player) {
         CityKickAction.startKick(sender, player);
     }
 
@@ -213,7 +213,7 @@ public class CityCommands {
     @Subcommand("claim")
     @CommandPermission("omc.commands.city.claim")
     @Description("Claim un chunk pour votre ville")
-    @DefaultFor("~")
+    @CommandPlaceholder()
     void claim(Player sender) {
         City city = CityManager.getPlayerCity(sender.getUniqueId());
 

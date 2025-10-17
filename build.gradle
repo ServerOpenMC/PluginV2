@@ -60,8 +60,8 @@ dependencies {
     compileOnly "net.dmulloy2:ProtocolLib:${protocolLibVersion}"
 
     implementation "org.jetbrains:annotations:${jetbrainsAnnotationsVersion}"
-    implementation "com.github.Revxrsal.Lamp:common:${revxrsalLampVersion}"
-    implementation "com.github.Revxrsal.Lamp:bukkit:${revxrsalLampVersion}"
+    implementation "io.github.revxrsal:lamp.common:${revxrsalLampVersion}"
+    implementation "io.github.revxrsal:lamp.bukkit:${revxrsalLampVersion}"
     implementation "com.j256.ormlite:ormlite-jdbc:${ormVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
@@ -72,6 +72,7 @@ dependencies {
     testImplementation "org.slf4j:slf4j-simple:${slf4jVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation paperweight.paperDevBundle("${minecraftVersion}-R0.1-SNAPSHOT")
     testImplementation "org.mockbukkit.mockbukkit:mockbukkit-v1.21:${mockbukkitVersion}"
     testImplementation "com.h2database:h2:${h2DatabaseVersion}"
 }
@@ -97,7 +98,7 @@ processResources {
     def pluginProps = ["version": version, "minecraftVersion": minecraftVersion]
     inputs.properties(pluginProps)
 
-    filesMatching('plugin.yml') {
+    filesMatching('paper-plugin.yml') {
         expand(pluginProps)
     }
 

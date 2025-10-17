@@ -48,7 +48,7 @@ public class AnalyticsManager {
 
             return stats.getFirst().getValue();
         } catch (SQLException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get Statistics from " + playerUUID, e);
+	        OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get Statistics of " + playerUUID, e);
             return defaultValue;
         }
     }

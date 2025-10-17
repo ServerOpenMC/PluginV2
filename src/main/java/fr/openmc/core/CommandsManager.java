@@ -8,10 +8,10 @@ import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
 import fr.openmc.core.features.adminshop.AdminShopCommand;
+import fr.openmc.core.features.credits.CreditsCommand;
+import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.cube.CubeCommands;
-import fr.openmc.core.features.cube.multiblocks.MultiBlockManager;
 import fr.openmc.core.features.friend.FriendCommand;
-import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
 import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
@@ -20,18 +20,18 @@ import fr.openmc.core.features.quests.command.QuestCommand;
 import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.features.updates.UpdateCommand;
 import lombok.Getter;
-import revxrsal.commands.bukkit.BukkitCommandHandler;
+import revxrsal.commands.Lamp;
+import revxrsal.commands.bukkit.BukkitLamp;
 
 public class CommandsManager {
     @Getter
-    static BukkitCommandHandler handler;
+    static Lamp handler;
 
     public CommandsManager() {
-        handler = BukkitCommandHandler.create(OMCPlugin.getInstance());
+        handler = BukkitLamp.builder(OMCPlugin.getInstance())
+                .commandCondition(new CooldownInterceptor())
+                .build();
 
-        handler.registerCondition(new CooldownInterceptor());
-
-        registerSuggestions();
         registerCommands();
     }
 
@@ -57,12 +57,8 @@ public class CommandsManager {
                 new SocialSpyCommand(),
                 new SettingsCommand(),
                 new Cooldowns(),
+                new CreditsCommand(),
                 new CubeCommands()
         );
-    }
-
-    private static void registerSuggestions() {
-        FriendManager.initCommandSuggestion();
-        MultiBlockManager.initCommandSuggestion();
     }
 }

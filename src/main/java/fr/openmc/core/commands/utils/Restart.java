@@ -46,8 +46,8 @@ public class Restart {
         for (City city : CityManager.getCities()) {
             UUID watcherUUID = city.getChestWatcher();
             if (watcherUUID == null) continue;
-
-            MessagesManager.sendMessage(sender, Component.text("§7Le coffre est inaccessible durant un rédémarrage programmé"), Prefix.OPENMC, MessageType.INFO, false);
+	        
+	        MessagesManager.sendMessage(sender, Component.text("§7Le coffre est inaccessible durant un redémarrage programmé"), Prefix.OPENMC, MessageType.INFO, false);
             Bukkit.getPlayer(watcherUUID).closeInventory();
         }
 

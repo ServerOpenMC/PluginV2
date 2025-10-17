@@ -24,6 +24,11 @@ public class TPACancelCommand {
 		}
 		
 		Player target = TPAQueue.getTargetByRequester(player);
+
+		if (target == null) {
+			MessagesManager.sendMessage(player, Component.text("§4Le joueur n'est pas en ligne ou n'existe pas"), Prefix.OPENMC, MessageType.ERROR, true);
+			return;
+		}
 		
 		TPAQueue.removeRequest(player, target);
 		MessagesManager.sendMessage(player, Component.text("§2Vous avez annulé votre demande de téléportation à §6" + target.getName()), Prefix.OPENMC, MessageType.SUCCESS, true);

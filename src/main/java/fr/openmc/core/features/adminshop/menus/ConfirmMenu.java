@@ -67,11 +67,11 @@ public class ConfirmMenu extends Menu {
         int quantityToStack = Math.max(0, quantity / 64);
 
         List<Component> lore = List.of(
-                Component.text("§8■ §eQuantité: §f" + quantity + " §7(§f" + quantityToStack + "§7 stack" + (quantityToStack > 1 ? "s" : "") + ")"),
-                Component.text("§8■ §ePrix unitaire: §a" + AdminShopManager.priceFormat.format(pricePerUnit) + EconomyManager.getEconomyIcon()),
-                Component.text("§8■ §ePrix total: §a" + AdminShopManager.priceFormat.format(totalPrice) + EconomyManager.getEconomyIcon()),
-                Component.empty(),
-                Component.text("§8■ §aClique molette pour §2définir §ala quantité manuellement")
+		        Component.text("§8■ §eQuantité : §f" + quantity + " §7(§f" + quantityToStack + "§7 stack" + (quantityToStack > 1 ? "s" : "") + ")"),
+		        Component.text("§8■ §ePrix unitaire : §a" + AdminShopManager.priceFormat.format(pricePerUnit) + EconomyManager.getEconomyIcon()),
+                Component.text("§8■ §ePrix total : §a" + AdminShopManager.priceFormat.format(totalPrice) + EconomyManager.getEconomyIcon()),
+		        Component.empty(),
+		        Component.text("§8■ §aClique molette pour §2définir §ala quantité manuellement")
         );
 
         content.put(9, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {

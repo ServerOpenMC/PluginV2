@@ -1,6 +1,7 @@
 package fr.openmc.core.features.tpa.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.tpa.TPAQueue;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -10,7 +11,9 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Named;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class TPACommand {
@@ -22,8 +25,7 @@ public class TPACommand {
 	 */
 	@Command({"tpa", "tpask"})
 	@CommandPermission("omc.commands.tpa")
-	@AutoComplete("@players")
-	public void tpaAsk(Player player, @Named("player") Player target) {
+	public void tpaAsk(Player player, @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
 		if (TPAQueue.requesterHasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous avez déjà une demande de téléportation en attente\n")
 					.append(Component.text("§3Tapez §5/tpacancel §3pour annuler votre demande de tp en cours").clickEvent(ClickEvent.runCommand("/tpacancel")).hoverEvent(HoverEvent.showText(Component.text("Annuler la demande de TP")))

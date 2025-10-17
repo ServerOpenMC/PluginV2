@@ -17,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
 
     public OpenSettingsMenuQuest() {
         super(
-                "Ouvrir le menu des Paramètres",
+                "Ouvrir le menu des paramètres",
                 List.of(
                         "§fTapez §d/settings §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu",
                         "§8§oCela va vous permettre de configurer votre expérience de jeu !"
@@ -43,8 +42,8 @@ public class OpenSettingsMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §9Paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, etc." +
-                                " Sujet à part, vous pouvez passer en mode compétition grâce aux §6Contests§f, une sorte de concours hebdomadaire !",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les §9paramètres §fcustomisent votre jeu, ils peuvent être utiles dans certains cas, comme pour bloquer des demandes d'amis, ..." +
+                                " Sujet à part, vous pouvez passer en mode compétition grâce aux §6contests§f, une sorte de concours hebdomadaire !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

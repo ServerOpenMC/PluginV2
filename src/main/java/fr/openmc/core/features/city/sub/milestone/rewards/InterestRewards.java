@@ -47,7 +47,7 @@ public enum InterestRewards implements CityRewards {
         InterestRewards[] values = InterestRewards.values();
 
         if (level < 1 || level > values.length) {
-            throw new IllegalArgumentException("Niveau invalide: " + level);
+	        throw new IllegalArgumentException("Niveau invalide : " + level);
         }
 
         double total = .00;

@@ -56,7 +56,7 @@ public class PersonalBankWithdrawMenu extends Menu {
         double halfMoneyBankPlayer = moneyBankPlayer/2;
 
         List<Component> loreBankWithdrawAll = List.of(
-                Component.text("§7Tout l'argent placé dans §6Votre Banque §7vous sera donné"),
+                Component.text("§7Tout l'argent placé dans §6votre banque §7vous sera donné"),
                 Component.empty(),
                 Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                 Component.empty(),
@@ -64,7 +64,7 @@ public class PersonalBankWithdrawMenu extends Menu {
         );
 
         inventory.put(11, new ItemBuilder(this, new ItemStack(Material.DISPENSER, 64), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre l'§6Argent de votre banque"));
+            itemMeta.itemName(Component.text("§7Prendre l'§6argent de votre banque"));
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
             player.closeInventory();
@@ -72,7 +72,7 @@ public class PersonalBankWithdrawMenu extends Menu {
         }));
 
         List<Component> loreBankWithdrawHalf = List.of(
-            Component.text("§7La Moitié de l'Argent sera pris de §6Votre Banque §7pour vous le donner"),
+                Component.text("§7La moitié de l'argent sera pris de §6votre banque §7pour vous le donner"),
                 Component.empty(),
             Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                 Component.empty(),
@@ -80,7 +80,7 @@ public class PersonalBankWithdrawMenu extends Menu {
         );
 
         inventory.put(13, new ItemBuilder(this,new ItemStack(Material.DISPENSER, 32), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6Argent de votre banque"));
+            itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6argent de votre banque"));
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
             BankManager.withdraw(player.getUniqueId(), String.valueOf(halfMoneyBankPlayer));
@@ -89,7 +89,7 @@ public class PersonalBankWithdrawMenu extends Menu {
 
 
         List<Component> loreBankWithdrawInput = List.of(
-            Component.text("§7L'argent demandé sera pris dans §6Votre Banque §7pour vous le donner"),
+                Component.text("§7L'argent demandé sera pris dans §6votre banque §7pour vous le donner"),
             Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
         );
 
@@ -107,7 +107,7 @@ public class PersonalBankWithdrawMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu de votre Banque"),
+                    Component.text("§7Vous allez retourner au menu de votre banque"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));

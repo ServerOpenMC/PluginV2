@@ -110,7 +110,7 @@ public class CityMenu extends Menu {
             itemMeta.lore(loreRanks);
         }).setOnClick(inventoryClickEvent -> {
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.RANK)) {
-                MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+	            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.RANK) + " !"), Prefix.CITY, MessageType.ERROR, false);
                 return;
             }
 
@@ -129,8 +129,8 @@ public class CityMenu extends Menu {
         List<Component> loreMillestoneCity;
 
         loreMillestoneCity = List.of(
-                Component.text("§8§oAcceder à votre route de progression de la ville !"),
-                Component.text("§8§oImportant pour débloquer les différentes features des Villes !"),
+		        Component.text("§8§oAccéder à la route de progression de la ville !"),
+		        Component.text("§8§oImportant pour débloquer les différentes features des villes !"),
                 Component.empty(),
                 Component.text("§7Level : §3" + city.getLevel()),
                 Component.empty(),
@@ -154,16 +154,16 @@ public class CityMenu extends Menu {
 
         if (hasPermissionRenameCity || hasPermissionOwner) {
             loreModifyCity = List.of(
-                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
-                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
+		            Component.text("§7Propriétaire de la ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
+		            Component.text("§dMaire de la ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                     Component.text("§7Membre(s) : §d" + city.getMembers().size() + "§7/§d" + MemberLimitRewards.getMemberLimit(city.getLevel())),
                     Component.empty(),
                     Component.text("§e§lCLIQUEZ ICI POUR MODIFIER LA VILLE")
             );
         } else {
             loreModifyCity = List.of(
-                    Component.text("§7Propriétaire de la Ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
-                    Component.text("§dMaire de la Ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
+		            Component.text("§7Propriétaire de la ville : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName()),
+		            Component.text("§dMaire de la ville §7: ").append(Component.text(mayorName).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
                     Component.text("§7Membre(s) : §d" + city.getMembers().size() + "§7/§d" + MemberLimitRewards.getMemberLimit(city.getLevel()))
             );
         }
@@ -188,7 +188,7 @@ public class CityMenu extends Menu {
         if (notation != null) {
             List<Component> loreNotation = new ArrayList<>() {
                 {
-                    add(Component.text("§7Notation de la Ville : §9" + Math.floor(notation.getTotalNote()) + "§7/§9" + NotationNote.getMaxTotalNote()));
+	                add(Component.text("§7Notation de la ville : §9" + Math.floor(notation.getTotalNote()) + "§7/§9" + NotationNote.getMaxTotalNote()));
                     add(Component.text("§7Argent remporté : §6" + EconomyManager.getFormattedSimplifiedNumber(notation.getMoney()) + EconomyManager.getEconomyIcon()));
                     add(Component.empty());
                     add(Component.text("§e§lCLIQUEZ ICI POUR VOIR LA NOTATION"));
@@ -196,7 +196,7 @@ public class CityMenu extends Menu {
             };
 
             inventory.put(5, new ItemBuilder(this, Material.DIAMOND, itemMeta -> {
-                itemMeta.itemName(Component.text("§3La Notation de Votre Ville"));
+	            itemMeta.itemName(Component.text("§3La Notation de votre ville"));
                 itemMeta.lore(loreNotation);
             }).setOnClick(inventoryClickEvent -> {
                 NotationDialog.send(player, DateUtils.getWeekFormat());
@@ -216,7 +216,7 @@ public class CityMenu extends Menu {
                     if (!mascot.isAlive()) {
 		                loreMascots = List.of(
 				                Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
-				                Component.text("§7Status : §cMorte"),
+				                Component.text("§7Statut : §cMorte"),
 				                Component.text("§7Réapparition dans : " + DateUtils.convertMillisToTime(DynamicCooldownManager.getRemaining(city.getUniqueId(), "city:immunity"))),
 				                Component.text("§7Niveau : §c" + mascot.getLevel()),
                                 Component.empty(),
@@ -225,7 +225,7 @@ public class CityMenu extends Menu {
 	                } else {
 		                loreMascots = List.of(
 				                Component.text("§7Vie : §c" + Math.floor(mob.getHealth()) + "§4/§c" + maxHealth),
-				                Component.text("§7Status : §aEn Vie"),
+				                Component.text("§7Statut : §aEn Vie"),
 				                Component.text("§7Niveau : §c" + mascot.getLevel()),
                                 Component.empty(),
 				                Component.text("§e§lCLIQUEZ ICI POUR INTERAGIR AVEC")
@@ -239,7 +239,7 @@ public class CityMenu extends Menu {
             } else {
                 mob = null;
                 loreMascots = List.of(
-                        Component.text("§cMascotte Inexistante")
+		                Component.text("§cMascotte inexistante (contactez le staff)")
                 );
             }
 
@@ -283,7 +283,7 @@ public class CityMenu extends Menu {
         }
 
         inventory.put(19, new ItemBuilder(this, Material.OAK_FENCE, itemMeta -> {
-            itemMeta.itemName(Component.text("§6Taille de votre Ville"));
+	        itemMeta.itemName(Component.text("§6Taille de votre ville"));
             itemMeta.lore(loreChunkCity);
         }).setOnClick(inventoryClickEvent -> {
             if (!hasPermissionChunkSee) {
@@ -315,37 +315,37 @@ public class CityMenu extends Menu {
             if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
                 if (MayorManager.phaseMayor == 2) {
                     loreElections = List.of(
-                            Component.text("§7En ce moment, les Maires sont tous appliqués dans les Villes !"),
+		                    Component.text("§7En ce moment, les maires sont tous appliqués dans les villes !"),
                             Component.text("§7Sauf la votre !"),
                             Component.empty(),
-                            Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
+		                    Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
                     );
                 } else if (MayorManager.phaseMayor == 1) {
                     loreElections = List.of(
-                            Component.text("§7Les Elections sont actuellement §6ouverte"),
+		                    Component.text("§7Les élections sont actuellement §6ouverte"),
                             Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
-                            Component.text("§7Mais vous ne pouvez pas y acceder !"),
+		                    Component.text("§7Mais vous ne pouvez pas y accéder !"),
                             Component.empty(),
-                            Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
+		                    Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
                     );
                 } else {
                     loreElections = List.of(
                             Component.text("§cErreur"),
-                            Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
+		                    Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.MAYOR) + " pour débloquer ceci")
                     );
                 }
             } else {
                 if (city.getElectionType() == ElectionType.ELECTION) {
                     if (MayorManager.phaseMayor == 2) {
                         loreElections = List.of(
-                                Component.text("§7Votre ville a un §6Maire !"),
+		                        Component.text("§7Votre ville a un §6maire !"),
                                 Component.text("§7Maire : ").append(Component.text(mayorName)).color(mayorColor).decoration(TextDecoration.ITALIC, false),
                                 Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
                         );
                     } else if (MayorManager.phaseMayor == 1) {
                         loreElections = List.of(
-                                Component.text("§7Les Elections sont actuellement §6ouverte"),
+		                        Component.text("§7Les élections sont actuellement §6ouverte"),
                                 Component.empty(),
                                 Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
                                 Component.empty(),
@@ -360,9 +360,9 @@ public class CityMenu extends Menu {
                 } else {
                     if (MayorManager.phaseMayor == 2) {
                         loreElections = List.of(
-                                Component.text("§7Votre ville a un §6Maire !"),
+		                        Component.text("§7Votre ville a un §6maire !"),
                                 Component.text("§7Maire §7: ").append(Component.text(mayorName)).color(mayorColor).decoration(TextDecoration.ITALIC, false),
-                                Component.text("§cOuverture des Elections dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)),
+		                        Component.text("§cOuverture des élections dans " + DateUtils.getTimeUntilNextDay(PHASE_1_DAY)),
                                 Component.empty(),
                                 Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AUX INFORMATIONS")
                         );
@@ -370,20 +370,20 @@ public class CityMenu extends Menu {
                         if (hasPermissionOwner) {
                             if (city.hasMayor()) {
                                 loreElections = List.of(
-                                        Component.text("§7Les Elections sont §6désactivées"),
+		                                Component.text("§7Les élections sont §6désactivées"),
                                         Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                         Component.empty(),
-                                        Component.text("§7Vous avez déjà choisis vos §3Réformes §7!"),
+		                                Component.text("§7Vous avez déjà choisis vos §3réformes §7!"),
                                         Component.text("§7Cependant vous pouvez changer votre couleur !"),
                                         Component.empty(),
                                         Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY))
                                 );
                             } else {
                                 loreElections = List.of(
-                                        Component.text("§7Les Elections sont §6désactivées"),
+		                                Component.text("§7Les élections sont §6désactivées"),
                                         Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                         Component.empty(),
-                                        Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
+		                                Component.text("§7Seul le propriétaire peut choisir §3les réformes §7qu'il veut."),
                                         Component.empty(),
                                         Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY)),
                                         Component.empty(),
@@ -392,10 +392,10 @@ public class CityMenu extends Menu {
                             }
                         } else {
                             loreElections = List.of(
-                                    Component.text("§7Les Elections sont §6désactivées"),
+		                            Component.text("§7Les élections sont §6désactivées"),
                                     Component.text("§cIl vous faut au moins §6" + MayorManager.MEMBER_REQUEST_ELECTION + " §cmembres"),
                                     Component.empty(),
-                                    Component.text("§7Seul le Propriétaire peut choisir §3les Réformes §7qu'il veut."),
+		                            Component.text("§7Seul le propriétaire peut choisir §3les réformes §7qu'il veut."),
                                     Component.empty(),
                                     Component.text("§cFermeture dans " + DateUtils.getTimeUntilNextDay(PHASE_2_DAY))
                             );
@@ -406,7 +406,7 @@ public class CityMenu extends Menu {
 
                 List<Component> finalLoreElections = loreElections;
                 return new ItemBuilder(this, Material.JUKEBOX, itemMeta -> {
-                    itemMeta.displayName(Component.text("§6Les Elections"));
+	                itemMeta.displayName(Component.text("§6Les élections"));
                     itemMeta.lore(finalLoreElections);
                 }).setOnClick(inventoryClickEvent -> MayorCommandAction.launchInteractionMenu(player));
         };
@@ -436,7 +436,7 @@ public class CityMenu extends Menu {
             }
 
             return new ItemBuilder(CityMenu.this, Material.NETHERITE_SWORD, meta -> {
-                meta.itemName(Component.text("§5Le Statut de votre Ville"));
+	            meta.itemName(Component.text("§5Le statut de votre ville"));
                 meta.lore(lore);
             }).setOnClick(inventoryClickEvent -> {
                 if (!(city.hasPermission(player.getUniqueId(), CityPermission.TYPE))) return;
@@ -456,23 +456,23 @@ public class CityMenu extends Menu {
 
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.CHEST)) {
             loreChestCity = List.of(
-                    Component.text("§7Acceder au Coffre de votre Ville pour"),
+		            Component.text("§7Acceder au coffre de votre ville pour"),
                     Component.text("§7stocker des items en commun"),
                     Component.empty(),
-                    Component.text("§cVous devez etre Niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CHEST) + " pour débloquer ceci")
+		            Component.text("§cVous devez être niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CHEST) + " pour débloquer ceci")
             );
         } else {
             if (hasPermissionChest) {
                 if (city.getChestWatcher() != null) {
                     loreChestCity = List.of(
-                            Component.text("§7Acceder au Coffre de votre Ville pour"),
+		                    Component.text("§7Acceder au coffre de votre ville pour"),
                             Component.text("§7stocker des items en commun"),
                             Component.empty(),
                             Component.text("§7Ce coffre est déjà ouvert par §c" + Bukkit.getPlayer(city.getChestWatcher()).getName())
                     );
                 } else {
                     loreChestCity = List.of(
-                            Component.text("§7Acceder au Coffre de votre Ville pour"),
+		                    Component.text("§7Acceder au coffre de votre ville pour"),
                             Component.text("§7stocker des items en commun"),
                             Component.empty(),
                             Component.text("§e§lCLIQUEZ ICI POUR ACCEDER AU COFFRE")
@@ -486,7 +486,7 @@ public class CityMenu extends Menu {
         }
 
             inventory.put(36, new ItemBuilder(this, Material.CHEST, itemMeta -> {
-                itemMeta.itemName(Component.text("§aLe Coffre de la Ville"));
+	            itemMeta.itemName(Component.text("§aLe coffre de la ville"));
                 itemMeta.lore(loreChestCity);
             }).setOnClick(inventoryClickEvent -> {
                 City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
@@ -515,7 +515,7 @@ public class CityMenu extends Menu {
         }
 
         inventory.put(40, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-            itemMeta.itemName(Component.text("§6La Banque"));
+	        itemMeta.itemName(Component.text("§6La banque"));
             itemMeta.lore(loreBankCity);
         }).setOnClick(inventoryClickEvent -> {
             City cityCheck = CityManager.getPlayerCity(player.getUniqueId());
@@ -532,7 +532,7 @@ public class CityMenu extends Menu {
 
         if (!hasPermissionOwner) {
             inventory.put(44, new ItemBuilder(this, Material.OAK_DOOR, itemMeta -> {
-                itemMeta.itemName(Component.text("§cPartir de la Ville"));
+	            itemMeta.itemName(Component.text("§cPartir de la ville"));
                 itemMeta.lore(List.of(
                         Component.text("§7Vous allez §cquitter §7" + city.getName()),
                         Component.empty(),

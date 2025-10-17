@@ -1,6 +1,7 @@
 package fr.openmc.core.features.economy.commands;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.Transaction;
 import fr.openmc.core.features.economy.TransactionsManager;
@@ -10,10 +11,10 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Range;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Pay {
@@ -21,7 +22,7 @@ public class Pay {
     @Command("pay")
     @Description("Permet de payer un joueur")
     @CommandPermission("omc.commands.pay")
-    public void pay(Player player, Player target, @Range(min = 1) double amount) {
+    public void pay(Player player, @SuggestWith(OnlinePlayerAutoComplete.class) Player target, @Range(min = 1) double amount) {
         if(player == target) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas vous payer vous-même"), Prefix.OPENMC, MessageType.ERROR, true);
             return;

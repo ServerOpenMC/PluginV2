@@ -1,5 +1,6 @@
 package fr.openmc.core.features.privatemessage.command;
 
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -13,7 +14,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 @Command("socialspy")
 public class SocialSpyCommand {
 
-    @DefaultFor("~")
+    @CommandPlaceholder()
     @Description("Active ou désactive le social spy")
     @CommandPermission("omc.admin.commands.privatemessage.socialspy")
     public void toggleSocialSpyCommand(Player player) {
@@ -23,7 +24,7 @@ public class SocialSpyCommand {
     @Subcommand("toggle")
     @Description("Active ou désactive le social spy pour un joueur spécifique")
     @CommandPermission("omc.admin.commands.privatemessage.socialspy.admin")
-    public void toggleSocialSpyForPlayer(Player admin, @Named("target") Player target) {
+    public void toggleSocialSpyForPlayer(Player admin, @SuggestWith(OnlinePlayerAutoComplete.class) @Named("target") Player target) {
         PrivateMessageManager.getInstance().getSpyManager().toggleSocialSpy(target);
 
         String status = PrivateMessageManager.getInstance().getSpyManager().hasSocialSpyEnabled(target)

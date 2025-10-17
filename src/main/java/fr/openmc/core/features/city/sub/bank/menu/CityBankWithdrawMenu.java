@@ -33,7 +33,7 @@ public class CityBankWithdrawMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu de la banque de Ville - Retirer";
+	    return "Menu de la banque de ville - Retirer";
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CityBankWithdrawMenu extends Menu {
 
         if (hasPermissionMoneyTake) {
             loreBankWithdrawAll = List.of(
-                    Component.text("§7Tout l'argent placé dans la §6Banque de la Ville §7vous sera donné"),
+		            Component.text("§7Tout l'argent placé dans la §6banque de la ville §7vous sera donné"),
                     Component.empty(),
                     Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.empty(),
@@ -81,7 +81,7 @@ public class CityBankWithdrawMenu extends Menu {
         }
 
         inventory.put(11, new ItemBuilder(this, new ItemStack(Material.DISPENSER, 64), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre l'§6Argent de votre Ville"));
+	        itemMeta.itemName(Component.text("§7Prendre l'§6argent de votre ville"));
             itemMeta.lore(loreBankWithdrawAll);
         }).setOnClick(inventoryClickEvent -> {
             city.withdrawCityBank(player, String.valueOf(moneyBankCity));
@@ -92,7 +92,7 @@ public class CityBankWithdrawMenu extends Menu {
 
         if (hasPermissionMoneyTake) {
             loreBankWithdrawHalf = List.of(
-                    Component.text("§7La Moitié de l'Argent sera pris de la §6Banque de votre Ville §7pour vous le donner"),
+		            Component.text("§7La moitié de l'argent sera pris de la §6banque de votre ville §7pour vous le donner"),
                     Component.empty(),
                     Component.text("§7Montant qui vous sera donné : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyBankCity) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.empty(),
@@ -105,7 +105,7 @@ public class CityBankWithdrawMenu extends Menu {
         }
 
         inventory.put(13, new ItemBuilder(this, new ItemStack(Material.DISPENSER, 32), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6Argent de la Ville"));
+	        itemMeta.itemName(Component.text("§7Prendre la moitié de l'§6argent de la ville"));
             itemMeta.lore(loreBankWithdrawHalf);
         }).setOnClick(inventoryClickEvent -> {
             city.withdrawCityBank(player, String.valueOf(halfMoneyBankCity));
@@ -117,7 +117,7 @@ public class CityBankWithdrawMenu extends Menu {
 
         if (hasPermissionMoneyTake) {
             loreBankWithdrawInput = List.of(
-                    Component.text("§7L'argent demandé sera pris dans la §6Banque de la Ville §7pour vous le donner"),
+		            Component.text("§7L'argent demandé sera pris dans la §6banque de la ville §7pour vous le donner"),
                     Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
             );
         } else {
@@ -143,7 +143,7 @@ public class CityBankWithdrawMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu Précédent"),
+		            Component.text("§7Vous allez retourner au menu précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));

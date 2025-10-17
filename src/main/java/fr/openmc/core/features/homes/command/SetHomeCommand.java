@@ -2,6 +2,7 @@ package fr.openmc.core.features.homes.command;
 
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.events.HomeCreateEvent;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
@@ -14,9 +15,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -27,8 +28,7 @@ public class SetHomeCommand {
     @Command("sethome")
     @Description("Permet de définir votre home")
     @CommandPermission("omc.commands.home.sethome")
-    @AutoComplete("@homes")
-    public void setHome(Player player, String name) {
+    public void setHome(Player player, @SuggestWith(HomeAutoComplete.class) String name) {
         if(DisabledWorldHome.isDisabledWorld(player.getWorld())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir de home dans ce monde."), Prefix.HOME, MessageType.ERROR, true);
             return;

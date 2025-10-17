@@ -1,6 +1,7 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.utils.HomeUtil;
 import fr.openmc.core.utils.messages.MessageType;
@@ -10,9 +11,9 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -22,8 +23,7 @@ public class RenameHomeCommand {
     @Command("renamehome")
     @Description("Renomme votre home")
     @CommandPermission("omc.commands.home.rename")
-    @AutoComplete("@homes")
-    public void renameHome(Player player, String home, String newName) {
+    public void renameHome(Player player, @SuggestWith(HomeAutoComplete.class) String home, String newName) {
         if(player.hasPermission("omc.admin.homes.rename.other") && home.contains(":")) {
             String[] split = home.split(":");
             String targetName = split[0];

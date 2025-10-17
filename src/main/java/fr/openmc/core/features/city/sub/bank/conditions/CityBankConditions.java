@@ -31,7 +31,7 @@ public class CityBankConditions {
         }
 
         if (!FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.CITY_BANK)) {
-            MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette Feature ! Veuillez Améliorer votre Ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CITY_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.CITY_BANK) + " !"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
@@ -99,7 +99,7 @@ public class CityBankConditions {
         }
 
         if (city.getType().equals(CityType.WAR)) {
-            MessagesManager.sendMessage(player, Component.text("Votre ville est dans un status de guerre, vous ne pouvez faire cela"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Votre ville est en situation de guerre, vous ne pouvez faire cela"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 

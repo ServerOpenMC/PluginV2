@@ -54,7 +54,7 @@ public class MascotsRenameListener implements Listener {
                 entity.setCustomNameVisible(true);
             }
         }
-
-        MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas rename une Mascotte"), Prefix.CITY, MessageType.ERROR, false);
+	    
+	    MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas renommer cette mascotte"), Prefix.CITY, MessageType.ERROR, false);
     }
 }

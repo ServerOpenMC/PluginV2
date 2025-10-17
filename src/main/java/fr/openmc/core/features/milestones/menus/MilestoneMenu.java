@@ -49,7 +49,7 @@ public class MilestoneMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Milestones - " + milestone.getName();
+        return "Menu des milestones - " + milestone.getName();
     }
 
     @Override

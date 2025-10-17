@@ -40,8 +40,8 @@ public class CooldownEndListener implements Listener {
         if (oldLevel + 1 > CityLevels.values().length) return;
 
         city.setLevel(oldLevel + 1);
-
-        MessagesManager.broadcastMessage(Component.text("La ville §d" + city.getName() + " §fa passé au §3Niveau " + city.getLevel() + " §f! Un maximum de GG!"), Prefix.CITY, MessageType.INFO);
+	    
+	    MessagesManager.broadcastMessage(Component.text("La ville §d" + city.getName() + " §fest passée au §3Niveau " + city.getLevel() + " §f! Un maximum de GG !"), Prefix.CITY, MessageType.INFO);
 
         CityStatisticsManager.removeStats(city.getUniqueId());
 

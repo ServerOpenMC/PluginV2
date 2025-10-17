@@ -24,7 +24,7 @@ public class ContestPlayerManager  {
             1000, "Légende en ",
             750, "Sénior en ",
             500, "Pro en ",
-            250, "Semi-Pro en ",
+            250, "Semi-pro en ",
             100, "Amateur en ",
             0, "Noob en "
     );

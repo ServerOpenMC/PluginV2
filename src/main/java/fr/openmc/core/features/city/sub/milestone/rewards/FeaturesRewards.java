@@ -114,12 +114,12 @@ public enum FeaturesRewards implements CityRewards {
         NOTATION("§3/city notation"),
         RANK("§6/city ranks"),
         MAYOR("§6/city mayor"),
-        PERK_AGRICULTURAL("§3les Réformes d'Agriculture"),
-        PERK_ECONOMY("§3les Réformes d'Economie"),
-        TYPE_WAR("§cle Type de Ville en Guerre"),
+	    PERK_AGRICULTURAL("§3les réformes d'agriculture"),
+	    PERK_ECONOMY("§3les réformes d'économie"),
+	    TYPE_WAR("§cle type de ville de guerre"),
         WAR("§c/war"),
-        PERK_MILITARY("§3les Réformes Militaires"),
-        PERK_STRATEGY("§3les Réformes de Stratégies");
+	    PERK_MILITARY("§3les réformes militaires"),
+	    PERK_STRATEGY("§3les réformes de stratégies");
 
         /**
          * Nom de la fonctionnalité.

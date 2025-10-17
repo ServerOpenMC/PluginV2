@@ -17,7 +17,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
 
     public OpenQuestMenuQuest() {
         super(
-                "Ouvrir le menu des Quêtes",
+                "Ouvrir le menu des quêtes",
                 List.of(
                         "§fTapez §d/quests §fou bien allez dans le §dmenu principal (/menu) §fpour pouvoir ouvrir le menu et voir quelles quêtes vous pouvez accomplir",
                         "§8§oCela va pouvoir vous lancer dans l'aventure et vous donner des défis afin de vous diversifier !"
@@ -43,7 +42,7 @@ public class OpenQuestMenuQuest extends Quest implements Listener {
                 1,
                 new QuestMoneyReward(500),
                 new QuestTextReward(
-                        "Bien Joué ! Vous avez fini l'§6Étape " + (step.ordinal() + 1) + " §f! Les §9Quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
+                        "Bien joué ! Vous avez fini l'§6étape " + (step.ordinal() + 1) + " §f! Les §9quêtes §fvous serviront à vous procurer de l'argent facilement pour le §9début de jeu §f! Vous pouvez tenter d'accomplir la §9tâche §fque vous voulez !",
                         Prefix.MILLESTONE,
                         MessageType.SUCCESS
                 ),

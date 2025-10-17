@@ -38,7 +38,7 @@ public class Letter extends MailboxInv {
     }
 
     public void refuse() {
-        Component message = Component.text("Cliquez-ici", NamedTextColor.YELLOW)
+        Component message = Component.text("Cliquez ici", NamedTextColor.YELLOW)
                 .clickEvent(getRunCommand("refuse " + id))
                 .hoverEvent(getHoverEvent("Refuser la lettre #" + id))
                 .append(Component.text(" si vous êtes sur de vouloir refuser la lettre.", NamedTextColor.GOLD));

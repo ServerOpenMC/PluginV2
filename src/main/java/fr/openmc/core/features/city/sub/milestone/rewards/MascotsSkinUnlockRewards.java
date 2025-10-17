@@ -71,9 +71,9 @@ public enum MascotsSkinUnlockRewards implements CityRewards {
                 .toList();
         String skins;
         if (names.size() == 1) {
-            skins = "la Mascotte " + names.getFirst();
+            skins = "la mascotte " + names.getFirst();
         } else {
-            skins = "les Mascottes " + String.join(", ", names.subList(0, names.size() - 1))
+            skins = "les mascottes " + String.join(", ", names.subList(0, names.size() - 1))
                     + " et " + names.get(names.size() - 1);
         }
         return Component.text("§7Débloque §c" + skins);

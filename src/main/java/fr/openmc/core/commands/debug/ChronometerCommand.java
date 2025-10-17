@@ -12,7 +12,7 @@ public class ChronometerCommand {
     @Command("debug chronometer start")
     @CommandPermission("omc.debug.chronometer.start")
     @Description("Test du chronometre")
-    private void chronometerStart(Player target,@Named("time") int time){
+    private void chronometerStart(Player target, @Named("time") int time) {
         if (time > 90) {
             target.sendMessage("§4Ne pas dépasser plus de 90s pour le débogage");
             return;

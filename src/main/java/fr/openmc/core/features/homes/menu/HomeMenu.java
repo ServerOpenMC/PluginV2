@@ -4,6 +4,7 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
@@ -94,7 +95,7 @@ public class HomeMenu extends PaginatedMenu {
                             Component.text("§7■ §aClique §2gauche pour vous téléporter"),
                             Component.text("§7■ §cCliquez §4droit §cpour configurer le home")
                     ));
-                }).hide(HomeIcon.getDataComponentTypes()).setOnClick(event -> {
+                }).hide(ItemUtils.getDataComponentType()).setOnClick(event -> {
                     if(event.isLeftClick()) {
                         this.getInventory().close();
                         getOwner().teleportAsync(home.getLocation()).thenAccept(success -> {
@@ -106,7 +107,7 @@ public class HomeMenu extends PaginatedMenu {
                     }
                 }));
             } catch (Exception e) {
-                MessagesManager.sendMessage(getOwner(), Component.text("§cUne Erreur est survenue, veuillez contacter le Staff"), Prefix.OPENMC, MessageType.ERROR, false);
+                MessagesManager.sendMessage(getOwner(), Component.text("§cUne erreur est survenue, veuillez contacter le staff"), Prefix.OPENMC, MessageType.ERROR, false);
                 getOwner().closeInventory();
                 throw new RuntimeException("Failed to create HomeMenu item for home: " + home.getName(), e);
             }

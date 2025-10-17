@@ -108,10 +108,10 @@ public class HomeChangeIconMenu extends PaginatedMenu {
         map.put(51, new ItemBuilder(this, Material.OAK_SIGN, meta -> {
             meta.displayName(Component.text("§eRecherche"));
             List<Component> lore = new ArrayList<>();
-            if (!searchQuery.isEmpty()) lore.add(Component.text("§7Recherche actuelle: §f" + searchQuery));
+            if (! searchQuery.isEmpty()) lore.add(Component.text("§7Recherche actuelle : §f" + searchQuery));
             lore.add(Component.empty());
-            lore.add(Component.text("§7■ §aCliquez §2gauche §apour rechercher"));
-            lore.add(Component.text("§7■ §cCliquez §4droit §cpour réinitialiser"));
+            lore.add(Component.text("§7■ §aClique §2gauche §apour rechercher"));
+            lore.add(Component.text("§7■ §cClique §4droit §cpour réinitialiser"));
             meta.lore(lore);
         }).setOnClick(event -> {
             if (event.getClick().isLeftClick()) {
@@ -144,7 +144,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("§7Sélection de catégorie"));
             lore.add(Component.empty());
-            lore.add(Component.text("§7Catégories disponibles:"));
+            lore.add(Component.text("§7Catégories disponibles :"));
 
             lore.add(formatCategoryLine(NamedTextColor.YELLOW, "§eToutes", currentCategory == HomeIcon.IconCategory.ALL));
             lore.add(formatCategoryLine(NamedTextColor.GREEN, "§aVanilla", currentCategory == HomeIcon.IconCategory.VANILLA));

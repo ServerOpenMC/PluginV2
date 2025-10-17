@@ -29,7 +29,7 @@ public class MainMilestonesMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Milestones - Plus d'info";
+        return "Menu des milestones - Plus d'info";
     }
 
     @Override
@@ -65,25 +65,25 @@ public class MainMilestonesMenu extends Menu {
         });
 
         List<Component> loreMilestoneVille = new ArrayList<>();
-
-        loreMilestoneVille.add(Component.text("§7Découvrez l'intégralité §3des Villes"));
+        
+        loreMilestoneVille.add(Component.text("§7Découvrez l'intégralité §3des villes"));
         loreMilestoneVille.add(Component.text("§7Via cette §3route de progression §7!"));
         loreMilestoneVille.add(Component.empty());
-        loreMilestoneVille.add(Component.text("§8§oLes Claims, Les Mascottes, Les Maires, Les Guerres, ..."));
+        loreMilestoneVille.add(Component.text("§8§oLes claims, Les mascottes, Les maires, Les guerres, ..."));
 
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null) {
             loreMilestoneVille.add(Component.empty());
-            loreMilestoneVille.add(Component.text("§cCréez ou rejoignez une Ville pour accéder à cela !"));
+            loreMilestoneVille.add(Component.text("§cCréez ou rejoignez une ville pour accéder à cela !"));
         } else {
             loreMilestoneVille.add(Component.empty());
-            loreMilestoneVille.add(Component.text("§7Level de votre Ville : §3" + playerCity.getLevel()));
+            loreMilestoneVille.add(Component.text("§7Level de votre ville : §3" + playerCity.getLevel()));
             loreMilestoneVille.add(Component.empty());
             loreMilestoneVille.add(Component.text("§e§lCLIQUEZ ICI POUR ACCEDER A VOTRE MILESTONE"));
         }
 
         inventory.put(12, new ItemBuilder(this, Material.SEA_LANTERN, itemMeta -> {
-            itemMeta.displayName(Component.text("§3Milestone des Villes"));
+            itemMeta.displayName(Component.text("§3Milestone des villes"));
             itemMeta.lore(loreMilestoneVille);
         }).setOnClick(event -> {
             if (playerCity == null) {
@@ -94,11 +94,11 @@ public class MainMilestonesMenu extends Menu {
         }));
 
         inventory.put(14, new ItemBuilder(this, Material.SCULK, itemMeta -> {
-            itemMeta.displayName(Component.text(" §kd §r§cComming Soon §kr"));
+            itemMeta.displayName(Component.text(" §kd §r§cComming soon §kr"));
         }));
 
         inventory.put(16, new ItemBuilder(this, Material.DEAD_BUBBLE_CORAL_BLOCK, itemMeta -> {
-            itemMeta.displayName(Component.text(" §ks §cComming Soon §ke"));
+            itemMeta.displayName(Component.text(" §ks §cComming soon §ke"));
         }));
 
         inventory.put(35, new ItemBuilder(this, Material.ARROW, itemMeta -> itemMeta.displayName(Component.text("§r§aRetour")), true));

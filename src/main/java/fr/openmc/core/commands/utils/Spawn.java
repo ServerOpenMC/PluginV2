@@ -1,5 +1,6 @@
 package fr.openmc.core.commands.utils;
 
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.utils.PlayerUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Default;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Spawn {
@@ -19,7 +21,7 @@ public class Spawn {
     @Command("spawn")
     @Description("Permet de se rendre au spawn")
     @CommandPermission("omc.commands.spawn")
-    public void spawn(CommandSender sender, @Default("me") Player target) {
+    public void spawn(CommandSender sender, @Default("me") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
         
         Location spawnLocation = SpawnManager.getSpawnLocation();
 

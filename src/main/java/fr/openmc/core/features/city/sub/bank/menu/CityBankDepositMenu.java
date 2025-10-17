@@ -33,7 +33,7 @@ public class CityBankDepositMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu de la banque de Ville - Remplir";
+	    return "Menu de la banque de ville - Remplir";
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CityBankDepositMenu extends Menu {
 
         if (hasPermissionMoneyGive) {
             loreBankDepositAll = List.of(
-                    Component.text("§7Tout votre argent sera placé dans la §6Banque de la Ville"),
+		            Component.text("§7Tout votre argent sera placé dans la §6banque de la ville"),
                     Component.empty(),
                     Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(moneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.empty(),
@@ -81,7 +81,7 @@ public class CityBankDepositMenu extends Menu {
         }
 
         inventory.put(11, new ItemBuilder(this, new ItemStack(Material.HOPPER, 64), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer tout votre §6Argent"));
+	        itemMeta.itemName(Component.text("§7Déposer tout votre §6argent"));
             itemMeta.lore(loreBankDepositAll);
         }).setOnClick(inventoryClickEvent -> {
             city.depositCityBank(player, String.valueOf(moneyPlayer));
@@ -93,7 +93,7 @@ public class CityBankDepositMenu extends Menu {
 
         if (hasPermissionMoneyGive) {
             loreBankDepositHalf = List.of(
-                    Component.text("§7La moitié de votre Argent sera placé dans la §6Banque de la Ville"),
+		            Component.text("§7La moitié de votre argent sera placé dans la §6banque de la ville"),
                     Component.empty(),
                     Component.text("§7Montant qui sera deposé : §d" + EconomyManager.getFormattedSimplifiedNumber(halfMoneyPlayer) + " ").append(Component.text(EconomyManager.getEconomyIcon()).decoration(TextDecoration.ITALIC, false)),
                     Component.empty(),
@@ -106,7 +106,7 @@ public class CityBankDepositMenu extends Menu {
         }
 
         inventory.put(13, new ItemBuilder(this, new ItemStack(Material.HOPPER, 32), itemMeta -> {
-            itemMeta.itemName(Component.text("§7Déposer la moitié de votre §6Argent"));
+	        itemMeta.itemName(Component.text("§7Déposer la moitié de votre §6argent"));
             itemMeta.lore(loreBankDepositHalf);
         }).setOnClick(inventoryClickEvent -> {
             city.depositCityBank(player, String.valueOf(halfMoneyPlayer));
@@ -118,7 +118,7 @@ public class CityBankDepositMenu extends Menu {
 
         if (hasPermissionMoneyGive) {
             loreBankDepositInput = List.of(
-                    Component.text("§7Votre argent sera placé dans la §6Banque de la Ville"),
+		            Component.text("§7Votre argent sera placé dans la §6banque de la ville"),
                     Component.text("§e§lCLIQUEZ ICI POUR INDIQUER LE MONTANT")
             );
         } else {
@@ -144,7 +144,7 @@ public class CityBankDepositMenu extends Menu {
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));
             itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au Menu Précédent"),
+		            Component.text("§7Vous allez retourner au menu précédent"),
                     Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
             ));
         }, true));

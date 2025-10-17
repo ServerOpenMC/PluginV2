@@ -72,32 +72,33 @@ public class CityListMenu extends PaginatedMenu {
 	@Override
     public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
-		cities.forEach(city -> {
+		for (City city : cities) {
 			UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
 
-			if (ownerUUID != null) {
-				String ownerName = PlayerNameCache.getName(ownerUUID);
+			if (ownerUUID == null) continue;
 
-				List<Component> cityLore = new ArrayList<>();
+			String ownerName = PlayerNameCache.getName(ownerUUID);
 
+			List<Component> cityLore = new ArrayList<>();
 
-        cityLore.add(Component.text("§7Propriétaire : " + ownerName));
-        if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
-          String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
-          NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
-          cityLore.add(Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)));
-        }
-        cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
-        cityLore.add(Component.text("§eType : " + city.getType().getDisplayName()));
-        cityLore.add(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
-
-
-				items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
-					itemMeta.displayName(Component.text("§a" + city.getName()));
-					itemMeta.lore(cityLore);
-				}));
+			cityLore.add(Component.text("§7Propriétaire : " + ownerName));
+			if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+				String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
+				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
+				cityLore.add(Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)));
 			}
-		});
+			cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
+			cityLore.add(Component.text("§eType : " + city.getType().getDisplayName()));
+			cityLore.add(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
+
+
+			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+				itemMeta.displayName(Component.text("§a" + city.getName()));
+				itemMeta.lore(cityLore);
+			}).setOnClick(inventoryClickEvent ->
+					new CityListDetailsMenu(getOwner(), city).open()
+			));
+		}
 		return items;
 	}
 
@@ -135,7 +136,7 @@ public class CityListMenu extends PaginatedMenu {
 	
 	@Override
 	public @NotNull String getName() {
-		return "Menu des listes des Villes";
+		return "Menu de liste des villes";
 	}
 
 	@Override
@@ -145,13 +146,7 @@ public class CityListMenu extends PaginatedMenu {
 
 	@Override
 	public void onInventoryClick(InventoryClickEvent e) {
-		if (e.getSlot() > 44) return;
-		if (e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
-		int page = getPage();
-		City city = cities.get(e.getSlot() + (45 * page));
-		if (city != null) {
-			new CityListDetailsMenu(getOwner(), city).open();
-		}
+
 	}
 
 	@Override

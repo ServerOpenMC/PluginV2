@@ -45,7 +45,7 @@ public class MayorColorMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Maires - Couleur";
+	    return "Menu des maires - Couleur";
     }
 
     @Override
@@ -102,7 +102,7 @@ public class MayorColorMenu extends Menu {
             }).setOnClick(inventoryClickEvent -> {
                 if (type.equals("create")) {
                     List<Component> loreAccept = new ArrayList<>(List.of(
-                            Component.text("§7Vous allez vous présenter en tant que §6Maire de " + city.getName()),
+		                    Component.text("§7Vous allez vous présenter en tant que §6maire de " + city.getName()),
                             Component.empty(),
                             Component.text("Maire " + player.getName()).color(color).decoration(TextDecoration.ITALIC, false)
                     ));
@@ -132,7 +132,7 @@ public class MayorColorMenu extends Menu {
                                             assert playerMember != null;
                                             if (playerMember == player) continue;
                                             if (playerMember.isOnline()) {
-                                                MessagesManager.sendMessage(playerMember.getPlayer(), Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6Maire§7!")), Prefix.MAYOR, MessageType.ERROR, false);
+	                                            MessagesManager.sendMessage(playerMember.getPlayer(), Component.text(player.getName()).color(color).append(Component.text(" §7s'est présenté en tant que §6maire§7!")), Prefix.MAYOR, MessageType.ERROR, false);
                                             }
                                         }
                                     } else { // donc si c MenuType.OWNER

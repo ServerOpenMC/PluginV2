@@ -16,7 +16,7 @@ public class ChickenThrowerQuest extends Quest implements Listener {
 
     public ChickenThrowerQuest() {
         super(
-                "Lanceur de Poules",
+                "Lanceur de poules",
                 List.of("Lancer {target} oeufs"),
                 new ItemStack(Material.EGG)
         );

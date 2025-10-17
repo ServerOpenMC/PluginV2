@@ -26,7 +26,7 @@ public class TransactionsMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Transactions de " + CacheOfflinePlayer.getOfflinePlayer(target).getName();
+        return "Menu des transactions de " + CacheOfflinePlayer.getOfflinePlayer(target).getName();
     }
 
     @Override

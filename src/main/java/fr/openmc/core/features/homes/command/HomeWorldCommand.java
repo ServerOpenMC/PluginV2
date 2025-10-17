@@ -1,5 +1,7 @@
 package fr.openmc.core.features.homes.command;
 
+import fr.openmc.core.features.homes.command.autocomplete.HomeWorldAddAutoComplete;
+import fr.openmc.core.features.homes.command.autocomplete.HomeWorldRemoveAutoComplete;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -8,10 +10,10 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command("homeworld")
@@ -22,8 +24,7 @@ public class HomeWorldCommand {
     @Subcommand("add")
     @Description("Set the world where homes are disabled")
     @CommandPermission("omc.admins.commands.home.world.add")
-    @AutoComplete("@homeWorldsAdd *")
-    public void setHomeDisabledWorld(Player player, String worldName) {
+    public void setHomeDisabledWorld(Player player, @SuggestWith(HomeWorldAddAutoComplete.class) String worldName) {
         World world = Bukkit.getWorld(worldName);
         if(world == null) {
             MessagesManager.sendMessage(player, Component.text("§cCe monde n'existe pas."), Prefix.HOME, MessageType.ERROR, true);
@@ -42,8 +43,7 @@ public class HomeWorldCommand {
     @Subcommand("remove")
     @Description("Remove the world where homes are disabled")
     @CommandPermission("omc.admins.commands.home.world")
-    @AutoComplete("@homeWorldsRemove *")
-    public void removeWorld(Player player, String worldName) {
+    public void removeWorld(Player player, @SuggestWith(HomeWorldRemoveAutoComplete.class) String worldName) {
         World world = Bukkit.getWorld(worldName);
         if(world == null) {
             MessagesManager.sendMessage(player, Component.text("§cLe monde §e" + worldName + " §cn'existe pas."), Prefix.HOME, MessageType.ERROR, true);

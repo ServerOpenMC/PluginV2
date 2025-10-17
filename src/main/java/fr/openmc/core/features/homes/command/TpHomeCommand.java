@@ -2,6 +2,7 @@ package fr.openmc.core.features.homes.command;
 
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
 import fr.openmc.core.features.homes.menu.HomeMenu;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.PlayerUtils;
@@ -12,10 +13,10 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Optional;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -25,8 +26,7 @@ public class TpHomeCommand {
     @Command("home")
     @Description("Se téléporter à un home")
     @CommandPermission("omc.commands.home.teleport")
-    @AutoComplete("@homes")
-    public static void home(Player player, @Optional String home) {
+    public static void home(Player player, @Optional @SuggestWith(HomeAutoComplete.class) String home) {
 
         if(home != null && home.contains(":") && player.hasPermission("omc.admin.homes.teleport.others")) {
             String[] split = home.split(":");

@@ -1,8 +1,9 @@
 package fr.openmc.core.features.homes.command;
 
-import fr.openmc.core.features.homes.HomesManager;
-import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.api.hooks.WorldGuardHook;
+import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
+import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.homes.world.DisabledWorldHome;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -12,9 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -24,8 +25,7 @@ public class RelocateHomeCommand {
     @Command("relocatehome")
     @Description("Déplace votre home")
     @CommandPermission("omc.commands.home.relocate")
-    @AutoComplete("@homes")
-    public void relocateHome(Player player, String home) {
+    public void relocateHome(Player player, @SuggestWith(HomeAutoComplete.class) String home) {
 
         Location location = player.getLocation();
 

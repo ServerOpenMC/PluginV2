@@ -27,10 +27,12 @@ public class AnimationsManager {
 
         loadAllAnimations(plugin);
 
-        OMCPlugin.registerEvents(
-                new EmoteListener(),
-                new PlayerFinishJoiningListener()
-        );
+        if (!OMCPlugin.isUnitTestVersion()) {
+            OMCPlugin.registerEvents(
+                    new EmoteListener(),
+                    new PlayerFinishJoiningListener()
+            );
+        }
     }
 
     public JsonObject loadAnimation(OMCPlugin plugin, String ressourcePath) {

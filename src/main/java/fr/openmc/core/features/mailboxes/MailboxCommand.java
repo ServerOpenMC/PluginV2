@@ -1,6 +1,7 @@
 package fr.openmc.core.features.mailboxes;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
@@ -37,8 +38,7 @@ public class MailboxCommand {
 
     @Subcommand("send")
     @Description("Envoyer une lettre à un joueur")
-    @AutoComplete("@players")
-    public void sendMailbox(Player player, @Named("player") String receiver) {
+    public void sendMailbox(Player player, @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) String receiver) {
         OfflinePlayer receiverPlayer = Bukkit.getPlayerExact(receiver);
         if (receiverPlayer == null) receiverPlayer = Bukkit.getOfflinePlayerIfCached(receiver);
         if (receiverPlayer == null || !(receiverPlayer.hasPlayedBefore() || receiverPlayer.isOnline())) {
@@ -87,7 +87,7 @@ public class MailboxCommand {
         PendingMailbox.cancelLetter(player, id);
     }
 
-    @DefaultFor("~")
+    @CommandPlaceholder()
     public void mailbox(Player player) {
         new PlayerMailbox(player).openInventory();
     }

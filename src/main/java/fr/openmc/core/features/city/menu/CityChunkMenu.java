@@ -142,7 +142,7 @@ public class CityChunkMenu extends Menu {
 
     @Override
     public @NotNull String getName() {
-        return "Menu des Ville - La Carte";
+	    return "Menu des villes - La carte";
     }
 
     @Override
@@ -209,7 +209,7 @@ public class CityChunkMenu extends Menu {
 
             if (hasFreeClaimAvailable) {
                 inventory.put(49, new ItemBuilder(this, Material.GOLD_BLOCK, itemMeta -> {
-                    itemMeta.displayName(Component.text("§6Claim Gratuit"));
+	                itemMeta.displayName(Component.text("§6Claim gratuit"));
                     itemMeta.lore(List.of(Component.text("§7Vous avez §6" + freeClaims + " claim gratuit !")));
                 }));
             }
@@ -217,7 +217,7 @@ public class CityChunkMenu extends Menu {
 
         inventory.put(53, new ItemBuilder(this, Material.MAP, itemMeta -> {
             itemMeta.displayName(Component.text("§6Rafraîchir la carte"));
-            itemMeta.lore(List.of(Component.text("§7Mettre à jour §6les claims affichés§7.")));
+	        itemMeta.lore(List.of(Component.text("§7Mettre à jour §6les claims affichés§7")));
         }).setOnClick(event -> {
             String refreshCacheKey = player.getWorld().getName() + ":" + startX + "," + startZ;
             CHUNK_CACHE.remove(refreshCacheKey);
@@ -296,7 +296,7 @@ public class CityChunkMenu extends Menu {
                     Component.text("§7Position : §f" + chunkX + ", " + chunkZ),
                     Component.empty(),
                     Component.text("§cCoûte :"),
-                    Component.text("§8- §6Claim Gratuit"),
+		            Component.text("§8- §6Claim gratuit"),
                     Component.empty(),
                     Component.text("§e§lCLIQUEZ POUR CLAIM")
             );
