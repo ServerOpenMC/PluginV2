@@ -1,5 +1,9 @@
 package fr.openmc.core.features.mailboxes.utils;
 
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
+import fr.openmc.core.items.CustomItemRegistry;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
 import net.kyori.adventure.key.Key;
@@ -44,30 +48,20 @@ public class MailboxMenuManager {
         return item;
     }
 
-    public static ItemStack transparentItem() {
-        ItemStack item = new ItemStack(customMaterial);
-        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(2005).build());
-
-        ItemMeta meta = item.getItemMeta();
-        meta.setHideTooltip(true);
-        meta.displayName(Component.empty());
-
-        meta.setMaxStackSize(1);
-        item.setItemMeta(meta);
-        return item;
+    public static ItemBuilder transparentItem(Menu menu) {
+        return new ItemBuilder(menu, CustomItemRegistry.getByName("omc_homes:omc_homes_invisible").getBest()).hide(DataComponentTypes.ITEM_NAME, DataComponentTypes.CUSTOM_NAME, DataComponentTypes.TOOLTIP_DISPLAY);
     }
 
-    public static ItemStack getBtn(String symbol, String name, int data, NamedTextColor color) {
-        return getBtn(symbol, name, data, color, false);
-    }
-
-    public static ItemStack getBtn(String symbol, String name, int data, NamedTextColor color, boolean bold) {
+    public static ItemBuilder getBtn(Menu menu, String symbol, String name, String customModelName, NamedTextColor color, boolean bold) {
         Component itemName = Component.text("[", NamedTextColor.DARK_GRAY).append(Component.text(symbol, color)).append(Component.text("]", NamedTextColor.DARK_GRAY)).append(Component.text(" " + name, color));
-        return getCustomItem(bold ? itemName.decorate(TextDecoration.BOLD) : itemName, data);
+        return new ItemBuilder(menu, CustomItemRegistry.getByName(customModelName).getBest(), meta -> {
+            meta.displayName(bold ? itemName.decorate(TextDecoration.BOLD) : itemName);
+            meta.setMaxStackSize(1);
+        });
     }
 
-    public static ItemStack cancelBtn() {
-        return getBtn("❌", "Cancel", 2000, NamedTextColor.DARK_RED, true);
+    public static ItemBuilder cancelBtn(Menu menu) {
+        return getBtn(menu, "✘", "Annuler", "omc_menus:mailbox_cancel_btn", NamedTextColor.DARK_RED, true);
     }
 
     public static ItemStack nextPageBtn() {
@@ -80,25 +74,25 @@ public class MailboxMenuManager {
         return getCustomItem(name, 2004);
     }
 
-    public static ItemStack acceptBtn() {
-        return getBtn("✔", "Accepter", 2001, NamedTextColor.DARK_GREEN);
+    public static ItemBuilder acceptBtn(Menu menu) {
+        return getBtn(menu, "✔", "Accepter", "omc_menus:mailbox_accept_btn", NamedTextColor.DARK_GREEN, true);
     }
 
-    public static ItemStack sendBtn() {
-        return getBtn("✉", "Envoyer", 2007, NamedTextColor.DARK_AQUA);
+    public static ItemBuilder sendBtn(Menu menu) {
+        return getBtn(menu, "✉", "Envoyer", "omc_menus:mailbox_send", NamedTextColor.DARK_AQUA, true);
     }
 
-    public static ItemStack refuseBtn() {
-        return getBtn("❌", "Refuser", 2002, NamedTextColor.DARK_RED);
+    public static ItemBuilder refuseBtn(Menu menu) {
+        return getBtn(menu, "✘", "Refuser", "omc_menus:mailbox_refuse_btn", NamedTextColor.DARK_RED, true);
     }
 
-    public static ItemStack homeBtn() {
+    public static ItemBuilder homeBtn(Menu menu) {
         ItemStack item = new ItemStack(Material.CHEST);
         ItemMeta meta = item.getItemMeta();
         meta.displayName(Component.text("⬅ Home", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
         meta.setMaxStackSize(1);
         item.setItemMeta(meta);
-        return item;
+        return new ItemBuilder(menu, item).setOnClick(e -> new HomeMailbox(menu.getOwner()).open());
     }
 
     public static boolean isNotNull(ItemStack item) {
@@ -124,15 +118,7 @@ public class MailboxMenuManager {
         return isBtn(item, 2004);
     }
 
-    public static boolean acceptBtn(ItemStack item) {
-        return isBtn(item, 2001);
-    }
-
     public static boolean sendBtn(ItemStack item) {
         return isBtn(item, 2007);
-    }
-
-    public static boolean refuseBtn(ItemStack item) {
-        return isBtn(item, 2002);
     }
 }

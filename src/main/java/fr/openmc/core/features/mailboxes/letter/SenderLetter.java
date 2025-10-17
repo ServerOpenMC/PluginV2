@@ -16,11 +16,11 @@ import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
 
 @Getter
 public class SenderLetter extends ItemStack {
-    private final int id;
+    private final int letterId;
 
-    public SenderLetter(OfflinePlayer player, int id, int itemsCount, LocalDateTime sentAt, boolean refused) {
+    public SenderLetter(OfflinePlayer player, int letterId, int itemsCount, LocalDateTime sentAt, boolean refused) {
         super(Material.PLAYER_HEAD, 1);
-        this.id = id;
+        this.letterId = letterId;
         SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
         skullMeta.setOwningPlayer(player);
         skullMeta.displayName(getStatus(refused));

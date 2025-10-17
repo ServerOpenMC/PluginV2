@@ -106,7 +106,7 @@ public class HomeConfigMenu extends Menu {
         }).setOnClick(inventoryClickEvent -> new HomeDeleteConfirmMenu(getOwner(), home).open()));
 
         content.put(36, new ItemBuilder(this, MailboxMenuManager.previousPageBtn(), true));
-        content.put(44, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        content.put(44, MailboxMenuManager.cancelBtn(this).setCloseButton());
 
         return content;
     }

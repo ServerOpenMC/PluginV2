@@ -70,16 +70,16 @@ public class MailboxManager {
             Letter letter = new Letter(sender.getUniqueId(), receiver.getUniqueId(), itemsBytes, numItems, Timestamp.valueOf(sent), false);
             if (letterDao.create(letter) == 0) return false;
 
-            int id = letter.getId();
-            Player receiverPlayer = receiver.getPlayer();
-            if (receiverPlayer != null) {
-                if (MailboxMenuManager.playerInventories.get(receiverPlayer) instanceof PlayerMailbox receiverMailbox) {
-                    LetterHead letterHead = new LetterHead(sender, numItems, id, sent);
-                    receiverMailbox.addLetter(letterHead);
-                } else {
-                    sendNotification(receiverPlayer, numItems, id, sender.getName());
-                }
-            }
+            int id = letter.getLetterId();
+//            Player receiverPlayer = receiver.getPlayer();
+//            if (receiverPlayer != null) {
+//                if (MailboxMenuManager.playerInventories.get(receiverPlayer) instanceof PlayerMailbox receiverMailbox) {
+//                    LetterHead letterHead = new LetterHead(sender, numItems, id, sent);
+//                    receiverMailbox.addLetter(letterHead);
+//                } else {
+//                    sendNotification(receiverPlayer, numItems, id, sender.getName());
+//                }
+//            }
 
             sendSuccessSendingMessage(sender, receiverName, numItems);
             return true;
@@ -270,10 +270,10 @@ public class MailboxManager {
 
     public static void cancelLetter(Player player, int id) {
         MailboxInv inv = MailboxMenuManager.playerInventories.get(player);
-        if (inv instanceof PlayerMailbox playerMailbox) {
-            playerMailbox.removeLetter(id);
-        } else if (inv instanceof LetterMenu letter) {
-            letter.cancel();
-        }
+//        if (inv instanceof PlayerMailbox playerMailbox) {
+//            playerMailbox.removeLetter(id);
+//        } else if (inv instanceof LetterMenu letter) {
+//            letter.cancel();
+//        }
     }
 }

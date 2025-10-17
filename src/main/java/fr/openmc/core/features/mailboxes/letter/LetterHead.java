@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getPlayerName;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
@@ -20,35 +20,32 @@ import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
 
 @Getter
 public class LetterHead extends ItemStack {
-    private final int id;
+    private final int letterId;
     private final int itemsCount;
     private final ItemStack[] items;
 
-    public LetterHead(OfflinePlayer player, int id, int itemsCount, LocalDateTime sentAt, ItemStack[] items) {
+    public LetterHead(OfflinePlayer player, int letterId, int itemsCount, LocalDateTime sentAt, ItemStack[] items) {
         super(Material.PLAYER_HEAD, 1);
-        this.id = id;
+        this.letterId = letterId;
         this.itemsCount = itemsCount;
         this.items = items;
         SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
         skullMeta.setOwningPlayer(player);
         skullMeta.displayName(getPlayerName(player));
-        ArrayList<Component> lore = new ArrayList<>();
-        Component firstLine = Component.text(formatRelativeDate(sentAt), NamedTextColor.DARK_GRAY);
-        Component secondLine = Component.text("➤ Contient ", NamedTextColor.DARK_GREEN)
-                .append(Component.text(itemsCount, NamedTextColor.GREEN, TextDecoration.BOLD))
-                .append(Component.text(" item" + (itemsCount > 1 ? "s" : ""), NamedTextColor.DARK_GREEN));
-        lore.add(nonItalic(firstLine));
-        lore.add(nonItalic(secondLine));
-        skullMeta.lore(lore);
+        skullMeta.lore(List.of(
+                nonItalic(Component.text(formatRelativeDate(sentAt), NamedTextColor.DARK_GRAY)),
+                nonItalic(Component.text("➤ Contient ", NamedTextColor.DARK_GREEN)
+                        .append(Component.text(itemsCount, NamedTextColor.GREEN, TextDecoration.BOLD))
+                        .append(Component.text(" item" + (itemsCount > 1 ? "s" : ""), NamedTextColor.DARK_GREEN)))
+        ));
         this.setItemMeta(skullMeta);
     }
 
-    public LetterHead(OfflinePlayer player, int id, int itemsCount, LocalDateTime sentAt) {
-        this(player, id, itemsCount, sentAt, null);
+    public LetterHead(OfflinePlayer player, int letterId, int itemsCount, LocalDateTime sentAt) {
+        this(player, letterId, itemsCount, sentAt, null);
     }
 
     public void openLetter(Player player) {
-        LetterMenu letter = new LetterMenu(player, this);
-        letter.openInventory();
+        new LetterMenu(player, this).open();
     }
 }

@@ -134,7 +134,7 @@ public class HomeMenu extends PaginatedMenu {
         }
 
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-        map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        map.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
         map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         return map;

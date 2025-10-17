@@ -30,9 +30,9 @@ public abstract class PaginatedMailbox<T extends ItemStack> extends MailboxInv {
 
     protected void initInventory() {
         inventory = Bukkit.createInventory(this, 54, MailboxMenuManager.getInvTitle(invName));
-        inventory.setItem(45, homeBtn());
+//        inventory.setItem(45, homeBtn());
         inventory.setItem(48, previousPageBtn());
-        inventory.setItem(49, cancelBtn());
+//        inventory.setItem(49, cancelBtn());
         inventory.setItem(50, nextPageBtn());
         updateInventory(false);
     }
