@@ -163,13 +163,13 @@ public final class MenuLib implements Listener {
         if (e.getCurrentItem() == null)
             return;
 
-        if (menu.getTakableSlot().contains(e.getSlot()))
+        if (menu.getTakableSlot().contains(e.getRawSlot()))
             return;
 
         e.setCancelled(true);
         menu.onInventoryClick(e);
 
-        ItemBuilder itemClicked = menu.getContent().get(e.getSlot());
+        ItemBuilder itemClicked = menu.getContent().get(e.getRawSlot());
 
         if (itemClicked != null && itemClicked.isBackButton()) {
             Player player = (Player) e.getWhoClicked();
@@ -208,6 +208,7 @@ public final class MenuLib implements Listener {
      */
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
+        if (!(e.getPlayer() instanceof Player player)) return;
         if (e.getInventory().getHolder(false) instanceof PaginatedMenu menu)
             menu.onClose(e);
 
@@ -215,7 +216,6 @@ public final class MenuLib implements Listener {
             menu.onClose(e);
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Menu)) {
-                    Player player = (Player) e.getPlayer();
                     MenuLib.clearHistory(player);
                 }
             }, 1L);
