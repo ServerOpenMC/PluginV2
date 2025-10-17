@@ -19,19 +19,19 @@ public class Letter extends MailboxInv {
         invErrorMessage = "Erreur lors de la récupération de votre boite aux lettres.";
     }
 
-    private final int id;
+    private final int letterId;
 
     public Letter(Player player, LetterHead letterHead) {
         super(player);
-        this.id = letterHead.getId();
+        this.letterId = letterHead.getLetterId();
         ItemStack[] items = letterHead.getItems();
 
         inventory = Bukkit.createInventory(this, 54, MailboxMenuManager.getInvTitle(INV_NAME));
-        inventory.setItem(45, homeBtn());
-        inventory.setItem(48, acceptBtn());
+//        inventory.setItem(45, homeBtn());
+//        inventory.setItem(48, acceptBtn());
         inventory.setItem(49, letterHead);
-        inventory.setItem(50, refuseBtn());
-        inventory.setItem(53, cancelBtn());
+//        inventory.setItem(50, refuseBtn());
+//        inventory.setItem(53, cancelBtn());
 
         for (int i = 0; i < items.length; i++)
             inventory.setItem(i + 9, items[i]);
@@ -39,8 +39,8 @@ public class Letter extends MailboxInv {
 
     public void refuse() {
         Component message = Component.text("Cliquez ici", NamedTextColor.YELLOW)
-                .clickEvent(getRunCommand("refuse " + id))
-                .hoverEvent(getHoverEvent("Refuser la lettre #" + id))
+                .clickEvent(getRunCommand("refuse " + letterId))
+                .hoverEvent(getHoverEvent("Refuser la lettre #" + letterId))
                 .append(Component.text(" si vous êtes sur de vouloir refuser la lettre.", NamedTextColor.GOLD));
         sendWarningMessage(player, message);
         player.closeInventory();

@@ -37,6 +37,13 @@ public class CustomItemRegistry {
         registerSimpleItem("omc_menus:64_btn", Material.PAPER);
         registerSimpleItem("omc_menus:minus_btn", Material.PAPER);
         registerSimpleItem("omc_menus:plus_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_accept_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_refuse_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_cancel_btn", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_arrow_left", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_arrow_right", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_send", Material.PAPER);
+        registerSimpleItem("omc_menus:mailbox_hourglass", Material.PAPER);
 
         /* Items */
         registerSimpleItem("omc_contest:contest_shell", Material.NAUTILUS_SHELL);

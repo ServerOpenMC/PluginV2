@@ -3,12 +3,15 @@ package fr.openmc.core.features.mailboxes;
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,8 +23,8 @@ import java.util.UUID;
 @Getter
 @DatabaseTable(tableName = "mail")
 public class Letter {
-    @DatabaseField(generatedId = true)
-    private int id;
+    @DatabaseField(generatedId = true, columnName = "letter_id")
+    private int letterId;
     @DatabaseField(canBeNull = false)
     private UUID sender;
     @DatabaseField(canBeNull = false)
@@ -56,14 +59,17 @@ public class Letter {
     public LetterHead toLetterHead() {
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
         ItemStack[] items = BukkitSerializer.deserializeItemStacks(this.items);
-        return new LetterHead(player, id, numItems,
-                LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), items);
+        return new LetterHead(player, letterId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), items);
     }
 
     public SenderLetter toSenderLetter() {
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
 
-        return new SenderLetter(player, id, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
+        return new SenderLetter(player, letterId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
                 refused);
+    }
+
+    public ItemBuilder toSenderLetterItemBuilder(Menu menu) {
+        return new ItemBuilder(menu, toSenderLetter());
     }
 }

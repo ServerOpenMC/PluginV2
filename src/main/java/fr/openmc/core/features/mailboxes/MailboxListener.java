@@ -32,46 +32,6 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 public class MailboxListener implements Listener {
     private final OMCPlugin plugin = OMCPlugin.getInstance();
 
-    /*
-    public MailboxListener() {
-        final int DELAY = 1; // in minutes
-        BukkitRunnable runnable = new BukkitRunnable() {
-            int i = 0;
-
-            @Override
-            public void run() {
-                showBossBar(i++);
-            }
-        };
-        runnable.runTaskTimer(plugin, DELAY, DELAY * 60L * 20L);
-    }
-
-    public void showBossBar(int i) {
-        BossBar bossBar = BossBar.bossBar(getBossBarTitle(i), 1, BossBar.Color.GREEN, BossBar.Overlay.NOTCHED_10);
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.showBossBar(bossBar);
-        }
-        new BukkitRunnable() {
-            int j = 1;
-
-            @Override
-            public void run() {
-                bossBar.progress(1.0F - j++ * 0.1F);
-                if (j > 10) {
-                    for (Player player : Bukkit.getOnlinePlayers()) {
-                        player.hideBossBar(bossBar);
-                    }
-                    cancel();
-                }
-            }
-        }.runTaskTimer(plugin, 10L, 10L);
-    }
-
-    public Component getBossBarTitle(int i) {
-        return Component.text("Envoi de lettre " + i, NamedTextColor.GOLD);
-    }
-    */
-
     @EventHandler
     public void onInventoryOpen(InventoryCloseEvent event) {
         InventoryHolder holder = event.getInventory().getHolder(false);
@@ -81,7 +41,6 @@ public class MailboxListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         InventoryHolder holder = event.getInventory().getHolder(false);
-        if (holder instanceof SendingLetter sendingLetter) sendingLetter.giveItems();
         if (holder instanceof MailboxInv mailboxInv) mailboxInv.removeInventory();
     }
 
@@ -115,105 +74,12 @@ public class MailboxListener implements Listener {
         }
     }
 
-    private void runTask(Runnable runnable) {
-        plugin.getServer().getScheduler().runTask(plugin, runnable);
-    }
-
-    @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        Inventory inv = event.getView().getTopInventory();
-        InventoryHolder holder = inv.getHolder(false);
-        ItemStack item = event.getCurrentItem();
-        Player player = (Player) event.getWhoClicked();
-        int slot = event.getRawSlot();
-        int row = slot / 9;
-
-        if (slot >= inv.getSize()) {
-            if (!event.isShiftClick())
-                return;
-
-            if (holder instanceof SendingLetter sendingLetter) {
-                if (sendingLetter.noSpace(item)) {
-                    event.setCancelled(true);
-                }
-            } else if (holder instanceof MailboxInv) {
-                event.setCancelled(true);
-            }
-
-            return;
-        }
-
-        if (holder instanceof SendingLetter) {
-            if (row < 1 || row > 3) {
-                event.setCancelled(true);
-            }
-        } else if (holder instanceof MailboxInv)
-            event.setCancelled(true);
-
-        //! Buttons actions
-        if (cancelBtn(item) && holder instanceof MailboxInv) {
-            runTask(player::closeInventory);
-            return;
-        } else if (item != null && item.getType() == Material.CHEST && slot == 45 && holder instanceof PlayerMailbox) {
-            runTask(() -> HomeMailbox.openHomeMailbox(player, plugin));
-            return;
-        } else if (holder instanceof PaginatedMailbox<? extends ItemStack> menu) {
-            if (nextPageBtn(item)) {
-                runTask(menu::nextPage);
-                return;
-            } else if (previousPageBtn(item)) {
-                runTask(menu::previousPage);
-                return;
-            }
-        }
-
-        switch (holder) {
-            case SendingLetter sendingLetter when sendBtn(item) -> {
-                runTask(sendingLetter::sendLetter);
-            }
-
-            case PlayerMailbox playerMailbox when item != null && item.getType() == Material.PLAYER_HEAD -> {
-                LetterHead letterHead = playerMailbox.getByIndex(slot);
-                if (letterHead == null)
-                    return;
-
-                runTask(() -> letterHead.openLetter(player));
-            }
-
-            case LetterMenu letterMenu -> {
-                if (acceptBtn(item)) {
-                    runTask(letterMenu::accept);
-                } else if (refuseBtn(item)) {
-                    runTask(letterMenu::refuse);
-                }
-            }
-
-            case HomeMailbox ignored -> {
-                if (slot == 3) {
-                    runTask(() -> HomeMailbox.openPendingMailbox(player));
-                } else if (slot == 4) {
-                    runTask(() -> HomeMailbox.openPlayerMailbox(player));
-                } else if (slot == 5) {
-                    runTask(() -> HomeMailbox.openPlayersList(player));
-                }
-            }
-
-            case PendingMailbox pendingMailbox when item != null && item.getType() == Material.PLAYER_HEAD -> {
-                runTask(() -> pendingMailbox.clickLetter(slot));
-            }
-
-            case PlayersList ignored when item != null && item.getType() == Material.PLAYER_HEAD -> {
-                SkullMeta meta = (SkullMeta) item.getItemMeta();
-                OfflinePlayer receiver = meta.getOwningPlayer();
-                if (receiver == null)
-                    return;
-
-                runTask(() -> {
-                    HomeMailbox.openSendingMailbox(player, receiver, OMCPlugin.getInstance());
-                });
-            }
-
-            case null, default -> {}
-        }
-    }
+//    @EventHandler
+//    public void onClick(InventoryClickEvent event) {
+//        switch (holder) {
+//            case SendingLetter sendingLetter when sendBtn(item) -> {
+//                runTask(sendingLetter::sendLetter);
+//            }
+//        }
+//    }
 }

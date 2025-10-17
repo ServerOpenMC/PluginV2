@@ -1,61 +1,100 @@
 package fr.openmc.core.features.mailboxes.menu;
 
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.InventorySize;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.getCustomItem;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 
-public class HomeMailbox extends MailboxInv {
-    private static final String INV_NAME = "\uF990\uE004";
-    
-    static OMCPlugin plugin;
-    
-    public HomeMailbox(Player player, OMCPlugin plugin) {
-        super(player);
-        HomeMailbox.plugin = plugin;
-        this.inventory = Bukkit.createInventory(this, 9, MailboxMenuManager.getInvTitle(INV_NAME));
-        inventory.setItem(3, getCustomItem(Component.text("En attente", NamedTextColor.DARK_AQUA, TextDecoration.BOLD), 2006));
-        inventory.setItem(4, getHead(player, Component.text("Ma boite aux lettres", NamedTextColor.GOLD, TextDecoration.BOLD)));
-        inventory.setItem(5, getCustomItem(Component.text("Envoyer", NamedTextColor.DARK_AQUA, TextDecoration.BOLD), 2007));
-    }
+public class HomeMailbox extends Menu {
 
-    public static void openPlayersList(Player player) {
-        PlayersList playersList = new PlayersList(player);
-        playersList.openInventory();
-    }
-
-    public static void openSendingMailbox(Player player, OfflinePlayer receiver, OMCPlugin plugin) {
-        SendingLetter sendingLetter = new SendingLetter(player, receiver, plugin);
-        sendingLetter.openInventory();
-    }
-
-    public static void openPlayerMailbox(Player player) {
-        PlayerMailbox playerMailbox = new PlayerMailbox(player);
-        playerMailbox.openInventory();
-    }
-
-    public static void openPendingMailbox(Player player) {
-        PendingMailbox pendingMailbox = new PendingMailbox(player);
-        pendingMailbox.openInventory();
-    }
-
-    public static void openHomeMailbox(Player player, OMCPlugin plugin) {
-        HomeMailbox homeMailbox = new HomeMailbox(player, plugin);
-        homeMailbox.openInventory();
+    @Override
+    public @NotNull String getName() {
+        return "Boite aux lettres";
     }
 
     @Override
-    public void openInventory() {
-        player.openInventory(this.inventory);
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§f§r:offset_-8::home_mailbox:");
     }
+    
+    public HomeMailbox(Player player) {
+        super(player);
+    }
+
+    @Override
+    public @NotNull InventorySize getInventorySize() {
+        return InventorySize.SMALLEST;
+    }
+
+    @Override
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
+
+        content.put(3, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_hourglass").getBest(), meta -> {
+            meta.displayName(Component
+                    .text("En attente", NamedTextColor.DARK_AQUA, TextDecoration.BOLD)
+                    .decoration(TextDecoration.ITALIC, false)
+            );
+        }).setOnClick(e -> new PendingMailbox(getOwner()).open()));
+
+        content.put(4, new ItemBuilder(this, getHead(getOwner()), meta -> {
+            meta.displayName(Component.
+                    text("Ma boite aux lettres", NamedTextColor.GOLD, TextDecoration.BOLD)
+                    .decoration(TextDecoration.ITALIC, false)
+            );
+        }).setOnClick(e -> new PlayerMailbox(getOwner()).open()));
+
+        content.put(5, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_send").getBest(), meta -> {
+            meta.displayName(Component
+                    .text("Envoyer", NamedTextColor.DARK_AQUA, TextDecoration.BOLD)
+                    .decoration(TextDecoration.ITALIC, false)
+            );
+        }).setOnClick(e -> new PlayersList(getOwner()).open()));
+
+        return content;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
+    }
+
+    public static void openSendingMailbox(Player player, OfflinePlayer receiver, OMCPlugin plugin) {
+        new SendingLetter(player, receiver).open();
+    }
+
+    public static void openHomeMailbox(Player player) {
+        HomeMailbox homeMailbox = new HomeMailbox(player);
+        homeMailbox.open();
+    }
+
+    @Override
+    public void onInventoryClick(InventoryClickEvent e) {}
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {}
 }

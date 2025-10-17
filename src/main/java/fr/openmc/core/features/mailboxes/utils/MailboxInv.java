@@ -33,6 +33,7 @@ public abstract class MailboxInv implements InventoryHolder {
     }
 
     public void openInventory() {
+        System.out.println(inventory);
         if (inventory == null) {
             sendInvErrorMessage(player);
             return;
