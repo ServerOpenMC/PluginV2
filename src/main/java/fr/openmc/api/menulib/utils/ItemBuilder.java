@@ -147,9 +147,7 @@ public class ItemBuilder extends ItemStack {
 		super(item);
 		this.itemMenu = itemMenu;
 		meta = item.getItemMeta();
-		if (itemMeta != null) {
-			itemMeta.accept(meta);
-		}
+		if (itemMeta != null) itemMeta.accept(meta);
 		setItemMeta(meta);
 	}
 

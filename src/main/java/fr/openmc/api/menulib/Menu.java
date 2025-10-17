@@ -49,7 +49,6 @@ public abstract class Menu implements InventoryHolder {
 		this.owner = owner;
 	}
 	
-	
 	/**
 	 * Retrieves the name of the menu.
 	 *
@@ -119,7 +118,6 @@ public abstract class Menu implements InventoryHolder {
 	 *
 	 * @return A non-null list of integers representing the takable inventory slot indices.
 	 */
-
 	public abstract List<Integer> getTakableSlot();
 
 	/**
@@ -165,13 +163,9 @@ public abstract class Menu implements InventoryHolder {
 		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) return;
 
 		if (this instanceof PaginatedMenu paginatedMenu) {
-			if (item.isPreviousButton() && paginatedMenu.isFirstPage()) {
+			if ((item.isPreviousButton() && paginatedMenu.isFirstPage())
+                    || (item.isNextButton() && paginatedMenu.isLastPage()))
 				return;
-			}
-
-			if (item.isNextButton() && paginatedMenu.isLastPage()) {
-				return;
-			}
 		}
 
 		if (item.isBackButton()) {
