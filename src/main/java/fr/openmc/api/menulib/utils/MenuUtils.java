@@ -10,7 +10,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 public class MenuUtils {
 	
@@ -86,4 +89,14 @@ public class MenuUtils {
 			}
 		};
 	}
+
+    /**
+     * Get the inventory item slots (from 54 to 89)
+     * @return A list of integers representing the inventory item slots
+     */
+    public static List<Integer> getInventoryItemSlots() {
+        return IntStream.rangeClosed(54, 89)
+                        .boxed()
+                        .toList();
+    }
 }

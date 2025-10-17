@@ -72,7 +72,7 @@ public class LeaderboardManager {
      * @return A Component representing the GitHub contributors leaderboard.
      */
     public static Component createContributorsTextLeaderboard() {
-        var contributorsMap = LeaderboardManager.getGithubContributorsMap();
+        var contributorsMap = new TreeMap<>(LeaderboardManager.getGithubContributorsMap());
         if (contributorsMap.isEmpty()) {
             return Component.text("Aucun contributeur trouvé pour le moment.").color(NamedTextColor.RED);
         }
@@ -107,7 +107,7 @@ public class LeaderboardManager {
      * @return A Component representing the player money leaderboard.
      */
     public static Component createMoneyTextLeaderboard() {
-        var moneyMap = LeaderboardManager.getPlayerMoneyMap();
+        var moneyMap = new TreeMap<>(LeaderboardManager.getPlayerMoneyMap());
         if (moneyMap.isEmpty()) {
             return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
         }
@@ -138,7 +138,7 @@ public class LeaderboardManager {
      * @return A Component representing the playtime leaderboard.
      */
     public static Component createCityMoneyTextLeaderboard() {
-        var moneyMap = LeaderboardManager.getVilleMoneyMap();
+        var moneyMap = new TreeMap<>(LeaderboardManager.getVilleMoneyMap());
         if (moneyMap.isEmpty()) {
             return Component.text("Aucune ville trouvée pour le moment.").color(NamedTextColor.RED);
         }
@@ -169,7 +169,7 @@ public class LeaderboardManager {
      * @return A Component representing the playtime leaderboard.
      */
     public static Component createPlayTimeTextLeaderboard() {
-        var playtimeMap = LeaderboardManager.getPlayTimeMap();
+        var playtimeMap = new TreeMap<>(LeaderboardManager.getPlayTimeMap());
         if (playtimeMap.isEmpty()) {
             return Component.text("Aucun joueur trouvé pour le moment.").color(NamedTextColor.RED);
         }

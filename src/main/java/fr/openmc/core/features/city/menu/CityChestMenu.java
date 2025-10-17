@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static fr.openmc.core.features.city.conditions.CityChestConditions.*;
 
@@ -79,13 +81,14 @@ public class CityChestMenu extends PaginatedMenu {
         return Arrays.asList(contents);
     }
 
-    private static final List<Integer> CITY_ITEM_SLOTS =
+    private static final List<Integer> CITY_MENU_ITEM_SLOTS =
             IntStream.rangeClosed(0, 44)
                     .boxed()
                     .toList();
+
     @Override
     public List<Integer> getTakableSlot() {
-        return CITY_ITEM_SLOTS;
+        return Stream.concat(CITY_MENU_ITEM_SLOTS.stream(), MenuUtils.getInventoryItemSlots().stream()).toList();
     }
 
     @Override
