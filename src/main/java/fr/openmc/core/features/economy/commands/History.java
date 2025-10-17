@@ -11,7 +11,10 @@ public class History {
     @Description("Affiche votre historique de transactions")
     @CommandPermission("omc.commands.money.history")
     @Cooldown(30)
-    public void history(Player sender, @Optional @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
+    public void history(
+            Player sender,
+            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) Player target
+    ) {
         if (!(sender instanceof Player player)) { return; }
 
         if (target == null) {

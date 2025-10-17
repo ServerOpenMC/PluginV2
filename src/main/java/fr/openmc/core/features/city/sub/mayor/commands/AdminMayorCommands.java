@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.mayor.commands;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -9,20 +10,20 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Named;
-import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @Command({"adminmayor"})
 @CommandPermission("omc.admins.commands.adminmayor")
 public class AdminMayorCommands {
     @Subcommand({"setphase"})
     @CommandPermission("omc.admins.commands.adminmayor")
-    public void setPhase(Player sender, int phase) {
+    public void setPhase(
+            Player sender,
+            @Named("phase") @Suggest({"1", "2"}) int phase
+    ) {
         if (phase == 1) {
             MayorManager.initPhase1();
         } else if (phase == 2){
@@ -32,7 +33,11 @@ public class AdminMayorCommands {
 
     @Subcommand({"changeelection"})
     @CommandPermission("omc.admins.commands.adminmayor")
-    public void changeElection(Player sender, @Named("name") String cityName, String electionType) {
+    public void changeElection(
+            Player sender,
+            @Named("name") @SuggestWith(CityNameAutoComplete.class) String cityName,
+            @Named("electionType") @Suggest({"owner_choose", "election"}) String electionType
+    ) {
         City city = CityManager.getCityByName(cityName);
 
         if (city == null) {

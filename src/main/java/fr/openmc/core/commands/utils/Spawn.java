@@ -10,10 +10,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Default;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.SuggestWith;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class Spawn {
@@ -21,7 +18,10 @@ public class Spawn {
     @Command("spawn")
     @Description("Permet de se rendre au spawn")
     @CommandPermission("omc.commands.spawn")
-    public void spawn(CommandSender sender, @Default("me") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
+    public void spawn(
+            CommandSender sender,
+            @Named("player") @Default("me") @SuggestWith(OnlinePlayerAutoComplete.class) Player target
+    ) {
         
         Location spawnLocation = SpawnManager.getSpawnLocation();
 

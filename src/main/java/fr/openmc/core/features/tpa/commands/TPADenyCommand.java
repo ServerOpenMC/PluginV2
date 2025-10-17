@@ -22,7 +22,11 @@ public class TPADenyCommand {
 	 */
 	@Command("tpadeny")
 	@CommandPermission("omc.commands.tpa")
-	public void tpaDeny(Player target, @Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player") Player player) {
+	public void tpaDeny(
+			Player target,
+			@Optional @SuggestWith(TpaPendingAutoComplete.class) @Named("player")
+			Player player
+	) {
 		if (!TPAQueue.hasPendingRequest(target)) {
 			MessagesManager.sendMessage(target, Component.text("§4Vous n'avez aucune demande de téléportation en cours"), Prefix.OPENMC, MessageType.ERROR, false);
 			return;

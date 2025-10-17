@@ -54,7 +54,12 @@ public class LeaderboardCommands {
     @Subcommand("setPos")
     @CommandPermission("op")
     @Description("Défini la position d'un Hologram.")
-    void setPosCommand(Player player, @Suggest({"contributors", "money", "ville-money", "playtime"}) String leaderboard) {
+    void setPosCommand(
+            Player player,
+            @Named("leaderboardName")
+            @Suggest({"contributors", "money", "ville-money", "playtime"})
+            String leaderboard
+    ) {
         if (leaderboard.equals("contributors") || leaderboard.equals("money") || leaderboard.equals("ville-money") || leaderboard.equals("playtime")) {
             try {
                 LeaderboardManager.setHologramLocation(leaderboard, player.getLocation());
@@ -117,7 +122,10 @@ public class LeaderboardCommands {
     @Subcommand("setScale")
     @CommandPermission("op")
     @Description("Défini la taille des Holograms.")
-    void setScaleCommand(Player player, float scale) {
+    void setScaleCommand(
+            Player player,
+            @Named("scale") float scale
+    ) {
         player.sendMessage("§aTaille des hologrammes modifiée à " + scale);
         try {
             LeaderboardManager.setScale(scale);

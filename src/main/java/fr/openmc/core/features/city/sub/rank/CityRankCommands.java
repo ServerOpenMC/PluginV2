@@ -47,7 +47,10 @@ public class CityRankCommands {
 	
 	@Subcommand("edit")
 	@CommandPermission("omc.commands.city.rank.edit")
-	public void edit(Player player, @Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName) {
+	public void edit(
+			Player player,
+			@Named("rank") @SuggestWith(CityRanksAutoComplete.class) String rankName
+	) {
 		City city = CityManager.getPlayerCity(player.getUniqueId());
 		if (city == null) {
 			MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);

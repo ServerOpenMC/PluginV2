@@ -13,6 +13,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -23,7 +24,11 @@ public class RenameHomeCommand {
     @Command("renamehome")
     @Description("Renomme votre home")
     @CommandPermission("omc.commands.home.rename")
-    public void renameHome(Player player, @SuggestWith(HomeAutoComplete.class) String home, String newName) {
+    public void renameHome(
+            Player player,
+            @Named("home") @SuggestWith(HomeAutoComplete.class) String home,
+            @Named("nouveau nom de home") String newName
+    ) {
         if(player.hasPermission("omc.admin.homes.rename.other") && home.contains(":")) {
             String[] split = home.split(":");
             String targetName = split[0];

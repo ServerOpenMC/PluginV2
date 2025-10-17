@@ -13,10 +13,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Optional;
-import revxrsal.commands.annotation.SuggestWith;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -26,7 +23,10 @@ public class TpHomeCommand {
     @Command("home")
     @Description("Se téléporter à un home")
     @CommandPermission("omc.commands.home.teleport")
-    public static void home(Player player, @Optional @SuggestWith(HomeAutoComplete.class) String home) {
+    public static void home(
+            Player player,
+            @Named("home") @Optional @SuggestWith(HomeAutoComplete.class) String home
+    ) {
 
         if(home != null && home.contains(":") && player.hasPermission("omc.admin.homes.teleport.others")) {
             String[] split = home.split(":");
