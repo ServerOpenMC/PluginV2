@@ -14,13 +14,13 @@ public enum InterestRewards implements CityRewards {
     LEVEL_1(.00),
     LEVEL_2(.00),
     LEVEL_3(.00),
-    LEVEL_4(.01),
-    LEVEL_5(.02),
-    LEVEL_6(.01),
-    LEVEL_7(.01),
-    LEVEL_8(.01),
-    LEVEL_9(.01),
-    LEVEL_10(.03);
+    LEVEL_4(.001),
+    LEVEL_5(.002),
+    LEVEL_6(.002),
+    LEVEL_7(.002),
+    LEVEL_8(.003),
+    LEVEL_9(.004),
+    LEVEL_10(.005);
 
     /**
      * Pourcentage d'intérêt pour le niveau.
