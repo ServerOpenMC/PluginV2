@@ -21,6 +21,8 @@ import fr.openmc.core.features.displays.TabList;
 import fr.openmc.core.features.displays.bossbar.BossbarManager;
 import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
+import fr.openmc.core.features.dream.DreamManager;
+import fr.openmc.core.features.dream.generation.DreamDimensionManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
@@ -135,8 +137,6 @@ public class OMCPlugin extends JavaPlugin {
 
         new MascotsManager();
 
-        new MultiBlockManager();
-
         PlayerSettingsManager.loadAllPlayerSettings();
     }
 
@@ -147,10 +147,14 @@ public class OMCPlugin extends JavaPlugin {
         new QuestsManager();
         new CityManager();
         new ContestManager();
+        new DreamManager();
+        new MultiBlockManager();
         if (WorldGuardHook.isHasWorldGuard()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
+
+        DreamDimensionManager.postInit();
         if (!OMCPlugin.isUnitTestVersion()) {
             new LeaderboardManager();
             new MainMenu(this);
@@ -165,6 +169,8 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion()) {
             HologramLoader.unloadAll();
         }
+
+        DreamManager.disable();
 
         // - MultiBlocks
         MultiBlockManager.save();

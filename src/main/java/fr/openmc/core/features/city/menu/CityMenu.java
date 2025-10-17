@@ -5,7 +5,6 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
@@ -34,6 +33,7 @@ import fr.openmc.core.features.city.sub.rank.menus.CityRanksMenu;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.DateUtils;
+import fr.openmc.core.utils.SkullUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -295,7 +295,7 @@ public class CityMenu extends Menu {
             menu.open();
         }));
 
-        ItemStack playerHead = ItemUtils.getPlayerSkull(player.getUniqueId());
+        ItemStack playerHead = SkullUtils.getPlayerSkull(player.getUniqueId());
 
         inventory.put(22, new ItemBuilder(this, playerHead, itemMeta -> {
             itemMeta.displayName(Component.text("§dListe des Membres"));
