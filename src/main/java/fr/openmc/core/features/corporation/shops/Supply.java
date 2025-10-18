@@ -1,4 +1,4 @@
-package fr.openmc.core.disabled.corporation.shops;
+package fr.openmc.core.features.corporation.shops;
 
 import lombok.Getter;
 import lombok.Setter;

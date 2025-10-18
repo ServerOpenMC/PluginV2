@@ -1,14 +1,15 @@
-package fr.openmc.core.disabled.corporation.menu.shop;
+package fr.openmc.core.features.corporation.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.disabled.corporation.shops.Shop;
-import fr.openmc.core.disabled.corporation.shops.ShopItem;
+import fr.openmc.core.features.corporation.shops.Shop;
+import fr.openmc.core.features.corporation.shops.ShopItem;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
@@ -60,9 +61,9 @@ public class ShopSalesMenu extends PaginatedMenu {
         for (ShopItem sale : shop.getSales()) {
             items.add(new ItemBuilder(this, sale.getItem().getType(), itemMeta -> {
                 itemMeta.displayName(ShopItem.getItemName(sale.getItem()).color(NamedTextColor.YELLOW).decorate(TextDecoration.BOLD));
-                itemMeta.setLore(List.of(
-                        "§7■ Prix : §a" + sale.getPrice() + EconomyManager.getEconomyIcon(),
-                        "§7■ Quantité : §a" + sale.getAmount()
+                itemMeta.lore(List.of(
+                        Component.text("§7■ Prix : §a" + sale.getPrice() + EconomyManager.getEconomyIcon()),
+                        Component.text("§7■ Quantité : §a" + sale.getAmount())
                 ));
             }));
         }
@@ -72,15 +73,15 @@ public class ShopSalesMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> buttons = new HashMap<>();
-        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.itemName(Component.text("§7Fermer")))
                 .setCloseButton());
-        ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
+        ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.itemName(Component.text("§aPage suivante")));
         if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
-            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cRetour"))
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.itemName(Component.text("§cRetour")))
                     .setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, itemIndex).open()));
             buttons.put(50, nextPageButton);
         } else {
-            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.itemName(Component.text("§cPage précédente")))
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
         }

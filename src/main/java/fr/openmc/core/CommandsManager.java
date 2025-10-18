@@ -8,8 +8,8 @@ import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
 import fr.openmc.core.features.adminshop.AdminShopCommand;
+import fr.openmc.core.features.corporation.commands.ShopCommand;
 import fr.openmc.core.features.credits.CreditsCommand;
-import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.cube.CubeCommands;
 import fr.openmc.core.features.friend.FriendCommand;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
@@ -58,7 +58,8 @@ public class CommandsManager {
                 new SettingsCommand(),
                 new Cooldowns(),
                 new CreditsCommand(),
-                new CubeCommands()
+                new CubeCommands(),
+		        new ShopCommand()
         );
     }
 }

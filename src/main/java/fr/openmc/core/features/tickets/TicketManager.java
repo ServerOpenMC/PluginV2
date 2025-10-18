@@ -1,12 +1,17 @@
 package fr.openmc.core.features.tickets;
 
-import com.comphenix.protocol.PacketType;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import fr.openmc.core.OMCPlugin;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 @Getter

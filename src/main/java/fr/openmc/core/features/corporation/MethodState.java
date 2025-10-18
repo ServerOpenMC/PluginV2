@@ -1,4 +1,4 @@
-package fr.openmc.core.disabled.corporation;
+package fr.openmc.core.features.corporation;
 
 import lombok.Getter;
 
@@ -10,5 +10,4 @@ public enum MethodState {
     FAILURE,
     ESCAPE,
     SPECIAL
-
 }

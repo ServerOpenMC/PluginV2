@@ -1,15 +1,13 @@
-package fr.openmc.core.disabled.corporation.models;
-
-import java.util.UUID;
-
-import org.bukkit.inventory.ItemStack;
+package fr.openmc.core.features.corporation.models;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import fr.openmc.core.disabled.corporation.shops.ShopItem;
+import fr.openmc.core.features.corporation.shops.ShopItem;
 import lombok.Getter;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 @Getter
 @DatabaseTable(tableName = "shop_sales")
@@ -17,7 +15,7 @@ public class DBShopSale {
     @DatabaseField(canBeNull = false, dataType = DataType.BYTE_ARRAY)
     private byte[] items;
     @DatabaseField(canBeNull = false)
-    private UUID shop;
+    private UUID ownerUUID;
     @DatabaseField(canBeNull = false, columnName = "sale_uuid")
     private UUID saleUuid;
     @DatabaseField(canBeNull = false)
@@ -28,10 +26,10 @@ public class DBShopSale {
     DBShopSale() {
         // required for ORMLite
     }
-
-    public DBShopSale(byte[] items, UUID shop, double price, int amount, UUID saleUuid) {
+    
+    public DBShopSale(byte[] items, UUID ownerUUID, double price, int amount, UUID saleUuid) {
         this.items = items;
-        this.shop = shop;
+        this.ownerUUID = ownerUUID;
         this.price = price;
         this.amount = amount;
         this.saleUuid = saleUuid;
