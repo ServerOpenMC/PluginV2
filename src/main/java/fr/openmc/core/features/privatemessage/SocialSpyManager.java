@@ -3,7 +3,6 @@ package fr.openmc.core.features.privatemessage;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,20 +12,14 @@ import java.util.Set;
 import java.util.UUID;
 
 public class SocialSpyManager {
-
-    @Getter private static SocialSpyManager instance;
-    private final Set<UUID> socialSpyEnabled = new HashSet<>();
-
-    public SocialSpyManager() {
-        instance = this;
-    }
+    private static final Set<UUID> socialSpyEnabled = new HashSet<>();
 
     /**
      * Toggles the social spy feature for the player.
      *
      * @param player The player whose social spy status is being toggled.
      */
-    public void toggleSocialSpy(Player player) {
+    public static void toggleSocialSpy(Player player) {
         UUID playerUUID = player.getUniqueId();
 
         if (socialSpyEnabled.contains(playerUUID)) {
@@ -48,7 +41,7 @@ public class SocialSpyManager {
      * @param player The player to check.
      * @return true if social spy is enabled, false otherwise.
      */
-    public boolean hasSocialSpyEnabled(Player player) {
+    public static boolean hasSocialSpyEnabled(Player player) {
         return socialSpyEnabled.contains(player.getUniqueId());
     }
 
@@ -59,7 +52,7 @@ public class SocialSpyManager {
      * @param receiver The player receiving the message.
      * @param message The message being sent.
      */
-    public void broadcastToSocialSpy(Player sender, Player receiver, String message) {
+    public static void broadcastToSocialSpy(Player sender, Player receiver, String message) {
         String socialSpyMessage =
                 "§8[§6SPY§8] §7" + sender.getName() + " §6→ §7" + receiver.getName() + "§8: §7" + message;
 

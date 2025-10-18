@@ -8,7 +8,7 @@ import fr.openmc.core.features.city.sub.milestone.listeners.CooldownEndListener;
 import fr.openmc.core.features.city.sub.statistics.listeners.MemberJoinListener;
 
 public class CityMilestoneManager {
-    public CityMilestoneManager() {
+    public static void init() {
         CommandsManager.getHandler().register(
                 new AdminCityMilestoneCommands(),
                 new CityMilestoneCommands()

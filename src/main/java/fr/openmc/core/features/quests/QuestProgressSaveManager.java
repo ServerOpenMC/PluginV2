@@ -20,9 +20,9 @@ public class QuestProgressSaveManager {
     static final Map<UUID, Map<String, Object>> playerQuestProgress = new ConcurrentHashMap<>();
 
     /**
-     * Constructor for QuestProgressSaveManager.
+     * Init for QuestProgressSaveManager.
      */
-    public QuestProgressSaveManager() {
+    public static void init() {
         File saveFolder = new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER);
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();

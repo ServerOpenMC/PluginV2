@@ -12,7 +12,7 @@ public class UpdateManager {
     @Getter
     static Component message;
 
-    public UpdateManager() {
+    public static void init() {
         String version = OMCPlugin.getInstance().getPluginMeta().getVersion();
         String milestoneUrl = "https://github.com/ServerOpenMC/PluginV2/releases/";
 

@@ -16,7 +16,7 @@ public class SpawnManager {
     private static FileConfiguration spawnConfig;
     @Getter private static Location spawnLocation;
 
-    public SpawnManager() {
+    public static void init() {
         spawnFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "spawn.yml");
         loadSpawnConfig();
     }

@@ -19,7 +19,7 @@ public class LuckPermsHook {
     @Getter
     private static boolean hasLuckPerms;
 
-    public LuckPermsHook() {
+    public static void init() {
         if (Bukkit.getPluginManager().getPlugin("LuckPerms") == null)
             return;
 

@@ -70,7 +70,7 @@ public class MayorManager {
 
     private static final Random RANDOM = new Random();
 
-    public MayorManager() {
+    public static void init() {
         // LISTENERS
         new PhaseListener(OMCPlugin.getInstance());
         OMCPlugin.registerEvents(

@@ -49,7 +49,7 @@ public class MascotsManager {
     public static NamespacedKey mascotsKey;
     private static Dao<Mascot, String> mascotsDao;
 
-    public MascotsManager() {
+    public static void init() {
         // changement du spigot.yml pour permettre aux mascottes d'avoir 3000 cœurs
         File spigotYML = new File("spigot.yml");
         YamlConfiguration spigotYMLConfig = YamlConfiguration.loadConfiguration(spigotYML);

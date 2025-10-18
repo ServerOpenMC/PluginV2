@@ -34,9 +34,9 @@ public class AdminShopManager {
     private static AdminShopYAML adminShopYAML;
 
     /**
-     * Constructs the AdminShopManager and loads the admin shop configuration.
+     * Initializes the AdminShopManager by loading the configuration.
      */
-    public AdminShopManager() {
+    public static void init() {
         adminShopYAML = new AdminShopYAML();
         adminShopYAML.loadConfig();
     }

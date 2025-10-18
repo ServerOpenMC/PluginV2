@@ -16,8 +16,8 @@ import java.util.List;
 public class CityRankManager {
 	
 	private static Dao<DBCityRank, String> ranksDao;
-	
-	public CityRankManager() {
+
+	public static void init() {
 		loadRanks();
 	}
 	
@@ -117,7 +117,7 @@ public class CityRankManager {
 	/**
 	 * Load all city ranks from the database and associate them with their respective cities.
 	 */
-	public void loadRanks() {
+	public static void loadRanks() {
 		try {
 			for (DBCityRank rank : ranksDao.queryForAll()) {
 				City city = CityManager.getCity(rank.getCityUUID());

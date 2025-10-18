@@ -65,7 +65,7 @@ public class ContestManager {
      * - Initialise les données globales et les joueurs
      * - Programme le lancement et la fin des différentes phases du contest
      */
-    public ContestManager() {
+    public static void init() {
         // ** LISTENERS **
         if (ItemsAdderHook.isHasItemAdder()) {
             OMCPlugin.registerEvents(

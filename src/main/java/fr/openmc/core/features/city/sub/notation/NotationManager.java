@@ -78,7 +78,7 @@ public class NotationManager {
      *
      * <p>Charge les notations, enregistre les commandes et les listeners, et planifie la tâche nocturne.</p>
      */
-    public NotationManager() {
+    public static void init() {
         loadNotations();
         CommandsManager.getHandler().register(
                 new NotationCommands(),

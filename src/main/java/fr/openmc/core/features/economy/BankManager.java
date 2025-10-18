@@ -44,15 +44,15 @@ public class BankManager {
 
     private static Dao<Bank, String> banksDao;
 
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Bank.class);
-        banksDao = DaoManager.createDao(connectionSource, Bank.class);
-    }
-
-    public BankManager() {
+    public static void init() {
         banks = loadAllBanks();
         CommandsManager.getHandler().register(new BankCommands());
         updateInterestTimer();
+    }
+
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, Bank.class);
+        banksDao = DaoManager.createDao(connectionSource, Bank.class);
     }
 
     public static double getBankBalance(UUID playerUUID) {

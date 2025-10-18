@@ -60,7 +60,7 @@ public class LeaderboardManager {
     private static TextDisplay villeMoneyHologram;
     private static TextDisplay playTimeHologram;
 
-    public LeaderboardManager() {
+    public static void init() {
         loadLeaderBoardConfig();
         CommandsManager.getHandler().register(new LeaderboardCommands());
         enable();

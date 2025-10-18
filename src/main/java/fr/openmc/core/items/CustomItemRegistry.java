@@ -18,7 +18,7 @@ public class CustomItemRegistry {
     static final HashMap<String, CustomItem> items = new HashMap<>();
     static final NamespacedKey customNameKey = new NamespacedKey("aywen", "custom_item");
 
-    public CustomItemRegistry() {
+    public static void init() {
         CommandsManager.getHandler().register(new CustomItemsDebugCommand());
 
         // ** REGISTRER ITEMSTACK OF ITEM ADDER **

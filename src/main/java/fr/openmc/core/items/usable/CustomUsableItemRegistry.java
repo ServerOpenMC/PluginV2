@@ -14,7 +14,7 @@ public class CustomUsableItemRegistry {
      * Initializes the registry and registers all custom usable items.
      * This constructor should be called once during server startup.
      */
-    public CustomUsableItemRegistry() {
+    public static void init() {
         // register here
     }
 

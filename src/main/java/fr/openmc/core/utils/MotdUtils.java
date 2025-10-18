@@ -13,9 +13,9 @@ import java.util.Random;
 
 public class MotdUtils {
     private static Component motd;
-    private final YamlConfiguration motdConfig;
+    private static YamlConfiguration motdConfig = null;
 
-    public MotdUtils() {
+    public static void init() {
         File motdFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "motd.yml");
 
         if (!motdFile.exists()) {

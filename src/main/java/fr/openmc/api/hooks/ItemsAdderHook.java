@@ -7,7 +7,7 @@ public class ItemsAdderHook {
     @Getter
     private static boolean hasItemAdder;
 
-    public ItemsAdderHook() {
+    public static void init() {
         hasItemAdder = Bukkit.getPluginManager().isPluginEnabled("ItemsAdder");
     }
 }

@@ -28,9 +28,9 @@ public class CityStatisticsManager {
     private static Dao<CityStatistics, String> statisticsDao;
 
     /**
-     * Constructeur qui initialise le chargement des statistiques.
+     * Initialise le gestionnaire des statistiques des villes en chargeant les statistiques depuis la base de données.
      */
-    public CityStatisticsManager() {
+    public static void init() {
         loadCityStatistics();
     }
 

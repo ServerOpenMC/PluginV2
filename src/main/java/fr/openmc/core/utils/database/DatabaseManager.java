@@ -31,7 +31,7 @@ public class DatabaseManager {
     @Getter
     private static ConnectionSource connectionSource;
 
-    public DatabaseManager() {
+    public static void init() {
         try {
             if (OMCPlugin.isUnitTestVersion()) {
                 Class.forName("org.h2.Driver");
