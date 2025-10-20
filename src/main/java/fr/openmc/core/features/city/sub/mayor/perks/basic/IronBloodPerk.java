@@ -80,8 +80,8 @@ public class IronBloodPerk implements Listener {
                 return;
 
             List<Player> nearbyEnemies = golem.getNearbyEntities(10, 10, 10).stream()
-                    .filter(ent -> ent instanceof Player)
-                    .map(ent -> (Player) ent)
+                    .filter(Player.class::isInstance)
+                    .map(Player.class::cast)
                     .filter(nearbyPlayer -> {
                         City enemyCity = CityManager.getPlayerCity(nearbyPlayer.getUniqueId());
                         return enemyCity != null && !enemyCity.getUniqueId().equals(MascotUtils.getCityFromEntity(mascotUUID).getUniqueId());
