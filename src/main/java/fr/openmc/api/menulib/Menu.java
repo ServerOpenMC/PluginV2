@@ -192,13 +192,26 @@ public abstract class Menu implements InventoryHolder {
 	 * in that slot.
 	 */
 	public final Map<Integer, ItemBuilder> fill(Material material) {
-		Map<Integer, ItemBuilder> map = new HashMap<>();
-		for (int i = 0; i < getInventorySize().getSize(); i++) {
-            ItemBuilder filler = new ItemBuilder(this, material, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
-			map.put(i, filler);
-		}
-		return map;
+		return fill(new ItemStack(material));
 	}
+
+    /**
+     * Fills the entire inventory with the specified {@link ItemStack}.
+     * Each slot in the inventory is populated with a copy of the provided item,
+     * with its display name set to a single space character to create a blank appearance.
+     *
+     * @param item The {@link ItemStack} to use for filling the inventory.
+     * @return     A {@link Map} where the key represents the inventory slot index,
+     *             and the value is the {@link ItemBuilder} placed in that slot.
+     */
+    public final Map<Integer, ItemBuilder> fill(ItemStack item) {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
+        for (int i = 0; i < getInventorySize().getSize(); i++) {
+            ItemBuilder filler = new ItemBuilder(this, item, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
+            map.put(i, filler);
+        }
+        return map;
+    }
 	
 	/**
 	 * Checks if the given {@link ItemStack} is associated with the specified item ID.
