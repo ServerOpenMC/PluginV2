@@ -202,6 +202,16 @@ public final class MenuLib implements Listener {
         }
     }
 
+    @EventHandler
+    public void onInventoryDrag(InventoryClickEvent e) {
+        if (!(e.getInventory().getHolder() instanceof Menu menu))
+            return;
+
+        if (menu.getTakableSlot().contains(e.getRawSlot()))
+            return;
+        e.setCancelled(true);
+    }
+
     /**
      * Handles the event that occurs when a player closes an inventory associated with a {@link Menu}.
      */
