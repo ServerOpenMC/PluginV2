@@ -6,7 +6,6 @@ import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
 import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
-import fr.openmc.core.features.mailboxes.MailboxListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
 import fr.openmc.core.features.updates.UpdateListener;
@@ -24,7 +23,6 @@ public class ListenersManager {
                 new JoinQuitMessageListener(),
                 new UpdateListener(),
                 new ClockInfos(),
-                new MailboxListener(),
                 new ChronometerListener(),
                 new CubeListener(),
                 new RepulseEffectListener(),

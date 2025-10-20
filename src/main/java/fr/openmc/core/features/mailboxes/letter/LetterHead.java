@@ -17,6 +17,7 @@ import java.util.List;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getPlayerName;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
+import static fr.openmc.core.utils.InputUtils.pluralize;
 
 @Getter
 public class LetterHead extends ItemStack {
@@ -36,16 +37,8 @@ public class LetterHead extends ItemStack {
                 nonItalic(Component.text(formatRelativeDate(sentAt), NamedTextColor.DARK_GRAY)),
                 nonItalic(Component.text("➤ Contient ", NamedTextColor.DARK_GREEN)
                         .append(Component.text(itemsCount, NamedTextColor.GREEN, TextDecoration.BOLD))
-                        .append(Component.text(" item" + (itemsCount > 1 ? "s" : ""), NamedTextColor.DARK_GREEN)))
+                        .append(Component.text(pluralize("item", itemsCount), NamedTextColor.DARK_GREEN)))
         ));
         this.setItemMeta(skullMeta);
-    }
-
-    public LetterHead(OfflinePlayer player, int letterId, int itemsCount, LocalDateTime sentAt) {
-        this(player, letterId, itemsCount, sentAt, null);
-    }
-
-    public void openLetter(Player player) {
-        new LetterMenu(player, this).open();
     }
 }

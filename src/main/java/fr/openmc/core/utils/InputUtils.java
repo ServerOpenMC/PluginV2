@@ -107,4 +107,8 @@ public class InputUtils {
 
         return Bukkit.getPlayer(input) != null;
     }
+
+    public static String pluralize(String word, int count) {
+        return word + (count > 1 ? "s" : "");
+    }
 }

@@ -7,10 +7,8 @@ import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
-import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.ItemUtils;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -64,23 +62,8 @@ public class PlayersList extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> buttons = new HashMap<>();
 
-        buttons.put(45, new ItemBuilder(this, Material.CHEST, meta -> {
-            meta.displayName(Component.text("§6§l⬅ Home"));
-        }).setOnClick(e -> {
-            new HomeMailbox(getOwner()).open();
-        }));
-
-        buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_arrow_left").getBest(), meta -> {
-            meta.displayName(Component.text("§6§l⬅ Previous Page"));
-        }).setPreviousPageButton());
-
-        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_cancel_btn").getBest(), meta -> {
-            meta.displayName(Component.text("§8§l[§c§l✖§8§l] §c§lClose"));
-        }).setCloseButton());
-
-        buttons.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_arrow_right").getBest(), meta -> {
-            meta.displayName(Component.text("§6§lNext Page ➡"));
-        }).setNextPageButton());
+        buttons.put(45, MailboxMenuManager.homeBtn(this));
+        buttons.putAll(MailboxMenuManager.getPaginatedButtons(this));
 
         return buttons;
     }

@@ -13,21 +13,20 @@ import java.util.ArrayList;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 import static fr.openmc.core.utils.DateUtils.formatRelativeDate;
+import static fr.openmc.core.utils.InputUtils.pluralize;
 
 @Getter
 public class SenderLetter extends ItemStack {
-    private final int letterId;
 
-    public SenderLetter(OfflinePlayer player, int letterId, int itemsCount, LocalDateTime sentAt, boolean refused) {
+    public SenderLetter(OfflinePlayer player, int itemsCount, LocalDateTime sentAt, boolean refused) {
         super(Material.PLAYER_HEAD, 1);
-        this.letterId = letterId;
         SkullMeta skullMeta = (SkullMeta) this.getItemMeta();
         skullMeta.setOwningPlayer(player);
         skullMeta.displayName(getStatus(refused));
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(colorText("➡ Cliquez pour annuler", NamedTextColor.YELLOW, true));
         lore.add(getPlayerName(player));
-        lore.add(colorText(formatRelativeDate(sentAt) + ", " + itemsCount + " " + getItemCount(itemsCount), NamedTextColor.DARK_GRAY, true));
+        lore.add(colorText(formatRelativeDate(sentAt) + ", " + itemsCount + " " + pluralize("item", itemsCount), NamedTextColor.DARK_GRAY, true));
         skullMeta.lore(lore);
         this.setItemMeta(skullMeta);
     }
@@ -40,5 +39,4 @@ public class SenderLetter extends ItemStack {
                                     .append(Component.text(refused ? "Refusée" : "En attente", color));
         return nonItalic(status);
     }
-
 }

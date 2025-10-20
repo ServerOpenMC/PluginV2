@@ -7,11 +7,9 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.letter.SenderLetter;
-import fr.openmc.core.features.mailboxes.utils.MailboxUtils;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
@@ -62,14 +60,11 @@ public class Letter {
         return new LetterHead(player, letterId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), items);
     }
 
-    public SenderLetter toSenderLetter() {
+    public ItemBuilder toSenderLetterItemBuilder(Menu menu) {
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
 
-        return new SenderLetter(player, letterId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
+        SenderLetter senderLetter = new SenderLetter(player, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()),
                 refused);
-    }
-
-    public ItemBuilder toSenderLetterItemBuilder(Menu menu) {
-        return new ItemBuilder(menu, toSenderLetter());
+        return new ItemBuilder(menu, senderLetter);
     }
 }

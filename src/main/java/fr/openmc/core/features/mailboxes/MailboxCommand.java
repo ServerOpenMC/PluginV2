@@ -9,6 +9,9 @@ import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -18,9 +21,6 @@ import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
-
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendFailureMessage;
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendWarningMessage;
 
 @Command({"mailbox", "mb", "letter", "mail", "lettre", "boite", "courrier"})
 @CommandPermission("omc.commands.mailbox")
@@ -41,14 +41,28 @@ public class MailboxCommand {
             Component message = Component.text("Le joueur ", NamedTextColor.DARK_RED)
                                          .append(Component.text(receiver, NamedTextColor.RED))
                                          .append(Component.text(" n'existe pas ou ne s'est jamais connecté !", NamedTextColor.DARK_RED));
-            sendFailureMessage(player, message);
+            MessagesManager.sendMessage(
+                    player,
+                    message,
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
             // TODO: readd
 //        } else if (receiverPlayer.getPlayer() == player) {
 //            sendWarningMessage(player, "Vous ne pouvez pas vous envoyer à vous-même !");
         } else if (MailboxManager.canSend(player, receiverPlayer)) {
             new SendingLetter(player, receiverPlayer).open();
         } else {
-            sendFailureMessage(player, "Vous n'avez pas les droits pour envoyer à cette personne !");
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Vous n'avez pas les droits pour envoyer à ", NamedTextColor.DARK_RED)
+                             .append(Component.text(receiverPlayer.getName(), NamedTextColor.RED))
+                             .append(Component.text(" !", NamedTextColor.DARK_RED)),
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
         }
     }
 

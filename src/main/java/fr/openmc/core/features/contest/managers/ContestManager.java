@@ -22,6 +22,7 @@ import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.ParticleUtils;
 import fr.openmc.core.utils.database.DatabaseManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -40,7 +41,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getRunCommand;
 
 public class ContestManager {
 
@@ -262,7 +262,7 @@ public class ContestManager {
         ));
         Component messageMail = Component.text("Vous avez reçu la lettre du contest", NamedTextColor.DARK_GREEN)
                 .append(Component.text("\nCliquez ici", NamedTextColor.YELLOW))
-                .clickEvent(getRunCommand("mail"))
+                .clickEvent(ClickEvent.runCommand("mailbox"))
                 .hoverEvent(getHoverEvent("Ouvrir la mailbox"))
                 .append(Component.text(" pour ouvrir la mailbox", NamedTextColor.GOLD));
         Bukkit.broadcast(messageMail);

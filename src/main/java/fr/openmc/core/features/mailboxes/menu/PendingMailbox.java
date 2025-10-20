@@ -2,16 +2,12 @@ package fr.openmc.core.features.mailboxes.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
-import fr.openmc.core.features.mailboxes.letter.SenderLetter;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.features.mailboxes.utils.PaginatedMailbox;
-import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -29,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
+import static fr.openmc.core.utils.InputUtils.pluralize;
 
 public class PendingMailbox extends PaginatedMenu {
     public PendingMailbox(Player player) {
@@ -62,22 +58,7 @@ public class PendingMailbox extends PaginatedMenu {
 
         MailboxManager.getSentLetters(getOwner()).forEach(letter -> {
             items.add(letter.toSenderLetterItemBuilder(this).setOnClick(e -> {
-                new ConfirmMenu(getOwner(),
-                        () -> {
-                            PendingMailbox.cancelLetter(getOwner(), letter.getLetterId());
-                            new PendingMailbox(getOwner()).open();
-                            MessagesManager.sendMessage(
-                                    getOwner(),
-                                    Component.text("Vous avez annulé la mailbox #" + letter.getLetterId(), NamedTextColor.GREEN),
-                                    Prefix.MAILBOX,
-                                    MessageType.SUCCESS,
-                                    false
-                            );
-                        },
-                        () -> getOwner().closeInventory(),
-                        List.of(Component.text("Confirmer l'annulation de la mailbox #" + letter.getLetterId(), NamedTextColor.RED)),
-                        List.of(Component.text("Annuler l'annulation de la mailbox #" + letter.getLetterId(), NamedTextColor.GREEN))
-                ).open();
+                MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter);
             }));
         });
 
@@ -89,18 +70,7 @@ public class PendingMailbox extends PaginatedMenu {
         Map<Integer, ItemBuilder> buttons = new HashMap<>();
 
         buttons.put(45, MailboxMenuManager.homeBtn(this));
-
-        buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_arrow_left").getBest(), meta -> {
-            meta.displayName(Component.text("§6§l⬅ Previous Page"));
-        }).setPreviousPageButton());
-
-        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_cancel_btn").getBest(), meta -> {
-            meta.displayName(Component.text("§8§l[§c§l✖§8§l] §c§lClose"));
-        }).setCloseButton());
-
-        buttons.put(50, new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:mailbox_arrow_right").getBest(), meta -> {
-            meta.displayName(Component.text("§6§lNext Page ➡"));
-        }).setNextPageButton());
+        buttons.putAll(MailboxMenuManager.getPaginatedButtons(this));
 
         return buttons;
     }
@@ -136,7 +106,13 @@ public class PendingMailbox extends PaginatedMenu {
             Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
                     .append(Component.text(id, NamedTextColor.RED))
                     .append(Component.text(" n'a pas été trouvée.", NamedTextColor.DARK_RED));
-            sendFailureMessage(player, message);
+            MessagesManager.sendMessage(
+                    player,
+                    message,
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
         }
 
         int itemsCount = letter.getNumItems();
@@ -149,8 +125,15 @@ public class PendingMailbox extends PaginatedMenu {
             MailboxManager.givePlayerItems(player, items);
             Component message = Component.text("Vous avez annulé la lettre et reçu ", NamedTextColor.DARK_GREEN)
                     .append(Component.text(itemsCount, NamedTextColor.GREEN))
-                    .append(Component.text(" " + getItemCount(itemsCount), NamedTextColor.DARK_GREEN));
-            sendSuccessMessage(player, message);
+                    .append(Component.text(" " + pluralize("item", itemsCount), NamedTextColor.DARK_GREEN));
+
+            MessagesManager.sendMessage(
+                    player,
+                    message,
+                    Prefix.MAILBOX,
+                    MessageType.SUCCESS,
+                    true
+            );
         }
     }
 }

@@ -1,9 +1,15 @@
 package fr.openmc.core.features.mailboxes.utils;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
+import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
 import net.kyori.adventure.key.Key;
@@ -23,7 +29,6 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
 @SuppressWarnings("UnstableApiUsage")
 public class MailboxMenuManager {
     public static final Key openmcKey = Key.key("openmc", "menu");
-    public static final HashMap<Player, MailboxInv> playerInventories = new HashMap<>();
     private static final Material customMaterial = Material.BARRIER;
 
     public static Component getInvTitle(String title) {
@@ -49,13 +54,13 @@ public class MailboxMenuManager {
     }
 
     public static ItemBuilder transparentItem(Menu menu) {
-        return new ItemBuilder(menu, CustomItemRegistry.getByName("omc_homes:omc_homes_invisible").getBest()).hide(DataComponentTypes.ITEM_NAME, DataComponentTypes.CUSTOM_NAME, DataComponentTypes.TOOLTIP_DISPLAY);
+        return new ItemBuilder(menu, CustomItemRegistry.getByName("omc_homes:omc_homes_invisible").getBest()).hideTooltip(true);
     }
 
     public static ItemBuilder getBtn(Menu menu, String symbol, String name, String customModelName, NamedTextColor color, boolean bold) {
         Component itemName = Component.text("[", NamedTextColor.DARK_GRAY).append(Component.text(symbol, color)).append(Component.text("]", NamedTextColor.DARK_GRAY)).append(Component.text(" " + name, color));
         return new ItemBuilder(menu, CustomItemRegistry.getByName(customModelName).getBest(), meta -> {
-            meta.displayName(bold ? itemName.decorate(TextDecoration.BOLD) : itemName);
+            meta.displayName(bold ? itemName.decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false) : itemName);
             meta.setMaxStackSize(1);
         });
     }
@@ -95,30 +100,40 @@ public class MailboxMenuManager {
         return new ItemBuilder(menu, item).setOnClick(e -> new HomeMailbox(menu.getOwner()).open());
     }
 
-    public static boolean isNotNull(ItemStack item) {
-        return item != null && item.getType() != Material.AIR && item.getItemMeta() != null;
+    public static HashMap<Integer, ItemBuilder> getPaginatedButtons(Menu menu) {
+        HashMap<Integer, ItemBuilder> buttons = new HashMap<>();
+
+        buttons.put(48, new ItemBuilder(menu, CustomItemRegistry.getByName("omc_menus:mailbox_arrow_left").getBest(), meta -> {
+            meta.displayName(Component.text("§6§l⬅ Page précédente"));
+        }).setPreviousPageButton());
+
+        buttons.put(49, new ItemBuilder(menu, CustomItemRegistry.getByName("omc_menus:mailbox_cancel_btn").getBest(), meta -> {
+            meta.displayName(Component.text("§8§l[§c§l✖§8§l] §c§lFermer"));
+        }).setCloseButton());
+
+        buttons.put(50, new ItemBuilder(menu, CustomItemRegistry.getByName("omc_menus:mailbox_arrow_right").getBest(), meta -> {
+            meta.displayName(Component.text("§6§lPage suivante ➡"));
+        }).setNextPageButton());
+
+        return buttons;
     }
 
-    public static boolean isBtn(ItemStack item, int data) {
-        return isNotNull(item)
-                && item.getType() == customMaterial
-                && item.hasData(DataComponentTypes.CUSTOM_MODEL_DATA)
-                && item.getData(DataComponentTypes.CUSTOM_MODEL_DATA).floats().getFirst() == data;
-    }
-
-    public static boolean cancelBtn(ItemStack item) {
-        return isBtn(item, 2000);
-    }
-
-    public static boolean nextPageBtn(ItemStack item) {
-        return isBtn(item, 2003);
-    }
-
-    public static boolean previousPageBtn(ItemStack item) {
-        return isBtn(item, 2004);
-    }
-
-    public static boolean sendBtn(ItemStack item) {
-        return isBtn(item, 2007);
+    public static void sendConfirmMenuToCancelLetter(Player player, Letter letter) {
+        new ConfirmMenu(player,
+                () -> {
+                    PendingMailbox.cancelLetter(player, letter.getLetterId());
+                    new PendingMailbox(player).open();
+                    MessagesManager.sendMessage(
+                            player,
+                            Component.text("Vous avez annulé la mailbox #" + letter.getLetterId(), NamedTextColor.GREEN),
+                            Prefix.MAILBOX,
+                            MessageType.SUCCESS,
+                            false
+                    );
+                },
+                player::closeInventory,
+                List.of(Component.text("Confirmer l'annulation de la mailbox #" + letter.getLetterId(), NamedTextColor.RED)),
+                List.of(Component.text("Annuler l'annulation de la mailbox #" + letter.getLetterId(), NamedTextColor.GREEN))
+        ).open();
     }
 }

@@ -9,10 +9,13 @@ import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.events.ClaimLetterEvent;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
-import fr.openmc.core.features.mailboxes.utils.MailboxInv;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,11 +30,10 @@ import java.util.Map;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
+import static fr.openmc.core.utils.InputUtils.pluralize;
 
 public class LetterMenu extends Menu {
-
-    private ItemStack[] items;
-
+    private final ItemStack[] items;
     private final LetterHead letterHead;
 
     @Override
@@ -54,7 +56,15 @@ public class LetterMenu extends Menu {
     public static LetterHead getById(Player player, int id) {
         Letter letter = MailboxManager.getById(player, id);
         if (letter == null || letter.isRefused()) {
-            sendFailureMessage(player, "La lettre n'a pas été trouvée.");
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("La lettre avec #", NamedTextColor.DARK_RED)
+                            .append(Component.text(id, NamedTextColor.RED))
+                            .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED)),
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
             return null;
         }
         return letter.toLetterHead();
@@ -64,7 +74,15 @@ public class LetterMenu extends Menu {
         Letter letter = MailboxManager.getById(player, id);
         if (letter != null && !letter.isRefused()) {
             if (letter.refuse()) {
-                sendSuccessMessage(player, "La lettre a été refusée.");
+                MessagesManager.sendMessage(
+                        player,
+                        Component.text("Vous avez refusé la lettre #", NamedTextColor.DARK_GREEN)
+                                .append(Component.text(id, NamedTextColor.GREEN))
+                                .append(Component.text(".", NamedTextColor.DARK_GREEN)),
+                        Prefix.MAILBOX,
+                        MessageType.SUCCESS,
+                        true
+                );
                 return;
             }
         }
@@ -72,19 +90,30 @@ public class LetterMenu extends Menu {
         Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
                 .append(Component.text(id, NamedTextColor.RED))
                 .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
-        sendFailureMessage(player, message);
+        MessagesManager.sendMessage(
+                player,
+                message,
+                Prefix.MAILBOX,
+                MessageType.ERROR,
+                true
+        );
     }
 
     public void accept() {
         if (MailboxManager.deleteLetter(letterHead.getLetterId())) {
-            Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
-                    .append(Component.text(letterHead.getItemsCount(), NamedTextColor.GREEN))
-                    .append(Component.text(" " + getItemCount(letterHead.getItemsCount()), NamedTextColor.DARK_GREEN));
-            sendSuccessMessage(getOwner(), message);
+            MessagesManager.sendMessage(
+                    getOwner(),
+                    Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
+                            .append(Component.text(letterHead.getItemsCount(), NamedTextColor.GREEN))
+                            .append(Component.text(" " + pluralize("item", letterHead.getItemsCount()), NamedTextColor.DARK_GREEN)),
+                    Prefix.MAILBOX,
+                    MessageType.SUCCESS,
+                    true
+            );
 
-            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
-                Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(getOwner()));
-            });
+            Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                    Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(getOwner(), MailboxManager.getById(getOwner(), letterHead.getLetterId())))
+            );
 
             HashMap<Integer, ItemStack> remainingItems = getOwner().getInventory().addItem(items);
             for (ItemStack item : remainingItems.values()) {
@@ -94,17 +123,30 @@ public class LetterMenu extends Menu {
             Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
                     .append(Component.text(letterHead.getLetterId(), NamedTextColor.RED))
                     .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED));
-            sendFailureMessage(getOwner(), message);
+            MessagesManager.sendMessage(
+                    getOwner(),
+                    message,
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
         }
         getOwner().closeInventory();
     }
 
     public void refuse() {
         Component message = Component.text("Cliquez-ici", NamedTextColor.YELLOW)
-                .clickEvent(getRunCommand("refuse " + letterHead.getLetterId()))
+                .clickEvent(ClickEvent.runCommand("/mailbox refuse " + letterHead.getLetterId()))
                 .hoverEvent(getHoverEvent("Refuser la lettre #" + letterHead.getLetterId()))
                 .append(Component.text(" si vous êtes sur de vouloir refuser la lettre.", NamedTextColor.GOLD));
-        sendWarningMessage(getOwner(), message);
+
+        MessagesManager.sendMessage(
+                getOwner(),
+                message,
+                Prefix.MAILBOX,
+                MessageType.WARNING,
+                true
+        );
         getOwner().closeInventory();
     }
 
@@ -114,14 +156,10 @@ public class LetterMenu extends Menu {
     }
 
     @Override
-    public void onInventoryClick(InventoryClickEvent e) {
-
-    }
+    public void onInventoryClick(InventoryClickEvent e) {}
 
     @Override
-    public void onClose(InventoryCloseEvent event) {
-
-    }
+    public void onClose(InventoryCloseEvent event) {}
 
     @Override
     public @NotNull Map<Integer, ItemBuilder> getContent() {
@@ -136,14 +174,24 @@ public class LetterMenu extends Menu {
 
         content.put(49, new ItemBuilder(this, letterHead));
 
-        content.put(50, refuseBtn(this).setOnClick(e -> refuse()));
+        content.put(50, refuseBtn(this).setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), MailboxManager.getById(getOwner(), letterHead.getLetterId()))));
 
-        content.put(53, cancelBtn(this).setOnClick(e -> {
-            getOwner().closeInventory();
-            sendFailureMessage(getOwner(), "La lettre a été annulée.");
-        }));
+        content.put(53, cancelBtn(this).setOnClick(e -> cancel()));
 
         return content;
+    }
+
+    public void cancel() {
+        getOwner().closeInventory();
+        MessagesManager.sendMessage(
+                getOwner(),
+                Component.text("Vous avez annulé la lettre #", NamedTextColor.DARK_RED)
+                        .append(Component.text(letterHead.getLetterId(), NamedTextColor.RED))
+                        .append(Component.text(".", NamedTextColor.DARK_RED)),
+                Prefix.MAILBOX,
+                MessageType.ERROR,
+                true
+        );
     }
 
     @Override

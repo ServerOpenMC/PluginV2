@@ -6,14 +6,14 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
-import fr.openmc.core.features.mailboxes.utils.MailboxInv;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.features.settings.PlayerSettings;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.settings.SettingType;
+import fr.openmc.core.utils.messages.MessageType;
+import fr.openmc.core.utils.messages.MessagesManager;
+import fr.openmc.core.utils.messages.Prefix;
 import fr.openmc.core.utils.serializer.BukkitSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -23,6 +23,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,10 +35,11 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
+import static fr.openmc.core.utils.InputUtils.pluralize;
 
-// Author Gexary
+// Author Gexary,
+// Reedits by Axeno
 public class MailboxManager {
-
     private static Dao<Letter, Integer> letterDao;
 
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
@@ -71,20 +73,17 @@ public class MailboxManager {
             if (letterDao.create(letter) == 0) return false;
 
             int id = letter.getLetterId();
-//            Player receiverPlayer = receiver.getPlayer();
-//            if (receiverPlayer != null) {
-//                if (MailboxMenuManager.playerInventories.get(receiverPlayer) instanceof PlayerMailbox receiverMailbox) {
-//                    LetterHead letterHead = new LetterHead(sender, numItems, id, sent);
-//                    receiverMailbox.addLetter(letterHead);
-//                } else {
-//                    sendNotification(receiverPlayer, numItems, id, sender.getName());
-//                }
-//            }
+            Player receiverPlayer = receiver.getPlayer();
+            if (receiverPlayer != null) {
+                Inventory inv = receiverPlayer.getInventory();
+                if (inv instanceof PlayerMailbox receiverMailbox) receiverMailbox.open();
+                sendLetterReceivedNotification(receiverPlayer, numItems, id, sender.getName());
+            }
 
             sendSuccessSendingMessage(sender, receiverName, numItems);
             return true;
         } catch (Exception ex) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to send lettre", ex);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error while sending items to offline player, {}", ex.getMessage(), ex);
             sendFailureSendingMessage(sender, receiverName);
             return false;
         }
@@ -133,26 +132,34 @@ public class MailboxManager {
             if (count == 0)
                 return;
 
-            Component message;
-            message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN);
-
-            if (count > 1) {
-                message = message.append(Component.text(count, NamedTextColor.GREEN))
-                        .append(Component.text(" lettres.", NamedTextColor.DARK_GREEN));
-            } else if (count == 1) {
-                message = message.append(Component.text("une", NamedTextColor.GREEN))
-                        .append(Component.text(" lettre.", NamedTextColor.DARK_GREEN));
-            }
-
-            message = message.append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
+            Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
+                    .append(
+                            count > 1
+                                    ? Component.text(count, NamedTextColor.GREEN)
+                                    : Component.text("une", NamedTextColor.GREEN)
+                    )
+                    .append(Component.text(" lettre" + (count > 1 ? "s" : "") + ".", NamedTextColor.DARK_GREEN))
+                    .appendNewline()
+                    .append(Component.text("Cliquez-ici", NamedTextColor.YELLOW))
                     .clickEvent(ClickEvent.runCommand("/mailbox"))
                     .hoverEvent(getHoverEvent("Ouvrir ma boîte aux lettres"))
                     .append(Component.text(" pour ouvrir les lettres", NamedTextColor.GOLD));
-            if (message != null) {
-                sendSuccessMessage(player, message);
-            }
+
+            MessagesManager.sendMessage(
+                    player,
+                    message,
+                    Prefix.MAILBOX,
+                    MessageType.SUCCESS,
+                    true
+            );
         } catch (SQLException e) {
-            sendFailureMessage(player, "Une erreur est survenue.");
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Une erreur est survenue.", NamedTextColor.DARK_RED),
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
             throw new RuntimeException(e);
         }
     }
@@ -184,7 +191,13 @@ public class MailboxManager {
             return letter;
         } catch (Exception e) {
             OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get lettre by id", e);
-            sendFailureMessage(player, "Une erreur est survenue.");
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("Une erreur est survenue.", NamedTextColor.DARK_RED),
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
             return null;
         }
     }
@@ -221,17 +234,24 @@ public class MailboxManager {
         return settings.canPerformAction(SettingType.MAILBOX_RECEIVE_POLICY, sender.getUniqueId());
     }
 
-    private static void sendNotification(Player receiver, int numItems, int id, String name) {
+    private static void sendLetterReceivedNotification(Player receiver, int numItems, int id, String name) {
         Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
                 .append(Component.text(numItems, NamedTextColor.GREEN))
-                .append(Component.text(" item" + (numItems > 1 ? "s" : "") + " de la part de ",
-                        NamedTextColor.DARK_GREEN))
+                .append(Component.text(" item" + (numItems > 1 ? "s" : "") + " de la part de ", NamedTextColor.DARK_GREEN))
                 .append(Component.text(name, NamedTextColor.GREEN))
-                .append(Component.text("\nCliquez-ici", NamedTextColor.YELLOW))
-                .clickEvent(getRunCommand("open " + id))
+                .appendNewline()
+                .append(Component.text("Cliquez-ici", NamedTextColor.YELLOW))
+                .clickEvent(ClickEvent.runCommand("/mailbox open" + id))
                 .hoverEvent(getHoverEvent("Ouvrir la lettre #" + id))
                 .append(Component.text(" pour ouvrir la lettre", NamedTextColor.GOLD));
-        sendSuccessMessage(receiver, message);
+
+        MessagesManager.sendMessage(
+                receiver,
+                message,
+                Prefix.MAILBOX,
+                MessageType.SUCCESS,
+                true
+        );
         Title titleComponent = getTitle(numItems, name);
         receiver.playSound(receiver.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.MASTER, 1.0f,
                 1.0f);
@@ -251,15 +271,28 @@ public class MailboxManager {
         Component message = Component
                 .text("Une erreur est apparue lors de l'envoie des items à ", NamedTextColor.DARK_RED)
                 .append(Component.text(receiverName, NamedTextColor.RED));
-        sendFailureMessage(player, message);
+        MessagesManager.sendMessage(
+                player,
+                message,
+                Prefix.MAILBOX,
+                MessageType.ERROR,
+                true
+        );
     }
 
     private static void sendSuccessSendingMessage(Player player, String receiverName, int numItems) {
         Component message = Component.text(numItems, NamedTextColor.GREEN)
-                .append(Component.text(" " + getItemCount(numItems) + " envoyé" + (numItems > 1 ? "s" : "") + " à ",
+                .append(Component.text(" " + pluralize("item", numItems) + pluralize("envoyé", numItems) + " à ",
                         NamedTextColor.DARK_GREEN))
                 .append(Component.text(receiverName, NamedTextColor.GREEN));
-        sendSuccessMessage(player, message);
+
+        MessagesManager.sendMessage(
+                player,
+                message,
+                Prefix.MAILBOX,
+                MessageType.SUCCESS,
+                true
+        );
     }
 
     public static void givePlayerItems(Player player, ItemStack[] items) {
@@ -269,11 +302,11 @@ public class MailboxManager {
     }
 
     public static void cancelLetter(Player player, int id) {
-        MailboxInv inv = MailboxMenuManager.playerInventories.get(player);
-//        if (inv instanceof PlayerMailbox playerMailbox) {
-//            playerMailbox.removeLetter(id);
-//        } else if (inv instanceof LetterMenu letter) {
-//            letter.cancel();
-//        }
+        Inventory inv = player.getInventory();
+        if (inv instanceof PlayerMailbox playerMailbox) {
+            playerMailbox.open();
+        } else if (inv instanceof LetterMenu letter) {
+            letter.cancel();
+        }
     }
 }

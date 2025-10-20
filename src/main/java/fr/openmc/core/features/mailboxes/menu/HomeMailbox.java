@@ -1,32 +1,25 @@
 package fr.openmc.core.features.mailboxes.menu;
 
-
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
-import fr.openmc.core.features.mailboxes.utils.MailboxInv;
-import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fr.openmc.core.features.mailboxes.utils.MailboxMenuManager.getCustomItem;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHead;
 
 public class HomeMailbox extends Menu {
@@ -62,8 +55,8 @@ public class HomeMailbox extends Menu {
         }).setOnClick(e -> new PendingMailbox(getOwner()).open()));
 
         content.put(4, new ItemBuilder(this, getHead(getOwner()), meta -> {
-            meta.displayName(Component.
-                    text("Ma boite aux lettres", NamedTextColor.GOLD, TextDecoration.BOLD)
+            meta.displayName(Component
+                    .text("Ma boite aux lettres", NamedTextColor.GOLD, TextDecoration.BOLD)
                     .decoration(TextDecoration.ITALIC, false)
             );
         }).setOnClick(e -> new PlayerMailbox(getOwner()).open()));
@@ -81,15 +74,6 @@ public class HomeMailbox extends Menu {
     @Override
     public List<Integer> getTakableSlot() {
         return List.of();
-    }
-
-    public static void openSendingMailbox(Player player, OfflinePlayer receiver, OMCPlugin plugin) {
-        new SendingLetter(player, receiver).open();
-    }
-
-    public static void openHomeMailbox(Player player) {
-        HomeMailbox homeMailbox = new HomeMailbox(player);
-        homeMailbox.open();
     }
 
     @Override
