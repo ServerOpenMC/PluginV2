@@ -11,6 +11,7 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -21,17 +22,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class LeaveVariantsMenu extends Menu {
+public class LeavesVariantsMenu extends Menu {
     private final String categoryId;
     private final ShopItem originalItem;
     private final Menu previousMenu;
     private static final List<Material> LEAVES_VARIANTS = List.of(
-        Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.BIRCH_LEAVES, Material.JUNGLE_LEAVES,
+        Material.OAK_LEAVES, Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.BIRCH_LEAVES, Material.JUNGLE_LEAVES,
         Material.ACACIA_LEAVES, Material.DARK_OAK_LEAVES, Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES,
         Material.PALE_OAK_LEAVES, Material.AZALEA_LEAVES, Material.FLOWERING_AZALEA_LEAVES
     );
 
-    public LeaveVariantsMenu(Player owner, String categoryId, ShopItem originalItem, Menu previousMenu) {
+    public LeavesVariantsMenu(Player owner, String categoryId, ShopItem originalItem, Menu previousMenu) {
         super(owner);
         this.categoryId = categoryId;
         this.originalItem = originalItem;
@@ -71,7 +72,7 @@ public class LeaveVariantsMenu extends Menu {
 
         ItemStack baseItemStack = new ItemStack(originalItem.getMaterial());
         ItemMeta baseMeta = baseItemStack.getItemMeta();
-        baseMeta.displayName(Component.text("Feuilles", NamedTextColor.GRAY));
+        baseMeta.displayName(Component.text("Feuilles", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
         baseItemStack.setItemMeta(baseMeta);
         content.put(4, new ItemBuilder(this, baseItemStack));
 
@@ -83,7 +84,7 @@ public class LeaveVariantsMenu extends Menu {
             ItemStack itemStack = new ItemStack(variant);
             ItemMeta meta = itemStack.getItemMeta();
 
-            meta.displayName(ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY));
+            meta.displayName(ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 
             meta.lore(AdminShopUtils.extractLoreForItem(originalItem));
 
@@ -94,7 +95,7 @@ public class LeaveVariantsMenu extends Menu {
                     .setOnClick(event -> {
                         ShopItem colorVariant = new ShopItem(
                                 variant.name(),
-                                ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY),
+                                ItemUtils.getItemTranslation(variant).color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false),
                                 variant,
                                 originalItem.getSlot(),
                                 originalItem.getInitialSellPrice(),

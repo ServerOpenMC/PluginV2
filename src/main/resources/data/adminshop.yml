@@ -1,18 +1,18 @@
 category:
 - BLOCKS:
-    name: '<green><bold>Blocks</green></bold>'
+    name: '<green><bold>Blocks</bold></green>'
     material: GRASS_BLOCK
     position: 0
 - ORES:
-    name: '<gold><bold>Ores</gold></bold>'
+    name: '<gold><bold>Minerais</bold></gold>'
     material: IRON_INGOT
     position: 1
 - FOODS:
-    name: '<red><bold>Nourritures</red></bold>'
+    name: '<red><bold>Nourritures</bold></red>'
     material: COOKED_BEEF
     position: 2
 - MISC:
-    name: '<dark_gray><bold>Misc</dark_gray></bold>'
+    name: '<dark_gray><bold>Misc</bold></dark_gray>'
     material: BLAZE_ROD
     position: 3
 
@@ -80,15 +80,15 @@ BLOCKS:
       actual:
         buy: 4.0
         sell: 0.0
-- FLOWERING_AZALEA_LEAVES:
+- OAK_LOG:
     slot: 25
     price:
       initial:
-        buy: 0.0
-        sell: 3.0
+        buy: 2.0
+        sell: 1.0
       actual:
-        buy: 0.0
-        sell: 3.0
+        buy: 2.0
+        sell: 1.0
 - DIORITE:
     slot: 12
     price:
@@ -120,11 +120,11 @@ BLOCKS:
     slot: 16
     price:
       initial:
-        buy: 0.0
-        sell: 1.0
+        buy: 2.0
+        sell: 0.5
       actual:
-        buy: 0.0
-        sell: 1.0
+        buy: 2.0
+        sell: 0.5
 - TERRACOTTA:
     slot: 30
     price:

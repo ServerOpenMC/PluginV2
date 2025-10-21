@@ -1,6 +1,5 @@
 package fr.openmc.core.features.adminshop.menus;
 
-import com.destroystokyo.paper.MaterialTags;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -10,6 +9,8 @@ import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -63,7 +64,7 @@ public class AdminShopCategoryMenu extends Menu {
             for (ShopItem item : categoryItems.values()) {
                 ItemStack itemStack = new ItemStack(item.getMaterial());
                 ItemMeta meta = itemStack.getItemMeta();
-                meta.displayName(item.getName());
+                meta.displayName(item.getName().color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 
                 meta.lore(AdminShopUtils.extractLoreForItem(item));
 
@@ -72,10 +73,12 @@ public class AdminShopCategoryMenu extends Menu {
                 ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
                 itemBuilder.setItemId(item.getId())
                         .setOnClick(event -> {
-                            if (item.isHasColorVariant())
+                            if (item.getMaterial() == Material.OAK_LEAVES)
+                                AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item, this);
+                            else if (item.getMaterial() == Material.OAK_LOG)
+                                AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item, this);
+                            else if (item.isHasColorVariant())
                                 AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item, this);
-                            else if (item.getMaterial() == Material.OAK_LEAVES)
-                                AdminShopManager.openLeaveVariantsMenu(getOwner(), categoryId, item, this);
                             else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
                                 AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), this);
                             else if (event.isRightClick() && item.getInitialSellPrice() > 0)

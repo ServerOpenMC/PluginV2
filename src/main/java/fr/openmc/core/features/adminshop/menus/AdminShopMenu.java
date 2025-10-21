@@ -7,6 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.ShopCategory;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -51,7 +52,7 @@ public class AdminShopMenu extends Menu {
         for (ShopCategory category : AdminShopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
             ItemStack itemStack = new ItemStack(category.material());
             ItemMeta meta = itemStack.getItemMeta();
-            meta.displayName(category.name());
+            meta.displayName(category.name().decoration(TextDecoration.ITALIC, false));
             itemStack.setItemMeta(meta);
 
             content.put(slot, new ItemBuilder(this, itemStack)

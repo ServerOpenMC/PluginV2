@@ -3,6 +3,7 @@ package fr.openmc.core.features.adminshop;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -54,7 +55,7 @@ public class AdminShopYAML {
                 Map<?, ?> section = (Map<?, ?>) entry.getValue();
                 AdminShopManager.categories.put(key, new ShopCategory(
                         key,
-                        MiniMessage.miniMessage().deserialize(section.get("name").toString()),
+                        MiniMessage.miniMessage().deserialize(section.get("name").toString()).decoration(TextDecoration.ITALIC, false),
                         Material.valueOf(section.get("material").toString()),
                         (int) section.get("position")
                 ));

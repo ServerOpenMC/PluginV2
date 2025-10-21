@@ -4,10 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
-import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
-import fr.openmc.core.features.adminshop.menus.ColorVariantsMenu;
-import fr.openmc.core.features.adminshop.menus.ConfirmMenu;
-import fr.openmc.core.features.adminshop.menus.LeaveVariantsMenu;
+import fr.openmc.core.features.adminshop.menus.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -257,8 +254,20 @@ public class AdminShopManager {
      * @param originalItem The original ShopItem.
      * @param previousMenu The previous menu to return to.
      */
-    public static void openLeaveVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
-        new LeaveVariantsMenu(player, categoryId, originalItem, previousMenu).open();
+    public static void openLeavesVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
+        new LeavesVariantsMenu(player, categoryId, originalItem, previousMenu).open();
+    }
+
+    /**
+     * Opens the menu displaying log variants of a shop item.
+     *
+     * @param player       The player.
+     * @param categoryId   The category ID.
+     * @param originalItem The original ShopItem.
+     * @param previousMenu The previous menu to return to.
+     */
+    public static void openLogVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
+        new LogVariantsMenu(player, categoryId, originalItem, previousMenu).open();
     }
 
     /**
