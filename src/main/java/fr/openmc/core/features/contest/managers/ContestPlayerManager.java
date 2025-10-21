@@ -1,19 +1,21 @@
 package fr.openmc.core.features.contest.managers;
 
-import fr.openmc.core.features.contest.ContestPlayer;
-import lombok.Getter;
+import fr.openmc.core.features.contest.models.ContestPlayer;
 import lombok.Setter;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Setter
 public class ContestPlayerManager  {
-    @Getter static ContestPlayerManager instance;
-    private ContestManager contestManager;
 
+    /**
+     * Map reliant un nombre de points à un titre correspondant.
+     * Par exemple, 10000 points correspondent à "Dictateur en ".
+     */
     private static final Map<Integer, String> RANKS = Map.of(
             10000, "Dictateur en ",
             2500, "Colonel en ",
@@ -22,11 +24,16 @@ public class ContestPlayerManager  {
             1000, "Légende en ",
             750, "Sénior en ",
             500, "Pro en ",
-            250, "Semi-Pro en ",
+            250, "Semi-pro en ",
             100, "Amateur en ",
             0, "Noob en "
     );
 
+    /**
+     * Map reliant le nombre de points minimum à atteindre pour obtenir le rang suivant
+     * au nombre de points à partir desquels ce rang est débloqué.
+     * Par exemple, pour 2500 points, le rang suivant commence à 10000 points.
+     */
     private static final Map<Integer, Integer> GOAL_POINTS = Map.of(
             10000, 0,
             2500, 10000,
@@ -40,6 +47,10 @@ public class ContestPlayerManager  {
             0, 100
     );
 
+    /**
+     * Map convertissant le nombre de points en un rang numérique compris entre 1 et 10.
+     * Par exemple, 10000 points correspondent au rang 10.
+     */
     private static final Map<Integer, Integer> POINTS_TO_INT_RANK = Map.of(
             10000, 10,
             2500, 9,
@@ -53,33 +64,57 @@ public class ContestPlayerManager  {
             0, 1
     );
 
-    public ContestPlayerManager() {
-        instance = this;
-        contestManager = ContestManager.getInstance();
+    /**
+     * Map des multiplicateurs d'argent pour la récompense en fonction du rang.
+     * Chaque clé est le rang numérique et chaque valeur le multiplicateur correspondant.
+     */
+    private static final HashMap<Integer, Double> MULTIPLICATOR_MONEY = new HashMap<>();
+
+    static {
+        MULTIPLICATOR_MONEY.put(1, 1.0);
+        MULTIPLICATOR_MONEY.put(2, 1.1);
+        MULTIPLICATOR_MONEY.put(3, 1.3);
+        MULTIPLICATOR_MONEY.put(4, 1.4);
+        MULTIPLICATOR_MONEY.put(5, 1.5);
+        MULTIPLICATOR_MONEY.put(6, 1.6);
+        MULTIPLICATOR_MONEY.put(7, 1.7);
+        MULTIPLICATOR_MONEY.put(8, 1.8);
+        MULTIPLICATOR_MONEY.put(9, 2.0);
+        MULTIPLICATOR_MONEY.put(10, 2.4);
     }
 
     /**
-     * Retourne le camp du joueur (soit camp1 ou camp2)
+     * Retourne le nom du camp auquel appartient le joueur.
+     *
+     * @param player Le joueur dont on veut connaître le camp.
+     * @return Le nom du camp (camp1 ou camp2).
      */
-    public String getPlayerCampName(Player player) {
-        int campInteger = contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
-        return contestManager.data.get("camp" + campInteger);
+    public static String getPlayerCampName(Player player) {
+        int campInteger = ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
+        return ContestManager.data.get("camp" + campInteger);
     }
 
     /**
-     * Met a jour le nombre de points du joueur, cela écrase les points précédents
+     * Met à jour le nombre de points d’un joueur.
+     * Cette opération écrase les points précédemment enregistrés.
+     *
+     * @param playerUUID L’UUID du joueur à mettre à jour.
+     * @param points Le nouveau nombre de points du joueur.
      */
-    public void setPointsPlayer(Player player, int points) {
-        ContestManager manager = ContestManager.getInstance();
-        ContestPlayer data = manager.dataPlayer.get(player.getUniqueId().toString());
-
-        manager.dataPlayer.put(player.getUniqueId().toString(), new ContestPlayer(data.getName(), points, data.getCamp(), data.getColor()));
+    public static void setPointsPlayer(UUID playerUUID, int points) {
+        ContestPlayer data = ContestManager.dataPlayer.get(playerUUID);
+        if (data != null) {
+            data.setPoints(points);
+        }
     }
 
     /**
-     * Retourne le Titre en fonction du nombre de points
+     * Retourne le titre associé à un nombre de points donné.
+     *
+     * @param points Le nombre de points d’un joueur.
+     * @return Le titre correspondant aux points.
      */
-    public String getTitleWithPoints(int points) {
+    public static String getTitleWithPoints(int points) {
         for (Map.Entry<Integer, String> entry : RANKS.entrySet()) {
             if (points >= entry.getKey()) {
                 return entry.getValue();
@@ -89,19 +124,26 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne le Titre d'une personne
+     * Retourne le titre du contest d’un joueur en fonction de ses points actuels.
+     *
+     * @param player Le joueur dont on veut obtenir le titre.
+     * @return Le titre correspondant au joueur.
      */
-    public String getTitleContest(Player player) {
-        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
+    public static String getTitleContest(Player player) {
+        int points = ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
 
         return getTitleWithPoints(points);
     }
 
     /**
-     * Retourne les prochains points pour arriver au prochain rang
+     * Retourne le nombre de points nécessaires pour atteindre le rang suivant.
+     *
+     * @param player Le joueur dont on veut calculer le prochain palier.
+     * @return Le nombre de points requis pour monter de rang.
+     *         Retourne -1 si aucun palier trouvé.
      */
-    public int getGoalPointsToRankUp(Player player) {
-        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
+    public static int getGoalPointsToRankUp(Player player) {
+        int points = ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
 
         for (Map.Entry<Integer, Integer> entry : GOAL_POINTS.entrySet()) {
             if (points >= entry.getKey()) {
@@ -113,10 +155,13 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne le Rang d'un joueur hors ligne
+     * Retourne le rang numérique d’un joueur hors ligne en fonction de ses points.
+     *
+     * @param player Le joueur hors ligne.
+     * @return Le rang sous forme d’un entier (1 à 10).
      */
-    public int getRankContestFromOfflineInt(OfflinePlayer player) {
-        int points = contestManager.dataPlayer.get(player.getUniqueId().toString()).getPoints();
+    public static int getRankContestFromOfflineInt(OfflinePlayer player) {
+        int points = ContestManager.dataPlayer.get(player.getUniqueId()).getPoints();
 
         for (Map.Entry<Integer, Integer> entry : POINTS_TO_INT_RANK.entrySet()) {
             if (points >= entry.getKey()) {
@@ -128,17 +173,20 @@ public class ContestPlayerManager  {
     }
 
     /**
-     * Retourne si le joueur est dans l'equipe gagnante
+     * Vérifie si le joueur fait partie de l’équipe gagnante du contest.
+     *
+     * @param player Le joueur hors ligne à vérifier.
+     * @return true si le joueur est dans le camp gagnant, false sinon.
      */
-    public boolean hasWinInCampFromOfflinePlayer(OfflinePlayer player) {
-        int playerCamp = contestManager.dataPlayer.get(player.getUniqueId().toString()).getCamp();
+    public static boolean hasWinInCampFromOfflinePlayer(OfflinePlayer player) {
+        int playerCamp = ContestManager.dataPlayer.get(player.getUniqueId()).getCamp();
 
-        int points1 = contestManager.data.getPoint1();
-        int points2 = contestManager.data.getPoint2();
+        int points1 = ContestManager.data.getPoints1();
+        int points2 = ContestManager.data.getPoints2();
 
 
-        int vote1 = contestManager.getVoteTaux(1);
-        int vote2 = contestManager.getVoteTaux(2);
+        int vote1 = ContestManager.getVoteTaux(1);
+        int vote2 = ContestManager.getVoteTaux(2);
         int totalvote = vote1 + vote2;
         int vote1Taux = (int) (((double) vote1 / totalvote) * 100);
         int vote2Taux = (int) (((double) vote2 / totalvote) * 100);
@@ -153,28 +201,17 @@ public class ContestPlayerManager  {
         if (points1 > points2 && playerCamp == 1) {
             return true;
         }
-        if (points2 > points1 && playerCamp == 2) {
-            return true;
-        }
-        return false;
+
+        return points2 > points1 && playerCamp == 2;
     }
 
     /**
-     * Retourne le multiplicateur en fonction de son rang
+     * Retourne le multiplicateur de récompense en fonction du rang du joueur.
+     *
+     * @param rang Le rang numérique du joueur (1 à 10).
+     * @return Le multiplicateur correspondant pour le calcul des récompenses.
      */
-    public double getMultiplicatorFromRank(int rang) {
-        HashMap<Integer, Double> rankToMultiplicatorMoney = new HashMap<>();
-        rankToMultiplicatorMoney.put(1, 1.0);
-        rankToMultiplicatorMoney.put(2, 1.1);
-        rankToMultiplicatorMoney.put(3, 1.3);
-        rankToMultiplicatorMoney.put(4, 1.4);
-        rankToMultiplicatorMoney.put(5, 1.5);
-        rankToMultiplicatorMoney.put(6, 1.6);
-        rankToMultiplicatorMoney.put(7, 1.7);
-        rankToMultiplicatorMoney.put(8, 1.8);
-        rankToMultiplicatorMoney.put(9, 2.0);
-        rankToMultiplicatorMoney.put(10, 2.4);
-
-        return rankToMultiplicatorMoney.getOrDefault(rang, 1.0);
+    public static double getMultiplicatorFromRank(int rang) {
+        return MULTIPLICATOR_MONEY.getOrDefault(rang, 1.0);
     }
 }

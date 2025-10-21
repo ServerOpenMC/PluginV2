@@ -16,33 +16,30 @@ import java.util.Map;
 
 public class DisabledWorldHome {
 
-    private final OMCPlugin plugin;
-    private final File file;
-    private FileConfiguration config;
-    private final Map<String, WorldDisableInfo> disabledWorlds;
+    private static File file;
+    private static FileConfiguration config;
+    private static Map<String, WorldDisableInfo> disabledWorlds;
 
-    public DisabledWorldHome(OMCPlugin plugin) {
-        this.plugin = plugin;
-        this.file = new File(plugin.getDataFolder() + "/data", "disabled_world_home.yml");
-        this.disabledWorlds = new HashMap<>();
+    public static void init() {
+        file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "disabled_world_home.yml");
+        disabledWorlds = new HashMap<>();
         loadConfig();
     }
 
-    public void loadConfig() {
+    public static void loadConfig() {
         if(!file.exists()) {
             file.getParentFile().mkdirs();
             try {
                 file.createNewFile();
             } catch (Exception e) {
-                OMCPlugin.getInstance().getLogger().severe("Error while creating disabled worlds config: " + e.getMessage());
-                e.printStackTrace();
+                OMCPlugin.getInstance().getSLF4JLogger().error("Error while creating disabled worlds config: {}", e.getMessage(), e);
             }
         }
         config = YamlConfiguration.loadConfiguration(file);
         loadDisabledWorlds();
     }
 
-    private void loadDisabledWorlds() {
+    private static void loadDisabledWorlds() {
         disabledWorlds.clear();
         ConfigurationSection sections = config.getConfigurationSection("disabled-worlds");
         if(sections != null) {
@@ -57,8 +54,8 @@ public class DisabledWorldHome {
         }
     }
 
-    public void saveConfig() {
-        plugin.getLogger().info("Saving disabled worlds config...");
+    public static void saveConfig() {
+        OMCPlugin.getInstance().getSLF4JLogger().info("Saving disabled worlds config...");
         config.set("disabled-worlds", null);
         for(Map.Entry<String, WorldDisableInfo> entry : disabledWorlds.entrySet()) {
             String key = entry.getKey();
@@ -69,33 +66,32 @@ public class DisabledWorldHome {
         try {
             config.save(file);
         } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().severe("Error while saving disabled worlds config: " + e.getMessage());
-            e.printStackTrace();
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error while saving disabled worlds config: {}", e.getMessage(), e);
         }
     }
 
-    public void addDisabledWorld(World world, Player player) {
+    public static void addDisabledWorld(World world, Player player) {
         if(!disabledWorlds.containsKey(world.getName())) {
             disabledWorlds.put(world.getName(), new WorldDisableInfo(player.getName(), System.currentTimeMillis()));
             saveConfig();
         }
     }
 
-    public void removeDisabledWorld(World world) {
+    public static void removeDisabledWorld(World world) {
         if(disabledWorlds.remove(world.getName()) != null) {
             saveConfig();
         }
     }
 
-    public boolean isDisabledWorld(World world) {
+    public static boolean isDisabledWorld(World world) {
         return disabledWorlds.containsKey(world.getName());
     }
 
-    public List<String> getDisabledWorlds() {
+    public static List<String> getDisabledWorlds() {
         return new ArrayList<>(disabledWorlds.keySet());
     }
 
-    public String getDisabledWorldInfo(String world) {
+    public static String getDisabledWorldInfo(String world) {
         WorldDisableInfo info = disabledWorlds.get(world);
         if(info != null) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");

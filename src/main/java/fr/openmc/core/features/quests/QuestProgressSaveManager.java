@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 /**
  * Manages the saving and loading of quest progress for players.
@@ -18,19 +17,13 @@ import java.util.logging.Level;
 public class QuestProgressSaveManager {
 
     private static final String SAVE_FOLDER = "quests";
-    private final OMCPlugin plugin;
-    private final QuestsManager questsManager;
-    final Map<UUID, Map<String, Object>> playerQuestProgress = new ConcurrentHashMap<>();
+    static final Map<UUID, Map<String, Object>> playerQuestProgress = new ConcurrentHashMap<>();
 
     /**
-     * Constructor for QuestProgressSaveManager.
-     * @param plugin the OMCPlugin instance
-     * @param questsManager the QuestsManager instance
+     * Init for QuestProgressSaveManager.
      */
-    public QuestProgressSaveManager(OMCPlugin plugin, QuestsManager questsManager) {
-        this.plugin = plugin;
-        this.questsManager = questsManager;
-        File saveFolder = new File(plugin.getDataFolder(), SAVE_FOLDER);
+    public static void init() {
+        File saveFolder = new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER);
         if (!saveFolder.exists()) {
             saveFolder.mkdirs();
         }
@@ -40,13 +33,13 @@ public class QuestProgressSaveManager {
      * Loads the quest progress for a specific player.
      * @param playerUUID the UUID of the player
      */
-    public void loadPlayerQuestProgress(UUID playerUUID) {
-        File playerFile = this.getPlayerProgressFile(playerUUID);
+    public static void loadPlayerQuestProgress(UUID playerUUID) {
+        File playerFile = getPlayerProgressFile(playerUUID);
         if (playerFile.exists()) {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(playerFile);
             Map<String, Object> playerProgress = new HashMap<>();
 
-            for (Quest quest : this.questsManager.quests.values()) {
+            for (Quest quest : QuestsManager.quests.values()) {
                 String questName = quest.getName();
 
                 int progress = config.getInt(questName + ".progress", 0);
@@ -84,7 +77,7 @@ public class QuestProgressSaveManager {
                 }
             }
 
-            this.playerQuestProgress.put(playerUUID, playerProgress);
+            playerQuestProgress.put(playerUUID, playerProgress);
         }
     }
 
@@ -92,11 +85,11 @@ public class QuestProgressSaveManager {
      * Saves the quest progress for a specific player.
      * @param playerUUID the UUID of the player
      */
-    public void savePlayerQuestProgress(UUID playerUUID) {
-        File playerFile = this.getPlayerProgressFile(playerUUID);
+    public static void savePlayerQuestProgress(UUID playerUUID) {
+        File playerFile = getPlayerProgressFile(playerUUID);
         YamlConfiguration config = new YamlConfiguration();
 
-        for (Quest quest : this.questsManager.quests.values()) {
+        for (Quest quest : QuestsManager.quests.values()) {
             String questName = quest.getName();
             int progress = quest.getProgress().getOrDefault(playerUUID, 0);
             int currentTier = quest.getCurrentTierIndex(playerUUID);
@@ -125,16 +118,16 @@ public class QuestProgressSaveManager {
         try {
             config.save(playerFile);
         } catch (IOException e) {
-            this.plugin.getLogger().log(Level.SEVERE, "Could not save quest progress for player " + playerUUID, e);
+            OMCPlugin.getInstance().getSLF4JLogger().error("Could not save quest progress for player {}", playerUUID, e);
         }
     }
 
     /**
      * Saves the quest progress for all players currently online.
      */
-    public void saveAllQuestProgress() {
-        this.plugin.getServer().getOnlinePlayers().forEach((player) ->
-                this.savePlayerQuestProgress(player.getUniqueId())
+    public static void saveAllQuestProgress() {
+        OMCPlugin.getInstance().getServer().getOnlinePlayers().forEach((player) ->
+                savePlayerQuestProgress(player.getUniqueId())
         );
     }
 
@@ -142,24 +135,26 @@ public class QuestProgressSaveManager {
      * Deletes the quest progress file for a specific player.
      * @param playerUUID the UUID of the player
      */
-    private File getPlayerProgressFile(UUID playerUUID) {
-        return new File(this.plugin.getDataFolder(), SAVE_FOLDER + File.separator + playerUUID + ".yml");
+    private static File getPlayerProgressFile(UUID playerUUID) {
+        return new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER + File.separator + playerUUID + ".yml");
     }
 
     /**
      * Loads the quest progress for all players.
      */
-    public void loadAllQuestProgress() {
-        File saveFolder = new File(this.plugin.getDataFolder(), SAVE_FOLDER);
+    public static void loadAllQuestProgress() {
+        File saveFolder = new File(OMCPlugin.getInstance().getDataFolder(), SAVE_FOLDER);
         File[] playerFiles = saveFolder.listFiles((dir, name) -> name.endsWith(".yml"));
 
         if (playerFiles != null) {
             for (File playerFile : playerFiles) {
                 try {
                     UUID playerUUID = UUID.fromString(playerFile.getName().replace(".yml", ""));
-                    this.loadPlayerQuestProgress(playerUUID);
+                    loadPlayerQuestProgress(playerUUID);
                 } catch (IllegalArgumentException e) {
-                    this.plugin.getLogger().warning("Invalid player file: " + playerFile.getName());
+                    OMCPlugin.getInstance().getSLF4JLogger().warn("Invalid UUID in quest progress file: {}", playerFile.getName(), e);
+                } catch (Exception e) {
+                    OMCPlugin.getInstance().getSLF4JLogger().error("Error loading quest progress for file: {}", playerFile.getName(), e);
                 }
             }
         }

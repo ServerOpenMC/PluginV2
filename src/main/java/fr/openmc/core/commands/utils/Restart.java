@@ -1,30 +1,28 @@
 package fr.openmc.core.commands.utils;
 
-import java.util.List;
-import java.util.UUID;
-
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+
+import java.util.List;
+import java.util.UUID;
 
 public class Restart {
 
@@ -37,7 +35,7 @@ public class Restart {
     @CommandPermission("omc.admin.commands.restart")
     public void restart(CommandSender sender) {
         if (sender instanceof Player) {
-            MessagesManager.sendMessage(sender, MessagesManager.Message.NOPERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, false);
+            MessagesManager.sendMessage(sender, MessagesManager.Message.NO_PERMISSION.getMessage(), Prefix.OPENMC, MessageType.ERROR, false);
             return;
         }
 
@@ -48,8 +46,8 @@ public class Restart {
         for (City city : CityManager.getCities()) {
             UUID watcherUUID = city.getChestWatcher();
             if (watcherUUID == null) continue;
-
-            MessagesManager.sendMessage(sender, Component.text("§7Le coffre est inaccessible durant un rédémarrage programmé"), Prefix.OPENMC, MessageType.INFO, false);
+	        
+	        MessagesManager.sendMessage(sender, Component.text("§7Le coffre est inaccessible durant un redémarrage programmé"), Prefix.OPENMC, MessageType.INFO, false);
             Bukkit.getPlayer(watcherUUID).closeInventory();
         }
 
@@ -72,6 +70,7 @@ public class Restart {
 
                 if (!announce.contains(remainingTime)) {
                     remainingTime -= 1;
+                    ScoreboardManager.updateAllScoreboards();
                     return;
                 }
 

@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.conditions;
 
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
+import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -25,27 +25,22 @@ public class CityKickCondition {
      */
     public static boolean canCityKickPlayer(City city, Player player, OfflinePlayer playerToKick) {
         if (city == null) {
-            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYERNOCITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
+            MessagesManager.sendMessage(player, MessagesManager.Message.PLAYER_NO_CITY.getMessage(), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
         if (player.getUniqueId().equals(playerToKick.getUniqueId())) {
-            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas t'auto exclure de la ville"), Prefix.CITY, MessageType.ERROR, false);
+	        MessagesManager.sendMessage(player, Component.text("Tu ne peux pas t'exclure toi même de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(player.getUniqueId(), CPermission.KICK))) {
+        if (!(city.hasPermission(player.getUniqueId(), CityPermission.KICK))) {
             MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'exclure un membre"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
 
-        if (!(city.hasPermission(playerToKick.getUniqueId(), CPermission.KICK))) {
-            MessagesManager.sendMessage(player, Component.text("Tu n'as pas la permission d'exclure " + playerToKick.getName()), Prefix.CITY, MessageType.ERROR, false);
-            return false;
-        }
-
-        if (city.hasPermission(playerToKick.getUniqueId(), CPermission.OWNER)) {
-            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas exclure le maire de la ville"), Prefix.CITY, MessageType.ERROR, false);
+        if (city.hasPermission(playerToKick.getUniqueId(), CityPermission.OWNER)) {
+            MessagesManager.sendMessage(player, Component.text("Tu ne peux pas exclure le propriétaire de la ville"), Prefix.CITY, MessageType.ERROR, false);
             return false;
         }
         return true;

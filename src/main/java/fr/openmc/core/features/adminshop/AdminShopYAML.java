@@ -13,34 +13,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * Handles loading and saving the admin shop data from a YAML file.
  */
 public class AdminShopYAML {
-    private final OMCPlugin plugin;
     private FileConfiguration config;
     private final File configFile;
-    private final AdminShopManager shopManager;
 
     /**
      * Constructs the AdminShopYAML manager.
-     *
-     * @param plugin       The plugin instance.
-     * @param shopManager  The admin shop manager instance to populate with data.
      */
-    public AdminShopYAML(OMCPlugin plugin, AdminShopManager shopManager) {
-        this.plugin = plugin;
-        this.configFile = new File(plugin.getDataFolder() + "/data", "adminshop.yml");
-        this.shopManager = shopManager;
+    public AdminShopYAML() {
+        this.configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "adminshop.yml");
     }
 
     /**
      * Loads the configuration file and populates categories and items.
      */
     public void loadConfig() {
-        if (!configFile.exists()) plugin.saveResource("data/adminshop.yml", false);
+        if (!configFile.exists()) OMCPlugin.getInstance().saveResource("data/adminshop.yml", false);
         config = YamlConfiguration.loadConfiguration(configFile);
         loadCategories(); // Load categories first
         loadItems(); // Load items after categories
@@ -50,14 +42,14 @@ public class AdminShopYAML {
      * Loads the shop categories from the YAML configuration and adds them to the manager.
      */
     private void loadCategories() {
-        shopManager.categories.clear();
+        AdminShopManager.categories.clear();
         List<Map<?, ?>> categoryList = config.getMapList("category");
 
         for (Map<?, ?> categoryMap : categoryList) {
             for (Map.Entry<?, ?> entry : categoryMap.entrySet()) {
                 String key = entry.getKey().toString();
                 Map<?, ?> section = (Map<?, ?>) entry.getValue();
-                shopManager.categories.put(key, new ShopCategory(
+                AdminShopManager.categories.put(key, new ShopCategory(
                         key,
                         ChatColor.translateAlternateColorCodes('&', section.get("name").toString()),
                         Material.valueOf(section.get("material").toString()),
@@ -71,9 +63,9 @@ public class AdminShopYAML {
      * Loads all shop items from the YAML configuration and maps them by category.
      */
     private void loadItems() {
-        shopManager.items.clear();
+        AdminShopManager.items.clear();
 
-        for (String categoryId : shopManager.categories.keySet()) {
+        for (String categoryId : AdminShopManager.categories.keySet()) {
             List<Map<?, ?>> itemList = config.getMapList(categoryId);
             Map<String, ShopItem> categoryItems = new HashMap<>();
 
@@ -100,7 +92,7 @@ public class AdminShopYAML {
                 }
             }
 
-            if (!categoryItems.isEmpty()) shopManager.items.put(categoryId, categoryItems);
+            if (!categoryItems.isEmpty()) AdminShopManager.items.put(categoryId, categoryItems);
         }
     }
 
@@ -108,7 +100,7 @@ public class AdminShopYAML {
      * Saves all shop item data back to the YAML configuration file.
      */
     public void saveConfig() {
-        for (var entry : shopManager.items.entrySet()) {
+        for (var entry : AdminShopManager.items.entrySet()) {
             String categoryId = entry.getKey();
             List<Map<String, Object>> itemList = new ArrayList<>();
 
@@ -124,7 +116,7 @@ public class AdminShopYAML {
         try {
             config.save(configFile);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not save shop config", e);
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Failed to save admin shop configuration file: {}", e.getMessage(), e);
         }
     }
 

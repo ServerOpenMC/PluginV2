@@ -8,35 +8,38 @@ import fr.openmc.core.commands.fun.Diceroll;
 import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
 import fr.openmc.core.features.adminshop.AdminShopCommand;
+import fr.openmc.core.features.credits.CreditsCommand;
+import fr.openmc.core.features.cube.CubeCommands;
 import fr.openmc.core.features.friend.FriendCommand;
-import fr.openmc.core.features.friend.FriendManager;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
+import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
+import fr.openmc.core.features.privatemessage.command.PrivateMessageCommand;
+import fr.openmc.core.features.privatemessage.command.SocialSpyCommand;
 import fr.openmc.core.features.quests.command.QuestCommand;
+import fr.openmc.core.features.settings.command.SettingsCommand;
 import fr.openmc.core.features.updates.UpdateCommand;
 import lombok.Getter;
-import revxrsal.commands.bukkit.BukkitCommandHandler;
+import revxrsal.commands.Lamp;
+import revxrsal.commands.bukkit.BukkitLamp;
 
 public class CommandsManager {
-    @Getter static CommandsManager instance;
-    @Getter static BukkitCommandHandler handler;
+    @Getter
+    static Lamp handler;
 
-    public CommandsManager() {
-        instance = this;
-        OMCPlugin plugin = OMCPlugin.getInstance();
-        handler = BukkitCommandHandler.create(plugin);
+    public static void init() {
+        handler = BukkitLamp.builder(OMCPlugin.getInstance())
+                .commandCondition(new CooldownInterceptor())
+                .build();
 
-        handler.registerCondition(new CooldownInterceptor());
-
-        registerSuggestions();
         registerCommands();
     }
 
-    private void registerCommands() {
+    private static void registerCommands() {
         handler.register(
                 new Socials(),
                 new Spawn(),
                 new UpdateCommand(),
-                new Rtp(),
+                new RTPCommands(),
                 new SetSpawn(),
                 new Playtime(),
                 new Diceroll(),
@@ -47,11 +50,14 @@ public class CommandsManager {
                 new FriendCommand(),
                 new QuestCommand(),
                 new Restart(),
-                new AdminShopCommand()
+                new AdminShopCommand(),
+                new MainMenuCommand(),
+                new PrivateMessageCommand(),
+                new SocialSpyCommand(),
+                new SettingsCommand(),
+                new Cooldowns(),
+                new CreditsCommand(),
+                new CubeCommands()
         );
-    }
-
-    private void registerSuggestions() {
-        FriendManager.getInstance().initCommandSuggestion();
     }
 }

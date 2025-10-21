@@ -22,13 +22,13 @@ Le système de quêtes permet d'implémenter des objectifs pour les joueurs dans
 
 Le système est composé des éléments suivants :
 
-| Composant | Description |
-|-----------|-------------|
-| **Quête** | Objet principal qui contient un nom, une description, une icône et une liste de paliers |
-| **Palier de Quête** | Niveau de progression avec un objectif et des récompenses |
-| **Étape de Quête** | Sous-objectifs optionnels au sein d'un palier |
-| **Récompenses** | Objets ou argent attribués lorsqu'un palier est complété |
-| **Progression** | Système de suivi et sauvegarde de l'avancement des joueurs |
+| Composant           | Description                                                                             |
+|---------------------|-----------------------------------------------------------------------------------------|
+| **Quête**           | Objet principal qui contient un nom, une description, une icône et une liste de paliers |
+| **Palier de Quête** | Niveau de progression avec un objectif et des récompenses                               |
+| **Étape de Quête**  | Sous-objectifs optionnels au sein d'un palier                                           |
+| **Récompenses**     | Objets ou argent attribués lorsqu'un palier est complété                                |
+| **Progression**     | Système de suivi et sauvegarde de l'avancement des joueurs                              |
 
 ## Guide d'implémentation
 
@@ -59,8 +59,9 @@ public class MinerQuest extends Quest {
 }
 ```
 
-pour `l'action bar`, le boolean est facultatif, par défaut il est à `false`.
-Il permet d'afficher la progression de la quête dans la barre d'action du joueur, elle s'afficheras a chaque palier (50), pour éviter de spammer le joueur.
+pour `l'action bar`, le boolean est facultatif, par défaut, il est à `false`.
+Il permet d'afficher la progression de la quête dans la barre d'action du joueur, elle s'affichera à chaque palier (50),
+pour éviter de spammer le joueur.
 
 ### Enregistrer une quête
 

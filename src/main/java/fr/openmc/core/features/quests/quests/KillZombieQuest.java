@@ -11,10 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 
+import java.util.List;
+
 public class KillZombieQuest extends Quest implements Listener {
 
     public KillZombieQuest() {
-        super("Apocalypse zombie ?", "Tuer {target} zombies", Material.ZOMBIE_HEAD);
+        super("Apocalypse zombie ?", List.of("Tuer {target} zombies"), Material.ZOMBIE_HEAD);
 
         this.addTiers(
                 new QuestTier(1000, new QuestMoneyReward(8000)),

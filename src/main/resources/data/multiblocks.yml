@@ -1,0 +1,10 @@
+multiblocks:
+  - type: CUBE
+    world: world
+    origin:
+      x: -171
+      z: -117
+    size: 5
+    material: LAPIS_BLOCK
+    vulnerable: false
+    bossbar: true

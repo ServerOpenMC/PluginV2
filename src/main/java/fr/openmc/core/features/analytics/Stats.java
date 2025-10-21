@@ -1,74 +1,55 @@
 package fr.openmc.core.features.analytics;
 
-import fr.openmc.core.OMCPlugin;
-import fr.openmc.core.utils.database.DatabaseManager;
-import org.bukkit.Bukkit;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.UUID;
 
 public enum Stats {
-    SESSION,
-    TOTAL_TRANSACTIONS,
+    SESSION("session"),
+    TOTAL_TRANSACTIONS("total_transactions"),
     ;
 
-    /**
-     * Return the stats for a player
-     * @param uuid Player
-     * @param defaultValue The value that will get returned if analytics is disabled or didn't work
-     * @return The stats of the player, if unavailable, it will return defaultValue
-     */
-    public int get(UUID uuid, int defaultValue) {
-        if (!AnalyticsManager.isEnabled()) return defaultValue;
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT value FROM stats WHERE player = ? AND scope = ? LIMIT 1");
-            statement.setString(1, uuid.toString());
-            statement.setString(2, this.name());
-            ResultSet resultSet = statement.executeQuery();
+    private final String scope;
 
-            return resultSet.getInt(1);
-        } catch (SQLException err) {
-            err.printStackTrace();
-            return defaultValue;
-        }
+    Stats(String scope) {
+        this.scope = scope;
     }
 
     /**
      * Return the stats for a player
-     * @param uuid Player
+     * 
+     * @param playerUUID       Player
+     * @param defaultValue The value if the analytics manager is disabled
      * @return The stats of the player, if unavailable, it will return `0`
      */
-    public int get(UUID uuid) {
-        return get(uuid, 0);
+    public int get(UUID playerUUID, int defaultValue) {
+        return AnalyticsManager.getStatistic(this.scope, playerUUID, defaultValue);
     }
 
     /**
-     * Increment a stats for a player
-     * @param uuid Player
-     * @param amount Amount to incremented
+     * Return the stats for a player
+     * 
+     * @param playerUUID Player
+     * @return The stats of the player, if unavailable, it will return `0`
      */
-    public void increment(UUID uuid, int amount) {
-        if (!AnalyticsManager.isEnabled()) return;
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            try {
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO stats VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value=value+?");
-                statement.setString(1, uuid.toString());
-                statement.setString(2, this.name());
-                statement.setInt(3, amount);
-                statement.setInt(4, amount);
-                statement.executeUpdate();
-            } catch (SQLException err) {
-                err.printStackTrace();
-            }
-        });
+    public int get(UUID playerUUID) {
+        return get(playerUUID, 0);
     }
 
     /**
-     * Increment a stats by one for a player
-     * @param uuid Player
+     * Increment a stat by one for a player
+     * 
+     * @param playerUUID Player
+     * @param value  the amount to increment the statistic
      */
-    public void increment(UUID uuid) {
-        increment(uuid, 1);
+    public void increment(UUID playerUUID, int value) {
+        AnalyticsManager.incrementStatistic(this.scope, playerUUID, value);
+    }
+
+    /**
+     * Increment a stat by one for a player
+     * 
+     * @param playerUUID The player to increment the stat for
+     */
+    public void increment(UUID playerUUID) {
+        increment(playerUUID, 1);
     }
 }

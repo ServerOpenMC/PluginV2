@@ -1,14 +1,12 @@
 package fr.openmc.core.features.city;
 
-import fr.openmc.core.features.city.mascots.Mascot;
-import fr.openmc.core.features.city.mascots.MascotUtils;
+import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.CacheOfflinePlayer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,17 +22,17 @@ public class CityMessages {
     public static void sendInfo(CommandSender sender, City city) {
         String mascotLife = "dead";
         String cityName = city.getName();
-        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName();
+        String mayorName = CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWithPermission(CityPermission.OWNER)).getName();
 
         int citizens = city.getMembers().size();
         int area = city.getChunks().size();
-        int power = CityManager.getCityPowerPoints(city.getUUID());
+        int power = city.getPowerPoints();
 
-        String type = CityManager.getCityType(city.getUUID());
-        Mascot mascot = MascotUtils.getMascotOfCity(city.getUUID());
+        CityType type = city.getType();
+        Mascot mascot = city.getMascot();
         if (mascot!=null){
-            LivingEntity mob = MascotUtils.loadMascot(mascot);
-            if (MascotUtils.getMascotState(city.getUUID())){
+            LivingEntity mob = (LivingEntity) mascot.getEntity();
+            if (mascot.isAlive()) {
                 mascotLife = String.valueOf(mob.getHealth());
             }
         }
@@ -48,21 +46,21 @@ public class CityMessages {
         sendLine(sender, "Maire", mayorName);
         sendLine(sender, "Habitants", String.valueOf(citizens));
         sendLine(sender, "Superficie", String.valueOf(area));
-        if (type!=null && type.equals("war")){
+        if (type == CityType.WAR) {
             sendLine(sender, "Puissance", String.valueOf(power));
         }
         sendLine(sender, "Vie de la Mascotte", mascotLife);
-        sendLine(sender, "Type", type);
+        sendLine(sender, "Type", type.getDisplayName());
 
         String money = EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + " " + EconomyManager.getEconomyIcon();
         if (sender instanceof Player player) {
-            if (!(city.hasPermission(player.getUniqueId(), CPermission.MONEY_BALANCE))) return;
+            if (!(city.hasPermission(player.getUniqueId(), CityPermission.MONEY_BALANCE))) return;
             sendLine(sender, "Banque", money);
         } else {
             sendLine(sender, "Banque", money);
         }
-        if (CityManager.freeClaim.containsKey(city.getUUID())){
-            sendLine(sender, "Claim gratuit", String.valueOf(CityManager.freeClaim.get(city.getUUID())));
-        }
+
+        if (city.getFreeClaims() > 0)
+            sendLine(sender, "Claim gratuit", String.valueOf(city.getFreeClaims()));
     }
 }

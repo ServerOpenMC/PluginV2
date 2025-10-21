@@ -1,0 +1,39 @@
+name: OpenMC
+version: ${version}
+main: fr.openmc.core.OMCPlugin
+api-version: ${minecraftVersion}
+bootstrapper: fr.openmc.core.OMCBootstrap
+
+dependencies:
+  server:
+    FancyNpcs:
+      load: BEFORE
+      required: false
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+    LuckPerms:
+      load: BEFORE
+      required: false
+    ItemsAdder:
+      load: BEFORE
+      required: false
+    ProtocolLib:
+      load: BEFORE
+      required: false
+    WorldGuard:
+      load: BEFORE
+      required: false
+
+prefix: OMC
+authors: [ La communauté ]
+description: Nouveau plugin d'OpenMC
+website: https://openmc.fr
+
+permissions:
+  omc.commands.*:
+    description: "Donne l'accès au commandes"
+    default: true
+  omc.admins.commands.*:
+    description: "Donne l'accès aux commandes d'administration"
+    default: op

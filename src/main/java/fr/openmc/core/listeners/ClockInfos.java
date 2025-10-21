@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.ItemStack;
 
 /*
 * Repris de src/main/java/fr/communaywen/core/clockinfos/tasks/CompassClockTask.java
@@ -16,9 +16,12 @@ public class ClockInfos implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        PlayerInventory inv = player.getInventory();
+        ItemStack item = event.getItem();
+        if (item == null)
+            return;
 
-        if (inv.getItemInMainHand().getType() != Material.CLOCK) return;
+        if (item.getType() != Material.CLOCK)
+            return;
 
         long daysPassed = player.getWorld().getFullTime() / 24000;
         long currentTime = player.getWorld().getTime();
@@ -30,6 +33,6 @@ public class ClockInfos implements Listener {
         String hoursAsText = String.format("%02d", hours);
 
         // J12 03h49
-        player.sendActionBar(Component.text("J"+daysPassed+" "+hoursAsText+"h"+minutesAsText));
+        player.sendActionBar(Component.text("J" + daysPassed + " " + hoursAsText + "h" + minutesAsText));
     }
 }

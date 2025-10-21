@@ -1,176 +1,121 @@
 package fr.openmc.core.features.friend;
 
-import fr.openmc.core.utils.database.DatabaseManager;
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
+import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.TableUtils;
+import fr.openmc.core.OMCPlugin;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public class FriendSQLManager {
 
-    private static final String TABLE_NAME = "friends";
+    private static Dao<Friend, UUID> friendsDao;
 
-    public static void init_db(Connection conn) throws SQLException {
-        conn.prepareStatement("CREATE TABLE IF NOT EXISTS friends (" +
-                "firstPlayer_uuid VARCHAR(36) NOT NULL," +
-                "secondPlayer_uuid VARCHAR(36) NOT NULL," +
-                "friendDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                "bestFriend BOOLEAN NOT NULL DEFAULT FALSE" +
-                ")").executeUpdate();
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, Friend.class);
+        friendsDao = DaoManager.createDao(connectionSource, Friend.class);
     }
 
-    public static boolean addInDatabase(UUID firstUUID, UUID secondUUID) {
+    private static Friend getFriendObject(UUID first, UUID second) {
         try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("INSERT INTO " + TABLE_NAME + " (firstPlayer_uuid, secondPlayer_uuid, friendDate, bestFriend) VALUES (?, ?, ?, ?)");
+            QueryBuilder<Friend, UUID> query = friendsDao.queryBuilder();
+            Where<Friend, UUID> where = query.where();
 
-            statement.setString(1, firstUUID.toString());
-            statement.setString(2, secondUUID.toString());
-            statement.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            statement.setBoolean(4, false);
+            where.or(where.eq("first", first).and().eq("second", second), where.eq("first", second).and().eq("second"
+                    , first)); // Bordel !!!!
 
-            statement.executeUpdate();
+            List<Friend> objs = friendsDao.query(query.prepare());
 
-            return true;
-        } catch (SQLException e) {
-            System.out.println(e.toString());
-            return false;
-        }
-    }
-
-    public static boolean removeInDatabase(UUID firstUUID, UUID secondUUID) {
-        try {
-
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("DELETE FROM " + TABLE_NAME + " WHERE (firstPlayer_uuid = ? AND secondPlayer_uuid = ?) OR (firstPlayer_uuid = ? AND secondPlayer_uuid = ?)");
-
-            statement.setString(1, firstUUID.toString());
-            statement.setString(2, secondUUID.toString());
-            statement.setString(3, secondUUID.toString());
-            statement.setString(4, firstUUID.toString());
-
-            statement.executeUpdate();
-
-            return true;
-        } catch (SQLException e) {
-            System.out.println(e.toString());
-            return false;
-        }
-    }
-
-    public static boolean areFriends(UUID firstUUID, UUID secondUUID) {
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT firstPlayer_uuid, secondPlayer_uuid FROM " + TABLE_NAME + " WHERE (firstPlayer_uuid = ? AND secondPlayer_uuid = ?) OR (firstPlayer_uuid = ? AND secondPlayer_uuid = ?)");
-
-            statement.setString(1, firstUUID.toString());
-            statement.setString(2, secondUUID.toString());
-            statement.setString(3, secondUUID.toString());
-            statement.setString(4, firstUUID.toString());
-
-            ResultSet resultSet = statement.executeQuery();
-            return resultSet.next();
-        } catch (SQLException e) {
-            System.out.println(e.toString());
-            return false;
-        }
-    }
-
-    public static boolean isBestFriend(UUID firstUUID, UUID secondUUID) {
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT bestFriend FROM " + TABLE_NAME + " WHERE (firstPlayer_uuid = ? AND secondPlayer_uuid = ?) OR (firstPlayer_uuid = ? AND secondPlayer_uuid = ?)");
-
-            statement.setString(1, firstUUID.toString());
-            statement.setString(2, secondUUID.toString());
-            statement.setString(3, secondUUID.toString());
-            statement.setString(4, firstUUID.toString());
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean("bestFriend");
-            }
-            return false;
-        } catch (SQLException e) {
-            System.out.println(e.toString());
-        }
-        return false;
-    }
-
-    public static boolean setBestFriend(UUID firstUUID, UUID secondUUID, boolean bestFriend) {
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("UPDATE " + TABLE_NAME + " SET bestFriend = ? WHERE (firstPlayer_uuid = ? AND secondPlayer_uuid = ?) OR (firstPlayer_uuid = ? AND secondPlayer_uuid = ?)");
-
-            statement.setBoolean(1, bestFriend);
-            statement.setString(2, firstUUID.toString());
-            statement.setString(3, secondUUID.toString());
-            statement.setString(4, secondUUID.toString());
-            statement.setString(5, firstUUID.toString());
-
-            statement.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            System.out.println(e.toString());
-            return false;
-        }
-    }
-
-    public static Timestamp getTimestamp(UUID firstUUID, UUID secondUUID) {
-        try {
-            PreparedStatement statement = DatabaseManager.getConnection().prepareStatement("SELECT friendDate FROM " + TABLE_NAME + " WHERE (firstPlayer_uuid = ? AND secondPlayer_uuid = ?) OR (firstPlayer_uuid = ? AND secondPlayer_uuid = ?)");
-
-            statement.setString(1, firstUUID.toString());
-            statement.setString(2, secondUUID.toString());
-            statement.setString(3, secondUUID.toString());
-            statement.setString(4, firstUUID.toString());
-
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getTimestamp("friendDate");
+            if (objs.isEmpty()) {
+                return null;
+            } else {
+                return objs.getFirst();
             }
 
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get Friends Object 1=" + first + " 2=" + second, e);
+            return null;
         }
-
-        return null;
     }
 
-    public static CompletableFuture<List<UUID>> getAllFriendsAsync(UUID uuid) {
+    public static boolean addInDatabase(UUID first, UUID second) {
+        try {
+            return friendsDao.create(new Friend(first, second, Timestamp.valueOf(LocalDateTime.now()))) != 0;
+        } catch (SQLException e) {
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to add Friends in database", e);
+            return false;
+        }
+    }
+
+    public static boolean removeInDatabase(UUID first, UUID second) {
+        try {
+            return friendsDao.delete(getFriendObject(first, second)) != 0;
+        } catch (SQLException e) {
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to remove Friends in database", e);
+            return false;
+        }
+    }
+
+    public static boolean areFriends(UUID first, UUID second) {
+        return getFriendObject(first, second) != null;
+    }
+
+    public static boolean isBestFriend(UUID first, UUID second) {
+        return getFriendObject(first, second).isBestFriend();
+    }
+
+    public static boolean setBestFriend(UUID first, UUID second, boolean bestFriend) {
+        Friend friend = getFriendObject(first, second);
+        friend.setBestFriend(bestFriend);
+        try {
+            return friendsDao.update(friend) != 0;
+        } catch (SQLException e) {
+            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to set Best Friends in database", e);
+            return false;
+        }
+    }
+
+    public static Timestamp getTimestamp(UUID first, UUID second) {
+        return getFriendObject(first, second).getDate();
+    }
+
+    public static CompletableFuture<List<UUID>> getAllFriendsAsync(UUID playerUUID) {
         return CompletableFuture.supplyAsync(() -> {
             List<UUID> friends = new ArrayList<>();
 
             try {
-                String sql = "SELECT * FROM " + TABLE_NAME + " WHERE firstPlayer_uuid = ? OR secondPlayer_uuid = ?";
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql);
-                statement.setString(1, uuid.toString());
-                statement.setString(2, uuid.toString());
-
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    String friendUUID = resultSet.getString("firstPlayer_uuid").equals(uuid.toString()) ? resultSet.getString("secondPlayer_uuid") : resultSet.getString("firstPlayer_uuid");
-                    friends.add(UUID.fromString(friendUUID));
-                }
+                QueryBuilder<Friend, UUID> query = friendsDao.queryBuilder();
+                query.where().eq("first", playerUUID).or().eq("second", playerUUID);
+                friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(playerUUID)));
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get a friends async", e);
             }
             return friends;
         });
     }
 
-    public static CompletableFuture<List<UUID>> getBestFriendsAsync(UUID uuid) {
+    public static CompletableFuture<List<UUID>> getBestFriendsAsync(UUID playerUUID) {
         return CompletableFuture.supplyAsync(() -> {
             List<UUID> friends = new ArrayList<>();
 
             try {
-                String sql = "SELECT * FROM " + TABLE_NAME + " WHERE (firstPlayer_uuid = ? OR secondPlayer_uuid = ?) AND bestFriend = TRUE";
-                PreparedStatement statement = DatabaseManager.getConnection().prepareStatement(sql);
-                statement.setString(1, uuid.toString());
-                statement.setString(2, uuid.toString());
-
-                ResultSet resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-                    String friendUUID = resultSet.getString("firstPlayer_uuid").equals(uuid.toString()) ? resultSet.getString("secondPlayer_uuid") : resultSet.getString("firstPlayer_uuid");
-                    friends.add(UUID.fromString(friendUUID));
-                }
+                QueryBuilder<Friend, UUID> query = friendsDao.queryBuilder();
+                query.where().and(query.where().eq("first", playerUUID)
+                                .or().eq("second", playerUUID),
+                        query.where().eq("best_friend", true));
+                friendsDao.query(query.prepare()).forEach(friend -> friends.add(friend.getOther(playerUUID)));
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get Best Friends async", e);
             }
             return friends;
         });

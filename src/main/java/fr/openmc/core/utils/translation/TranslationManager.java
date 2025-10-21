@@ -1,28 +1,26 @@
 package fr.openmc.core.utils.translation;
 
-import org.bukkit.configuration.file.YamlConfiguration;
+import fr.openmc.core.OMCPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import fr.openmc.core.OMCPlugin;
-
 
 public class TranslationManager {
 
-    private final String defaultLanguage;
-    private final OMCPlugin plugin;
-    private final File translationFolder;
-    private final Map<String, FileConfiguration> loadedLanguages;
+    private static String defaultLanguage;
+    private static File translationFolder;
+    private static final Map<String, FileConfiguration> loadedLanguages = new HashMap<>();
 
-    public TranslationManager(OMCPlugin plugin, File translationFolder, String defaultLanguage) {
-        this.plugin = plugin;
-        this.defaultLanguage = defaultLanguage;
-        this.translationFolder = translationFolder;
-        this.loadedLanguages = new HashMap<>();
+    public static void init(File inTranslationFolder, String inDefaultLanguage) {
+        defaultLanguage = inDefaultLanguage;
+        translationFolder = inTranslationFolder;
+
+        loadAllLanguages();
     }
 
     /**
@@ -31,10 +29,10 @@ public class TranslationManager {
      * @param path  The path to the translation, "default" for default language
      * @param language The language of the translation
      */
-    public String getTranslation(String path, String language) {
-        FileConfiguration languageConfig = this.loadedLanguages.get(language);
-                this.loadedLanguages.get(this.defaultLanguage);
-        if (languageConfig != null || Objects.equals(language, this.defaultLanguage)) {
+    public static String getTranslation(String path, String language) {
+        FileConfiguration languageConfig = loadedLanguages.get(language);
+                loadedLanguages.get(defaultLanguage);
+        if (languageConfig != null || Objects.equals(language, defaultLanguage)) {
             return languageConfig.getString(path, "Missing translation for path: " + path);
         } else {
             return getTranslation(path);
@@ -46,10 +44,10 @@ public class TranslationManager {
      *
      * @param path  The path to the translation
      * @param language The language of the translation, "default" for default language
-     * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
+     * @param placeholders The placeholders you want to replace in a pair with values ("player", player.getName())
      */
-    public String getTranslation(String path, String language, String... placeholders) {
-        return this.replacePlaceholders(getTranslation(path, language), placeholders);
+    public static String getTranslation(String path, String language, String... placeholders) {
+        return replacePlaceholders(getTranslation(path, language), placeholders);
     }
 
     /**
@@ -57,8 +55,8 @@ public class TranslationManager {
      *
      * @param path  The path to the translation
      */
-    public String getTranslation(String path) {
-        return this.getTranslation(path, this.defaultLanguage);
+    public static String getTranslation(String path) {
+        return getTranslation(path, defaultLanguage);
     }
 
 
@@ -67,23 +65,24 @@ public class TranslationManager {
      *
      * @param language The language to load
      */
-    public void loadLanguage(String language) {
+    public static void loadLanguage(String language) {
 
-        File languageFile = new File(this.translationFolder, language + ".yml");
+        File languageFile = new File(translationFolder, language + ".yml");
 
         if (!languageFile.exists()) {
             try {
-                this.plugin.saveResource(translationFolder.getPath() + language + ".yml", false);
-                plugin.getLogger().info("Language loaded : " + language);
+                OMCPlugin.getInstance().saveResource(translationFolder.getPath() + language + ".yml", false);
+                OMCPlugin.getInstance().getSLF4JLogger().info("Language {} not found, creating a new one from default template.", language);
             }
             catch (Exception ignored) {
-                plugin.getLogger().warning("Language " + language + " does not exist");
+                OMCPlugin.getInstance().getSLF4JLogger().error("Failed to load the default language file: {}.yml. Please ensure it exists in the translations folder in the jar file.", language);
+                return;
             }
         }
 
         if (languageFile.exists()) {
-            this.loadedLanguages.put(language, YamlConfiguration.loadConfiguration(languageFile));
-            plugin.getLogger().info("Language " + language + " loaded");
+            loadedLanguages.put(language, YamlConfiguration.loadConfiguration(languageFile));
+            OMCPlugin.getInstance().getSLF4JLogger().info("Language {} loaded successfully.", language);
         }
     }
 
@@ -91,9 +90,9 @@ public class TranslationManager {
      * Replaces the keys (between {}) in a String with the value Strings.
      *
      * @param text The string to modify
-     * @param placeholders The placeholders you want to replace in pair with values ("player", player.getName())
+     * @param placeholders The placeholders you want to replace in a pair with values ("player", player.getName())
      */
-    public String replacePlaceholders(String text, String... placeholders) {
+    public static String replacePlaceholders(String text, String... placeholders) {
         for (int i = 0; i < placeholders.length; i += 2) {
             String key = placeholders[i];
             String value = placeholders[i + 1];
@@ -105,27 +104,27 @@ public class TranslationManager {
     /**
      * Loads all the languages present in the translations folder.
      */
-    public void loadAllLanguages() {
-        if (!this.translationFolder.exists()) {
-            this.translationFolder.mkdirs();
+    public static void loadAllLanguages() {
+        if (!translationFolder.exists()) {
+            translationFolder.mkdirs();
 
             // List of default languages
             String[] defaultLanguages = {"fr"};
 
             for (String lang : defaultLanguages) {
                 String resourcePath = "translations/" + lang + ".yml";
-                File targetFile = new File(this.translationFolder, lang + ".yml");
+                File targetFile = new File(translationFolder, lang + ".yml");
 
                 if (!targetFile.exists()) {
-                    this.plugin.saveResource(resourcePath, false);
+                    OMCPlugin.getInstance().saveResource(resourcePath, false);
                 }
             }
         }
 
-        File[] files = this.translationFolder.listFiles((dir, name) -> name.endsWith(".yml"));
+        File[] files = translationFolder.listFiles((dir, name) -> name.endsWith(".yml"));
         if (files!=null) {
             for (File file: files)  {
-                this.loadLanguage(file.getName().replace(".yml", ""));
+                loadLanguage(file.getName().replace(".yml", ""));
             }
         }
 

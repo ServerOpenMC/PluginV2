@@ -1,31 +1,35 @@
 package fr.openmc.core.utils;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.settings.PlayerSettingsManager;
+import fr.openmc.core.features.settings.SettingType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.title.Title;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.jetbrains.annotations.Nullable;
+import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.UUID;
+import java.time.Duration;
 
 public class PlayerUtils {
-	
-	/**
-	 * @param player Player to be tested
-	 * @return If the player is safe
-	 */
-	private boolean isInSafePosition(Player player) {
-		if (player.isFlying()) return false;
-		if (player.isInsideVehicle()) return false;
-		if (player.isGliding()) return false;
-		if (player.isSleeping()) return false;
-		if (player.isUnderWater()) return false;
-		if (player.isFlying()) return false;
-		if (player.isVisualFire()) return false;
-		// TODO: Check si le block en pile, sur la tête et en dessous (trapdoor) est plein
-		
-		return true;
+	public static void sendFadeTitleTeleport(Player player, Location location) {
+		if (PlayerSettingsManager.getPlayerSettings(player.getUniqueId()).getSetting(SettingType.TELEPORT_TITLE_FADE)) {
+            player.showTitle(Title.title(
+                    Component.text(FontImageWrapper.replaceFontImages(":tp_effect:")),
+                    Component.text("Téléportation...", NamedTextColor.GREEN, TextDecoration.BOLD),
+                    Title.Times.times(Duration.ofMillis(20 * 50), Duration.ofMillis(10 * 50), Duration.ofMillis(10 * 50))
+            ));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					player.teleport(location);
+				}
+			}.runTaskLater(OMCPlugin.getInstance(), 14);
+		} else {
+			player.teleportAsync(location);
+		}
 	}
 }

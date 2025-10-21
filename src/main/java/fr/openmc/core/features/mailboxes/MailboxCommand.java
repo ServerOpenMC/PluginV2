@@ -1,11 +1,12 @@
 package fr.openmc.core.features.mailboxes;
 
 import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
-import fr.openmc.core.features.mailboxes.menu.letter.Letter;
+import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,8 +16,6 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.sql.SQLException;
-
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendFailureMessage;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendWarningMessage;
 
@@ -24,7 +23,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.sendWarningMe
 @CommandPermission("omc.commands.mailbox")
 public class MailboxCommand {
     
-    private OMCPlugin plugin;
+    private final OMCPlugin plugin;
     
     public MailboxCommand(OMCPlugin plugin) {
         this.plugin = plugin;
@@ -32,15 +31,14 @@ public class MailboxCommand {
     
     @Subcommand("home")
     @Description("Ouvrir la page d'accueil de la boite aux lettres")
-    public void homeMailbox(Player player) {
-        HomeMailbox homeMailbox = new HomeMailbox(player, this.plugin);
+    public static void homeMailbox(Player player) {
+        HomeMailbox homeMailbox = new HomeMailbox(player, OMCPlugin.getInstance());
         homeMailbox.openInventory();
     }
 
     @Subcommand("send")
     @Description("Envoyer une lettre à un joueur")
-    @AutoComplete("@players")
-    public void sendMailbox(Player player, @Named("player") String receiver) throws SQLException {
+    public void sendMailbox(Player player, @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) String receiver) {
         OfflinePlayer receiverPlayer = Bukkit.getPlayerExact(receiver);
         if (receiverPlayer == null) receiverPlayer = Bukkit.getOfflinePlayerIfCached(receiver);
         if (receiverPlayer == null || !(receiverPlayer.hasPlayedBefore() || receiverPlayer.isOnline())) {
@@ -69,9 +67,9 @@ public class MailboxCommand {
     @Subcommand("open")
     @Description("Ouvrir une lettre")
     public void openMailbox(Player player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        LetterHead letterHead = Letter.getById(player, id);
+        LetterHead letterHead = LetterMenu.getById(player, id);
         if (letterHead == null) return;
-        Letter mailbox = new Letter(player, letterHead);
+        LetterMenu mailbox = new LetterMenu(player, letterHead);
         mailbox.openInventory();
     }
 
@@ -79,7 +77,7 @@ public class MailboxCommand {
     @SecretCommand
     @Description("Refuser une lettre")
     public void refuseMailbox(Player player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        Letter.refuseLetter(player, id);
+        LetterMenu.refuseLetter(player, id);
     }
 
     @Subcommand("cancel")
@@ -89,9 +87,8 @@ public class MailboxCommand {
         PendingMailbox.cancelLetter(player, id);
     }
 
-    @DefaultFor("~")
+    @CommandPlaceholder()
     public void mailbox(Player player) {
-        PlayerMailbox playerMailbox = new PlayerMailbox(player);
-        playerMailbox.openInventory();
+        new PlayerMailbox(player).openInventory();
     }
 }

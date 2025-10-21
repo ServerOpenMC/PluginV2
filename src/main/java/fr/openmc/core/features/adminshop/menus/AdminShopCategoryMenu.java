@@ -1,36 +1,41 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.adminshop.AdminShopManager;
 import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
-import fr.openmc.core.utils.customitems.CustomItemRegistry;
-import me.clip.placeholderapi.PlaceholderAPI;
+import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AdminShopCategoryMenu extends Menu {
-    private final AdminShopManager shopManager;
     private final String categoryId;
 
-    public AdminShopCategoryMenu(Player owner, AdminShopManager shopManager, String categoryId) {
+    public AdminShopCategoryMenu(Player owner, String categoryId) {
         super(owner);
-        this.shopManager = shopManager;
         this.categoryId = categoryId;
     }
 
     @Override
     public @NotNull String getName() {
-        return PlaceholderAPI.setPlaceholders(getOwner(), "§r§f%img_offset_-11%%img_adminshop_items%");
+        return "Menu d'une catégorie de l'adminshop";
+    }
+
+    @Override
+    public String getTexture() {
+        return FontImageWrapper.replaceFontImages("§r§f:offset_-11::adminshop_items:");
     }
 
     @Override
@@ -42,10 +47,15 @@ public class AdminShopCategoryMenu extends Menu {
     public void onInventoryClick(InventoryClickEvent event) {}
 
     @Override
-    public @NotNull Map<Integer, ItemStack> getContent() {
-        Map<Integer, ItemStack> content = new HashMap<>();
+    public void onClose(InventoryCloseEvent event) {
 
-        Map<String, ShopItem> categoryItems = shopManager.getCategoryItems(categoryId);
+    }
+
+    @Override
+    public @NotNull Map<Integer, ItemBuilder> getContent() {
+        Map<Integer, ItemBuilder> content = new HashMap<>();
+
+        Map<String, ShopItem> categoryItems = AdminShopManager.getCategoryItems(categoryId);
 
         if (categoryItems != null) {
             for (ShopItem item : categoryItems.values()) {
@@ -61,11 +71,11 @@ public class AdminShopCategoryMenu extends Menu {
                 itemBuilder.setItemId(item.getId())
                         .setOnClick(event -> {
                             if (item.isHasColorVariant())
-                                shopManager.openColorVariantsMenu(getOwner(), categoryId, item, this);
+                                AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item, this);
                             else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
-                                shopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), this);
+                                AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), this);
                             else if (event.isRightClick() && item.getInitialSellPrice() > 0)
-                                shopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId(), this);
+                                AdminShopManager.openSellConfirmMenu(getOwner(), categoryId, item.getId(), this);
                         });
 
                 content.put(item.getSlot(), itemBuilder);
@@ -74,15 +84,20 @@ public class AdminShopCategoryMenu extends Menu {
 
         ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(Component.text("§aRetour au menu principal"));
-        });
+        }, true);
 
         backButton.setItemId("back")
                 .setOnClick(event -> {
-                    new AdminShopMenu(getOwner(), shopManager).open();
+                    new AdminShopMenu(getOwner()).open();
                 });
 
         content.put(40, backButton);
 
         return content;
+    }
+
+    @Override
+    public List<Integer> getTakableSlot() {
+        return List.of();
     }
 }

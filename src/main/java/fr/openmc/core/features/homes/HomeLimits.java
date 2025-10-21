@@ -19,14 +19,16 @@ public enum HomeLimits {
     LIMIT_12(30, 60000, 120),
     ;
 
-    @Getter int limit;
-    @Getter int price;
-    @Getter int ayweniteCost;
+    @Getter
+    private final int limit;
+    @Getter
+    private final int price;
+    @Getter
+    private final int ayweniteCost;
 
     HomeLimits(int limit, int price, int ayweniteCost) {
         this.limit = limit;
         this.price = price;
         this.ayweniteCost = ayweniteCost;
     }
-
 }

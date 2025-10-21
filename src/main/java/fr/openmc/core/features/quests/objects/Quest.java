@@ -1,8 +1,10 @@
 package fr.openmc.core.features.quests.objects;
 
-import fr.openmc.core.features.adminshop.AdminShopManager;
+import fr.openmc.core.OMCPlugin;
+import fr.openmc.core.features.quests.events.QuestCompleteEvent;
 import fr.openmc.core.features.quests.rewards.QuestItemReward;
 import fr.openmc.core.features.quests.rewards.QuestReward;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -10,9 +12,11 @@ import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Quest {
 
     private final String name;
-    private final String baseDescription;
+    private final List<String> baseDescription;
     private final ItemStack icon;
     private final boolean isLargeActionBar;
     private final List<QuestTier> tiers = new ArrayList<>();
@@ -42,7 +46,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - ItemStack
      */
-    public Quest(String name, String baseDescription, ItemStack icon) {
+    public Quest(String name, List<String> baseDescription, ItemStack icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = icon;
@@ -56,7 +60,7 @@ public class Quest {
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - Material
      */
-    public Quest(String name, String baseDescription, Material icon) {
+    public Quest(String name, List<String> baseDescription, Material icon) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = new ItemStack(icon);
@@ -69,9 +73,9 @@ public class Quest {
      * @param name            The name of the quest
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - ItemStack
-     * @param isLargeActionBar If true, the quest will be displayed in large action bar
+     * @param isLargeActionBar If true, the quest will be displayed in the large action bar
      */
-    public Quest(String name, String baseDescription, ItemStack icon, boolean isLargeActionBar) {
+    public Quest(String name, List<String> baseDescription, ItemStack icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = icon;
@@ -84,9 +88,9 @@ public class Quest {
      * @param name            The name of the quest
      * @param baseDescription The base description of the quest
      * @param icon            The icon representing the quest - Material
-     * @param isLargeActionBar If true, the quest will be displayed in large action bar
+     * @param isLargeActionBar If true, the quest will be displayed in the large action bar
      */
-    public Quest(String name, String baseDescription, Material icon, boolean isLargeActionBar) {
+    public Quest(String name, List<String> baseDescription, Material icon, boolean isLargeActionBar) {
         this.name = name;
         this.baseDescription = baseDescription;
         this.icon = new ItemStack(icon);
@@ -186,6 +190,24 @@ public class Quest {
     }
 
     /**
+     * Get the name of the quest for a player.
+     * <p>
+     * The name can contain the placeholder {target} which will be replaced by the current target number.
+     * And the placeholder {s} which will be replaced by "s" if the current target is greater than 1.
+     *
+     * @param playerUUID The UUID of the player
+     * @return the name of the quest for the player
+     */
+    public String getName(UUID playerUUID) {
+        int target = this.getCurrentTarget(playerUUID);
+        String s = target > 1 ? "s" : "";
+
+        return this.name
+                .replace("{target}", String.valueOf(target))
+                .replace("{s}", s);
+    }
+
+    /**
      * Get the description of the quest for a player.
      * <p>
      * The description can contain the placeholder {target} which will be replaced by the current target number.
@@ -193,10 +215,15 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the description of the quest for the player
      */
-    public String getDescription(UUID playerUUID) {
-        return this.baseDescription
-                .replace("{target}", String.valueOf(this.getCurrentTarget(playerUUID)))
-                .replace("{s}", this.getCurrentTarget(playerUUID) > 1 ? "s" : "");
+    public List<String> getDescription(UUID playerUUID) {
+        int target = this.getCurrentTarget(playerUUID);
+        String s = target > 1 ? "s" : "";
+
+        return this.baseDescription.stream()
+                .map(line -> line
+                        .replace("{target}", String.valueOf(target))
+                        .replace("{s}", s))
+                .toList();
     }
 
     /**
@@ -207,10 +234,15 @@ public class Quest {
      * @param playerUUID The UUID of the player
      * @return the next tier description of the quest for the player
      */
-    public String getNextTierDescription(UUID playerUUID) {
-        return this.baseDescription
-                .replace("{target}", String.valueOf(this.getNextTierTarget(playerUUID)))
-                .replace("{s}", this.getNextTierTarget(playerUUID) > 1 ? "s" : "");
+    public List<String> getNextTierDescription(UUID playerUUID) {
+        int target = this.getNextTierTarget(playerUUID);
+        String s = this.getNextTierTarget(playerUUID) > 1 ? "s" : "";
+
+        return this.baseDescription.stream()
+                .map(line -> line
+                        .replace("{target}", String.valueOf(target))
+                        .replace("{s}", s))
+                .toList();
     }
 
     /**
@@ -230,12 +262,11 @@ public class Quest {
             boolean isLastTier = tierIndex == this.tiers.size() - 1;
 
             if (player != null && player.isOnline()) {
-
                 boolean hasEnoughSpace = true;
 
                 for (QuestReward reward : tier.getRewards()) {
                     if (reward instanceof QuestItemReward itemReward) {
-                        if (!AdminShopManager.hasEnoughSpace(player, itemReward.getItemStack())) {
+                        if (!ItemUtils.hasEnoughSpace(player, itemReward.getItemStack())) {
                             hasEnoughSpace = false;
                         }
                     }
@@ -248,6 +279,10 @@ public class Quest {
                     }
                 }
 
+                Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
+                    Bukkit.getPluginManager().callEvent(new QuestCompleteEvent(player, this));
+                });
+
                 Component titleMain = Component.text(
                                 "✦ ", TextColor.color(15770808))
                         .append(Component.text(isLastTier
@@ -257,7 +292,7 @@ public class Quest {
                         .append(Component.text(" ✦", TextColor.color(15770808)));
 
                 Component titleSub = Component.text(this.name, TextColor.color(8087790));
-                String message = isLastTier ? "§6★ §aQuête terminée ! §e" + this.name + " §7est maintenant complète !" : "§e★ §aPalier " + (tierIndex + 1) + " §7de §e" + this.name + " §avalidé !";
+                String message = isLastTier ? "§6★ §aQuête terminée ! §e" + getName(uuid) + " §7est maintenant complète !" : "§e★ §aPalier " + (tierIndex + 1) + " §7de §e" + this.name + " §avalidé !";
 
                 player.showTitle(Title.title(
                         titleMain,
@@ -338,7 +373,7 @@ public class Quest {
 
         for (QuestReward reward : rewards) {
             if (reward instanceof QuestItemReward itemReward) {
-                if (!AdminShopManager.hasEnoughSpace(player, itemReward.getItemStack())) {
+                if (!ItemUtils.hasEnoughSpace(player, itemReward.getItemStack())) {
                     remainingRewards.add(reward);
                     allClaimed = false;
                     continue;
@@ -371,7 +406,7 @@ public class Quest {
     /**
      * Complete a specific step of the current tier for a player.
      * <p>
-     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * This method will check if the step is completed, and if so, it will complete the step and check if the tier is completed.
      * @param playerUUID the UUID of the player
      * @param stepIndex the index of the step to complete
      */
@@ -388,6 +423,7 @@ public class Quest {
 
         QuestStep step = currentTier.getSteps().get(stepIndex);
         if (step.isCompleted(playerUUID)) {
+
             int tierIndex = getCurrentTierIndex(playerUUID);
             String stepName = "Étape " + (stepIndex + 1);
 
@@ -431,7 +467,7 @@ public class Quest {
     /**
      * Increment the progress of the quest for a player.
      * <p>
-     * This method will check if the quest is fully completed and if not, it will increment the progress.
+     * This method will check if the quest is fully completed, and if not, it will increment the progress.
      * @param playerUUID The UUID of the player
      */
     public void incrementProgress(UUID playerUUID) {
@@ -441,14 +477,14 @@ public class Quest {
     /**
      * Increment the progress of the quest for a player by a specified amount.
      * <p>
-     * This method will check if the quest is fully completed and if not, it will increment the progress.
+     * This method will check if the quest is fully completed, and if not, it will increase the progress.
      * @param playerUUID The UUID of the player
      * @param amount The amount to increment the progress by
      */
     public void incrementProgress(UUID playerUUID, int amount) {
         if (!this.isFullyCompleted(playerUUID) && !this.progressLock.getOrDefault(playerUUID, false)) {
             this.progressLock.put(playerUUID, true);
-
+            
             try {
                 Player onlinePlayer = Bukkit.getPlayer(playerUUID);
                 if (onlinePlayer != null && onlinePlayer.isOnline() && !onlinePlayer.getGameMode().equals(GameMode.SURVIVAL)) return;
@@ -461,18 +497,16 @@ public class Quest {
                 if (currentProgress < currentTarget) {
                     this.progress.put(playerUUID, newProgress);
                     this.checkTierCompletion(playerUUID);
-
                     if (onlinePlayer != null && onlinePlayer.isOnline()) {
                         if (this.isLargeActionBar && newProgress % 50 != 0) return;
                         Component actionBar = Component.text()
-                                .append(MiniMessage.miniMessage().deserialize(Prefix.QUEST.getPrefix()))
+                                .append(Prefix.QUEST.getPrefix())
                                 .append(Component.text(" » ", NamedTextColor.DARK_GRAY))
                                 .append(Component.text("Progression de la quête ", NamedTextColor.GRAY))
                                 .append(Component.text(this.name, NamedTextColor.WHITE))
                                 .append(Component.text(" : ", NamedTextColor.GRAY))
                                 .append(Component.text(newProgress + "/" + currentTarget, NamedTextColor.GOLD))
                                 .build();
-
                         onlinePlayer.sendActionBar(actionBar);
                     }
                 }
@@ -485,7 +519,7 @@ public class Quest {
     /**
      * Increment the progress of a specific step of the current tier for a player.
      * <p>
-     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * This method will check if the step is completed, and if so, it will complete the step and check if the tier is completed.
      * @param playerUUID the UUID of the player
      * @param stepIndex the index of the step to increment
      */
@@ -496,7 +530,7 @@ public class Quest {
     /**
      * Increment the progress of a specific step of the current tier for a player by a specified amount.
      * <p>
-     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * This method will check if the step is completed, and if so, it will complete the step and check if the tier is completed.
      * @param playerUUID the UUID of the player
      * @param stepIndex the index of the step to increment
      * @param amount The amount to increment the progress by
@@ -515,7 +549,7 @@ public class Quest {
     /**
      * Increment the progress of a specific step of the current tier for a player by a specified amount.
      * <p>
-     * This method will check if the step is completed and if so, it will complete the step and check if the tier is completed.
+     * This method will check if the step is completed, and if so, it will complete the step and check if the tier is completed.
      * @param playerUUID the UUID of the player
      * @param stepDescription the description of the step to increment
      * @param amount The amount to increment the progress by

@@ -1,19 +1,19 @@
 package fr.openmc.core.utils;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class CacheOfflinePlayer {
-    private static final Map<UUID, OfflinePlayer> offlinePlayerCache = new HashMap<>();
+    private static final Object2ObjectMap<UUID, OfflinePlayer> offlinePlayerCache = new Object2ObjectOpenHashMap<>();
 
     /**
-     * Donne l'OfflinePlayer si il est déjà mis en cache, sinon il execute la méthode basique
+     * Donne l'OfflinePlayer s'il est déjà mis en cache, sinon il exécute la méthode basique
      */
     public static OfflinePlayer getOfflinePlayer(UUID uuid) {
-         return offlinePlayerCache.computeIfAbsent(uuid, Bukkit::getOfflinePlayer);
+        return offlinePlayerCache.computeIfAbsent(uuid, key -> Bukkit.getOfflinePlayer((UUID) key));
     }
 }

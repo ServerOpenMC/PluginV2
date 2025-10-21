@@ -1,114 +1,193 @@
 #--------------------CONFIGURATION DES CONTEST-----------------------------
 ## La Liste des Trades Disponibles
 contestTrades:
-  - ress: PRISMARINE
-    amount: 2
-    amount_shell: 1
-    selected: false
-  - ress: LARGE_AMETHYST_BUD
-    amount: 1
-    amount_shell: 2
-    selected: false
-  - ress: RABBIT_STEW
-    amount: 2
-    amount_shell: 3
-    selected: false
   - ress: SHROOMLIGHT
     amount: 3
     amount_shell: 2
     selected: false
-  - ress: ROOTED_DIRT
-    amount: 2
-    amount_shell: 1
+  - ress: LARGE_AMETHYST_BUD
+    amount: 1
+    amount_shell: 5
     selected: false
   - ress: SEA_LANTERN
-    amount: 2
-    amount_shell: 1
+    amount: 1
+    amount_shell: 3
     selected: false
   - ress: ENCHANTED_GOLDEN_APPLE
     amount: 1
-    amount_shell: 8
+    amount_shell: 128
     selected: false
-  - ress: MANGROVE_LOG
-    amount: 7
-    amount_shell: 1
-    selected: false
-  - ress: BEE_NEST
-    amount: 1
+  - ress: CHORUS_FLOWER
+    amount: 3
     amount_shell: 2
     selected: false
-  - ress: GOAT_HORN
-    amount: 1
-    amount_shell: 8
-    selected: false
-  - ress: PACKED_MUD
-    amount: 2
-    amount_shell: 1
-    selected: false
-  - ress: POPPED_CHORUS_FRUIT
-    amount: 2
+  - ress: TINTED_GLASS
+    amount: 16
     amount_shell: 1
     selected: false
   - ress: HEAVY_CORE
     amount: 1
-    amount_shell: 18
+    amount_shell: 192
     selected: false
-  - ress: END_CRYSTAL
-    amount: 2
-    amount_shell: 5
-    selected: false
-  - ress: TINTED_GLASS
-    amount: 3
-    amount_shell: 1
-    selected: false
-  - ress: CONDUIT
+  - ress: WET_SPONGE
     amount: 1
-    amount_shell: 15
-    selected: false
-  - ress: DECORATED_POT
-    amount: 2
-    amount_shell: 1
-    selected: false
-  - ress: CALIBRATED_SCULK_SENSOR
-    amount: 2
-    amount_shell: 1
-    selected: false
-  - ress: MUDDY_MANGROVE_ROOTS
-    amount: 2
     amount_shell: 3
     selected: false
-  - ress: TORCHFLOWER
-    amount: 2
-    amount_shell: 3
+  - ress: WAXED_WEATHERED_COPPER_BULB
+    amount: 1
+    amount_shell: 4
     selected: false
-  - ress: SPONGE
+  - ress: HONEY_BOTTLE
+    amount: 4
+    amount_shell: 1
+    selected: false
+  - ress: ACACIA_LEAVES
+    amount: 32
+    amount_shell: 1
+    selected: false
+  - ress: RED_MUSHROOM_BLOCK
+    amount: 18
+    amount_shell: 1
+    selected: false
+  - ress: GILDED_BLACKSTONE
     amount: 1
     amount_shell: 5
     selected: false
-  - ress: MAGENTA_GLAZED_TERRACOTTA
+  - ress: ENCHANTING_TABLE
+    amount: 1
+    amount_shell: 5
+    selected: false
+  - ress: HEART_OF_THE_SEA
+    amount: 1
+    amount_shell: 45
+    selected: false
+  - ress: PUFFERFISH
+    amount: 1
+    amount_shell: 3
+    selected: false
+  - ress: TUBE_CORAL_BLOCK
     amount: 3
     amount_shell: 1
+    selected: false
+  - ress: MUSHROOM_STEM
+    amount: 6
+    amount_shell: 1
+    selected: false
+  - ress: OCHRE_FROGLIGHT
+    amount: 1
+    amount_shell: 2
+    selected: false
+  - ress: PEARLESCENT_FROGLIGHT
+    amount: 1
+    amount_shell: 2
     selected: false
   - ress: VERDANT_FROGLIGHT
     amount: 1
     amount_shell: 2
     selected: false
-  - ress: HONEYCOMB
+  - ress: RABBIT_HIDE
+    amount: 16
+    amount_shell: 1
+    selected: false
+  - ress: DISC_FRAGMENT_5
+    amount: 1
+    amount_shell: 25
+    selected: false
+  - ress: CAKE
+    amount: 6
+    amount_shell: 1
+    selected: false
+  - ress: POINTED_DRIPSTONE
+    amount: 32
+    amount_shell: 1
+    selected: false
+  - ress: NETHERITE_HOE
+    amount: 1
+    amount_shell: 50
+    selected: false
+  - ress: MEDIUM_AMETHYST_BUD
+    amount: 5
+    amount_shell: 1
+    selected: false
+  - ress: COBBLED_DEEPSLATE
+    amount: 96
+    amount_shell: 1
+    selected: false
+  - ress: AXOLOTL_BUCKET
+    amount: 1
+    amount_shell: 5
+    selected: false
+  - ress: DEAD_BUSH
+    amount: 32
+    amount_shell: 1
+    selected: false
+  - ress: MUDDY_MANGROVE_ROOTS
+    amount: 32
+    amount_shell: 1
+    selected: false
+  - ress: BLACK_TERRACOTTA
+    amount: 64
+    amount_shell: 1
+    selected: false
+  - ress: SPORE_BLOSSOM
+    amount: 1
+    amount_shell: 6
+    selected: false
+  - ress: DEEPSLATE_IRON_ORE
     amount: 2
     amount_shell: 1
     selected: false
-  - ress: CLOSED_EYEBLOSSOM
+  - ress: EMERALD_ORE
     amount: 1
     amount_shell: 3
     selected: false
-  - ress: RESIN_BRICK
+  - ress: DEEPSLATE_DIAMOND_ORE
+    amount: 1
+    amount_shell: 3
+    selected: false
+  - ress: TURTLE_EGG
+    amount: 1
+    amount_shell: 6
+    selected: false
+  - ress: WITHER_SKELETON_SKULL
+    amount: 1
+    amount_shell: 30
+    selected: false
+  - ress: CACTUS
+    amount: 128
+    amount_shell: 1
+    selected: false
+  - ress: INK_SAC
+    amount: 4
+    amount_shell: 1
+    selected: false
+  - ress: GLOW_INK_SAC
     amount: 2
     amount_shell: 1
     selected: false
-
+  - ress: PHANTOM_MEMBRANE
+    amount: 1
+    amount_shell: 5
+    selected: false
+  - ress: ACACIA_CHEST_BOAT
+    amount: 1
+    amount_shell: 1
+    selected: false
+  - ress: DIAMOND_BLOCK
+    amount: 1
+    amount_shell: 9
+    selected: false
+  - ress: COCOA_BEANS
+    amount: 32
+    amount_shell: 1
+    selected: false
+  - ress: POISONOUS_POTATO
+    amount: 1
+    amount_shell: 10
+    selected: false
 
 # La Liste des Contest
-# - Couleur autorisé : BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED,  DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE
+# - Couleurs autorisées : BLACK, DARK_BLUE, DARK_GREEN, DARK_AQUA, DARK_RED, DARK_PURPLE, GOLD, GRAY, DARK_GRAY, BLUE, GREEN, AQUA, RED, LIGHT_PURPLE, YELLOW, WHITE
 contestList:
   - camp1: "Mayonnaise"
     color1: "YELLOW"
@@ -193,7 +272,7 @@ contestList:
   - camp1: "Thé"
     color1: "GREEN"
     camp2: "Café"
-    color2: "BROWN"
+    color2: "GOLD"
     selected: 0
   - camp1: "Chocolat Noir"
     color1: "DARK_PURPLE"

@@ -2,28 +2,31 @@ package fr.openmc.core.features.city.menu.list;
 
 import dev.lone.itemsadder.api.CustomStack;
 import fr.openmc.api.menulib.PaginatedMenu;
+import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.city.CPermission;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.CityPermission;
+import fr.openmc.core.features.city.CityType;
+import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
+import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.economy.EconomyManager;
-import fr.openmc.core.utils.CacheOfflinePlayer;
+import fr.openmc.core.utils.PlayerNameCache;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CityListMenu extends PaginatedMenu {
 	
@@ -39,62 +42,90 @@ public class CityListMenu extends PaginatedMenu {
 	 * Constructor for CityListMenu.
 	 *
 	 * @param owner  The player who opens the menu.
-	 * @param cities The list of cities to display.
 	 */
-	public CityListMenu(Player owner, List<City> cities) {
-		this(owner, cities, SortType.NAME);
+	public CityListMenu(Player owner) {
+		this(owner, SortType.NAME);
 	}
 	
 	/**
 	 * Constructor for CityListMenu with a specified sort type.
 	 *
 	 * @param owner    The player who opens the menu.
-	 * @param cities   The list of cities to display.
 	 * @param sortType The initial sort type.
 	 */
-	public CityListMenu(Player owner, List<City> cities, SortType sortType) {
+	public CityListMenu(Player owner, SortType sortType) {
 		super(owner);
-		this.cities = cities;
+		this.cities = new ArrayList<>(CityManager.getCities());
 		setSortType(sortType);
 	}
 	
 	@Override
 	public @Nullable Material getBorderMaterial() {
-		return Material.GRAY_STAINED_GLASS_PANE;
+		return Material.AIR;
 	}
 	
 	@Override
 	public @NotNull List<Integer> getStaticSlots() {
-		return StaticSlots.BOTTOM;
+		return StaticSlots.getBottomSlots(getInventorySize());
 	}
 	
 	@Override
-	public @NotNull List<ItemStack> getItems() {
+    public List<ItemStack> getItems() {
 		List<ItemStack> items = new ArrayList<>();
-		cities.forEach(city -> items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(city.getPlayerWith(CPermission.OWNER)), itemMeta -> {
-			String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
-			NamedTextColor mayorColor = city.getMayor() == null ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
-			itemMeta.displayName(Component.text("§a" + city.getCityName()));
-			itemMeta.lore(List.of(
-					Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(city.getPlayerWith(CPermission.OWNER)).getName()),
-					Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)),
-					Component.text("§bPopulation : " + city.getMembers().size()),
-					Component.text("§eType : " + (CityManager.getCityType(city.getUUID()).equals("war") ? "§cGuerre" : "§aPaix")),
-					Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon())
+		for (City city : cities) {
+			UUID ownerUUID = city.getPlayerWithPermission(CityPermission.OWNER);
+
+			if (ownerUUID == null) continue;
+
+			String ownerName = PlayerNameCache.getName(ownerUUID);
+
+			List<Component> cityLore = new ArrayList<>();
+
+			cityLore.add(Component.text("§7Propriétaire : " + ownerName));
+			if (MayorManager.phaseMayor == 2 && FeaturesRewards.hasUnlockFeature(city, FeaturesRewards.Feature.MAYOR)) {
+				String mayorCity = city.getMayor() == null ? "§7Aucun" : city.getMayor().getName();
+				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
+				cityLore.add(Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)));
+			}
+			cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
+			cityLore.add(Component.text("§eType : " + city.getType().getDisplayName()));
+			cityLore.add(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
+
+
+			items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(ownerUUID), itemMeta -> {
+				itemMeta.displayName(Component.text("§a" + city.getName()));
+				itemMeta.lore(cityLore);
+			}).setOnClick(inventoryClickEvent ->
+					new CityListDetailsMenu(getOwner(), city).open()
 			));
-		})));
+		}
 		return items;
 	}
-	
+
 	@Override
-	public Map<Integer, ItemStack> getButtons() {
-		Map<Integer, ItemStack> map = new HashMap<>();
+	public List<Integer> getTakableSlot() {
+		return List.of();
+	}
+
+	@Override
+	public @NotNull InventorySize getInventorySize() {
+		return InventorySize.LARGEST;
+	}
+
+	@Override
+	public int getSizeOfItems() {
+		return getItems().size();
+	}
+
+	@Override
+    public Map<Integer, ItemBuilder> getButtons() {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
 		map.put(49, new ItemBuilder(this, Material.HOPPER, itemMeta -> {
 			itemMeta.displayName(Component.text("Trier"));
 			itemMeta.lore(generateSortLoreText());
 		}).setOnClick(inventoryClickEvent -> {
 			changeSortType();
-			new CityListMenu(getOwner(), cities, sortType).open();
+			new CityListMenu(getOwner(), sortType).open();
 		}));
 		map.put(48, new ItemBuilder(this, CustomStack.getInstance("_iainternal:icon_back_orange")
 				.getItemStack(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
@@ -105,18 +136,22 @@ public class CityListMenu extends PaginatedMenu {
 	
 	@Override
 	public @NotNull String getName() {
-		return "Liste des villes";
+		return "Menu de liste des villes";
 	}
-	
+
+	@Override
+	public String getTexture() {
+		return "§r§f:offset_-48::city_template6x9:";
+	}
+
 	@Override
 	public void onInventoryClick(InventoryClickEvent e) {
-		if (e.getSlot() > 44) return;
-		if (e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
-		int page = getPage();
-		City city = cities.get(e.getSlot() + (45 * page));
-		if (city != null) {
-			new CityListDetailsMenu(getOwner(), city).open();
-		}
+
+	}
+
+	@Override
+	public void onClose(InventoryCloseEvent event) {
+		//empty
 	}
 	
 	/**
@@ -180,7 +215,8 @@ public class CityListMenu extends PaginatedMenu {
 	 * @param cities The list of cities to sort.
 	 */
 	private void sortByName(List<City> cities) {
-		cities.sort((o1, o2) -> o1.getCityName().compareToIgnoreCase(o2.getCityName()));
+		if (cities.size() <= 1) return;
+		cities.sort((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
 	}
 	
 	/**
@@ -189,6 +225,7 @@ public class CityListMenu extends PaginatedMenu {
 	 * @param cities The list of cities to sort.
 	 */
 	private void sortByWealth(List<City> cities) {
+		if (cities.size() <= 1) return;
 		cities.sort((o1, o2) -> Double.compare(o2.getBalance(), o1.getBalance()));
 	}
 	
@@ -198,6 +235,7 @@ public class CityListMenu extends PaginatedMenu {
 	 * @param cities The list of cities to sort.
 	 */
 	private void sortByPopulation(List<City> cities) {
+		if (cities.size() <= 1) return;
 		cities.sort((o1, o2) -> Integer.compare(o2.getMembers().size(), o1.getMembers().size()));
 	}
 	
@@ -207,17 +245,18 @@ public class CityListMenu extends PaginatedMenu {
 	 * @param cities The list of cities to sort.
 	 */
 	private void sortByPeaceWar(List<City> cities) {
+		if (cities.size() <= 1) return;
 		cities.sort((o1, o2) -> {
-			String type1 = CityManager.getCityType(o1.getUUID());
-			String type2 = CityManager.getCityType(o2.getUUID());
-			return type1.equals(type2) ? 0 : type1.equals("war") ? - 1 : 1;
+			CityType type1 = o1.getType();
+			CityType type2 = o2.getType();
+			return type1.equals(type2) ? 0 : type1.equals(CityType.WAR) ? -1 : 1;
 		});
 	}
 	
 	/**
 	 * Enum representing the sorting types for the city list.
 	 */
-	private enum SortType {
+	public enum SortType {
 		NAME,
 		WEALTH,
 		POPULATION,

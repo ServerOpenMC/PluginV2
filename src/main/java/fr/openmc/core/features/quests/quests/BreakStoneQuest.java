@@ -11,10 +11,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class BreakStoneQuest extends Quest implements Listener {
 
     public BreakStoneQuest() {
-        super("Casseur de pierres","Miner {target} blocs de pierre", new ItemStack(Material.DIAMOND_PICKAXE));
+        super("Casseur de pierres", List.of("Miner {target} blocs de pierre"), new ItemStack(Material.DIAMOND_PICKAXE));
 
 
         this.addTiers(
@@ -27,6 +29,7 @@ public class BreakStoneQuest extends Quest implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerBreak(BlockBreakEvent event) {
+        ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
         Block block = event.getBlock();
         if (block.getType().equals(Material.STONE)) {
             this.incrementProgress(event.getPlayer().getUniqueId());
