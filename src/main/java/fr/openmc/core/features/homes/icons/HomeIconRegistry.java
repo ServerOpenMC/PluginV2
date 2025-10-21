@@ -38,7 +38,7 @@ public class HomeIconRegistry {
 
         // Vanilla icons registration
         for (Material material : Material.values()) {
-            if (material.isItem() && !material.isAir()) {
+            if (!material.isLegacy() && material.isItem() && !material.isAir()) {
                 HomeIcon icon = HomeIcon.vanilla(material);
                 icons.put(icon.id(), icon);
                 vanillaIcons.add(icon);
