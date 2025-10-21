@@ -117,7 +117,8 @@ public class Chronometer{
 
                 chronometer.get(entityUUID).put(group, remainingTime - 1);
             }
-        };task.runTaskTimer(OMCPlugin.getInstance(), 0, 20);
+        };
+        task.runTaskTimer(OMCPlugin.getInstance(), 0, 20);
 
         activeTasks.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, task);
     }
