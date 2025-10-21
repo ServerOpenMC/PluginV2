@@ -11,8 +11,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.features.city.commands.CityInviteCommands;
+import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -44,7 +44,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -134,7 +134,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                     CityPlayerGestionMenu menu = new CityPlayerGestionMenu(player, playerOffline);
                     menu.open();
                 } else if (hasPermissionPerms) {
-                    CitizensPermsMenu.openBookFor(player, playerOffline.getUniqueId());
+                    new CityPermsMenu(player, playerOffline.getUniqueId(), false).open();
                 } else if (hasPermissionKick) {
                     if (player.getUniqueId().equals(playerOffline.getUniqueId()))
                         return;
@@ -194,7 +194,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
                 if (InputUtils.isInputPlayer(input)) {
                     Player playerToInvite = Bukkit.getPlayer(input);
-                    CityCommands.invite(player, playerToInvite);
+                    CityInviteCommands.invite(player, playerToInvite);
                 } else {
                     MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                 }
@@ -210,7 +210,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override

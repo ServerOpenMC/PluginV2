@@ -3,21 +3,24 @@ package fr.openmc.core.features.city.sub.milestone.commands;
 import fr.openmc.api.cooldown.DynamicCooldownManager;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class AdminCityMilestoneCommands {
     @Command({"admcity milestone skipUpgrade"})
     @CommandPermission("omc.admins.commands.milestone")
     @Description("Skip l'upgrade d'un level")
-    void adminSkinUpgrade(Player sender, String name) {
-        City city = CityManager.getCityByName(name);
+    void adminSkinUpgrade(
+            Player sender,
+            @Named("cityName") @SuggestWith(CityNameAutoComplete.class) String cityName
+    ) {
+        City city = CityManager.getCityByName(cityName);
 
         if (city == null) {
             MessagesManager.sendMessage(sender, Component.text("§cVille inexistante"), Prefix.STAFF, MessageType.ERROR, false);
@@ -31,7 +34,11 @@ public class AdminCityMilestoneCommands {
     @Command({"admcity milestone setlevel"})
     @CommandPermission("omc.admins.commands.milestone")
     @Description("Skip l'upgrade d'un level")
-    void setLevel(Player sender, String name, int level) {
+    void setLevel(
+            Player sender,
+            @Named("cityName") @SuggestWith(CityNameAutoComplete.class) String name,
+            @Named("level") @Range(min = 1, max = 10) int level
+    ) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {

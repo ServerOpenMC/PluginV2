@@ -1,5 +1,5 @@
 name: OpenMC
 version: ${version}
 main: fr.openmc.core.OMCPlugin
-api-version: '1.21.8'
+api-version: '1.21.10'
 prefix: OMC

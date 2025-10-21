@@ -33,11 +33,10 @@ import java.util.function.Consumer;
  * A menu is tied to a specific player and provides methods for customization,
  * handling inventory interactions, and managing permissions.
  */
+@Getter
 public abstract class Menu implements InventoryHolder {
-	@Getter
 	private final Object2ObjectMap<ItemBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
 	
-	@Getter
 	private final Player owner;
 	
 	/**

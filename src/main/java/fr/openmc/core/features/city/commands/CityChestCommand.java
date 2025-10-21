@@ -13,7 +13,10 @@ public class CityChestCommand {
     @Command({"city chest", "ville coffre"})
     @Description("Ouvre le coffre de la ville")
     @CommandPermission("omc.commands.city.chest")
-    void chest(Player player, @Optional @Named("page") @Range(min=0) Integer page) {
+    void chest(
+            Player player,
+            @Optional @Named("page") @Range(min = 0) Integer page
+    ) {
         City city = CityManager.getPlayerCity(player.getUniqueId());
 
         if (!CityChestConditions.canCityChestOpen(city, player)) return;

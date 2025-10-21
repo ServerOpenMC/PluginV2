@@ -33,9 +33,9 @@ public class BossbarManager {
     public static BossBar bossBarHelp;
 
     /**
-     * Constructs the BossbarManager and initializes its components
+     * Initializes the BossbarManager
      */
-    public BossbarManager() {
+    public static void init() {
         configFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "bossbars.yml");
         loadConfig();
         loadDefaultMessages();

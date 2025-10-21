@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import fr.openmc.api.menulib.MenuLib;
 import io.papermc.paper.datacomponent.DataComponentType;
 import io.papermc.paper.datacomponent.DataComponentTypes;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -32,12 +33,12 @@ public class ItemUtils {
 		ItemStack itemStack = new ItemStack(material);
 		ItemMeta meta = itemStack.getItemMeta();
 		if (meta != null) {
-			meta.setDisplayName(name);
+			meta.displayName(Component.text(name));
 		}
 		itemStack.setItemMeta(meta);
 		return itemStack;
 	}
-	
+
 	/**
 	 * Checks if the provided {@link ItemStack} has the specified item ID stored in its
 	 * {@link PersistentDataContainer}.

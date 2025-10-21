@@ -17,6 +17,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -28,7 +29,10 @@ public class SetHomeCommand {
     @Command("sethome")
     @Description("Permet de définir votre home")
     @CommandPermission("omc.commands.home.sethome")
-    public void setHome(Player player, @SuggestWith(HomeAutoComplete.class) String name) {
+    public void setHome(
+            Player player,
+            @Named("home") @SuggestWith(HomeAutoComplete.class) String name
+    ) {
         if(DisabledWorldHome.isDisabledWorld(player.getWorld())) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas définir de home dans ce monde."), Prefix.HOME, MessageType.ERROR, true);
             return;

@@ -12,10 +12,7 @@ import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.CommandPlaceholder;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command({ "bank", "banque" })
@@ -35,7 +32,10 @@ public class BankCommands {
 
     @Subcommand("deposit")
     @Description("Ajout de l'argent a votre banque personelle")
-    void deposit(Player player, String input) {
+    void deposit(
+            Player player,
+            @Named("montant") String input
+    ) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);
@@ -47,7 +47,10 @@ public class BankCommands {
 
     @Subcommand("withdraw")
     @Description("Retire de l'argent de votre banque personelle")
-    void withdraw(Player player, String input) {
+    void withdraw(
+            Player player,
+            @Named("montant") String input
+    ) {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
         if (playerCity == null || !FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.PLAYER_BANK)) {
             MessagesManager.sendMessage(player, Component.text("Vous n'avez pas débloqué cette feature ! Veuillez améliorer votre ville au niveau " + FeaturesRewards.getFeatureUnlockLevel(FeaturesRewards.Feature.PLAYER_BANK) + "!"), Prefix.CITY, MessageType.ERROR, false);

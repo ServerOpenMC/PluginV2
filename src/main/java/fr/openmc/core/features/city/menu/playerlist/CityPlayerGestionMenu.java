@@ -10,7 +10,7 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
 import fr.openmc.core.features.city.conditions.CityKickCondition;
-import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.utils.messages.MessagesManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -40,7 +40,7 @@ public class CityPlayerGestionMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -133,7 +133,9 @@ public class CityPlayerGestionMenu extends Menu {
         inventory.put(15, new ItemBuilder(this, Material.BOOK, itemMeta -> {
             itemMeta.itemName(Component.text("§cModifier les permissions"));
             itemMeta.lore(lorePermission);
-        }).setOnClick(inventoryClickEvent -> CitizensPermsMenu.openBookFor(player, playerTarget.getUniqueId())));
+        }).setOnClick(inventoryClickEvent ->
+                new CityPermsMenu(player, playerTarget.getUniqueId(), true).open()
+        ));
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.itemName(Component.text("§aRetour"));

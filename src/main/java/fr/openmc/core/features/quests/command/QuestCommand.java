@@ -20,7 +20,10 @@ public class QuestCommand {
 
     @Subcommand("open")
     @Description("Ouvre le menu des quêtes")
-    public void resetProgress(Player sender, @SuggestWith(OnlinePlayerAutoComplete.class) @Optional Player target) {
+    public void resetProgress(
+            Player sender,
+            @Named("joueur") @SuggestWith(OnlinePlayerAutoComplete.class) @Optional Player target
+    ) {
         if (target == null || target == sender) {
             new QuestsMenu(sender).open();
         } else {

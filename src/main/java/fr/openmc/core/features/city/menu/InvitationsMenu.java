@@ -7,7 +7,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -33,7 +33,7 @@ public class InvitationsMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override
@@ -43,7 +43,7 @@ public class InvitationsMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class InvitationsMenu extends PaginatedMenu {
     public List<ItemStack> getItems() {
         List<ItemStack> items = new ArrayList<>();
         Player player = getOwner();
-        List<Player> invitations = CityCommands.invitations.get(player);
+        List<Player> invitations = CityInviteCommands.invitations.get(player);
 
         List<Component> invitationLore = List.of(
                 Component.text("§e§lCLIQUEZ ICI POUR REJOINDRE LA VILLE"));
@@ -66,7 +66,7 @@ public class InvitationsMenu extends PaginatedMenu {
             if (inviterCity == null) {
                 invitations.remove(inviter);
                 if (invitations.isEmpty()) {
-                    CityCommands.invitations.remove(player);
+                    CityInviteCommands.invitations.remove(player);
                 }
                 return getItems();
             }
@@ -79,11 +79,11 @@ public class InvitationsMenu extends PaginatedMenu {
             }).setOnClick(InventoryClickEvent -> {
                 new ConfirmMenu(player,
                         () -> {
-                            CityCommands.acceptInvitation(player, inviter);
+                            CityInviteCommands.acceptInvitation(player, inviter);
                             player.closeInventory();
                         },
                         () -> {
-                            CityCommands.denyInvitation(player, inviter);
+                            CityInviteCommands.denyInvitation(player, inviter);
                             player.closeInventory();
                         },
                         List.of(Component.text("§7Accepter")),

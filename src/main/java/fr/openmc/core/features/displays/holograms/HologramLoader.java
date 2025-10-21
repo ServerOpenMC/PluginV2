@@ -27,7 +27,7 @@ public class HologramLoader {
 
     public static final File hologramFolder = new File(OMCPlugin.getInstance().getDataFolder(), "data/holograms");
 
-    public HologramLoader() {
+    public static void init() {
         hologramFolder.mkdirs();
 
         CommandsManager.getHandler().register(

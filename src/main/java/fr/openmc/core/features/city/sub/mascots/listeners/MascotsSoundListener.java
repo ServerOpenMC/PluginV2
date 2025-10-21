@@ -38,10 +38,19 @@ public class MascotsSoundListener {
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
 
-                String soundName = packet.getSoundEffects().read(0).toString();
-                String[] splitedSound = soundName.split("\\.");
+                Object soundObj = packet.getSoundEffects().read(0); // CraftSound
+                String soundName = soundObj.toString(); // CraftSound{holder=Reference{ResourceKey[minecraft:sound_event / minecraft:entity.zombie.ambient]=...}}
 
-                if (!splitedSound[0].equals("ENTITY")) return;
+                int index = soundName.indexOf("/ ");
+                if (index == -1) return;
+                String name = soundName.substring(index + 2, soundName.indexOf("]", index)); // "minecraft:entity.zombie.ambient"
+
+                if (!name.startsWith("minecraft:entity.")) return;
+
+                String[] parts = name.split("\\.");
+                String entityName = parts[1].toUpperCase(Locale.ROOT);
+                EntityType soundEntity = EnumUtils.match(entityName, EntityType.class);
+                if (soundEntity == null) return;
 
                 UUID playerUUID = event.getPlayer().getUniqueId();
                 if (PlayerSettingsManager.getPlayerSettings(playerUUID).getSetting(SettingType.MASCOT_PLAY_SOUND_POLICY))
@@ -60,12 +69,6 @@ public class MascotsSoundListener {
                         .filter(entity -> MascotsManager.mascotsByEntityUUID.containsKey(entity.getUniqueId()))
                         .map(entity -> MascotsManager.mascotsByEntityUUID.get(entity.getUniqueId()))
                         .toList();
-
-                EntityType soundEntity = EnumUtils.match(splitedSound[1].toUpperCase(Locale.ROOT), EntityType.class);
-
-                if (soundEntity == null) {
-                    return;
-                }
 
                 for (Mascot mascot : mascotsNear) {
                     Entity entity = mascot.getEntity();

@@ -15,6 +15,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -33,7 +35,6 @@ public class InteractProtection implements Listener {
         Block clickedBlock = event.getClickedBlock();
         if (clickedBlock == null) return;
         Location location = clickedBlock.getLocation();
-        Material clickedType = clickedBlock.getType();
 
         ItemStack inHand = event.getItem();
         Material itemType = inHand != null ? inHand.getType() : Material.AIR;
@@ -60,13 +61,12 @@ public class InteractProtection implements Listener {
                 } else {
                     ProtectionsManager.checkPermissions(player, event, city, CityPermission.INTERACT);
                 }
-                
+
             } else {
                 ProtectionsManager.checkCity(player, event, city);
             }
-            
+
         }
-        if (!clickedType.isInteractable() && !isMinecart) return;
 
         if (!isMinecart) return;
         if (isTnt) return;
@@ -83,8 +83,18 @@ public class InteractProtection implements Listener {
         if (!(rightClicked instanceof ItemFrame)) return;
 
         if (MascotUtils.canBeAMascot(rightClicked)) return;
-        
+
         ProtectionsManager.verify(event.getPlayer(), event, rightClicked.getLocation());
+    }
+
+    @EventHandler
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        ProtectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
+    }
+
+    @EventHandler
+    public void onBucketFill(PlayerBucketFillEvent event) {
+        ProtectionsManager.verify(event.getPlayer(), event, event.getBlockClicked().getLocation());
     }
 
     private boolean isMinecart(Material type) {

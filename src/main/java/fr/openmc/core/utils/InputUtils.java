@@ -80,7 +80,6 @@ public class InputUtils {
             return false;
         }
 
-        //TODO: Attendre la PR des alliances.
         for (City city : CityManager.getCities()) {
             String testCityName = city.getName();
             if (testCityName.equalsIgnoreCase(input)) {
@@ -88,7 +87,7 @@ public class InputUtils {
             }
         }
 
-        return input.matches("[a-zA-Z0-9\\s]+");
+        return input.matches("[A-Za-z0-9]+");
     }
 
     /**

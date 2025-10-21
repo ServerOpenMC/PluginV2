@@ -47,9 +47,9 @@ public class MascotsDamageListener implements Listener {
 
     @EventHandler
     void onMascotDamageCaused(EntityDamageEvent e) {
-        Entity entity = e.getEntity();
+        if (!(e.getEntity() instanceof LivingEntity entity)) return;
 
-        if (!(entity instanceof Player mob)) return;
+        if (entity instanceof Player) return;
 
         if (!MascotUtils.canBeAMascot(entity)) return;
 
@@ -63,20 +63,20 @@ public class MascotsDamageListener implements Listener {
         City city = MascotUtils.getCityFromEntity(entity.getUniqueId());
         if (city == null) return;
 
-        double newHealth = Math.floor(mob.getHealth());
-        mob.setHealth(newHealth);
-        double maxHealth = mob.getAttribute(Attribute.MAX_HEALTH).getValue();
+        double newHealth = Math.floor(entity.getHealth());
+        entity.setHealth(newHealth);
+        double maxHealth = entity.getAttribute(Attribute.MAX_HEALTH).getValue();
 
         Mascot mascot = city.getMascot();
         if (mascot == null) return;
 
-        double healthAfterDamage = mob.getHealth() - e.getFinalDamage();
+        double healthAfterDamage = entity.getHealth() - e.getFinalDamage();
         if (healthAfterDamage < 0) healthAfterDamage = 0;
 
         if (!mascot.isAlive()) {
-            mob.customName(Component.text(DEAD_MASCOT_NAME));
+            entity.customName(Component.text(DEAD_MASCOT_NAME));
         } else {
-            mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+            entity.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
                     city.getName(),
                     healthAfterDamage,
                     maxHealth

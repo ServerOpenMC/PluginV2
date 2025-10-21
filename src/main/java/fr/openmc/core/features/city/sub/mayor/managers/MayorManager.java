@@ -70,7 +70,7 @@ public class MayorManager {
 
     private static final Random RANDOM = new Random();
 
-    public MayorManager() {
+    public static void init() {
         // LISTENERS
         new PhaseListener(OMCPlugin.getInstance());
         OMCPlugin.registerEvents(
@@ -305,11 +305,12 @@ public class MayorManager {
         Bukkit.broadcast(Component.text("""
                 §8§m                                                     §r
                 §7
-		        §3§lMAIRE !§r §7Les élections sont ouvertes !§7
+                §3§lMAIRE !§r §7Les élections sont ouvertes !§7
                 §8§oPrésentez vous, votez pour des maires, ...
-		        §8§oRegardez si vous avez assez de membres !
+                §8§oRegardez si vous avez assez de membres !
                 §7
-                §8§m                                                     §r"""));
+                §8§m                                                     §r"""
+        ));
     }
 
     public static void initPhase2() {
@@ -328,7 +329,7 @@ public class MayorManager {
         Bukkit.broadcast(Component.text("""
                 §8§m                                                     §r
                 §7
-		        §3§lMAIRE !§r §7Vos réformes sont actives !§7
+                §3§lMAIRE !§r §7Vos réformes sont actives !§7
                 §8§oFaites vos stratégies, farmez, et pleins d'autres choses !
                 §7
                 §8§m                                                     §r"""));

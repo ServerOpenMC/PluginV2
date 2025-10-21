@@ -31,22 +31,19 @@ import fr.openmc.core.utils.ChunkPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 import java.sql.SQLException;
 import java.util.*;
 
-public class CityManager implements Listener {
+public class CityManager {
     private static final Map<UUID, City> cities = new HashMap<>();
     public static final Map<String, City> citiesByName = new HashMap<>();
     public static final Map<UUID, City> playerCities = new HashMap<>();
     private static final Map<ChunkPos, City> claimedChunks = new HashMap<>();
 
-    public CityManager() {
-        OMCPlugin.registerEvents(this);
-
+    public static void init() {
         loadCities();
 
         CommandsManager.getHandler().register(
@@ -56,7 +53,9 @@ public class CityManager implements Listener {
                 new CityPermsCommands(),
                 new CityChestCommand(),
                 new CityRankCommands(),
-                new CityTopCommands()
+                new CityTopCommands(),
+                new CityInviteCommands(),
+                new CityClaimCommands()
         );
 
         OMCPlugin.registerEvents(
@@ -64,14 +63,14 @@ public class CityManager implements Listener {
         );
 
         // SUB-FEATURE
-        new MayorManager();
-        new ProtectionsManager();
-        new WarManager();
-        new CityBankManager();
-        new CityStatisticsManager();
-        new NotationManager();
-        new CityRankManager();
-        new CityMilestoneManager();
+        MayorManager.init();
+        ProtectionsManager.init();
+        WarManager.init();
+        CityBankManager.init();
+        CityStatisticsManager.init();
+        NotationManager.init();
+        CityRankManager.init();
+        CityMilestoneManager.init();
     }
 
     private static Dao<DBCity, String> citiesDao;

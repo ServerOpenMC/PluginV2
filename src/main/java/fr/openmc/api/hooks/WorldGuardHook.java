@@ -20,7 +20,7 @@ public class WorldGuardHook {
     @Getter
     private static boolean hasWorldGuard;
 
-    public WorldGuardHook() {
+    public static void init() {
         hasWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
     }
 

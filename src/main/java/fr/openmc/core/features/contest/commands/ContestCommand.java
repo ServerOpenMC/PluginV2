@@ -49,7 +49,7 @@ public class ContestCommand {
     @Subcommand("setphase")
     @Description("Permet de lancer une procédure de phase")
     @CommandPermission("omc.admin.commands.contest.setphase")
-    public void setPhase(Integer phase) {
+    public void setPhase(@Named("phase") @Suggest({"1", "2", "3"}) Integer phase) {
         switch(phase) {
             case 2:
                 ContestManager.initPhase2();
@@ -66,7 +66,13 @@ public class ContestCommand {
     @Subcommand("setcontest")
     @Description("Permet de définir un Contest")
     @CommandPermission("omc.admin.commands.contest.setcontest")
-    public void setContest(Player player, String camp1, @SuggestWith(ColorContestAutoComplete.class) String color1, String camp2, @SuggestWith(ColorContestAutoComplete.class) String color2) {
+    public void setContest(
+            Player player,
+            @Named("nom du camp 1") String camp1,
+            @Named("couleur du camp 1") @SuggestWith(ColorContestAutoComplete.class) String color1,
+            @Named("nom du camp 2") String camp2,
+            @Named("couleur du camp 2") @SuggestWith(ColorContestAutoComplete.class) String color2
+    ) {
         int phase = ContestManager.data.getPhase();
         if (phase == 1) {
 	        // It is unique, but it is for performance reasons
@@ -85,7 +91,12 @@ public class ContestCommand {
 
     @Subcommand("settrade")
     @Description("Permet de définir un Trade")
-    public void setTrade(Player player, @SuggestWith(TradeContestAutoComplete.class) String trade, int amount, int amountShell) {
+    public void setTrade(
+            Player player,
+            @Named("trade") @SuggestWith(TradeContestAutoComplete.class) String trade,
+            @Named("tradeAmount") int amount,
+            @Named("shellAmount") int amountShell
+    ) {
         YamlConfiguration config = TradeYMLManager.getContestConfig();
         List<Map<?, ?>> trades = config.getMapList("contestTrades");
 
@@ -111,7 +122,11 @@ public class ContestCommand {
     @Subcommand("addpoints")
     @Description("Permet d'ajouter des points a un membre")
     @CommandPermission("omc.admin.commands.contest.addpoints")
-    public void addPoints(Player player, @SuggestWith(OnlinePlayerAutoComplete.class) Player target, Integer points) {
+    public void addPoints(
+            Player player,
+            @Named("membre") @SuggestWith(OnlinePlayerAutoComplete.class) Player target,
+            @Named("points") Integer points
+    ) {
         if (ContestManager.data.getPhase()!=3) {
             MessagesManager.sendMessage(player, Component.text("§cVous ne pouvez pas donner des points lorsque le contest n'a pas commencé"), Prefix.STAFF, MessageType.ERROR, true);
             return;

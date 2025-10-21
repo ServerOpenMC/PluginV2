@@ -25,7 +25,10 @@ public class TPACommand {
 	 */
 	@Command({"tpa", "tpask"})
 	@CommandPermission("omc.commands.tpa")
-	public void tpaAsk(Player player, @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target) {
+	public void tpaAsk(
+			Player player,
+			@Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player target
+	) {
 		if (TPAQueue.requesterHasPendingRequest(player)) {
 			MessagesManager.sendMessage(player, Component.text("§4Vous avez déjà une demande de téléportation en attente\n")
 					.append(Component.text("§3Tapez §5/tpacancel §3pour annuler votre demande de tp en cours").clickEvent(ClickEvent.runCommand("/tpacancel")).hoverEvent(HoverEvent.showText(Component.text("Annuler la demande de TP")))

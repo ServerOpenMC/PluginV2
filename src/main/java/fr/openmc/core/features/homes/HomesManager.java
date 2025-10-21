@@ -24,7 +24,7 @@ public class HomesManager {
     public static final List<Home> homes = new ArrayList<>();
     public static final List<HomeLimit> homeLimits = new ArrayList<>();
 
-    public HomesManager() {
+    public static void init() {
         DisabledWorldHome.init();
 
         CommandsManager.getHandler().register(
