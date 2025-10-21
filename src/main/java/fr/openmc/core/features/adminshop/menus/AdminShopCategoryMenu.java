@@ -93,11 +93,6 @@ public class AdminShopCategoryMenu extends Menu {
             meta.displayName(Component.text("§aRetour au menu principal"));
         }, true);
 
-        backButton.setItemId("back")
-                .setOnClick(event -> {
-                    new AdminShopMenu(getOwner()).open();
-                });
-
         content.put(40, backButton);
 
         return content;

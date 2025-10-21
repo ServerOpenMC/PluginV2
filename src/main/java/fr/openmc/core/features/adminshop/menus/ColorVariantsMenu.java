@@ -163,12 +163,7 @@ public class ColorVariantsMenu extends Menu {
 
         ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(Component.text("§aRetour à la catégorie"));
-        });
-
-        backButton.setItemId("back")
-                .setOnClick(event -> {
-                    previousMenu.open();
-                });
+        }, true);
 
         content.put(49, backButton);
 

@@ -120,15 +120,9 @@ public class LeavesVariantsMenu extends Menu {
 
         ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(Component.text("Retour à la catégorie", NamedTextColor.GREEN));
-        });
-
-        backButton.setItemId("back")
-                .setOnClick(event -> {
-                    previousMenu.open();
-                });
+        }, true);
 
         content.put(49, backButton);
-
         return content;
     }
 
