@@ -51,7 +51,7 @@ public class AdminShopMenu extends Menu {
         for (ShopCategory category : AdminShopManager.getCategories().stream().sorted(Comparator.comparingInt(ShopCategory::position)).toList()) {
             ItemStack itemStack = new ItemStack(category.material());
             ItemMeta meta = itemStack.getItemMeta();
-            meta.displayName(Component.text(category.name()));
+            meta.displayName(category.name());
             itemStack.setItemMeta(meta);
 
             content.put(slot, new ItemBuilder(this, itemStack)

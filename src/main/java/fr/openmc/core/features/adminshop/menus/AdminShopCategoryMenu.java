@@ -1,5 +1,6 @@
 package fr.openmc.core.features.adminshop.menus;
 
+import com.destroystokyo.paper.MaterialTags;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;
 import fr.openmc.api.menulib.utils.InventorySize;
@@ -9,6 +10,7 @@ import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -61,7 +63,7 @@ public class AdminShopCategoryMenu extends Menu {
             for (ShopItem item : categoryItems.values()) {
                 ItemStack itemStack = new ItemStack(item.getMaterial());
                 ItemMeta meta = itemStack.getItemMeta();
-                meta.displayName(Component.text(item.getName()));
+                meta.displayName(item.getName());
 
                 meta.lore(AdminShopUtils.extractLoreForItem(item));
 
@@ -72,6 +74,8 @@ public class AdminShopCategoryMenu extends Menu {
                         .setOnClick(event -> {
                             if (item.isHasColorVariant())
                                 AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item, this);
+                            else if (item.getMaterial() == Material.OAK_LEAVES)
+                                AdminShopManager.openLeaveVariantsMenu(getOwner(), categoryId, item, this);
                             else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
                                 AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), this);
                             else if (event.isRightClick() && item.getInitialSellPrice() > 0)
