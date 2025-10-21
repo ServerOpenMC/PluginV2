@@ -101,7 +101,7 @@ public class AdminShopManager {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new BuyEvent(player, item));
             });
-            sendInfo(player, "Vous avez acheté " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
+            sendInfo(player, Component.text("Vous avez acheté " + amount + " ").append(item.getName()).append(Component.text(" pour " + AdminShopUtils.formatPrice(totalPrice))));
             adjustPrice(getPlayerCategory(player), itemId, amount, true);
         } else {
             sendError(player, "Vous n'avez pas assez d'argent !");
@@ -137,7 +137,7 @@ public class AdminShopManager {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new SellEvent(player, item));
         });
-        sendInfo(player, "Vous avez vendu " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
+        sendInfo(player, Component.text("Vous avez vendu " + amount + " ").append(item.getName()).append(Component.text(" pour " + AdminShopUtils.formatPrice(totalPrice))));
         adjustPrice(getPlayerCategory(player), itemId, amount, false); // Adjust the price based on the transaction
     }
 
@@ -216,13 +216,13 @@ public class AdminShopManager {
     }
 
     /**
-     * Sends an info message to a player (includes currency icon).
+     * Sends an info message to a player.
      *
      * @param player  The player.
      * @param message The information message.
      */
-    private static void sendInfo(Player player, String message) {
-        MessagesManager.sendMessage(player, Component.text(message), Prefix.ADMINSHOP, MessageType.INFO, true);
+    private static void sendInfo(Player player, Component message) {
+        MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.INFO, true);
     }
 
     /**
