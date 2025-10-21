@@ -88,7 +88,6 @@ public class Cube extends MultiBlock {
     public boolean isPartOf(Location loc) {
         if (loc == null) return false;
         Material type = loc.getBlock().getType();
-        if (type == Material.AIR) return false;
         if (type != this.material) return false;
 
         int x = loc.getBlockX();
