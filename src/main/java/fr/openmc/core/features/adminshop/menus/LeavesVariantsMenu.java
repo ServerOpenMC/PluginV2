@@ -20,14 +20,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LeavesVariantsMenu extends Menu {
     private final String categoryId;
     private final ShopItem originalItem;
     private final Menu previousMenu;
     private static final List<Material> LEAVES_VARIANTS = List.of(
-        Material.OAK_LEAVES, Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.BIRCH_LEAVES, Material.JUNGLE_LEAVES,
+        Material.OAK_LEAVES, Material.SPRUCE_LEAVES, Material.BIRCH_LEAVES, Material.JUNGLE_LEAVES,
         Material.ACACIA_LEAVES, Material.DARK_OAK_LEAVES, Material.MANGROVE_LEAVES, Material.CHERRY_LEAVES,
         Material.PALE_OAK_LEAVES, Material.AZALEA_LEAVES, Material.FLOWERING_AZALEA_LEAVES
     );
@@ -62,10 +64,10 @@ public class LeavesVariantsMenu extends Menu {
         Map<Integer, ItemBuilder> content = new HashMap<>();
 
         int[] organizedSlots = {
-                4,
                 11, 12, 13, 14, 15,
                 20, 21, 22, 23, 24,
-                29, 30, 31, 32, 33
+                29, 30, 31, 32, 33,
+                38, 39, 40, 41, 42
         };
 
         int maxVariants = Math.min(LEAVES_VARIANTS.size(), organizedSlots.length);
@@ -79,7 +81,6 @@ public class LeavesVariantsMenu extends Menu {
         for (int i = 0; i < maxVariants; i++) {
             Material variant = LEAVES_VARIANTS.get(i);
             int slot = organizedSlots[i];
-            if (slot == 4) continue;
 
             ItemStack itemStack = new ItemStack(variant);
             ItemMeta meta = itemStack.getItemMeta();

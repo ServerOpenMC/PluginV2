@@ -29,7 +29,7 @@ public class LogVariantsMenu extends Menu {
     private final ShopItem originalItem;
     private final Menu previousMenu;
     private static final List<Material> LOGS_VARIANTS = List.of(
-        Material.OAK_LOG, Material.OAK_LOG, Material.SPRUCE_LOG, Material.BIRCH_LOG, Material.JUNGLE_LOG,
+        Material.OAK_LOG, Material.SPRUCE_LOG, Material.BIRCH_LOG, Material.JUNGLE_LOG,
         Material.ACACIA_LOG, Material.DARK_OAK_LOG, Material.MANGROVE_LOG, Material.CHERRY_LOG,
         Material.PALE_OAK_LOG
     );
@@ -64,10 +64,10 @@ public class LogVariantsMenu extends Menu {
         Map<Integer, ItemBuilder> content = new HashMap<>();
 
         int[] organizedSlots = {
-                4,
                 11, 12, 13, 14, 15,
                 20, 21, 22, 23, 24,
-                29, 30, 31, 32, 33
+                29, 30, 31, 32, 33,
+                38, 39, 40, 41, 42
         };
 
         int maxVariants = Math.min(LOGS_VARIANTS.size(), organizedSlots.length);
@@ -81,7 +81,6 @@ public class LogVariantsMenu extends Menu {
         for (int i = 0; i < maxVariants; i++) {
             Material variant = LOGS_VARIANTS.get(i);
             int slot = organizedSlots[i];
-            if (slot == 4) continue;
 
             ItemStack itemStack = new ItemStack(variant);
             ItemMeta meta = itemStack.getItemMeta();

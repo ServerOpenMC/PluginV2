@@ -104,10 +104,10 @@ public class ColorVariantsMenu extends Menu {
         }
 
         int[] organizedSlots = {
-                4,
                 11, 12, 13, 14, 15,
                 20, 21, 22, 23, 24,
-                29, 30, 31, 32, 33
+                29, 30, 31, 32, 33,
+                38, 39, 40, 41, 42
         };
 
         int maxVariants = Math.min(variants.size(), organizedSlots.length);
@@ -121,7 +121,6 @@ public class ColorVariantsMenu extends Menu {
         for (int i = 0; i < maxVariants; i++) {
             Material variant = variants.get(i);
             int slot = organizedSlots[i];
-            if (slot == 4) continue;
 
             ItemStack itemStack = new ItemStack(variant);
             ItemMeta meta = itemStack.getItemMeta();
