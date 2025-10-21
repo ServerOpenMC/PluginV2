@@ -12,7 +12,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -34,7 +33,7 @@ public class IronBloodPerk implements Listener {
             return;
         }
         perkIronBloodCooldown.put(city, currentTime);
-        Location location = LocationUtils.getSafeNearbySurface(mobMascot.getLocation().clone(), 10);;
+        Location location = LocationUtils.getSafeNearbySurface(mobMascot.getLocation().clone(), 10);
 
         IronGolem golem = location.getWorld().spawn(location, IronGolem.class, CreatureSpawnEvent.SpawnReason.CUSTOM, g -> {
             g.setPlayerCreated(false);
