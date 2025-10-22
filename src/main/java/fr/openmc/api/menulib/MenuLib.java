@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -200,11 +201,11 @@ public final class MenuLib implements Listener {
     }
 
     @EventHandler
-    public void onInventoryDrag(InventoryClickEvent e) {
+    public void onInventoryDrag(InventoryDragEvent e) {
         if (!(e.getInventory().getHolder() instanceof Menu menu))
             return;
 
-        if (menu.getTakableSlot().contains(e.getRawSlot()))
+        if (e.getRawSlots().stream().anyMatch(menu.getTakableSlot()::contains))
             return;
         e.setCancelled(true);
     }
