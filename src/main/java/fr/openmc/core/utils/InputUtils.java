@@ -110,4 +110,8 @@ public class InputUtils {
     public static String pluralize(String word, int count) {
         return word + (count > 1 ? "s" : "");
     }
+
+    public static String pluralize(String word, long count) {
+        return word + (count > 1 ? "s" : "");
+    }
 }

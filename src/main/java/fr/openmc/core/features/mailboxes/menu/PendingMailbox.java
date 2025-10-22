@@ -121,7 +121,7 @@ public class PendingMailbox extends PaginatedMenu {
 
         if (MailboxManager.deleteLetter(id)) {
             if (receiver != null)
-                MailboxManager.cancelLetter(receiver, id);
+                MailboxManager.cancelLetter(receiver);
             MailboxManager.givePlayerItems(player, items);
             Component message = Component.text("Vous avez annulé la lettre et reçu ", NamedTextColor.DARK_GREEN)
                     .append(Component.text(itemsCount, NamedTextColor.GREEN))

@@ -5,12 +5,9 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.features.homes.menu.HomeMenu;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
-import fr.openmc.core.items.CustomItemRegistry;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -28,7 +25,6 @@ public class PlayerMailbox extends PaginatedMenu {
 
     public PlayerMailbox(Player player) {
         super(player);
-        System.out.println(MailboxManager.getReceivedLetters(getOwner()));
     }
 
     @Override
@@ -97,6 +93,4 @@ public class PlayerMailbox extends PaginatedMenu {
     public int getSizeOfItems() {
         return MailboxManager.getReceivedLetters(getOwner()).size();
     }
-
-
 }

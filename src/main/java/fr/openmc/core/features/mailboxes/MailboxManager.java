@@ -2,7 +2,6 @@ package fr.openmc.core.features.mailboxes;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
-import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
@@ -32,22 +31,17 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Level;
 
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
+import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 import static fr.openmc.core.utils.InputUtils.pluralize;
 
 // Author Gexary,
 // Reedits by Axeno
 public class MailboxManager {
-    private static Dao<Letter, Integer> letterDao;
-
-    public static void initDB(ConnectionSource connectionSource) throws SQLException {
-        TableUtils.createTableIfNotExists(connectionSource, Letter.class);
-        letterDao = DaoManager.createDao(connectionSource, Letter.class);
-    }
-
     private static final int MAX_STACKS_PER_LETTER = 27;
+    private static final List<Letter> letters = new ArrayList<>();
+
+    private static int nextLetterId = 1;
 
     public static boolean sendItems(Player sender, OfflinePlayer receiver, ItemStack[] items) {
         if (!canSend(sender, receiver)) return false;
@@ -69,8 +63,8 @@ public class MailboxManager {
 
         try {
             byte[] itemsBytes = BukkitSerializer.serializeItemStacks(items);
-            Letter letter = new Letter(sender.getUniqueId(), receiver.getUniqueId(), itemsBytes, numItems, Timestamp.valueOf(sent), false);
-            if (letterDao.create(letter) == 0) return false;
+            Letter letter = new Letter(nextLetterId++, sender.getUniqueId(), receiver.getUniqueId(), itemsBytes, numItems, Timestamp.valueOf(sent), false);
+            letters.add(letter);
 
             int id = letter.getLetterId();
             Player receiverPlayer = receiver.getPlayer();
@@ -83,15 +77,21 @@ public class MailboxManager {
             sendSuccessSendingMessage(sender, receiverName, numItems);
             return true;
         } catch (Exception ex) {
-            OMCPlugin.getInstance().getSLF4JLogger().error("Error while sending items to offline player, {}", ex.getMessage(), ex);
-            sendFailureSendingMessage(sender, receiverName);
+            OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline player: {}", ex.getMessage(), ex);
+            MessagesManager.sendMessage(
+                    sender,
+                    Component.text("Une erreur est apparue lors de l'envoie des items à ", NamedTextColor.DARK_RED)
+                            .append(Component.text(receiverName, NamedTextColor.RED)),
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
             return false;
         }
     }
 
     public static void sendItemsToAOfflinePlayerBatch(Map<OfflinePlayer, ItemStack[]> playerItemsMap) {
         try {
-            List<Letter> letters = new ArrayList<>();
             for (Map.Entry<OfflinePlayer, ItemStack[]> entry : playerItemsMap.entrySet()) {
                 OfflinePlayer player = entry.getKey();
                 ItemStack[] items = entry.getValue();
@@ -100,12 +100,11 @@ public class MailboxManager {
 
                 byte[] itemsBytes = BukkitSerializer.serializeItemStacks(changeStackItem(items));
 
-                Letter letter = new Letter(player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
+                Letter letter = new Letter(nextLetterId++, player.getUniqueId(), player.getUniqueId(), itemsBytes, numItems,
                         Timestamp.valueOf(LocalDateTime.now()), false);
                 letters.add(letter);
             }
-            letterDao.create(letters);
-        } catch (SQLException | IOException e) {
+        } catch (IOException e) {
             OMCPlugin.getInstance().getSLF4JLogger().warn("Error while sending items to offline players: {}", e.getMessage(), e);
         }
     }
@@ -123,113 +122,61 @@ public class MailboxManager {
     }
 
     public static void sendMailNotification(Player player) {
-        try {
-            QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
-            query.where().eq("receiver", player.getUniqueId()).and().eq("refused", false);
-            query.setCountOf(true);
+        long count = letters.stream()
+                .filter(letter -> letter.getReceiver().equals(player.getUniqueId()) && !letter.isRefused())
+                .count();
 
-            long count = letterDao.countOf(query.prepare());
-            if (count == 0)
-                return;
+        if (count == 0) return;
 
-            Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
-                    .append(
-                            count > 1
-                                    ? Component.text(count, NamedTextColor.GREEN)
-                                    : Component.text("une", NamedTextColor.GREEN)
-                    )
-                    .append(Component.text(" lettre" + (count > 1 ? "s" : "") + ".", NamedTextColor.DARK_GREEN))
-                    .appendNewline()
-                    .append(Component.text("Cliquez-ici", NamedTextColor.YELLOW))
-                    .clickEvent(ClickEvent.runCommand("/mailbox"))
-                    .hoverEvent(getHoverEvent("Ouvrir ma boîte aux lettres"))
-                    .append(Component.text(" pour ouvrir les lettres", NamedTextColor.GOLD));
+        Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
+                .append(Component.text((count > 1 ? count : "une") + " ", NamedTextColor.GREEN))
+                .append(Component.text(pluralize("lettre", count) + ".", NamedTextColor.DARK_GREEN))
+                .appendNewline()
+                .append(Component.text("Cliquez-ici", NamedTextColor.YELLOW))
+                .clickEvent(ClickEvent.runCommand("/mailbox"))
+                .hoverEvent(getHoverEvent("Ouvrir ma boîte aux lettres"))
+                .append(Component.text(" pour ouvrir les lettres", NamedTextColor.GOLD));
 
-            MessagesManager.sendMessage(
-                    player,
-                    message,
-                    Prefix.MAILBOX,
-                    MessageType.SUCCESS,
-                    true
-            );
-        } catch (SQLException e) {
-            MessagesManager.sendMessage(
-                    player,
-                    Component.text("Une erreur est survenue.", NamedTextColor.DARK_RED),
-                    Prefix.MAILBOX,
-                    MessageType.ERROR,
-                    true
-            );
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static boolean saveLetter(Letter letter) {
-        try {
-            return letterDao.createOrUpdate(letter) != null;
-        } catch (SQLException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save letter in database", e);
-            return false;
-        }
+        MessagesManager.sendMessage(
+                player,
+                message,
+                Prefix.MAILBOX,
+                MessageType.SUCCESS,
+                true
+        );
     }
 
     public static boolean deleteLetter(int id) {
-        try {
-            return letterDao.deleteById(id) != 0;
-        } catch (SQLException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to delete lettre in database", e);
-            return false;
-        }
+        return letters.removeIf(letter -> letter.getLetterId() == id);
     }
 
     public static Letter getById(Player player, int id) {
-        try {
-            Letter letter = letterDao.queryForId(id);
-            if (letter.isRefused())
-                return null;
+        Letter letter = letters.stream()
+                .filter(l -> l.getLetterId() == id)
+                .findFirst()
+                .orElse(null);
 
-            return letter;
-        } catch (Exception e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get lettre by id", e);
-            MessagesManager.sendMessage(
-                    player,
-                    Component.text("Une erreur est survenue.", NamedTextColor.DARK_RED),
-                    Prefix.MAILBOX,
-                    MessageType.ERROR,
-                    true
-            );
-            return null;
-        }
+        if (letter == null || letter.isRefused()) return null;
+        return letter;
     }
 
     public static List<Letter> getSentLetters(Player player) {
-        try {
-            QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
-            query.where().eq("sender", player.getUniqueId());
-            query.orderBy("sent", false);
-            return letterDao.query(query.prepare());
-        } catch (SQLException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get sent letters", e);
-            return null;
-        }
+        return letters.stream()
+                .filter(l -> l.getSender().equals(player.getUniqueId()))
+                .sorted(Comparator.comparing(Letter::getSent).reversed())
+                .toList();
     }
 
     public static List<Letter> getReceivedLetters(Player player) {
-        try {
-            QueryBuilder<Letter, Integer> query = letterDao.queryBuilder();
-            query.where().eq("receiver", player.getUniqueId());
-            query.orderBy("sent", false);
-            return letterDao.query(query.prepare());
-        } catch (SQLException e) {
-            OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to get received letters", e);
-            return null;
-        }
+        return letters.stream()
+                .filter(l -> l.getReceiver().equals(player.getUniqueId()) && !l.isRefused())
+                .sorted(Comparator.comparing(Letter::getSent).reversed())
+                .toList();
     }
 
     public static boolean canSend(Player sender, OfflinePlayer receiver) {
         if (sender.getUniqueId().equals(receiver.getUniqueId()))
-            return true
-                    ;
+            return true;
         PlayerSettings settings = PlayerSettingsManager.getPlayerSettings(receiver.getUniqueId());
         return settings.canPerformAction(SettingType.MAILBOX_RECEIVE_POLICY, sender.getUniqueId());
     }
@@ -237,11 +184,11 @@ public class MailboxManager {
     private static void sendLetterReceivedNotification(Player receiver, int numItems, int id, String name) {
         Component message = Component.text("Vous avez reçu ", NamedTextColor.DARK_GREEN)
                 .append(Component.text(numItems, NamedTextColor.GREEN))
-                .append(Component.text(" item" + (numItems > 1 ? "s" : "") + " de la part de ", NamedTextColor.DARK_GREEN))
+                .append(Component.text(pluralize(" item", numItems) + " de la part de ", NamedTextColor.DARK_GREEN))
                 .append(Component.text(name, NamedTextColor.GREEN))
                 .appendNewline()
                 .append(Component.text("Cliquez-ici", NamedTextColor.YELLOW))
-                .clickEvent(ClickEvent.runCommand("/mailbox open" + id))
+                .clickEvent(ClickEvent.runCommand("/mailbox open " + id))
                 .hoverEvent(getHoverEvent("Ouvrir la lettre #" + id))
                 .append(Component.text(" pour ouvrir la lettre", NamedTextColor.GOLD));
 
@@ -262,28 +209,14 @@ public class MailboxManager {
         Component subtitle = Component.text(name, NamedTextColor.GOLD)
                 .append(Component.text(" vous a envoyé ", NamedTextColor.YELLOW))
                 .append(Component.text(numItems, NamedTextColor.GOLD))
-                .append(Component.text(" item" + (numItems > 1 ? "s" : ""), NamedTextColor.YELLOW));
+                .append(Component.text(pluralize(" item", numItems), NamedTextColor.YELLOW));
         Component title = Component.text("Nouvelle lettre !", NamedTextColor.GREEN);
         return Title.title(title, subtitle);
     }
 
-    private static void sendFailureSendingMessage(Player player, String receiverName) {
-        Component message = Component
-                .text("Une erreur est apparue lors de l'envoie des items à ", NamedTextColor.DARK_RED)
-                .append(Component.text(receiverName, NamedTextColor.RED));
-        MessagesManager.sendMessage(
-                player,
-                message,
-                Prefix.MAILBOX,
-                MessageType.ERROR,
-                true
-        );
-    }
-
     private static void sendSuccessSendingMessage(Player player, String receiverName, int numItems) {
         Component message = Component.text(numItems, NamedTextColor.GREEN)
-                .append(Component.text(" " + pluralize("item", numItems) + pluralize("envoyé", numItems) + " à ",
-                        NamedTextColor.DARK_GREEN))
+                .append(Component.text(" " + pluralize("item", numItems) + " " + pluralize("envoyé", numItems) + " à ", NamedTextColor.DARK_GREEN))
                 .append(Component.text(receiverName, NamedTextColor.GREEN));
 
         MessagesManager.sendMessage(
@@ -301,12 +234,45 @@ public class MailboxManager {
             player.getWorld().dropItemNaturally(player.getLocation(), item);
     }
 
-    public static void cancelLetter(Player player, int id) {
+    public static void cancelLetter(Player player) {
         Inventory inv = player.getInventory();
         if (inv instanceof PlayerMailbox playerMailbox) {
             playerMailbox.open();
         } else if (inv instanceof LetterMenu letter) {
             letter.cancel();
+        }
+    }
+
+    // DB Methods
+
+    private static Dao<Letter, Integer> letterDao;
+
+    public static void initDB(ConnectionSource connectionSource) throws SQLException {
+        TableUtils.createTableIfNotExists(connectionSource, Letter.class);
+        letterDao = DaoManager.createDao(connectionSource, Letter.class);
+    }
+
+    public static void loadLetters() {
+        try {
+            letters.addAll(letterDao.queryForAll());
+
+            nextLetterId = letters.stream()
+                    .mapToInt(Letter::getLetterId)
+                    .max()
+                    .orElse(0) + 1;
+        } catch (SQLException e) {
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error loading letters from database: {}", e.getMessage(), e);
+        }
+    }
+
+    public static void saveLetters() {
+        try {
+            TableUtils.clearTable(letterDao.getConnectionSource(), Letter.class);
+            for (Letter letter : letters) {
+                letterDao.create(letter);
+            }
+        } catch (SQLException e) {
+            OMCPlugin.getInstance().getSLF4JLogger().error("Error saving letters to database: {}", e.getMessage(), e);
         }
     }
 }

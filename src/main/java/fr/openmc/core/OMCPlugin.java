@@ -26,6 +26,7 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
@@ -136,6 +137,8 @@ public class OMCPlugin extends JavaPlugin {
         MultiBlockManager.init();
 
         PlayerSettingsManager.loadAllPlayerSettings();
+
+        MailboxManager.loadLetters();
     }
 
     public void loadWithItemsAdder() {
@@ -163,6 +166,9 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion()) {
             HologramLoader.unloadAll();
         }
+
+        // - Mailboxes
+        MailboxManager.saveLetters();
 
         // - MultiBlocks
         MultiBlockManager.save();

@@ -21,7 +21,7 @@ import java.util.UUID;
 @Getter
 @DatabaseTable(tableName = "mail")
 public class Letter {
-    @DatabaseField(generatedId = true, columnName = "letter_id")
+    @DatabaseField(columnName = "letter_id")
     private int letterId;
     @DatabaseField(canBeNull = false)
     private UUID sender;
@@ -36,28 +36,30 @@ public class Letter {
     @DatabaseField
     private boolean refused;
 
+    private ItemStack[] cachedItems;
+
     Letter() {
         // required by ORMLite
     }
 
-    Letter(UUID sender, UUID receiver, byte[] items, int numItems, Timestamp sent, boolean refused) {
+    Letter(int id, UUID sender, UUID receiver, byte[] items, int numItems, Timestamp sent, boolean refused) {
+        this.letterId = id;
         this.sender = sender;
         this.receiver = receiver;
         this.items = items;
         this.numItems = numItems;
         this.refused = refused;
         this.sent = sent;
+        this.cachedItems = BukkitSerializer.deserializeItemStacks(this.items);
     }
 
     public boolean refuse() {
-        refused = true;
-        return MailboxManager.saveLetter(this);
+        return refused = true;
     }
 
     public LetterHead toLetterHead() {
         OfflinePlayer player = CacheOfflinePlayer.getOfflinePlayer(sender);
-        ItemStack[] items = BukkitSerializer.deserializeItemStacks(this.items);
-        return new LetterHead(player, letterId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), items);
+        return new LetterHead(player, letterId, numItems, LocalDateTime.ofInstant(sent.toInstant(), ZoneId.systemDefault()), this.cachedItems);
     }
 
     public ItemBuilder toSenderLetterItemBuilder(Menu menu) {
