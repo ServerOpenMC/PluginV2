@@ -10,9 +10,6 @@ import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.CustomModelData;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -24,35 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.HashMap;
 import java.util.List;
 
-import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.nonItalic;
-
-@SuppressWarnings("UnstableApiUsage")
 public class MailboxMenuManager {
-    public static final Key openmcKey = Key.key("openmc", "menu");
-    private static final Material customMaterial = Material.BARRIER;
-
-    public static Component getInvTitle(String title) {
-        return Component.text(title, NamedTextColor.WHITE).font(openmcKey);
-    }
-
-    public static ItemStack getCustomItem(Component name, int data) {
-        return getCustomItem(name, data, null);
-    }
-
-    public static ItemStack getCustomItem(Component name, int data, List<Component> lore) {
-        ItemStack item = new ItemStack(customMaterial);
-        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addFloat(data).build());
-
-        ItemMeta meta = item.getItemMeta();
-        meta.displayName(nonItalic(name));
-        if (lore != null)
-            meta.lore(lore);
-
-        meta.setMaxStackSize(1);
-        item.setItemMeta(meta);
-        return item;
-    }
-
     public static ItemBuilder transparentItem(Menu menu) {
         return new ItemBuilder(menu, CustomItemRegistry.getByName("omc_homes:omc_homes_invisible").getBest()).hideTooltip(true);
     }
@@ -71,12 +40,22 @@ public class MailboxMenuManager {
 
     public static ItemStack nextPageBtn() {
         Component name = Component.text("Next page ➡", NamedTextColor.GOLD, TextDecoration.BOLD);
-        return getCustomItem(name, 2003);
+        ItemStack item = CustomItemRegistry.getByName("omc_menus:mailbox_arrow_right").getBest();
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(name);
+        meta.setMaxStackSize(1);
+        item.setItemMeta(meta);
+        return item;
     }
 
     public static ItemStack previousPageBtn() {
         Component name = Component.text("⬅ Previous page", NamedTextColor.GOLD, TextDecoration.BOLD);
-        return getCustomItem(name, 2004);
+        ItemStack item = CustomItemRegistry.getByName("omc_menus:mailbox_arrow_left").getBest();
+        ItemMeta meta = item.getItemMeta();
+        meta.displayName(name);
+        meta.setMaxStackSize(1);
+        item.setItemMeta(meta);
+        return item;
     }
 
     public static ItemBuilder acceptBtn(Menu menu) {

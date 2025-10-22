@@ -35,7 +35,7 @@ public class LetterHead extends ItemStack {
                 nonItalic(Component.text(formatRelativeDate(sentAt), NamedTextColor.DARK_GRAY)),
                 nonItalic(Component.text("➤ Contient ", NamedTextColor.DARK_GREEN)
                         .append(Component.text(itemsCount, NamedTextColor.GREEN, TextDecoration.BOLD))
-                        .append(Component.text(pluralize("item", itemsCount) + " ", NamedTextColor.DARK_GREEN)))
+                        .append(Component.text(pluralize(" item", itemsCount), NamedTextColor.DARK_GREEN)))
         ));
         this.setItemMeta(skullMeta);
     }
