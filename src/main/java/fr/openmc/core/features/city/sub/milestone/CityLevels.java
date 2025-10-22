@@ -49,6 +49,7 @@ public enum CityLevels {
             Component.text("Les fondations"),
             List.of(
                     new CommandRequirement("/city map", 1),
+                    new CommandRequirement("/city claim view", 1),
                     new TemplateRequirement(
                             city -> city.getChunks().size() >= 5,
                             city -> ItemStack.of(Material.OAK_FENCE),
