@@ -119,9 +119,9 @@ public abstract class PaginatedMenu extends Menu {
 			getButtons().forEach((integer, itemBuilder) -> {
 				if (staticSlots.contains(integer)) {
 					ItemBuilder newItemBuilder = new ItemBuilder(this, itemBuilder, itemBuilder.isBackButton());
-					if (itemBuilder.isPreviousButton()) {
+					if (itemBuilder.isPreviousButton() && !this.isFirstPage()) {
 						newItemBuilder.setPreviousPageButton();
-					} else if (itemBuilder.isNextButton()) {
+					} else if (itemBuilder.isNextButton() && !this.isLastPage()) {
 						newItemBuilder.setNextPageButton();
 					}
 
