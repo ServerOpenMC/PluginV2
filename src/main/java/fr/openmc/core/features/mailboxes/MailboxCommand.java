@@ -1,7 +1,5 @@
 package fr.openmc.core.features.mailboxes;
 
-import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
-import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.commands.autocomplete.OnlinePlayerAutoComplete;
 import fr.openmc.core.features.mailboxes.letter.LetterHead;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
@@ -9,6 +7,7 @@ import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.features.mailboxes.menu.PlayerMailbox;
 import fr.openmc.core.features.mailboxes.menu.letter.LetterMenu;
 import fr.openmc.core.features.mailboxes.menu.letter.SendingLetter;
+import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -20,11 +19,14 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
-import java.util.List;
-
 @Command({"mailbox", "mb", "letter", "mail", "lettre", "boite", "courrier"})
 @CommandPermission("omc.commands.mailbox")
 public class MailboxCommand {
+
+    @CommandPlaceholder()
+    public void mailbox(Player player) {
+        new PlayerMailbox(player).open();
+    }
     
     @Subcommand("home")
     @Description("Ouvrir la page d'accueil de la boite aux lettres")
@@ -41,29 +43,27 @@ public class MailboxCommand {
             Component message = Component.text("Le joueur ", NamedTextColor.DARK_RED)
                                          .append(Component.text(receiver, NamedTextColor.RED))
                                          .append(Component.text(" n'existe pas ou ne s'est jamais connecté !", NamedTextColor.DARK_RED));
-            MessagesManager.sendMessage(
-                    player,
-                    message,
-                    Prefix.MAILBOX,
-                    MessageType.ERROR,
-                    true
-            );
-            // TODO: readd
-//        } else if (receiverPlayer.getPlayer() == player) {
-//            sendWarningMessage(player, "Vous ne pouvez pas vous envoyer à vous-même !");
-        } else if (MailboxManager.canSend(player, receiverPlayer)) {
-            new SendingLetter(player, receiverPlayer).open();
-        } else {
+            MessagesManager.sendMessage(player, message, Prefix.MAILBOX, MessageType.ERROR, true);
+            return;
+        }
+        if (receiverPlayer.getUniqueId() == player.getUniqueId()) {
+            MessagesManager.sendMessage(player, Component.text("Vous ne pouvez pas vous envoyer à vous-même !", NamedTextColor.DARK_RED), Prefix.MAILBOX, MessageType.ERROR, true);
+            return;
+        }
+        if (!MailboxManager.canSend(player, receiverPlayer)) {
             MessagesManager.sendMessage(
                     player,
                     Component.text("Vous n'avez pas les droits pour envoyer à ", NamedTextColor.DARK_RED)
-                             .append(Component.text(receiverPlayer.getName(), NamedTextColor.RED))
-                             .append(Component.text(" !", NamedTextColor.DARK_RED)),
+                            .append(Component.text(receiverPlayer.getName(), NamedTextColor.RED))
+                            .append(Component.text(" !", NamedTextColor.DARK_RED)),
                     Prefix.MAILBOX,
                     MessageType.ERROR,
                     true
             );
+            return;
         }
+
+        new SendingLetter(player, receiverPlayer).open();
     }
 
     @Subcommand("pending")
@@ -93,16 +93,19 @@ public class MailboxCommand {
     @SecretCommand
     @Description("Annuler une lettre")
     public void cancelMailbox(Player player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        new ConfirmMenu(player,
-                () -> PendingMailbox.cancelLetter(player, id),
-                player::closeInventory,
-                List.of(Component.text("Confirmer l'annulation de la mailbox #" + id, NamedTextColor.RED)),
-                List.of(Component.text("Annuler l'annulation de la mailbox #" + id, NamedTextColor.GREEN))
-        ).open();
-    }
-
-    @CommandPlaceholder()
-    public void mailbox(Player player) {
-        new PlayerMailbox(player).open();
+        Letter letter = MailboxManager.getById(player, id);
+        if (letter == null) {
+            MessagesManager.sendMessage(
+                    player,
+                    Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
+                            .append(Component.text(id, NamedTextColor.RED))
+                            .append(Component.text(" n'existe pas.", NamedTextColor.DARK_RED)),
+                    Prefix.MAILBOX,
+                    MessageType.ERROR,
+                    true
+            );
+            return;
+        }
+        MailboxMenuManager.sendConfirmMenuToCancelLetter(player, letter);
     }
 }
