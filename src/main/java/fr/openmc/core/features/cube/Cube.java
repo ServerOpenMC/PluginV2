@@ -41,6 +41,11 @@ public class Cube extends MultiBlock {
 
         startEventsCycle();
         startSoundCycle();
+
+        // Force load the chunk where the cube is
+        Chunk cubeChunk = origin.getChunk();
+        if (!cubeChunk.getPluginChunkTickets().contains(OMCPlugin.getInstance()))
+            cubeChunk.addPluginChunkTicket(OMCPlugin.getInstance());
     }
 
     @Override
@@ -82,8 +87,8 @@ public class Cube extends MultiBlock {
     @Override
     public boolean isPartOf(Location loc) {
         if (loc == null) return false;
-        if (loc.getBlock().getType().equals(Material.AIR)) return false;
-        if (!loc.getBlock().getType().equals(this.material)) return false;
+        Material type = loc.getBlock().getType();
+        if (type != this.material) return false;
 
         int x = loc.getBlockX();
         int y = loc.getBlockY();
@@ -93,10 +98,9 @@ public class Cube extends MultiBlock {
         int baseY = this.origin.getBlockY();
         int baseZ = this.origin.getBlockZ();
 
-        return x >= baseX && x < baseX + this.radius &&
-                y >= baseY && y < baseY + this.radius &&
-                z >= baseZ && z < baseZ + this.radius &&
-                loc.getBlock().getType() == this.material;
+        return x >= baseX && x < baseX + this.radius
+                && y >= baseY && y < baseY + this.radius
+                && z >= baseZ  && z < baseZ + this.radius;
     }
 
     public Location getCenter() {

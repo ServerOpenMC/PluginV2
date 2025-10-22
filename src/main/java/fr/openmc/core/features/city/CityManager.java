@@ -413,6 +413,17 @@ public class CityManager {
     /**
      * Get a city from a chunk
      *
+     * @param chunk The chunk
+     * @return The city object, or null if not found
+     */
+    @Nullable
+    public static City getCityFromChunk(Chunk chunk) {
+        return claimedChunks.get(new ChunkPos(chunk.getX(), chunk.getZ()));
+    }
+
+    /**
+     * Get a city from a chunk
+     *
      * @param chunkPos The chunk position
      * @return The city object, or null if not found
      */

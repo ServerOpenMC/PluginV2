@@ -4,9 +4,7 @@ import fr.openmc.api.menulib.Menu;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.adminshop.events.BuyEvent;
 import fr.openmc.core.features.adminshop.events.SellEvent;
-import fr.openmc.core.features.adminshop.menus.AdminShopMenu;
-import fr.openmc.core.features.adminshop.menus.ColorVariantsMenu;
-import fr.openmc.core.features.adminshop.menus.ConfirmMenu;
+import fr.openmc.core.features.adminshop.menus.*;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -103,7 +101,7 @@ public class AdminShopManager {
             Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
                 Bukkit.getPluginManager().callEvent(new BuyEvent(player, item));
             });
-            sendInfo(player, "Vous avez acheté " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
+            sendInfo(player, Component.text("Vous avez acheté " + amount + " ").append(item.getName()).append(Component.text(" pour " + AdminShopUtils.formatPrice(totalPrice))));
             adjustPrice(getPlayerCategory(player), itemId, amount, true);
         } else {
             sendError(player, "Vous n'avez pas assez d'argent !");
@@ -139,7 +137,7 @@ public class AdminShopManager {
         Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () -> {
             Bukkit.getPluginManager().callEvent(new SellEvent(player, item));
         });
-        sendInfo(player, "Vous avez vendu " + amount + " " + item.getName() + " pour " + AdminShopUtils.formatPrice(totalPrice));
+        sendInfo(player, Component.text("Vous avez vendu " + amount + " ").append(item.getName()).append(Component.text(" pour " + AdminShopUtils.formatPrice(totalPrice))));
         adjustPrice(getPlayerCategory(player), itemId, amount, false); // Adjust the price based on the transaction
     }
 
@@ -218,13 +216,13 @@ public class AdminShopManager {
     }
 
     /**
-     * Sends an info message to a player (includes currency icon).
+     * Sends an info message to a player.
      *
      * @param player  The player.
      * @param message The information message.
      */
-    private static void sendInfo(Player player, String message) {
-        MessagesManager.sendMessage(player, Component.text(message), Prefix.ADMINSHOP, MessageType.INFO, true);
+    private static void sendInfo(Player player, Component message) {
+        MessagesManager.sendMessage(player, message, Prefix.ADMINSHOP, MessageType.INFO, true);
     }
 
     /**
@@ -246,6 +244,30 @@ public class AdminShopManager {
      */
     public static void openColorVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
         new ColorVariantsMenu(player, categoryId, originalItem, previousMenu).open();
+    }
+
+    /**
+     * Opens the menu displaying leaf variants of a shop item.
+     *
+     * @param player       The player.
+     * @param categoryId   The category ID.
+     * @param originalItem The original ShopItem.
+     * @param previousMenu The previous menu to return to.
+     */
+    public static void openLeavesVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
+        new LeavesVariantsMenu(player, categoryId, originalItem, previousMenu).open();
+    }
+
+    /**
+     * Opens the menu displaying log variants of a shop item.
+     *
+     * @param player       The player.
+     * @param categoryId   The category ID.
+     * @param originalItem The original ShopItem.
+     * @param previousMenu The previous menu to return to.
+     */
+    public static void openLogVariantsMenu(Player player, String categoryId, ShopItem originalItem, Menu previousMenu) {
+        new LogVariantsMenu(player, categoryId, originalItem, previousMenu).open();
     }
 
     /**

@@ -32,12 +32,12 @@ public class ItemUtils {
     /**
      * Return a {@link TranslatableComponent} from a {@link ItemStack}
      *
-     * @param stack ItemStack that get translate
+     * @param material Material that get translate
      * @return a {@link TranslatableComponent} that can be translated by client
      */
-    public static TranslatableComponent getItemTranslation(ItemStack stack) {
+    public static TranslatableComponent getItemTranslation(Material material) {
         return Component.translatable(Objects.requireNonNullElse(
-                stack.getType().translationKey(),
+                material.translationKey(),
                 "block.minecraft.stone"
         ));
     }
@@ -45,11 +45,11 @@ public class ItemUtils {
     /**
      * Return a {@link TranslatableComponent} from a {@link Material}
      *
-     * @param material Material that get translate
+     * @param stack ItemStack that get translate
      * @return a {@link TranslatableComponent} that can be translated by client
      */
-    public static TranslatableComponent getItemTranslation(Material material) {
-        return getItemTranslation(new ItemStack(material));
+    public static TranslatableComponent getItemTranslation(ItemStack stack) {
+        return getItemTranslation(stack.getType());
     }
 
     public static String getItemName(ItemStack stack) {

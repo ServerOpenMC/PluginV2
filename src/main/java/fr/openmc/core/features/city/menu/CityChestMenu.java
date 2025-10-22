@@ -88,7 +88,10 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public List<Integer> getTakableSlot() {
-        return Stream.concat(CITY_MENU_ITEM_SLOTS.stream(), MenuUtils.getInventoryItemSlots().stream()).toList();
+        return Stream.concat(
+                CITY_MENU_ITEM_SLOTS.stream(),
+                MenuUtils.getInventoryItemSlots().stream()
+        ).toList();
     }
 
     @Override
@@ -187,6 +190,7 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        if (Restart.isRestarting) return;
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) {
             return;

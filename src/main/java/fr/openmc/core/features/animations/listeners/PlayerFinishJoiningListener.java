@@ -5,8 +5,6 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.animations.Animation;
 import fr.openmc.core.features.animations.PlayerAnimationInfo;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

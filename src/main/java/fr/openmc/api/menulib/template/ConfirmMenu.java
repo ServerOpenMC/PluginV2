@@ -1,4 +1,4 @@
-package fr.openmc.api.menulib.defaultmenu;
+package fr.openmc.api.menulib.template;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.Menu;

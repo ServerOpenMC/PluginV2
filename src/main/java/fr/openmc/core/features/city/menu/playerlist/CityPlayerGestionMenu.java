@@ -1,7 +1,7 @@
 package fr.openmc.core.features.city.menu.playerlist;
 
 import fr.openmc.api.menulib.Menu;
-import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;

@@ -1,6 +1,6 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeDeleteConfirmMenu;
@@ -160,9 +160,6 @@ public final class MenuLib implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         if (!(e.getInventory().getHolder() instanceof Menu menu))
-            return;
-
-        if (e.getCurrentItem() == null)
             return;
 
         if (menu.getTakableSlot().contains(e.getRawSlot()))
