@@ -8,6 +8,7 @@ import dev.lone.itemsadder.api.Events.PlayerEmotePlayEvent;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.animations.Animation;
 import fr.openmc.core.features.animations.PlayerAnimationInfo;
+import fr.openmc.core.utils.EnumUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -25,8 +26,7 @@ public class EmoteListener implements Listener {
 
     @EventHandler
     public void onAnimationStart(PlayerEmotePlayEvent e) {
-        Animation animation = Animation.valueOf(e.getEmoteName().toUpperCase());
-
+        Animation animation = EnumUtils.match(e.getEmoteName(), Animation.class);
         if (animation == null) return;
 
         Player player = e.getPlayer();
@@ -86,8 +86,7 @@ public class EmoteListener implements Listener {
 
     @EventHandler
     public void onAnimationEndOrStop(PlayerEmoteEndEvent e) {
-        Animation animation = Animation.valueOf(e.getEmoteName().toUpperCase());
-
+        Animation animation = EnumUtils.match(e.getEmoteName(), Animation.class);
         if (animation == null) return;
 
         animationEnd(e.getPlayer());
