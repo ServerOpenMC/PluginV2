@@ -33,7 +33,7 @@ import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.*;
 import static fr.openmc.core.utils.InputUtils.pluralize;
 
 public class LetterMenu extends Menu {
-    private final ItemStack[] items;
+    private final Letter letter;
     private final LetterHead letterHead;
 
     @Override
@@ -46,11 +46,10 @@ public class LetterMenu extends Menu {
         return FontImageWrapper.replaceFontImages("§f§r:offset_-8::letter_mailbox:");
     }
 
-    public LetterMenu(Player player, LetterHead letterHead) {
+    public LetterMenu(Player player, Letter letter) {
         super(player);
-        this.letterHead = letterHead;
-        Letter letter = MailboxManager.getById(player, letterHead.getLetterId());
-        this.items = BukkitSerializer.deserializeItemStacks(letter.getItems());
+        this.letter = letter;
+        this.letterHead = letter.toLetterHead();
     }
 
     public static LetterHead getById(Player player, int id) {
@@ -115,7 +114,7 @@ public class LetterMenu extends Menu {
                     Bukkit.getPluginManager().callEvent(new ClaimLetterEvent(getOwner(), MailboxManager.getById(getOwner(), letterHead.getLetterId())))
             );
 
-            HashMap<Integer, ItemStack> remainingItems = getOwner().getInventory().addItem(items);
+            HashMap<Integer, ItemStack> remainingItems = getOwner().getInventory().addItem(letter.getCachedItems());
             for (ItemStack item : remainingItems.values()) {
                 getOwner().getWorld().dropItemNaturally(getOwner().getLocation(), item);
             }
@@ -165,6 +164,8 @@ public class LetterMenu extends Menu {
     public @NotNull Map<Integer, ItemBuilder> getContent() {
         Map<Integer, ItemBuilder> content = new HashMap<>();
 
+        ItemStack[] items = letter.getCachedItems();
+
         for (int i = 0; i < items.length; i++)
             content.put(i + 9, new ItemBuilder(this, items[i]));
 
@@ -174,7 +175,7 @@ public class LetterMenu extends Menu {
 
         content.put(49, new ItemBuilder(this, letterHead));
 
-        content.put(50, refuseBtn(this).setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), MailboxManager.getById(getOwner(), letterHead.getLetterId()))));
+        content.put(50, refuseBtn(this).setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
 
         content.put(53, cancelBtn(this).setOnClick(e -> cancel()));
 

@@ -53,7 +53,7 @@ public class PlayerMailbox extends PaginatedMenu {
 
         MailboxManager.getReceivedLetters(getOwner()).forEach(letter ->
                 items.add(new ItemBuilder(this, letter.toLetterHead())
-                        .setOnClick(e -> new LetterMenu(getOwner(), letter.toLetterHead()).open()))
+                        .setOnClick(e -> new LetterMenu(getOwner(), letter).open()))
         );
 
         return items;

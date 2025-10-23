@@ -76,9 +76,9 @@ public class MailboxCommand {
     @Subcommand("open")
     @Description("Ouvrir une lettre")
     public void openMailbox(Player player, @Named("id") @Range(min = 1, max = Integer.MAX_VALUE) int id) {
-        LetterHead letterHead = LetterMenu.getById(player, id);
-        if (letterHead == null) return;
-        LetterMenu mailbox = new LetterMenu(player, letterHead);
+        Letter letter = MailboxManager.getById(player, id);
+        if (letter == null) return;
+        LetterMenu mailbox = new LetterMenu(player, letter);
         mailbox.open();
     }
 
