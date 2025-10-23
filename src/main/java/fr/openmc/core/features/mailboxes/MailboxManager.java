@@ -35,8 +35,6 @@ import java.util.*;
 import static fr.openmc.core.features.mailboxes.utils.MailboxUtils.getHoverEvent;
 import static fr.openmc.core.utils.InputUtils.pluralize;
 
-// Author Gexary,
-// Reedits by Axeno
 public class MailboxManager {
     private static final int MAX_STACKS_PER_LETTER = 27;
     private static final List<Letter> letters = new ArrayList<>();
