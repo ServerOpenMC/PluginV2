@@ -71,8 +71,7 @@ public class MainWarMenu extends PaginatedMenu {
                 .toList();
 
         for (City city : warCities) {
-            if (Objects.equals(city.getUniqueId(), CityManager.getPlayerCity(player.getUniqueId()).getUniqueId()))
-                continue;
+            if (city.getUniqueId().equals(CityManager.getPlayerCity(player.getUniqueId()).getUniqueId())) continue;
             if (city.getType() != CityType.WAR) continue;
             if (city.isImmune()) continue;
             if (WarManager.getPendingDefenseFor(city) != null) continue;
