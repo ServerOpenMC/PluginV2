@@ -4,12 +4,12 @@ import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
-import fr.openmc.api.menulib.utils.ItemUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.disabled.corporation.company.Company;
 import fr.openmc.core.disabled.corporation.data.MerchantData;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.SkullUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -57,7 +57,7 @@ public class CompanyMenu extends PaginatedMenu {
         Set<UUID> merchants = company.getMerchants().keySet();
         List<ItemStack> items = new ArrayList<>();
         for (UUID merchant : merchants) {
-            items.add(new ItemBuilder(this, ItemUtils.getPlayerSkull(merchant), itemMeta -> {
+            items.add(new ItemBuilder(this, SkullUtils.getPlayerSkull(merchant), itemMeta -> {
                 itemMeta.setDisplayName("§e" + Bukkit.getOfflinePlayer(merchant).getName());
                 MerchantData merchantData = company.getMerchants().get(merchant);
                 itemMeta.setLore(List.of(
