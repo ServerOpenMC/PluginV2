@@ -18,6 +18,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -115,8 +116,9 @@ public class LetterMenu extends Menu {
             );
 
             HashMap<Integer, ItemStack> remainingItems = getOwner().getInventory().addItem(letter.getCachedItems());
+            World world = getOwner().getWorld();
             for (ItemStack item : remainingItems.values()) {
-                getOwner().getWorld().dropItemNaturally(getOwner().getLocation(), item);
+                world.dropItemNaturally(getOwner().getLocation(), item);
             }
         } else {
             Component message = Component.text("La lettre avec l'id ", NamedTextColor.DARK_RED)
@@ -135,7 +137,7 @@ public class LetterMenu extends Menu {
 
     public void refuse() {
         Component message = Component.text("Cliquez-ici", NamedTextColor.YELLOW)
-                .clickEvent(ClickEvent.runCommand("/mailbox refuse " + letterHead.getLetterId()))
+                .clickEvent(ClickEvent.runCommand("mailbox refuse " + letterHead.getLetterId()))
                 .hoverEvent(getHoverEvent("Refuser la lettre #" + letterHead.getLetterId()))
                 .append(Component.text(" si vous êtes sur de vouloir refuser la lettre.", NamedTextColor.GOLD));
 
@@ -170,13 +172,9 @@ public class LetterMenu extends Menu {
             content.put(i + 9, new ItemBuilder(this, items[i]));
 
         content.put(45, homeBtn(this));
-
         content.put(48, acceptBtn(this).setOnClick(e -> accept()));
-
         content.put(49, new ItemBuilder(this, letterHead));
-
         content.put(50, refuseBtn(this).setOnClick(e -> MailboxMenuManager.sendConfirmMenuToCancelLetter(getOwner(), letter)));
-
         content.put(53, cancelBtn(this).setOnClick(e -> cancel()));
 
         return content;

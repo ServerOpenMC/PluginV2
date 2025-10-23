@@ -1,6 +1,8 @@
 package fr.openmc.core.utils;
 
 import dev.lone.itemsadder.api.CustomStack;
+import fr.openmc.api.menulib.Menu;
+import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
@@ -14,6 +16,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingInventory;
@@ -475,5 +478,14 @@ public class ItemUtils {
         }
 
         return true;
+    }
+
+    public static ItemStack getInvisibleItem() {
+        ItemStack item = new ItemStack(Material.PINK_STAINED_GLASS_PANE);
+        item.editMeta(meta -> {
+            meta.setItemModel(NamespacedKey.minecraft("air"));
+            meta.setHideTooltip(true);
+        });
+        return item;
     }
 }

@@ -63,7 +63,6 @@ public class CustomItemRegistry {
         registerSimpleItem("omc_homes:omc_homes_icon_bin", Material.CHEST);
         registerSimpleItem("omc_homes:omc_homes_icon_information", Material.CHEST);
         registerSimpleItem("omc_homes:omc_homes_icon_upgrade", Material.CHEST);
-        registerSimpleItem("omc_homes:omc_homes_invisible", Material.CHEST);
 
         /* Blocs */
         registerSimpleItem("omc_blocks:aywenite_block", Material.AMETHYST_BLOCK);

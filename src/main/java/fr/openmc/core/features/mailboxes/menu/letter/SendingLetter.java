@@ -9,6 +9,7 @@ import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -114,15 +115,12 @@ public class SendingLetter extends Menu {
                         .toList();
 
         for (int slot : slots) {
-            items.put(slot, new ItemBuilder(this, new ItemBuilder(this, MailboxMenuManager.transparentItem(this))));
+            items.put(slot, new ItemBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
         items.put(49, new ItemBuilder(this, getHead(receiver)).setOnClick(e -> {}));
-
         items.put(45, new ItemBuilder(this, MailboxMenuManager.homeBtn(this)));
-
         items.put(48, new ItemBuilder(this, MailboxMenuManager.sendBtn(this)).setOnClick(e -> sendLetter(e.getInventory())));
-
         items.put(50, new ItemBuilder(this, MailboxMenuManager.cancelBtn(this)).setOnClick(e -> getOwner().closeInventory()));
 
         return items;

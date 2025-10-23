@@ -11,6 +11,7 @@ import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.features.mailboxes.utils.MailboxMenuManager;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -133,8 +134,7 @@ public class HomeChangeIconMenu extends PaginatedMenu {
 
         // Invisible items
         for (int slot : List.of(46, 47, 52)) {
-            map.put(slot, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("omc_homes:omc_homes_invisible")).getBest(),
-                    itemMeta -> itemMeta.displayName(Component.empty())));
+            map.put(slot, new ItemBuilder(this, ItemUtils.getInvisibleItem()));
         }
 
         // Category selector

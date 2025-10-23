@@ -7,6 +7,7 @@ import fr.openmc.core.features.mailboxes.Letter;
 import fr.openmc.core.features.mailboxes.menu.HomeMailbox;
 import fr.openmc.core.features.mailboxes.menu.PendingMailbox;
 import fr.openmc.core.items.CustomItemRegistry;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -22,14 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MailboxMenuManager {
-    public static ItemBuilder transparentItem(Menu menu) {
-        return new ItemBuilder(menu, CustomItemRegistry.getByName("omc_homes:omc_homes_invisible").getBest()).hideTooltip(true);
-    }
-
     public static ItemBuilder getBtn(Menu menu, String symbol, String name, String customModelName, NamedTextColor color, boolean bold) {
-        Component itemName = Component.text("[", NamedTextColor.DARK_GRAY).append(Component.text(symbol, color)).append(Component.text("]", NamedTextColor.DARK_GRAY)).append(Component.text(" " + name, color));
+        Component itemName = Component.text("[", NamedTextColor.DARK_GRAY)
+                .append(Component.text(symbol, color))
+                .append(Component.text("]", NamedTextColor.DARK_GRAY))
+                .append(Component.text(" " + name, color));
         return new ItemBuilder(menu, CustomItemRegistry.getByName(customModelName).getBest(), meta -> {
-            meta.displayName(bold ? itemName.decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false) : itemName);
+            meta.displayName(itemName.decorate(TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, bold));
             meta.setMaxStackSize(1);
         });
     }
