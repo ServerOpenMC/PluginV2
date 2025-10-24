@@ -1,5 +1,7 @@
 package fr.openmc.core.features.homes.models;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.icons.LegacyHomeIcon;
@@ -7,14 +9,10 @@ import fr.openmc.core.features.homes.utils.HomeUtil;
 import lombok.Getter;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.List;
 import java.util.UUID;
@@ -70,9 +68,9 @@ public class Home {
 
     public void setLocation(Location location) {
         world = location.getWorld().getName();
-        x = location.getBlockX();
-        y = location.getBlockY();
-        z = location.getBlockZ();
+        x = (double) Math.round(location.getX() * 10d) / 10d;
+        y = (double) Math.round(location.getY() * 10d) / 10d;
+        z = (double) Math.round(location.getZ() * 10d) / 10d;
         yaw = location.getYaw();
         pitch = location.getPitch();
     }
@@ -80,9 +78,9 @@ public class Home {
     public String serializeLocation() {
         Location location = getLocation();
         return location.getWorld().getName() + "," +
-                location.getBlockX() + "," +
-                location.getBlockY() + "," +
-                location.getBlockZ() + "," +
+                (double) Math.round(location.getX() * 10d) / 10d + "," +
+                (double) Math.round(location.getY() * 10d) / 10d + "," +
+                (double) Math.round(location.getZ() * 10d) / 10d + "," +
                 location.getYaw() + "," +
                 location.getPitch();
     }
@@ -106,9 +104,9 @@ public class Home {
         item.lore(List.of(
                 Component.text("§6Position:"),
                 Component.text("§6  W: §e" + location.getWorld().getName()),
-                Component.text("§6  X: §e" + location.getBlockX()),
-                Component.text("§6  Y: §e" + location.getBlockY()),
-                Component.text("§6  Z: §e" + location.getBlockZ())));
+                Component.text("§6  X: §e" + (double) Math.round(location.getX() * 10d) / 10d),
+                Component.text("§6  Y: §e" + (double) Math.round(location.getY() * 10d) / 10d),
+                Component.text("§6  Z: §e" + (double) Math.round(location.getZ() * 10d) / 10d)));
         item.setItemMeta(meta);
         return item;
     }
