@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MilestoneMenu extends Menu {
+public class MilestoneMenu extends Menu {
 
     private final Milestone milestone;
     private final List<Quest> steps;
