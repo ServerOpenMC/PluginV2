@@ -1,65 +1,46 @@
 package fr.openmc.core.features.hdv.commands;
 
 import fr.openmc.core.features.hdv.HDVModule;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import fr.openmc.core.features.hdv.menu.HDVMainMenu;
 import org.bukkit.entity.Player;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.bukkit.annotation.CommandPermission;
+import revxrsal.commands.annotation.CommandPlaceholder;
 
-public class HDVCommand implements CommandExecutor {
+@SuppressWarnings({"unused", "WeakerAccess"})
+@Command({"hdv"})
+public class HDVCommand {
+    private static final String PREFIX = "§6[§eOpenMC-HDV§6] §r";
+    private final HDVModule hdvModule = HDVModule.getInstance();
 
-    private final HDVModule module;
-    private static final String PREFIX = "§8[§6OpenMC §8> §eHDV§8]§r ";
-
-    public HDVCommand(HDVModule module) {
-        this.module = module;
+    @CommandPlaceholder()
+    public void openMenu(Player player) {
+        new HDVMainMenu(player).open();
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("§cCette commande ne peut être exécutée que par un joueur !");
-            return true;
+    @Subcommand("sell")
+    @CommandPermission("openmc.hdv.sell")
+    public void sell(Player player, String prix) {
+        if (player == null) return;
+        var itemInHand = player.getInventory().getItemInMainHand();
+        if (itemInHand.getType().isAir()) {
+            player.sendMessage(PREFIX + "§cVous devez tenir un objet en main!");
+            return;
         }
-
-        Player player = (Player) sender;
-
-        if (args.length == 0) {
-            module.openMainMenu(player);
-            return true;
-        }
-
-        String subCommand = args[0].toLowerCase();
-
-        switch (subCommand) {
-            case "vendre":
-            case "sell":
-                return new HDVSellCommand(module).execute(player, args);
-
-            case "retirer":
-            case "remove":
-                module.openMyListingsMenu(player);
-                return true;
-
-            case "help":
-            case "aide":
-                sendHelp(player);
-                return true;
-
-            default:
-                player.sendMessage(PREFIX + "§cCommande inconnue ! Utilisez §e/hdv help");
-                return true;
+        try {
+            double price = Double.parseDouble(prix);
+            hdvModule.addListing(player, itemInHand, price);
+        } catch (NumberFormatException e) {
+            player.sendMessage(PREFIX + "§cLe prix doit être un nombre valide!");
         }
     }
 
-    private void sendHelp(Player player) {
-        player.sendMessage("§8§m                                                ");
-        player.sendMessage("§6§lHDV - Hôtel de Ville");
-        player.sendMessage("");
-        player.sendMessage("§e/hdv §7- Ouvre le menu principal");
-        player.sendMessage("§e/hdv vendre <prix> §7- Met en vente l'objet en main");
-        player.sendMessage("§e/hdv retirer §7- Gère vos objets en vente");
-        player.sendMessage("§e/hdv help §7- Affiche cette aide");
-        player.sendMessage("§8§m                                                ");
+    @Subcommand("help")
+    public void help(Player player) {
+        player.sendMessage(PREFIX + "§6=== Aide HDV ===");
+        player.sendMessage("§e/hdv §7- Ouvre le menu du HDV");
+        player.sendMessage("§e/hdv sell <prix> §7- Met en vente l'objet en main");
+        player.sendMessage("§e/hdv help §7- Affiche ce message d'aide");
     }
 }

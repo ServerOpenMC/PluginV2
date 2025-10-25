@@ -15,6 +15,7 @@ public enum Prefix {
     // Color format: MiniMessage
 
     OPENMC("<gradient:#BD45E6:#F99BEB>ᴏᴘᴇɴᴍᴄ</gradient>"),
+    HDV("<gold>HDV</gold>"),
     STAFF("<gradient:#AC3535:#8C052B>ѕᴛᴀꜰꜰ</gradient>"),
     CITY("<gradient:#026404:#2E8F38>ᴄɪᴛʏ</gradient>"),
     CONTEST("<gradient:#FFB800:#F0DF49>ᴄᴏɴᴛᴇѕᴛ</gradient>"),
@@ -37,5 +38,12 @@ public enum Prefix {
     private final Component prefix;
     Prefix(String prefix) {
         this.prefix = MiniMessage.miniMessage().deserialize(prefix);
+    }
+
+    /**
+     * Return legacy plain-text representation (MiniMessage serialized) for chat sendMessage use.
+     */
+    public String asText() {
+        return MiniMessage.miniMessage().serialize(this.prefix);
     }
 }
