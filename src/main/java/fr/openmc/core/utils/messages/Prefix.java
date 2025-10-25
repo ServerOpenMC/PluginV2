@@ -15,7 +15,7 @@ public enum Prefix {
     // Color format: MiniMessage
 
     OPENMC("<gradient:#BD45E6:#F99BEB>ᴏᴘᴇɴᴍᴄ</gradient>"),
-    HDV("<gold>HDV</gold>"),
+    HDV("<gradient:#FFBF40:#FF930F>ʜᴅᴠ</gradient>"),
     STAFF("<gradient:#AC3535:#8C052B>ѕᴛᴀꜰꜰ</gradient>"),
     CITY("<gradient:#026404:#2E8F38>ᴄɪᴛʏ</gradient>"),
     CONTEST("<gradient:#FFB800:#F0DF49>ᴄᴏɴᴛᴇѕᴛ</gradient>"),
