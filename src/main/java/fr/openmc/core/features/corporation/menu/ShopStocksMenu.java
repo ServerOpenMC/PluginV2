@@ -1,4 +1,4 @@
-package fr.openmc.core.disabled.corporation.menu.shop;
+package fr.openmc.core.features.corporation.menu;
 
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.menulib.PaginatedMenu;
@@ -6,9 +6,9 @@ import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.StaticSlots;
-import fr.openmc.core.disabled.corporation.shops.Shop;
-import fr.openmc.core.disabled.corporation.shops.ShopItem;
-import fr.openmc.core.disabled.corporation.shops.Supply;
+import fr.openmc.core.features.corporation.shops.Shop;
+import fr.openmc.core.features.corporation.shops.ShopItem;
+import fr.openmc.core.features.corporation.shops.Supply;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
@@ -72,10 +72,10 @@ public class ShopStocksMenu extends PaginatedMenu {
         for (ShopItem stock : shop.getItems()) {
             items.add(new ItemBuilder(this, stock.getItem().getType(), itemMeta -> {
                 itemMeta.displayName(ShopItem.getItemName(stock.getItem()).color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD));
-                itemMeta.setLore(List.of(
-                        "§7■ Quantité restante : " + EconomyManager.getFormattedSimplifiedNumber(stock.getAmount()),
-                        "§7■ Prix de vente (par item) : " + EconomyManager.getFormattedNumber(stock.getPricePerItem()),
-                        "§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente")
+                itemMeta.lore(List.of(
+                        Component.text("§7■ Quantité restante : " + EconomyManager.getFormattedSimplifiedNumber(stock.getAmount())),
+                        Component.text("§7■ Prix de vente (par item) : " + EconomyManager.getFormattedNumber(stock.getPricePerItem())),
+                        Component.text("§7" + (stock.getAmount() > 0 ? "■ Click gauche pour récupérer le stock" : "■ Click gauche pour retirer l'item de la vente"))
                 ));
             }).setOnClick(inventoryClickEvent -> {
                 this.stock = stock;
@@ -88,15 +88,15 @@ public class ShopStocksMenu extends PaginatedMenu {
     @Override
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> buttons = new HashMap<>();
-        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.setDisplayName("§7Fermer"))
+        buttons.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> itemMeta.itemName(Component.text("§7Fermer")))
                 .setCloseButton());
-        ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§aPage suivante"));
+        ItemBuilder nextPageButton = new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_next_orange").getBest(), itemMeta -> itemMeta.itemName(Component.text("§aPage suivante")));
         if ((getPage() == 0 && isLastPage()) || shop.getSales().isEmpty()) {
-            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cRetour"))
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.itemName(Component.text("§cRetour")))
                     .setOnClick(inventoryClickEvent -> new ShopMenu(getOwner(), shop, itemIndex).open()));
             buttons.put(50, nextPageButton);
         } else {
-            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.setDisplayName("§cPage précédente"))
+            buttons.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> itemMeta.itemName(Component.text("§cPage précédente")))
                     .setPreviousPageButton());
             buttons.put(50, nextPageButton.setNextPageButton());
         }
