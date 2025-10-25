@@ -66,7 +66,8 @@ public class AdminShopCategoryMenu extends Menu {
                 ItemMeta meta = itemStack.getItemMeta();
                 meta.displayName(item.getName().color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 
-                meta.lore(AdminShopUtils.extractLoreForItem(item));
+                boolean category = item.getMaterial() == Material.OAK_LEAVES || item.getMaterial() == Material.OAK_LOG || item.isHasColorVariant();
+                meta.lore(category ? List.of(Component.text("§8■ §7Clique molette pour choisir l'item")) : AdminShopUtils.extractLoreForItem(item));
 
                 itemStack.setItemMeta(meta);
 
