@@ -43,6 +43,7 @@ import fr.openmc.core.utils.ShutUpOrmLite;
 import fr.openmc.core.utils.database.DatabaseManager;
 import fr.openmc.core.utils.errors.ErrorReporter;
 import fr.openmc.core.utils.translation.TranslationManager;
+import fr.openmc.core.features.hdv.HDVInitializer;
 import io.papermc.paper.datapack.Datapack;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -139,6 +140,7 @@ public class OMCPlugin extends JavaPlugin {
         PlayerSettingsManager.loadAllPlayerSettings();
 
         MailboxManager.loadLetters();
+        HDVInitializer.init();
     }
 
     public void loadWithItemsAdder() {
