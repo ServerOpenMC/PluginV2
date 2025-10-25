@@ -54,7 +54,7 @@ public class RTPCommands {
             message = "§cTu dois attendre avant de pouvoir te rtp (%formatTime%)")
     public void rtp(Player player) {
         if (DynamicCooldownManager.isReady(player.getUniqueId(), "player:rtp")) {
-            DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
+            DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", 15 * 1000L); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
             rtpPlayer(player, 0);
         }
     }
@@ -110,6 +110,7 @@ public class RTPCommands {
     public void tpPlayer(Player player, Location loc) {
         PlayerUtils.sendFadeTitleTeleport(player, loc);
         MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté à §6X: §e" + loc.getBlockX() + "§6, Y: §e" + loc.getBlockY() + "§6, Z: §e" + loc.getBlockZ()), Prefix.OPENMC, MessageType.SUCCESS, true);
+        DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L);
     }
 
 }
