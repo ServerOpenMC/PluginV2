@@ -24,7 +24,7 @@ public class HalloweenData {
         this.pumpkinCount = 0;
     }
 
-    public void deposit(int amount) {
+    public void depositPumpkins(int amount) {
         pumpkinCount += amount;
     }
 }

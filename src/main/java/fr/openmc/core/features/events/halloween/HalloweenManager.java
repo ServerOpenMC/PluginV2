@@ -1,6 +1,7 @@
 package fr.openmc.core.features.events.halloween;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import fr.openmc.core.OMCPlugin;
@@ -21,9 +22,14 @@ public class HalloweenManager {
         halloweenData = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
     }
 
+    public static void depositPumpkins(UUID playerUUID, int amount) {
+        HalloweenData data = halloweenData.get(playerUUID);
+        data.depositPumpkins(amount);
+    }
+
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, HalloweenData.class);
-
+        halloweenDataDao = DaoManager.createDao(connectionSource, HalloweenData.class);
     }
 
     private static boolean saveHalloweenData(HalloweenData data) {
