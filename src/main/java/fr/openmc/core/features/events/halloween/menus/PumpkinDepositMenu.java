@@ -57,18 +57,18 @@ public class PumpkinDepositMenu extends Menu {
                     Player player = (Player) event.getWhoClicked();
                     int pumpkinCount = ItemUtils.removeItemsFromInventory(player, Material.PUMPKIN, Integer.MAX_VALUE);
 
-                     HalloweenManager.depositPumpkins(player.getUniqueId(), pumpkinCount);
-                     MessagesManager.sendMessage(
-                             player,
-                             Component.text("Vous avez déposé ", NamedTextColor.GOLD)
-                                     .append(Component.text(pumpkinCount, TextColor.color(255, 107, 37), TextDecoration.BOLD))
-                                     .append(Component.text(" citrouilles !", NamedTextColor.GOLD)),
-                             Prefix.HALLOWEEN,
-                             MessageType.SUCCESS,
-                             false
-                     );
+                    HalloweenManager.depositPumpkins(player.getUniqueId(), pumpkinCount);
+                    MessagesManager.sendMessage(
+                            player,
+                            Component.text("Vous avez déposé ", NamedTextColor.GOLD)
+                                    .append(Component.text(pumpkinCount, TextColor.color(255, 107, 37), TextDecoration.BOLD))
+                                    .append(Component.text(" citrouilles !", NamedTextColor.GOLD)),
+                            Prefix.HALLOWEEN,
+                            MessageType.SUCCESS,
+                            false
+                    );
 
-                     player.closeInventory();
+                    player.closeInventory();
                 })
         );
     }
