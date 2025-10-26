@@ -238,7 +238,7 @@ public class ScoreboardManager implements Listener {
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
 
         String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
-        objective.getScore("§8• §d" + pumpkinCount + "§rCitrouilles");
+        objective.getScore("§8• §d" + pumpkinCount + "§rCitrouilles").setScore(7);
 
 
 /*        Contest data = ContestManager.data;

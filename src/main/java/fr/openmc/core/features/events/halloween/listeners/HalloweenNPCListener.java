@@ -7,10 +7,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class HalloweenNPCListener implements Listener {
+    private static final String HALLOWEEN_NPC_ID = "halloween_pumpkin_deposit_npc";
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onNPCInteract(NpcInteractEvent event) {
-        String npcID = event.getNpc().getData().getId();
-        if (!npcID.equals("halloween_pumpkin_deposit_npc"))
+        String npcName = event.getNpc().getData().getName();
+        if (!npcName.equals(HALLOWEEN_NPC_ID))
             return;
 
         new HalloweenPumpkinDepositMenu(event.getPlayer()).open();
