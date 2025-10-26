@@ -56,6 +56,19 @@ public class HalloweenPumpkinDepositMenu extends Menu {
                 }).setOnClick(event -> {
                     Player player = (Player) event.getWhoClicked();
                     int pumpkinCount = ItemUtils.removeItemsFromInventory(player, Material.PUMPKIN, Integer.MAX_VALUE);
+                    if (pumpkinCount == 0) {
+                        MessagesManager.sendMessage(
+                                player,
+                                Component.text("Vous n'avez aucune citrouille à déposer !", NamedTextColor.RED),
+                                Prefix.HALLOWEEN,
+                                MessageType.ERROR,
+                                false
+                        );
+
+                        player.closeInventory();
+                        return;
+                    }
+
 
                     HalloweenManager.depositPumpkins(player.getUniqueId(), pumpkinCount);
                     MessagesManager.sendMessage(
