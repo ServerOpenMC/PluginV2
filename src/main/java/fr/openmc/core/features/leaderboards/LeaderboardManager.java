@@ -204,6 +204,9 @@ public class LeaderboardManager {
 
     public static Component createPumpkinCountTextLeaderboard() {
         var pumpkinCountMap = new TreeMap<>(LeaderboardManager.getPumpkinCountMap());
+        if (pumpkinCountMap.isEmpty()) {
+            return Component.text("Aucun joueur trouvé pour le moment.", NamedTextColor.RED);
+        }
         Component text = Component.text("--- Leaderboard des critrouilles ---")
                 .color(TextColor.color(156, 69, 26))
                 .decorate(TextDecoration.BOLD);
