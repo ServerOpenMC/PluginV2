@@ -7,7 +7,8 @@ public class FancyNpcsHook {
     @Getter
     private static boolean hasFancyNpc = false;
 
-    public FancyNpcsHook() {
+    public static void init() {
         hasFancyNpc = Bukkit.getPluginManager().isPluginEnabled("FancyNpcs");
     }
+
 }

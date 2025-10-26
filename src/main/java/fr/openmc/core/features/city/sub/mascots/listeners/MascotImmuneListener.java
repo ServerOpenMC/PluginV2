@@ -8,11 +8,11 @@ import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import net.kyori.adventure.text.Component;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.UUID;
 
 public class MascotImmuneListener implements Listener {
 
@@ -25,7 +25,9 @@ public class MascotImmuneListener implements Listener {
         if (cityImmune == null) return;
 
         Mascot mascot = cityImmune.getMascot();
-        LivingEntity entityMascot = (LivingEntity) mascot.getEntity();
+        Entity entityMascot = mascot.getEntity();
+
+        if (entityMascot == null) return;
 
         entityMascot.setGlowing(true);
         mascot.setImmunity(true);
@@ -40,17 +42,23 @@ public class MascotImmuneListener implements Listener {
         if (cityImmune == null) return;
 
         Mascot mascot = cityImmune.getMascot();
-        LivingEntity entityMascot = (LivingEntity) mascot.getEntity();
+        Entity entityMascot = mascot.getEntity();
+
+        if (entityMascot == null) return;
+        if (!(entityMascot instanceof LivingEntity mascotMob)) return;
 
         entityMascot.setGlowing(false);
 
         mascot.setImmunity(false);
         mascot.setAlive(true);
 
+        AttributeInstance maxHealthInst = mascotMob.getAttribute(Attribute.MAX_HEALTH);
+        if (maxHealthInst == null) return;
+
         entityMascot.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
                 cityImmune.getName(),
-                entityMascot.getHealth(),
-                entityMascot.getAttribute(Attribute.MAX_HEALTH).getValue()
+                mascotMob.getHealth(),
+                maxHealthInst.getValue()
         )));
     }
 }

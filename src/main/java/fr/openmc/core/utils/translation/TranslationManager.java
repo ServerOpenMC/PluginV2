@@ -16,7 +16,7 @@ public class TranslationManager {
     private static File translationFolder;
     private static final Map<String, FileConfiguration> loadedLanguages = new HashMap<>();
 
-    public TranslationManager(File inTranslationFolder, String inDefaultLanguage) {
+    public static void init(File inTranslationFolder, String inDefaultLanguage) {
         defaultLanguage = inDefaultLanguage;
         translationFolder = inTranslationFolder;
 

@@ -15,6 +15,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -25,7 +26,10 @@ public class RelocateHomeCommand {
     @Command("relocatehome")
     @Description("Déplace votre home")
     @CommandPermission("omc.commands.home.relocate")
-    public void relocateHome(Player player, @SuggestWith(HomeAutoComplete.class) String home) {
+    public void relocateHome(
+            Player player,
+            @Named("home") @SuggestWith(HomeAutoComplete.class) String home
+    ) {
 
         Location location = player.getLocation();
 

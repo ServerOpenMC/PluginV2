@@ -8,7 +8,7 @@ import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.actions.CityCreateAction;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.conditions.CityCreateConditions;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
@@ -44,7 +44,7 @@ public class NoCityMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -65,7 +65,7 @@ public class NoCityMenu extends Menu {
 
             Component nameNotif;
             List<Component> loreNotif = new ArrayList<>();
-            if (!CityCommands.invitations.containsKey(player)) {
+        if (!CityInviteCommands.invitations.containsKey(player)) {
                 nameNotif = Component.text("§7Vous n'avez aucune §6invitation");
 	            loreNotif.add(Component.text("§7Un habitant d'une ville doit vous §6inviter"));
                 loreNotif.add(Component.text("§6via /city invite"));
@@ -75,7 +75,7 @@ public class NoCityMenu extends Menu {
                 itemMeta.lore(loreNotif);
             }).setOnClick(inventoryClickEvent -> MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false)));
         } else {
-            List<Player> invitations = CityCommands.invitations.get(player);
+            List<Player> invitations = CityInviteCommands.invitations.get(player);
             nameNotif = Component.text("§7Vous avez §6" + invitations.size() + " invitation" + (invitations.size() > 1 ? "s" : ""));
 
             loreNotif.add(Component.text("§e§lCLIQUEZ ICI POUR VOIR VOS INVITATIONS"));

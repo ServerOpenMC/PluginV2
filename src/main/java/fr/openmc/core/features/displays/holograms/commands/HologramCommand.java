@@ -8,10 +8,7 @@ import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Subcommand;
-import revxrsal.commands.annotation.SuggestWith;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.io.IOException;
@@ -24,7 +21,10 @@ public class HologramCommand {
     @Subcommand("setPos")
     @CommandPermission("op")
     @Description("Défini la position d'un Hologram.")
-    void setPosCommand(Player player, @SuggestWith(HologramAutoComplete.class) String hologramName) {
+    void setPosCommand(
+            Player player,
+            @Named("hologramName") @SuggestWith(HologramAutoComplete.class) String hologramName
+    ) {
         if (HologramLoader.displays.containsKey(hologramName)) {
 
             try {

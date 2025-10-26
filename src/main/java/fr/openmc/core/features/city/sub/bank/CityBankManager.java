@@ -25,8 +25,7 @@ import java.util.UUID;
 
 public class CityBankManager {
 
-    public CityBankManager() {
-
+    public static void init() {
         CommandsManager.getHandler().register(
                 new CityBankCommand()
         );

@@ -11,6 +11,8 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -99,7 +101,7 @@ public class ConfirmMenu extends Menu {
         }));
 
         content.put(13, new ItemBuilder(this, shopItem.getMaterial(), meta -> {
-            meta.displayName(Component.text("§f" + shopItem.getName()));
+            meta.displayName(shopItem.getName().color(NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false));
             meta.lore(lore);
         }).setOnClick(event -> {
             if (event.getClick().equals(ClickType.MIDDLE)) {

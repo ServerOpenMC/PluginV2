@@ -16,7 +16,6 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -31,8 +30,6 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Set;
 import java.util.UUID;
 
-import static fr.openmc.core.features.city.sub.mascots.MascotsManager.DEAD_MASCOT_NAME;
-
 public class MascotsDamageListener implements Listener {
     private static final Set<EntityDamageEvent.DamageCause> BLOCKED_CAUSES = Set.of(
             EntityDamageEvent.DamageCause.SUFFOCATION,
@@ -40,16 +37,14 @@ public class MascotsDamageListener implements Listener {
             EntityDamageEvent.DamageCause.LIGHTNING,
             EntityDamageEvent.DamageCause.BLOCK_EXPLOSION,
             EntityDamageEvent.DamageCause.ENTITY_EXPLOSION,
-            EntityDamageEvent.DamageCause.FIRE_TICK,
-            EntityDamageEvent.DamageCause.ENTITY_ATTACK,
-            EntityDamageEvent.DamageCause.ENTITY_SWEEP_ATTACK
+            EntityDamageEvent.DamageCause.FIRE_TICK
     );
 
     @EventHandler
     void onMascotDamageCaused(EntityDamageEvent e) {
-        Entity entity = e.getEntity();
+        if (!(e.getEntity() instanceof LivingEntity entity)) return;
 
-        if (!(entity instanceof Player mob)) return;
+        if (entity instanceof Player) return;
 
         if (!MascotUtils.canBeAMascot(entity)) return;
 
@@ -63,25 +58,13 @@ public class MascotsDamageListener implements Listener {
         City city = MascotUtils.getCityFromEntity(entity.getUniqueId());
         if (city == null) return;
 
-        double newHealth = Math.floor(mob.getHealth());
-        mob.setHealth(newHealth);
-        double maxHealth = mob.getAttribute(Attribute.MAX_HEALTH).getValue();
-
         Mascot mascot = city.getMascot();
         if (mascot == null) return;
 
-        double healthAfterDamage = mob.getHealth() - e.getFinalDamage();
-        if (healthAfterDamage < 0) healthAfterDamage = 0;
+        // on return pour eviter d'actualiser 2 fois la vie
+        if (city.isInWar()) return;
 
-        if (!mascot.isAlive()) {
-            mob.customName(Component.text(DEAD_MASCOT_NAME));
-        } else {
-            mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
-                    city.getName(),
-                    healthAfterDamage,
-                    maxHealth
-            )));
-        }
+        MascotUtils.updateDisplayName(entity, mascot, e.getFinalDamage());
     }
 
     @EventHandler
@@ -187,22 +170,10 @@ public class MascotsDamageListener implements Listener {
             return;
         }
 
-
         LivingEntity mob = (LivingEntity) damageEntity;
         City cityMob = MascotUtils.getCityFromEntity(mob.getUniqueId());
 
-        double newHealth = Math.floor(mob.getHealth());
-
-        mob.setHealth(newHealth);
-        if (newHealth <= 0) {
-            mob.setHealth(0);
-        }
-
-        mob.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
-                cityMob.getName(),
-                mob.getHealth() - e.getFinalDamage(),
-                mob.getAttribute(Attribute.MAX_HEALTH).getValue()
-        )));
+        MascotUtils.updateDisplayName(mob, cityMob.getMascot(), e.getFinalDamage());
 
         try {
             if (MayorManager.phaseMayor != 2) return;
@@ -220,7 +191,6 @@ public class MascotsDamageListener implements Listener {
         }
 
         MascotRegenerationUtils.startRegenCooldown(cityMob.getMascot());
-
     }
 
     @EventHandler

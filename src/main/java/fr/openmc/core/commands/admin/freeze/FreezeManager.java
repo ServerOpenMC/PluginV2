@@ -17,8 +17,8 @@ public class FreezeManager {
 	
 	public static final Set<Player> FROZEN_PLAYERS = new HashSet<>();
 	private static Player player;
-	
-	public FreezeManager() {
+
+	public static void init() {
 		Bukkit.getServer().getPluginManager().registerEvents(new FreezeListener(), OMCPlugin.getInstance());
 	}
 	

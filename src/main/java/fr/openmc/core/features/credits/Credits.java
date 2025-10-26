@@ -25,7 +25,7 @@ public enum Credits {
     FRIENDS(Material.EMERALD_BLOCK, "Le systeme d'ami", Set.of("Axeno")),
     HOMES(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_maison").getBest(), "Le Systeme d'Home", Set.of("Axeno"), Set.of("Gexary")),
     LEADERBOARD(Material.ANCIENT_DEBRIS, "Les Classements", Set.of("miseur")),
-    MAILBOX(Material.PAPER, "La Boite aux Lettres", Set.of("Gexary"), Set.of("Gexary")),
+    MAILBOX(Material.PAPER, "La Boite aux Lettres", Set.of("Gexary", "Axeno"), Set.of("Gexary")),
     MAINMENU(CustomItemRegistry.getByName("omc_homes:omc_homes_icon_information").getBest(), "Le Menu Principal", Set.of("miseur"), Set.of("Tfloa")),
     MILESTONES(Material.SEA_LANTERN, "Les Milestones", Set.of("iambibi_", "gab400")),
     PRIVATEMESSAGE(Material.ZOMBIE_HEAD, "Les messages privés", Set.of("Axeno")),

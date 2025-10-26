@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.CommandPlaceholder;
+import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -99,7 +100,10 @@ public class BossBarCommand {
 
     @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("add")
-    public void addMessage(BukkitCommandActor actor, String message) {
+    public void addMessage(
+            BukkitCommandActor actor,
+            @Named("message") String message
+    ) {
         try {
             Component component = MiniMessage.miniMessage().deserialize(message);
             BossbarManager.addMessage(component);
@@ -114,7 +118,11 @@ public class BossBarCommand {
 
     @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("edit")
-    public void editMessage(BukkitCommandActor actor, int index, String newMessage) {
+    public void editMessage(
+            BukkitCommandActor actor,
+            @Named("index") int index,
+            @Named("message edité") String newMessage
+    ) {
         try {
             Component component = MiniMessage.miniMessage().deserialize(newMessage);
             BossbarManager.updateMessage(index, component);
@@ -128,7 +136,10 @@ public class BossBarCommand {
 
     @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("confirm")
-    public void confirmDelete(BukkitCommandActor actor, int index) {
+    public void confirmDelete(
+            BukkitCommandActor actor,
+            @Named("index") int index
+    ) {
         Component confirmation = Component.text()
                 .append(Component.text("§eÊtes-vous sûr de vouloir supprimer ce message ?"))
                 .append(Component.text("[OUI]")
@@ -142,7 +153,10 @@ public class BossBarCommand {
 
     @CommandPermission("omc.admin.commands.bossbar.manage")
     @Subcommand("delete")
-    public void deleteMessage(BukkitCommandActor actor, int index) {
+    public void deleteMessage(
+            BukkitCommandActor actor,
+            @Named("index") int index
+    ) {
         BossbarManager.removeMessage(index);
         BossbarManager.reloadMessages();
         MessagesManager.sendMessage(actor.sender(), Component.text("Message supprimé avec succès."), Prefix.OPENMC, MessageType.SUCCESS, true);

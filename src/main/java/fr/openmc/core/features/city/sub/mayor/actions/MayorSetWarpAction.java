@@ -29,9 +29,7 @@ public class MayorSetWarpAction {
 
         Mayor mayor = city.getMayor();
 
-        if (mayor == null) return;
-
-        if (!player.getUniqueId().equals(mayor.getMayorUUID()) && !city.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
+        if ((mayor == null || !player.getUniqueId().equals(city.getMayor().getMayorUUID())) && !city.getPlayerWithPermission(CityPermission.OWNER).equals(player.getUniqueId())) {
 	        MessagesManager.sendMessage(player, Component.text("Vous n'êtes pas le maire de la ville"), Prefix.MAYOR, MessageType.ERROR, false);
             return;
         }

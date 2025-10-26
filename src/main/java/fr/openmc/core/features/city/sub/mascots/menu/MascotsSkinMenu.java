@@ -49,7 +49,7 @@ public class MascotsSkinMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -97,9 +97,12 @@ public class MascotsSkinMenu extends Menu {
 
         if (city.getLevel() < MascotsSkinUnlockRewards.getLevelRequiredSkin(type)) {
 	        loreMascots.add(Component.text("§cVous devez être niveau " + MascotsSkinUnlockRewards.getLevelRequiredSkin(type) + " pour débloquer ce skin"));
+        } else {
+            loreMascots.add(Component.text("§cVous devez avoir §d" + type.getPrice() + " Aywenite"));
         }
 
-        return new ItemBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg())), meta -> meta.lore(loreMascots))
+        return new ItemBuilder(this, type.getMascotItem(egg.equals(type.getSpawnEgg())),
+                meta -> meta.lore(loreMascots))
                 .setOnClick(event -> {
                     if (city.getLevel() < MascotsSkinUnlockRewards.getLevelRequiredSkin(type)) {
                         MessagesManager.sendMessage(getOwner(), Component.text("Vous n'avez pas le niveau de ville requis pour mettre ce skin"), Prefix.CITY, MessageType.ERROR, false);

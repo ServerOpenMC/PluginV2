@@ -3,7 +3,7 @@ package fr.openmc.core.features.city.conditions;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
-import fr.openmc.core.features.city.commands.CityCommands;
+import fr.openmc.core.features.city.commands.CityInviteCommands;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.utils.messages.MessageType;
@@ -13,8 +13,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-
-import static fr.openmc.core.features.city.commands.CityCommands.invitations;
 
 /**
  * Le but de cette classe est de regrouper toutes les conditions necessaires
@@ -66,7 +64,7 @@ public class CityInviteConditions {
 	 * @return booleen
 	 */
 	public static boolean canCityInviteDeny(Player player, Player inviter) {
-		List<Player> playerInvitations = CityCommands.invitations.get(player);
+		List<Player> playerInvitations = CityInviteCommands.invitations.get(player);
 
 		if (playerInvitations == null) {
 			MessagesManager.sendMessage(player, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
@@ -90,18 +88,18 @@ public class CityInviteConditions {
 	 * @return booleen
 	 */
 	public static boolean canCityInviteAccept(City newCity, Player inviter, Player invitedPlayer) {
-		if (!invitations.containsKey(invitedPlayer)) {
+		if (!CityInviteCommands.invitations.containsKey(invitedPlayer)) {
 			MessagesManager.sendMessage(invitedPlayer, Component.text("Tu n'as aucune invitation en attente"), Prefix.CITY, MessageType.ERROR, false);
 			return false;
 		}
 		
 		if (newCity == null) {
 			MessagesManager.sendMessage(invitedPlayer, Component.text("L'invitation a expiré"), Prefix.CITY, MessageType.ERROR, false);
-			
-			List<Player> playerInvitations = CityCommands.invitations.get(invitedPlayer);
+
+			List<Player> playerInvitations = CityInviteCommands.invitations.get(invitedPlayer);
 			playerInvitations.remove(inviter);
 			if (playerInvitations.isEmpty()) {
-				CityCommands.invitations.remove(invitedPlayer);
+				CityInviteCommands.invitations.remove(invitedPlayer);
 			}
 			return false;
 		}

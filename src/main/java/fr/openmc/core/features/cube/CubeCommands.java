@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
@@ -20,7 +21,10 @@ public class CubeCommands {
 
     @Subcommand("startShock")
     @CommandPermission("omc.admins.commands.cube.shock")
-    public void startShock(Player player, @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc) {
+    public void startShock(
+            Player player,
+            @Named("cubeLoc") @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc
+    ) {
         Cube cube = getInputCubes(player, cubeLoc);
 
         if (cube == null) return;
@@ -31,7 +35,10 @@ public class CubeCommands {
 
     @Subcommand("startBubble")
     @CommandPermission("omc.admins.commands.cube.bubble")
-    public void startCorruptedBubble(Player player, @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc) {
+    public void startCorruptedBubble(
+            Player player,
+            @Named("cubeLoc") @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc
+    ) {
         Cube cube = getInputCubes(player, cubeLoc);
 
         if (cube == null) return;
@@ -42,7 +49,10 @@ public class CubeCommands {
 
     @Subcommand("reproduce")
     @CommandPermission("omc.admins.commands.cube.reproduce")
-    public void reproduceCube(Player player, @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc) {
+    public void reproduceCube(
+            Player player,
+            @Named("cubeLoc") @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc
+    ) {
         Cube cube = getInputCubes(player, cubeLoc);
         if (cube == null) return;
 
@@ -52,7 +62,10 @@ public class CubeCommands {
 
     @Subcommand("reproduceForce")
     @CommandPermission("omc.admins.commands.cube.reproduce_force")
-    public void reproduceForceCube(Player player, @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc) {
+    public void reproduceForceCube(
+            Player player,
+            @Named("cubeLoc") @SuggestWith(CubeLocationAutoComplete.class) String cubeLoc
+    ) {
         Cube cube = getInputCubes(player, cubeLoc);
 
         if (cube == null) return;

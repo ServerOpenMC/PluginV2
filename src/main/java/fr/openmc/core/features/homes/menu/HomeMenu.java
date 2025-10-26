@@ -5,7 +5,9 @@ import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.HomesManager;
+import fr.openmc.core.features.homes.events.HomeTpEvent;
 import fr.openmc.core.features.homes.icons.HomeIcon;
 import fr.openmc.core.features.homes.icons.HomeIconRegistry;
 import fr.openmc.core.features.homes.models.Home;
@@ -15,12 +17,14 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,7 +68,7 @@ public class HomeMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.BLUE_STAINED_GLASS_PANE;
+        return null;
     }
 
     @Override
@@ -99,6 +103,12 @@ public class HomeMenu extends PaginatedMenu {
                     if(event.isLeftClick()) {
                         this.getInventory().close();
                         getOwner().teleportAsync(home.getLocation()).thenAccept(success -> {
+                            new BukkitRunnable() {
+                                @Override
+                                public void run() {
+                                    Bukkit.getPluginManager().callEvent(new HomeTpEvent(home, getOwner()));
+                                }
+                            }.runTask(OMCPlugin.getInstance());
                             MessagesManager.sendMessage(getOwner(), Component.text("§aVous avez été téléporté à votre home §e" + home.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
                         });
                     } else if(event.isRightClick()) {
@@ -134,7 +144,7 @@ public class HomeMenu extends PaginatedMenu {
         }
 
         map.put(48, new ItemBuilder(this, MailboxMenuManager.previousPageBtn()).setPreviousPageButton());
-        map.put(49, new ItemBuilder(this, MailboxMenuManager.cancelBtn()).setCloseButton());
+        map.put(49, MailboxMenuManager.cancelBtn(this).setCloseButton());
         map.put(50, new ItemBuilder(this, MailboxMenuManager.nextPageBtn()).setNextPageButton());
 
         return map;

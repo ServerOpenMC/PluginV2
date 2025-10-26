@@ -7,7 +7,7 @@ public class PapiHook {
     @Getter
     private static boolean hasPAPI;
 
-    public PapiHook() {
+    public static void init() {
         hasPAPI = Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 }

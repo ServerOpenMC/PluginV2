@@ -42,7 +42,7 @@ public class MayorManager {
     @Getter
     private static ConnectionSource connectionSource;
 
-    public static final int MEMBER_REQUEST_ELECTION = 2;
+    public static final int MEMBER_REQUEST_ELECTION = 3;
 
     private static final List<NamedTextColor> LIST_MAYOR_COLOR = List.of(
             NamedTextColor.RED,
@@ -70,7 +70,7 @@ public class MayorManager {
 
     private static final Random RANDOM = new Random();
 
-    public MayorManager() {
+    public static void init() {
         // LISTENERS
         new PhaseListener(OMCPlugin.getInstance());
         OMCPlugin.registerEvents(
@@ -305,11 +305,12 @@ public class MayorManager {
         Bukkit.broadcast(Component.text("""
                 §8§m                                                     §r
                 §7
-		        §3§lMAIRE !§r §7Les élections sont ouvertes !§7
+                §3§lMAIRE !§r §7Les élections sont ouvertes !§7
                 §8§oPrésentez vous, votez pour des maires, ...
-		        §8§oRegardez si vous avez assez de membres !
+                §8§oRegardez si vous avez assez de membres !
                 §7
-                §8§m                                                     §r"""));
+                §8§m                                                     §r"""
+        ));
     }
 
     public static void initPhase2() {
@@ -328,7 +329,7 @@ public class MayorManager {
         Bukkit.broadcast(Component.text("""
                 §8§m                                                     §r
                 §7
-		        §3§lMAIRE !§r §7Vos réformes sont actives !§7
+                §3§lMAIRE !§r §7Vos réformes sont actives !§7
                 §8§oFaites vos stratégies, farmez, et pleins d'autres choses !
                 §7
                 §8§m                                                     §r"""));
@@ -384,6 +385,7 @@ public class MayorManager {
             OfflinePlayer offlinePlayer = CacheOfflinePlayer.getOfflinePlayer(uuid);
             if (offlinePlayer.isOnline()) {
                 Player player = offlinePlayer.getPlayer();
+                if (player == null) continue;
                 // Mineur Dévoué
                 if (PerkManager.hasPerk(city.getMayor(), Perks.MINER.getId())) {
                     MinerPerk.updatePlayerEffects(player);
@@ -397,6 +399,12 @@ public class MayorManager {
                 // Fruit du Démon
                 if (PerkManager.hasPerk(city.getMayor(), Perks.FRUIT_DEMON.getId())) {
                     DemonFruitPerk.applyReachBonus(player);
+                }
+
+                // Fou de Rage
+                if (PerkManager.hasPerk(city.getMayor(), Perks.FOU_DE_RAGE.getId())) {
+                    City locCity = CityManager.getCityFromChunk(player.getLocation().getChunk());
+                    RagePerk.updateEffect(locCity, player);
                 }
             }
         }

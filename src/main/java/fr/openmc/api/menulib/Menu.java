@@ -33,11 +33,10 @@ import java.util.function.Consumer;
  * A menu is tied to a specific player and provides methods for customization,
  * handling inventory interactions, and managing permissions.
  */
+@Getter
 public abstract class Menu implements InventoryHolder {
-	@Getter
 	private final Object2ObjectMap<ItemBuilder, Consumer<InventoryClickEvent>> itemClickEvents = new Object2ObjectOpenHashMap<>();
 	
-	@Getter
 	private final Player owner;
 	
 	/**
@@ -48,7 +47,6 @@ public abstract class Menu implements InventoryHolder {
 	protected Menu(Player owner) {
 		this.owner = owner;
 	}
-	
 	
 	/**
 	 * Retrieves the name of the menu.
@@ -119,7 +117,6 @@ public abstract class Menu implements InventoryHolder {
 	 *
 	 * @return A non-null list of integers representing the takable inventory slot indices.
 	 */
-
 	public abstract List<Integer> getTakableSlot();
 
 	/**
@@ -165,13 +162,9 @@ public abstract class Menu implements InventoryHolder {
 		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) return;
 
 		if (this instanceof PaginatedMenu paginatedMenu) {
-			if (item.isPreviousButton() && paginatedMenu.isFirstPage()) {
+			if ((item.isPreviousButton() && paginatedMenu.isFirstPage())
+                    || (item.isNextButton() && paginatedMenu.isLastPage()))
 				return;
-			}
-
-			if (item.isNextButton() && paginatedMenu.isLastPage()) {
-				return;
-			}
 		}
 
 		if (item.isBackButton()) {
@@ -198,13 +191,26 @@ public abstract class Menu implements InventoryHolder {
 	 * in that slot.
 	 */
 	public final Map<Integer, ItemBuilder> fill(Material material) {
-		Map<Integer, ItemBuilder> map = new HashMap<>();
-		for (int i = 0; i < getInventorySize().getSize(); i++) {
-            ItemBuilder filler = new ItemBuilder(this, material, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
-			map.put(i, filler);
-		}
-		return map;
+		return fill(new ItemStack(material));
 	}
+
+    /**
+     * Fills the entire inventory with the specified {@link ItemStack}.
+     * Each slot in the inventory is populated with a copy of the provided item,
+     * with its display name set to a single space character to create a blank appearance.
+     *
+     * @param item The {@link ItemStack} to use for filling the inventory.
+     * @return     A {@link Map} where the key represents the inventory slot index,
+     *             and the value is the {@link ItemBuilder} placed in that slot.
+     */
+    public final Map<Integer, ItemBuilder> fill(ItemStack item) {
+        Map<Integer, ItemBuilder> map = new HashMap<>();
+        for (int i = 0; i < getInventorySize().getSize(); i++) {
+            ItemBuilder filler = new ItemBuilder(this, item, itemMeta -> itemMeta.displayName(Component.text(" "))).hideTooltip(true);
+            map.put(i, filler);
+        }
+        return map;
+    }
 	
 	/**
 	 * Checks if the given {@link ItemStack} is associated with the specified item ID.

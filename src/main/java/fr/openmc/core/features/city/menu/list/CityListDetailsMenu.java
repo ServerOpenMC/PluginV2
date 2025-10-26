@@ -54,7 +54,7 @@ public class CityListDetailsMenu extends Menu {
 
 	@Override
 	public String getTexture() {
-		return null;
+		return "§r§f:offset_-48::city_template3x9:";
 	}
 
 	@Override
@@ -70,6 +70,11 @@ public class CityListDetailsMenu extends Menu {
 	@Override
 	public @NotNull Map<Integer, ItemBuilder> getContent() {
 		Map<Integer, ItemBuilder> map = new HashMap<>();
+
+		map.put(0, new ItemBuilder(this, Material.DIAMOND,
+				itemMeta ->
+						itemMeta.displayName(Component.text("§7Niveau : §3" + this.city.getLevel()))).hide(ItemUtils.getDataComponentType())
+		);
 
 		List<Component> loreOwner = new ArrayList<>();
 
@@ -96,7 +101,7 @@ public class CityListDetailsMenu extends Menu {
 					itemMeta -> {
 						itemMeta.displayName(Component.text("§7Propriétaire : " + CacheOfflinePlayer.getOfflinePlayer(this.city.getPlayerWithPermission(CityPermission.OWNER)).getName()));
 						itemMeta.lore(loreOwner);
-					})
+					}).hide(ItemUtils.getDataComponentType())
 			);
 
 			if (electionType == ElectionType.ELECTION) {
@@ -116,7 +121,7 @@ public class CityListDetailsMenu extends Menu {
 									);
 									itemMeta.lore(loreMayor);
 								}
-						)
+						).hide(ItemUtils.getDataComponentType())
 				);
 			}
 		} else {

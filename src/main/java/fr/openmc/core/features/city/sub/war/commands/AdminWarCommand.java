@@ -2,6 +2,7 @@ package fr.openmc.core.features.city.sub.war.commands;
 
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
+import fr.openmc.core.features.city.commands.autocomplete.CityNameAutoComplete;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command("admwar")
@@ -18,7 +20,10 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 public class AdminWarCommand {
     @Subcommand("startCombat")
     @CommandPermission("omc.admins.commands.adminwar.startCombat")
-    void startCombat(Player player, @Named("name") String cityName) {
+    void startCombat(
+            Player player,
+            @Named("name") @SuggestWith(CityNameAutoComplete.class) String cityName
+    ) {
         City city = CityManager.getCityByName(cityName);
 
         if (city == null) {

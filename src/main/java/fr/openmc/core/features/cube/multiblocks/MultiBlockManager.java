@@ -24,7 +24,7 @@ public class MultiBlockManager {
     private static FileConfiguration config = null;
     private static File file = null;
 
-    public MultiBlockManager() {
+    public static void init() {
         file = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "multiblocks.yml");
         if (!file.exists()) {
             plugin.saveResource("data/multiblocks.yml", false);

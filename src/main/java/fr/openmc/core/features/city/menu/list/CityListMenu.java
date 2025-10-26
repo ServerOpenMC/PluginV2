@@ -61,7 +61,7 @@ public class CityListMenu extends PaginatedMenu {
 	
 	@Override
 	public @Nullable Material getBorderMaterial() {
-		return Material.GRAY_STAINED_GLASS_PANE;
+		return Material.AIR;
 	}
 	
 	@Override
@@ -87,6 +87,7 @@ public class CityListMenu extends PaginatedMenu {
 				NamedTextColor mayorColor = (city.getMayor() == null || city.getMayor().getMayorColor() == null) ? NamedTextColor.WHITE : city.getMayor().getMayorColor();
 				cityLore.add(Component.text("§7Maire : ").append(Component.text(mayorCity).color(mayorColor).decoration(TextDecoration.ITALIC, false)));
 			}
+			cityLore.add(Component.text("§7Niveau : §3" + city.getLevel()));
 			cityLore.add(Component.text("§7Membres : §a" + city.getMembers().size() + "/" + MemberLimitRewards.getMemberLimit(city.getLevel()) + (city.getMembers().size() > 1 ? " joueurs" : " joueur")));
 			cityLore.add(Component.text("§eType : " + city.getType().getDisplayName()));
 			cityLore.add(Component.text("§6Richesses : " + EconomyManager.getFormattedSimplifiedNumber(city.getBalance()) + EconomyManager.getEconomyIcon()));
@@ -97,7 +98,7 @@ public class CityListMenu extends PaginatedMenu {
 				itemMeta.lore(cityLore);
 			}).setOnClick(inventoryClickEvent ->
 					new CityListDetailsMenu(getOwner(), city).open()
-			));
+			).hide(ItemUtils.getDataComponentType()));
 		}
 		return items;
 	}
@@ -141,7 +142,7 @@ public class CityListMenu extends PaginatedMenu {
 
 	@Override
 	public String getTexture() {
-		return null;
+		return "§r§f:offset_-48::city_template6x9:";
 	}
 
 	@Override

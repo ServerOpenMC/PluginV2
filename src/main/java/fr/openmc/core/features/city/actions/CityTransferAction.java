@@ -1,6 +1,6 @@
 package fr.openmc.core.features.city.actions;
 
-import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.conditions.CityManageConditions;

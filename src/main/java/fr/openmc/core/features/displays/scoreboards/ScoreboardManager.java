@@ -16,7 +16,6 @@ import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -37,18 +36,13 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ScoreboardManager implements Listener {
-    @Getter
-    static ScoreboardManager instance;
-
     public static final Set<UUID> disabledPlayers = new HashSet<>();
     public static final HashMap<UUID, Scoreboard> playerScoreboards = new HashMap<>();
     private static final boolean canShowLogo = ItemsAdderHook.isHasItemAdder();
-    final OMCPlugin plugin = OMCPlugin.getInstance();
+    static final OMCPlugin plugin = OMCPlugin.getInstance();
     private static GlobalTeamManager globalTeamManager = null;
 
-    public ScoreboardManager() {
-        instance = this;
-
+    public static void init() {
         OMCPlugin.registerEvents(
                 new ScoreboardListener()
         );

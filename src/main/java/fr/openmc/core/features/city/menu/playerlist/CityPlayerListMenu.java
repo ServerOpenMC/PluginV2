@@ -2,7 +2,7 @@ package fr.openmc.core.features.city.menu.playerlist;
 
 import fr.openmc.api.input.DialogInput;
 import fr.openmc.api.menulib.PaginatedMenu;
-import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.api.menulib.utils.ItemUtils;
@@ -11,8 +11,8 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.CityPermission;
 import fr.openmc.core.features.city.actions.CityKickAction;
-import fr.openmc.core.features.city.commands.CityCommands;
-import fr.openmc.core.features.city.menu.CitizensPermsMenu;
+import fr.openmc.core.features.city.commands.CityInviteCommands;
+import fr.openmc.core.features.city.menu.CityPermsMenu;
 import fr.openmc.core.features.city.sub.milestone.rewards.MemberLimitRewards;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.CacheOfflinePlayer;
@@ -44,7 +44,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -134,7 +134,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
                     CityPlayerGestionMenu menu = new CityPlayerGestionMenu(player, playerOffline);
                     menu.open();
                 } else if (hasPermissionPerms) {
-                    CitizensPermsMenu.openBookFor(player, playerOffline.getUniqueId());
+                    new CityPermsMenu(player, playerOffline.getUniqueId(), false).open();
                 } else if (hasPermissionKick) {
                     if (player.getUniqueId().equals(playerOffline.getUniqueId()))
                         return;
@@ -171,15 +171,26 @@ public class CityPlayerListMenu extends PaginatedMenu {
         City playerCity = CityManager.getPlayerCity(player.getUniqueId());
 
         Map<Integer, ItemBuilder> map = new HashMap<>();
-        map.put(49, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_cancel")).getBest(), itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§7Vous allez retourner au menu précédent"),
-                    Component.text("§e§lCLIQUEZ ICI POUR CONFIRMER")
-            ));
+        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
         }, true));
-        map.put(48, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
-        map.put(50, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(), itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+
+        map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
+            itemMeta.displayName(Component.text("§7Fermer"));
+        }).setOnClick(inventoryClickEvent ->
+                getOwner().closeInventory()
+        ));
+
+        map.put(48,
+                new ItemBuilder(this,
+                        Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_back_orange")).getBest(),
+                        itemMeta -> itemMeta.displayName(Component.text("§cPage précédente"))).setPreviousPageButton());
+        map.put(50,
+                new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_next_orange")).getBest(),
+                        itemMeta -> itemMeta.displayName(Component.text("§aPage suivante"))).setNextPageButton());
+
+
         map.put(53, new ItemBuilder(this, Objects.requireNonNull(CustomItemRegistry.getByName("_iainternal:icon_search")).getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Inviter des §dpersonnes"));
             itemMeta.lore(
@@ -194,7 +205,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
                 if (InputUtils.isInputPlayer(input)) {
                     Player playerToInvite = Bukkit.getPlayer(input);
-                    CityCommands.invite(player, playerToInvite);
+                    CityInviteCommands.invite(player, playerToInvite);
                 } else {
                     MessagesManager.sendMessage(player, Component.text("Veuillez mettre une entrée correcte"), Prefix.CITY, MessageType.ERROR, true);
                 }
@@ -210,7 +221,7 @@ public class CityPlayerListMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override

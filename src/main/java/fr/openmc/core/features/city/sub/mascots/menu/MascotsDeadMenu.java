@@ -46,7 +46,7 @@ public class MascotsDeadMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override

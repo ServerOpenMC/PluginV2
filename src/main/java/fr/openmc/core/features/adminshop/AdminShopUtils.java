@@ -20,17 +20,13 @@ public class AdminShopUtils {
         List<Component> lore = new ArrayList<>();
         boolean buy = item.getInitialBuyPrice() > 0;
         boolean sell = item.getInitialSellPrice() > 0;
-	    
-	    if (buy) lore.add(Component.text("§aAcheter : " + formatPrice(item.getActualBuyPrice())));
-	    if (sell) lore.add(Component.text("§cVendre : " + formatPrice(item.getActualSellPrice())));
+
+        if (buy) lore.add(Component.text("§aAcheter : " + formatPrice(item.getActualBuyPrice())));
+        if (sell) lore.add(Component.text("§cVendre : " + formatPrice(item.getActualSellPrice())));
         lore.add(Component.text("§7"));
 
-        if (item.isHasColorVariant()) {
-	        lore.add(Component.text("§8■ §7Clique molette pour choisir une couleur"));
-        } else {
-            if (buy) lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
-            if (sell) lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
-        }
+        if(buy) lore.add(Component.text("§8■ §aClique gauche pour §2acheter"));
+        if (sell) lore.add(Component.text("§8■ §cClique droit pour §4vendre"));
 
         return lore;
     }

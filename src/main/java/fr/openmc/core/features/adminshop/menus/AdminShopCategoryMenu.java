@@ -9,6 +9,9 @@ import fr.openmc.core.features.adminshop.AdminShopUtils;
 import fr.openmc.core.features.adminshop.ShopItem;
 import fr.openmc.core.items.CustomItemRegistry;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -59,18 +62,24 @@ public class AdminShopCategoryMenu extends Menu {
 
         if (categoryItems != null) {
             for (ShopItem item : categoryItems.values()) {
-                ItemStack itemStack = new ItemStack(item.getMaterial());
+                Material material = item.getMaterial();
+                ItemStack itemStack = new ItemStack(material);
                 ItemMeta meta = itemStack.getItemMeta();
-                meta.displayName(Component.text(item.getName()));
+                meta.displayName(item.getName().color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 
-                meta.lore(AdminShopUtils.extractLoreForItem(item));
+                boolean category = material.name().endsWith("_LEAVES") || material.name().endsWith("_LOG") || item.isHasColorVariant();
+                meta.lore(category ? List.of(Component.text("§8■ §7Clique gauche pour choisir l'item")) : AdminShopUtils.extractLoreForItem(item));
 
                 itemStack.setItemMeta(meta);
 
                 ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
                 itemBuilder.setItemId(item.getId())
                         .setOnClick(event -> {
-                            if (item.isHasColorVariant())
+                            if (material.name().endsWith("_LEAVES"))
+                                AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item, this);
+                            else if (material.name().endsWith("_LOG"))
+                                AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item, this);
+                            else if (item.isHasColorVariant())
                                 AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item, this);
                             else if (event.isLeftClick() && item.getInitialBuyPrice() > 0)
                                 AdminShopManager.openBuyConfirmMenu(getOwner(), categoryId, item.getId(), this);
@@ -85,11 +94,6 @@ public class AdminShopCategoryMenu extends Menu {
         ItemBuilder backButton = new ItemBuilder(this, CustomItemRegistry.getByName("omc_menus:refuse_btn").getBest(), meta -> {
             meta.displayName(Component.text("§aRetour au menu principal"));
         }, true);
-
-        backButton.setItemId("back")
-                .setOnClick(event -> {
-                    new AdminShopMenu(getOwner()).open();
-                });
 
         content.put(40, backButton);
 

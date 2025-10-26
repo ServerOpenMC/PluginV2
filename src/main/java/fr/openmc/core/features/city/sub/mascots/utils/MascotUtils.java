@@ -4,15 +4,21 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.sub.mascots.MascotsManager;
 import fr.openmc.core.features.city.sub.mascots.models.Mascot;
 import fr.openmc.core.features.city.sub.mascots.models.MascotType;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Chunk;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static fr.openmc.core.features.city.sub.mascots.MascotsManager.DEAD_MASCOT_NAME;
 
 public class MascotUtils {
 	private static final Set<EntityType> POSSIBLE_MASCOT_TYPES = Arrays.stream(MascotType.values())
@@ -55,6 +61,27 @@ public class MascotUtils {
 			return false;
 
 		return entity.getPersistentDataContainer().has(MascotsManager.mascotsKey, PersistentDataType.STRING);
+	}
+
+	public static void updateDisplayName(LivingEntity entityMascot, Mascot mascot, double damage) {
+		double newHealth = Math.floor(entityMascot.getHealth());
+		entityMascot.setHealth(newHealth);
+		AttributeInstance maxHealthInst = entityMascot.getAttribute(Attribute.MAX_HEALTH);
+		if (maxHealthInst == null) return;
+		double maxHealth = maxHealthInst.getValue();
+
+		double healthAfterDamage = entityMascot.getHealth() - damage;
+		if (healthAfterDamage < 0) healthAfterDamage = 0;
+
+		if (!mascot.isAlive()) {
+			entityMascot.customName(Component.text(DEAD_MASCOT_NAME));
+		} else {
+			entityMascot.customName(Component.text(MascotsManager.PLACEHOLDER_MASCOT_NAME.formatted(
+					mascot.getCity().getName(),
+					healthAfterDamage,
+					maxHealth
+			)));
+		}
 	}
 
 	public static City getCityFromEntity(UUID entityUUID) {

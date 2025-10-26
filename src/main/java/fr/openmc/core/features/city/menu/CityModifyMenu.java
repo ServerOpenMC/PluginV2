@@ -44,7 +44,7 @@ public class CityModifyMenu extends Menu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template3x9:";
     }
 
     @Override
@@ -177,10 +177,8 @@ public class CityModifyMenu extends Menu {
             }
 
         inventory.put(18, new ItemBuilder(this, Material.ARROW, itemMeta -> {
-            itemMeta.itemName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(
-                    Component.text("§e§lCLIQUEZ ICI POUR RETOURNER")
-            ));
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
         }, true));
 
         return inventory;

@@ -21,7 +21,7 @@ public class ProtectionsManager {
     private static final Map<UUID, Long> lastErrorMessageTime = new HashMap<>();
     private static final long ERROR_MESSAGE_COOLDOWN = 3000; // 3 secondes
 
-    public ProtectionsManager() {
+	public static void init() {
         OMCPlugin.registerEvents(
                 new BlockProtection(),
                 new BowProtection(),

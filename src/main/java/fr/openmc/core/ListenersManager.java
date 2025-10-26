@@ -6,7 +6,6 @@ import fr.openmc.core.features.cube.listeners.CubeListener;
 import fr.openmc.core.features.cube.listeners.RepulseEffectListener;
 import fr.openmc.core.features.cube.multiblocks.MultiBlocksListeners;
 import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
-import fr.openmc.core.features.mailboxes.MailboxListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
 import fr.openmc.core.features.updates.UpdateListener;
@@ -17,14 +16,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ListenersManager {
-    public ListenersManager() {
+    public static void init() {
         registerEvents(
                 new HappyGhastListener(),
                 new SessionsListener(),
                 new JoinQuitMessageListener(),
                 new UpdateListener(),
                 new ClockInfos(),
-                new MailboxListener(),
                 new ChronometerListener(),
                 new CubeListener(),
                 new RepulseEffectListener(),
@@ -39,6 +37,7 @@ public class ListenersManager {
                 new PlayerSettingsManager(),
                 new InteractListener(),
                 new AywenCapListener(),
+                new NoMoreRabbit(),
                 new ArmorListener()
         );
         if (!OMCPlugin.isUnitTestVersion()) {

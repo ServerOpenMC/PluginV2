@@ -1,7 +1,10 @@
 package fr.openmc.core.features.adminshop;
 
 import fr.openmc.core.OMCPlugin;
-import org.bukkit.ChatColor;
+import fr.openmc.core.utils.ItemUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -51,7 +54,7 @@ public class AdminShopYAML {
                 Map<?, ?> section = (Map<?, ?>) entry.getValue();
                 AdminShopManager.categories.put(key, new ShopCategory(
                         key,
-                        ChatColor.translateAlternateColorCodes('&', section.get("name").toString()),
+                        MiniMessage.miniMessage().deserialize(section.get("name").toString()).decoration(TextDecoration.ITALIC, false),
                         Material.valueOf(section.get("material").toString()),
                         (int) section.get("position")
                 ));
@@ -74,9 +77,9 @@ public class AdminShopYAML {
                     String itemKey = entry.getKey().toString();
                     Map<?, ?> itemSection = (Map<?, ?>) entry.getValue();
 
-                    String name = ChatColor.translateAlternateColorCodes('&', itemSection.get("name").toString());
                     int slot = (int) itemSection.get("slot");
                     Material material = Material.valueOf(itemKey);
+                    Component name = ItemUtils.getItemTranslation(material);
 
                     Map<?, ?> prices = (Map<?, ?>) itemSection.get("price");
                     Map<?, ?> initial = (Map<?, ?>) prices.get("initial");
@@ -129,7 +132,7 @@ public class AdminShopYAML {
     private static @NotNull Map<String, Object> convertShopItemToMap(Map.Entry<String, ShopItem> itemEntry) {
         ShopItem item = itemEntry.getValue();
         return Map.of(
-                "name", item.getName(),
+                "name", item.getId(),
                 "slot", item.getSlot(),
                 "price", Map.of(
                         "initial", Map.of("sell", item.getInitialSellPrice(), "buy", item.getInitialBuyPrice()),

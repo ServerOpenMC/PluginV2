@@ -9,7 +9,6 @@ import fr.openmc.core.commands.fun.Playtime;
 import fr.openmc.core.commands.utils.*;
 import fr.openmc.core.features.adminshop.AdminShopCommand;
 import fr.openmc.core.features.credits.CreditsCommand;
-import fr.openmc.core.features.city.sub.rank.CityRankManager;
 import fr.openmc.core.features.cube.CubeCommands;
 import fr.openmc.core.features.friend.FriendCommand;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
@@ -27,7 +26,7 @@ public class CommandsManager {
     @Getter
     static Lamp handler;
 
-    public CommandsManager() {
+    public static void init() {
         handler = BukkitLamp.builder(OMCPlugin.getInstance())
                 .commandCondition(new CooldownInterceptor())
                 .build();
@@ -47,7 +46,7 @@ public class CommandsManager {
                 new CooldownCommand(),
                 new ChronometerCommand(),
                 new FreezeCommand(),
-                new MailboxCommand(OMCPlugin.getInstance()),
+                new MailboxCommand(),
                 new FriendCommand(),
                 new QuestCommand(),
                 new Restart(),

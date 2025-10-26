@@ -78,7 +78,7 @@ public class DynamicCooldownManager {
         }
     }
 
-    public DynamicCooldownManager() {
+    public static void init() {
         loadCooldowns();
     }
 

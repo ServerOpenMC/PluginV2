@@ -20,7 +20,7 @@ import java.util.logging.Level;
 
 public class AnimationsManager {
 
-    public AnimationsManager() {
+    public static void init() {
         OMCPlugin plugin = OMCPlugin.getInstance();
 
         saveAllAnimation(plugin);
@@ -35,7 +35,7 @@ public class AnimationsManager {
         }
     }
 
-    public JsonObject loadAnimation(OMCPlugin plugin, String ressourcePath) {
+    public static JsonObject loadAnimation(OMCPlugin plugin, String ressourcePath) {
         File file = new File(plugin.getDataFolder(), ressourcePath);
         if (!file.exists()) {
             return null;
@@ -49,7 +49,7 @@ public class AnimationsManager {
         }
     }
 
-    public void loadAllAnimations(OMCPlugin plugin) {
+    public static void loadAllAnimations(OMCPlugin plugin) {
         for (Animation animation : Animation.values()) {
             String animationName = animation.getNameAnimation();
 
@@ -84,7 +84,7 @@ public class AnimationsManager {
         }
     }
 
-    public void saveAllAnimation(OMCPlugin plugin) {
+    public static void saveAllAnimation(OMCPlugin plugin) {
         for (Animation animation : Animation.values()) {
             String animationJsonName = animation.getNameAnimation();
 
@@ -93,7 +93,7 @@ public class AnimationsManager {
         }
     }
 
-    public void saveDefaultAnimation(OMCPlugin plugin, String resourcePath) {
+    public static void saveDefaultAnimation(OMCPlugin plugin, String resourcePath) {
         File folder = new File(plugin.getDataFolder(), "data/animations");
         if (!folder.exists()) {
             folder.mkdirs();

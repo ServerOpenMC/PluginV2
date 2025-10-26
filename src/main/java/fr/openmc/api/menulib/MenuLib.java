@@ -1,6 +1,6 @@
 package fr.openmc.api.menulib;
 
-import fr.openmc.api.menulib.defaultmenu.ConfirmMenu;
+import fr.openmc.api.menulib.template.ConfirmMenu;
 import fr.openmc.api.menulib.utils.ItemBuilder;
 import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.menu.HomeDeleteConfirmMenu;
@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -113,7 +114,9 @@ public final class MenuLib implements Listener {
         while (iterator.hasNext()) {
             Menu previous = iterator.next();
 
-            if (!ignoredMenus.contains(previous.getClass()) && !previous.getClass().equals(current.getClass())) {
+            if (!ignoredMenus.contains(previous.getClass())
+                    && !previous.getClass().equals(current.getClass())
+            ) {
                 return previous;
             }
         }
@@ -160,23 +163,18 @@ public final class MenuLib implements Listener {
         if (!(e.getInventory().getHolder() instanceof Menu menu))
             return;
 
-        if (e.getCurrentItem() == null)
-            return;
-
-        if (menu.getTakableSlot().contains(e.getSlot()))
+        if (menu.getTakableSlot().contains(e.getRawSlot()))
             return;
 
         e.setCancelled(true);
         menu.onInventoryClick(e);
 
-        ItemBuilder itemClicked = menu.getContent().get(e.getSlot());
+        ItemBuilder itemClicked = menu.getContent().get(e.getRawSlot());
 
         if (itemClicked != null && itemClicked.isBackButton()) {
             Player player = (Player) e.getWhoClicked();
             Menu previous = MenuLib.popAndGetPreviousMenu(player);
-            if (previous != null) {
-                previous.open();
-            }
+            if (previous != null) previous.open();
             return;
         }
 
@@ -196,11 +194,20 @@ public final class MenuLib implements Listener {
                     entry.getValue().accept(e);
                     break;
                 }
-
             }
         } catch (Exception ex) {
             OMCPlugin.getInstance().getSLF4JLogger().error("An error occurred while handling a click event in a menu: {}", ex.getMessage(), ex);
         }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent e) {
+        if (!(e.getInventory().getHolder() instanceof Menu menu))
+            return;
+
+        if (e.getRawSlots().stream().anyMatch(menu.getTakableSlot()::contains))
+            return;
+        e.setCancelled(true);
     }
 
     /**
@@ -208,14 +215,14 @@ public final class MenuLib implements Listener {
      */
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
-        if (e.getInventory().getHolder(false) instanceof PaginatedMenu menu)
-            menu.onClose(e);
+        if (!(e.getPlayer() instanceof  Player player)) return;
+        if (e.getInventory().getHolder(false) instanceof PaginatedMenu paginatedMenu)
+            paginatedMenu.onClose(e);
 
         if (e.getInventory().getHolder(false) instanceof Menu menu) {
             menu.onClose(e);
             Bukkit.getScheduler().runTaskLater(OMCPlugin.getInstance(), () -> {
                 if (!(e.getPlayer().getOpenInventory().getTopInventory().getHolder() instanceof Menu)) {
-                    Player player = (Player) e.getPlayer();
                     MenuLib.clearHistory(player);
                 }
             }, 1L);

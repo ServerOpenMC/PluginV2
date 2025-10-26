@@ -22,7 +22,11 @@ public class CityClaimAction {
     private static final int[][] CARDINAL_OFFSETS = new int[][]{{0, -1}, {1, 0}, {0, 1}, {-1, 0}};
 
     public static int calculatePrice(int chunkCount) {
-        return 5000 + (chunkCount * 750);
+        double maxValue = 40000;
+        double k = 0.015;
+
+        double value = maxValue * (1 - Math.exp(-k * chunkCount));
+        return (int) (2000 + value);
     }
 
     public static int calculateAywenite(int chunkCount) {

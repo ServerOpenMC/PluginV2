@@ -150,6 +150,7 @@ public class ErrorReporter {
 
             if (discordMsg.length() > 1500) {
                 discordMsg = discordMsg.substring(0, 1000) + "\n...(coupé)...";
+                discordMsg += "```";
             }
 
             DiscordWebhook.sendMessage(webhookUrl, discordMsg);

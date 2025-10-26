@@ -1,8 +1,10 @@
 package fr.openmc.core.features.homes.command;
 
 import fr.openmc.api.menulib.Menu;
+import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.command.autocomplete.HomeAutoComplete;
+import fr.openmc.core.features.homes.events.HomeTpEvent;
 import fr.openmc.core.features.homes.menu.HomeMenu;
 import fr.openmc.core.features.homes.models.Home;
 import fr.openmc.core.utils.PlayerUtils;
@@ -13,10 +15,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Optional;
-import revxrsal.commands.annotation.SuggestWith;
+import org.bukkit.scheduler.BukkitRunnable;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.List;
@@ -26,7 +26,10 @@ public class TpHomeCommand {
     @Command("home")
     @Description("Se téléporter à un home")
     @CommandPermission("omc.commands.home.teleport")
-    public static void home(Player player, @Optional @SuggestWith(HomeAutoComplete.class) String home) {
+    public static void home(
+            Player player,
+            @Named("home") @Optional @SuggestWith(HomeAutoComplete.class) String home
+    ) {
 
         if(home != null && home.contains(":") && player.hasPermission("omc.admin.homes.teleport.others")) {
             String[] split = home.split(":");
@@ -55,6 +58,12 @@ public class TpHomeCommand {
             for(Home h : homes) {
                 if (h.getName().equalsIgnoreCase(split[1])) {
                     PlayerUtils.sendFadeTitleTeleport(player, h.getLocation());
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            Bukkit.getPluginManager().callEvent(new HomeTpEvent(h, player));
+                        }
+                    }.runTask(OMCPlugin.getInstance());
                     MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté au home §e" + h.getName() + " §ade §e" + target.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
                     return;
                 }
@@ -80,6 +89,12 @@ public class TpHomeCommand {
         for(Home h : homes) {
             if(h.getName().equalsIgnoreCase(home)) {
                 PlayerUtils.sendFadeTitleTeleport(player, h.getLocation());
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Bukkit.getPluginManager().callEvent(new HomeTpEvent(h, player));
+                    }
+                }.runTask(OMCPlugin.getInstance());
                 MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté à votre home §e" + h.getName() + "§a."), Prefix.HOME, MessageType.SUCCESS, true);
                 return;
             }

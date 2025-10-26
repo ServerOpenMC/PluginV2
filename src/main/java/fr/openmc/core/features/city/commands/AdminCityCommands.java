@@ -31,7 +31,10 @@ import java.util.UUID;
 public class AdminCityCommands {
     @Subcommand("deleteCity")
     @CommandPermission("omc.admins.commands.admincity.deleteCity")
-    void deleteCity(Player player, @SuggestWith(CityNameAutoComplete.class) String name) {
+    void deleteCity(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
+    ) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
@@ -105,7 +108,10 @@ public class AdminCityCommands {
 
     @Subcommand("info")
     @CommandPermission("omc.admins.commands.admincity.info")
-    void info(Player player, @SuggestWith(CityNameAutoComplete.class) String name) {
+    void info(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
+    ) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
@@ -118,7 +124,11 @@ public class AdminCityCommands {
 
     @Subcommand("rename")
     @CommandPermission("omc.admins.commands.admincity.rename")
-    void rename(Player player, @SuggestWith(CityNameAutoComplete.class) String name, @Named("nouveau nom") String newName) {
+    void rename(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
+            @Named("nouveau nom") String newName
+    ) {
         City newNameCity = CityManager.getCityByName(newName);
         if (newNameCity != null) {
             MessagesManager.sendMessage(player, Component.text("Une ville a déjà le nom que vous voulez mettre"), Prefix.STAFF, MessageType.ERROR, false);
@@ -137,7 +147,10 @@ public class AdminCityCommands {
 
     @Subcommand("setOwner")
     @CommandPermission("omc.admins.commands.admincity.setOwner")
-    void setOwner(Player player, @SuggestWith(CityNameAutoComplete.class) String name, @Named("nouveau propriétaire") @SuggestWith(OnlinePlayerAutoComplete.class) Player newOwner) {
+    void setOwner(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
+            @Named("nouveau propriétaire") @SuggestWith(OnlinePlayerAutoComplete.class) Player newOwner) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
@@ -150,7 +163,11 @@ public class AdminCityCommands {
 
     @Subcommand("setBalance")
     @CommandPermission("omc.admins.commands.admincity.setBalance")
-    void setBalance(Player player, @SuggestWith(CityNameAutoComplete.class) String name, @Named("balance") double newBalance) {
+    void setBalance(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
+            @Named("balance") double newBalance
+    ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -163,7 +180,10 @@ public class AdminCityCommands {
 
     @Subcommand("getBalance")
     @CommandPermission("omc.admins.commands.admincity.getBalance")
-    void getBalance(Player player, @SuggestWith(CityNameAutoComplete.class) String name) {
+    void getBalance(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
+    ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -175,7 +195,10 @@ public class AdminCityCommands {
 
     @Subcommand("addPlayer")
     @CommandPermission("omc.admins.commands.admincity.addplayer")
-    void add(Player player, @SuggestWith(CityNameAutoComplete.class) String name, @SuggestWith(OnlinePlayerAutoComplete.class) Player newMember) {
+    void add(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
+            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player newMember) {
         City city = CityManager.getCityByName(name);
 
         if (city == null) {
@@ -194,7 +217,10 @@ public class AdminCityCommands {
 
     @Subcommand("remove")
     @CommandPermission("omc.admins.commands.admincity.remove")
-    void remove(Player player, @SuggestWith(OnlinePlayerAutoComplete.class) Player member) {
+    void remove(
+            Player player,
+            @Named("nom de ville") @SuggestWith(OnlinePlayerAutoComplete.class) Player member
+    ) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
 	        MessagesManager.sendMessage(player, Component.text("Ce joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
@@ -210,9 +236,12 @@ public class AdminCityCommands {
         MessagesManager.sendMessage(player, Component.text("Le joueur a été retiré"), Prefix.STAFF, MessageType.SUCCESS, false);
     }
 
-    @Subcommand("getPlayer")
+    @Subcommand("getcity")
     @CommandPermission("omc.admins.commands.admincity.getPlayer")
-    void getPlayer(Player player, @SuggestWith(OnlinePlayerAutoComplete.class) Player member) {
+    void getPlayer(
+            Player player,
+            @Named("player") @SuggestWith(OnlinePlayerAutoComplete.class) Player member
+    ) {
         City city = CityManager.getPlayerCity(member.getUniqueId());
         if (city == null) {
             MessagesManager.sendMessage(player, Component.text("Le joueur n'est pas dans une ville"), Prefix.STAFF, MessageType.ERROR, false);
@@ -240,7 +269,10 @@ public class AdminCityCommands {
 
     @Subcommand("freeclaim add")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.add")
-    public void freeClaimAdd(Player player, @SuggestWith(CityNameAutoComplete.class) String name, @Named("claim") int claim) {
+    public void freeClaimAdd(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
+            @Named("claim") int claim) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -251,7 +283,11 @@ public class AdminCityCommands {
 
     @Subcommand("freeclaim remove")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.remove")
-    public void freeClaimRemove(Player player, @SuggestWith(CityNameAutoComplete.class) String name, @Named("claim") int claim) {
+    public void freeClaimRemove(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name,
+            @Named("claim") int claim
+    ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);
@@ -263,7 +299,10 @@ public class AdminCityCommands {
 
     @Subcommand("freeclaim delete")
     @CommandPermission("omc.admins.commands.admincity.freeclaim.remove")
-    public void freeClaimDelete(Player player, @SuggestWith(CityNameAutoComplete.class) String name) {
+    public void freeClaimDelete(
+            Player player,
+            @Named("nom de ville") @SuggestWith(CityNameAutoComplete.class) String name
+    ) {
         City city = CityManager.getCityByName(name);
         if (city == null) {
             MessagesManager.sendMessage(player, MessagesManager.Message.CITY_NOT_FOUND.getMessage(), Prefix.STAFF, MessageType.ERROR, false);

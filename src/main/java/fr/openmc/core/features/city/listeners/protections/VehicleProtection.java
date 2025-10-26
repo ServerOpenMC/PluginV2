@@ -27,7 +27,6 @@ public class VehicleProtection implements Listener {
         Entity victim = event.getEntity();
         if (!(victim instanceof Vehicle)) return;
 
-        // Ignore les mascottes
         if (MascotUtils.canBeAMascot(victim)) return;
 
         Entity damager = event.getDamager();

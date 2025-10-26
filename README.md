@@ -17,11 +17,11 @@ Nouveau plugin collaboratif pour un serveur : VOTRE serveur !
 3. Une fois qu'une fonctionnalité est implémentée et fonctionnelle, créez une pull request.
 4. Après approbation, elle sera disponible sur le serveur de développement pour les tests.
 
-Serveur de test : `dev.openmc.fr` (1.21.8 Java Edition)
+Serveur de test : `dev.openmc.fr` (1.21.10 Java Edition)
 
-Serveur de la beta : `beta.openmc.fr` (1.21.8 Java Edition)
+Serveur de la beta : `beta.openmc.fr` (1.21.10 Java Edition)
 
-Serveur de jeu : `play.openmc.fr` (1.21.8 Java Edition)
+Serveur de jeu : `play.openmc.fr` (1.21.10 Java Edition)
 
 ## 📘 En apprendre plus.
 Vous voulez en savoir plus ? Vous voulez avoir des tutoriels à propos d'OpenMC ?

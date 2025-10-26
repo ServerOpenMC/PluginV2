@@ -12,6 +12,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Named;
 import revxrsal.commands.annotation.SuggestWith;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -22,7 +23,10 @@ public class DelHomeCommand {
     @Command("delhome")
     @Description("Supprime un home")
     @CommandPermission("omc.commands.home.delhome")
-    public void delHome(Player player, @SuggestWith(HomeAutoComplete.class) String name) {
+    public void delHome(
+            Player player,
+            @Named("home") @SuggestWith(HomeAutoComplete.class) String name
+    ) {
         if(player.hasPermission("omc.admin.homes.delhome.other") && name.contains(":")) {
             String[] split = name.split(":");
             String targetName = split[0];

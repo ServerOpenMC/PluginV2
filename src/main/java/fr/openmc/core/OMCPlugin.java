@@ -26,9 +26,9 @@ import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
+import fr.openmc.core.features.mailboxes.MailboxManager;
 import fr.openmc.core.features.mainmenu.MainMenu;
 import fr.openmc.core.features.milestones.MilestonesManager;
-import fr.openmc.core.features.privatemessage.PrivateMessageManager;
 import fr.openmc.core.features.quests.QuestProgressSaveManager;
 import fr.openmc.core.features.quests.QuestsManager;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
@@ -88,13 +88,13 @@ public class OMCPlugin extends JavaPlugin {
         /* EXTERNALS */
         MenuLib.init(this);
 
-        new LuckPermsHook();
-        new PapiHook();
-        new WorldGuardHook();
-        new ItemsAdderHook();
-        new FancyNpcsHook();
+        LuckPermsHook.init();
+        PapiHook.init();
+        WorldGuardHook.init();
+        ItemsAdderHook.init();
+        FancyNpcsHook.init();
         if (!OMCPlugin.isUnitTestVersion())
-            new PacketMenuLib(this);
+            PacketMenuLib.init(this);
 
         logLoadMessage();
         if (!OMCPlugin.isUnitTestVersion()) {
@@ -111,50 +111,51 @@ public class OMCPlugin extends JavaPlugin {
 
         /* MANAGERS */
         TicketManager.loadPlayerStats(new File(this.getDataFolder(), "data/stats"));
-        new DatabaseManager();
-        new CommandsManager();
-        new SpawnManager();
-        new UpdateManager();
-        new ListenersManager();
-        new EconomyManager();
-        new BankManager();
-        new ScoreboardManager();
-        new HomesManager();
+        DatabaseManager.init();
+        CommandsManager.init();
+        SpawnManager.init();
+        UpdateManager.init();
+        ListenersManager.init();
+        EconomyManager.init();
+        BankManager.init();
+        ScoreboardManager.init();
+        HomesManager.init();
         TPAQueue.initCommand();
-        new FreezeManager();
-        new QuestProgressSaveManager();
-        new TabList();
-        new AdminShopManager();
-        new BossbarManager();
-        new PrivateMessageManager();
-        new AnimationsManager();
+        FreezeManager.init();
+        QuestProgressSaveManager.init();
+        TabList.init();
+        AdminShopManager.init();
+        BossbarManager.init();
+        AnimationsManager.init();
 
-        new MotdUtils();
-        new TranslationManager(new File(this.getDataFolder(), "translations"), "fr");
-        new DynamicCooldownManager();
+        MotdUtils.init();
+        TranslationManager.init(new File(this.getDataFolder(), "translations"), "fr");
+        DynamicCooldownManager.init();
 
-        new MascotsManager();
+        MascotsManager.init();
 
-        new MultiBlockManager();
+        MultiBlockManager.init();
 
         PlayerSettingsManager.loadAllPlayerSettings();
+
+        MailboxManager.loadLetters();
     }
 
     public void loadWithItemsAdder() {
-        new CustomItemRegistry();
-        new CustomUsableItemRegistry();
-        new MilestonesManager();
-        new QuestsManager();
-        new CityManager();
-        new ContestManager();
+        CustomItemRegistry.init();
+        CustomUsableItemRegistry.init();
+        MilestonesManager.init();
+        QuestsManager.init();
+        CityManager.init();
+        ContestManager.init();
         if (WorldGuardHook.isHasWorldGuard()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);
         }
         if (!OMCPlugin.isUnitTestVersion()) {
-            new LeaderboardManager();
-            new MainMenu(this);
-            new HologramLoader();
+            LeaderboardManager.init();
+            MainMenu.init(this);
+            HologramLoader.init();
         }
         HomeIconCacheManager.initialize();
     }
@@ -165,6 +166,9 @@ public class OMCPlugin extends JavaPlugin {
         if (!OMCPlugin.isUnitTestVersion()) {
             HologramLoader.unloadAll();
         }
+
+        // - Mailboxes
+        MailboxManager.saveLetters();
 
         // - MultiBlocks
         MultiBlockManager.save();

@@ -3,6 +3,7 @@ package fr.openmc.core.features.city.menu;
 import fr.openmc.api.menulib.PaginatedMenu;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.api.menulib.utils.MenuUtils;
 import fr.openmc.api.menulib.utils.StaticSlots;
 import fr.openmc.core.commands.utils.Restart;
 import fr.openmc.core.features.city.City;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static fr.openmc.core.features.city.conditions.CityChestConditions.*;
 
@@ -54,7 +56,7 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public @Nullable Material getBorderMaterial() {
-        return Material.GRAY_STAINED_GLASS_PANE;
+        return Material.AIR;
     }
 
     @Override
@@ -79,13 +81,17 @@ public class CityChestMenu extends PaginatedMenu {
         return Arrays.asList(contents);
     }
 
-    private static final List<Integer> CITY_ITEM_SLOTS =
+    private static final List<Integer> CITY_MENU_ITEM_SLOTS =
             IntStream.rangeClosed(0, 44)
                     .boxed()
                     .toList();
+
     @Override
     public List<Integer> getTakableSlot() {
-        return CITY_ITEM_SLOTS;
+        return Stream.concat(
+                CITY_MENU_ITEM_SLOTS.stream(),
+                MenuUtils.getInventoryItemSlots().stream()
+        ).toList();
     }
 
     @Override
@@ -95,6 +101,12 @@ public class CityChestMenu extends PaginatedMenu {
         Player player = getOwner();
 
         Map<Integer, ItemBuilder> map = new HashMap<>();
+
+        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
+            itemMeta.displayName(Component.text("§aRetour"));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
+        }, true));
+
         map.put(49, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
             itemMeta.displayName(Component.text("§7Fermer"));
         }).setOnClick(inventoryClickEvent -> {
@@ -165,7 +177,7 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public String getTexture() {
-        return null;
+        return "§r§f:offset_-48::city_template6x9:";
     }
 
     @Override
@@ -184,6 +196,7 @@ public class CityChestMenu extends PaginatedMenu {
 
     @Override
     public void onClose(InventoryCloseEvent event) {
+        if (Restart.isRestarting) return;
         HumanEntity humanEntity = event.getPlayer();
         if (!(humanEntity instanceof Player player)) {
             return;

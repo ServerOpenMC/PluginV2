@@ -8,7 +8,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import lombok.Getter;
 import net.minecraft.advancements.*;
-import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.network.protocol.game.ServerboundSeenAdvancementsPacket;
@@ -53,7 +52,7 @@ public class PacketListener implements Listener {
                 ItemStack.fromBukkitCopy(getInvisibleItem()),
                 Component.literal("Chargement..."),
                 Component.empty(),
-                Optional.of(new ClientAsset(ResourceLocation.fromNamespaceAndPath("minecraft", "gui/tab_header_background"))), // Texture transparente par défaut
+                Optional.empty(),
                 AdvancementType.GOAL,
                 false,
                 false,

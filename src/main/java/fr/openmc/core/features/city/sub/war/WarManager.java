@@ -45,7 +45,7 @@ public class WarManager {
     /**
      * Initializes the WarManager by registering commands and listeners.
      */
-    public WarManager() {
+    public static void init() {
         CommandsManager.getHandler().register(
                 new WarCommand(),
                 new AdminWarCommand()

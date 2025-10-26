@@ -10,10 +10,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Subcommand;
-import revxrsal.commands.annotation.SuggestWith;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 @Command("homeworld")
@@ -24,7 +21,10 @@ public class HomeWorldCommand {
     @Subcommand("add")
     @Description("Set the world where homes are disabled")
     @CommandPermission("omc.admins.commands.home.world.add")
-    public void setHomeDisabledWorld(Player player, @SuggestWith(HomeWorldAddAutoComplete.class) String worldName) {
+    public void setHomeDisabledWorld(
+            Player player,
+            @Named("homeWorldAdd") @SuggestWith(HomeWorldAddAutoComplete.class) String worldName
+    ) {
         World world = Bukkit.getWorld(worldName);
         if(world == null) {
             MessagesManager.sendMessage(player, Component.text("§cCe monde n'existe pas."), Prefix.HOME, MessageType.ERROR, true);

@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,6 +23,8 @@ public class Chronometer{
 
     // Map structure: UUID -> (Group -> Time)
     public static final HashMap<UUID, HashMap<String, Integer>> chronometer = new HashMap<>();
+    // Map structure: UUID -> Group -> Task
+    private static final HashMap<UUID, HashMap<String, BukkitRunnable>> activeTasks = new HashMap<>();
     // new @EventHandler > ChronometerEndEvent
 
     @Getter
@@ -65,7 +68,11 @@ public class Chronometer{
         UUID entityUUID = entity.getUniqueId();
         chronometer.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, time);
 
-        new BukkitRunnable() {
+        if (activeTasks.containsKey(entityUUID) && activeTasks.get(entityUUID).containsKey(group)) {
+            activeTasks.get(entityUUID).get(group).cancel();
+        }
+
+        BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
                 if (!chronometer.containsKey(entityUUID)) {
@@ -110,7 +117,10 @@ public class Chronometer{
 
                 chronometer.get(entityUUID).put(group, remainingTime - 1);
             }
-        }.runTaskTimer(OMCPlugin.getInstance(), 0, 20);
+        };
+        task.runTaskTimer(OMCPlugin.getInstance(), 0, 20);
+
+        activeTasks.computeIfAbsent(entityUUID, k -> new HashMap<>()).put(group, task);
     }
 
     /**
@@ -134,6 +144,13 @@ public class Chronometer{
                 }
             }
         }
+
+        if (activeTasks.containsKey(entityUUID)) {
+            for (Map.Entry<String, BukkitRunnable> entry : activeTasks.get(entityUUID).entrySet()) {
+                entry.getValue().cancel();
+            }
+            activeTasks.remove(entityUUID);
+        }
     }
 
     /**
@@ -147,6 +164,12 @@ public class Chronometer{
 
         if (chronometer.containsKey(entityUUID) && chronometer.get(entityUUID).containsKey(group)) {
             chronometer.get(entityUUID).remove(group);
+
+            if (activeTasks.containsKey(entityUUID) && activeTasks.get(entityUUID).containsKey(group)) {
+                activeTasks.get(entityUUID).get(group).cancel();
+                activeTasks.get(entityUUID).remove(group);
+            }
+
             if (message!=null){
                 if (!message.contains("%null%")){
                     if (entity instanceof Player player){

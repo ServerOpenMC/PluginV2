@@ -22,7 +22,10 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 public class Money {
 
     @CommandPlaceholder()
-    public void getMoney(CommandSender sender, @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target) {
+    public void getMoney(
+            CommandSender sender,
+            @Named("joueur") @Optional @SuggestWith(OnlinePlayerAutoComplete.class) OfflinePlayer target
+    ) {
         if (sender instanceof Player player && target == null) {
             MessagesManager.sendMessage(player, Component.text("§aVous avez §e" + EconomyManager.getFormattedBalance(player.getUniqueId()) + "§a"), Prefix.OPENMC, MessageType.INFO,  true);
         } else {
