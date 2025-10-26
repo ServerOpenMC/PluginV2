@@ -4,6 +4,7 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.mayor.ElectionType;
 import fr.openmc.core.features.city.sub.mayor.managers.MayorManager;
+import fr.openmc.core.features.city.sub.milestone.rewards.FeaturesRewards;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,6 +22,8 @@ public class JoinListener implements Listener  {
         if (playerCity.getLaw() == null) {
             MayorManager.createCityLaws(playerCity, false, null);
         }
+
+        if (!FeaturesRewards.hasUnlockFeature(playerCity, FeaturesRewards.Feature.MAYOR)) return;
 
         if (MayorManager.phaseMayor == 2 && MayorManager.cityMayor.get(playerCity.getUniqueId()) == null) {
             if (playerCity.getMembers().size() >= MayorManager.MEMBER_REQUEST_ELECTION) {

@@ -311,6 +311,8 @@ public class ItemInteraction implements Listener {
         if (playerCallbacksMap != null) {
             Runnable onFail = playerCallbacksMap.get(chronometerGroup);
 
+            if (onFail == null) return;
+
             onFail.run();
         }
 
@@ -329,7 +331,6 @@ public class ItemInteraction implements Listener {
             ItemStack item = playerChronometerMap.get(chronometerGroup).item();
             ChronometerInfo chronoInfo = playerChronometerMap.get(chronometerGroup).chronometerInfo();
             ItemStack oldItem = playerOldItemHand.getOrDefault(player.getUniqueId(), new HashMap<>()).remove(chronometerGroup);
-
 
             if (chronoInfo != null) {
                 Chronometer.stopChronometer(player, chronoInfo.chronometerGroup(), null, "%null%");

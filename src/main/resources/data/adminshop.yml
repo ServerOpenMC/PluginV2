@@ -26,6 +26,15 @@ BLOCKS:
       actual:
         buy: 0.0
         sell: 2.0
+- MOSS_BLOCK:
+    slot: 2
+    price:
+      initial:
+        buy: 4.0
+        sell: 0.5
+      actual:
+        buy: 4.0
+        sell: 0.5
 - OBSIDIAN:
     slot: 22
     price:
@@ -125,6 +134,15 @@ BLOCKS:
       actual:
         buy: 2.0
         sell: 0.5
+- ANDESITE:
+    slot: 29
+    price:
+      initial:
+        buy: 0.0
+        sell: 0.1
+      actual:
+        buy: 0.0
+        sell: 0.2
 - TERRACOTTA:
     slot: 30
     price:

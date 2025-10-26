@@ -62,20 +62,22 @@ public class AdminShopCategoryMenu extends Menu {
 
         if (categoryItems != null) {
             for (ShopItem item : categoryItems.values()) {
-                ItemStack itemStack = new ItemStack(item.getMaterial());
+                Material material = item.getMaterial();
+                ItemStack itemStack = new ItemStack(material);
                 ItemMeta meta = itemStack.getItemMeta();
                 meta.displayName(item.getName().color(NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
 
-                meta.lore(AdminShopUtils.extractLoreForItem(item));
+                boolean category = material.name().endsWith("_LEAVES") || material.name().endsWith("_LOG") || item.isHasColorVariant();
+                meta.lore(category ? List.of(Component.text("§8■ §7Clique gauche pour choisir l'item")) : AdminShopUtils.extractLoreForItem(item));
 
                 itemStack.setItemMeta(meta);
 
                 ItemBuilder itemBuilder = new ItemBuilder(this, itemStack);
                 itemBuilder.setItemId(item.getId())
                         .setOnClick(event -> {
-                            if (item.getMaterial() == Material.OAK_LEAVES)
+                            if (material.name().endsWith("_LEAVES"))
                                 AdminShopManager.openLeavesVariantsMenu(getOwner(), categoryId, item, this);
-                            else if (item.getMaterial() == Material.OAK_LOG)
+                            else if (material.name().endsWith("_LOG"))
                                 AdminShopManager.openLogVariantsMenu(getOwner(), categoryId, item, this);
                             else if (item.isHasColorVariant())
                                 AdminShopManager.openColorVariantsMenu(getOwner(), categoryId, item, this);

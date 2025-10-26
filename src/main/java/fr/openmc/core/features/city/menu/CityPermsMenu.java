@@ -95,9 +95,9 @@ public class CityPermsMenu extends PaginatedMenu {
     public Map<Integer, ItemBuilder> getButtons() {
         Map<Integer, ItemBuilder> map = new HashMap<>();
 
-        map.put(45, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_cancel").getBest(), itemMeta -> {
+        map.put(45, new ItemBuilder(this, Material.ARROW, itemMeta -> {
             itemMeta.displayName(Component.text("§aRetour"));
-            itemMeta.lore(List.of(Component.text("§7Cliquez pour retourner au menu précédent")));
+            itemMeta.lore(List.of(Component.text("§7Retourner au menu précédent")));
         }, true));
 
         map.put(48, new ItemBuilder(this, CustomItemRegistry.getByName("_iainternal:icon_back_orange").getBest(), itemMeta -> {
