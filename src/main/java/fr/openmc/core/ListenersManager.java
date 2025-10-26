@@ -9,6 +9,7 @@ import fr.openmc.core.features.displays.bossbar.listeners.BossbarListener;
 import fr.openmc.core.features.settings.PlayerSettingsManager;
 import fr.openmc.core.features.tickets.TicketListener;
 import fr.openmc.core.features.updates.UpdateListener;
+import fr.openmc.core.features.chat.animations.ChatAnimationsListener;
 import fr.openmc.core.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -38,7 +39,8 @@ public class ListenersManager {
                 new InteractListener(),
                 new AywenCapListener(),
                 new NoMoreRabbit(),
-                new ArmorListener()
+                new ArmorListener(),
+                new ChatAnimationsListener()
         );
         if (!OMCPlugin.isUnitTestVersion()) {
             registerEvents(
