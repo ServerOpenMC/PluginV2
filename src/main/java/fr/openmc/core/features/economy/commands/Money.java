@@ -62,14 +62,12 @@ public class Money {
             MessagesManager.sendMessage(target.getPlayer(), Component.text("§aVous avez reçu §e" + EconomyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.INFO, true);
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-            TransactionsManager.registerTransaction(new Transaction(
-                    target.getUniqueId().toString(),
-                    "CONSOLE",
-                    amount,
-                    "Admin"
-            ));
-        });
+        TransactionsManager.registerTransaction(new Transaction(
+                target.getUniqueId().toString(),
+                "CONSOLE",
+                amount,
+                "Admin"
+        ));
     }
 
     @Subcommand("remove")
