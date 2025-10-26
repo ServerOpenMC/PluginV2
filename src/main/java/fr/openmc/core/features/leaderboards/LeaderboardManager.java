@@ -7,9 +7,12 @@ import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
 import fr.openmc.core.features.economy.models.EconomyPlayer;
+import fr.openmc.core.features.events.halloween.HalloweenManager;
+import fr.openmc.core.features.events.halloween.models.HalloweenData;
 import fr.openmc.core.features.leaderboards.commands.LeaderboardCommands;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.entities.TextDisplay;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -44,6 +47,8 @@ public class LeaderboardManager {
     private static final Map<Integer, Map.Entry<String, String>> villeMoneyMap = new TreeMap<>();
     @Getter
     private static final Map<Integer, Map.Entry<String, String>> playTimeMap = new TreeMap<>();
+    @Getter
+    private static final Map<Integer, Map.Entry<String, String>> pumpkinCountMap = new TreeMap<>();
     private static final File leaderBoardFile = new File(OMCPlugin.getInstance().getDataFolder() + "/data", "leaderboards.yml");
     @Getter
     private static Location contributorsHologramLocation;
@@ -53,12 +58,15 @@ public class LeaderboardManager {
     private static Location villeMoneyHologramLocation;
     @Getter
     private static Location playTimeHologramLocation;
+    @Getter
+    private static Location pumpkinCountHologramLocation;
     private static BukkitTask taskTimer;
     private static float scale;
     private static TextDisplay contributorsHologram;
     private static TextDisplay moneyHologram;
     private static TextDisplay villeMoneyHologram;
     private static TextDisplay playTimeHologram;
+    private static TextDisplay pumpkinCountHologram;
 
     public static void init() {
         loadLeaderBoardConfig();
@@ -138,11 +146,11 @@ public class LeaderboardManager {
      * @return A Component representing the playtime leaderboard.
      */
     public static Component createCityMoneyTextLeaderboard() {
-        var moneyMap = new TreeMap<>(LeaderboardManager.getVilleMoneyMap());
+        var moneyMap = LeaderboardManager.getVilleMoneyMap();
         if (moneyMap.isEmpty()) {
             return Component.text("Aucune ville trouvée pour le moment.").color(NamedTextColor.RED);
         }
-        Component text = Component.text("--- Leaderboard de l'argent des villes ---")
+        Component text = Component.text("--- Leaderboard de l'argent des villes ----")
                 .color(NamedTextColor.DARK_PURPLE)
                 .decorate(TextDecoration.BOLD);
         for (var entry : moneyMap.entrySet()) {
@@ -194,6 +202,29 @@ public class LeaderboardManager {
         return text;
     }
 
+    public static Component createPumpkinCountTextLeaderboard() {
+        var pumpkinCountMap = new TreeMap<>(LeaderboardManager.getPumpkinCountMap());
+        Component text = Component.text("--- Leaderboard des critrouilles ---")
+                .color(TextColor.color(156, 69, 26))
+                .decorate(TextDecoration.BOLD);
+        for (var entry : pumpkinCountMap.entrySet()) {
+            int rank = entry.getKey();
+            String playerName = entry.getValue().getKey();
+            String money = entry.getValue().getValue();
+            Component line = Component.text("\n#")
+                    .color(getRankColor(rank))
+                    .append(Component.text(rank).color(getRankColor(rank)))
+                    .append(Component.text(" ").append(Component.text(playerName).color(TextColor.color(255, 107, 37))))
+                    .append(Component.text(" - ").color(NamedTextColor.GRAY))
+                    .append(Component.text(money + " Citrouilles").color(NamedTextColor.WHITE));
+            text = text.append(line);
+        }
+        text = text.append(Component.text("\n-----------------------------------------")
+                .color(TextColor.color(156, 69, 26))
+                .decorate(TextDecoration.BOLD));
+        return text;
+    }
+
     /**
      * Retrieves the color associated with a specific rank.
      *
@@ -214,6 +245,7 @@ public class LeaderboardManager {
         moneyHologram = new TextDisplay(createMoneyTextLeaderboard(), moneyHologramLocation, new Vector3f(scale));
         villeMoneyHologram = new TextDisplay(createCityMoneyTextLeaderboard(), villeMoneyHologramLocation, new Vector3f(scale));
         playTimeHologram = new TextDisplay(createPlayTimeTextLeaderboard(), playTimeHologramLocation, new Vector3f(scale));
+        pumpkinCountHologram = new TextDisplay(createPumpkinCountTextLeaderboard(), pumpkinCountHologramLocation, new Vector3f(scale));
         taskTimer = new BukkitRunnable() {
             private int i = 0;
 
@@ -225,6 +257,7 @@ public class LeaderboardManager {
                     updatePlayerMoneyMap();
                     updateCityMoneyMap();
                     updatePlayTimeMap();
+                    updatePumpkinCountMap();
                     updateHolograms();
                 }
                 updateHologramsViewers();
@@ -246,6 +279,9 @@ public class LeaderboardManager {
         if (playTimeHologramLocation != null) {
             playTimeHologram.updateViewersList();
         }
+        if (pumpkinCountHologramLocation != null) {
+            pumpkinCountHologram.updateViewersList();
+        }
     }
 
     public static void disable() {
@@ -254,6 +290,7 @@ public class LeaderboardManager {
         moneyHologram.remove();
         villeMoneyHologram.remove();
         playTimeHologram.remove();
+        pumpkinCountHologram.remove();
     }
 
     /**
@@ -276,6 +313,8 @@ public class LeaderboardManager {
             villeMoneyHologram.setLocation(location);
         } else if (playTimeHologram != null && name.equals("playtime")) {
             playTimeHologram.setLocation(location);
+        } else if (pumpkinCountHologram != null && name.equals("pumpkin-count")) {
+            pumpkinCountHologram.setLocation(location);
         }
     }
 
@@ -302,6 +341,9 @@ public class LeaderboardManager {
         if (playTimeHologram != null) {
             playTimeHologram.setScale(new Vector3f(scale));
         }
+        if (pumpkinCountHologram != null) {
+            pumpkinCountHologram.setScale(new Vector3f(scale));
+        }
     }
 
     /**
@@ -317,6 +359,7 @@ public class LeaderboardManager {
         moneyHologramLocation = leaderBoardConfig.getLocation("money-location");
         villeMoneyHologramLocation = leaderBoardConfig.getLocation("ville-money-location");
         playTimeHologramLocation = leaderBoardConfig.getLocation("playtime-location");
+        pumpkinCountHologramLocation = leaderBoardConfig.getLocation("pumpkin-count-location", new Location(Bukkit.getWorlds().get(0), 0, 0, 0));
         scale = (float) leaderBoardConfig.getDouble("scale");
     }
 
@@ -471,6 +514,22 @@ public class LeaderboardManager {
         }
     }
 
+    public static void updatePumpkinCountMap() {
+        playerMoneyMap.clear();
+        int rank = 1;
+
+        Object2ObjectMap<UUID, HalloweenData> balances = HalloweenManager.getAllHalloweenData();
+
+        for (var entry : balances.entrySet().stream()
+                .sorted((entry1, entry2) -> Double.compare(entry2.getValue().getPumpkinCount(), entry1.getValue().getPumpkinCount()))
+                .limit(10)
+                .toList()) {
+            String playerName = Bukkit.getOfflinePlayer(entry.getKey()).getName();
+            String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
+            playerMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
+        }
+    }
+
     /**
      * Updates the holograms for all leaderboards by sending ENTITY_METADATA packets to players.
      */
@@ -486,6 +545,9 @@ public class LeaderboardManager {
         }
         if (playTimeHologram != null) {
             playTimeHologram.updateText(createPlayTimeTextLeaderboard());
+        }
+        if (pumpkinCountHologram != null) {
+            pumpkinCountHologram.updateText(createPumpkinCountTextLeaderboard());
         }
     }
 

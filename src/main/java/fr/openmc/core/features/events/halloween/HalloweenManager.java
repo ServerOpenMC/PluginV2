@@ -33,6 +33,10 @@ public class HalloweenManager {
         return data.getPumpkinCount();
     }
 
+    public static Object2ObjectMap<UUID, HalloweenData> getAllHalloweenData() {
+        return halloweenData;
+    }
+
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, HalloweenData.class);
         halloweenDataDao = DaoManager.createDao(connectionSource, HalloweenData.class);
