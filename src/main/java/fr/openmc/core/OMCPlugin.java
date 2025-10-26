@@ -23,6 +23,7 @@ import fr.openmc.core.features.displays.holograms.HologramLoader;
 import fr.openmc.core.features.displays.scoreboards.ScoreboardManager;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.halloween.HalloweenManager;
 import fr.openmc.core.features.homes.HomesManager;
 import fr.openmc.core.features.homes.icons.HomeIconCacheManager;
 import fr.openmc.core.features.leaderboards.LeaderboardManager;
@@ -127,6 +128,7 @@ public class OMCPlugin extends JavaPlugin {
         AdminShopManager.init();
         BossbarManager.init();
         AnimationsManager.init();
+        HalloweenManager.init();
 
         MotdUtils.init();
         TranslationManager.init(new File(this.getDataFolder(), "translations"), "fr");
