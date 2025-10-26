@@ -1,7 +1,7 @@
 package fr.openmc.core.features.events.halloween.listeners;
 
 import de.oliver.fancynpcs.api.events.NpcInteractEvent;
-import fr.openmc.core.features.events.halloween.menus.PumpkinDepositMenu;
+import fr.openmc.core.features.events.halloween.menus.HalloweenPumpkinDepositMenu;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -13,6 +13,6 @@ public class HalloweenNPCListener implements Listener {
         if (!npcID.equals("halloween_pumpkin_deposit_npc"))
             return;
 
-        new PumpkinDepositMenu(event.getPlayer()).open();
+        new HalloweenPumpkinDepositMenu(event.getPlayer()).open();
     }
 }

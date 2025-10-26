@@ -27,6 +27,11 @@ public class HalloweenManager {
         data.depositPumpkins(amount);
     }
 
+    public static int getPumpkinCount(UUID playerUUID) {
+        HalloweenData data = halloweenData.computeIfAbsent(playerUUID, HalloweenData::new);
+        return data.getPumpkinCount();
+    }
+
     public static void initDB(ConnectionSource connectionSource) throws SQLException {
         TableUtils.createTableIfNotExists(connectionSource, HalloweenData.class);
         halloweenDataDao = DaoManager.createDao(connectionSource, HalloweenData.class);

@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class PumpkinDepositMenu extends Menu {
-    public PumpkinDepositMenu(Player owner) {
+public class HalloweenPumpkinDepositMenu extends Menu {
+    public HalloweenPumpkinDepositMenu(Player owner) {
         super(owner);
     }
 

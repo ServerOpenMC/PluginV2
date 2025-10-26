@@ -11,15 +11,17 @@ import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.city.sub.war.War;
 import fr.openmc.core.features.city.sub.war.WarManager;
-import fr.openmc.core.features.contest.managers.ContestManager;
-import fr.openmc.core.features.contest.models.Contest;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.events.halloween.HalloweenManager;
 import fr.openmc.core.utils.DateUtils;
 import fr.openmc.core.utils.DirectionUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -29,7 +31,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -224,27 +225,30 @@ public class ScoreboardManager implements Listener {
             objective.getScore("§8• §fVille §7: " + cityName).setScore(17);
 
 
-            objective.getScore("  ").setScore(7);
+            objective.getScore("  ").setScore(6);
 
             City chunkCity = CityManager.getCityFromChunk(player.getChunk().getX(), player.getChunk().getZ());
             boolean isInRegion = WorldGuardHook.isRegionConflict(player.getLocation());
             String location = isInRegion ? "§6Région Protégée" : "Nature";
             location = (chunkCity != null) ? chunkCity.getName() : location;
-            objective.getScore("§8• §fLocation §7: " + location).setScore(6);
+            objective.getScore("§8• §fLocation §7: " + location).setScore(5);
         }
 
         String balance = EconomyManager.getMiniBalance(player.getUniqueId());
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
 
+        String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
+        objective.getScore("§8• §d" + pumpkinCount + "§rCitrouilles");
 
-        Contest data = ContestManager.data;
+
+/*        Contest data = ContestManager.data;
         int phase = data.getPhase();
         if(phase != 1) {
             objective.getScore(" ").setScore(5);
             objective.getScore("§8• §6§lCONTEST !").setScore(4);
             objective.getScore(ChatColor.valueOf(data.getColor1()) + data.getCamp1() + " §8VS " + ChatColor.valueOf(data.getColor2()) + data.getCamp2()).setScore(3);
             objective.getScore("§cFin dans " + DateUtils.getTimeUntilNextDay(DayOfWeek.MONDAY)).setScore(2);
-        }
+        }*/
 
         objective.getScore("   ").setScore(1);
         objective.getScore("§d      ᴘʟᴀʏ.ᴏᴘᴇɴᴍᴄ.ꜰʀ").setScore(0);
