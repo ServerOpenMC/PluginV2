@@ -11,7 +11,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 public class PrivateMessageCommand {
 
-    @Command("msg")
+    @Command({"msg", "w", "whisper", "tell"})
     @Description("Envoie un message privé à un joueur")
     @CommandPermission("omc.commands.privatemessage.msg")
     public void sendPrivateMessage(
