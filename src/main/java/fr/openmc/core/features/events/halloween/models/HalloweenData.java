@@ -16,7 +16,7 @@ public class HalloweenData {
     private int pumpkinCount;
 
     HalloweenData() {
-        // necessary for OrmLite
+        // Necessary for OrmLite
     }
 
     public HalloweenData(UUID playerUUID) {

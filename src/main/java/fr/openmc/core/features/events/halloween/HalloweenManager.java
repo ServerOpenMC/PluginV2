@@ -25,6 +25,7 @@ public class HalloweenManager {
     public static void depositPumpkins(UUID playerUUID, int amount) {
         HalloweenData data = halloweenData.get(playerUUID);
         data.depositPumpkins(amount);
+        saveHalloweenData(data);
     }
 
     public static int getPumpkinCount(UUID playerUUID) {
