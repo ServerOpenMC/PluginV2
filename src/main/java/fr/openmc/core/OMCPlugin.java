@@ -149,7 +149,7 @@ public class OMCPlugin extends JavaPlugin {
         MilestonesManager.init();
         QuestsManager.init();
         CityManager.init();
-        // ContestManager.init(); // Contest retirés pendant Halloween
+        ContestManager.init();
         if (WorldGuardHook.isHasWorldGuard()) {
             ParticleUtils.spawnParticlesInRegion("spawn", Bukkit.getWorld("world"), Particle.CHERRY_LEAVES, 50, 70, 130);
             ParticleUtils.spawnContestParticlesInRegion("spawn", Bukkit.getWorld("world"), 10, 70, 135);

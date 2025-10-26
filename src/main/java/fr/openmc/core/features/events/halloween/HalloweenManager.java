@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -19,7 +20,7 @@ public class HalloweenManager {
     private static Dao<HalloweenData, String> halloweenDataDao;
 
     public static void init() {
-        halloweenData = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        halloweenData = loadAllHalloweenDatas();
     }
 
     public static void depositPumpkins(UUID playerUUID, int amount) {
@@ -44,12 +45,25 @@ public class HalloweenManager {
 
     private static boolean saveHalloweenData(HalloweenData data) {
         try {
-            halloweenData.put(data.getPlayerUUID(), data);
             halloweenDataDao.createOrUpdate(data);
             return true;
         } catch (SQLException e) {
             OMCPlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to save halloween data " + data.getPlayerUUID(), e);
             return false;
         }
+    }
+
+    private static Object2ObjectMap<UUID, HalloweenData> loadAllHalloweenDatas() {
+        Object2ObjectMap<UUID, HalloweenData> newHalloweenDatas = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
+        try {
+            List<HalloweenData> halloweenDataDBs = halloweenDataDao.queryForAll();
+            for (HalloweenData halloweenData : halloweenDataDBs) {
+                newHalloweenDatas.put(halloweenData.getPlayerUUID(), halloweenData);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newHalloweenDatas;
     }
 }
