@@ -40,7 +40,7 @@ public class LeaderboardCommands {
     @CommandPermission("omc.commands.leaderboard.money.city")
     @Description("Affiche le leaderboard de l'argent des villes")
     void cityMoneyCommand(CommandSender sender) {
-        sender.sendMessage(LeaderboardManager.createPumpkinCountTextLeaderboard());
+        sender.sendMessage(createCityMoneyTextLeaderboard());
     }
 
     @Subcommand({"playtime"})

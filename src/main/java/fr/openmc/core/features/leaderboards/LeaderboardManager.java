@@ -522,8 +522,6 @@ public class LeaderboardManager {
         int rank = 1;
 
         Object2ObjectMap<UUID, HalloweenData> balances = HalloweenManager.getAllHalloweenData();
-        System.out.println(balances);
-
         for (var entry : balances.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue().getPumpkinCount(), entry1.getValue().getPumpkinCount()))
                 .limit(10)
