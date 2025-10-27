@@ -10,6 +10,7 @@ import fr.openmc.core.commands.utils.*;
 import fr.openmc.core.features.adminshop.AdminShopCommand;
 import fr.openmc.core.features.credits.CreditsCommand;
 import fr.openmc.core.features.cube.CubeCommands;
+import fr.openmc.core.features.events.halloween.commands.HalloweenCommands;
 import fr.openmc.core.features.friend.FriendCommand;
 import fr.openmc.core.features.mailboxes.MailboxCommand;
 import fr.openmc.core.features.mainmenu.commands.MainMenuCommand;
@@ -57,7 +58,8 @@ public class CommandsManager {
                 new SettingsCommand(),
                 new Cooldowns(),
                 new CreditsCommand(),
-                new CubeCommands()
+                new CubeCommands(),
+                new HalloweenCommands()
         );
     }
 }

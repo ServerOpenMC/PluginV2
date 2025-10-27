@@ -1,5 +1,8 @@
 package fr.openmc.core.features.displays.scoreboards;
 
+import de.oliver.fancynpcs.api.FancyNpcsPlugin;
+import de.oliver.fancynpcs.api.Npc;
+import de.oliver.fancynpcs.api.NpcManager;
 import dev.lone.itemsadder.api.FontImages.FontImageWrapper;
 import fr.openmc.api.hooks.ItemsAdderHook;
 import fr.openmc.api.hooks.LuckPermsHook;
@@ -237,9 +240,12 @@ public class ScoreboardManager implements Listener {
         String balance = EconomyManager.getMiniBalance(player.getUniqueId());
         objective.getScore("§8• §r"+EconomyManager.getEconomyIcon()+" §d"+balance).setScore(8);
 
-        String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
-        objective.getScore("§8• §d" + pumpkinCount + " §rCitrouilles").setScore(7);
-
+        NpcManager npcManager = FancyNpcsPlugin.get().getNpcManager();
+        Npc halloweenNPC = npcManager.getNpc("halloween_pumpkin_deposit_npc");
+        if (halloweenNPC != null) {
+            String pumpkinCount = EconomyManager.getFormattedSimplifiedNumber(HalloweenManager.getPumpkinCount(player.getUniqueId()));
+            objective.getScore("§8• §d" + pumpkinCount + " §rCitrouilles").setScore(7);
+        }
 
         Contest data = ContestManager.data;
         int phase = data.getPhase();

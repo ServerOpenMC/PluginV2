@@ -518,10 +518,11 @@ public class LeaderboardManager {
     }
 
     public static void updatePumpkinCountMap() {
-        playerMoneyMap.clear();
+        pumpkinCountMap.clear();
         int rank = 1;
 
         Object2ObjectMap<UUID, HalloweenData> balances = HalloweenManager.getAllHalloweenData();
+        System.out.println(balances);
 
         for (var entry : balances.entrySet().stream()
                 .sorted((entry1, entry2) -> Double.compare(entry2.getValue().getPumpkinCount(), entry1.getValue().getPumpkinCount()))
@@ -529,7 +530,7 @@ public class LeaderboardManager {
                 .toList()) {
             String playerName = Bukkit.getOfflinePlayer(entry.getKey()).getName();
             String formattedPumpkinCount = EconomyManager.getFormattedSimplifiedNumber(entry.getValue().getPumpkinCount());
-            playerMoneyMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
+            pumpkinCountMap.put(rank++, new AbstractMap.SimpleEntry<>(playerName, formattedPumpkinCount));
         }
     }
 
