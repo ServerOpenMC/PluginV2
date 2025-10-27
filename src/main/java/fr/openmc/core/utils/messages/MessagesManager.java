@@ -50,8 +50,8 @@ public class MessagesManager {
     }
 
     public static void sendMessage(OfflinePlayer sender, Component message, Prefix prefix, MessageType type, boolean sound) {
-        if (sender.isOnline()) {
-            sendMessage((Player) sender, message, prefix, type, 1.0F, sound);
+        if (sender.isOnline() && sender instanceof Player player) {
+            sendMessage(player, message, prefix, type, 1.0F, sound);
         }
 
     }

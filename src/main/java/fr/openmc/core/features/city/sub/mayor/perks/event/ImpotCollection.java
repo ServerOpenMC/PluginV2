@@ -4,6 +4,8 @@ import fr.openmc.core.OMCPlugin;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.economy.BankManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.Transaction;
+import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
@@ -89,8 +91,24 @@ public class ImpotCollection implements Listener {
             BankManager.withdraw(victim.getUniqueId(), amount);
         } else {
             EconomyManager.withdrawBalance(victim.getUniqueId(), amount);
+            TransactionsManager.registerTransaction(
+                    new Transaction(
+                            victim.getUniqueId().toString(),
+                            "CONSOLE",
+                            amount,
+                            "Impôt prélevé par le maire " + mayorPlayer.getName()
+                    )
+            );
         }
         EconomyManager.addBalance(mayorPlayer.getUniqueId(), amount);
+        TransactionsManager.registerTransaction(
+                new Transaction(
+                        victim.getUniqueId().toString(),
+                        mayorPlayer.getUniqueId().toString(),
+                        amount,
+                        "Impôt prélevé par le maire " + mayorPlayer.getName()
+                )
+        );
 
         double newTotal = playerWithdrawnAmount.getOrDefault(victim.getUniqueId(), 0.0) + amount;
         playerWithdrawnAmount.put(victim.getUniqueId(), newTotal);

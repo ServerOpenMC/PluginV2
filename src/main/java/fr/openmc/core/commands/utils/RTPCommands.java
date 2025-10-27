@@ -8,6 +8,7 @@ import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Cooldown;
 import revxrsal.commands.annotation.Description;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -52,9 +54,9 @@ public class RTPCommands {
     @DynamicCooldown(
             group="player:rtp",
             message = "§cTu dois attendre avant de pouvoir te rtp (%formatTime%)")
+    @Cooldown(15)
     public void rtp(Player player) {
         if (DynamicCooldownManager.isReady(player.getUniqueId(), "player:rtp")) {
-            DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", 15 * 1000L); // Pour être sûr que le jouer ne réexécute pas la commande avant qu'elle soit finie
             rtpPlayer(player, 0);
         }
     }
@@ -68,7 +70,7 @@ public class RTPCommands {
 
                 if ((tries + 1) >= maxTries) {
                     // On a déjà mis le cooldown au début
-	                player.sendActionBar(Component.text("Échec du RTP. Réessayez plus tard..."));
+                    player.sendActionBar(Component.text("Échec du RTP. Réessayez plus tard..."));
                     return;
                 }
 
@@ -110,7 +112,9 @@ public class RTPCommands {
     public void tpPlayer(Player player, Location loc) {
         PlayerUtils.sendFadeTitleTeleport(player, loc);
         MessagesManager.sendMessage(player, Component.text("§aVous avez été téléporté à §6X: §e" + loc.getBlockX() + "§6, Y: §e" + loc.getBlockY() + "§6, Z: §e" + loc.getBlockZ()), Prefix.OPENMC, MessageType.SUCCESS, true);
-        DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L);
+        Bukkit.getScheduler().runTask(OMCPlugin.getInstance(), () ->
+                DynamicCooldownManager.use(player.getUniqueId(), "player:rtp", rtpCooldown * 1000L)
+        );
     }
 
 }

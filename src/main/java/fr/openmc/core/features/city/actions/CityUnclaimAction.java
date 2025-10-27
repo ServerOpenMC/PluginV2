@@ -3,6 +3,8 @@ package fr.openmc.core.features.city.actions;
 import fr.openmc.core.features.city.City;
 import fr.openmc.core.features.city.CityManager;
 import fr.openmc.core.features.economy.EconomyManager;
+import fr.openmc.core.features.economy.Transaction;
+import fr.openmc.core.features.economy.TransactionsManager;
 import fr.openmc.core.items.CustomItemRegistry;
 import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
@@ -46,6 +48,14 @@ public class CityUnclaimAction {
         int ayweniteNb = calculateAywenite(city.getChunks().size());
 
         EconomyManager.addBalance(sender.getUniqueId(), price);
+        TransactionsManager.registerTransaction(
+                new Transaction(
+                        sender.getUniqueId().toString(),
+                        "CONSOLE",
+                        price,
+                        "Unclaim de chunk de ville"
+                )
+        );
         ItemStack aywenite = ayweniteItemStack.clone();
         aywenite.setAmount(ayweniteNb);
         for (ItemStack item : ItemUtils.splitAmountIntoStack(aywenite)) {

@@ -3,6 +3,7 @@ package fr.openmc.api.menulib;
 import fr.openmc.api.menulib.events.OpenMenuEvent;
 import fr.openmc.api.menulib.utils.InventorySize;
 import fr.openmc.api.menulib.utils.ItemBuilder;
+import fr.openmc.core.utils.ItemUtils;
 import fr.openmc.core.utils.messages.MessageType;
 import fr.openmc.core.utils.messages.MessagesManager;
 import fr.openmc.core.utils.messages.Prefix;
@@ -159,15 +160,13 @@ public abstract class Menu implements InventoryHolder {
 	}
 
 	public final void setItem(Player player, Inventory inventory, int slot, ItemBuilder item) {
-		if (item.isBackButton() && !MenuLib.hasPreviousMenu(player)) return;
-
 		if (this instanceof PaginatedMenu paginatedMenu) {
 			if ((item.isPreviousButton() && paginatedMenu.isFirstPage())
                     || (item.isNextButton() && paginatedMenu.isLastPage()))
 				return;
 		}
 
-		if (item.isBackButton()) {
+		if (item.isBackButton() && MenuLib.hasPreviousMenu(player)) {
 			item = new ItemBuilder(this, item, itemMeta -> {
 				itemMeta.displayName(Component.text("§aRetour"));
 				itemMeta.lore(List.of(
@@ -179,6 +178,10 @@ public abstract class Menu implements InventoryHolder {
 		}
 
 		inventory.setItem(slot, item);
+
+		if ((item.getType().isAir() || item.isBackButton()) && !this.getTakableSlot().contains(slot)) {
+			item = new ItemBuilder(this, ItemUtils.getInvisibleItem());
+		}
 	}
 	
 	/**

@@ -173,6 +173,14 @@ public class BankManager {
         }
 
         EconomyManager.addBalance(playerUUID, amount);
+        TransactionsManager.registerTransaction(
+                new Transaction(
+                        playerUUID.toString(),
+                        "CONSOLE",
+                        amount,
+                        "Retrait banque personnelle"
+                )
+        );
 
         MessagesManager.sendMessage(offlinePlayer,
                 Component.text("§d" + EconomyManager.getFormattedSimplifiedNumber(amount) + "§r"

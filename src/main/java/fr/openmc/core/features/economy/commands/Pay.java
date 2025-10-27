@@ -33,14 +33,12 @@ public class Pay {
             MessagesManager.sendMessage(player, Component.text("§aVous avez payé §e" + target.getName() + "§a de §e" + EconomyManager.getFormattedNumber(amount)), Prefix.OPENMC, MessageType.SUCCESS, true);
             MessagesManager.sendMessage(target, Component.text("§aVous avez reçu §e" + EconomyManager.getFormattedNumber(amount) + "§a de §e" + player.getName()), Prefix.OPENMC, MessageType.INFO, true);
 
-            Bukkit.getScheduler().runTaskAsynchronously(OMCPlugin.getInstance(), () -> {
-                TransactionsManager.registerTransaction(new Transaction(
-                        target.getUniqueId().toString(),
-                        player.getUniqueId().toString(),
-                        amount,
-                        "Paiement"
-                ));
-            });
+            TransactionsManager.registerTransaction(new Transaction(
+                    target.getUniqueId().toString(),
+                    player.getUniqueId().toString(),
+                    amount,
+                    "Paiement"
+            ));
         } else {
             MessagesManager.sendMessage(player, Component.text("§cVous n'avez pas assez d'argent"), Prefix.OPENMC, MessageType.ERROR, true);
         }

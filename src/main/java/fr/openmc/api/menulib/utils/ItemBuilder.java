@@ -28,6 +28,7 @@ import java.util.function.Consumer;
  * metadata, making it easier to create interactive items within a menu system.
  */
 public class ItemBuilder extends ItemStack {
+	@Getter
 	private final Menu itemMenu;
 	@Getter
 	private boolean previousButton;

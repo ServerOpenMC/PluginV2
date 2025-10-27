@@ -24,7 +24,7 @@ public class ShopItem {
      * List of materials that have color variants.
      */
     private static final List<String> COLOR_VARIANTS_MATERIALS = Arrays.asList(
-            "WOOL", "CONCRETE", "CONCRETE_POWDER", "TERRACOTTA", "GLASS"
+            "WOOL", "CONCRETE", "CONCRETE_POWDER", "TERRACOTTA", "GLASS", "GLASS_PANE"
     );
 
     /**
