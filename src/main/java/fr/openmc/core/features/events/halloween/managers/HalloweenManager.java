@@ -29,6 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -49,7 +50,12 @@ public class HalloweenManager {
         HalloweenData data = halloweenData.get(playerUUID);
         data.depositPumpkins(amount);
         halloweenData.put(playerUUID, data);
-        saveHalloweenData(data);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                saveHalloweenData(data);
+            }
+        }.runTaskAsynchronously(OMCPlugin.getInstance());
     }
 
     public static int getPumpkinCount(UUID playerUUID) {
